@@ -1,0 +1,161 @@
+
+#+TITLE: Emacs Configuration
+#+AUTHOR: Colin McLear
+
+This is my emacs configuration file. I use org-mode to organize it and then
+"tangle" the file using org-babel. You can find a helpful discussion of this
+method [[http://stackoverflow.com/questions/17416738/emacs-initialization-as-org-file-how-can-i-get-the-right-version-of-org-mode][here]]. 
+
+* Installing Emacs
+
+On OS X, which I use, [[http://brew.sh/][homebrew]] is an easy way to install emacs. I use the [[https://github.com/railwaycat/homebrew-emacsmacport][emacs
+ mac port]] version, which has a variety of options set that make for smoother
+ running on OS X. The one downside is that it loads a bit slower than regular
+ emacs. If you use the bleeding edge version it is a bit snappier (e.g. loads in about 1 sec!) than the =emacs-mac= version. For more info on the latter use =brew info=.
+
+Here's what some example parameters mean.
+- ~--with-cocoa~ :: installs emacs with the OS X GUI version
+- ~--with-imagemagick~ :: installs emacs with imagemagick support for image processing
+- ~--with-gnutls~ :: installs emacs with GnuTLS to utilize encrypted SSL and TLS connections
+     
+For =emacs-mac= use:
+
+#+BEGIN_SRC sh :tangle no
+brew install emacs-mac --with-gnutls --with-imagemagick --with-librsvg
+#+END_SRC
+     
+For regular =emacs= use the following:
+
+#+BEGIN_SRC sh :tangle no
+brew install emacs --with-cocoa --HEAD --use-git-head --devel --with-gnutls --with-imagemagick --with-librsvg
+#+END_SRC
+
+* Personal Information
+Tell emacs who you are. 
+
+#+begin_src emacs-lisp
+(setq user-full-name "Colin McLear"
+      user-mail-address "mclear@fastmail.com")
+#+end_src
+
+* Default settings
+Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
+
+#+begin_src emacs-lisp
+
+  ;; Environment settings
+  (defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
+  (defvar usr-local-bin "/usr/local/bin")
+
+  (setenv "PATH" (concat usr-local-bin ":" (getenv "PATH") ":" cpm-local-bin))
+  (setq exec-path (append exec-path (list cpm-local-bin usr-local-bin)))
+
+  ;; don't send to debug on error
+  (setq debug-on-error nil)
+
+  ;; spelling
+  (setq flyspell-issue-welcome-flag nil)
+  (if (eq system-type 'darwin)
+      (setq-default ispell-program-name "/usr/local/bin/aspell")
+    (setq-default ispell-program-name "/usr/bin/aspell"))
+  (setq-default ispell-list-command "list")
+ 
+  ;; deal with warnings
+  (setq visible-bell nil) ;; The default
+  (setq ring-bell-function 'ignore)
+
+  ;; navigate using visual lines rather than true lines
+  (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+
+  ;; frame startup size and position
+  ;; Set Frame width/height
+  (setq default-frame-alist
+        '((top . 25) (left . 275) (width . 105) (height . 60)))
+
+  ;; name frame
+    (setq frame-title-format
+          '(" "
+          (buffer-file-name "%f"
+          (dired-directory dired-directory "%b"))))
+
+  ;; get rid of UI cruft
+  ;; Turn off mouse interface early in startup to avoid momentary display
+  (when window-system
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tooltip-mode -1))
+
+  ;; No menu bar in terminal
+  (when (not (display-graphic-p))
+    (menu-bar-mode -1))
+
+  ;; Start from scratch
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+
+  ;; start scratch in text mode (useful to get a faster Emacs load time
+  ;; because it avoids autoloads of elisp modes)
+  (setq initial-major-mode 'text-mode)
+
+  ;; These functions are useful. Activate them.
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+  (put 'narrow-to-region 'disabled nil)
+  (put 'dired-find-alternate-file 'disabled nil)
+
+  ;; Answering just 'y' or 'n' will do
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  ;; UTF-8 please
+  (setq locale-coding-system 'utf-8) ; pretty
+  (set-terminal-coding-system 'utf-8) ; pretty
+  (set-keyboard-coding-system 'utf-8) ; pretty
+  (set-selection-coding-system 'utf-8) ; please
+  (prefer-coding-system 'utf-8) ; with sugar on top
+
+  ;; Turn off the blinking cursor
+  (blink-cursor-mode -1)
+
+  ;; only use spaces
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
+  (setq-default indicate-empty-lines nil)
+
+  ;; Don't count two spaces after a period as the end of a sentence.
+  ;; Just one space is needed.
+  (setq sentence-end-double-space nil)
+
+  ;; delete the region when typing, just like as we expect nowadays.
+  (delete-selection-mode t)
+
+  ;; show matching parens
+  (show-paren-mode t)
+
+  ;; line wrap
+  (global-visual-line-mode)
+  (diminish 'visual-line-mode)
+
+  (setq uniquify-buffer-name-style 'forward)
+
+  ;; -i gets alias definitions from .bash_profile
+  (setq shell-command-switch "-ic")
+
+  ;; Don't beep at me
+  (setq visible-bell t)
+#+END_SRC
+
+* Packages & use-package
+[[https://github.com/jwiegley/use-package][use-package]] is a macro that helps in downloading and managing package a breeze. It has lots of options for lazy loading and configurations and this configuration relies on it completely for all package management. This is a requirement. The following piece of code checks if it is already installed and installs it if it is not and also loads it and bind-key. 
+
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
+  (require 'bind-key)                ;; if you use any :bind variant
+#+END_SRC
+
+
