@@ -230,24 +230,6 @@ customize settings in [[file:init.el][init.el]].
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
-** Diminish minor modes
-#+BEGIN_SRC emacs-lisp
-  (diminish 'visual-line-mode)
-  (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
-  (eval-after-load "org-indent" '(diminish 'org-indent-mode))
-  (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
-  (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
-  (eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
-  (eval-after-load "company" '(diminish 'company-mode "Ⓒ"))
-  (eval-after-load "cm-mode" '(diminish 'cm-mode "ⓒ"))
-  (eval-after-load "reftex" '(diminish 'reftex-mode "ⓡ"))
-  ;; (eval-after-load "autorevert" '(diminish 'auto-revert-mode))
-  (eval-after-load "simple" '(diminish 'auto-revert-mode "Ⓡ"))
-  (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
-  (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
-  (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
-  (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
-  #+END_SRC
 ** OSX settings
 
 There are configurations to make when running Emacs on OS X (hence the
@@ -360,8 +342,230 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
      (message "Init tangling completed: %s" result))))
 #+END_SRC
 
-** Useful functions
-*** Other functions
+** Add some useful libraries
+
+[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
+
+#+BEGIN_SRC emacs-lisp
+(use-package async
+  :ensure t
+  :commands (async-start))
+
+(use-package cl-lib
+  :ensure t)
+
+(use-package dash
+  :ensure t)
+
+(use-package s
+  :ensure t)
+#+END_SRC
+
+* Evil Mode
+  I'm coming from vim, and want modal keybidings in emacs. There are other, less
+  radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
+  package for modal editing. But nothing beats full vim keybindings. And that is
+  what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
+
+** Basic setup
+The essential stuff
+#+begin_src emacs-lisp :tangle yes
+  (use-package evil
+    :ensure t
+    :init
+    (progn
+    ;; Cursor shape and color
+      (defcustom dotemacs-evil/emacs-cursor
+      "red"
+      "The color of the cursor when in Emacs state."
+      :type 'color
+      :group 'dotemacs-evil)
+
+      (defcustom dotemacs-evil/emacs-insert-mode
+      nil
+      "If non-nil, insert mode will act as Emacs state."
+      :type 'boolean
+      :group 'dotemacs-evil)
+
+      (setq evil-search-module 'evil-search)
+      (setq evil-magic 'very-magic)
+
+      (setq evil-emacs-state-cursor `(,dotemacs-evil/emacs-cursor box))
+      (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
+      (setq evil-visual-state-cursor '("gray" box)) 
+      (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
+      (setq evil-replace-state-cursor '("red" hbar))
+      (setq evil-operator-state-cursor '("red" hollow))
+      (use-package evil-escape
+        :ensure t
+        :diminish ""
+        :init
+        (evil-escape-mode)
+        ;; use "fd" for escape
+        (setq-default evil-escape-key-sequence "fd")
+        (use-package evil-indent-textobject :ensure t)
+        (use-package evil-leader
+          :ensure t
+          :init
+          (defun switch-to-previous-buffer ()
+          (interactive)
+          (switch-to-buffer (other-buffer (current-buffer) 1)))
+          ;; leader basic shortcuts
+          (evil-leader/set-key
+          "A" 'helm-apropos)
+          ;; evil-normal-state is preferred, so revert when idle
+          (run-with-idle-timer 9 t 'evil-normal-state)
+
+          ;; the order of the following is important!
+
+          ;; (setq evil-leader/in-all-states t)
+          (setq evil-leader/non-normal-prefix "")
+          (evil-leader/set-leader "<SPC>")
+          (evil-mode nil) ;; no idea
+          (global-evil-leader-mode)
+          (evil-mode 1)))))
+#+end_src
+
+** Evil packages & settings
+There are some other useful setup packages for evil
+
+*** navigate using visual lines rather than true lines
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+#+END_SRC
+
+*** Increment and decrement numbers
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-numbers
+    :ensure t
+    :defer t
+    :init
+    (progn
+      (bind-key "H-s" 'evil-numbers/inc-at-pt evil-normal-state-map)
+      (bind-key "H-a" 'evil-numbers/dec-at-pt evil-normal-state-map)))
+#+END_SRC
+
+*** Change cursor in terminal
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-terminal-cursor-changer
+    :ensure t
+    :defer t
+    :init
+     (unless (display-graphic-p)
+             (require 'evil-terminal-cursor-changer)))
+#+END_SRC
+
+*** motions and text objects for delimited arguments
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-args
+    :ensure t
+    :defer t
+    :config
+    ;; bind evil-args text objects
+    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+
+    ;; bind evil-forward/backward-args
+    (define-key evil-normal-state-map "L" 'evil-forward-arg)
+    (define-key evil-normal-state-map "H" 'evil-backward-arg)
+    (define-key evil-motion-state-map "L" 'evil-forward-arg)
+    (define-key evil-motion-state-map "H" 'evil-backward-arg)
+
+    ;; bind evil-jump-out-args
+    (define-key evil-normal-state-map "K" 'evil-jump-out-args)
+    )
+#+END_SRC
+
+*** surround commands like vim-surround
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-surround
+    :ensure t
+    :defer t
+    :commands (evil-surround-region)
+    :init 
+    (progn 
+      (global-evil-surround-mode 1)
+      (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
+      (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)))
+#+END_SRC 
+
+*** commenting 
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-commentary
+    :ensure t
+    :defer t
+    :commands (evil-commentary evil-commentary-line)
+    :diminish evil-commentary-mode
+    :config
+    (evil-commentary-mode))
+#+END_SRC
+
+*** graphical undo
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :defer 2
+    :diminish ""
+    :init
+    (progn
+      (global-undo-tree-mode)
+      (setq undo-tree-auto-save-history t)
+      (evil-leader/set-key "u" 'undo-tree-visualize)))    
+#+END_SRC
+ 
+* Useful functions
+** Org wrap in block template
+A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
+#+begin_src emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; function to wrap blocks of text in org templates                       ;;
+;; e.g. latex or src etc                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun org-block-wrap ()
+  "Make a template at point."
+  (interactive)
+  (if (org-at-table-p)
+      (call-interactively 'org-table-rotate-recalc-marks)
+    (let* ((choices '(("s" . "SRC")
+                      ("E" . "SRC emacs-lisp")
+                      ("e" . "EXAMPLE")
+                      ("q" . "QUOTE")
+                      ("v" . "VERSE")
+                      ("c" . "CENTER")
+                      ("l" . "LaTeX")
+                      ("h" . "HTML")
+                      ("a" . "ASCII")))
+           (key
+            (key-description
+             (vector
+              (read-key
+               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+                       (mapconcat (lambda (choice)
+                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
+                                            ": "
+                                            (cdr choice)))
+                                  choices
+                                  ", ")))))))
+      (let ((result (assoc key choices)))
+        (when result
+          (let ((choice (cdr result)))
+            (cond
+             ((region-active-p)
+              (let ((start (region-beginning))
+                    (end (region-end)))
+                (goto-char end)
+                (insert "#+END_" choice "\n")
+                (goto-char start)
+                (insert "#+BEGIN_" choice "\n")))
+             (t
+              (insert "#+BEGIN_" choice "\n")
+              (save-excursion (insert "#+END_" choice))))))))))
+
+#+end_src
+
+** Other functions
+Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
 #+BEGIN_SRC emacs-lisp
   ;; Regexp for useful and useless buffers for smarter buffer switching, from spacemacs
 
@@ -500,223 +704,6 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
     (interactive)
     (call-interactively 'write-file))
 #+END_SRC
-** Add some useful libraries
-
-[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
-
-#+BEGIN_SRC emacs-lisp
-(use-package async
-  :ensure t
-  :commands (async-start))
-
-(use-package cl-lib
-  :ensure t)
-
-(use-package dash
-  :ensure t)
-
-(use-package s
-  :ensure t)
-#+END_SRC
-
-* Evil Mode
-  I'm coming from vim, and want modal keybidings in emacs. There are other, less
-  radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
-  package for modal editing. But nothing beats full vim keybindings. And that is
-  what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
-
-** Basic setup
-The essential stuff
-#+begin_src emacs-lisp :tangle yes
-  (use-package evil
-    :ensure t
-    :defer 2
-    :init
-    (progn
-    ;; Cursor shape and color
-      (defcustom dotemacs-evil/emacs-cursor
-      "red"
-      "The color of the cursor when in Emacs state."
-      :type 'color
-      :group 'dotemacs-evil)
-
-      (defcustom dotemacs-evil/emacs-insert-mode
-      nil
-      "If non-nil, insert mode will act as Emacs state."
-      :type 'boolean
-      :group 'dotemacs-evil)
-
-      (setq evil-search-module 'evil-search)
-      (setq evil-magic 'very-magic)
-
-      (setq evil-emacs-state-cursor `(,dotemacs-evil/emacs-cursor box))
-      (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
-      (setq evil-visual-state-cursor '("gray" box)) 
-      (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
-      (setq evil-replace-state-cursor '("red" hbar))
-      (setq evil-operator-state-cursor '("red" hollow))
-      (use-package evil-escape
-        :ensure t
-        :diminish ""
-        :init
-        (evil-escape-mode)
-        ;; use "fd" for escape
-        (setq-default evil-escape-key-sequence "fd")
-        (use-package evil-indent-textobject :ensure t)
-        (use-package evil-leader
-          :ensure t
-          :init
-          (defun switch-to-previous-buffer ()
-          (interactive)
-          (switch-to-buffer (other-buffer (current-buffer) 1)))
-          ;; leader basic shortcuts
-          (evil-leader/set-key
-          "A" 'helm-apropos)
-          ;; evil-normal-state is preferred, so revert when idle
-          (run-with-idle-timer 9 t 'evil-normal-state)
-
-          ;; the order of the following is important!
-
-          ;; (setq evil-leader/in-all-states t)
-          (setq evil-leader/non-normal-prefix "")
-          (evil-leader/set-leader "<SPC>")
-          (evil-mode nil) ;; no idea
-          (global-evil-leader-mode)
-          (evil-mode 1)))))
-#+end_src
-
-** Evil packages & settings
-There are some other useful setup packages for evil
-
-*** navigate using visual lines rather than true lines
-#+BEGIN_SRC emacs-lisp
-(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
-(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
-#+END_SRC
-
-*** Increment and decrement numbers
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-numbers
-    :ensure t
-    :defer t
-    :config
-    (progn
-      (bind-key "C-a" 'evil-numbers/inc-at-pt evil-normal-state-map)
-      (bind-key "C-x" 'evil-numbers/dec-at-pt evil-normal-state-map)))
-#+END_SRC
-
-*** Change cursor in terminal
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-terminal-cursor-changer
-    :ensure t
-    :defer t
-    :init
-     (unless (display-graphic-p)
-             (require 'evil-terminal-cursor-changer)))
-#+END_SRC emacs-lisp
-
-*** motions and text objects for delimited arguments
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-args
-    :ensure t
-    :defer t
-    :config
-    ;; bind evil-args text objects
-    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-    ;; bind evil-forward/backward-args
-    (define-key evil-normal-state-map "L" 'evil-forward-arg)
-    (define-key evil-normal-state-map "H" 'evil-backward-arg)
-    (define-key evil-motion-state-map "L" 'evil-forward-arg)
-    (define-key evil-motion-state-map "H" 'evil-backward-arg)
-
-    ;; bind evil-jump-out-args
-    (define-key evil-normal-state-map "K" 'evil-jump-out-args)
-    )
-#+END_SRC emacs-lisp
-
-*** surround commands like vim-surround
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-surround
-    :ensure t
-    :defer t
-    :init (global-evil-surround-mode 1))
-#+END_SRC emacs-lisp
-
-*** commenting 
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-commentary
-    :ensure t
-    :defer t
-    :commands (evil-commentary evil-commentary-line)
-    :diminish evil-commentary-mode
-    :config
-    (evil-commentary-mode))
-#+END_SRC emacs-lisp
-
-*** graphical undo
-#+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    :ensure t
-    :defer 2
-    :diminish ""
-    :init
-    (progn
-      (global-undo-tree-mode)
-      (setq undo-tree-auto-save-history t)
-      (evil-leader/set-key "u" 'undo-tree-visualize)))    
-#+END_SRC emacs-lisp
- 
-* Useful functions
-** Org wrap in block template
-A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
-#+begin_src emacs-lisp
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; function to wrap blocks of text in org templates                       ;;
-;; e.g. latex or src etc                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun org-block-wrap ()
-  "Make a template at point."
-  (interactive)
-  (if (org-at-table-p)
-      (call-interactively 'org-table-rotate-recalc-marks)
-    (let* ((choices '(("s" . "SRC")
-                      ("E" . "SRC emacs-lisp")
-                      ("e" . "EXAMPLE")
-                      ("q" . "QUOTE")
-                      ("v" . "VERSE")
-                      ("c" . "CENTER")
-                      ("l" . "LaTeX")
-                      ("h" . "HTML")
-                      ("a" . "ASCII")))
-           (key
-            (key-description
-             (vector
-              (read-key
-               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
-                       (mapconcat (lambda (choice)
-                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
-                                            ": "
-                                            (cdr choice)))
-                                  choices
-                                  ", ")))))))
-      (let ((result (assoc key choices)))
-        (when result
-          (let ((choice (cdr result)))
-            (cond
-             ((region-active-p)
-              (let ((start (region-beginning))
-                    (end (region-end)))
-                (goto-char end)
-                (insert "#+END_" choice "\n")
-                (goto-char start)
-                (insert "#+BEGIN_" choice "\n")))
-             (t
-              (insert "#+BEGIN_" choice "\n")
-              (save-excursion (insert "#+END_" choice))))))))))
-
-#+end_src
 
 * Theme
 ** Gruvbox theme
@@ -1594,6 +1581,13 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
 
 #+END_SRC
  
+** Autopair
+#+BEGIN_SRC emacs-lisp
+(use-package electric-pair-mode
+  :defer t
+  :init 
+  (electric-pair-mode 1))
+#+END_SRC
 ** Autorevert
 Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
@@ -1630,7 +1624,24 @@ Auto-revert buffers of changed files
 (use-package diminish
   :ensure t)
 #+END_SRC
- 
+*** Diminish minor modes
+#+BEGIN_SRC emacs-lisp
+  (diminish 'visual-line-mode)
+  (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
+  (eval-after-load "org-indent" '(diminish 'org-indent-mode))
+  (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
+  (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
+  (eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
+  (eval-after-load "company" '(diminish 'company-mode "Ⓒ"))
+  (eval-after-load "cm-mode" '(diminish 'cm-mode "ⓒ"))
+  (eval-after-load "reftex" '(diminish 'reftex-mode "ⓡ"))
+  ;; (eval-after-load "autorevert" '(diminish 'auto-revert-mode))
+  (eval-after-load "simple" '(diminish 'auto-revert-mode "Ⓡ"))
+  (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
+  (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
+  (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
+  (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
+  #+END_SRC
 ** Doc View Mode
 #+begin_src emacs-lisp :tangle yes
 (use-package doc-view
@@ -1949,7 +1960,22 @@ highlight TODO statements in comments
       :init
       (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
    #+END_SRC
-
+** Rainbow identifiers
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-identifiers
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
+#+END_SRC
+** Rainbow mode
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :ensure t
+  :defer t
+  :commands rainbow-mode
+)
+#+END_SRC 
 ** Ranger
 Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
@@ -2675,6 +2701,7 @@ Keybindings for managing packages
   "tn" 'linum-mode
   "to" 'org-toggle-link-display
   "tp" 'smartparens-mode
+  "tr" 'rainbow-identifiers-mode
   "tt" 'helm-themes
 )
 #+END_SRC
