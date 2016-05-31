@@ -230,6 +230,11 @@ customize settings in [[file:init.el][init.el]].
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
+** Text settings
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook 'centered-cursor-mode)
+  (add-hook 'prog-mode-hook 'linum-relative-mode)
+#+END_SRC
 ** OSX settings
 
 There are configurations to make when running Emacs on OS X (hence the
@@ -414,7 +419,7 @@ The essential stuff
           (evil-leader/set-key
           "A" 'helm-apropos)
           ;; evil-normal-state is preferred, so revert when idle
-          (run-with-idle-timer 9 t 'evil-normal-state)
+          (run-with-idle-timer 20 t 'evil-normal-state)
 
           ;; the order of the following is important!
 
@@ -510,8 +515,7 @@ There are some other useful setup packages for evil
     :init
     (progn
       (global-undo-tree-mode)
-      (setq undo-tree-auto-save-history t)
-      (evil-leader/set-key "u" 'undo-tree-visualize)))    
+      (setq undo-tree-auto-save-history t)))
 #+END_SRC
  
 * Useful functions
@@ -861,6 +865,7 @@ And here's how we tell Emacs to use the font we want to use.
 #+END_SRC
 
 * Org
+Org is really why most people use emacs. Here are some basic settings and packages.
 #+BEGIN_SRC emacs-lisp
 (use-package org 
   :defer t
@@ -930,6 +935,63 @@ And here's how we tell Emacs to use the font we want to use.
             (add-hook 'org-mode-hook 'toc-org-enable)))
      ))
 #+END_SRC
+** Org hooks
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+            '(lambda()
+               (turn-on-auto-fill) (set-fill-column 80) (flyspell-mode 1) (hl-todo-mode) (imenu-add-to-menubar "Imenu") (global-git-gutter+-mode 0)))
+#+END_SRC
+** Org publish
+#+BEGIN_SRC emacs-lisp
+
+   ;;; Org and website (pelican)
+      (with-eval-after-load 'org
+      (org-add-link-type
+       "pelican"
+       (lambda (path) (org-open-file path))
+       ;; ; export
+       (lambda (path desc backend)
+         (cond
+          ((eq backend 'org)
+           (format "[[file:{filename}/%s][%s]]" path (or desc "")))
+          ((eq backend 'html)
+           (format "<a href=\"%s\">%s</a>" path (or desc "")))
+          ((eq backend 'md)
+           (format "[{filename}/%s](%s)" path (or desc "")))))))
+
+    ;;; Org-publish settings
+        (setq org-publish-project-alist
+          '(
+            ("notebook"
+             ;; Path to org files
+             :base-directory "~/Dropbox/Notes/ResearchNotes"
+             :base-extension "org"
+             ;; Path to pelican project
+             :publishing-directory "~/bin/notebook/content" 
+             ;; settings
+             :author "Colin McLear"
+             :email "mclear@unl.edu"
+             :recursive t
+             :auto-sitemap nil
+             :auto-preamble nil ;; Don't add any kind of html before the content
+             :export-with-tags nil
+             :with-timestamps nil
+             :time-stamp-file nil
+             :with-creator nil
+             :auto-postamble nil ;; Don't add any kind of html after the content
+             :html-postamble nil ;; same thing
+             ;; :preparation-function (pandoc-filter)
+             ;; :publishing-function (org-html-publish-to-html)
+             ;; :publishing-function (org-md-publish-to-md)
+             :publishing-function (org-org-publish-to-org)
+             ;; :publishing-function (org-pandoc-publish-to-html)
+             )
+            ))
+
+        (defun org-pandoc-publish-to-html (plist filename pub-dir)
+          "Publish an org file to html using ox-pandoc. Return output file name."
+          (org-publish-org-to 'org-pandoc-export-to-html filename ".html" plist pub-dir))
+#+END_SRC
 
 ** Org pomodoro
 Helps with time tracking
@@ -941,7 +1003,7 @@ Helps with time tracking
     (progn
       (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 #+END_SRC emacs-lisp
-**  open docx files in default application (ie msword)
+** open docx files in default application (ie msword)
 Open exported docx files in Word/Open Office rather than emacs
 #+BEGIN_SRC emacs-lisp
   (setq org-file-apps
@@ -1494,11 +1556,12 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
           deft-org-mode-title-prefix t ;; add #+TITLE prefix
           deft-recursive t  ;; search recursively in folders
           deft-use-filename-as-title t)
-    (evil-leader/set-key "an" 'evilmacs/deft)
+    (evil-leader/set-key "an" 'cpm/deft)
 
-    (defun evilmacs/deft ()
+    (defun cpm/deft ()
       "Helper to call deft and then fix things so that it is nice and works"
       (interactive)
+      (require 'org)
       (deft)
       ;; Hungry delete wrecks deft's DEL override
       (when (fboundp 'hungry-delete-mode)
@@ -1513,6 +1576,13 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
       "n" 'deft-new-file
       "r" 'deft-rename-file)))
       
+;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
+;;advise deft-new-file-named to replace spaces in file names with -
+(defun bjm-deft-strip-spaces (args)
+  "Replace spaces with - in the string contained in the first element of the list args. Used to advise deft's file naming function."
+  (list (replace-regexp-in-string " " "-" (car args)))
+  )
+(advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
 #+END_SRC
 
 * Other packages
@@ -2364,6 +2434,11 @@ Numbered window shortcuts for Emacs
           ;; (define-key markdown-mode-map (kbd "<return>") 'markdown-jump)
     ))
 
+    ;; markdown hooks
+  (add-hook 'markdown-mode-hook
+            '(lambda()
+               (turn-on-auto-fill) (linum-relative-mode) (centered-cursor-mode) (set-fill-column 80) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (global-git-gutter+-mode t)))
+
   ;; autofill for markdown
   (defun markdown-auto-fill ()
     "turn on autofill and settings"
@@ -2392,17 +2467,10 @@ Pandoc mode for markdown conversion
         (interactive)
         (find-file (concat (file-name-sans-extension buffer-file-name) ".pdf")))
         )
-
     :init
     (progn
       (evil-leader/set-key "p" 'run-pandoc)
-      (evil-leader/set-key "op" 'pandoc-pdf-open)))
-
-(defun pandoc/init-ox-pandoc ()
-  (use-package ox-pandoc
-    :defer t
-    :init
-    (with-eval-after-load 'org (require 'ox-pandoc))))
+      (evil-leader/set-key "up" 'pandoc-pdf-open)))
 #+END_SRC
 
 *** Critic markup
@@ -2634,7 +2702,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
  
-** Owner
+** User
 #+BEGIN_SRC emacs-lisp
   (defun cpm/org-to-markdown ()
     "convert clipboard contents from org to markdown and paste"
@@ -2648,18 +2716,18 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t org"))
     (yank))
 
-  (which-key-declare-prefixes "<SPC>o" "Owner")
+  (which-key-declare-prefixes "<SPC>u" "User")
   (evil-leader/set-key
-   "om" 'cpm/org-to-markdown   
-   "oo" 'cpm/markdown-to-org
-   "os" 'sb-expand-current-file
-   "oS" 'just-one-space
-   "oc" 'centered-window-mode
-   "od" 'distraction-free
-   "oD" 'osx-dictionary-search-input
+   "um" 'cpm/org-to-markdown   
+   "uo" 'cpm/markdown-to-org
+   "us" 'sb-expand-current-file
+   "uS" 'just-one-space
+   "uc" 'centered-window-mode
+   "ud" 'distraction-free
+   "uD" 'osx-dictionary-search-input
    ;; "ou" 'paradox-upgrade-packages
    ;; "op" 'pandoc-convert-to-pdf
-   "ow" 'count-words
+   "uw" 'count-words
     )
 
 #+END_SRC
