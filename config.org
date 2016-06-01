@@ -1353,7 +1353,7 @@ A completion framework and much more. For a complete overview see [[http://tuhdo
 
       (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
       (helm-autoresize-mode 1)
-      (setq helm-autoresize-max-height 35)
+      (setq helm-autoresize-max-height 40)
       (setq helm-autoresize-min-height 35)
 
       ;; enter text at eye level
@@ -2722,7 +2722,6 @@ I use a lot of keybindings, with <SPC> as my "leader" key
    "uo" 'cpm/markdown-to-org
    "us" 'sb-expand-current-file
    "uS" 'just-one-space
-   "uc" 'centered-window-mode
    "ud" 'distraction-free
    "uD" 'osx-dictionary-search-input
    ;; "ou" 'paradox-upgrade-packages
@@ -2760,6 +2759,7 @@ Keybindings for managing packages
   "ta" 'company-mode
   "tb" 'fancy-battery-mode
   "tc" 'centered-cursor-mode
+  "td" 'centered-window-mode
   "tf" 'toggle-frame-fullscreen
   "tg" 'git-gutter+-mode
   "th" 'global-hl-line-mode
@@ -2789,6 +2789,13 @@ Keybindings for managing packages
   )
 #+END_SRC
 
+* Test code
+#+BEGIN_SRC emacs-lisp
+  (defun goto-projects ()
+      "Open init.el file"
+      (interactive)
+      (find-file "~/"))
+#+END_SRC
 * Server
 Start server
 #+BEGIN_SRC emacs-lisp
