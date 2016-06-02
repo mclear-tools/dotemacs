@@ -1,0 +1,10 @@
+*~undo-tree~
+/custom.el
+/config.el
+elpa
+/recentf
+/saved-places
+var/
+/bookmarks
+.backups
+/config.org_archive
