@@ -9,6 +9,13 @@
 ;; Increase the garbage collection threshold to 500 MB to ease startup
 (setq gc-cons-threshold (* 500 1024 1024))
 
+;; Show elapsed start-up time in mini-buffer
+(let ((emacs-start-time (current-time)))
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
+                (message "[Emacs initialized in %.3fs]" elapsed)))))
+
 ;; List package archives and initialize them
 (require 'package)
 (when (>= emacs-major-version 24)
@@ -29,6 +36,16 @@
 (unless (package-installed-p 'org-plus-contrib)
     (package-refresh-contents)
     (package-install 'org-plus-contrib))
+
+;; Check if use-package is installed, and install if not. Then require it.
+(unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+(require 'bind-key)                ;; if you use any :bind variant
+(require 'diminish)                ;; if you use diminish
 
 ;; load config -- Note that config file must exist & have source code for tangling, otherwise errors get thrown!!
 (defvar init-source-org-file (expand-file-name "config.org" user-emacs-directory)
