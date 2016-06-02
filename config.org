@@ -573,7 +573,20 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
               (save-excursion (insert "#+END_" choice))))))))))
 
 #+end_src
-
+** Resume last search
+#+BEGIN_SRC emacs-lisp
+  (defun last-search-buffer ()
+        "open last helm-ag or hgrep buffer."
+        (interactive)
+        (cond ((get-buffer "*helm ag results*")
+               (switch-to-buffer-other-window "*helm ag results*"))
+              ((get-buffer "*helm-ag*")
+               (helm-resume "*helm-ag*"))
+              ((get-buffer "*hgrep*")
+               (switch-to-buffer-other-window "*hgrep*"))
+              (t
+               (message "No previous search buffer found"))))
+#+END_SRC
 ** Other functions
 Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
 #+BEGIN_SRC emacs-lisp
@@ -2707,11 +2720,10 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "<SPC>" 'helm-M-x
     "d" 'deer
     "e" 'server-edit
+    "h" 'helm-resume
     "j" 'ace-jump-mode
     "k" 'helm-show-kill-ring
     "n" 'deft
-    "qq" 'evil-quit-all
-    "qr" 'restart-emacs
     "W" 'woman
     ";" 'evil-commentary-line
     "[" 'spacemacs/previous-useful-buffer
@@ -2835,11 +2847,12 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
   (which-key-declare-prefixes "<SPC>s" "Search")
   (evil-leader/set-key
-    "ss" 'helm-swoop-without-pre-input 
+    "ss" 'helm-swoop-without-pre-input ;; search in file
     "sp" 'helm-ag-project-root
     "so" 'helm-occur
-    "sa" 'helm-ag
-    "/"  'helm-ag
+    "sd" 'helm-do-ag ;; search with directory prompt
+    "/"  'helm-ag  ;; search in directory with word prompt
+    "sl" 'last-search-buffer
    )
 #+END_SRC
  
@@ -2882,8 +2895,19 @@ Keybindings for managing packages
   )
 #+END_SRC
 
+** Quitting
+#+BEGIN_SRC emacs-lisp
+    (which-key-declare-prefixes "<SPC>q" "Quit")
+    (evil-leader/set-key
+    "qq" 'evil-quit-all
+    "qr" 'restart-emacs)
+#+END_SRC
 * Test code
 #+BEGIN_SRC emacs-lisp
+  (defun cpm/helm-files-do-ag (&optional dir)
+        "Search in files with `ag' using a default input."
+        (interactive)
+        (helm-do-ag dir))
   (defun goto-projects ()
       "Open projects dir"
       (interactive)
