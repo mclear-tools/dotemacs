@@ -2868,6 +2868,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 
 ** Miscellaneous
 #+BEGIN_SRC emacs-lisp
+;; Show which-key top-level bindings
+(global-set-key (kbd "H-k") 'which-key-show-top-level)
 #+END_SRC
  
 ** User
