@@ -1654,7 +1654,6 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
           deft-org-mode-title-prefix t ;; add #+TITLE prefix
           deft-recursive t  ;; search recursively in folders
           deft-use-filename-as-title t)
-    (evil-leader/set-key "an" 'cpm/deft)
 
     (defun cpm/deft ()
       "Helper to call deft and then fix things so that it is nice and works"
@@ -2572,8 +2571,8 @@ Pandoc mode for markdown conversion
         )
     :init
     (progn
-      (evil-leader/set-key "p" 'run-pandoc)
-      (evil-leader/set-key "up" 'pandoc-pdf-open)))
+      (evil-leader/set-key "up" 'run-pandoc)
+      (evil-leader/set-key "uP" 'pandoc-pdf-open)))
 #+END_SRC
 
 *** Critic markup
@@ -2723,7 +2722,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "h" 'helm-resume
     "j" 'ace-jump-mode
     "k" 'helm-show-kill-ring
-    "n" 'deft
+    "n" 'cpm/deft
     "W" 'woman
     ";" 'evil-commentary-line
     "[" 'spacemacs/previous-useful-buffer
