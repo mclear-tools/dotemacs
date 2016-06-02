@@ -1440,7 +1440,7 @@ evil bindings for magit
 #+BEGIN_SRC emacs-lisp
  (use-package projectile
     :ensure t
-    :defer 2
+    :defer t
     :commands (projectile-ack
                projectile-ag
                projectile-compile-project
