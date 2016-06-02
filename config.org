@@ -764,6 +764,22 @@ argument takes the kindows rotate backwards."
   (interactive "p")
   (spacemacs/rotate-windows (* -1 count)))
 #+END_SRC
+** Open Projects directory
+#+BEGIN_SRC emacs-lisp
+  (defun goto-projects ()
+      "Open projects dir"
+      (interactive)
+      (require 'ranger)
+      (find-file "~/projects"))
+
+#+END_SRC
+** Search directories with ag
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/helm-files-do-ag (&optional dir)
+        "Search in files with `ag' using a default input."
+        (interactive)
+        (helm-do-ag dir))
+#+END_SRC
 * Theme
 ** Gruvbox theme
    This is a great general-purpose theme
@@ -2903,15 +2919,6 @@ Keybindings for managing packages
 #+END_SRC
 * Test code
 #+BEGIN_SRC emacs-lisp
-  (defun cpm/helm-files-do-ag (&optional dir)
-        "Search in files with `ag' using a default input."
-        (interactive)
-        (helm-do-ag dir))
-  (defun goto-projects ()
-      "Open projects dir"
-      (interactive)
-      (require 'ranger)
-      (find-file "~/projects"))
 #+END_SRC
 * Server
 Start server
