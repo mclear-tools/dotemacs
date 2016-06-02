@@ -187,7 +187,10 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
 * Settings
 ** Backups
 #+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist '(("." . "~/.emacs.d/.backups")))
+ (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 (setq make-backup-files t               ; backup of a file the first time it is saved.
       backup-by-copying t               ; don't clobber symlinks
       version-control t                 ; version numbers for backup files
@@ -233,7 +236,7 @@ customize settings in [[file:init.el][init.el]].
 ** Text settings
 #+BEGIN_SRC emacs-lisp
   (add-hook 'text-mode-hook 'centered-cursor-mode)
-  (add-hook 'prog-mode-hook 'linum-relative-mode)
+  (add-hook 'prog-mode-hook 'linum-mode)
 #+END_SRC
 ** OSX settings
 
@@ -511,11 +514,14 @@ There are some other useful setup packages for evil
   (use-package undo-tree
     :ensure t
     :defer 2
-    :diminish ""
     :init
     (progn
-      (global-undo-tree-mode)
-      (setq undo-tree-auto-save-history t)))
+      (setq undo-tree-mode-lighter "")
+      (setq undo-tree-auto-save-history t)
+      (setq undo-tree-history-directory-alist `((".*" . ,temporary-file-directory))))
+    :config
+    (global-undo-tree-mode)
+    )
 #+END_SRC
  
 * Useful functions
@@ -708,17 +714,52 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     (interactive)
     (call-interactively 'write-file))
 #+END_SRC
+** Rotate windows
+#+BEGIN_SRC emacs-lisp
+;; from magnars modified by ffevotte for dedicated windows support
+(defun rotate-windows (count)
+  "Rotate your windows.
+Dedicated windows are left untouched. Giving a negative prefix
+argument takes the kindows rotate backwards."
+  (interactive "p")
+  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
+         (num-windows (length non-dedicated-windows))
+         (i 0)
+         (step (+ num-windows count)))
+    (cond ((not (> num-windows 1))
+           (message "You can't rotate a single window!"))
+          (t
+           (dotimes (counter (- num-windows 1))
+             (let* ((next-i (% (+ step i) num-windows))
 
+                    (w1 (elt non-dedicated-windows i))
+                    (w2 (elt non-dedicated-windows next-i))
+
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
+
+                    (s1 (window-start w1))
+                    (s2 (window-start w2)))
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i next-i)))))))
+
+(defun rotate-windows-backward (count)
+  "Rotate your windows backward."
+  (interactive "p")
+  (spacemacs/rotate-windows (* -1 count)))
+#+END_SRC
 * Theme
 ** Gruvbox theme
    This is a great general-purpose theme
-
    #+begin_src emacs-lisp
-   (use-package gruvbox-theme
-     :ensure t
-     :init
-     (progn
-        (load-theme 'gruvbox t)))
+     (use-package gruvbox-theme
+       :ensure t 
+       :disabled t
+       :init
+       (load-theme 'gruvbox t))
    #+end_src
 ** Darktooth theme
    Similar to gruvbox
@@ -726,9 +767,83 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
       (use-package darktooth-theme
         :ensure t
         :defer t
-       )
+        :disabled t
+       (load-theme 'darktooth t))
       #+end_src
- 
+
+** Solarized
+The best low-contrast theme out there.
+#+BEGIN_SRC emacs-lisp
+      (use-package solarized-theme
+        :ensure t
+        :defer t
+        ;; :disabled t
+        :init
+        (progn
+        ;; make the fringe stand out from the background
+        (setq solarized-distinct-fringe-background nil)
+
+        ;; change the font for some headings and titles
+        (setq solarized-use-variable-pitch t)
+
+        ;; make the modeline high contrast
+        (setq solarized-high-contrast-mode-line t)
+
+        ;; Use bolding
+        (setq solarized-use-less-bold nil)
+
+        ;; Use more italics
+        (setq solarized-use-more-italic t)
+
+        ;; Use colors for indicators such as git:gutter, flycheck and similar
+        (setq solarized-emphasize-indicators t)
+
+        ;; Don't change size of org-mode headlines (but keep other size-changes)
+        (setq solarized-scale-org-headlines t)
+
+        (load-theme 'solarized-dark t)
+
+    ))
+
+        ;; Avoid all font-size changes
+        ;; (setq solarized-height-minus-1 1)
+        ;; (setq solarized-height-plus-1 1)
+        ;; (setq solarized-height-plus-2 1)
+        ;; (setq solarized-height-plus-3 1)
+        ;; (setq solarized-height-plus-4 1))
+
+  ;; An alternative solarized theme
+    (use-package color-theme-sanityinc-solarized
+      :ensure t
+      :disabled t
+      :init
+         (progn
+            (load-theme 'sanityinc-solarized-dark t)))
+
+#+END_SRC
+
+#+RESULTS:
+** Zenburn 
+Another popular low-contrast theme
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn
+    :ensure t
+    :disabled t
+    :init
+    (progn
+      (load-theme 'zenburn t)))
+#+END_SRC
+
+There is also a higher contrast version
+#+BEGIN_SRC emacs-lisp
+  (use-package hc-zenburn
+    :ensure t
+    :disabled t
+    :init
+    (progn
+      (load-theme 'hc-zenburn t)))
+#+END_SRC
+
 ** Material theme
 #+BEGIN_SRC emacs-lisp
 (use-package material-theme
@@ -737,58 +852,15 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
   :commands material-theme)
 #+END_SRC
 
-** Solarized
-#+BEGIN_SRC emacs-lisp
-  (use-package solarized-theme
-    :ensure t
-    :defer t
-    :init
-    ;; make the fringe stand out from the background
-    (setq solarized-distinct-fringe-background nil)
-
-    ;; change the font for some headings and titles
-    (setq solarized-use-variable-pitch t)
-
-    ;; make the modeline high contrast
-    (setq solarized-high-contrast-mode-line t)
-
-    ;; Use bolding
-    (setq solarized-use-less-bold nil)
-  
-    ;; Use more italics
-    (setq solarized-use-more-italic t)
-  
-    ;; Use colors for indicators such as git:gutter, flycheck and similar
-    (setq solarized-emphasize-indicators t)
-
-    ;; Don't change size of org-mode headlines (but keep other size-changes)
-    (setq solarized-scale-org-headlines t))
-
-    ;; Avoid all font-size changes
-    ;; (setq solarized-height-minus-1 1)
-    ;; (setq solarized-height-plus-1 1)
-    ;; (setq solarized-height-plus-2 1)
-    ;; (setq solarized-height-plus-3 1)
-    ;; (setq solarized-height-plus-4 1))
-    
-
-(use-package color-theme-sanityinc-solarized
-  :ensure t
-  :disabled t
-  :init
-     (progn
-        (load-theme 'sanityinc-solarized-dark t)))
-
-#+END_SRC
-
 ** Badger
+A dark and relatively high-contrast theme
 #+BEGIN_SRC emacs-lisp
-(use-package badger-theme
-  :ensure t
-  :disabled t
-  :init
-  (progn
-    (load-theme 'badger t)))
+  (use-package badger-theme
+    :ensure t
+    :disabled t
+    :init
+    (progn
+      (load-theme 'badger t)))
 #+END_SRC
 ** Convenient theme functions
 #+begin_src emacs-lisp
@@ -1036,7 +1108,16 @@ Open exported docx files in Word/Open Office rather than emacs
         spaceline-line-column-p nil
         spaceline-buffer-id-p nil
         spaceline-minor-modes-separator nil))
+ 
+        ;; size of modeline
+        (setq powerline-height 21)
+        (powerline-reset)
+;; don't use srgb & get proper powerline faces
+(setq ns-use-srgb-colorspace nil)
 #+END_SRC
+
+#+RESULTS:
+
 ** Fancy Battery
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery
@@ -1047,9 +1128,13 @@ Open exported docx files in Word/Open Office rather than emacs
  
 ** Display Time
 #+begin_src emacs-lisp :tangle yes
-  (setq display-time-format "  %a %b %d | %H:%M |")
+  (setq display-time-format "%a %b %d | %H:%M |")
   (display-time-mode)
 #+end_src
+
+#+RESULTS:
+: t
+
 * Shell
 ** Eshell
 Emacs own shell
@@ -1710,8 +1795,13 @@ Auto-revert buffers of changed files
   (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
   (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
   (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
-  (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
+  ;; (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
+  (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
   #+END_SRC
+
+#+RESULTS:
+|   |
+
 ** Doc View Mode
 #+begin_src emacs-lisp :tangle yes
 (use-package doc-view
@@ -2054,10 +2144,11 @@ Better dired navigation using ranger-like settings
   :defer t
   :init
   (progn
-      ;; set up image-dired to allow picture resize
-      (setq image-dired-dir (concat user-emacs-directory "image-dir"))
-      (unless (file-directory-p image-dired-dir)
-      (make-directory image-dired-dir)))
+    (setq ranger-override-dired t)
+    ;; set up image-dired to allow picture resize
+    (setq image-dired-dir (concat user-emacs-directory "image-dir"))
+    (unless (file-directory-p image-dired-dir)
+    (make-directory image-dired-dir)))
   :config
   (progn
     (define-key ranger-mode-map (kbd "-") 'ranger-up-directory)
@@ -2065,7 +2156,6 @@ Better dired navigation using ranger-like settings
           ranger-dont-show-binary t
           ranger-excluded-extensions '("mkv" "iso" "mp4")
           ranger-max-preview-size 25
-          ranger-override-dired t
           ranger-preview-file t
           ranger-show-dotfiles t
           ranger-width-parents 0.25
@@ -2437,7 +2527,7 @@ Numbered window shortcuts for Emacs
     ;; markdown hooks
   (add-hook 'markdown-mode-hook
             '(lambda()
-               (turn-on-auto-fill) (linum-relative-mode) (centered-cursor-mode) (set-fill-column 80) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (global-git-gutter+-mode t)))
+               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 80) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (global-git-gutter+-mode t)))
 
   ;; autofill for markdown
   (defun markdown-auto-fill ()
@@ -2604,6 +2694,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "fl" 'helm-locate
     "fs" 'save-buffer
     "fr" 'helm-recentf
+    "fy" 'spacemacs/show-and-copy-buffer-filename
       )
 
 #+END_SRC
@@ -2783,6 +2874,8 @@ Keybindings for managing packages
   "wc" 'delete-window
   "w-" 'evil-window-split
   "w_" 'split-window-below-and-focus
+  "wr" 'rotate-windows
+  "wR" 'rotate-windows-backward
   "wv" 'split-window-right-and-focus
   "wV" 'evil-window-vsplit
   "wm" 'delete-other-windows
@@ -2792,9 +2885,10 @@ Keybindings for managing packages
 * Test code
 #+BEGIN_SRC emacs-lisp
   (defun goto-projects ()
-      "Open init.el file"
+      "Open projects dir"
       (interactive)
-      (find-file "~/"))
+      (require 'ranger)
+      (find-file "~/projects"))
 #+END_SRC
 * Server
 Start server
