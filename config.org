@@ -518,6 +518,8 @@ There are some other useful setup packages for evil
     (progn
       (setq undo-tree-mode-lighter "")
       (setq undo-tree-auto-save-history t)
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t)
       (setq undo-tree-history-directory-alist `((".*" . ,temporary-file-directory))))
     :config
     (global-undo-tree-mode)
