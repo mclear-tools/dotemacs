@@ -1603,7 +1603,6 @@ Recent directories
 
   ;; Set global shortcut for calling helm-bibtex
    (global-set-key (kbd "H-b") 'helm-bibtex)
-   (evil-leader/set-key "ox" 'helm-bibtex)
 #+end_src
 *** Helm-projectile
 #+BEGIN_SRC emacs-lisp
@@ -2895,6 +2894,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
    ;; "ou" 'paradox-upgrade-packages
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
+   "ux" 'helm-bibtex
     )
 
 #+END_SRC
@@ -2920,6 +2920,7 @@ Keybindings for managing packages
   "pd"  'helm-projectile-find-dir
   "pD" 'projectile-dired
   "pf"  'helm-projectile-find-file
+  "pg" 'goto-projects
   "ph"  'helm-projectile
   "pG" 'projectile-regenerate-tags
   "pI" 'projectile-invalidate-cache
