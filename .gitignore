@@ -9,3 +9,7 @@ var/
 .backups
 /config.org_archive
 auto-save-list
+#*#
+/#config.org#
+/projectile-bookmarks.eld
+/recentf~
