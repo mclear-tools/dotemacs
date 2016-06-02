@@ -1874,6 +1874,7 @@ Auto-revert buffers of changed files
   (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
   ;; (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
   (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
+  (eval-after-load "projectile" '(diminish 'projectile-mode ""))
   #+END_SRC
 
 #+RESULTS:
