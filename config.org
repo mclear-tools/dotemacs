@@ -998,13 +998,16 @@ Org is really why most people use emacs. Here are some basic settings and packag
           (flyspell-mode 1)
           (global-git-gutter+-mode 0)
           (imenu-add-to-menubar "Imenu")))
-          (setq org-imenu-depth 4)
-          (setq imenu-auto-rescan t)
+    (setq org-imenu-depth 4)
+    (setq imenu-auto-rescan t)
+    ;; add org mode evil keybindings
+    (add-hook 'org-mode-hook #'cpm/org-keybindings)
           )
     :config
       (progn
         (use-package evil-org
           :defer t
+          :disabled t
           :ensure t
           :diminish ""
           :commands evil-org-mode
@@ -2902,6 +2905,21 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 
 #+END_SRC
  
+** Org Mode
+Keybindings for org mode 
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/org-keybindings ()
+    "Modify keymaps in org mode"
+    (which-key-declare-prefixes "<SPC>m" "Org")
+    (which-key-declare-prefixes "<SPC>ma" "agenda")
+    (evil-leader/set-key
+    "mt"  'org-show-todo-tree
+    "maa"  'org-agenda
+    "mc"  'org-archive-subtree
+    "ml"  'evil-org-open-links
+    "mo"  'evil-org-recompute-clocks
+    ))
+#+END_SRC
 ** Packages
 Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
