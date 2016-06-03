@@ -2908,17 +2908,56 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 ** Org Mode
 Keybindings for org mode 
 #+BEGIN_SRC emacs-lisp
-  (defun cpm/org-keybindings ()
-    "Modify keymaps in org mode"
-    (which-key-declare-prefixes "<SPC>m" "Org")
-    (which-key-declare-prefixes "<SPC>ma" "agenda")
-    (evil-leader/set-key
-    "mt"  'org-show-todo-tree
-    "maa"  'org-agenda
-    "mc"  'org-archive-subtree
-    "ml"  'evil-org-open-links
-    "mo"  'evil-org-recompute-clocks
-    ))
+    (defun cpm/org-keybindings ()
+      "Modify keymaps for mode 'm' in org mode"
+      (which-key-declare-prefixes "<SPC>m" "Org")
+      (which-key-declare-prefixes "<SPC>ma" "agenda")
+      (evil-leader/set-key
+      "mt"  'org-show-todo-tree
+      "maa"  'org-agenda
+      "mc"  'org-archive-subtree
+      "ml"  'evil-org-open-links
+      "mo"  'evil-org-recompute-clocks
+      )
+
+  ;; normal state shortcuts
+  (evil-define-key 'normal org-mode-map
+    "gh" 'outline-up-heading
+    "gp" 'outline-previous-heading
+    "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
+         'org-forward-same-level
+        'org-forward-heading-same-level)
+    "gk" (if (fboundp 'org-backward-same-level)
+         'org-backward-same-level
+        'org-backward-heading-same-level)
+    "gl" 'outline-next-visible-heading
+    "t" 'org-todo
+    "H" 'org-shiftleft
+    ;; "" 'org-shiftdown
+    ;; "" 'org-shiftup
+    "L" 'org-shiftright
+    "$" 'org-end-of-line
+    "^" 'org-beginning-of-line
+    "<" 'org-metaleft
+    ">" 'org-metaright
+    "-" 'org-cycle-list-bullet
+    (kbd "<tab>") 'org-cycle)
+
+  ;; normal & insert state shortcuts.
+  (mapc (lambda (state)
+          (evil-define-key state org-mode-map
+            (kbd "M-l") 'org-metaright
+            (kbd "M-h") 'org-metaleft
+            (kbd "M-k") 'org-metaup
+            (kbd "M-j") 'org-metadown
+            (kbd "M-L") 'org-shiftmetaright
+            (kbd "M-H") 'org-shiftmetaleft
+            (kbd "M-K") 'org-shiftmetaup
+            (kbd "M-J") 'org-shiftmetadown
+            ))
+        '(normal insert))
+
+  )
 #+END_SRC
 ** Packages
 Keybindings for managing packages
