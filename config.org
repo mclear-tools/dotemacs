@@ -41,8 +41,8 @@ Tell emacs who you are.
 
 * Default settings
 Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
-
 ** Environment settings
+Make sure emacs correctly sets up your PATH.
 #+BEGIN_SRC emacs-lisp
   (defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
   (defvar usr-local-bin "/usr/local/bin")
@@ -50,12 +50,13 @@ Let's use sane defaults. Sources for this section include [[https://github.com/m
   (setq exec-path (append exec-path (list cpm-local-bin usr-local-bin)))
 #+END_SRC 
 
-** don't send to debug on error
+** Don't send to debug on error
 #+BEGIN_SRC emacs-lisp
   (setq debug-on-error nil)
 #+END_SRC 
 
-** spelling
+** Spelling
+Use flyspell and aspell
 #+BEGIN_SRC emacs-lisp
   (setq flyspell-issue-welcome-flag nil)
   (if (eq system-type 'darwin)
@@ -64,20 +65,23 @@ Let's use sane defaults. Sources for this section include [[https://github.com/m
   (setq-default ispell-list-command "list")
 #+END_SRC 
  
-** deal with warnings
+** Deal with warnings
+No bells and no visible "bell" either!
 #+BEGIN_SRC emacs-lisp
   (setq visible-bell nil) ;; The default
   (setq ring-bell-function 'ignore)
 #+END_SRC
 
-** frame startup size and position
+** Frame startup size and position
+I like the frame centered and approximately 2/3 of a 13inch laptop screen.
 #+BEGIN_SRC emacs-lisp
   ;; Set Frame width/height
   (setq default-frame-alist
         '((top . 25) (left . 275) (width . 105) (height . 60)))
 #+END_SRC
 
-** name frame
+** Name frame
+Show the filepath in the frame title.
 #+BEGIN_SRC emacs-lisp
 (setq frame-title-format
       '(" "
@@ -85,7 +89,8 @@ Let's use sane defaults. Sources for this section include [[https://github.com/m
       (dired-directory dired-directory "%b"))))
 #+END_SRC
 
-** get rid of UI cruft
+** Get rid of UI cruft
+Turn off all of the GUI cruft.
 #+BEGIN_SRC emacs-lisp
   ;; Turn off mouse interface early in startup to avoid momentary display
   (when window-system
@@ -96,18 +101,20 @@ Let's use sane defaults. Sources for this section include [[https://github.com/m
 #+END_SRC
 
 ** No menu bar in terminal
+Ditto for the terminal.
 #+BEGIN_SRC emacs-lisp
   (when (not (display-graphic-p))
     (menu-bar-mode -1))
 #+END_SRC
 
 ** Start from scratch
+Start up with a clean scratch buffer.
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
 #+END_SRC
 
-** start scratch in text mode 
+** Start scratch in text mode 
 Useful to get a faster Emacs load time because it avoids autoloads of elisp modes
 #+BEGIN_SRC emacs-lisp
   (setq initial-major-mode 'text-mode)
@@ -128,11 +135,11 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
 
 ** UTF-8 please
 #+BEGIN_SRC emacs-lisp
-  (setq locale-coding-system 'utf-8) ; pretty
-  (set-terminal-coding-system 'utf-8) ; pretty
-  (set-keyboard-coding-system 'utf-8) ; pretty
-  (set-selection-coding-system 'utf-8) ; please
-  (prefer-coding-system 'utf-8) ; with sugar on top
+  (setq locale-coding-system 'utf-8) 
+  (set-terminal-coding-system 'utf-8) 
+  (set-keyboard-coding-system 'utf-8) 
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8) 
 #+END_SRC
 
 ** Turn off the blinking cursor
@@ -140,7 +147,7 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
   (blink-cursor-mode -1)
 #+END_SRC
 
-** only use spaces
+** Only use spaces
 #+BEGIN_SRC emacs-lisp
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
@@ -153,17 +160,17 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
   (setq sentence-end-double-space nil)
 #+END_SRC
 
-** delete the region when typing, just like as we expect nowadays.
+** Delete the region when typing, just like as we expect nowadays.
 #+BEGIN_SRC emacs-lisp
   (delete-selection-mode t)
 #+END_SRC
 
-** show matching parens
+** Show matching parens
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode t)
 #+END_SRC
 
-** line wrap
+** Line wrap
 #+BEGIN_SRC emacs-lisp
   (global-visual-line-mode)
  ;; (diminish 'visual-line-mode)
@@ -174,14 +181,10 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
   (setq uniquify-buffer-name-style 'forward)
 #+END_SRC
 
-** -i gets alias definitions from .bash_profile
+** Bash aliases 
+-i gets alias definitions from .bash_profile
 #+BEGIN_SRC emacs-lisp
   (setq shell-command-switch "-ic")
-#+END_SRC
-
-** Don't beep at me
-#+BEGIN_SRC emacs-lisp
-  (setq visible-bell t)
 #+END_SRC
 
 * Settings
@@ -204,7 +207,7 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
       )
 #+END_SRC
 *** Auto Save
-I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in some temporary directory.
+I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in the temporary directory.
 
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
@@ -212,7 +215,7 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
 #+END_SRC
 
 *** Full Auto Save
-I also make emacs just outright save a file for me when time elapses.
+I also make emacs just outright save all buffers. 
 #+BEGIN_SRC emacs-lisp
   (defun full-auto-save ()
     (interactive)
@@ -224,7 +227,6 @@ I also make emacs just outright save a file for me when time elapses.
   (add-hook 'auto-save-hook 'full-auto-save)
 #+END_SRC
 ** Custom file settings
-
 Set up the customize file to its own separate file, instead of saving
 customize settings in [[file:init.el][init.el]].
 
@@ -234,12 +236,12 @@ customize settings in [[file:init.el][init.el]].
   (load custom-file))
 #+end_src
 ** Text settings
+Center the cursor, and line numbers for programming modes.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'text-mode-hook 'centered-cursor-mode)
   (add-hook 'prog-mode-hook 'linum-mode)
 #+END_SRC
 ** OSX settings
-
 There are configurations to make when running Emacs on OS X (hence the
 "darwin" system-type check).
 
@@ -319,7 +321,7 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
 
 #+BEGIN_SRC emacs-lisp
 (defun tangle-if-init ()
-  "If the current buffer is 'init.org' the code-blocks are
+  "If the current buffer is 'config.org' the code-blocks are
     tangled, and the tangled file is compiled."
 
   (when (string-suffix-p "config.org" (buffer-file-name))
@@ -356,6 +358,7 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
 
 #+BEGIN_SRC emacs-lisp
 (use-package async
+  :defer 2
   :ensure t
   :commands (async-start))
 
@@ -419,6 +422,7 @@ The essential stuff
           (interactive)
           (switch-to-buffer (other-buffer (current-buffer) 1)))
           ;; leader basic shortcuts
+          ;; I have to include some here but the rest are under "General" in the "Keybindings" section below.
           (evil-leader/set-key
           "A" 'helm-apropos)
           ;; evil-normal-state is preferred, so revert when idle
@@ -434,17 +438,18 @@ The essential stuff
           (evil-mode 1)))))
 #+end_src
 
+#+RESULTS:
+
 ** Evil packages & settings
 There are some other useful setup packages for evil
-
-*** navigate using visual lines rather than true lines
-#+BEGIN_SRC emacs-lisp
+*** Navigate Using Visual Lines Rather Than True Lines
+#+begin_src emacs-lisp
 (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
-#+END_SRC
+#+end_src
 
-*** Increment and decrement numbers
-#+BEGIN_SRC emacs-lisp
+*** Increment And Decrement Numbers
+#+begin_src emacs-lisp
   (use-package evil-numbers
     :ensure t
     :defer t
@@ -452,20 +457,40 @@ There are some other useful setup packages for evil
     (progn
       (bind-key "H-s" 'evil-numbers/inc-at-pt evil-normal-state-map)
       (bind-key "H-a" 'evil-numbers/dec-at-pt evil-normal-state-map)))
-#+END_SRC
+#+end_src
 
-*** Change cursor in terminal
-#+BEGIN_SRC emacs-lisp
+*** Change Cursor In Terminal
+#+begin_src emacs-lisp
+(defun my-send-string-to-terminal (string)
+  (unless (display-graphic-p) (send-string-to-terminal string)))
+
+(defun my-evil-terminal-cursor-change ()
+  (when (string= (getenv "TERM_PROGRAM") "iTerm.app")
+    (add-hook 'evil-insert-state-entry-hook (lambda () (my-send-string-to-terminal "\e]50;CursorShape=1\x7")))
+    (add-hook 'evil-insert-state-exit-hook  (lambda () (my-send-string-to-terminal "\e]50;CursorShape=0\x7"))))
+  (when (and (getenv "TMUX") (string= (getenv "TERM_PROGRAM") "iTerm.app"))
+    (add-hook 'evil-insert-state-entry-hook (lambda () (my-send-string-to-terminal "\ePtmux;\e\e]50;CursorShape=1\x7\e\\")))
+    (add-hook 'evil-insert-state-exit-hook  (lambda () (my-send-string-to-terminal "\ePtmux;\e\e]50;CursorShape=0\x7\e\\")))))
+
+(add-hook 'after-make-frame-functions (lambda (frame) (my-evil-terminal-cursor-change)))
+(my-evil-terminal-cursor-change)
+
   (use-package evil-terminal-cursor-changer
     :ensure t
+    :disabled t
     :defer t
     :init
      (unless (display-graphic-p)
-             (require 'evil-terminal-cursor-changer)))
-#+END_SRC
+             (require 'evil-terminal-cursor-changer)
+    (progn 
+     (setq evil-visual-state-cursor '("red" box)); █
+     (setq evil-insert-state-cursor '("green" bar)); ⎸
+     (setq evil-emacs-state-cursor '("blue" hbar)); _
+     )))
+#+end_src
 
-*** motions and text objects for delimited arguments
-#+BEGIN_SRC emacs-lisp
+*** Motions And Text Objects For Delimited Arguments
+#+begin_src emacs-lisp
   (use-package evil-args
     :ensure t
     :defer t
@@ -483,10 +508,10 @@ There are some other useful setup packages for evil
     ;; bind evil-jump-out-args
     (define-key evil-normal-state-map "K" 'evil-jump-out-args)
     )
-#+END_SRC
+#+end_src
 
-*** surround commands like vim-surround
-#+BEGIN_SRC emacs-lisp
+*** Surround Commands Like Vim-Surround
+#+begin_src emacs-lisp
   (use-package evil-surround
     :ensure t
     :defer t
@@ -496,10 +521,10 @@ There are some other useful setup packages for evil
       (global-evil-surround-mode 1)
       (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
       (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)))
-#+END_SRC 
+#+end_src 
 
-*** commenting 
-#+BEGIN_SRC emacs-lisp
+*** Commenting 
+#+begin_src emacs-lisp
   (use-package evil-commentary
     :ensure t
     :defer t
@@ -507,10 +532,10 @@ There are some other useful setup packages for evil
     :diminish evil-commentary-mode
     :config
     (evil-commentary-mode))
-#+END_SRC
+#+end_src
 
-*** graphical undo
-#+BEGIN_SRC emacs-lisp
+*** Graphical undo
+#+begin_src emacs-lisp
   (use-package undo-tree
     :ensure t
     :defer 2
@@ -524,7 +549,7 @@ There are some other useful setup packages for evil
     :config
     (global-undo-tree-mode)
     )
-#+END_SRC
+#+end_src
  
 * Useful functions
 ** Org wrap in block template
@@ -588,6 +613,59 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
                (switch-to-buffer-other-window "*hgrep*"))
               (t
                (message "No previous search buffer found"))))
+#+END_SRC
+** Rotate windows
+#+BEGIN_SRC emacs-lisp
+;; from magnars modified by ffevotte for dedicated windows support
+(defun rotate-windows (count)
+  "Rotate your windows.
+Dedicated windows are left untouched. Giving a negative prefix
+argument takes the kindows rotate backwards."
+  (interactive "p")
+  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
+         (num-windows (length non-dedicated-windows))
+         (i 0)
+         (step (+ num-windows count)))
+    (cond ((not (> num-windows 1))
+           (message "You can't rotate a single window!"))
+          (t
+           (dotimes (counter (- num-windows 1))
+             (let* ((next-i (% (+ step i) num-windows))
+
+                    (w1 (elt non-dedicated-windows i))
+                    (w2 (elt non-dedicated-windows next-i))
+
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
+
+                    (s1 (window-start w1))
+                    (s2 (window-start w2)))
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i next-i)))))))
+
+(defun rotate-windows-backward (count)
+  "Rotate your windows backward."
+  (interactive "p")
+  (spacemacs/rotate-windows (* -1 count)))
+#+END_SRC
+** Open projects directory
+#+BEGIN_SRC emacs-lisp
+  (defun goto-projects ()
+      "Open projects dir"
+      (interactive)
+      (require 'ranger)
+      (find-file "~/projects"))
+
+#+END_SRC
+** Search directories with ag
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/helm-files-do-ag (&optional dir)
+        "Search in files with `ag' using a default input."
+        (interactive)
+        (helm-do-ag dir))
 #+END_SRC
 ** Other functions
 Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
@@ -729,82 +807,11 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     (interactive)
     (call-interactively 'write-file))
 #+END_SRC
-** Rotate windows
-#+BEGIN_SRC emacs-lisp
-;; from magnars modified by ffevotte for dedicated windows support
-(defun rotate-windows (count)
-  "Rotate your windows.
-Dedicated windows are left untouched. Giving a negative prefix
-argument takes the kindows rotate backwards."
-  (interactive "p")
-  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
-         (num-windows (length non-dedicated-windows))
-         (i 0)
-         (step (+ num-windows count)))
-    (cond ((not (> num-windows 1))
-           (message "You can't rotate a single window!"))
-          (t
-           (dotimes (counter (- num-windows 1))
-             (let* ((next-i (% (+ step i) num-windows))
-
-                    (w1 (elt non-dedicated-windows i))
-                    (w2 (elt non-dedicated-windows next-i))
-
-                    (b1 (window-buffer w1))
-                    (b2 (window-buffer w2))
-
-                    (s1 (window-start w1))
-                    (s2 (window-start w2)))
-               (set-window-buffer w1 b2)
-               (set-window-buffer w2 b1)
-               (set-window-start w1 s2)
-               (set-window-start w2 s1)
-               (setq i next-i)))))))
-
-(defun rotate-windows-backward (count)
-  "Rotate your windows backward."
-  (interactive "p")
-  (spacemacs/rotate-windows (* -1 count)))
-#+END_SRC
-** Open Projects directory
-#+BEGIN_SRC emacs-lisp
-  (defun goto-projects ()
-      "Open projects dir"
-      (interactive)
-      (require 'ranger)
-      (find-file "~/projects"))
-
-#+END_SRC
-** Search directories with ag
-#+BEGIN_SRC emacs-lisp
-  (defun cpm/helm-files-do-ag (&optional dir)
-        "Search in files with `ag' using a default input."
-        (interactive)
-        (helm-do-ag dir))
-#+END_SRC
 * Theme
-** Gruvbox theme
-   This is a great general-purpose theme
-   #+begin_src emacs-lisp
-     (use-package gruvbox-theme
-       :ensure t 
-       :disabled t
-       :init
-       (load-theme 'gruvbox t))
-   #+end_src
-** Darktooth theme
-   Similar to gruvbox
-      #+begin_src emacs-lisp
-      (use-package darktooth-theme
-        :ensure t
-        :defer t
-        :disabled t
-       (load-theme 'darktooth t))
-      #+end_src
-
 ** Solarized
 The best low-contrast theme out there.
 #+BEGIN_SRC emacs-lisp
+  (if (display-graphic-p)
       (use-package solarized-theme
         :ensure t
         :defer t
@@ -835,6 +842,7 @@ The best low-contrast theme out there.
         (load-theme 'solarized-dark t)
 
     ))
+(load-theme 'wombat t))
 
         ;; Avoid all font-size changes
         ;; (setq solarized-height-minus-1 1)
@@ -854,6 +862,24 @@ The best low-contrast theme out there.
 #+END_SRC
 
 #+RESULTS:
+** Gruvbox theme
+   This is a great general-purpose theme
+   #+begin_src emacs-lisp
+     (use-package gruvbox-theme
+       :ensure t 
+       :disabled t
+       :init
+       (load-theme 'gruvbox t))
+   #+end_src
+** Darktooth theme
+   Similar to gruvbox
+      #+begin_src emacs-lisp
+      (use-package darktooth-theme
+        :ensure t
+        :defer t
+        :disabled t
+       (load-theme 'darktooth t))
+      #+end_src
 ** Zenburn 
 Another popular low-contrast theme
 #+BEGIN_SRC emacs-lisp
@@ -969,6 +995,7 @@ And here's how we tell Emacs to use the font we want to use.
 
 * Org
 Org is really why most people use emacs. Here are some basic settings and packages.
+** Base settings
 #+BEGIN_SRC emacs-lisp
 (use-package org 
   :defer t
@@ -1050,53 +1077,54 @@ Org is really why most people use emacs. Here are some basic settings and packag
 ** Org publish
 #+BEGIN_SRC emacs-lisp
 
-   ;;; Org and website (pelican)
-      (with-eval-after-load 'org
-      (org-add-link-type
-       "pelican"
-       (lambda (path) (org-open-file path))
-       ;; ; export
-       (lambda (path desc backend)
-         (cond
-          ((eq backend 'org)
-           (format "[[file:{filename}/%s][%s]]" path (or desc "")))
-          ((eq backend 'html)
-           (format "<a href=\"%s\">%s</a>" path (or desc "")))
-          ((eq backend 'md)
-           (format "[{filename}/%s](%s)" path (or desc "")))))))
+  ;;; Org and website (pelican)
+     (with-eval-after-load 'org
+     (org-add-link-type
+      "pelican"
+      (lambda (path) (org-open-file path))
+      ;; ; export
+      (lambda (path desc backend)
+        (cond
+         ((eq backend 'org)
+          (format "[[file:{filename}/%s][%s]]" path (or desc "")))
+         ((eq backend 'html)
+          (format "<a href=\"%s\">%s</a>" path (or desc "")))
+         ((eq backend 'md)
+          (format "[{filename}/%s](%s)" path (or desc "")))))))
 
-    ;;; Org-publish settings
-        (setq org-publish-project-alist
-          '(
-            ("notebook"
-             ;; Path to org files
-             :base-directory "~/Dropbox/Notes/ResearchNotes"
-             :base-extension "org"
-             ;; Path to pelican project
-             :publishing-directory "~/bin/notebook/content" 
-             ;; settings
-             :author "Colin McLear"
-             :email "mclear@unl.edu"
-             :recursive t
-             :auto-sitemap nil
-             :auto-preamble nil ;; Don't add any kind of html before the content
-             :export-with-tags nil
-             :with-timestamps nil
-             :time-stamp-file nil
-             :with-creator nil
-             :auto-postamble nil ;; Don't add any kind of html after the content
-             :html-postamble nil ;; same thing
-             ;; :preparation-function (pandoc-filter)
-             ;; :publishing-function (org-html-publish-to-html)
-             ;; :publishing-function (org-md-publish-to-md)
-             :publishing-function (org-org-publish-to-org)
-             ;; :publishing-function (org-pandoc-publish-to-html)
-             )
-            ))
+   ;;; Org-publish settings
+       (setq org-publish-project-alist
+         '(
+           ("notebook"
+            ;; Path to org files
+            ;; :base-directory "~/Dropbox/Notes/ResearchNotes"
+            :base-directory "~/projects/notebook/content/org_notes"
+            :base-extension "org"
+            ;; Path to pelican project
+            :publishing-directory "~/projects/notebook/content/notes" 
+            ;; settings
+            :author "Colin McLear"
+            :email "mclear@unl.edu"
+            :recursive t
+            :auto-sitemap nil
+            :auto-preamble nil ;; Don't add any kind of html before the content
+            :export-with-tags nil
+            :with-timestamps nil
+            :time-stamp-file nil
+            :with-creator nil
+            :auto-postamble nil ;; Don't add any kind of html after the content
+            :html-postamble nil ;; same thing
+            ;; :preparation-function (pandoc-filter)
+            ;; :publishing-function (org-html-publish-to-html)
+            ;; :publishing-function (org-md-publish-to-md)
+            :publishing-function (org-org-publish-to-org)
+            ;; :publishing-function (org-pandoc-publish-to-html)
+            )
+           ))
 
-        (defun org-pandoc-publish-to-html (plist filename pub-dir)
-          "Publish an org file to html using ox-pandoc. Return output file name."
-          (org-publish-org-to 'org-pandoc-export-to-html filename ".html" plist pub-dir))
+       (defun org-pandoc-publish-to-html (plist filename pub-dir)
+         "Publish an org file to html using ox-pandoc. Return output file name."
+         (org-publish-org-to 'org-pandoc-export-to-html filename ".html" plist pub-dir))
 #+END_SRC
 
 ** Org pomodoro
@@ -1118,6 +1146,347 @@ Open exported docx files in Word/Open Office rather than emacs
           ("\\.x?html?\\'" . default)
           ("\\.pdf\\'" . default)
           (auto-mode . emacs)))
+#+END_SRC
+* Research 
+Packages I use for research.
+** Helm-Bibtex
+Great for managing citations and notes
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-bibtex
+    :defer t
+    :ensure t
+    :after helm
+    :commands helm-bibtex
+    :config
+    (setq bibtex-completion-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
+          bibtex-completion-library-path "/Users/Roambot/Dropbox/Work/MasterLib/"
+          bibtex-completion-pdf-field "File"
+          bibtex-completion-notes-path "/Users/Roambot/Dropbox/Notes/ResearchNotes/"
+          bibtex-completion-additional-search-fields '(keywords)
+          bibtex-completion-notes-extension ".org"
+          helm-bibtex-full-frame nil) ;; Set insert citekey with markdown citekeys for org-mode
+    (setq bibtex-completion-format-citation-functions
+          '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-default)))
+    ;; Set default action for helm-bibtex as inserting citation
+    (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
+    (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
+    (setq bibtex-completion-pdf-symbol "⌘")
+    (setq bibtex-completion-notes-symbol "✎")
+    )
+
+  ;; Set global shortcut for calling helm-bibtex
+   (global-set-key (kbd "H-b") 'helm-bibtex)
+#+end_src
+
+** Interleave
+Useful when taking notes
+#+BEGIN_SRC emacs-lisp
+(use-package interleave
+  :ensure t
+  :defer t
+  :init
+  (progn
+    (with-eval-after-load 'doc-view
+      (bind-key "i" #'interleave--open-notes-file-for-pdf doc-view-mode-map))
+    (with-eval-after-load 'pdf-view
+      (bind-key "i" #'interleave--open-notes-file-for-pdf pdf-view-mode-map)))
+   :config
+     (with-eval-after-load 'doc-view
+     ;; In continuous mode, reaching the page edge advances to the next/prev page
+       (setq doc-view-continuous t))
+  )
+#+END_SRC
+** PDF Tools
+Better than doc-view, but doesn't render well on retina screens :(
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :defer t
+    :ensure t
+    :mode (("\\.pdf$" . pdf-view-mode))
+    :config
+    (progn
+      (pdf-tools-install)
+
+  (evil-define-key 'normal pdf-view-mode-map
+          ;; Navigation
+          "j"  'pdf-view-next-line-or-next-page
+          "k"  'pdf-view-previous-line-or-previous-page
+          "l"  'image-forward-hscroll
+          "h"  'image-backward-hscroll
+          "J"  'pdf-view-next-page
+          "K"  'pdf-view-previous-page
+          "gg"  'pdf-view-first-page
+          "G"  'pdf-view-last-page
+          "gt"  'pdf-view-goto-page
+          "gl"  'pdf-view-goto-label
+          "u" 'pdf-view-scroll-down-or-previous-page
+          "d" 'pdf-view-scroll-up-or-next-page
+          (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
+          (kbd "C-d") 'pdf-view-scroll-up-or-next-page
+          (kbd "``")  'pdf-history-backward
+          ;; Search
+          "/" 'isearch-forward
+          "?" 'isearch-backward
+          ;; Actions
+          "r"   'pdf-view-revert-buffer
+          "o"   'pdf-links-action-perform
+          "O"   'pdf-outline
+          )
+
+      (evil-define-key 'insert pdf-view-mode-map
+          "y" 'pdf-view-kill-ring-save )
+      ;; for annotation and jumping to file
+      (eval-after-load 'org '(require 'org-pdfview))
+      (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+      (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+      ;; Extracting annotations using pdf-tools
+      ;; modified from https://github.com/politza/pdf-tools/pull/133 
+      ;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
+
+      (defun mwp/pdf-multi-extract (sources)
+      "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
+      and links back to page of highlight."
+      (let (
+            (output ""))
+        (dolist (thispdf sources)
+          (setq output (concat output (pdf-annot-markups-as-org-text thispdf nil level ))))
+        (princ output))
+      )
+
+      (defun cpm/pdf-summary-extract (sources)
+      "Helper function to print underlined text from a list of pdf's, with one org header per pdf, 
+      and links back to page of highlight."
+      (let (
+            (output ""))
+        (dolist (thispdf sources)
+          (setq output (concat output (pdf-annot-summary-as-org-text thispdf nil level ))))
+        (princ output))
+      )
+
+      ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
+      (defun pdf-annot-edges-to-region (edges)
+      "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
+      We need this to import annotations and to get marked-up text, because annotations
+      are referenced by its edges, but functions for these tasks need region."
+
+      (let ((left0 (nth 0 (car edges)))
+            (top0 (nth 1 (car edges)))
+            (bottom0 (nth 3 (car edges)))
+            (top1 (nth 1 (car (last edges))))
+            (right1 (nth 2 (car (last edges))))
+            (bottom1 (nth 3 (car (last edges))))
+            (n (safe-length edges)))
+        ;; we try to guess the line height to move
+        ;; the region away from the boundary and
+        ;; avoid double lines
+        (list left0
+              (+ top0 (/ (- bottom0 top0) 2))
+              right1
+              (- bottom1 (/ (- bottom1 top1) 2 )))))
+
+      (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
+      "Acquire highligh annotations as text, and return as org-heading"
+
+      (interactive "fPath to PDF: ")  
+      (let* ((outputstring "") ;; the text to be returned
+              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
+              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
+              (levelstring (make-string level ?*)) ;; set headline to proper level
+              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
+                            'pdf-annot-compare-annotations)))
+        ;; create the header
+        (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
+
+        ;; extract text
+        (mapc
+          (lambda (annot) ;; traverse all annotations
+            (if (eq 'highlight (assoc-default 'type annot))
+                (let* ((page (assoc-default 'page annot))
+                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
+                      (real-edges (pdf-annot-edges-to-region
+                                    (pdf-annot-get annot 'markup-edges)))
+                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                      (height (nth 1 real-edges)) ;; distance down the page
+                      ;; use pdfview link directly to page number
+                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                        "++" (number-to-string height) "][" title  "]]" )))
+                  (setq outputstring (concat outputstring text " ("
+                                            linktext ", " (number-to-string page) ")\n\n"))
+                  ))
+
+            (if (eq 'text (assoc-default 'type annot))
+                (let* ((page (assoc-default 'page annot))
+                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
+                      (real-edges (pdf-annot-edges-to-region
+                                    (pdf-annot-get annot 'markup-edges)))
+                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                      (height (nth 1 real-edges)) ;; distance down the page
+                      ;; use pdfview link directly to page number
+                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                        "++" (number-to-string height) "][" title  "]]" )))
+                  (setq outputstring (concat outputstring text " ("
+                                            linktext ", " (number-to-string page) ")\n\n"))
+                  ))
+
+              (if (eq 'underline (assoc-default 'type annot))
+                  (let* ((page (assoc-default 'page annot))
+                        ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
+                        (real-edges (pdf-annot-edges-to-region
+                                      (pdf-annot-get annot 'markup-edges)))
+                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                        (height (nth 1 real-edges)) ;; distance down the page
+                        ;; use pdfview link directly to page number
+                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                          "++" (number-to-string height) "][" title  "]]" )))
+                    (setq outputstring (concat outputstring text " ("
+                                              linktext ", " (number-to-string page) ")\n\n"))
+                    ))
+                  )
+          annots)
+        outputstring ;; return the header
+        )
+      )
+
+      (defun pdf-annot-summary-as-org-text (pdfpath &optional title level)
+      "Acquire underlined annotations as text, and return as org-heading"
+
+      (interactive "fPath to PDF: ")  
+      (let* ((outputstring "") ;; the text to be returned
+              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
+              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
+              (levelstring (make-string level ?*)) ;; set headline to proper level
+              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
+                            'pdf-annot-compare-annotations)))
+        ;; create the header
+        (setq outputstring (concat levelstring " Summary from " title "\n\n")) ;; create heading
+
+        ;; extract text
+        (mapc
+          (lambda (annot) ;; traverse all annotations
+              (if (eq 'underline (assoc-default 'type annot))
+                  (let* ((page (assoc-default 'page annot))
+                        ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
+                        (real-edges (pdf-annot-edges-to-region
+                                      (pdf-annot-get annot 'markup-edges)))
+                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                        (height (nth 1 real-edges)) ;; distance down the page
+                        ;; use pdfview link directly to page number
+                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                          "++" (number-to-string height) "][" title  "]]" )))
+                    (setq outputstring (concat outputstring text " ("
+                                              linktext ", " (number-to-string page) ")\n\n"))
+                    ))
+                  )
+          annots)
+        outputstring ;; return the header
+        )
+      )
+
+
+      ))
+
+  (use-package org-pdfview
+    :defer t
+    :ensure t)
+
+  (use-package pdf-tools-org 
+    :defer t
+    :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
+    :init
+    (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/"))
+
+#+END_SRC
+** Org-ref
+I mostly don't use this in favor of helm-bibtex
+#+BEGIN_SRC emacs-lisp
+(use-package org-ref
+  :ensure t
+  :defer t
+  :disabled t
+  :after org
+  :init
+  (setq reftex-default-bibliography '("~/Dropbox/Work/master.bib"))
+  (setq org-ref-bibliography-notes "~/Dropbox/Notes/ResearchNotes/"
+        org-ref-default-bibliography '("~/Dropbox/Work/master.bib")
+        org-ref-pdf-directory "~/Dropbox/Work/MasterLib/")
+
+  ;; helm-bibtex
+  (setq bibtex-completion-pdf-field "File")
+  (setq helm-bibtex-bibliography "~/Dropbox/Work/master.bib")
+  (setq helm-bibtex-library-path "~/Dropbox/Work/MasterLib/")
+  (setq bibtex-completion-notes-path "/Users/Roambot/Dropbox/Notes/ResearchNotes/")
+
+  (setq helm-bibtex-pdf-open-function
+        (lambda (fpath)
+          (start-process "open" "*open*" "open" fpath)))
+
+  (setq helm-bibtex-notes-path "~/Dropbox/Notes/ResearchNotes/")
+)
+#+END_SRC
+
+** Devonthink
+#+BEGIN_SRC emacs-lisp
+;;; org-devonthink.el - Support for links to dtp messages by their UUID
+
+;; version 1.1, by John Wiegley <johnw@gnu.org>
+
+(with-eval-after-load "org"
+
+(org-add-link-type "x-devonthink-item" 'org-dtp-open)
+
+(defun org-dtp-open (record-location)
+  "Visit the dtp message with the given Message-ID."
+  (shell-command (concat "open x-devonthink-item:" record-location)))
+
+(defun org-get-dtp-link (&optional given-name)
+  (interactive)
+  (let ((name (or given-name
+                  (substring (do-applescript (format "
+	tell application \"DEVONthink Pro\"
+		get name of content record
+	end tell")) 1 -1)))
+	(location (substring (do-applescript (format "
+	tell application \"DEVONthink Pro\"
+		get uuid of content record
+	end tell")) 1 -1)))
+    (org-make-link-string
+     (concat "x-devonthink-item://" location) name)))
+
+(defun org-insert-dtp-link ()
+  (interactive)
+  (let (name)
+    (when (region-active-p)
+      (setq name (buffer-substring-no-properties (region-beginning)
+                                                 (region-end)))
+      (delete-region (region-beginning) (region-end)))
+    (insert (org-get-dtp-link name))))
+
+(defun org-dtp-store-link ()
+  "Store a link to an dtp e-mail message by Message-ID."
+  (let ((link-name
+	 (with-temp-buffer
+	   (clipboard-yank)
+	   (buffer-string))))
+    (org-store-link-props
+     :type "x-devonthink-item"
+     :link (cons (concat "x-devonthink-item://" link-name)
+		 (concat "x-devonthink-item://" link-name))
+     :description (file-name-nondirectory link-name))))
+)
+
+
+;;; org-devonthink.el ends here
 #+END_SRC
 * Modeline
 ** Spaceline
@@ -1188,7 +1557,6 @@ Emacs own shell
    eshell-glob-case-insensitive t
    eshell-scroll-to-bottom-on-input 'all
    eshell-aliases-file (concat user-emacs-directory "eshell/alias")
-
 ))
 #+END_SRC
 ** Multi-term
@@ -1326,15 +1694,16 @@ Whenever I run ~compile~, the buffer stays even after a successful compilation. 
               (message "No Compilation Errors!")))))
 #+END_SRC
 * Version Control
-a great interface for git projects. It's much more pleasant to use
-than the git interface on the command line. Use an easy keybinding to
-access magit.
+Magit is a great interface for git projects. It's much more pleasant to use than
+the standard git interface on the command line. I've set up some easy
+keybindings to access magit and related packages.
 
 ** Evil Magit
 evil bindings for magit
 #+BEGIN_SRC emacs-lisp
   (use-package evil-magit
     :ensure t
+    :after magit
     :defer t)
   (use-package magit
     :ensure t
@@ -1577,36 +1946,6 @@ Recent directories
       "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
 #+end_src
 
-*** Helm-Bibtex
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm-bibtex
-    :defer t
-    :ensure t
-    :commands helm-bibtex
-    :config
-    (setq bibtex-completion-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-          bibtex-completion-library-path "/Users/Roambot/Dropbox/Work/MasterLib/"
-          bibtex-completion-pdf-field "File"
-          bibtex-completion-notes-path "/Users/Roambot/Dropbox/Notes/ResearchNotes/"
-          bibtex-completion-additional-search-fields '(keywords)
-          bibtex-completion-notes-extension ".org"
-          helm-bibtex-full-frame nil)
-    ;; Set insert citekey with markdown citekeys for org-mode
-    (setq bibtex-completion-format-citation-functions
-          '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
-          (latex-mode    . bibtex-completion-format-citation-cite)
-          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-          (default       . bibtex-completion-format-citation-default)))
-    ;; Set default action for helm-bibtex as inserting pandoc citation
-    (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
-    (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
-    (setq bibtex-completion-pdf-symbol "⌘")
-    (setq bibtex-completion-notes-symbol "✎")
-    )
-
-  ;; Set global shortcut for calling helm-bibtex
-   (global-set-key (kbd "H-b") 'helm-bibtex)
-#+end_src
 *** Helm-projectile
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
@@ -1716,7 +2055,7 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
   :init
   (progn
     (setq deft-extensions '("org" "md" "txt")
-          deft-directory "~/Dropbox/Notes"
+          deft-directory "~/projects/notebook/content/org_notes"
           deft-text-mode 'org-mode
           deft-use-filter-string-for-filename t ;; use filter string as filename
           deft-org-mode-title-prefix t ;; add #+TITLE prefix
@@ -1827,6 +2166,7 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
 Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert                 
+    :defer 2
     :init
     (global-auto-revert-mode)
     :config
@@ -1978,213 +2318,6 @@ highlight TODO statements in comments
         paradox-github-token t))
 #+END_SRC
 
-** PDF Tools
-#+BEGIN_SRC emacs-lisp
-  (use-package pdf-tools
-    :defer t
-    :ensure t
-    :mode (("\\.pdf$" . pdf-view-mode))
-    :config
-    (progn
-      (pdf-tools-install)
-
-  (evil-define-key 'normal pdf-view-mode-map
-          ;; Navigation
-          "j"  'pdf-view-next-line-or-next-page
-          "k"  'pdf-view-previous-line-or-previous-page
-          "l"  'image-forward-hscroll
-          "h"  'image-backward-hscroll
-          "J"  'pdf-view-next-page
-          "K"  'pdf-view-previous-page
-          "gg"  'pdf-view-first-page
-          "G"  'pdf-view-last-page
-          "gt"  'pdf-view-goto-page
-          "gl"  'pdf-view-goto-label
-          "u" 'pdf-view-scroll-down-or-previous-page
-          "d" 'pdf-view-scroll-up-or-next-page
-          (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
-          (kbd "C-d") 'pdf-view-scroll-up-or-next-page
-          (kbd "``")  'pdf-history-backward
-          ;; Search
-          "/" 'isearch-forward
-          "?" 'isearch-backward
-          ;; Actions
-          "r"   'pdf-view-revert-buffer
-          "o"   'pdf-links-action-perform
-          "O"   'pdf-outline
-          )
-
-      (evil-define-key 'insert pdf-view-mode-map
-          "y" 'pdf-view-kill-ring-save )
-      ;; for annotation and jumping to file
-      (eval-after-load 'org '(require 'org-pdfview))
-      (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
-      (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
-      ;; Extracting annotations using pdf-tools
-      ;; modified from https://github.com/politza/pdf-tools/pull/133 
-      ;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
-
-      (defun mwp/pdf-multi-extract (sources)
-      "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
-      and links back to page of highlight."
-      (let (
-            (output ""))
-        (dolist (thispdf sources)
-          (setq output (concat output (pdf-annot-markups-as-org-text thispdf nil level ))))
-        (princ output))
-      )
-
-      (defun cpm/pdf-summary-extract (sources)
-      "Helper function to print underlined text from a list of pdf's, with one org header per pdf, 
-      and links back to page of highlight."
-      (let (
-            (output ""))
-        (dolist (thispdf sources)
-          (setq output (concat output (pdf-annot-summary-as-org-text thispdf nil level ))))
-        (princ output))
-      )
-
-      ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
-      (defun pdf-annot-edges-to-region (edges)
-      "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
-      We need this to import annotations and to get marked-up text, because annotations
-      are referenced by its edges, but functions for these tasks need region."
-
-      (let ((left0 (nth 0 (car edges)))
-            (top0 (nth 1 (car edges)))
-            (bottom0 (nth 3 (car edges)))
-            (top1 (nth 1 (car (last edges))))
-            (right1 (nth 2 (car (last edges))))
-            (bottom1 (nth 3 (car (last edges))))
-            (n (safe-length edges)))
-        ;; we try to guess the line height to move
-        ;; the region away from the boundary and
-        ;; avoid double lines
-        (list left0
-              (+ top0 (/ (- bottom0 top0) 2))
-              right1
-              (- bottom1 (/ (- bottom1 top1) 2 )))))
-
-      (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
-      "Acquire highligh annotations as text, and return as org-heading"
-
-      (interactive "fPath to PDF: ")  
-      (let* ((outputstring "") ;; the text to be returned
-              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
-              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
-              (levelstring (make-string level ?*)) ;; set headline to proper level
-              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
-                            'pdf-annot-compare-annotations)))
-        ;; create the header
-        (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
-
-        ;; extract text
-        (mapc
-          (lambda (annot) ;; traverse all annotations
-            (if (eq 'highlight (assoc-default 'type annot))
-                (let* ((page (assoc-default 'page annot))
-                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
-                      (real-edges (pdf-annot-edges-to-region
-                                    (pdf-annot-get annot 'markup-edges)))
-                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                      (height (nth 1 real-edges)) ;; distance down the page
-                      ;; use pdfview link directly to page number
-                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                        "++" (number-to-string height) "][" title  "]]" )))
-                  (setq outputstring (concat outputstring text " ("
-                                            linktext ", " (number-to-string page) ")\n\n"))
-                  ))
-
-            (if (eq 'text (assoc-default 'type annot))
-                (let* ((page (assoc-default 'page annot))
-                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
-                      (real-edges (pdf-annot-edges-to-region
-                                    (pdf-annot-get annot 'markup-edges)))
-                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                      (height (nth 1 real-edges)) ;; distance down the page
-                      ;; use pdfview link directly to page number
-                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                        "++" (number-to-string height) "][" title  "]]" )))
-                  (setq outputstring (concat outputstring text " ("
-                                            linktext ", " (number-to-string page) ")\n\n"))
-                  ))
-
-              (if (eq 'underline (assoc-default 'type annot))
-                  (let* ((page (assoc-default 'page annot))
-                        ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
-                        (real-edges (pdf-annot-edges-to-region
-                                      (pdf-annot-get annot 'markup-edges)))
-                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                        (height (nth 1 real-edges)) ;; distance down the page
-                        ;; use pdfview link directly to page number
-                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                          "++" (number-to-string height) "][" title  "]]" )))
-                    (setq outputstring (concat outputstring text " ("
-                                              linktext ", " (number-to-string page) ")\n\n"))
-                    ))
-                  )
-          annots)
-        outputstring ;; return the header
-        )
-      )
-
-      (defun pdf-annot-summary-as-org-text (pdfpath &optional title level)
-      "Acquire underlined annotations as text, and return as org-heading"
-
-      (interactive "fPath to PDF: ")  
-      (let* ((outputstring "") ;; the text to be returned
-              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
-              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
-              (levelstring (make-string level ?*)) ;; set headline to proper level
-              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
-                            'pdf-annot-compare-annotations)))
-        ;; create the header
-        (setq outputstring (concat levelstring " Summary from " title "\n\n")) ;; create heading
-
-        ;; extract text
-        (mapc
-          (lambda (annot) ;; traverse all annotations
-              (if (eq 'underline (assoc-default 'type annot))
-                  (let* ((page (assoc-default 'page annot))
-                        ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
-                        (real-edges (pdf-annot-edges-to-region
-                                      (pdf-annot-get annot 'markup-edges)))
-                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                        (height (nth 1 real-edges)) ;; distance down the page
-                        ;; use pdfview link directly to page number
-                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                          "++" (number-to-string height) "][" title  "]]" )))
-                    (setq outputstring (concat outputstring text " ("
-                                              linktext ", " (number-to-string page) ")\n\n"))
-                    ))
-                  )
-          annots)
-        outputstring ;; return the header
-        )
-      )
-
-
-      ))
-
-  (use-package org-pdfview
-    :defer t
-    :ensure t)
-
-  (use-package pdf-tools-org 
-    :defer t
-    :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
-    :init
-    (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/"))
-
-#+END_SRC
 ** Persp-mode
 #+begin_src emacs-lisp :tangle yes
   (use-package persp-mode
@@ -2303,6 +2436,7 @@ Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
 (use-package sunshine
   :ensure t
+  :disabled t
   :defer t
   ;;:commands (sunshine-forecast sunshine-quick-forecast)
   :init 
@@ -2346,6 +2480,19 @@ This is the [[https://github.com/benma/visual-regexp.el][good old search and rep
     :commands (vr/select-query-replace)))
 #+END_SRC
 
+** Weather
+#+BEGIN_SRC emacs-lisp
+(use-package wttrin
+  :ensure t
+  :defer t
+  :commands (wttrin wttrin-exit)
+  :init
+  (progn 
+    (setq wttrin-default-cities '("Providence" "Lincoln, NE"))
+    (evil-leader/set-key 
+      "aw" 'wttrin))
+)
+#+END_SRC
 ** Which Key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
@@ -2576,7 +2723,7 @@ Numbered window shortcuts for Emacs
               markdown-enable-math t
               markdown-footnote-location "immediately"
               markdown-nested-imenu-heading-index t
-              markdown-open-command "/Users/Roambot/bin/mark.sh"
+              markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
          (global-git-gutter+-mode t)
          (add-hook 'markdown-mode-hook #'markdown-auto-fill)
@@ -2751,8 +2898,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key
       "bb" 'helm-mini
       "bB" 'helm-buffers-list
       "bc" 'spacemacs/new-empty-buffer
+      "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
-      "bD" 'spacemacs/delete-current-buffer-file
       "bf" 'reveal-in-osx-finder
       "bj" 'evilmacs/jump-in-buffer 
       "bk" 'evil-delete-buffer
@@ -2897,7 +3044,6 @@ I use a lot of keybindings, with <SPC> as my "leader" key
    "uS" 'just-one-space
    "ud" 'distraction-free
    "uD" 'osx-dictionary-search-input
-   ;; "ou" 'paradox-upgrade-packages
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "ux" 'helm-bibtex
@@ -2910,14 +3056,19 @@ Keybindings for org mode
 #+BEGIN_SRC emacs-lisp
     (defun cpm/org-keybindings ()
       "Modify keymaps for mode 'm' in org mode"
-      (which-key-declare-prefixes "<SPC>m" "Org")
-      (which-key-declare-prefixes "<SPC>ma" "agenda")
+      (which-key-declare-prefixes "<SPC>o" "Org")
+      (which-key-declare-prefixes "<SPC>oa" "agenda")
+      (which-key-declare-prefixes "<SPC>ot" "tree")
       (evil-leader/set-key
-      "mt"  'org-show-todo-tree
-      "maa"  'org-agenda
-      "mc"  'org-archive-subtree
-      "ml"  'evil-org-open-links
-      "mo"  'evil-org-recompute-clocks
+      ;; org tree
+      "otn" 'org-narrow-to-subtree
+      "otw" 'widen
+      "ott" 'org-show-todo-tree
+      "oaa" 'org-agenda
+      "oc"  'org-archive-subtree
+      "ol"  'evil-org-open-links
+      "oo"  'evil-org-recompute-clocks
+      "op"  'org-publish-current-project
       )
 
   ;; normal state shortcuts
