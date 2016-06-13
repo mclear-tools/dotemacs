@@ -2987,14 +2987,6 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 #+END_SRC
 ** Buffers
 #+BEGIN_SRC emacs-lisp
-  (defun evilmacs/jump-in-buffer ()
-    (interactive)
-    (cond
-     ((eq major-mode 'org-mode)
-      (call-interactively 'helm-org-in-buffer-headings))
-     (t
-      (call-interactively 'helm-semantic-or-imenu))))
-
     (which-key-declare-prefixes "<SPC>b" "Buffers")
     (evil-leader/set-key
       "bb" 'helm-mini
@@ -3003,7 +2995,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
       "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
       "bf" 'reveal-in-osx-finder
-      "bj" 'evilmacs/jump-in-buffer 
+      ;; "bj" 'jump-in-buffer 
       "bk" 'evil-delete-buffer
       "bK" 'spacemacs/kill-other-buffers
       "bn" 'spacemacs/new-empty-buffer
@@ -3256,6 +3248,7 @@ Keybindings for managing packages
     "sp" 'helm-ag-project-root
     "so" 'helm-occur
     "sd" 'helm-do-ag ;; search with directory prompt
+    "sj" 'jump-in-buffer
     "/"  'helm-ag  ;; search in directory with word prompt
     "sl" 'last-search-buffer
    )
