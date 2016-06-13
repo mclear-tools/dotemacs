@@ -1265,7 +1265,7 @@ I mostly don't use this in favor of helm-bibtex
         (setq powerline-height 21)
         (powerline-reset)
 ;; don't use srgb & get proper powerline faces
-(setq ns-use-srgb-colorspace nil)
+(setq ns-use-srgb-colorspace t)
 #+END_SRC
 
 #+RESULTS:
