@@ -743,7 +743,7 @@ And here's how we tell Emacs to use the font we want to use.
 #+END_SRC
 
 * Org
-Org is really why most people use emacs. Here are some basic settings and packages.
+[[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 ** Base settings
 #+BEGIN_SRC emacs-lisp
 (use-package org 
