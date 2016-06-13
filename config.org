@@ -3174,7 +3174,8 @@ Keybindings for org mode
       "oc"  'org-archive-subtree
       "ol"  'evil-org-open-links
       "oo"  'evil-org-recompute-clocks
-      "op"  'org-publish-current-project
+      "oP"  'org-publish-current-project
+      "op"  'org-publish-current-file
       )
 
   ;; normal state shortcuts
