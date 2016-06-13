@@ -5,6 +5,12 @@ This is my emacs configuration file. I use org-mode to organize it and then
 "tangle" the file using org-babel. You can find a helpful discussion of this
 method [[http://stackoverflow.com/questions/17416738/emacs-initialization-as-org-file-how-can-i-get-the-right-version-of-org-mode][here]]. 
 
+I use emacs for all my academic work. The configuration tends in that direction,
+as opposed to programming or literary work. If you don't tend to want to think
+about your text editor, but like emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] as a way
+of managing your configuration. For a more traditional emacs feel there are also
+the configurations of [[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]].    
+
 * Installing Emacs
 
 On OS X, which I use, [[http://brew.sh/][homebrew]] is an easy way to install emacs. I use the [[https://github.com/railwaycat/homebrew-emacsmacport][emacs
