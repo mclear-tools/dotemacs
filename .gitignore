@@ -16,3 +16,4 @@ auto-save-list
 /snippets/
 /eshell/history
 /eshell/lastdir
+.DS_Store

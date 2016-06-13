@@ -1,0 +1,21 @@
+;; -*- mode: emacs-lisp -*-
+
+;; pandoc-mode global settings file
+;; saved on 2015.11.30 21:14
+
+((mathjax . "")
+ (bibliography "/Users/Roambot/Dropbox/Work/Master.bib")
+ (csl . "/Users/Roambot/.pandoc/styles/chicago-author-date.csl")
+ ;; (reference-links . t)
+ (number-sections . t)
+ (reference-docx . "/Users/Roambot/.pandoc/pandoc-templates/reference.docx")
+ (standalone . t)
+ (template . "/Users/Roambot/.pandoc/pandoc-templates/default.latex")
+ (latex-engine . "xelatex")
+ (variable
+  (#("mainfont" 0 8
+     (ws-butler-chg chg))
+   . "Optima"))
+ (smart . t)
+ (read . "markdown")
+ (write . "latex"))
