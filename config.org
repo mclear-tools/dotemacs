@@ -2617,7 +2617,6 @@ Pandoc mode for markdown conversion
     :defer t  
     :config
     (progn
-      (setq pandoc-data-dir "~/.spacemacs.d/pandoc-mode/")
       (defun run-pandoc ()
         "Start pandoc for the buffer and open the menu"
         (interactive)
@@ -2632,6 +2631,9 @@ Pandoc mode for markdown conversion
         )
     :init
     (progn
+      (setq pandoc-data-dir "~/.emacs.d/pandoc-mode/")
+      ;; help pandoc find xelatex
+      (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
       (evil-leader/set-key "up" 'run-pandoc)
       (evil-leader/set-key "uP" 'pandoc-pdf-open)))
 #+END_SRC
