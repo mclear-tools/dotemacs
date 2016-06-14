@@ -2517,18 +2517,17 @@ Numbered window shortcuts for Emacs
              ("\\.md\\'"       . markdown-mode))
       :init
       (progn
-        (setq markdown-command "pandoc -s -N -V mainfont=Optima --latex-engine=xelatex --smart --bibliography=/Users/Roambot/Dropbox/Work/Master.bib --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"
+        (setq markdown-command "pandoc"
               markdown-enable-math t
               markdown-footnote-location "immediately"
               markdown-nested-imenu-heading-index t
               markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
-         (global-git-gutter+-mode t)
-         (add-hook 'markdown-mode-hook #'markdown-auto-fill)
-         (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
-         (add-hook 'markdown-mode-hook #'pandoc-mode) 
-         (add-hook 'markdown-mode-hook #'hl-todo-mode) 
-         (add-hook 'markdown-mode-hook #'flyspell-mode)
+         ;; (global-git-gutter+-mode t)
+         ;; (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
+         ;; (add-hook 'markdown-mode-hook #'pandoc-mode) 
+         ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
+         ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
          ;; add keybindings to hook
          (add-hook 'markdown-mode-hook #'my-markdown-config))
        :config
