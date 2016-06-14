@@ -351,7 +351,6 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
 
 (defun tangle-init ()
   "Tangle init.org asynchronously."
-
   (interactive)
   (message "Tangling init")
   (async-start
@@ -425,8 +424,6 @@ The essential stuff
           (global-evil-leader-mode)
           (evil-mode 1)))))
 #+end_src
-
-#+RESULTS:
 
 ** Evil packages & settings
 There are some other useful setup packages for evil
