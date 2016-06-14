@@ -720,6 +720,561 @@ And here's how we tell Emacs to use the font we want to use.
 
   (setq linum-format 'linum-highlight-current-line)
 #+END_SRC
+* Navigation
+** Projectile
+#+BEGIN_SRC emacs-lisp
+ (use-package projectile
+    :ensure t
+    :defer t
+    :commands (projectile-ack
+               projectile-ag
+               projectile-compile-project
+               projectile-dired
+               projectile-find-dir
+               projectile-find-file
+               projectile-find-tag
+               projectile-find-test-file
+               projectile-grep
+               projectile-invalidate-cache
+               projectile-kill-buffers
+               projectile-multi-occur
+               projectile-project-p
+               projectile-project-root
+               projectile-recentf
+               projectile-regenerate-tags
+               projectile-replace
+               projectile-run-async-shell-command-in-root
+               projectile-run-shell-command-in-root
+               projectile-switch-project
+               projectile-switch-to-buffer
+               projectile-vc)
+    :config
+    (progn
+      (projectile-global-mode)))
+#+END_SRC
+** Helm
+A completion framework and much more. For a complete overview see [[http://tuhdo.github.io/helm-intro.html][the tutorial]].
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm
+    :ensure t
+    :diminish (helm-mode . "")
+    :defer 2
+    :config
+    (progn
+      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
+            helm-buffers-fuzzy-matching t
+            helm-recentf-fuzzy-match t
+            helm-prevent-escaping-from-minibuffer t
+            helm-bookmark-show-location t
+            helm-find-files-sort-directories t
+            helm-display-header-line nil
+            helm-always-two-windows t                       
+            helm-split-window-in-side-p t
+            helm-echo-input-in-header-line t
+            helm-locate-fuzzy-match nil
+            helm-locate-command "mdfind -interpret -name %s %s")
+      (bind-key* "C-x r b" 'helm-filtered-bookmarks)
+      (bind-key* "M-x" 'helm-M-x)
+      (bind-key* "C-x C-f" 'helm-find-files)
+      ;;; helm vim-bindings in buffer ;;
+      (define-key helm-map (kbd "C-j") 'helm-next-line)
+      (define-key helm-map (kbd "C-k") 'helm-previous-line)
+      (define-key helm-map (kbd "C-h") 'helm-next-source)
+      (define-key helm-map (kbd "C-S-h") 'describe-key)
+      (define-key helm-map (kbd "C-l") (kbd "RET"))
+
+      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
+      (helm-autoresize-mode 1)
+      (setq helm-autoresize-max-height 40)
+      (setq helm-autoresize-min-height 35)
+
+      ;; enter text at eye level
+      (defun helm-hide-minibuffer-maybe ()
+        (when (with-helm-buffer helm-echo-input-in-header-line)
+        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+        (overlay-put ov 'window (selected-window))
+        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                              `(:background ,bg-color :foreground ,bg-color)))
+                              (setq-local cursor-type nil))))
+
+      (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+      (helm-mode 1)))
+#+end_src
+** Helm packages
+*** Helm ag
+#+begin_src emacs-lisp :tangle yes
+(use-package helm-ag :ensure t :defer t)
+#+end_src
+*** Helm descbinds
+#+begin_src emacs-lisp :tangle yes
+      (use-package helm-descbinds 
+        :ensure t 
+        :defer t
+        :config
+        (setq helm-descbinds-window-style 'split)
+        (add-hook 'helm-mode-hook 'helm-descbinds-mode)
+        (evil-leader/set-key "?" 'helm-descbinds))
+#+end_src
+*** Helm git list
+#+begin_src emacs-lisp :tangle yes
+(use-package helm-ls-git :ensure t :defer t)
+#+end_src
+*** Helm swoop
+Search on steroids
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-swoop
+    :defer t
+    :ensure t
+    :config
+    ;; If this value is t, split window inside the current window
+    (setq helm-swoop-split-with-multiple-windows t)
+  )
+#+end_src
+*** Helm flyspell
+Use helm with flyspell
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-flyspell
+    :defer t
+    :ensure t
+    :commands helm-flyspell-correct
+  )
+#+end_src
+
+*** Helm recent directories
+Recent directories
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-dired-recent-dirs
+    :defer t
+    :ensure t)
+#+end_src
+*** Helm files
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-files
+    :defer t
+    :config
+    (setq helm-ff-skip-boring-files t)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (setq helm-boring-file-regexp-list
+    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
+      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+#+end_src
+
+*** Helm-projectile
+#+BEGIN_SRC emacs-lisp
+(use-package helm-projectile
+  :ensure t
+  :defer t
+  :commands (helm-projectile-switch-to-buffer
+             helm-projectile-find-dir
+             helm-projectile-dired-find-dir
+             helm-projectile-recentf
+             helm-projectile-find-file
+             helm-projectile-grep
+             helm-projectile
+             helm-projectile-switch-project)
+  :init
+    (progn
+      (setq projectile-switch-project-action 'helm-projectile)))
+#+END_SRC
+** Speedbar
+A file tree and outliner
+#+BEGIN_SRC emacs-lisp
+    (use-package sr-speedbar
+      :ensure t
+      :defer t
+      :commands sb-expand-current-file
+      :config
+        (progn 
+          (setq sr-speedbar-width 60)
+          (setq sr-speedbar-max-width 60)
+          (setq sr-speedbar-right-side nil)
+          ;; Auto expand
+          (defun sb-expand-current-file ()
+          "Expand current file in speedbar buffer"
+          (interactive)
+          (setq current-file (buffer-file-name))
+          (sr-speedbar-toggle)
+          (speedbar-find-selected-file current-file)
+          (speedbar-toggle-line-expansion))
+          ;; Switch to window
+          (defun speedbar-edit-line-and-switch-to-window ()
+          (interactive)
+          (speedbar-edit-line)
+          (other-window 1))
+
+          ;; other settings
+          (setq speedbar-hide-button-brackets-flag t
+              speedbar-show-unknown-files t
+              speedbar-directory-button-trim-method 'trim
+              speedbar-use-images nil
+              speedbar-indentation-width 2
+              speedbar-use-imenu-flag t
+              speedbar-tag-hierarchy-method nil  ;; No grouping
+              speedbar-file-unshown-regexp "flycheck-.*"
+              speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|\\.\\.*$\\)\\'"    
+              speedbar-smart-directory-expand-flag t)
+          ;; Add markdown support
+          (speedbar-add-supported-extension ".md")
+          (speedbar-add-supported-extension ".org")
+          ;; More familiar keymap settings.
+          (add-hook 'speedbar-reconfigure-keymaps-hook
+                  '(lambda ()
+                      (define-key speedbar-mode-map [tab] 'speedbar-toggle-line-expansion)
+                      (define-key speedbar-mode-map [return] 'speedbar-edit-line-and-switch-to-window)))))
+
+#+END_SRC
+** Code documentation
+
+[[https://kapeli.com/dash][Dash]] is a nice little app that stores documents offline for reference. Let's [[https://github.com/stanaka/dash-at-point][bring that to Emacs]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package dash-at-point
+  :ensure t)
+#+END_SRC
+
+** Back button
+
+The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[https://www.emacswiki.org/emacs/BackButton][Back button mode]] provides a similar navigation in Emacs where you navigate to the points where you made changes previously. Comes in really handy at times.
+
+#+BEGIN_SRC emacs-lisp
+(use-package back-button
+  :ensure t
+  :diminish back-button-mode
+  :defer 2
+  :init
+  (setq back-button-show-toolbar-buttons nil)
+  :config
+  (back-button-mode 1))
+#+END_SRC
+* Modeline
+** Spaceline
+This is a really nice powerline-ish modeline.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package spaceline
+  :ensure t
+  :init 
+  (progn 
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+  (setq-default powerline-default-separator 'slant) 
+  (setq spaceline-separator-dir-left '(right . right))
+  (setq spaceline-separator-dir-right '(right . right))
+  ;; fancy git icon for the modeline
+  (defadvice vc-mode-line (after strip-backend () activate)
+    (when (stringp vc-mode)
+      (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
+            (setq vc-mode gitlogo)))))
+  :config
+  (require 'spaceline-config)
+  (spaceline-spacemacs-theme)
+  (setq spaceline-buffer-encoding-abbrev-p nil
+        spaceline-line-column-p nil
+        spaceline-buffer-id-p nil
+        spaceline-minor-modes-separator nil))
+ 
+        ;; size of modeline
+        (setq powerline-height 21)
+        (powerline-reset)
+;; don't use srgb & get proper powerline faces
+(setq ns-use-srgb-colorspace t)
+#+END_SRC
+
+** SVG Modelines
+An svg modeline. 
+#+BEGIN_SRC emacs-lisp
+(use-package ocodo-svg-modelines
+  :ensure t
+  :disabled t
+  :init
+  (ocodo-svg-modelines-init)
+  (smt/set-theme 'ocodo-mesh-aqua-smt)
+  )
+#+END_SRC
+** Fancy Battery
+#+BEGIN_SRC emacs-lisp
+  (use-package fancy-battery
+    :ensure t
+    :defer t
+    :init (fancy-battery-mode))
+#+END_SRC
+ 
+** Display Time
+#+begin_src emacs-lisp :tangle yes
+  (setq display-time-format "%a %b %d | %H:%M |")
+  (display-time-mode)
+#+end_src
+
+#+RESULTS:
+: t
+
+* Shell
+** Eshell
+Emacs own shell
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :commands eshell
+  :defer t
+  :config
+  (bind-key "C-x e" 'eshell)
+  (setq
+   eshell-buffer-shorthand t
+   eshell-cmpl-ignore-case t
+   eshell-cmpl-cycle-completions nil
+   eshell-history-size 10000
+   eshell-hist-ignoredups t
+   eshell-error-if-no-glob t
+   eshell-glob-case-insensitive t
+   eshell-scroll-to-bottom-on-input 'all
+   eshell-aliases-file (concat user-emacs-directory "eshell/alias")
+))
+#+END_SRC
+** Multi-term
+When one shell isn't enough
+#+BEGIN_SRC emacs-lisp
+(use-package multi-term
+    :defer t
+    :ensure t
+    :config
+    (bind-key "C-x m" 'multi-term)
+    (setq multi-term-program "/usr/local/bin/zsh")
+    (add-hook 'term-mode-hook
+            (lambda ()
+                (setq term-buffer-maximum-size 10000))))
+#+END_SRC
+** Sane term
+Sane settings for ansi-term
+#+BEGIN_SRC emacs-lisp
+  (use-package sane-term
+    :ensure t
+    :defer t
+    ;; :commands (sane-term sane-term-create)
+    :config
+    (evil-leader/set-key "as" 'sane-term)
+    ;; shell to use for sane-term
+    (setq sane-term-shell-command "/usr/local/bin/zsh")
+    ;; sane-term will create first term if none exist
+    (setq sane-term-initial-create t)
+    ;; `C-d' or `exit' will kill the term buffer.
+    (setq sane-term-kill-on-exit t)
+    ;; After killing a term buffer, not cycle to another.
+    (setq sane-term-next-on-kill nil))
+#+END_SRC
+** Shell Pop
+A popup shell
+#+begin_src emacs-lisp :tangle yes
+     (use-package shell-pop
+        :defer t
+        :ensure t
+        :init
+        (evil-leader/set-key "'" 'shell-pop)
+        :config
+         (defun ansi-term-handle-close ()
+          "Close current term buffer when `exit' from term buffer."
+          (when (ignore-errors (get-buffer-process (current-buffer)))
+            (set-process-sentinel (get-buffer-process (current-buffer))
+                                  (lambda (proc change)
+                                    (when (string-match "\\(finished\\|exited\\)" change)
+                                      (kill-buffer (process-buffer proc))
+                                      (delete-window))))))
+        (add-hook 'term-mode-hook 'ansi-term-handle-close)
+        (add-hook 'term-mode-hook (lambda () (linum-mode -1) (centered-window-mode 0)))
+        )
+#+end_src
+
+** Shell settings
+Other useful shell settings  
+#+begin_src emacs-lisp
+    ;; basic settings
+    (setq explicit-shell-file-name "/usr/local/bin/zsh")
+    
+    ;; kill ansi-buffer on exit
+    (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+      (if (memq (process-status proc) '(signal exit))
+          (let ((buffer (process-buffer proc)))
+            ad-do-it
+            (kill-buffer buffer))
+        ad-do-it))
+    (ad-activate 'term-sentinel)
+
+    ;; clickable links & no highlight of line
+    (defun my-term-hook ()
+      (goto-address-mode) (global-hl-line-mode 0))
+    (add-hook 'term-mode-hook 'my-term-hook)
+
+  ;; paste and navigation
+  (defun term-send-tab ()
+      "Send tab in term mode."
+      (interactive)
+      (term-send-raw-string "\t"))
+    ;; hack to fix pasting issue, the paste micro-state won't
+    ;; work in term
+    (evil-define-key 'normal term-raw-map "p" 'term-paste)
+    (evil-define-key 'insert term-raw-map (kbd "C-c C-d") 'term-send-eof)
+    (evil-define-key 'insert term-raw-map (kbd "C-c C-z") 'term-stop-subjob)
+    (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab)
+
+    (evil-define-key 'insert term-raw-map
+      (kbd "s-v") 'term-paste
+      (kbd "C-k") 'term-send-up
+      (kbd "C-j") 'term-send-down)
+    (evil-define-key 'normal term-raw-map
+      (kbd "C-k") 'term-send-up
+      (kbd "C-j") 'term-send-down)
+
+#+end_src
+** Shell Script Mode
+Open zsh files in shell-script mode
+#+BEGIN_SRC emacs-lisp
+(use-package sh-script
+    :defer t
+    :init
+    (progn
+      ;; Use sh-mode when opening `.zsh' files, and when opening Prezto runcoms.
+      (dolist (pattern '("\\.zsh\\'"
+                         "zlogin\\'"
+                         "zlogout\\'"
+                         "zpreztorc\\'"
+                         "zprofile\\'"
+                         "zshenv\\'"
+                         "zshrc\\'"))
+        (add-to-list 'auto-mode-alist (cons pattern 'sh-mode)))
+
+      (defun spacemacs//setup-shell ()
+        (when (and buffer-file-name
+                   (string-match-p "\\.zsh\\'" buffer-file-name))
+          (sh-set-shell "zsh")))
+      (add-hook 'sh-mode-hook 'spacemacs//setup-shell)))
+#+END_SRC
+
+** Compilation buffer
+
+Whenever I run ~compile~, the buffer stays even after a successful compilation. Let's make it close automatically if the compilation is successful.
+
+#+BEGIN_SRC emacs-lisp
+(setq compilation-finish-functions
+      (lambda (buf str)
+        (if (null (string-match ".*exited abnormally.*" str))
+            ;;no errors, make the compilation window go away in a few seconds
+            (progn
+              (run-at-time "0.4 sec" nil
+                           (lambda ()
+                             (select-window (get-buffer-window (get-buffer-create "*compilation*")))
+                             (switch-to-buffer nil)))
+              (message "No Compilation Errors!")))))
+#+END_SRC
+* Version Control
+Magit is a great interface for git projects. It's much more pleasant to use than
+the standard git interface on the command line. I've set up some easy
+keybindings to access magit and related packages.
+
+** Evil Magit
+evil bindings for magit
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-magit
+    :ensure t
+    :after magit
+    :defer t)
+  (use-package magit
+    :ensure t
+    :defer t
+    :commands
+   (magit-blame-mode
+    magit-commit
+    magit-diff
+    magit-log
+    magit-status)
+    :init
+    (with-eval-after-load 'evil-leader
+    (evil-leader/set-key
+      (kbd "gb") #'magit-blame
+      (kbd "gc") #'magit-commit
+      (kbd "gd") #'magit-diff
+      (kbd "gl") #'magit-log
+      (kbd "gr") #'magit-reflog
+      (kbd "gs") #'magit-status))
+    (with-eval-after-load 'which-key
+    (which-key-declare-prefixes
+    "<SPC>g" "Git"))
+    :config
+    (require 'evil-magit)
+    (setq vc-follow-symlinks t)
+    (setq-default git-magit-status-fullscreen nil)
+    (setq magit-diff-refine-hunk 'all)
+    (global-git-commit-mode t) ; use spacemacs as editor for git commits
+    (add-hook 'magit-diff-mode-hook (lambda () (setq cursor-type nil)))
+    (add-hook 'magit-log-mode-hook (lambda () (setq cursor-type nil)))
+    (add-hook 'magit-log-select-mode-hook (lambda () (setq cursor-type nil)))
+    (add-hook 'magit-refs-mode-hook (lambda () (setq cursor-type nil)))
+    (add-hook 'magit-revision-mode-hook (lambda () (setq cursor-type nil)))
+    (add-hook 'magit-status-mode-hook #'hl-line-mode)
+    (add-hook 'magit-status-mode-hook (lambda () (setq cursor-type nil)))
+    (add-hook 'with-editor-mode-hook 'evil-insert-state)
+    (bind-keys
+    :map magit-status-mode-map
+    ("<C-tab>"   . nil)
+    ("<backtab>" . magit-section-cycle))
+    (setq magit-push-always-verify nil)
+  )
+#+END_SRC
+
+** Git timemachine
+#+BEGIN_SRC emacs-lisp
+(use-package git-timemachine            ; Go back in Git time
+  :ensure t
+  :defer t
+)
+#+END_SRC
+ 
+** Git gutter
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter+
+      :ensure t
+      :defer t
+      :init
+      (progn
+        (add-hook 'markdown-mode-hook #'git-gutter+-mode)
+        (add-hook 'prog-mode-hook #'git-gutter+-mode)))
+        ;; ;; If you enable global minor mode
+        ;;   (add-hook 'magit-pre-refresh-hook 'git-gutter+-refresh)
+          ;; (global-git-gutter+-mode t)))
+#+END_SRC
+ 
+** Fringe
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter-fringe+
+  :ensure t
+  :defer t
+  :commands git-gutter+-mode
+  :init
+    (progn
+      (when (display-graphic-p)
+        (with-eval-after-load 'git-gutter+
+          (require 'git-gutter-fringe+)))
+      (setq git-gutter-fr+-side 'right-fringe))
+  :config
+    (progn
+      ;; custom graphics that works nice with half-width fringes
+      (fringe-helper-define 'git-gutter-fr+-added nil
+        "..X...."
+        "..X...."
+        "XXXXX.."
+        "..X...."
+        "..X...."
+        )
+      (fringe-helper-define 'git-gutter-fr+-deleted nil
+        "......."
+        "......."
+        "XXXXX.."
+        "......."
+        "......."
+        )
+      (fringe-helper-define 'git-gutter-fr+-modified nil
+        "..X...."
+        ".XXX..."
+        "XX.XX.."
+        ".XXX..."
+        "..X...."
+        )))
+#+END_SRC
 
 * Org
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
@@ -800,7 +1355,14 @@ And here's how we tell Emacs to use the font we want to use.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
             '(lambda()
-               (turn-on-auto-fill) (set-fill-column 80) (flyspell-mode 1) (hl-todo-mode) (imenu-add-to-menubar "Imenu") (global-git-gutter+-mode 0)))
+               (turn-on-auto-fill) 
+               (set-fill-column 80) 
+               (flyspell-mode 1) 
+               (hl-todo-mode) 
+               (imenu-add-to-menubar "Imenu") 
+               (git-gutter+-mode 0)
+               (eldoc-mode 1)
+               (org-eldoc-load)))
 #+END_SRC
 ** Org publish
 #+BEGIN_SRC emacs-lisp
@@ -1215,564 +1777,6 @@ I mostly don't use this in favor of helm-bibtex
 
 
 ;;; org-devonthink.el ends here
-#+END_SRC
-* Modeline
-** Spaceline
-#+BEGIN_SRC emacs-lisp
-(use-package spaceline
-  :ensure t
-  :init 
-  (progn 
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (setq-default powerline-default-separator 'slant) 
-  (setq spaceline-separator-dir-left '(right . right))
-  (setq spaceline-separator-dir-right '(right . right))
-  ;; fancy git icon for the modeline
-  (defadvice vc-mode-line (after strip-backend () activate)
-    (when (stringp vc-mode)
-      (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
-            (setq vc-mode gitlogo)))))
-  :config
-  (require 'spaceline-config)
-  (spaceline-spacemacs-theme)
-  (setq spaceline-buffer-encoding-abbrev-p nil
-        spaceline-line-column-p nil
-        spaceline-buffer-id-p nil
-        spaceline-minor-modes-separator nil))
- 
-        ;; size of modeline
-        (setq powerline-height 21)
-        (powerline-reset)
-;; don't use srgb & get proper powerline faces
-(setq ns-use-srgb-colorspace t)
-#+END_SRC
-
-#+RESULTS:
-
-** Fancy Battery
-#+BEGIN_SRC emacs-lisp
-  (use-package fancy-battery
-    :ensure t
-    :defer t
-    :init (fancy-battery-mode))
-#+END_SRC
- 
-** Display Time
-#+begin_src emacs-lisp :tangle yes
-  (setq display-time-format "%a %b %d | %H:%M |")
-  (display-time-mode)
-#+end_src
-
-#+RESULTS:
-: t
-
-* Shell
-** Eshell
-Emacs own shell
-#+BEGIN_SRC emacs-lisp
-(use-package eshell
-  :commands eshell
-  :defer t
-  :config
-  (bind-key "C-x e" 'eshell)
-  (setq
-   eshell-buffer-shorthand t
-   eshell-cmpl-ignore-case t
-   eshell-cmpl-cycle-completions nil
-   eshell-history-size 10000
-   eshell-hist-ignoredups t
-   eshell-error-if-no-glob t
-   eshell-glob-case-insensitive t
-   eshell-scroll-to-bottom-on-input 'all
-   eshell-aliases-file (concat user-emacs-directory "eshell/alias")
-))
-#+END_SRC
-** Multi-term
-When one shell isn't enough
-#+BEGIN_SRC emacs-lisp
-(use-package multi-term
-    :defer t
-    :ensure t
-    :config
-    (bind-key "C-x m" 'multi-term)
-    (setq multi-term-program "/usr/local/bin/zsh")
-    (add-hook 'term-mode-hook
-            (lambda ()
-                (setq term-buffer-maximum-size 10000))))
-#+END_SRC
-** Sane term
-Sane settings for ansi-term
-#+BEGIN_SRC emacs-lisp
-  (use-package sane-term
-    :ensure t
-    :defer t
-    ;; :commands (sane-term sane-term-create)
-    :config
-    (evil-leader/set-key "as" 'sane-term)
-    ;; shell to use for sane-term
-    (setq sane-term-shell-command "/usr/local/bin/zsh")
-    ;; sane-term will create first term if none exist
-    (setq sane-term-initial-create t)
-    ;; `C-d' or `exit' will kill the term buffer.
-    (setq sane-term-kill-on-exit t)
-    ;; After killing a term buffer, not cycle to another.
-    (setq sane-term-next-on-kill nil))
-#+END_SRC
-** Shell Pop
-A popup shell
-#+begin_src emacs-lisp :tangle yes
-     (use-package shell-pop
-        :defer t
-        :ensure t
-        :init
-        (evil-leader/set-key "'" 'shell-pop)
-        :config
-         (defun ansi-term-handle-close ()
-          "Close current term buffer when `exit' from term buffer."
-          (when (ignore-errors (get-buffer-process (current-buffer)))
-            (set-process-sentinel (get-buffer-process (current-buffer))
-                                  (lambda (proc change)
-                                    (when (string-match "\\(finished\\|exited\\)" change)
-                                      (kill-buffer (process-buffer proc))
-                                      (delete-window))))))
-        (add-hook 'term-mode-hook 'ansi-term-handle-close)
-        (add-hook 'term-mode-hook (lambda () (linum-mode -1) (centered-window-mode 0)))
-        )
-#+end_src
-
-** Shell settings
-Other useful shell settings  
-#+begin_src emacs-lisp
-    ;; basic settings
-    (setq explicit-shell-file-name "/usr/local/bin/zsh")
-    
-    ;; kill ansi-buffer on exit
-    (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-      (if (memq (process-status proc) '(signal exit))
-          (let ((buffer (process-buffer proc)))
-            ad-do-it
-            (kill-buffer buffer))
-        ad-do-it))
-    (ad-activate 'term-sentinel)
-
-    ;; clickable links & no highlight of line
-    (defun my-term-hook ()
-      (goto-address-mode) (global-hl-line-mode 0))
-    (add-hook 'term-mode-hook 'my-term-hook)
-
-  ;; paste and navigation
-  (defun term-send-tab ()
-      "Send tab in term mode."
-      (interactive)
-      (term-send-raw-string "\t"))
-    ;; hack to fix pasting issue, the paste micro-state won't
-    ;; work in term
-    (evil-define-key 'normal term-raw-map "p" 'term-paste)
-    (evil-define-key 'insert term-raw-map (kbd "C-c C-d") 'term-send-eof)
-    (evil-define-key 'insert term-raw-map (kbd "C-c C-z") 'term-stop-subjob)
-    (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab)
-
-    (evil-define-key 'insert term-raw-map
-      (kbd "s-v") 'term-paste
-      (kbd "C-k") 'term-send-up
-      (kbd "C-j") 'term-send-down)
-    (evil-define-key 'normal term-raw-map
-      (kbd "C-k") 'term-send-up
-      (kbd "C-j") 'term-send-down)
-
-#+end_src
-** Shell Script Mode
-Open zsh files in shell-script mode
-#+BEGIN_SRC emacs-lisp
-(use-package sh-script
-    :defer t
-    :init
-    (progn
-      ;; Use sh-mode when opening `.zsh' files, and when opening Prezto runcoms.
-      (dolist (pattern '("\\.zsh\\'"
-                         "zlogin\\'"
-                         "zlogout\\'"
-                         "zpreztorc\\'"
-                         "zprofile\\'"
-                         "zshenv\\'"
-                         "zshrc\\'"))
-        (add-to-list 'auto-mode-alist (cons pattern 'sh-mode)))
-
-      (defun spacemacs//setup-shell ()
-        (when (and buffer-file-name
-                   (string-match-p "\\.zsh\\'" buffer-file-name))
-          (sh-set-shell "zsh")))
-      (add-hook 'sh-mode-hook 'spacemacs//setup-shell)))
-#+END_SRC
-
-** Compilation buffer
-
-Whenever I run ~compile~, the buffer stays even after a successful compilation. Let's make it close automatically if the compilation is successful.
-
-#+BEGIN_SRC emacs-lisp
-(setq compilation-finish-functions
-      (lambda (buf str)
-        (if (null (string-match ".*exited abnormally.*" str))
-            ;;no errors, make the compilation window go away in a few seconds
-            (progn
-              (run-at-time "0.4 sec" nil
-                           (lambda ()
-                             (select-window (get-buffer-window (get-buffer-create "*compilation*")))
-                             (switch-to-buffer nil)))
-              (message "No Compilation Errors!")))))
-#+END_SRC
-* Version Control
-Magit is a great interface for git projects. It's much more pleasant to use than
-the standard git interface on the command line. I've set up some easy
-keybindings to access magit and related packages.
-
-** Evil Magit
-evil bindings for magit
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-magit
-    :ensure t
-    :after magit
-    :defer t)
-  (use-package magit
-    :ensure t
-    :defer t
-    :commands
-   (magit-blame-mode
-    magit-commit
-    magit-diff
-    magit-log
-    magit-status)
-    :init
-    (with-eval-after-load 'evil-leader
-    (evil-leader/set-key
-      (kbd "gb") #'magit-blame
-      (kbd "gc") #'magit-commit
-      (kbd "gd") #'magit-diff
-      (kbd "gl") #'magit-log
-      (kbd "gr") #'magit-reflog
-      (kbd "gs") #'magit-status))
-    (with-eval-after-load 'which-key
-    (which-key-declare-prefixes
-    "<SPC>g" "Git"))
-    :config
-    (require 'evil-magit)
-    (setq vc-follow-symlinks t)
-    (setq-default git-magit-status-fullscreen nil)
-    (setq magit-diff-refine-hunk 'all)
-    (global-git-commit-mode t) ; use spacemacs as editor for git commits
-    (add-hook 'magit-diff-mode-hook (lambda () (setq cursor-type nil)))
-    (add-hook 'magit-log-mode-hook (lambda () (setq cursor-type nil)))
-    (add-hook 'magit-log-select-mode-hook (lambda () (setq cursor-type nil)))
-    (add-hook 'magit-refs-mode-hook (lambda () (setq cursor-type nil)))
-    (add-hook 'magit-revision-mode-hook (lambda () (setq cursor-type nil)))
-    (add-hook 'magit-status-mode-hook #'hl-line-mode)
-    (add-hook 'magit-status-mode-hook (lambda () (setq cursor-type nil)))
-    (add-hook 'with-editor-mode-hook 'evil-insert-state)
-    (bind-keys
-    :map magit-status-mode-map
-    ("<C-tab>"   . nil)
-    ("<backtab>" . magit-section-cycle))
-    (setq magit-push-always-verify nil)
-  )
-#+END_SRC
-
-** Git timemachine
-#+BEGIN_SRC emacs-lisp
-(use-package git-timemachine            ; Go back in Git time
-  :ensure t
-  :defer t
-)
-#+END_SRC
- 
-** Git gutter
-#+BEGIN_SRC emacs-lisp
-  (use-package git-gutter+
-      :ensure t
-      :defer t
-      :init
-      (progn
-        (add-hook 'markdown-mode-hook #'git-gutter+-mode)
-        (add-hook 'prog-mode-hook #'git-gutter+-mode)))
-        ;; ;; If you enable global minor mode
-        ;;   (add-hook 'magit-pre-refresh-hook 'git-gutter+-refresh)
-          ;; (global-git-gutter+-mode t)))
-#+END_SRC
- 
-** Fringe
-#+BEGIN_SRC emacs-lisp
-(use-package git-gutter-fringe+
-  :ensure t
-  :defer t
-  :commands git-gutter+-mode
-  :init
-    (progn
-      (when (display-graphic-p)
-        (with-eval-after-load 'git-gutter+
-          (require 'git-gutter-fringe+)))
-      (setq git-gutter-fr+-side 'right-fringe))
-  :config
-    (progn
-      ;; custom graphics that works nice with half-width fringes
-      (fringe-helper-define 'git-gutter-fr+-added nil
-        "..X...."
-        "..X...."
-        "XXXXX.."
-        "..X...."
-        "..X...."
-        )
-      (fringe-helper-define 'git-gutter-fr+-deleted nil
-        "......."
-        "......."
-        "XXXXX.."
-        "......."
-        "......."
-        )
-      (fringe-helper-define 'git-gutter-fr+-modified nil
-        "..X...."
-        ".XXX..."
-        "XX.XX.."
-        ".XXX..."
-        "..X...."
-        )))
-#+END_SRC
-* Navigation
-** Projectile
-#+BEGIN_SRC emacs-lisp
- (use-package projectile
-    :ensure t
-    :defer t
-    :commands (projectile-ack
-               projectile-ag
-               projectile-compile-project
-               projectile-dired
-               projectile-find-dir
-               projectile-find-file
-               projectile-find-tag
-               projectile-find-test-file
-               projectile-grep
-               projectile-invalidate-cache
-               projectile-kill-buffers
-               projectile-multi-occur
-               projectile-project-p
-               projectile-project-root
-               projectile-recentf
-               projectile-regenerate-tags
-               projectile-replace
-               projectile-run-async-shell-command-in-root
-               projectile-run-shell-command-in-root
-               projectile-switch-project
-               projectile-switch-to-buffer
-               projectile-vc)
-    :config
-    (progn
-      (projectile-global-mode)))
-#+END_SRC
-** Helm
-A completion framework and much more. For a complete overview see [[http://tuhdo.github.io/helm-intro.html][the tutorial]].
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm
-    :ensure t
-    :diminish (helm-mode . "")
-    :defer 2
-    :config
-    (progn
-      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
-            helm-buffers-fuzzy-matching t
-            helm-recentf-fuzzy-match t
-            helm-prevent-escaping-from-minibuffer t
-            helm-bookmark-show-location t
-            helm-find-files-sort-directories t
-            helm-display-header-line nil
-            helm-always-two-windows t                       
-            helm-split-window-in-side-p t
-            helm-echo-input-in-header-line t
-            helm-locate-fuzzy-match nil
-            helm-locate-command "mdfind -interpret -name %s %s")
-      (bind-key* "C-x r b" 'helm-filtered-bookmarks)
-      (bind-key* "M-x" 'helm-M-x)
-      (bind-key* "C-x C-f" 'helm-find-files)
-      ;;; helm vim-bindings in buffer ;;
-      (define-key helm-map (kbd "C-j") 'helm-next-line)
-      (define-key helm-map (kbd "C-k") 'helm-previous-line)
-      (define-key helm-map (kbd "C-h") 'helm-next-source)
-      (define-key helm-map (kbd "C-S-h") 'describe-key)
-      (define-key helm-map (kbd "C-l") (kbd "RET"))
-
-      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
-      (helm-autoresize-mode 1)
-      (setq helm-autoresize-max-height 40)
-      (setq helm-autoresize-min-height 35)
-
-      ;; enter text at eye level
-      (defun helm-hide-minibuffer-maybe ()
-        (when (with-helm-buffer helm-echo-input-in-header-line)
-        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-        (overlay-put ov 'window (selected-window))
-        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-                              `(:background ,bg-color :foreground ,bg-color)))
-                              (setq-local cursor-type nil))))
-
-      (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
-      (helm-mode 1)))
-#+end_src
-** Helm packages
-*** Helm ag
-#+begin_src emacs-lisp :tangle yes
-(use-package helm-ag :ensure t :defer t)
-#+end_src
-*** Helm descbinds
-#+begin_src emacs-lisp :tangle yes
-      (use-package helm-descbinds 
-        :ensure t 
-        :defer t
-        :config
-        (setq helm-descbinds-window-style 'split)
-        (add-hook 'helm-mode-hook 'helm-descbinds-mode)
-        (evil-leader/set-key "?" 'helm-descbinds))
-#+end_src
-*** Helm git list
-#+begin_src emacs-lisp :tangle yes
-(use-package helm-ls-git :ensure t :defer t)
-#+end_src
-*** Helm swoop
-Search on steroids
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm-swoop
-    :defer t
-    :ensure t
-    :config
-    ;; If this value is t, split window inside the current window
-    (setq helm-swoop-split-with-multiple-windows t)
-  )
-#+end_src
-*** Helm flyspell
-Use helm with flyspell
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm-flyspell
-    :defer t
-    :ensure t
-    :commands helm-flyspell-correct
-  )
-#+end_src
-
-*** Helm recent directories
-Recent directories
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm-dired-recent-dirs
-    :defer t
-    :ensure t)
-#+end_src
-*** Helm files
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm-files
-    :defer t
-    :config
-    (setq helm-ff-skip-boring-files t)
-    (setq helm-ff-file-name-history-use-recentf t)
-    (setq helm-boring-file-regexp-list
-    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
-      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
-#+end_src
-
-*** Helm-projectile
-#+BEGIN_SRC emacs-lisp
-(use-package helm-projectile
-  :ensure t
-  :defer t
-  :commands (helm-projectile-switch-to-buffer
-             helm-projectile-find-dir
-             helm-projectile-dired-find-dir
-             helm-projectile-recentf
-             helm-projectile-find-file
-             helm-projectile-grep
-             helm-projectile
-             helm-projectile-switch-project)
-  :init
-    (progn
-      (setq projectile-switch-project-action 'helm-projectile)))
-#+END_SRC
-** Speedbar
-A file tree and outliner
-#+BEGIN_SRC emacs-lisp
-    (use-package sr-speedbar
-      :ensure t
-      :defer t
-      :commands sb-expand-current-file
-      :config
-        (progn 
-          (setq sr-speedbar-width 60)
-          (setq sr-speedbar-max-width 60)
-          (setq sr-speedbar-right-side nil)
-          ;; Auto expand
-          (defun sb-expand-current-file ()
-          "Expand current file in speedbar buffer"
-          (interactive)
-          (setq current-file (buffer-file-name))
-          (sr-speedbar-toggle)
-          (speedbar-find-selected-file current-file)
-          (speedbar-toggle-line-expansion))
-          ;; Switch to window
-          (defun speedbar-edit-line-and-switch-to-window ()
-          (interactive)
-          (speedbar-edit-line)
-          (other-window 1))
-
-          ;; other settings
-          (setq speedbar-hide-button-brackets-flag t
-              speedbar-show-unknown-files t
-              speedbar-directory-button-trim-method 'trim
-              speedbar-use-images nil
-              speedbar-indentation-width 2
-              speedbar-use-imenu-flag t
-              speedbar-tag-hierarchy-method nil  ;; No grouping
-              speedbar-file-unshown-regexp "flycheck-.*"
-              speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|\\.\\.*$\\)\\'"    
-              speedbar-smart-directory-expand-flag t)
-          ;; Add markdown support
-          (speedbar-add-supported-extension ".md")
-          (speedbar-add-supported-extension ".org")
-          ;; More familiar keymap settings.
-          (add-hook 'speedbar-reconfigure-keymaps-hook
-                  '(lambda ()
-                      (define-key speedbar-mode-map [tab] 'speedbar-toggle-line-expansion)
-                      (define-key speedbar-mode-map [return] 'speedbar-edit-line-and-switch-to-window)))))
-
-#+END_SRC
-** Code documentation
-
-[[https://kapeli.com/dash][Dash]] is a nice little app that stores documents offline for reference. Let's [[https://github.com/stanaka/dash-at-point][bring that to Emacs]].
-
-#+BEGIN_SRC emacs-lisp
-(use-package dash-at-point
-  :ensure t)
-#+END_SRC
-
-** Back button
-
-The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[https://www.emacswiki.org/emacs/BackButton][Back button mode]] provides a similar navigation in Emacs where you navigate to the points where you made changes previously. Comes in really handy at times.
-
-#+BEGIN_SRC emacs-lisp
-(use-package back-button
-  :ensure t
-  :diminish back-button-mode
-  :defer 2
-  :init
-  (setq back-button-show-toolbar-buttons nil)
-  :config
-  (back-button-mode 1))
-#+END_SRC
-* Distraction Free Mode
-#+BEGIN_SRC emacs-lisp
-(use-package centered-window-mode
-  :defer t
-  :ensure t
-  :diminish centered-window-mode
-  :config
-  (setq cwm-centered-window-width 90))
-  (defun distraction-free ()
-  "distraction free writing"
-    (interactive)
-    (centered-window-mode) (git-gutter+-mode) (linum-mode 0) (toggle-frame-fullscreen) (visual-line-mode))
 #+END_SRC
  
 * Notes
