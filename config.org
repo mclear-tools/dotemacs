@@ -2466,38 +2466,37 @@ Numbered window shortcuts for Emacs
 #+END_SRC
 * Languages
 ** Elisp
-#+BEGIN_SRC emacs-lisp
-(use-package ielm
-    :defer t
-    :init
-    (progn
-      (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))))
-    :config
-    (defun ielm-indent-line ()
-      (interactive)
-      (let ((current-point (point)))
-        (save-restriction
-          (narrow-to-region (search-backward-regexp "^ELISP>") (goto-char current-point))
-          (lisp-indent-line)))))
+#+BEGIN_SRC emacs-lisp 
+  (use-package ielm
+      :defer t
+      :init
+      (progn
+        (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))))
+      :config
+      (defun ielm-indent-line ()
+        (interactive)
+        (let ((current-point (point)))
+          (save-restriction
+            (narrow-to-region (search-backward-regexp "^ELISP>") (goto-char current-point))
+            (lisp-indent-line)))))
 
- (use-package elisp-slime-nav
-    :ensure t
-    :defer t)
+   (use-package elisp-slime-nav
+      :ensure t
+      :defer t)
 
- (use-package eldoc
-  :diminish eldoc-mode
-  :commands eldoc-mode)
+   (use-package eldoc
+    :diminish eldoc-mode
+    :commands eldoc-mode)
 
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (setq show-trailing-whitespace t)
-            (show-paren-mode)
-            (prettify-symbols-mode)
-            (eldoc-mode)
-            (yas-minor-mode)
-            (company-mode)
-            (smartparens-strict-mode)
-            (rainbow-delimiters-mode)))
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (setq show-trailing-whitespace t)
+              (show-paren-mode)
+              (prettify-symbols-mode)
+              (eldoc-mode)
+              (yas-minor-mode)
+              (company-mode)
+              (rainbow-delimiters-mode)))
 #+END_SRC
 
 ** Html
