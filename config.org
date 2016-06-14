@@ -2962,7 +2962,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
       "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
       "bf" 'reveal-in-osx-finder
-      ;; "bj" 'jump-in-buffer 
+      "bj" 'jump-in-buffer 
       "bk" 'evil-delete-buffer
       "bK" 'spacemacs/kill-other-buffers
       "bn" 'spacemacs/new-empty-buffer
