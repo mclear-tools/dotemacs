@@ -325,7 +325,7 @@ There are configurations to make when running Emacs on OS X (hence the
 #+END_SRC
 ** Tangle on save
 
-This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle it on save instead of tangling it every time I open it again.
+This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle the dotfile on save instead of tangling it every time I open it again.
 
 #+BEGIN_SRC emacs-lisp
 (defun tangle-if-init ()
