@@ -1820,6 +1820,19 @@ I mostly don't use this in favor of helm-bibtex
   )
 (advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
 #+END_SRC
+* Distraction Free Mode
+#+BEGIN_SRC emacs-lisp
+(use-package centered-window-mode
+  :defer t
+  :ensure t
+  :diminish centered-window-mode
+  :config
+  (setq cwm-centered-window-width 90))
+  (defun distraction-free ()
+  "distraction free writing"
+    (interactive)
+    (centered-window-mode) (git-gutter+-mode) (linum-mode 0) (toggle-frame-fullscreen) (visual-line-mode))
+#+END_SRC
 
 * Other packages
 ** Ace-Jump-Mode
