@@ -2355,6 +2355,11 @@ Numbered window shortcuts for Emacs
     (interactive)
     (split-window-below)
     (windmove-down))
+    ;; add edit mode keybindings
+    (global-set-key (kbd "<H-up>")     'windmove-up)
+    (global-set-key (kbd "<H-down>")   'windmove-down)
+    (global-set-key (kbd "<H-left>")   'windmove-left)
+    (global-set-key (kbd "<H-right>")  'windmove-right)
   )
 )
 #+END_SRC
