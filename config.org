@@ -2250,53 +2250,6 @@ Better dired navigation using ranger-like settings
 )
 #+END_SRC
  
-** Smartparenthesis
-
-#+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :ensure t
-    :defer t
-    :init
-      (progn
-        (setq sp-show-pair-delay 0.2
-        ;; fix paren highlighting in normal mode
-        sp-show-pair-from-inside t
-        sp-cancel-autoskip-on-backward-movement nil)
-        (add-hook 'markdown-mode-hook #'smartparens-mode)
-        (add-hook 'org-mode-hook #'smartparens-mode)
-        (add-hook 'prog-mode-hook #'smartparens-mode)))
-      
-  (use-package evil-smartparens
-    :ensure t
-    :defer t
-    :init 
-    (add-hook 'smartparens-mode #'evil-smartparens-mode))
-#+END_SRC
- 
-** Sunshine Weather app
-#+BEGIN_SRC emacs-lisp
-(use-package sunshine
-  :ensure t
-  :disabled t
-  :defer t
-  ;;:commands (sunshine-forecast sunshine-quick-forecast)
-  :init 
-  (progn 
-    (evil-leader/set-key 
-      "aw" 'sunshine-forecast
-      "aW" 'sunshine-quick-forecast
-     ))
-  :config
-  (progn
-    (setq sunshine-show-icons t)
-    (evil-define-key 'normal sunshine-mode-map
-      (kbd "q") 'quit-window
-      (kbd "i") 'sunshine-toggle-icons))
-    (setq sunshine-location "68503,USA")
-)
-
-#+END_SRC
- 
 ** Uniquify
 Distinguish buffers with the same name
 #+begin_src emacs-lisp :tangle yes
