@@ -3275,9 +3275,10 @@ Keybindings for managing packages
 Start server
 #+BEGIN_SRC emacs-lisp
   (use-package server
-    :init
-    (when window-system
-      (unless (server-running-p)
-        (add-hook 'after-init-hook 'server-start t)))
+    :defer 2
+    :config
+    (if (display-graphic-p)
+        (unless (server-running-p)
+           (server-start)))
     )
 #+END_SRC
