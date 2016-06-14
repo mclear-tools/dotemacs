@@ -360,26 +360,6 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
      (message "Init tangling completed: %s" result))))
 #+END_SRC
 
-** Add some useful libraries
-
-[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
-
-#+BEGIN_SRC emacs-lisp
-(use-package async
-  :defer 2
-  :ensure t
-  :commands (async-start))
-
-(use-package cl-lib
-  :ensure t)
-
-(use-package dash
-  :ensure t)
-
-(use-package s
-  :ensure t)
-#+END_SRC
-
 * Evil Mode
   I'm coming from vim, and want modal keybidings in emacs. There are other, less
   radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
