@@ -1,4 +1,4 @@
-#+TITLE: Emacs Configuration
+* #+TITLE: Emacs Configuration
 #+AUTHOR: Colin McLear
 
 This is my emacs configuration file. I use org-mode to organize it and then
@@ -309,20 +309,6 @@ There are configurations to make when running Emacs on OS X (hence the
       (put 'ns-print-buffer 'disabled t)
       (put 'suspend-frame 'disabled t)
 #+end_src
-** Other settings
-#+BEGIN_SRC emacs-lisp
-  ;; Keep focus while navigating help buffers
-  (setq help-window-select 't)
-
-  ;; highlight current line
-  (global-hl-line-mode t)
-
-  ;; Save clipboard contents into kill-ring before replace them
-  (setq save-interprogram-paste-before-kill t)
-
-  ;; Single space between sentences is more widespread than double
-  (setq-default sentence-end-double-space nil)
-#+END_SRC
 ** Tangle on save
 
 This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle the dotfile on save instead of tangling it every time I open it again.
@@ -359,6 +345,20 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
      (message "Init tangling completed: %s" result))))
 #+END_SRC
 
+** Other settings
+#+BEGIN_SRC emacs-lisp
+  ;; Keep focus while navigating help buffers
+  (setq help-window-select 't)
+
+  ;; highlight current line
+  (global-hl-line-mode t)
+
+  ;; Save clipboard contents into kill-ring before replace them
+  (setq save-interprogram-paste-before-kill t)
+
+  ;; Single space between sentences is more widespread than double
+  (setq-default sentence-end-double-space nil)
+#+END_SRC
 * Evil Mode
   I'm coming from vim, and want modal keybidings in emacs. There are other, less
   radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
