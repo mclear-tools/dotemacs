@@ -3124,8 +3124,13 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "]" 'spacemacs/next-useful-buffer
     "TAB" 'switch-to-previous-buffer)
 #+END_SRC
-** Markdown mode
+** Major Mode Bindings
+I keep all major mode bindings under "m"
 #+BEGIN_SRC emacs-lisp
+  (which-key-declare-prefixes "<SPC>m" "Major mode")
+#+END_SRC
+** Markdown mode
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun my-markdown-config ()
   "Modify keymaps in markdown mode"
   (which-key-declare-prefixes "<SPC>m" "Markdown")
