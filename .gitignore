@@ -17,3 +17,7 @@ auto-save-list
 /eshell/history
 /eshell/lastdir
 .DS_Store
+config.el*
+/core-funcs.el
+/core-keybindings.el
+/evilify.el
