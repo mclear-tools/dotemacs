@@ -568,8 +568,15 @@ The best low-contrast theme out there.
         (setq solarized-scale-org-headlines t)
 
         (load-theme 'solarized-dark t)
-
-    ))
+        (setq active-theme 'solarized-dark)
+        (defun toggle-dark-light-theme ()
+        (interactive)
+        (if (eq active-theme 'solarized-light)
+            (setq active-theme 'solarized-dark)
+          (setq active-theme 'solarized-light))
+        (load-theme active-theme)
+        (powerline-reset))
+        ))
 (load-theme 'wombat t))
 
         ;; Avoid all font-size changes
@@ -975,7 +982,7 @@ This is a really nice powerline-ish modeline.
         (setq powerline-height 21)
         (powerline-reset)
 ;; don't use srgb & get proper powerline faces
-(setq ns-use-srgb-colorspace t)
+(setq ns-use-srgb-colorspace nil)
 #+END_SRC
 
 ** SVG Modelines
