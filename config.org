@@ -3238,6 +3238,7 @@ Keybindings for org mode
       "ott" 'org-show-todo-tree
       "oaa" 'org-agenda
       "oc"  'org-archive-subtree
+      "of"  'org-footnote-action
       "ol"  'evil-org-open-links
       "oo"  'evil-org-recompute-clocks
       "oP"  'org-publish-current-project
@@ -3340,7 +3341,7 @@ Keybindings for managing packages
   "ta" 'company-mode
   "tb" 'fancy-battery-mode
   "tc" 'centered-cursor-mode
-  "td" 'centered-window-mode
+  "td" 'distraction-free
   "tf" 'toggle-frame-fullscreen
   "tg" 'git-gutter+-mode
   "th" 'global-hl-line-mode
@@ -3351,6 +3352,7 @@ Keybindings for managing packages
   "to" 'org-toggle-link-display
   "tp" 'smartparens-mode
   "tr" 'rainbow-identifiers-mode
+  "ts" 'toggle-dark-light-theme
   "tt" 'helm-themes
 )
 #+END_SRC
