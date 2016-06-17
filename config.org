@@ -1440,7 +1440,7 @@ Helps with time tracking
     (progn
       (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 #+END_SRC emacs-lisp
-** open docx files in default application (ie msword)
+** Open docx files in default application (ie msword)
 Open exported docx files in Word/Open Office rather than emacs
 #+BEGIN_SRC emacs-lisp
   (setq org-file-apps
