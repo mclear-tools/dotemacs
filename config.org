@@ -2775,6 +2775,32 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
               (save-excursion (insert "#+END_" choice))))))))))
 
 #+end_src
+** Pandoc conversion from clipboard
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/org-to-markdown ()
+    "convert clipboard contents from org to markdown and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown"))
+    (yank))
+
+  (defun cpm/markdown-to-org ()
+    "convert clipboard contents from markdown to org and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t org"))
+    (yank))
+
+  (defun cpm/tex-to-org ()
+    "convert clipboard contents from markdown to org and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t org"))
+    (yank))
+
+  (defun cpm/tex-to-markdown ()
+    "convert clipboard contents from markdown to org and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown"))
+    (yank))
+#+END_SRC
 ** Resume last search
 #+BEGIN_SRC emacs-lisp
   (defun last-search-buffer ()
@@ -3177,18 +3203,6 @@ I use a lot of keybindings, with <SPC> as my "leader" key
  
 ** User
 #+BEGIN_SRC emacs-lisp
-  (defun cpm/org-to-markdown ()
-    "convert clipboard contents from org to markdown and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown"))
-    (yank))
-
-  (defun cpm/markdown-to-org ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t org"))
-    (yank))
-
   (which-key-declare-prefixes "<SPC>u" "User")
   (evil-leader/set-key
    "um" 'cpm/org-to-markdown   
