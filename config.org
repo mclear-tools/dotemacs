@@ -1394,7 +1394,6 @@ evil bindings for magit
          '(
            ("notebook"
             ;; Path to org files
-            ;; :base-directory "~/Dropbox/Notes/ResearchNotes"
             :base-directory "~/projects/notebook/content/org_notes"
             :base-extension "org"
             ;; Path to pelican project
@@ -1403,7 +1402,6 @@ evil bindings for magit
             :author "Colin McLear"
             :email "mclear@unl.edu"
             :recursive t
-            :auto-sitemap nil
             :auto-preamble nil ;; Don't add any kind of html before the content
             :export-with-tags nil
             :with-timestamps nil
@@ -1411,13 +1409,21 @@ evil bindings for magit
             :with-creator nil
             :auto-postamble nil ;; Don't add any kind of html after the content
             :html-postamble nil ;; same thing
-            ;; :preparation-function (pandoc-filter)
             ;; :publishing-function (org-html-publish-to-html)
             ;; :publishing-function (org-md-publish-to-md)
             :publishing-function (org-org-publish-to-org)
             ;; :publishing-function (org-pandoc-publish-to-html)
             )
-           ))
+            ("test"
+            :base-directory "~/test/source"
+            :base-extension "org"
+            :publishing-directory "~/test/output" 
+            ;; settings
+            :author "Colin McLear"
+            :email "mclear@unl.edu"
+            :publishing-function (org-org-publish-to-org)
+            )
+            ))
 
        (defun org-pandoc-publish-to-html (plist filename pub-dir)
          "Publish an org file to html using ox-pandoc. Return output file name."
