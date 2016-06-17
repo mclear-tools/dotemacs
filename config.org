@@ -4046,6 +4046,7 @@ Start server
     :config
     (if (display-graphic-p)
         (unless (server-running-p)
+           (message "Starting server..")
            (server-start)))
     )
 #+END_SRC
