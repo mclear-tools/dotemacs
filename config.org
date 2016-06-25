@@ -1672,8 +1672,8 @@ Open exported docx files in Word/Open Office rather than emacs
     (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
           (cl-reduce 'append
                      (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                             `(("#+begin_src" . ?⏹) ;; ➤ 🖝 ➟ ➤ ✎ ✎
-                               ("#+end_src"   . ?⏹) ;; □
+                             `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
+                               ("#+end_src"   . ?╩) ;; □
                                ("#+header:" . ,rasmus/ob-header-symbol)
                                ("#+begin_comment" . ?✎)
                                ("#+end_comment" . ?✎)
