@@ -2492,14 +2492,16 @@ Better dired navigation using ranger-like settings
  
 ** Saveplace
 #+BEGIN_SRC emacs-lisp
-(use-package saveplace
-  :defer 2
-  :init
-  (setq-default save-place t)
-  :config
-  (setq save-place-file "~/.emacs.d/saved-places")
-  (setq save-place-forget-unreadable-files nil)
-)
+  (use-package saveplace
+    :defer 2
+    :ensure t 
+    :init
+    (save-place-mode 1)
+    ;; (setq-default save-place t)
+    :config
+    (setq save-place-file "~/.emacs.d/saved-places")
+    (setq save-place-forget-unreadable-files nil)
+  )
 #+END_SRC
  
 ** Uniquify
