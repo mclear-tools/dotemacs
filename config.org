@@ -547,75 +547,114 @@ There are some other useful setup packages for evil
     (global-undo-tree-mode)
     )
 #+end_src
+
+*** Multiple cursors
+[[https://github.com/hlissner/evil-multiedit][Multiple cursors]] are awesome. Based on [[https://github.com/tsdh/iedit][iedit]]. 
+#+BEGIN_SRC emacs-lisp
+(use-package evil-multiedit
+  :ensure t
+  :config (progn
+            (bind-keys :map evil-visual-state-map
+                       ;; Highlights all matches of the selection in the buffer.
+                       ("R"   . evil-multiedit-match-all)
+                       ;; Match selected region.
+                       ("M-d" . evil-multiedit-match-and-next)
+                       ;; Same as M-d but in reverse.
+                       ("M-D" . evil-multiedit-match-and-prev))
+
+            (bind-keys :map evil-normal-state-map
+                       ;; Match the word under cursor (i.e. make it an edit region). Consecutive presses will
+                       ;; incrementally add the next unmatched match.
+                       ("M-d" . evil-multiedit-match-and-next)
+                       ;; Same as M-d but in reverse.
+                       ("M-D" . evil-multiedit-match-and-prev))
+
+            (bind-keys :map evil-multiedit-state-map
+                       ;; For moving between edit regions
+                       ("C-n" . evil-multiedit-next)
+                       ("C-p" . evil-multiedit-prev))
+
+            (bind-keys :map evil-multiedit-insert-state-map
+                       ;; For moving between edit regions
+                       ("C-n" . evil-multiedit-next)
+                       ("C-p" . evil-multiedit-prev))
+
+            ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
+            (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)))
+#+END_SRC
+*** Evilify
+Make a mode evil
+#+BEGIN_SRC emacs-lisp
+  (use-package evilified-state
+    :load-path "/Users/Roambot/.emacs.d/elisp/evilified-state.el"
+   )
+   
+#+END_SRC
 * Theme
 ** Solarized
 The best low-contrast theme out there.
 #+BEGIN_SRC emacs-lisp
-  (if (display-graphic-p)
-      (use-package solarized-theme
+  (use-package solarized-theme
+    :ensure t
+    :if (display-graphic-p)
+    :init
+      (progn
+          ;; don't make the fringe stand out from the background
+          (setq solarized-distinct-fringe-background nil)
+
+          ;; change the font for some headings and titles
+          (setq solarized-use-variable-pitch t)
+
+          ;; make the modeline high contrast
+          (setq solarized-high-contrast-mode-line t)
+
+          ;; Use bolding
+          (setq solarized-use-less-bold nil)
+
+          ;; Use more italics
+          (setq solarized-use-more-italic t)
+
+          ;; Use colors for indicators such as git:gutter, flycheck and similar
+          (setq solarized-emphasize-indicators t)
+
+          ;; Don't change size of org-mode headlines (but keep other size-changes)
+          (setq solarized-scale-org-headlines t)
+          (load-theme 'solarized-dark t)
+      
+          ;; Theme toggle
+          (setq active-theme 'solarized-dark)
+          (defun toggle-dark-light-theme ()
+          (interactive)
+          (if (eq active-theme 'solarized-light)
+              (setq active-theme 'solarized-dark)
+            (setq active-theme 'solarized-light))
+          (load-theme active-theme)
+          (powerline-reset))
+          ))
+
+          ;; Avoid all font-size changes
+          ;; (setq solarized-height-minus-1 1)
+          ;; (setq solarized-height-plus-1 1)
+          ;; (setq solarized-height-plus-2 1)
+          ;; (setq solarized-height-plus-3 1)
+          ;; (setq solarized-height-plus-4 1))
+
+    ;; An alternative solarized theme
+      (use-package color-theme-sanityinc-solarized
         :ensure t
-        :defer t
-        ;; :disabled t
+        :disabled t
         :init
-        (progn
-        ;; make the fringe stand out from the background
-        (setq solarized-distinct-fringe-background nil)
-
-        ;; change the font for some headings and titles
-        (setq solarized-use-variable-pitch t)
-
-        ;; make the modeline high contrast
-        (setq solarized-high-contrast-mode-line t)
-
-        ;; Use bolding
-        (setq solarized-use-less-bold nil)
-
-        ;; Use more italics
-        (setq solarized-use-more-italic t)
-
-        ;; Use colors for indicators such as git:gutter, flycheck and similar
-        (setq solarized-emphasize-indicators t)
-
-        ;; Don't change size of org-mode headlines (but keep other size-changes)
-        (setq solarized-scale-org-headlines t)
-
-        (load-theme 'solarized-dark t)
-        (setq active-theme 'solarized-dark)
-        (defun toggle-dark-light-theme ()
-        (interactive)
-        (if (eq active-theme 'solarized-light)
-            (setq active-theme 'solarized-dark)
-          (setq active-theme 'solarized-light))
-        (load-theme active-theme)
-        (powerline-reset))
-        ))
-(load-theme 'wombat t))
-
-        ;; Avoid all font-size changes
-        ;; (setq solarized-height-minus-1 1)
-        ;; (setq solarized-height-plus-1 1)
-        ;; (setq solarized-height-plus-2 1)
-        ;; (setq solarized-height-plus-3 1)
-        ;; (setq solarized-height-plus-4 1))
-
-  ;; An alternative solarized theme
-    (use-package color-theme-sanityinc-solarized
-      :ensure t
-      :disabled t
-      :init
-         (progn
-            (load-theme 'sanityinc-solarized-dark t)))
-
+           (progn
+              (load-theme 'sanityinc-solarized-dark t)))
 #+END_SRC
 
-#+RESULTS:
 ** Gruvbox theme
-   This is a great general-purpose theme
+   This is a great general-purpose theme. Use it in terminal.
    #+begin_src emacs-lisp
      (use-package gruvbox-theme
        :ensure t 
-       :disabled t
-       :init
+       :if (not (display-graphic-p))
+       :config
        (load-theme 'gruvbox t))
    #+end_src
 ** Darktooth theme
