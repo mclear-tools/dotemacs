@@ -1,4 +1,4 @@
-* #+TITLE: Emacs Configuration
+#+TITLE: Emacs Configuration
 #+AUTHOR: Colin McLear
 
 This is my emacs configuration file. I use org-mode to organize it and then
@@ -1054,7 +1054,7 @@ Sane settings for ansi-term
     :ensure t
     :defer t
     ;; :commands (sane-term sane-term-create)
-    :config
+    :init
     (evil-leader/set-key "as" 'sane-term)
     ;; shell to use for sane-term
     (setq sane-term-shell-command "/usr/local/bin/zsh")
@@ -3341,6 +3341,7 @@ Keybindings for managing packages
   "ta" 'company-mode
   "tb" 'fancy-battery-mode
   "tc" 'centered-cursor-mode
+  "tC" 'centered-window-mode
   "td" 'distraction-free
   "tf" 'toggle-frame-fullscreen
   "tg" 'git-gutter+-mode
