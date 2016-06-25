@@ -1407,7 +1407,7 @@ well with org-mode using org-indent. So I don't use it globally.
     (add-hook 'org-mode-hook
         (lambda () 
           (turn-on-auto-fill)
-          (set-fill-column 80)
+          (set-fill-column 72)
           (centered-cursor-mode)
           (flyspell-mode 1)
           (global-git-gutter+-mode 0)
@@ -2743,13 +2743,13 @@ Numbered window shortcuts for Emacs
     ;; markdown hooks
   (add-hook 'markdown-mode-hook
             '(lambda()
-               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 80) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
+               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 72) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
 
   ;; autofill for markdown
   (defun markdown-auto-fill ()
     "turn on autofill and settings"
     (turn-on-auto-fill)
-    (set-fill-column 80))
+    (set-fill-column 72))
 #+end_src
 
 *** Pandoc
