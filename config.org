@@ -3381,11 +3381,13 @@ I keep all major mode bindings under "m"
   (which-key-declare-prefixes "<SPC>u" "User")
   (evil-leader/set-key
    "um" 'cpm/org-to-markdown   
+   "uc" 'pandoc-convert-to-pdf
    "uo" 'cpm/markdown-to-org
    "us" 'sb-expand-current-file
    "uS" 'just-one-space
    "ud" 'distraction-free
    "uD" 'osx-dictionary-search-input
+   "uj" 'org-journal-new-entry
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "ux" 'helm-bibtex
@@ -3395,6 +3397,11 @@ I keep all major mode bindings under "m"
  
 ** Org Mode
 Keybindings for org mode 
+#+BEGIN_SRC emacs-lisp
+(which-key-declare-prefixes "<SPC>o" "Org")
+(which-key-declare-prefixes "<SPC>oa" "agenda")
+(evil-leader/set-key "oj" 'journal-file-today)
+#+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle no
     (defun cpm/org-keybindings ()
       "Modify keymaps for mode 'm' in org mode"
@@ -3528,6 +3535,18 @@ Keybindings for managing packages
 )
 #+END_SRC
 
+** Version Control
+#+BEGIN_SRC emacs-lisp
+  (which-key-declare-prefixes "<SPC>g" "Git")
+  (evil-leader/set-key
+      "gb" 'magit-blame
+      "gc" 'magit-commit
+      "gd" 'magit-diff
+      "gl" 'magit-log
+      "gr" 'magit-reflog
+      "gs" 'magit-status
+      )
+#+END_SRC
 ** Windows
 
 
