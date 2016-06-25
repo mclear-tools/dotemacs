@@ -2450,7 +2450,8 @@ Better dired navigation using ranger-like settings
   :defer t
   :init
   (progn
-    (setq ranger-override-dired t)
+    (setq ranger-override-dired t
+          ranger-cleanup-on-disable t)
     ;; set up image-dired to allow picture resize
     (setq image-dired-dir (concat user-emacs-directory "image-dir"))
     (unless (file-directory-p image-dired-dir)
@@ -2458,7 +2459,7 @@ Better dired navigation using ranger-like settings
   :config
   (progn
     (define-key ranger-mode-map (kbd "-") 'ranger-up-directory)
-    (setq ranger-cleanup-eagerly t
+    (setq 
           ranger-dont-show-binary t
           ranger-excluded-extensions '("mkv" "iso" "mp4")
           ranger-max-preview-size 25
