@@ -378,7 +378,7 @@ The essential stuff
 #+begin_src emacs-lisp :tangle yes
   (use-package evil
     :ensure t
-    :init
+    :config
     (progn
     ;; Cursor shape and color
       (defcustom dotemacs-evil/emacs-cursor
@@ -402,36 +402,37 @@ The essential stuff
       (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
       (setq evil-replace-state-cursor '("red" hbar))
       (setq evil-operator-state-cursor '("red" hollow))
-      (use-package evil-escape
-        :ensure t
-        :diminish ""
-        :init
-        (evil-escape-mode)
-        ;; use "fd" for escape
-        (setq-default evil-escape-key-sequence "fd")
-        (use-package evil-indent-textobject :ensure t)
-        (use-package evil-leader
-          :ensure t
-          :init
-          (defun switch-to-previous-buffer ()
-          (interactive)
-          (switch-to-buffer (other-buffer (current-buffer) 1)))
-          ;; leader basic shortcuts
-          ;; I have to include some here but the rest are under "General" in the "Keybindings" section below.
-          (evil-leader/set-key
-          "A" 'helm-apropos)
-          ;; evil-normal-state is preferred, so revert when idle
-          (run-with-idle-timer 20 t 'evil-normal-state)
-
-          ;; the order of the following is important!
-
-          ;; (setq evil-leader/in-all-states t)
-          (setq evil-leader/non-normal-prefix "")
-          (evil-leader/set-leader "<SPC>")
-          (evil-mode nil) ;; no idea
-          (global-evil-leader-mode)
-          (evil-mode 1)))))
+      ;; evil-normal-state is preferred, so revert when idle
+      (run-with-idle-timer 20 t 'evil-normal-state)
+      ;; evil everywhere
+      (global-evil-leader-mode)
+      (evil-mode 1)))
 #+end_src
+
+** Evil escape
+Use a key sequence for [[https://github.com/syl20bnr/evil-escape#install][escaping]].
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-escape
+    :ensure t
+    :diminish ""
+    :init
+    (evil-escape-mode)
+    ;; use "fd" for escape
+    (setq-default evil-escape-key-sequence "fd"))
+#+END_SRC 
+
+** Evil leader
+Use a leader key for [[*Keybindings][Keybindings]]. 
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-leader
+    :ensure t
+    :config
+      (progn 
+        (evil-leader/set-leader "<SPC>")
+        (setq evil-leader/non-normal-prefix ""))
+        ;; (setq evil-leader/in-all-states t)
+    :init (global-evil-leader-mode))
+#+END_SRC 
 
 ** Evil packages & settings
 There are some other useful setup packages for evil
@@ -440,7 +441,10 @@ There are some other useful setup packages for evil
 (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
 #+end_src
-
+*** Evil indent
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-indent-textobject :ensure t)
+#+END_SRC
 *** Increment And Decrement Numbers
 #+begin_src emacs-lisp
   (use-package evil-numbers
