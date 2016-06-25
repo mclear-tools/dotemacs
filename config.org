@@ -1008,32 +1008,41 @@ The one thing I missed from Vim when I switched to Emacs was Vim's jump list. [[
 ** Spaceline
 This is a really nice powerline-ish modeline.
 #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package spaceline
-  :ensure t
-  :init 
-  (progn 
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (setq-default powerline-default-separator 'slant) 
-  (setq spaceline-separator-dir-left '(right . right))
-  (setq spaceline-separator-dir-right '(right . right))
-  ;; fancy git icon for the modeline
-  (defadvice vc-mode-line (after strip-backend () activate)
-    (when (stringp vc-mode)
-      (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
-            (setq vc-mode gitlogo)))))
-  :config
-  (require 'spaceline-config)
-  (spaceline-spacemacs-theme)
-  (setq spaceline-buffer-encoding-abbrev-p nil
-        spaceline-line-column-p nil
-        spaceline-buffer-id-p nil
-        spaceline-minor-modes-separator nil))
+  (use-package spaceline
+    :ensure t
+    :init 
+    (progn 
+      ;; size of modeline
+      (setq powerline-height 21)
+      (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+      (setq-default powerline-default-separator 'utf-8) 
+      ;; small triangles
+      ;; (setq powerline-utf-8-separator-left 9654 
+      ;;      powerline-utf-8-separator-right 9664)
+      ;; half circles
+      (setq powerline-utf-8-separator-left 9687 
+            powerline-utf-8-separator-right 9686)
+      ;; slant (requires srbg support)
+      ;; (setq-default powerline-default-separator 'slant) 
+      ;; (setq spaceline-separator-dir-left '(right . right))
+      ;; (setq spaceline-separator-dir-right '(right . right))
  
-        ;; size of modeline
-        (setq powerline-height 21)
-        (powerline-reset)
-;; don't use srgb & get proper powerline faces
-(setq ns-use-srgb-colorspace nil)
+      ;; fancy git icon for the modeline
+      (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
+              (setq vc-mode gitlogo)))))
+    :config
+    (require 'spaceline-config)
+    (spaceline-spacemacs-theme)
+    (setq spaceline-buffer-encoding-abbrev-p nil
+          spaceline-window-numbers-unicode t
+          spaceline-line-column-p nil
+          spaceline-buffer-id-p nil
+          spaceline-minor-modes-separator nil))
+          (powerline-reset)
+  ;; nil - don't use srgb & get proper powerline faces
+  (setq ns-use-srgb-colorspace t)
 #+END_SRC
 
 ** SVG Modelines
@@ -1046,6 +1055,37 @@ An svg modeline.
   (ocodo-svg-modelines-init)
   (smt/set-theme 'ocodo-mesh-aqua-smt)
   )
+#+END_SRC
+** Smart mode line
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package smart-mode-line
+    :ensure t
+    :init
+    (progn
+    (setq sml/vc-mode-show-backend t)
+    (setq sml/no-confirm-load-theme t) 
+        ;; fancy git icon for the modeline
+    (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
+              (setq vc-mode gitlogo)))))
+    :config
+    (progn
+      (setq sml/theme 'respectful)
+      ;; (setq sml/theme 'powerline)
+      ;; (setq-default powerline-default-separator 'utf-8) 
+      ;; triangles
+     ;; (setq powerline-utf-8-separator-left 9654 
+     ;;       powerline-utf-8-separator-right 9664)
+     ;; angle brackets
+     ;; (setq powerline-utf-8-separator-left 12296 
+     ;;       powerline-utf-8-separator-right 12297)
+      (sml/setup)))
+
+  (use-package smart-mode-line-powerline-theme
+    :ensure t
+    :disabled t
+    :after smart-mode-line)
 #+END_SRC
 ** Fancy Battery
 #+BEGIN_SRC emacs-lisp
