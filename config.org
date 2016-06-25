@@ -188,6 +188,10 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
  ;; (diminish 'visual-line-mode)
 #+END_SRC
 
+** Fill column
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 72)
+#+END_SRC
 ** Give buffers unique names
 #+BEGIN_SRC emacs-lisp
   (setq uniquify-buffer-name-style 'forward)
