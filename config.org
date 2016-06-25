@@ -2773,7 +2773,7 @@ Numbered window shortcuts for Emacs
       (progn
         (setq markdown-command "pandoc"
               markdown-enable-math t
-              markdown-footnote-location "immediately"
+              markdown-footnote-location "end"
               markdown-nested-imenu-heading-index t
               markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
@@ -2788,6 +2788,7 @@ Numbered window shortcuts for Emacs
        (progn
          ;; Header navigation in normal state movements
          (evil-define-key 'normal markdown-mode-map
+            "<tab>" 'markdown-cycle
             "gj" 'outline-forward-same-level
             "gk" 'outline-backward-same-level
             "gh" 'outline-up-heading
@@ -4064,6 +4065,9 @@ pressing `<leader> m`. Set it to `nil` to disable it.")
         "gh" 'outline-up-heading
         ;; next visible heading is not exactly what we want but close enough
         "gl" 'outline-next-visible-heading)
+        
+      ;; Cycle headers like in org-mode
+      (evil-define-key 'normal markdown-mode-map (kbd "TAB") 'markdown-cycle)
 
       ;; Promotion, Demotion
       (define-key markdown-mode-map (kbd "M-h") 'markdown-promote)
