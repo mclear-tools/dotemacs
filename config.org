@@ -2890,6 +2890,12 @@ Disabled due to errors
     :defer t)
 #+END_SRC
 * Useful functions
+** Switch to previous buffer
+#+BEGIN_SRC emacs-lisp
+  (defun switch-to-previous-buffer ()
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+#+END_SRC
 ** Org wrap in block template
 A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
 #+begin_src emacs-lisp
@@ -4205,6 +4211,48 @@ pressing `<leader> m`. Set it to `nil` to disable it.")
           "aoO" 'org-clock-out
           "aoc" 'org-capture
           "aol" 'org-store-link))
+#+END_SRC
+** Org clone to buffer
+#+BEGIN_SRC emacs-lisp
+(defun cpm/open-tree-view ()
+  "Open a clone of the current buffer to the left, resize it to 30 columns, and bind <mouse-1> to jump to the same position in the base buffer."
+  (interactive)
+  (let ((new-buffer-name (concat "<tree>" (buffer-name))))
+    ;; Create tree buffer
+    (split-window-right 30)
+    (if (get-buffer new-buffer-name)
+        (switch-to-buffer new-buffer-name)  ; Use existing tree buffer
+      ;; Make new tree buffer
+      (progn  (clone-indirect-buffer new-buffer-name nil t)
+              (switch-to-buffer new-buffer-name)
+              (read-only-mode)
+              (hide-body)
+              (toggle-truncate-lines)
+
+              ;; Do this twice in case the point is in a hidden line
+              (dotimes (_ 2 (forward-line 0)))
+
+              ;; Map keys
+              (use-local-map (copy-keymap outline-mode-map))
+              (local-set-key (kbd "q") 'delete-window)
+              (mapc (lambda (key) (local-set-key (kbd key) 'my/jump-to-point-and-show))
+                    '("<mouse-1>" "RET"))))))
+
+(defun cpm/jump-to-point-and-show ()
+  "Switch to a cloned buffer's base buffer and move point to the cursor position in the clone."
+  (interactive)
+  (let ((buf (buffer-base-buffer)))
+    (unless buf
+      (error "You need to be in a cloned buffer!"))
+    (let ((pos (point))
+          (win (car (get-buffer-window-list buf))))
+      (if win
+          (select-window win)
+        (other-window 1)
+        (switch-to-buffer buf))
+      (goto-char pos)
+      (when (invisible-p (point))
+        (show-branches)))))
 #+END_SRC
 * Server
 Start server
