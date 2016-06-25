@@ -729,15 +729,15 @@ brew cask install font-inconsolata
 And here's how we tell Emacs to use the font we want to use.
 
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil
-                    :family "Inconsolata LGC"
-                    :height 120
-                    :weight 'normal
-                    :width 'normal
-                    )
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-;; C-x C-0 restores the default font size
+  (set-face-attribute 'default nil
+                      :family "Inconsolata LGC for Powerline"
+                      :height 120
+                      :weight 'normal
+                      :width 'normal
+                      )
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+  ;; C-x C-0 restores the default font size
 #+end_src
 * Line numbers
 #+BEGIN_SRC emacs-lisp
