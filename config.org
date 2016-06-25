@@ -1746,7 +1746,8 @@ Better than doc-view, but doesn't render well on retina screens :(
     :config
     (progn
       (pdf-tools-install)
-
+      (evil-set-initial-state 'pdf-view-mode 'normal)
+      (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
   (evil-define-key 'normal pdf-view-mode-map
           ;; Navigation
           "j"  'pdf-view-next-line-or-next-page
@@ -1761,6 +1762,9 @@ Better than doc-view, but doesn't render well on retina screens :(
           "gl"  'pdf-view-goto-label
           "u" 'pdf-view-scroll-down-or-previous-page
           "d" 'pdf-view-scroll-up-or-next-page
+          "-"  'pdf-view-shrink
+          "+"  'pdf-view-enlarge
+          "="  'pdf-view-fit-page-to-window
           (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
           (kbd "C-d") 'pdf-view-scroll-up-or-next-page
           (kbd "``")  'pdf-history-backward
