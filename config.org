@@ -1455,12 +1455,71 @@ well with org-mode using org-indent. So I don't use it globally.
             (add-hook 'org-mode-hook 'toc-org-enable)))
      ))
 #+END_SRC
+** Journal
+*** Org-journal
+#+BEGIN_SRC emacs-lisp
+(use-package org-journal
+  :ensure t
+  :defer t
+  :init
+   (setq org-journal-dir "~/Dropbox/journal/")
+   (setq org-journal-date-format "%Y-%b-%d (%A)"))
+#+END_SRC
+*** Journal functions
+I got all of these from Howard Abrams' great [[https://github.com/howardabrams/dot-files/blob/master/emacs-org.org][config file]]. 
+**** Today's entry
+#+begin_src emacs-lisp
+(defun get-journal-file-today ()
+  "Return filename for today's journal entry."
+  (let ((daily-name (format-time-string "%Y%m%d")))
+    (expand-file-name (concat org-journal-dir daily-name))))
+(defun journal-file-today ()
+  "Create and load a journal file based on today's date."
+  (interactive)
+  (find-file (get-journal-file-today)))
+#+END_SRC
+**** Yesterday's (new) entry
+#+BEGIN_SRC emacs-lisp
+(defun get-journal-file-yesterday ()
+  "Return filename for yesterday's journal entry."
+  (let ((daily-name (format-time-string "%Y%m%d" (time-subtract (current-time) (days-to-time 1)))))
+    (expand-file-name (concat org-journal-dir daily-name))))
+
+(defun journal-file-yesterday ()
+  "Creates and load a file based on yesterday's date."
+  (interactive)
+  (find-file (get-journal-file-yesterday)))
+#+END_SRC
+**** Last year
+#+BEGIN_SRC emacs-lisp
+(defun journal-last-year-file ()
+  "Returns the string corresponding to the journal entry that
+happened 'last year' at this same time (meaning on the same day
+of the week)."
+(let* ((last-year-seconds (- (float-time) (* 365 24 60 60)))
+       (last-year (seconds-to-time last-year-seconds))
+       (last-year-dow (nth 6 (decode-time last-year)))
+       (this-year-dow (nth 6 (decode-time)))
+       (difference (if (> this-year-dow last-year-dow)
+                       (- this-year-dow last-year-dow)
+                     (- last-year-dow this-year-dow)))
+       (target-date-seconds (+ last-year-seconds (* difference 24 60 60)))
+       (target-date (seconds-to-time target-date-seconds)))
+  (format-time-string "%Y%m%d" target-date)))
+
+(defun journal-last-year ()
+  "Loads last year's journal entry, which is not necessary the
+same day of the month, but will be the same day of the week."
+  (interactive)
+  (let ((journal-file (concat org-journal-dir (journal-last-year-file))))
+    (find-file journal-file)))
+#+END_SRC
 ** Org hooks
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
             '(lambda()
                (turn-on-auto-fill) 
-               (set-fill-column 80) 
+               (set-fill-column 72) 
                (flyspell-mode 1) 
                (hl-todo-mode) 
                (imenu-add-to-menubar "Imenu") 
