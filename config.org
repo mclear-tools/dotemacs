@@ -1265,40 +1265,44 @@ Magit is a great interface for git projects. It's much more pleasant to use than
 the standard git interface on the command line. I've set up some easy
 keybindings to access magit and related packages.
 
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :defer t
+    :commands 
+      (magit-blame-mode
+      magit-commit
+      magit-diff
+      magit-log
+      magit-status)
+    :config
+      (setq vc-follow-symlinks t)
+      (setq-default git-magit-status-fullscreen nil)
+      (setq magit-diff-refine-hunk 'all)
+      (global-git-commit-mode t) ; use emacs as editor for git commits
+      (setq magit-push-always-verify nil)
+      )
+#+END_SRC
 ** Evil Magit
 evil bindings for magit
 #+BEGIN_SRC emacs-lisp
   (use-package evil-magit
     :ensure t
+    :defer t
+    :after magit)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package evil-magit
+    :ensure t
     :after magit
     :defer t)
-  (use-package magit
-    :ensure t
-    :defer t
     :commands
    (magit-blame-mode
     magit-commit
     magit-diff
     magit-log
     magit-status)
-    :init
-    (with-eval-after-load 'evil-leader
-    (evil-leader/set-key
-      (kbd "gb") #'magit-blame
-      (kbd "gc") #'magit-commit
-      (kbd "gd") #'magit-diff
-      (kbd "gl") #'magit-log
-      (kbd "gr") #'magit-reflog
-      (kbd "gs") #'magit-status))
-    (with-eval-after-load 'which-key
-    (which-key-declare-prefixes
-    "<SPC>g" "Git"))
-    :config
-    (require 'evil-magit)
-    (setq vc-follow-symlinks t)
-    (setq-default git-magit-status-fullscreen nil)
-    (setq magit-diff-refine-hunk 'all)
-    (global-git-commit-mode t) ; use spacemacs as editor for git commits
     (add-hook 'magit-diff-mode-hook (lambda () (setq cursor-type nil)))
     (add-hook 'magit-log-mode-hook (lambda () (setq cursor-type nil)))
     (add-hook 'magit-log-select-mode-hook (lambda () (setq cursor-type nil)))
@@ -1311,8 +1315,7 @@ evil bindings for magit
     :map magit-status-mode-map
     ("<C-tab>"   . nil)
     ("<backtab>" . magit-section-cycle))
-    (setq magit-push-always-verify nil)
-  )
+  ))
 #+END_SRC
 
 ** Git timemachine
@@ -1324,6 +1327,8 @@ evil bindings for magit
 #+END_SRC
  
 ** Git gutter
+Git gutter is great for giving visual feedback on changes, but it doesn't play
+well with org-mode using org-indent. So I don't use it globally. 
 #+BEGIN_SRC emacs-lisp
   (use-package git-gutter+
       :ensure t
