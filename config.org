@@ -3301,6 +3301,17 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     (interactive)
     (call-interactively 'write-file))
 #+END_SRC
+** Jump to sexp
+#+BEGIN_SRC emacs-lisp
+(defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+#+END_SRC
 * Keybindings
 I use a lot of keybindings, with <SPC> as my "leader" key
 ** Applications
@@ -3482,7 +3493,7 @@ Keybindings for managing packages
     "sp" 'helm-ag-project-root
     "so" 'helm-occur
     "sd" 'helm-do-ag ;; search with directory prompt
-    "sj" 'jump-in-buffer
+    "sj" 'forward-or-backward-sexp
     "/"  'helm-ag  ;; search in directory with word prompt
     "sl" 'last-search-buffer
    )
