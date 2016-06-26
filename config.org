@@ -449,7 +449,21 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
   package for modal editing. But nothing beats full vim keybindings. And that is
   what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
 
-** Basic setup
+** Evil leader
+Use a leader key for [[*Keybindings][Keybindings]]. This has to come before =evil= is
+called, otherwise =<leader>= won't be available gloablly (e.g. in =*Messages*=).
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-leader
+    :ensure t
+    :config
+      (progn 
+        (evil-leader/set-leader "<SPC>")
+        (setq evil-leader/non-normal-prefix ""))
+        ;; (setq evil-leader/in-all-states t)
+    :init (global-evil-leader-mode))
+#+END_SRC 
+
+** Evil mode
 The essential stuff
 #+begin_src emacs-lisp :tangle yes
   (use-package evil
@@ -481,7 +495,6 @@ The essential stuff
       ;; evil-normal-state is preferred, so revert when idle
       (run-with-idle-timer 20 t 'evil-normal-state)
       ;; evil everywhere
-      (global-evil-leader-mode)
       (evil-mode 1)))
 #+end_src
 
@@ -495,19 +508,6 @@ Use a key sequence for [[https://github.com/syl20bnr/evil-escape#install][escapi
     (evil-escape-mode)
     ;; use "fd" for escape
     (setq-default evil-escape-key-sequence "fd"))
-#+END_SRC 
-
-** Evil leader
-Use a leader key for [[*Keybindings][Keybindings]]. 
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-leader
-    :ensure t
-    :config
-      (progn 
-        (evil-leader/set-leader "<SPC>")
-        (setq evil-leader/non-normal-prefix ""))
-        ;; (setq evil-leader/in-all-states t)
-    :init (global-evil-leader-mode))
 #+END_SRC 
 
 ** Evil packages & settings
