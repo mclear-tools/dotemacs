@@ -3406,82 +3406,6 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "]" 'spacemacs/next-useful-buffer
     "TAB" 'switch-to-previous-buffer)
 #+END_SRC
-** Major Mode Bindings
-I keep all major mode bindings under "m"
-#+BEGIN_SRC emacs-lisp
-  (which-key-declare-prefixes "<SPC>m" "Major mode")
-#+END_SRC
-** Markdown mode
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun my-markdown-config ()
-  "Modify keymaps in markdown mode"
-  (which-key-declare-prefixes "<SPC>m" "Markdown")
-  (which-key-declare-prefixes "<SPC>mc" "command")
-  (which-key-declare-prefixes "<SPC>mh" "insert")
-  (which-key-declare-prefixes "<SPC>mi" "lists")
-  (which-key-declare-prefixes "<SPC>mx" "text")
-  (evil-leader/set-key
-        ;; Movement
-        "m{"   'markdown-backward-paragraph
-        "m}"   'markdown-forward-paragraph
-        ;; Completion, and Cycling
-        "m]"   'markdown-complete
-        ;; Indentation
-        "m>"   'markdown-indent-region
-        "m<"   'markdown-exdent-region
-        ;; Buffer-wide commands
-        "mc]"  'markdown-complete-buffer
-        "mcc"  'markdown-check-refs
-        "mce"  'markdown-export
-        "mcm"  'markdown-other-window
-        "mcn"  'markdown-cleanup-list-numbers
-        "mco"  'markdown-open
-        "mcp"  'markdown-preview
-        "mcv"  'markdown-export-and-preview
-        "mcw"  'markdown-kill-ring-save
-        ;; headings
-        "mhi"  'markdown-insert-header-dwim
-        "mhI"  'markdown-insert-header-setext-dwim
-        "mh1"  'markdown-insert-header-atx-1
-        "mh2"  'markdown-insert-header-atx-2
-        "mh3"  'markdown-insert-header-atx-3
-        "mh4"  'markdown-insert-header-atx-4
-        "mh5"  'markdown-insert-header-atx-5
-        "mh6"  'markdown-insert-header-atx-6
-        "mh!"  'markdown-insert-header-setext-1
-        "mh@"  'markdown-insert-header-setext-2
-        ;; Insertion of common elements
-        "m-"   'markdown-insert-hr
-        "mif"  'markdown-insert-footnote
-        "mii"  'markdown-insert-image
-        "mik"  'spacemacs/insert-keybinding-markdown
-        "miI"  'markdown-insert-reference-image
-        "mil"  'markdown-insert-link
-        "miL"  'markdown-insert-reference-link-dwim
-        "miw"  'markdown-insert-wiki-link
-        "miu"  'markdown-insert-uri
-        ;; Element removal
-        "mk"   'markdown-kill-thing-at-point
-        ;; List editing
-        "mli"  'markdown-insert-list-item
-        ;; region manipulation
-        "mxb"  'markdown-insert-bold
-        "mxi"  'markdown-insert-italic
-        "mxc"  'markdown-insert-code
-        "mxC"  'markdown-insert-gfm-code-block
-        "mxq"  'markdown-insert-blockquote
-        "mxQ"  'markdown-blockquote-region
-        "mxp"  'markdown-insert-pre
-        "mxP"  'markdown-pre-region
-        ;; Following and Jumping
-        "mN"   'markdown-next-link
-        "mf"   'markdown-follow-thing-at-point
-        "mP"   'markdown-previous-link
-   ))
-   
-
-#+END_SRC
-
 ** Miscellaneous
 #+BEGIN_SRC emacs-lisp
 ;; Show which-key top-level bindings
@@ -3513,65 +3437,6 @@ Keybindings for org mode
 (which-key-declare-prefixes "<SPC>o" "Org")
 (which-key-declare-prefixes "<SPC>oa" "agenda")
 (evil-leader/set-key "oj" 'journal-file-today)
-#+END_SRC
-#+BEGIN_SRC emacs-lisp :tangle no
-    (defun cpm/org-keybindings ()
-      "Modify keymaps for mode 'm' in org mode"
-      (which-key-declare-prefixes "<SPC>o" "Org")
-      (which-key-declare-prefixes "<SPC>oa" "agenda")
-      (which-key-declare-prefixes "<SPC>ot" "tree")
-      (evil-leader/set-key
-      ;; org tree
-      "otn" 'org-narrow-to-subtree
-      "otw" 'widen
-      "ott" 'org-show-todo-tree
-      "oaa" 'org-agenda
-      "oc"  'org-archive-subtree
-      "of"  'org-footnote-action
-      "ol"  'evil-org-open-links
-      "oo"  'evil-org-recompute-clocks
-      "oP"  'org-publish-current-project
-      "op"  'org-publish-current-file
-      )
-
-  ;; normal state shortcuts
-  (evil-define-key 'normal org-mode-map
-    "gh" 'outline-up-heading
-    "gp" 'outline-previous-heading
-    "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
-         'org-forward-same-level
-        'org-forward-heading-same-level)
-    "gk" (if (fboundp 'org-backward-same-level)
-         'org-backward-same-level
-        'org-backward-heading-same-level)
-    "gl" 'outline-next-visible-heading
-    "t" 'org-todo
-    "H" 'org-shiftleft
-    ;; "" 'org-shiftdown
-    ;; "" 'org-shiftup
-    "L" 'org-shiftright
-    "$" 'org-end-of-line
-    "^" 'org-beginning-of-line
-    "<" 'org-metaleft
-    ">" 'org-metaright
-    "-" 'org-cycle-list-bullet
-    (kbd "<tab>") 'org-cycle)
-
-  ;; normal & insert state shortcuts.
-  (mapc (lambda (state)
-          (evil-define-key state org-mode-map
-            (kbd "M-l") 'org-metaright
-            (kbd "M-h") 'org-metaleft
-            (kbd "M-k") 'org-metaup
-            (kbd "M-j") 'org-metadown
-            (kbd "M-L") 'org-shiftmetaright
-            (kbd "M-H") 'org-shiftmetaleft
-            (kbd "M-K") 'org-shiftmetaup
-            (kbd "M-J") 'org-shiftmetadown
-            ))
-        '(normal insert))
-
-  )
 #+END_SRC
 ** Packages
 Keybindings for managing packages
@@ -3660,8 +3525,6 @@ Keybindings for managing packages
       )
 #+END_SRC
 ** Windows
-
-
 #+BEGIN_SRC emacs-lisp
 (which-key-declare-prefixes "<SPC>w" "Windows")
 (evil-leader/set-key
@@ -3683,61 +3546,16 @@ Keybindings for managing packages
     "qq" 'evil-quit-all
     "qr" 'restart-emacs)
 #+END_SRC
-* Test code
-** Evil leader mode namespace
-#+BEGIN_SRC emacs-lisp
-(defvar configuration-layer--protected-packages)
-(defvar dotspacemacs-filepath)
+** Major Mode Bindings 
+I keep all major mode bindings under "m"
+#+BEGIN_SRC emacs-lisp 
+  (which-key-declare-prefixes "<SPC>m" "Major mode")
+#+END_SRC
+*** Evil leader mode namespace
+This is the set-up for major mode specific bindings. All of the
+functions are just taken from [[https://github.com/syl20bnr/spacemacs/blob/develop/core/core-keybindings.el][spacemacs]].
 
-(defun spacemacs/load-or-install-protected-package (pkg &optional log file-to-load)
-  "Load PKG package, and protect it against being deleted as an orphan.
-See `spacemacs/load-or-install-package' for more information."
-  (push pkg configuration-layer--protected-packages)
-  (spacemacs/load-or-install-package pkg log file-to-load))
-
-(defun spacemacs/load-or-install-package (pkg &optional log file-to-load)
-  "Load PKG package. PKG will be installed if it is not already installed.
-Whenever the initial require fails the absolute path to the package
-directory is returned.
-If LOG is non-nil a message is displayed in spacemacs-buffer-mode buffer.
-FILE-TO-LOAD is an explicit file to load after the installation."
-  (let ((warning-minimum-level :error))
-    (condition-case nil
-        (require pkg)
-      (error
-       ;; not installed, we try to initialize package.el only if required to
-       ;; precious seconds during boot time
-       (require 'cl)
-       (let ((pkg-elpa-dir (spacemacs//get-package-directory pkg)))
-         (if pkg-elpa-dir
-             (add-to-list 'load-path pkg-elpa-dir)
-           ;; install the package
-           (when log
-             (spacemacs-buffer/append
-              (format "(Bootstrap) Installing %s...\n" pkg))
-             (spacemacs//redisplay))
-           (configuration-layer/retrieve-package-archives 'quiet)
-           (package-install pkg)
-           (setq pkg-elpa-dir (spacemacs//get-package-directory pkg)))
-         (require pkg nil 'noerror)
-         (when file-to-load
-           (load-file (concat pkg-elpa-dir file-to-load)))
-         pkg-elpa-dir)))))
-
-(defun spacemacs//get-package-directory (pkg)
-  "Return the directory of PKG. Return nil if not found."
-  (let ((elpa-dir (concat user-emacs-directory "elpa/")))
-    (when (file-exists-p elpa-dir)
-      (let ((dir (cl-reduce (lambda (x y) (if x x y))
-                         (mapcar (lambda (x)
-                                   (when (string-match
-                                          (concat "/"
-                                                  (symbol-name pkg)
-                                                  "-[0-9]+") x) x))
-                                 (directory-files elpa-dir 'full))
-                         :initial-value nil)))
-        (when dir (file-name-as-directory dir))))))
-
+#+BEGIN_SRC emacs-lisp 
 (defun spacemacs/mplist-get (plist prop)
   "Get the values associated to PROP in PLIST, a modified plist.
 
@@ -3838,100 +3656,7 @@ Supported properties:
         (dolist (val ',def-key)
           (define-key (eval (car val)) (kbd (cdr val)) ',func))))))
 
-(defun spacemacs/view-org-file (file &optional anchor-text expand-scope)
-  "Open the change log for the current version."
-  (interactive)
-  (find-file file)
-  (org-indent-mode)
-  (view-mode)
-  (goto-char (point-min))
 
-  (when anchor-text
-    (re-search-forward anchor-text))
-  (beginning-of-line)
-
-  (cond
-   ((eq expand-scope 'subtree)
-    (outline-show-subtree))
-   ((eq expand-scope 'all)
-    (outline-show-all))
-   (t nil))
-
-  ;; Make ~SPC ,~ work, reference:
-  ;; http://stackoverflow.com/questions/24169333/how-can-i-emphasize-or-verbatim-quote-a-comma-in-org-mode
-  (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\n")
-  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
-
-  (setq-local org-emphasis-alist '(("*" bold)
-                                   ("/" italic)
-                                   ("_" underline)
-                                   ("=" org-verbatim verbatim)
-                                   ("~" org-kbd)
-                                   ("+"
-                                    (:strike-through t))))
-
-  (setq-local org-hide-emphasis-markers t))
-
-(defun spacemacs//test-var (pred var test-desc)
-  "Test PRED against VAR and print test result, incrementing
-passed-tests and total-tests."
-  (let ((var-name (symbol-name var))
-        (var-val (symbol-value var)))
-    (when (boundp 'total-tests) (setq total-tests (1+ total-tests)))
-    (insert (format "** TEST: [[file:%s::%s][%s]] %s\n"
-                    dotspacemacs-filepath var-name var-name test-desc))
-    (if (funcall pred var-val)
-        (progn
-          (when (boundp 'passed-tests) (setq passed-tests (1+ passed-tests)))
-          (insert (format "*** PASS: %s\n" var-val)))
-      (insert (propertize (format "*** FAIL: %s\n" var-val)
-                                  'font-lock-face 'font-lock-warning-face)))))
-
-(defun spacemacs//test-list (pred varlist test-desc &optional element-desc)
-  "Test PRED against each element of VARLIST and print test
-result, incrementing passed-tests and total-tests."
-  (let ((varlist-name (symbol-name varlist))
-        (varlist-val (symbol-value varlist)))
-    (if element-desc
-        (insert (format "** TEST: Each %s in [[file:%s::%s][%s]] %s\n"
-                        element-desc dotspacemacs-filepath varlist-name
-                        varlist-name test-desc))
-      (insert (format "** TEST: Each element of [[file:%s::%s][%s]] %s\n"
-                      dotspacemacs-filepath varlist-name varlist-name
-                      test-desc)))
-    (dolist (var varlist-val)
-      (when (boundp 'total-tests) (setq total-tests (1+ total-tests)))
-      (if (funcall pred var)
-          (progn
-            (when (boundp 'passed-tests) (setq passed-tests (1+ passed-tests)))
-            (insert (format "*** PASS: %s\n" var)))
-        (insert (propertize (format "*** FAIL: %s\n" var) 'font-lock-face 'font-lock-warning-face))))))
-
-;; hide mode line
-;; from http://bzg.fr/emacs-hide-mode-line.html
-(defvar-local hidden-mode-line-mode nil)
-(defvar-local hide-mode-line nil)
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
 
 (defun spacemacs/recompile-elpa ()
   "Recompile packages in elpa directory. Useful if you switch
@@ -4106,13 +3831,7 @@ they are in `spacemacs/set-leader-keys'."
 
 #+END_SRC
 
-#+RESULTS:
-: defun
-
-** Markdown namespace
 #+BEGIN_SRC emacs-lisp
-(use-package bind-map
-  :ensure t)
 (defvar dotspacemacs-leader-key "SPC"
   "The leader key.")
 
@@ -4126,6 +3845,11 @@ pressing `<leader> m`. Set it to `nil` to disable it.")
 (defvar dotspacemacs-major-mode-emacs-leader-key "C-M-m"
   "Major mode leader key accessible in `emacs state' and `insert state'")
 (setq dotspacemacs-leader-key "SPC")
+
+#+END_SRC
+
+*** Markdown namespace
+#+BEGIN_SRC emacs-lisp
 (defun my-markdown-config ()
   "Modify keymaps in markdown mode"
 ;; Declare prefixes and bind keys
@@ -4213,7 +3937,8 @@ pressing `<leader> m`. Set it to `nil` to disable it.")
       (define-key markdown-mode-map (kbd "M-l") 'markdown-demote))
 
 #+END_SRC
-** Org-mode namespace
+
+*** Org-mode namespace
 #+BEGIN_SRC emacs-lisp
   (defmacro spacemacs|org-emphasize (fname char)
           "Make function for setting the emphasis in org mode"
@@ -4343,48 +4068,7 @@ pressing `<leader> m`. Set it to `nil` to disable it.")
           "aoc" 'org-capture
           "aol" 'org-store-link))
 #+END_SRC
-** Org clone to buffer
-#+BEGIN_SRC emacs-lisp
-(defun cpm/open-tree-view ()
-  "Open a clone of the current buffer to the left, resize it to 30 columns, and bind <mouse-1> to jump to the same position in the base buffer."
-  (interactive)
-  (let ((new-buffer-name (concat "<tree>" (buffer-name))))
-    ;; Create tree buffer
-    (split-window-right 30)
-    (if (get-buffer new-buffer-name)
-        (switch-to-buffer new-buffer-name)  ; Use existing tree buffer
-      ;; Make new tree buffer
-      (progn  (clone-indirect-buffer new-buffer-name nil t)
-              (switch-to-buffer new-buffer-name)
-              (read-only-mode)
-              (hide-body)
-              (toggle-truncate-lines)
-
-              ;; Do this twice in case the point is in a hidden line
-              (dotimes (_ 2 (forward-line 0)))
-
-              ;; Map keys
-              (use-local-map (copy-keymap outline-mode-map))
-              (local-set-key (kbd "q") 'delete-window)
-              (mapc (lambda (key) (local-set-key (kbd key) 'my/jump-to-point-and-show))
-                    '("<mouse-1>" "RET"))))))
-
-(defun cpm/jump-to-point-and-show ()
-  "Switch to a cloned buffer's base buffer and move point to the cursor position in the clone."
-  (interactive)
-  (let ((buf (buffer-base-buffer)))
-    (unless buf
-      (error "You need to be in a cloned buffer!"))
-    (let ((pos (point))
-          (win (car (get-buffer-window-list buf))))
-      (if win
-          (select-window win)
-        (other-window 1)
-        (switch-to-buffer buf))
-      (goto-char pos)
-      (when (invisible-p (point))
-        (show-branches)))))
-#+END_SRC
+* Test code
 * Server
 Start server
 #+BEGIN_SRC emacs-lisp
