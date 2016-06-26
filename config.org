@@ -2884,7 +2884,7 @@ Numbered window shortcuts for Emacs
       (progn
         (setq markdown-command "pandoc"
               markdown-enable-math t
-              markdown-footnote-location "end"
+              ;; markdown-footnote-location "end"
               markdown-nested-imenu-heading-index t
               markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
@@ -2894,12 +2894,12 @@ Numbered window shortcuts for Emacs
          ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
          ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
          ;; add keybindings to hook
-         (add-hook 'markdown-mode-hook #'my-markdown-config))
+         )
        :config
        (progn
          ;; Header navigation in normal state movements
          (evil-define-key 'normal markdown-mode-map
-            "<tab>" 'markdown-cycle
+            (kbd "TAB") 'markdown-cycle
             "gj" 'outline-forward-same-level
             "gk" 'outline-backward-same-level
             "gh" 'outline-up-heading
@@ -2916,6 +2916,7 @@ Numbered window shortcuts for Emacs
          ;; fix wrong emacs keybindings
           (define-key markdown-mode-map (kbd "C-c C-j") 'markdown-jump)
           (define-key markdown-mode-map (kbd "C-c C-l") 'markdown-insert-list-item)
+          (add-hook 'markdown-mode-hook #'my-markdown-config)
     ))
 
     ;; markdown hooks
