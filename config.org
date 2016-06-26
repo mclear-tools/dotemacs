@@ -1180,6 +1180,35 @@ An svg modeline.
 #+RESULTS:
 : t
 
+** Hide mode line
+Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
+
+#+BEGIN_SRC emacs-lisp
+(defvar-local hidden-mode-line-mode nil)
+(defvar-local hide-mode-line nil)
+(define-minor-mode hidden-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global t
+  :variable hidden-mode-line-mode
+  :group 'editing-basics
+  (if hidden-mode-line-mode
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
+    (setq mode-line-format hide-mode-line
+          hide-mode-line nil))
+  (force-mode-line-update)
+  ;; Apparently force-mode-line-update is not always enough to
+  ;; redisplay the mode-line
+  (redraw-display)
+  (when (and (called-interactively-p 'interactive)
+             hidden-mode-line-mode)
+    (run-with-idle-timer
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+
+#+END_SRC
 * Shell
 ** Eshell
 Emacs own shell
@@ -2248,6 +2277,12 @@ Auto-revert buffers of changed files
             global-auto-revert-non-file-buffers t)))
 #+END_SRC
  
+** Bind map
+[[https://github.com/justbur/emacs-bind-map][Emacs macro for keybindings.]]
+#+BEGIN_SRC emacs-lisp
+(use-package bind-map
+  :ensure t)
+#+END_SRC
 ** Centered Cursor Mode
 #+BEGIN_SRC emacs-lisp
   (use-package centered-cursor-mode
