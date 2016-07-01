@@ -1521,7 +1521,47 @@ well with org-mode using org-indent. So I don't use it globally.
     (setq imenu-auto-rescan t)
     ;; add org mode evil keybindings
     (add-hook 'org-mode-hook #'cpm/org-keybindings)
-          )
+    ;; normal state shortcuts
+    (evil-define-key 'normal org-mode-map
+         "gh" 'outline-up-heading
+         "gp" 'outline-previous-heading
+         "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
+        	       'org-forward-same-level
+	             'org-forward-heading-same-level)
+         "gk" (if (fboundp 'org-backward-same-level) 
+                  'org-backward-same-level 'org-backward-heading-same-level)
+         "gl" 'outline-next-visible-heading
+         "L" 'org-shiftright
+         "H" 'org-shiftleft
+          "$" 'org-end-of-line
+          "^" 'org-beginning-of-line
+          "<" 'org-metaleft
+          ">" 'org-metaright
+          "-" 'org-cycle-list-bullet)
+       ;; normal & insert state shortcuts.
+       (mapc (lambda (state)
+       (evil-define-key state evil-org-mode-map
+          (kbd "M-l") 'org-metaright
+          (kbd "M-h") 'org-metaleft
+          (kbd "M-k") 'org-metaup
+          (kbd "M-j") 'org-metadown
+          (kbd "M-L") 'org-shiftmetaright
+          (kbd "M-H") 'org-shiftmetaleft
+          (kbd "M-K") 'org-shiftmetaup
+          (kbd "M-J") 'org-shiftmetadown
+          (kbd "M-o") '(lambda () (interactive)
+                          (evil-org-eol-call
+                          '(lambda()
+                              (org-insert-heading)
+                              (org-metaright))))
+          (kbd "M-t") '(lambda () (interactive)
+                          (evil-org-eol-call
+                          '(lambda()
+                              (org-insert-todo-heading nil)
+                              (org-metaright))))
+          ))
+          '(normal insert))
+    )
     :config
       (progn
         (use-package evil-org
