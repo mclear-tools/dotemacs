@@ -181,7 +181,7 @@ Show the filepath in the frame title.
 Turn off all of the GUI cruft.
 #+BEGIN_SRC emacs-lisp
   ;; Turn off mouse interface early in startup to avoid momentary display
-  (when window-system
+  (when (display-graphic-p)
     (menu-bar-mode -1)
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
