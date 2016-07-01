@@ -1600,11 +1600,26 @@ well with org-mode using org-indent. So I don't use it globally.
             (add-hook 'org-mode-hook 'toc-org-enable)))
      ))
 #+END_SRC
+** Org capture
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+      '(
+        ("j" "Journal entry" plain
+         (file+datetree "~/Dropbox/journal.org")
+         "**** %<%H:%M>\n%?")
+
+        ;; other entries
+        ))
+#+END_SRC
 ** Journal
 *** Org-journal
 #+BEGIN_SRC emacs-lisp
-(use-package org-journal
+(defun cpm/org-journal ()
+  (interactive) (org-capture nil "j"))
+
+  (use-package org-journal
   :ensure t
+  :disabled t
   :defer t
   :init
    (setq org-journal-dir "~/Dropbox/journal/")
@@ -3352,6 +3367,12 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
         ((looking-at "\\s)") (forward-char) (backward-sexp arg))
         ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 #+END_SRC
+** Goto journal 
+#+BEGIN_SRC emacs-lisp
+  (defun goto-journal ()
+    (interactive)
+    (find-file "/Users/Roambot/Dropbox/journal.org"))
+#+END_SRC
 * Keybindings
 I use a lot of keybindings, with <SPC> as my "leader" key
 ** Applications
@@ -3474,7 +3495,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
    "uS" 'just-one-space
    "ud" 'distraction-free
    "uD" 'osx-dictionary-search-input
-   "uj" 'org-journal-new-entry
+   "uj" 'goto-journal
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "ux" 'helm-bibtex
@@ -3485,9 +3506,12 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 ** Org Mode
 Keybindings for org mode 
 #+BEGIN_SRC emacs-lisp
-(which-key-declare-prefixes "<SPC>o" "Org")
-(which-key-declare-prefixes "<SPC>oa" "agenda")
-(evil-leader/set-key "oj" 'journal-file-today)
+  (which-key-declare-prefixes "<SPC>o" "Org")
+  (which-key-declare-prefixes "<SPC>oa" "agenda")
+  (evil-leader/set-key 
+    "oj" 'cpm/org-journal
+    "oc" 'org-capture
+  )
 #+END_SRC
 ** Packages
 Keybindings for managing packages
