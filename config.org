@@ -1381,6 +1381,8 @@ keybindings to access magit and related packages.
       magit-diff
       magit-log
       magit-status)
+    :init
+    (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
     :config
       (setq vc-follow-symlinks t)
       (setq-default git-magit-status-fullscreen nil)
@@ -1599,6 +1601,17 @@ well with org-mode using org-indent. So I don't use it globally.
             (setq toc-org-max-depth 10)
             (add-hook 'org-mode-hook 'toc-org-enable)))
      ))
+#+END_SRC
+** Org-reveal
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+  :ensure t
+  :after org
+  :config
+  (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
+        org-reveal-theme "simple"
+        org-reveal-default-frag-style "roll-in"
+        ))
 #+END_SRC
 ** Org capture
 #+BEGIN_SRC emacs-lisp
@@ -1845,7 +1858,7 @@ Open exported docx files in Word/Open Office rather than emacs
 #+END_SRC
 
 * Research 
-Packages I use for research.
+Packages I use for research and writing.
 ** Helm-Bibtex
 Great for managing citations and notes
 #+begin_src emacs-lisp :tangle yes
@@ -2135,7 +2148,14 @@ I mostly don't use this in favor of helm-bibtex
   (setq helm-bibtex-notes-path "~/Dropbox/Notes/ResearchNotes/")
 )
 #+END_SRC
-
+** Palimpsest mode
+#+BEGIN_SRC emacs-lisp
+  (use-package palimpsest
+    :ensure t
+    :defer t
+    :config 
+    (add-hook 'text-mode-hook 'palimpsest-mode))
+#+END_SRC
 ** Devonthink
 #+BEGIN_SRC emacs-lisp
 ;;; org-devonthink.el - Support for links to dtp messages by their UUID
@@ -2355,7 +2375,13 @@ Auto-revert buffers of changed files
                                    scroll-bar-toolkit-scroll
                                    evil-mouse-drag-region))))
 #+END_SRC
-
+** Clipboard formatted copy
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-clip
+    :ensure t
+    :disabled t
+    )
+#+END_SRC
 ** Diminish
 #+BEGIN_SRC emacs-lisp
 (use-package diminish
@@ -2637,6 +2663,17 @@ Better dired navigation using ranger-like settings
   )
 #+END_SRC
 
+** Recent files
+Open recentf on startup
+#+BEGIN_SRC emacs-lisp
+  (use-package init-open-recentf
+    :ensure t
+    :disabled t
+    :config
+    (setq init-open-recentf-interface 'helm)
+    (recentf-mode)
+    (init-open-recentf))
+#+END_SRC
 ** Restart emacs
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
@@ -2670,6 +2707,15 @@ Better dired navigation using ranger-like settings
   )
 #+END_SRC
  
+** Smooth Scrolling
+#+BEGIN_SRC emacs-lisp
+  (use-package smooth-scrolling
+    :ensure t
+    :config (setq smooth-scroll-margin 2)
+    :init (smooth-scrolling-mode 1))
+    (setq mouse-wheel-scroll-amount '(1 ((shift) .1) ((control) . nil)))
+    (setq mouse-wheel-progressive-speed nil)
+#+END_SRC
 ** Uniquify
 Distinguish buffers with the same name
 #+begin_src emacs-lisp :tangle yes
@@ -2908,6 +2954,18 @@ Numbered window shortcuts for Emacs
     :diminish eldoc-mode
     :commands eldoc-mode)
 
+  (use-package lispy 
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1))))
+
+  (use-package lispyville
+    :ensure t 
+    :defer t
+    :init
+    (add-hook 'lispy-mode-hook #'lispyville-mode))
+
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq show-trailing-whitespace t)
@@ -2917,6 +2975,7 @@ Numbered window shortcuts for Emacs
               (yas-minor-mode)
               (company-mode)
               (rainbow-delimiters-mode)))
+              
 #+END_SRC
 
 ** Html
@@ -3112,6 +3171,25 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
               (save-excursion (insert "#+END_" choice))))))))))
 
 #+end_src
+** Copy formatted org-mode text to rtf
+Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/Copy-formatted-org-mode-text-from-Emacs-to-other-applications/][John Kitchin]].
+#+BEGIN_SRC emacs-lisp
+  (defun formatted-copy ()
+  "Export region to HTML, and copy it to the clipboard."
+  (interactive)
+  (save-window-excursion
+    (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           (html (with-current-buffer buf (buffer-string))))
+      (with-current-buffer buf
+        (shell-command-on-region
+         (point-min)
+         (point-max)
+         "textutil -stdin -format html -convert rtf -stdout | pbcopy")) 
+      (kill-buffer buf))))
+
+(global-set-key (kbd "H-w") 'formatted-copy)
+
+#+END_SRC
 ** Pandoc conversion from clipboard
 #+BEGIN_SRC emacs-lisp
   (defun cpm/org-to-markdown ()
@@ -4144,6 +4222,49 @@ pressing `<leader> m`. Set it to `nil` to disable it.")
           "aol" 'org-store-link))
 #+END_SRC
 * Test code
+#+BEGIN_SRC emacs-lisp
+   ;; define text objects
+      (defmacro spacemacs|define-text-object (key name start end)
+        (let ((inner-name (make-symbol (concat "evil-inner-" name)))
+              (outer-name (make-symbol (concat "evil-outer-" name)))
+              (start-regex (regexp-opt (list start)))
+              (end-regex (regexp-opt (list end))))
+          `(progn
+             (evil-define-text-object ,inner-name (count &optional beg end type)
+               (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+             (evil-define-text-object ,outer-name (count &optional beg end type)
+               (evil-select-paren ,start-regex ,end-regex beg end type count t))
+             (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+             (define-key evil-outer-text-objects-map ,key (quote ,outer-name))
+             (with-eval-after-load 'evil-surround
+               (push (cons (string-to-char ,key)
+                           (if ,end
+                               (cons ,start ,end)
+                             ,start))
+                     evil-surround-pairs-alist)))))
+
+      (spacemacs|define-text-object "$" "dollar" "$" "$")
+      (spacemacs|define-text-object "*" "star" "*" "*")
+      (spacemacs|define-text-object "8" "block-star" "/*" "*/")
+      (spacemacs|define-text-object "|" "bar" "|" "|")
+      (spacemacs|define-text-object "%" "percent" "%" "%")
+      (spacemacs|define-text-object "/" "slash" "/" "/")
+      (spacemacs|define-text-object "_" "underscore" "_" "_")
+      (spacemacs|define-text-object "-" "hyphen" "-" "-")
+      (spacemacs|define-text-object "~" "tilde" "~" "~")
+      (spacemacs|define-text-object "=" "equal" "=" "=")
+
+      (evil-define-text-object evil-pasted (count &rest args)
+        (list (save-excursion (evil-goto-mark ?\[) (point))
+              (save-excursion (evil-goto-mark ?\]) (point))))
+      (define-key evil-inner-text-objects-map "P" 'evil-pasted)
+
+      ;; define text-object for entire buffer
+      (evil-define-text-object evil-inner-buffer (count &optional beg end type)
+        (evil-select-paren "\\`" "\\'" beg end type count nil))
+      (define-key evil-inner-text-objects-map "g" 'evil-inner-buffer)
+
+#+END_SRC
 * Server
 Start server
 #+BEGIN_SRC emacs-lisp
