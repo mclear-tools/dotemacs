@@ -902,7 +902,7 @@ A completion framework and much more. For a complete overview see [[http://tuhdo
             helm-bookmark-show-location t
             helm-find-files-sort-directories t
             helm-display-header-line nil
-            helm-always-two-windows t                       
+            helm-always-two-windows nil                       
             helm-split-window-in-side-p t
             helm-echo-input-in-header-line t
             helm-locate-fuzzy-match nil
@@ -953,6 +953,14 @@ A completion framework and much more. For a complete overview see [[http://tuhdo
 #+begin_src emacs-lisp :tangle yes
 (use-package helm-ls-git :ensure t :defer t)
 #+end_src
+*** Helm hunks
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-hunks
+    :defer t
+    :commands helm-hunks)
+
+#+END_SRC
+
 *** Helm swoop
 Search on steroids
 #+begin_src emacs-lisp :tangle yes
@@ -987,6 +995,8 @@ Recent directories
     :defer t
     :config
     (setq helm-ff-skip-boring-files t)
+    (setq helm-idle-delay 0.05)
+    (setq helm-input-idle-delay 0.05)
     (setq helm-ff-file-name-history-use-recentf t)
     (setq helm-boring-file-regexp-list
     '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
