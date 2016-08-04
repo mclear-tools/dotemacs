@@ -1503,6 +1503,13 @@ well with org-mode using org-indent. So I don't use it globally.
         )))
 #+END_SRC
 
+** Quick commits
+#+BEGIN_SRC emacs-lisp
+  (defun quick-commit ()
+  "make a quick commit from the mini-buffer"
+  (interactive)
+  (evil-ex '"!Git add % && Git commit -m '" ))
+#+END_SRC
 * Org
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 ** Base settings
@@ -2266,6 +2273,24 @@ I mostly don't use this in favor of helm-bibtex
   (list (replace-regexp-in-string " " "-" (car args)))
   )
 (advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
+
+;;function to run deft in specified directory
+(defun any-deft (dir)
+  "Run deft in directory DIR"
+  (setq deft-directory dir)
+  (switch-to-buffer "*Deft*")
+  (kill-this-buffer)
+  (require 'org)
+  (deft)
+  )
+(defun big-notes ()
+  "Goto main notes with deft"
+  (interactive)
+  (any-deft "~/Dropbox/Notes"))
+(defun research-notes ()
+  "Goto research notes"
+  (interactive)
+  (any-deft "~/projects/notebook/content/org_notes"))
 #+END_SRC
 * Distraction Free Mode
 #+BEGIN_SRC emacs-lisp
@@ -3144,6 +3169,16 @@ Disabled due to errors
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+END_SRC
+** Make parent directory
+ Create a directory – or a hierarchy of them – while finding a file in a
+ nonexistent directory. From [[http://mbork.pl/2016-07-25_Making_directories_on_the_fly][mbork]]. 
+#+BEGIN_SRC emacs-lisp
+  (defun make-parent-directory ()
+    "Make sure the directory of `buffer-file-name' exists."
+    (make-directory (file-name-directory buffer-file-name) t))
+
+  (add-hook 'find-file-not-found-functions #'make-parent-directory)
+#+END_SRC
 ** Org wrap in block template
 A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
 #+begin_src emacs-lisp
@@ -3510,15 +3545,15 @@ I use a lot of keybindings, with <SPC> as my "leader" key
       "Open config.org file"
       (interactive)
       (find-file "~/.emacs.d/config.org"))
-  (defun load-config.org ()
-      "Load config.org using org-babel"
+  (defun load-config ()
+      "Load config "
       (interactive)
-      (org-babel-load-file "~/.emacs.d/config.org"))
+      (load-file "~/.emacs.d/init.el"))
   (which-key-declare-prefixes "<SPC>C" "Config")
   (evil-leader/set-key
     "Cc" 'goto-config.org
     "Cl" 'tangle-init
-    "Cd" 'load-config.org
+    "Cd" 'load-config
     "Cs" 'goto-custom.el
     "Ci" 'goto-init.el
   )
