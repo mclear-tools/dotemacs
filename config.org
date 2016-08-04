@@ -1638,8 +1638,9 @@ well with org-mode using org-indent. So I don't use it globally.
   :after org
   :config
   (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
-        org-reveal-theme "simple"
+        org-reveal-theme "moon"
         org-reveal-default-frag-style "roll-in"
+        org-reveal-hlevel 2
         ))
 #+END_SRC
 ** Org capture
