@@ -1407,12 +1407,12 @@ keybindings to access magit and related packages.
       (setq magit-push-always-verify nil)
       )
 #+END_SRC
+
 ** Evil Magit
 evil bindings for magit
 #+BEGIN_SRC emacs-lisp
   (use-package evil-magit
     :ensure t
-    :defer t
     :after magit)
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle no
