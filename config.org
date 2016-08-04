@@ -1941,7 +1941,7 @@ Useful when taking notes
        (setq doc-view-continuous t))
   )
 #+END_SRC
-** PDF Tools
+** PDF-Tools
 Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
@@ -2274,7 +2274,6 @@ I mostly don't use this in favor of helm-bibtex
       "i" 'deft-toggle-incremental-search
       "n" 'deft-new-file
       "r" 'deft-rename-file)))
-      
 ;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
 ;;advise deft-new-file-named to replace spaces in file names with -
 (defun bjm-deft-strip-spaces (args)
@@ -2781,8 +2780,8 @@ Distinguish buffers with the same name
         uniquify-after-kill-buffer-p t
         uniquify-ignore-buffers-re "^\\*"))
 #+end_src
-** Visual replace
 
+** Visual replace
 This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
 
 #+BEGIN_SRC emacs-lisp
