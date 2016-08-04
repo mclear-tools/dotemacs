@@ -1607,13 +1607,21 @@ well with org-mode using org-indent. So I don't use it globally.
           :commands ox-pandoc
           :init
           (with-eval-after-load 'org)
-            (require 'ox-pandoc))
+            (require 'ox-pandoc)
+          :config
+          ;; default options for all output formats
+          (setq org-pandoc-options '((standalone . t)))
+          ;; cancel above settings only for 'docx' format
+          (setq org-pandoc-options-for-docx '((standalone . nil)))
+          ;; special settings for beamer-pdf and latex-pdf exporters
+          (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
+          (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
         (use-package org-bullets
           :defer t
           :ensure t
           :init (add-hook 'org-mode-hook 'org-bullets-mode))
         (use-package htmlize
-          :defer t :ensure t)
+          :after org :ensure t)
         (use-package toc-org
           :ensure t
           :defer t
