@@ -1903,7 +1903,7 @@ Great for managing citations and notes
     (setq bibtex-completion-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
           bibtex-completion-library-path "/Users/Roambot/Dropbox/Work/MasterLib/"
           bibtex-completion-pdf-field "File"
-          bibtex-completion-notes-path "/Users/Roambot/Dropbox/Notes/ResearchNotes/"
+          bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
           bibtex-completion-additional-search-fields '(keywords)
           bibtex-completion-notes-extension ".org"
           helm-bibtex-full-frame nil) ;; Set insert citekey with markdown citekeys for org-mode
@@ -2808,6 +2808,7 @@ This is the [[https://github.com/benma/visual-regexp.el][good old search and rep
       "aw" 'wttrin))
 )
 #+END_SRC
+
 ** Which Key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
