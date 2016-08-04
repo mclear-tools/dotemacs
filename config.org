@@ -2431,6 +2431,12 @@ Auto-revert buffers of changed files
     :disabled t
     )
 #+END_SRC
+** Crux
+A collection of ridiculously useful extensions. Indeed.
+#+BEGIN_SRC emacs-lisp
+  (use-package crux
+    :ensure t)
+#+END_SRC
 ** Diminish
 #+BEGIN_SRC emacs-lisp
 (use-package diminish
