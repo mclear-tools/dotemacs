@@ -3206,16 +3206,19 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
   (interactive)
   (if (org-at-table-p)
       (call-interactively 'org-table-rotate-recalc-marks)
-    (let* ((choices '(("s" . "SRC")
-                      ("E" . "SRC emacs-lisp")
-                      ("e" . "EXAMPLE")
-                      ("q" . "QUOTE")
-                      ("v" . "VERSE")
+    (let* ((choices '(
+                      ("a" . "ASCII")
                       ("c" . "COMMENT")
                       ("C" . "CENTER")
-                      ("l" . "LaTeX")
+                      ("e" . "EXAMPLE")
+                      ("E" . "SRC emacs-lisp")
                       ("h" . "HTML")
-                      ("a" . "ASCII")))
+                      ("l" . "LaTeX")
+                      ("n" . "NOTES")
+                      ("q" . "QUOTE")
+                      ("s" . "SRC")
+                      ("v" . "VERSE")
+                      ))
            (key
             (key-description
              (vector
