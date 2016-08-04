@@ -1544,8 +1544,6 @@ well with org-mode using org-indent. So I don't use it globally.
           (imenu-add-to-menubar "Imenu")))
     (setq org-imenu-depth 4)
     (setq imenu-auto-rescan t)
-    ;; add org mode evil keybindings
-    (add-hook 'org-mode-hook #'cpm/org-keybindings)
     ;; normal state shortcuts
     (evil-define-key 'normal org-mode-map
          "gh" 'outline-up-heading
@@ -3588,11 +3586,11 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     ;; "ff" 'counsel-find-files
     ;; "fl" 'counsel-locate
     "fl" 'helm-locate
+    "fo" 'crux-open-with
     "fs" 'save-buffer
     "fr" 'helm-recentf
     "fy" 'spacemacs/show-and-copy-buffer-filename
       )
-
 #+END_SRC
 
 ** General
@@ -3606,13 +3604,103 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "h" 'helm-resume
     "j" 'ace-jump-mode
     "k" 'helm-show-kill-ring
-    "n" 'cpm/deft
+    "n" 'research-notes
+    "N" 'big-notes
     "W" 'woman
+    "." 'quick-commit
     ";" 'evil-commentary-line
     "[" 'spacemacs/previous-useful-buffer
     "]" 'spacemacs/next-useful-buffer
     "TAB" 'switch-to-previous-buffer)
 #+END_SRC
+** Markdown
+#+BEGIN_SRC emacs-lisp
+(defun my-markdown-config ()
+  "Modify keymaps in markdown mode"
+  (which-key-declare-prefixes "<SPC>m" "Markdown")
+  (which-key-declare-prefixes "<SPC>mc" "command")
+  (which-key-declare-prefixes "<SPC>mh" "insert")
+  (which-key-declare-prefixes "<SPC>mi" "lists")
+  (which-key-declare-prefixes "<SPC>mx" "text")
+  (evil-leader/set-key
+        ;; Movement
+        "m{"   'markdown-backward-paragraph
+        "m}"   'markdown-forward-paragraph
+        ;; Completion, and Cycling
+        "m]"   'markdown-complete
+        ;; Indentation
+        "m>"   'markdown-indent-region
+        "m<"   'markdown-exdent-region
+        ;; Buffer-wide commands
+        "mc]"  'markdown-complete-buffer
+        "mcc"  'markdown-check-refs
+        "mce"  'markdown-export
+        "mcm"  'markdown-other-window
+        "mcn"  'markdown-cleanup-list-numbers
+        "mco"  'markdown-open
+        "mcp"  'markdown-preview
+        "mcv"  'markdown-export-and-preview
+        "mcw"  'markdown-kill-ring-save
+        ;; headings
+        "mhi"  'markdown-insert-header-dwim
+        "mhI"  'markdown-insert-header-setext-dwim
+        "mh1"  'markdown-insert-header-atx-1
+        "mh2"  'markdown-insert-header-atx-2
+        "mh3"  'markdown-insert-header-atx-3
+        "mh4"  'markdown-insert-header-atx-4
+        "mh5"  'markdown-insert-header-atx-5
+        "mh6"  'markdown-insert-header-atx-6
+        "mh!"  'markdown-insert-header-setext-1
+        "mh@"  'markdown-insert-header-setext-2
+        ;; Insertion of common elements
+        "m-"   'markdown-insert-hr
+        "mif"  'markdown-insert-footnote
+        "mii"  'markdown-insert-image
+        "mik"  'spacemacs/insert-keybinding-markdown
+        "miI"  'markdown-insert-reference-image
+        "mil"  'markdown-insert-link
+        "miL"  'markdown-insert-reference-link-dwim
+        "miw"  'markdown-insert-wiki-link
+        "miu"  'markdown-insert-uri
+        ;; Element removal
+        "mk"   'markdown-kill-thing-at-point
+        ;; List editing
+        "mli"  'markdown-insert-list-item
+        ;; region manipulation
+        "mxb"  'markdown-insert-bold
+        "mxi"  'markdown-insert-italic
+        "mxc"  'markdown-insert-code
+        "mxC"  'markdown-insert-gfm-code-block
+        "mxq"  'markdown-insert-blockquote
+        "mxQ"  'markdown-blockquote-region
+        "mxp"  'markdown-insert-pre
+        "mxP"  'markdown-pre-region
+        ;; Following and Jumping
+        "mN"   'markdown-next-link
+        "mf"   'markdown-follow-thing-at-point
+        "mP"   'markdown-previous-link
+        "<RET>" 'markdown-jump
+   )
+   
+      ;; Header navigation in normal state movements
+      (evil-define-key 'normal markdown-mode-map
+        "gj" 'outline-forward-same-level
+        "gk" 'outline-backward-same-level
+        "gh" 'outline-up-heading
+        ;; next visible heading is not exactly what we want but close enough
+        "gl" 'outline-next-visible-heading)
+        
+      ;; Cycle headers like in org-mode
+      (evil-define-key 'normal markdown-mode-map (kbd "TAB") 'markdown-cycle)
+
+      ;; Promotion, Demotion
+      (define-key markdown-mode-map (kbd "M-h") 'markdown-promote)
+      (define-key markdown-mode-map (kbd "M-j") 'markdown-move-down)
+      (define-key markdown-mode-map (kbd "M-k") 'markdown-move-up)
+      (define-key markdown-mode-map (kbd "M-l") 'markdown-demote))
+
+#+END_SRC
+
 ** Miscellaneous
 #+BEGIN_SRC emacs-lisp
 ;; Show which-key top-level bindings
@@ -3638,14 +3726,94 @@ I use a lot of keybindings, with <SPC> as my "leader" key
 
 #+END_SRC
  
-** Org Mode
+** Org Keybindings
 Keybindings for org mode 
 #+BEGIN_SRC emacs-lisp
   (which-key-declare-prefixes "<SPC>o" "Org")
-  (which-key-declare-prefixes "<SPC>oa" "agenda")
+  (which-key-declare-prefixes "<SPC>oh" "headers")
+  (which-key-declare-prefixes "<SPC>oi" "insert")
+  (which-key-declare-prefixes "<SPC>oS" "subtree")
+  (which-key-declare-prefixes "<SPC>ot" "tables")
   (evil-leader/set-key 
     "oj" 'cpm/org-journal
     "oc" 'org-capture
+    "of" 'org-footnote-action
+    "oP" 'org-set-property
+    ;; "P" 'org-publish-current-project
+    "op" 'org-publish-current-file
+    "o:" 'org-set-tags
+    "oa" 'org-agenda
+    "ob" 'org-tree-to-indirect-buffer
+    "oA" 'org-archive-subtree
+    "ol" 'org-open-at-point
+    "oT" 'org-show-todo-tree
+    "or" 'org-reveal-export-to-html-and-browse
+
+    "o." 'org-time-stamp
+    "o!" 'org-time-stamp-inactive
+
+    ;; headings
+    "ohi" 'org-insert-heading-after-current
+    "ohI" 'org-insert-heading
+
+    ;; More cycling options (timestamps, headlines, items, properties)
+    "oL" 'org-shiftright
+    "oH" 'org-shiftleft
+    "oJ" 'org-shiftdown
+    "oK" 'org-shiftup
+
+    ;; Subtree editing
+    "oSl" 'org-demote-subtree
+    "oSh" 'org-promote-subtree
+    "oSj" 'org-move-subtree-down
+    "oSk" 'org-move-subtree-up
+
+    ;; tables
+    "ota" 'org-table-align
+    "otb" 'org-table-blank-field
+    "otc" 'org-table-convert
+    "otdc" 'org-table-delete-column
+    "otdr" 'org-table-kill-row
+    "ote" 'org-table-eval-formula
+    "otE" 'org-table-export
+    "oth" 'org-table-previous-field
+    "otH" 'org-table-move-column-left
+    "otic" 'org-table-insert-column
+    "otih" 'org-table-insert-hline
+    "otiH" 'org-table-hline-and-move
+    "otir" 'org-table-insert-row
+    "otI" 'org-table-import
+    "otj" 'org-table-next-row
+    "otJ" 'org-table-move-row-down
+    "otK" 'org-table-move-row-up
+    "otl" 'org-table-next-field
+    "otL" 'org-table-move-column-right
+    "otn" 'org-table-create
+    "otN" 'org-table-create-with-table.el
+    "otr" 'org-table-recalculate
+    "ots" 'org-table-sort-lines
+    "ottf" 'org-table-toggle-formula-debugger
+    "otto" 'org-table-toggle-coordinate-overlays
+    "otw" 'org-table-wrap-region
+
+    ;; Multi-purpose keys
+    "o*" 'org-ctrl-c-star
+    "oRET" 'org-ctrl-c-ret
+    "o-" 'org-ctrl-c-minus
+    "o^" 'org-sort
+    "o/" 'org-sparse-tree
+
+    "oI" 'org-clock-in
+    "on" 'org-narrow-to-subtree
+    "oN" 'widen
+    "oO" 'org-clock-out
+    "oq" 'org-clock-cancel
+    "oR" 'org-refile
+    "os" 'org-schedule
+
+    ;; insertion of common elements
+    "oil" 'org-insert-link
+    "oif" 'org-footnote-new
   )
 #+END_SRC
 ** Packages
@@ -3712,7 +3880,8 @@ Keybindings for managing packages
   "th" 'global-hl-line-mode
   "te" 'toggle-indicate-empty-lines
   "tE" 'eldoc-mode
-  "tm" 'spaceline-toggle-minor-modes
+  "tm" 'hidden-mode-line-mode
+  "tM" 'spaceline-toggle-minor-modes
   "tn" 'linum-mode
   "to" 'org-toggle-link-display
   "tp" 'smartparens-mode
@@ -3756,571 +3925,51 @@ Keybindings for managing packages
     "qq" 'evil-quit-all
     "qr" 'restart-emacs)
 #+END_SRC
-** Major Mode Bindings 
-I keep all major mode bindings under "m"
-#+BEGIN_SRC emacs-lisp 
-  (which-key-declare-prefixes "<SPC>m" "Major mode")
-#+END_SRC
-*** Evil leader mode namespace
-This is the set-up for major mode specific bindings. All of the
-functions are just taken from [[https://github.com/syl20bnr/spacemacs/blob/develop/core/core-keybindings.el][spacemacs]].
-
-#+BEGIN_SRC emacs-lisp 
-(defun spacemacs/mplist-get (plist prop)
-  "Get the values associated to PROP in PLIST, a modified plist.
-
-A modified plist is one where keys are keywords and values are
-all non-keywords elements that follow it.
-
-If there are multiple properties with the same keyword, only the first property
-and its values is returned.
-
-Currently this function infloops when the list is circular."
-  (let ((tail plist)
-        result)
-    (while (and (consp tail) (not (eq prop (car tail))))
-      (pop tail))
-    ;; pop the found keyword
-    (pop tail)
-    (while (and (consp tail) (not (keywordp (car tail))))
-      (push (pop tail) result))
-    (nreverse result)))
-
-(defun spacemacs/mplist-remove (plist prop)
-  "Return a copy of a modified PLIST without PROP and its values.
-
-If there are multiple properties with the same keyword, only the first property
-and its values are removed."
-  (let ((tail plist)
-        result)
-    (while (and (consp tail) (not (eq prop (car tail))))
-      (push (pop tail) result))
-    (when (eq prop (car tail))
-      (pop tail)
-      (while (and (consp tail) (not (keywordp (car tail))))
-        (pop tail)))
-    (while (consp tail)
-      (push (pop tail) result))
-    (nreverse result)))
-
-;; From http://stackoverflow.com/questions/2321904/elisp-how-to-save-data-in-a-file
-(defun spacemacs/dump-vars-to-file (varlist filename)
-  "simplistic dumping of variables in VARLIST to a file FILENAME"
-  (save-excursion
-    (let ((buf (find-file-noselect filename)))
-      (set-buffer buf)
-      (erase-buffer)
-      (spacemacs/dump varlist buf)
-      (make-directory (file-name-directory filename) t)
-      (save-buffer)
-      (kill-buffer))))
-
-;; From http://stackoverflow.com/questions/2321904/elisp-how-to-save-data-in-a-file
-(defun spacemacs/dump (varlist buffer)
-  "insert into buffer the setq statement to recreate the variables in VARLIST"
-  (cl-loop for var in varlist do
-        (print (list 'setq var (list 'quote (symbol-value var)))
-               buffer)))
-
-(defvar spacemacs--init-redisplay-count 0
-  "The number of calls to `redisplay'")
-(defun spacemacs//redisplay ()
-  "`redisplay' wrapper."
-  (setq spacemacs--init-redisplay-count (1+ spacemacs--init-redisplay-count))
-  (redisplay))
-
-(defun spacemacs//create-key-binding-form (props func)
-  "Helper which returns a from to bind FUNC to a key according to PROPS.
-
-Supported properties:
-
-`:evil-leader STRING'
-    One or several key sequence strings to be set with `spacemacs/set-leader-keys .
-
-`:evil-leader-for-mode CONS CELL'
-    One or several cons cells (MODE . KEY) where MODE is a major-mode symbol
-    and KEY is a key sequence string to be set with
-    `spacemacs/set-leader-keys-for-major-mode'.
-
-`:global-key STRING'
-    One or several key sequence strings to be set with `global-set-key'.
-
-`:define-key CONS CELL'
-    One or several cons cells (MAP . KEY) where MAP is a mode map and KEY is a
-    key sequence string to be set with `define-key'. "
-  (let ((evil-leader (spacemacs/mplist-get props :evil-leader))
-        (evil-leader-for-mode (spacemacs/mplist-get props :evil-leader-for-mode))
-        (global-key (spacemacs/mplist-get props :global-key))
-        (def-key (spacemacs/mplist-get props :define-key)))
-    `((unless (null ',evil-leader)
-        (dolist (key ',evil-leader)
-          (spacemacs/set-leader-keys key ',func)))
-      (unless (null ',evil-leader-for-mode)
-        (dolist (val ',evil-leader-for-mode)
-          (spacemacs/set-leader-keys-for-major-mode
-            (car val) (cdr val) ',func)))
-      (unless (null ',global-key)
-        (dolist (key ',global-key)
-          (global-set-key (kbd key) ',func)))
-      (unless (null ',def-key)
-        (dolist (val ',def-key)
-          (define-key (eval (car val)) (kbd (cdr val)) ',func))))))
-
-
-
-(defun spacemacs/recompile-elpa ()
-  "Recompile packages in elpa directory. Useful if you switch
-Emacs versions."
-  (interactive)
-  (byte-recompile-directory package-user-dir nil t))
-
-;; end core-funcs
-
-(defvar spacemacs/prefix-titles nil
-  "alist for mapping command prefixes to long names.")
-
-(defvar spacemacs-default-map (make-sparse-keymap)
-  "Base keymap for all spacemacs leader key commands.")
-
-(defun spacemacs/translate-C-i (_)
-  "If `dotspacemacs-distinguish-gui-tab' is non nil, the raw key
-sequence does not include <tab> or <kp-tab>, and we are in the
-gui, translate to [C-i]. Otherwise, [9] (TAB)."
-  (interactive)
-  (if (and (not (cl-position 'tab (this-single-command-raw-keys)))
-           (not (cl-position 'kp-tab (this-single-command-raw-keys)))
-           dotspacemacs-distinguish-gui-tab
-           (display-graphic-p))
-      [C-i] [?\C-i]))
-(define-key key-translation-map [?\C-i] 'spacemacs/translate-C-i)
-
-;; (defun spacemacs/translate-C-m (_)
-;;   "If `dotspacemacs-distinguish-gui-ret' is non nil, the raw key
-;; sequence does not include <ret>, and we are in the gui, translate
-;; to [C-m]. Otherwise, [9] (TAB)."
-;;   (interactive)
-;;   (if (and
-;;        (not (cl-position 'return (this-single-command-raw-keys)))
-;;        (not (cl-position 'kp-enter (this-single-command-raw-keys)))
-;;        dotspacemacs-distinguish-gui-ret
-;;        (display-graphic-p))
-;;     [C-m] [?\C-m]))
-;; (define-key key-translation-map [?\C-m] 'spacemacs/translate-C-m)
-
-(defun spacemacs/declare-prefix (prefix name &optional long-name)
-  "Declare a prefix PREFIX. PREFIX is a string describing a key
-sequence. NAME is a string used as the prefix command.
-LONG-NAME if given is stored in `spacemacs/prefix-titles'."
-  (let* ((command name)
-         (full-prefix (concat dotspacemacs-leader-key " " prefix))
-         (full-prefix-emacs (concat dotspacemacs-emacs-leader-key " " prefix))
-         (full-prefix-lst (listify-key-sequence (kbd full-prefix)))
-         (full-prefix-emacs-lst (listify-key-sequence
-                                 (kbd full-prefix-emacs))))
-    ;; define the prefix command only if it does not already exist
-    (unless long-name (setq long-name name))
-    (which-key-declare-prefixes
-      full-prefix-emacs (cons name long-name)
-      full-prefix (cons name long-name))))
-
-(defun spacemacs/declare-prefix-for-mode (mode prefix name &optional long-name)
-  "Declare a prefix PREFIX. MODE is the mode in which this prefix command should
-be added. PREFIX is a string describing a key sequence. NAME is a symbol name
-used as the prefix command."
-  (let  ((command (intern (concat (symbol-name mode) name)))
-         (full-prefix (concat dotspacemacs-leader-key " " prefix))
-         (full-prefix-emacs (concat dotspacemacs-emacs-leader-key " " prefix))
-         (is-major-mode-prefix (string-prefix-p "m" prefix))
-         (major-mode-prefix (concat dotspacemacs-major-mode-leader-key
-                                    " " (substring prefix 1)))
-         (major-mode-prefix-emacs
-          (concat dotspacemacs-major-mode-emacs-leader-key
-                  " " (substring prefix 1))))
-    (unless long-name (setq long-name name))
-    (let ((prefix-name (cons name long-name)))
-      (which-key-declare-prefixes-for-mode mode
-        full-prefix-emacs prefix-name
-        full-prefix prefix-name)
-      (when (and is-major-mode-prefix dotspacemacs-major-mode-leader-key)
-        (which-key-declare-prefixes-for-mode mode major-mode-prefix prefix-name))
-      (when (and is-major-mode-prefix dotspacemacs-major-mode-emacs-leader-key)
-        (which-key-declare-prefixes-for-mode
-          mode major-mode-prefix-emacs prefix-name)))))
-
-(defun spacemacs/set-leader-keys (key def &rest bindings)
-  "Add KEY and DEF as key bindings under
-`dotspacemacs-leader-key' and `dotspacemacs-emacs-leader-key'.
-KEY should be a string suitable for passing to `kbd', and it
-should not include the leaders. DEF is most likely a quoted
-command. See `define-key' for more information about the possible
-choices for DEF. This function simply uses `define-key' to add
-the bindings.
-
-For convenience, this function will accept additional KEY DEF
-pairs. For example,
-
-\(spacemacs/set-leader-keys
-   \"a\" 'command1
-   \"C-c\" 'command2
-   \"bb\" 'command3\)"
-  (while key
-    (define-key spacemacs-default-map (kbd key) def)
-    (setq key (pop bindings) def (pop bindings))))
-(put 'spacemacs/set-leader-keys 'lisp-indent-function 'defun)
-
-(defalias 'evil-leader/set-key 'spacemacs/set-leader-keys)
-
-(defun spacemacs//acceptable-leader-p (key)
-  "Return t if key is a string and non-empty."
-  (and (stringp key) (not (string= key ""))))
-
-(defun spacemacs//init-leader-mode-map (mode map &optional minor)
-  "Check for MAP-prefix. If it doesn't exist yet, use `bind-map'
-to create it and bind it to `dotspacemacs-major-mode-leader-key'
-and `dotspacemacs-major-mode-emacs-leader-key'. If MODE is a
-minor-mode, the third argument should be non nil."
-  (let* ((prefix (intern (format "%s-prefix" map)))
-         (leader1 (when (spacemacs//acceptable-leader-p
-                         dotspacemacs-major-mode-leader-key)
-                    dotspacemacs-major-mode-leader-key))
-         (leader2 (when (spacemacs//acceptable-leader-p
-                         dotspacemacs-leader-key)
-                    (concat dotspacemacs-leader-key
-                            (unless minor " m"))))
-         (emacs-leader1 (when (spacemacs//acceptable-leader-p
-                               dotspacemacs-major-mode-emacs-leader-key)
-                          dotspacemacs-major-mode-emacs-leader-key))
-         (emacs-leader2 (when (spacemacs//acceptable-leader-p
-                               dotspacemacs-emacs-leader-key)
-                          (concat dotspacemacs-emacs-leader-key
-                                  (unless minor " m"))))
-         (leaders (delq nil (list leader1 leader2)))
-         (emacs-leaders (delq nil (list emacs-leader1 emacs-leader2))))
-    (or (boundp prefix)
-        (progn
-          (eval
-           `(bind-map ,map
-              :prefix-cmd ,prefix
-              ,(if minor :minor-modes :major-modes) (,mode)
-              :keys ,emacs-leaders
-              :evil-keys ,leaders
-              :evil-states (normal motion visual evilified)))
-          (boundp prefix)))))
-
-(defun spacemacs/set-leader-keys-for-major-mode (mode key def &rest bindings)
-  "Add KEY and DEF as key bindings under
-`dotspacemacs-major-mode-leader-key' and
-`dotspacemacs-major-mode-emacs-leader-key' for the major-mode
-MODE. MODE should be a quoted symbol corresponding to a valid
-major mode. The rest of the arguments are treated exactly like
-they are in `spacemacs/set-leader-keys'."
-  (let* ((map (intern (format "spacemacs-%s-map" mode))))
-    (when (spacemacs//init-leader-mode-map mode map)
-      (while key
-        (define-key (symbol-value map) (kbd key) def)
-        (setq key (pop bindings) def (pop bindings))))))
-(put 'spacemacs/set-leader-keys-for-major-mode 'lisp-indent-function 'defun)
-
-(defalias
-  'evil-leader/set-key-for-mode
-  'spacemacs/set-leader-keys-for-major-mode)
-
-(defun spacemacs/set-leader-keys-for-minor-mode (mode key def &rest bindings)
-  "Add KEY and DEF as key bindings under
-`dotspacemacs-major-mode-leader-key' and
-`dotspacemacs-major-mode-emacs-leader-key' for the minor-mode
-MODE. MODE should be a quoted symbol corresponding to a valid
-minor mode. The rest of the arguments are treated exactly like
-they are in `spacemacs/set-leader-keys'."
-  (let* ((map (intern (format "spacemacs-%s-map" mode))))
-    (when (spacemacs//init-leader-mode-map mode map t)
-      (while key
-        (define-key (symbol-value map) (kbd key) def)
-        (setq key (pop bindings) def (pop bindings))))))
-(put 'spacemacs/set-leader-keys-for-minor-mode 'lisp-indent-function 'defun)
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defvar dotspacemacs-leader-key "SPC"
-  "The leader key.")
-
-(defvar dotspacemacs-emacs-leader-key "M-m"
-  "The leader key accessible in `emacs state' and `insert state'")
-
-(defvar dotspacemacs-major-mode-leader-key ","
-  "Major mode leader key is a shortcut key which is the equivalent of
-pressing `<leader> m`. Set it to `nil` to disable it.")
-
-(defvar dotspacemacs-major-mode-emacs-leader-key "C-M-m"
-  "Major mode leader key accessible in `emacs state' and `insert state'")
-(setq dotspacemacs-leader-key "SPC")
-
-#+END_SRC
-
-*** Markdown namespace
-#+BEGIN_SRC emacs-lisp
-(defun my-markdown-config ()
-  "Modify keymaps in markdown mode"
-;; Declare prefixes and bind keys
-      (dolist (prefix '(("mc" . "markdown/command")
-                        ("mh" . "markdown/header")
-                        ("mi" . "markdown/insert")
-                        ("ml" . "markdown/lists")
-                        ("mx" . "markdown/text")))
-        (spacemacs/declare-prefix-for-mode
-         'markdown-mode (car prefix) (cdr prefix)))
-      (spacemacs/set-leader-keys-for-major-mode 'markdown-mode
-        ;; Movement
-        "{"   'markdown-backward-paragraph
-        "}"   'markdown-forward-paragraph
-        ;; Completion, and Cycling
-        "]"   'markdown-complete
-        ;; Indentation
-        ">"   'markdown-indent-region
-        "<"   'markdown-exdent-region
-        ;; Buffer-wide commands
-        "c]"  'markdown-complete-buffer
-        "cc"  'markdown-check-refs
-        "ce"  'markdown-export
-        "cm"  'markdown-other-window
-        "cn"  'markdown-cleanup-list-numbers
-        "co"  'markdown-open
-        "cp"  'markdown-preview
-        "cv"  'markdown-export-and-preview
-        "cw"  'markdown-kill-ring-save
-        ;; headings
-        "hi"  'markdown-insert-header-dwim
-        "hI"  'markdown-insert-header-setext-dwim
-        "h1"  'markdown-insert-header-atx-1
-        "h2"  'markdown-insert-header-atx-2
-        "h3"  'markdown-insert-header-atx-3
-        "h4"  'markdown-insert-header-atx-4
-        "h5"  'markdown-insert-header-atx-5
-        "h6"  'markdown-insert-header-atx-6
-        "h!"  'markdown-insert-header-setext-1
-        "h@"  'markdown-insert-header-setext-2
-        ;; Insertion of common elements
-        "-"   'markdown-insert-hr
-        "if"  'markdown-insert-footnote
-        "ii"  'markdown-insert-image
-        "ik"  'spacemacs/insert-keybinding-markdown
-        "iI"  'markdown-insert-reference-image
-        "il"  'markdown-insert-link
-        "iL"  'markdown-insert-reference-link-dwim
-        "iw"  'markdown-insert-wiki-link
-        "iu"  'markdown-insert-uri
-        ;; Element removal
-        "k"   'markdown-kill-thing-at-point
-        ;; List editing
-        "li"  'markdown-insert-list-item
-        ;; region manipulation
-        "xb"  'markdown-insert-bold
-        "xi"  'markdown-insert-italic
-        "xc"  'markdown-insert-code
-        "xC"  'markdown-insert-gfm-code-block
-        "xq"  'markdown-insert-blockquote
-        "xQ"  'markdown-blockquote-region
-        "xp"  'markdown-insert-pre
-        "xP"  'markdown-pre-region
-        ;; Following and Jumping
-        "N"   'markdown-next-link
-        "f"   'markdown-follow-thing-at-point
-        "P"   'markdown-previous-link
-        "<RET>" 'markdown-jump)
-
-      ;; Header navigation in normal state movements
-      (evil-define-key 'normal markdown-mode-map
-        "gj" 'outline-forward-same-level
-        "gk" 'outline-backward-same-level
-        "gh" 'outline-up-heading
-        ;; next visible heading is not exactly what we want but close enough
-        "gl" 'outline-next-visible-heading)
-        
-      ;; Cycle headers like in org-mode
-      (evil-define-key 'normal markdown-mode-map (kbd "TAB") 'markdown-cycle)
-
-      ;; Promotion, Demotion
-      (define-key markdown-mode-map (kbd "M-h") 'markdown-promote)
-      (define-key markdown-mode-map (kbd "M-j") 'markdown-move-down)
-      (define-key markdown-mode-map (kbd "M-k") 'markdown-move-up)
-      (define-key markdown-mode-map (kbd "M-l") 'markdown-demote))
-
-#+END_SRC
-
-*** Org-mode namespace
-#+BEGIN_SRC emacs-lisp
-  (defmacro spacemacs|org-emphasize (fname char)
-          "Make function for setting the emphasis in org mode"
-            `(defun ,fname () (interactive)
-                    (org-emphasize ,char)))
-
-  (defun cpm/org-keybindings ()
-  (spacemacs/set-leader-keys-for-major-mode 'org-mode
-          "'" 'org-edit-special
-          "c" 'org-capture
-          "d" 'org-deadline
-          "D" 'org-insert-drawer
-          "e" 'org-export-dispatch
-          "f" 'org-footnote-action
-          "F" 'org-set-effort
-          "P" 'org-set-property
-          ;; "P" 'org-publish-current-project
-          "p" 'org-publish-current-file
-          ":" 'org-set-tags
-
-          "a" 'org-agenda
-          "b" 'org-tree-to-indirect-buffer
-          "A" 'org-archive-subtree
-          "l" 'org-open-at-point
-          "T" 'org-show-todo-tree
-
-          "." 'org-time-stamp
-          "!" 'org-time-stamp-inactive
-
-          ;; headings
-          "hi" 'org-insert-heading-after-current
-          "hI" 'org-insert-heading
-
-          ;; More cycling options (timestamps, headlines, items, properties)
-          "L" 'org-shiftright
-          "H" 'org-shiftleft
-          "J" 'org-shiftdown
-          "K" 'org-shiftup
-
-          ;; Change between TODO sets
-          "C-S-l" 'org-shiftcontrolright
-          "C-S-h" 'org-shiftcontrolleft
-          "C-S-j" 'org-shiftcontroldown
-          "C-S-k" 'org-shiftcontrolup
-
-          ;; Subtree editing
-          "Sl" 'org-demote-subtree
-          "Sh" 'org-promote-subtree
-          "Sj" 'org-move-subtree-down
-          "Sk" 'org-move-subtree-up
-
-          ;; tables
-          "ta" 'org-table-align
-          "tb" 'org-table-blank-field
-          "tc" 'org-table-convert
-          "tdc" 'org-table-delete-column
-          "tdr" 'org-table-kill-row
-          "te" 'org-table-eval-formula
-          "tE" 'org-table-export
-          "th" 'org-table-previous-field
-          "tH" 'org-table-move-column-left
-          "tic" 'org-table-insert-column
-          "tih" 'org-table-insert-hline
-          "tiH" 'org-table-hline-and-move
-          "tir" 'org-table-insert-row
-          "tI" 'org-table-import
-          "tj" 'org-table-next-row
-          "tJ" 'org-table-move-row-down
-          "tK" 'org-table-move-row-up
-          "tl" 'org-table-next-field
-          "tL" 'org-table-move-column-right
-          "tn" 'org-table-create
-          "tN" 'org-table-create-with-table.el
-          "tr" 'org-table-recalculate
-          "ts" 'org-table-sort-lines
-          "ttf" 'org-table-toggle-formula-debugger
-          "tto" 'org-table-toggle-coordinate-overlays
-          "tw" 'org-table-wrap-region
-
-          ;; Multi-purpose keys
-          (or dotspacemacs-major-mode-leader-key ",") 'org-ctrl-c-ctrl-c
-          "*" 'org-ctrl-c-star
-          "RET" 'org-ctrl-c-ret
-          "-" 'org-ctrl-c-minus
-          "^" 'org-sort
-          "/" 'org-sparse-tree
-
-          "I" 'org-clock-in
-          "n" 'org-narrow-to-subtree
-          "N" 'widen
-          "O" 'org-clock-out
-          "q" 'org-clock-cancel
-          "R" 'org-refile
-          "s" 'org-schedule
-
-          ;; insertion of common elements
-          "il" 'org-insert-link
-          "if" 'org-footnote-new
-          "ik" 'spacemacs/insert-keybinding-org
-
-          ;; images and other link types have no commands in org mode-line
-          ;; could be inserted using yasnippet?
-          ;; region manipulation
-          "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
-          "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
-          "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
-          "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
-          "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
-          "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
-          "xv" (spacemacs|org-emphasize spacemacs/org-verbose ?=))
-
-        ;; Add global evil-leader mappings. Used to access org-agenda
-        ;; functionalities – and a few others commands – from any other mode.
-        (spacemacs/declare-prefix "ao" "org")
-        (spacemacs/set-leader-keys
-          ;; org-agenda
-          "ao#" 'org-agenda-list-stuck-projects
-          "ao/" 'org-occur-in-agenda-files
-          "aoa" 'org-agenda-list
-          "aoe" 'org-store-agenda-views
-          "aom" 'org-tags-view
-          "aoo" 'org-agenda
-          "aos" 'org-search-view
-          "aot" 'org-todo-list
-          ;; other
-          "aoO" 'org-clock-out
-          "aoc" 'org-capture
-          "aol" 'org-store-link))
-#+END_SRC
 * Test code
 #+BEGIN_SRC emacs-lisp
-   ;; define text objects
-      (defmacro spacemacs|define-text-object (key name start end)
-        (let ((inner-name (make-symbol (concat "evil-inner-" name)))
-              (outer-name (make-symbol (concat "evil-outer-" name)))
-              (start-regex (regexp-opt (list start)))
-              (end-regex (regexp-opt (list end))))
-          `(progn
-             (evil-define-text-object ,inner-name (count &optional beg end type)
-               (evil-select-paren ,start-regex ,end-regex beg end type count nil))
-             (evil-define-text-object ,outer-name (count &optional beg end type)
-               (evil-select-paren ,start-regex ,end-regex beg end type count t))
-             (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
-             (define-key evil-outer-text-objects-map ,key (quote ,outer-name))
-             (with-eval-after-load 'evil-surround
-               (push (cons (string-to-char ,key)
-                           (if ,end
-                               (cons ,start ,end)
-                             ,start))
-                     evil-surround-pairs-alist)))))
+  ;; define text objects
+     (defmacro spacemacs|define-text-object (key name start end)
+       (let ((inner-name (make-symbol (concat "evil-inner-" name)))
+             (outer-name (make-symbol (concat "evil-outer-" name)))
+             (start-regex (regexp-opt (list start)))
+             (end-regex (regexp-opt (list end))))
+         `(progn
+            (evil-define-text-object ,inner-name (count &optional beg end type)
+              (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+            (evil-define-text-object ,outer-name (count &optional beg end type)
+              (evil-select-paren ,start-regex ,end-regex beg end type count t))
+            (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+            (define-key evil-outer-text-objects-map ,key (quote ,outer-name))
+            (with-eval-after-load 'evil-surround
+              (push (cons (string-to-char ,key)
+                          (if ,end
+                              (cons ,start ,end)
+                            ,start))
+                    evil-surround-pairs-alist)))))
 
-      (spacemacs|define-text-object "$" "dollar" "$" "$")
-      (spacemacs|define-text-object "*" "star" "*" "*")
-      (spacemacs|define-text-object "8" "block-star" "/*" "*/")
-      (spacemacs|define-text-object "|" "bar" "|" "|")
-      (spacemacs|define-text-object "%" "percent" "%" "%")
-      (spacemacs|define-text-object "/" "slash" "/" "/")
-      (spacemacs|define-text-object "_" "underscore" "_" "_")
-      (spacemacs|define-text-object "-" "hyphen" "-" "-")
-      (spacemacs|define-text-object "~" "tilde" "~" "~")
-      (spacemacs|define-text-object "=" "equal" "=" "=")
+     (spacemacs|define-text-object "$" "dollar" "$" "$")
+     (spacemacs|define-text-object "*" "star" "*" "*")
+     (spacemacs|define-text-object "8" "block-star" "/*" "*/")
+     (spacemacs|define-text-object "|" "bar" "|" "|")
+     (spacemacs|define-text-object "%" "percent" "%" "%")
+     (spacemacs|define-text-object "/" "slash" "/" "/")
+     (spacemacs|define-text-object "_" "underscore" "_" "_")
+     (spacemacs|define-text-object "-" "hyphen" "-" "-")
+     (spacemacs|define-text-object "~" "tilde" "~" "~")
+     (spacemacs|define-text-object "=" "equal" "=" "=")
 
-      (evil-define-text-object evil-pasted (count &rest args)
-        (list (save-excursion (evil-goto-mark ?\[) (point))
-              (save-excursion (evil-goto-mark ?\]) (point))))
-      (define-key evil-inner-text-objects-map "P" 'evil-pasted)
+     (evil-define-text-object evil-pasted (count &rest args)
+       (list (save-excursion (evil-goto-mark ?\[) (point))
+             (save-excursion (evil-goto-mark ?\]) (point))))
+     (define-key evil-inner-text-objects-map "P" 'evil-pasted)
 
-      ;; define text-object for entire buffer
-      (evil-define-text-object evil-inner-buffer (count &optional beg end type)
-        (evil-select-paren "\\`" "\\'" beg end type count nil))
-      (define-key evil-inner-text-objects-map "g" 'evil-inner-buffer)
+     ;; define text-object for entire buffer
+     (evil-define-text-object evil-inner-buffer (count &optional beg end type)
+       (evil-select-paren "\\`" "\\'" beg end type count nil))
+     (define-key evil-inner-text-objects-map "g" 'evil-inner-buffer)
 
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
 * Server
 Start server
