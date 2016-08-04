@@ -1880,6 +1880,8 @@ Open exported docx files in Word/Open Office rather than emacs
                                ("#+header:" . ,rasmus/ob-header-symbol)
                                ("#+begin_comment" . ?✎)
                                ("#+end_comment" . ?✎)
+                               ("#+begin_notes" . ?➤)
+                               ("#+end_notes" . ?➤)
                                ("#+begin_quote" . ?»)
                                ("#+end_quote" . ?«)))))
     (turn-on-prettify-symbols-mode)
