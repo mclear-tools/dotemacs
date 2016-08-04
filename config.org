@@ -39,16 +39,16 @@ For =emacs 25= use the following:
 brew install emacs --with-cocoa --HEAD --use-git-head --devel --with-gnutls --with-imagemagick --with-librsvg
 #+END_SRC
 * Bootstrapping
-This config is fed into the [[https://github.com/mclear-tools/dotemacs/blob/master/init.el][real init file]]. The configuration for that
-is below. [[http://orgmode.org][Org mode]] is installed if not already present, as is
-[[https://github.com/jwiegley/use-package][use-package]]. There is no need for any other package management. The
-whole init config is below. This is the bootstrap code for geting the
-literate configuration file in =config.org= up and running. The original
-source for much of this code is from sriramkswamy/dotemacs at
+This is the bootstrap code for getting the literate configuration file
+in =config.org= up and running. The original source for much of this code
+is from sriramkswamy/dotemacs at
 =https://github.com/sriramkswamy/dotemacs=. I've also been inspired by
 [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's configuration]]. There are also many other sources from
 around the Internet whose names I've forgotten. Thanks to all of you for
-making your configurations public!
+making your configurations public! This config is fed into the [[https://github.com/mclear-tools/dotemacs/blob/master/init.el][real init
+file]]. [[http://orgmode.org][Org mode]] is installed if not already present, as is [[https://github.com/jwiegley/use-package][use-package]].
+There is no need for any other package management. I've reproduced the
+whole init config below.
 
 #+BEGIN_SRC emacs-lisp :tangle no
   ;;; init.el --- Global settings -*- lexical-binding: t; -*-
