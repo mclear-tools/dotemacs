@@ -398,6 +398,11 @@ There are configurations to make when running Emacs on OS X (hence the
 This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle the dotfile on save instead of tangling it every time I open it again.
 
 #+BEGIN_SRC emacs-lisp
+(use-package async
+  :ensure t
+  :commands (async-start)
+  :defer 2)
+
 (defun tangle-if-init ()
   "If the current buffer is 'config.org' the code-blocks are
     tangled, and the tangled file is compiled."
@@ -2850,18 +2855,19 @@ Numbered window shortcuts for Emacs
 [[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
 
 #+BEGIN_SRC emacs-lisp
-(use-package async
-  :ensure t
-  :commands (async-start))
+  ;; (use-package async
+  ;;   :ensure t
+  ;;   :disabled t
+  ;;   :commands (async-start))
 
-(use-package cl-lib
-  :ensure t)
+  (use-package cl-lib
+    :ensure t)
 
-(use-package dash
-  :ensure t)
+  (use-package dash
+    :ensure t)
 
-(use-package s
-  :ensure t)
+  (use-package s
+    :ensure t)
 #+END_SRC
  
 * Completion
