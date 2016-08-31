@@ -1951,13 +1951,12 @@ Open exported docx files in Word/Open Office rather than emacs
   (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
 #+END_SRC
 
-* Research 
+* Research
 Packages I use for research and writing.
 ** Helm-Bibtex
 Great for managing citations and notes
 #+begin_src emacs-lisp :tangle yes
   (use-package helm-bibtex
-    :defer t
     :ensure t
     :after helm
     :commands helm-bibtex
