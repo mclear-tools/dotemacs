@@ -1559,6 +1559,19 @@ well with org-mode using org-indent. So I don't use it globally.
   (interactive)
   (evil-ex '"!Git add % && Git commit -m '" ))
 #+END_SRC
+
+** Git status in dired
+Like the title says...
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package dired-k
+    :ensure t
+    :config
+  (progn
+    (setq dired-use-ls-dired nil)
+    ;; always execute dired-k when dired buffer is opened
+    (add-hook 'dired-initial-position-hook 'dired-k)
+    (add-hook 'dired-after-readin-hook #'dired-k-no-revert)))
+#+END_SRC
 * Org
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 ** Base settings
