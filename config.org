@@ -280,30 +280,52 @@ Useful to get a faster Emacs load time because it avoids autoloads of elisp mode
 #+END_SRC
 
 * Settings
+** Cache Directory
+#+BEGIN_SRC emacs-lisp
+  (defconst user-cache-directory
+    (file-name-as-directory (concat user-emacs-directory ".cache"))
+    "My emacs storage area for persistent files.")
+  ;; create the `user-cache-directory' if it doesn't exist
+  (make-directory user-cache-directory t)
+#+END_SRC
 ** Backups
 #+BEGIN_SRC emacs-lisp
- (setq backup-directory-alist
-          `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
-(setq make-backup-files t               ; backup of a file the first time it is saved.
-      backup-by-copying t               ; don't clobber symlinks
-      version-control t                 ; version numbers for backup files
-      delete-old-versions t             ; delete excess backup files silently
-      delete-by-moving-to-trash t
-      kept-old-versions 4               ; oldest versions to keep when a new numbered backup is made
-      kept-new-versions 6               ; newest versions to keep when a new numbered backup is made
-      auto-save-default t               ; auto-save every buffer that visits a file
-      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
-      )
+   ;; (setq backup-directory-alist
+   ;;          `((".*" . ,temporary-file-directory)))
+      ;; (setq auto-save-file-name-transforms
+      ;;       `((".*" ,temporary-file-directory t)))
+
+  (let ((backup-dir (concat user-cache-directory "backup")))
+    ;; Move backup file to `~/.emacs.d/.cache/backup'
+    (setq backup-directory-alist `(("." . ,backup-dir)))
+    ;; Makesure backup directory exist
+    (when (not (file-exists-p backup-dir))
+      (make-directory backup-dir t)))
+
+  (setq make-backup-files t               ; backup of a file the first time it is saved.
+        backup-by-copying t               ; don't clobber symlinks
+        version-control t                 ; version numbers for backup files
+        delete-old-versions t             ; delete excess backup files silently
+        delete-by-moving-to-trash t
+        kept-old-versions 4               ; oldest versions to keep when a new numbered backup is made
+        kept-new-versions 6               ; newest versions to keep when a new numbered backup is made
+        auto-save-default t               ; auto-save every buffer that visits a file
+        auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+        auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+        )
 #+END_SRC
 *** Auto Save
-I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in the temporary directory.
+I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in the cache directory.
 
 #+BEGIN_SRC emacs-lisp
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
-      create-lockfiles nil)
+  (let ((auto-save-dir (concat user-cache-directory "auto-save")))
+    ;; Move backup file to `~/.emacs.d/.cache/auto-save
+  (setq auto-save-file-name-transforms
+        `((".*" ,auto-save-dir t)))
+    ;; Makesure auto-save directory exist
+        (when (not (file-exists-p auto-save-dir))
+      (make-directory auto-save-dir t)))
+  (setq create-lockfiles nil)
 #+END_SRC
 
 *** Full Auto Save
