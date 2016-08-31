@@ -4150,6 +4150,7 @@ Keybindings for managing packages
 
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
+(custom-set-faces (if (not window-system) '(default ((t (:background "nil"))))))
 #+END_SRC
 * Server
 Start server
