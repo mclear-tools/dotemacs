@@ -3744,6 +3744,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
       "bk" 'evil-delete-buffer
       "bK" 'spacemacs/kill-other-buffers
       "bn" 'spacemacs/new-empty-buffer
+      "bN" 'nuke-all-buffers
       "br" 'revert-buffer
       "bR" 'spacemacs/rename-current-buffer-file
       "bt" 'open-dir-in-iterm
@@ -3907,6 +3908,7 @@ Keybindings for org mode
   (which-key-declare-prefixes "<SPC>oi" "insert")
   (which-key-declare-prefixes "<SPC>oS" "subtree")
   (which-key-declare-prefixes "<SPC>ot" "tables")
+  (which-key-declare-prefixes "<SPC>or" "org-reveal")
   (evil-leader/set-key 
     "oj" 'cpm/org-journal
     "oc" 'org-capture
@@ -3920,7 +3922,10 @@ Keybindings for org mode
     "oA" 'org-archive-subtree
     "ol" 'org-open-at-point
     "oT" 'org-show-todo-tree
-    "or" 'org-reveal-export-to-html-and-browse
+
+    "orr" 'org-reveal-export-to-html-and-browse
+    "ors" 'org-reveal-export-current-subtree
+    "orp" 'reveal-to-pdf
 
     "o." 'org-time-stamp
     "o!" 'org-time-stamp-inactive
@@ -4002,26 +4007,28 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
 (which-key-declare-prefixes "<SPC>p" "Projects")
 (evil-leader/set-key 
-  "p!" 'projectile-run-shell-command-in-root
-  "p&" 'projectile-run-async-shell-command-in-root
-  "pa" 'projectile-toggle-between-implementation-and-test
+  "p!"  'projectile-run-shell-command-in-root
+  "p&"  'projectile-run-async-shell-command-in-root
+  "pa"  'projectile-toggle-between-implementation-and-test
   "pb"  'helm-projectile-switch-to-buffer
-  "pc" 'projectile-compile-project
+  "pc"  'projectile-compile-project
   "pd"  'helm-projectile-find-dir
-  "pD" 'projectile-dired
+  "pD"  'projectile-dired
   "pf"  'helm-projectile-find-file
-  "pg" 'goto-projects
+  "pg"  'goto-projects
   "ph"  'helm-projectile
-  "pG" 'projectile-regenerate-tags
-  "pI" 'projectile-invalidate-cache
-  "pk" 'projectile-kill-buffers
-  "po" 'projectile-multi-occur
+  "pG"  'projectile-regenerate-tags
+  "pI"  'projectile-invalidate-cache
+  "pk"  'projectile-kill-buffers
+  "po"  'projectile-multi-occur
   "pp"  'helm-projectile-switch-project
   "pr"  'helm-projectile-recentf
-  "pR" 'projectile-replace
-  "pT" 'projectile-find-test-file
+  "pR"  'projectile-replace
+  "ps"  'desktop-save
+  "pS"  'desktop-read
+  "pT"  'projectile-find-test-file
   "pv"  'projectile-vc
-  "py" 'projectile-find-tag
+  "py"  'projectile-find-tag
   "sgp" 'helm-projectile-grep
 )
 #+END_SRC
