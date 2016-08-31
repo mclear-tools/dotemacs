@@ -2685,6 +2685,25 @@ don't cause as much overhead."
   :ensure t)
 #+END_SRC
  
+** Highlight numbers
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-numbers
+  :ensure t
+  :defer t 
+  :init
+  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+#+END_SRC
+ 
+** Highlight TODOs
+highlight TODO statements in comments 
+#+BEGIN_SRC emacs-lisp
+(use-package hl-todo
+  :ensure t
+  :defer t
+  :config
+  (setq global-hl-todo-mode t))
+#+END_SRC
+ 
 ** Iedit
 [[https://www.masteringemacs.org/article/iedit-interactive-multi-occurrence-editing-in-your-buffer][Iedit-mode]] is the bomb. Quick, fast edits of every symbol selected. Although [[*Multiple cursors][multiple cursors]] has some more features, this is the best choice for quick renaming of variables/words.
 
@@ -2702,23 +2721,17 @@ don't cause as much overhead."
   :defer t)
 #+END_SRC
  
-** Highlight numbers
+** Lorem ipsum
+Make arbitrary blocks or sentences of text.
 #+BEGIN_SRC emacs-lisp
-(use-package highlight-numbers
-  :ensure t
-  :defer t 
-  :init
-  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+  (use-package lorem-ipsum
+    :ensure t
+    :defer t
+    :config 
+    (lorem-ipsum-use-default-bindings)
+    )
+
 #+END_SRC
- 
-** Highlight TODOs
-highlight TODO statements in comments 
-#+BEGIN_SRC emacs-lisp
-(use-package hl-todo
-  :ensure t
-  :defer t)
-#+END_SRC
- 
 ** Paradox
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
