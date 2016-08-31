@@ -1345,7 +1345,7 @@ A popup shell
                                       (kill-buffer (process-buffer proc))
                                       (delete-window))))))
         (add-hook 'term-mode-hook 'ansi-term-handle-close)
-        (add-hook 'term-mode-hook (lambda () (linum-mode -1) (centered-window-mode 0)))
+        (add-hook 'term-mode-hook (lambda () (linum-mode -1)))
         )
 #+end_src
 
@@ -2354,9 +2354,11 @@ I mostly don't use this in favor of helm-bibtex
 (use-package centered-window-mode
   :defer t
   :ensure t
+  :disabled t
   :diminish centered-window-mode
-  :config
+  :init
   (setq cwm-centered-window-width 90))
+
   (defun distraction-free ()
   "distraction free writing"
     (interactive)
@@ -2381,7 +2383,6 @@ I mostly don't use this in favor of helm-bibtex
   :defer t
   :config
   (progn
-
     (defun ag/jump-to-result-if-only-one-match ()
       "Jump to the first ag result if that ag search came up with just one match."
       (let (only-one-match)
