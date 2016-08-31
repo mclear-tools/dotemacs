@@ -1301,7 +1301,6 @@ When one shell isn't enough
 #+BEGIN_SRC emacs-lisp
 (use-package multi-term
     :defer t
-    :disabled t
     :ensure t
     :config
     (bind-key "C-x m" 'multi-term)
