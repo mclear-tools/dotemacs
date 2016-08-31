@@ -340,6 +340,11 @@ I also make emacs just outright save all buffers.
             (basic-save-buffer)))))
   (add-hook 'auto-save-hook 'full-auto-save)
 #+END_SRC
+
+** Desktop save
+#+BEGIN_SRC emacs-lisp
+  (setq desktop-dirname (concat user-cache-directory "desktop"))
+#+END_SRC
 ** Custom file settings
 Set up the customize file to its own separate file, instead of saving
 customize settings in [[file:init.el][init.el]].
@@ -910,6 +915,11 @@ And here's how we tell Emacs to use the font we want to use.
                projectile-switch-to-buffer
                projectile-vc)
     :config
+    ;; save projectile-known-projects-file in cache folder
+    (setq projectile-known-projects-file
+        (concat user-cache-directory "projectile-bookmarks.eld"))
+    (setq projectile-cache-file
+        (concat user-cache-directory "projectile.cache"))
     (progn
       (projectile-global-mode)))
 #+END_SRC
@@ -2429,6 +2439,15 @@ Auto-revert buffers of changed files
 (use-package bind-map
   :ensure t)
 #+END_SRC
+
+** Bookmark
+#+BEGIN_SRC emacs-lisp 
+  (use-package bookmark
+    :defer t
+    :config
+    (setq bookmark-default-file
+             (concat user-cache-directory "bookmarks")))
+#+END_SRC 
 ** Centered Cursor Mode
 #+BEGIN_SRC emacs-lisp
   (use-package centered-cursor-mode
@@ -2746,6 +2765,13 @@ Better dired navigation using ranger-like settings
 #+END_SRC
 
 ** Recent files
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+  :init
+  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory))
+  :config
+  (recentf-mode 1))
+#+END_SRC
 Open recentf on startup
 #+BEGIN_SRC emacs-lisp
   (use-package init-open-recentf
@@ -2808,7 +2834,14 @@ Distinguish buffers with the same name
         uniquify-after-kill-buffer-p t
         uniquify-ignore-buffers-re "^\\*"))
 #+end_src
-
+** Url
+#+BEGIN_SRC emacs-lisp
+  (use-package url
+    :config
+    (setq url-configuration-directory
+           (file-name-as-directory
+            (concat user-cache-directory "url"))))
+#+END_SRC
 ** Visual replace
 This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
 
