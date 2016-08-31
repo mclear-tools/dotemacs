@@ -3482,6 +3482,63 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
    (t
     (call-interactively 'helm-semantic-or-imenu))))
 #+END_SRC
+** Jump to sexp
+#+BEGIN_SRC emacs-lisp
+(defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+#+END_SRC
+** Goto journal 
+#+BEGIN_SRC emacs-lisp
+  (defun goto-journal ()
+    (interactive)
+    (find-file "/Users/Roambot/Dropbox/journal.org"))
+#+END_SRC
+** Kill all other buffers
+Kill all the buffers except =*scratch*= buffer
+#+BEGIN_SRC emacs-lisp
+  (defun nuke-all-buffers ()
+  "Kill all buffers, leaving *scratch* only."
+  (interactive)
+  (mapcar (lambda (x) (kill-buffer x)) (buffer-list))
+  (delete-other-windows))
+#+END_SRC
+** Eval emacs buffer until error
+#+BEGIN_SRC emacs-lisp
+  (defun eval-buffer-until-error ()
+  "Evaluate emacs buffer until error occured."
+  (interactive)
+  (goto-char (point-min))
+  (while t (eval (read (current-buffer)))))
+#+END_SRC
+** Timestamps
+The code below sets the correct value for system-time-locale, and binds
+keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
+#+BEGIN_SRC emacs-lisp
+  (defun format-date (format)
+  (let ((system-time-locale "en_US.UTF-8"))
+    (insert (format-time-string format))))
+
+(defun insert-date ()
+  (interactive)
+  (format-date "%A, %B %d %Y"))
+
+(defun insert-date-and-time ()
+  (interactive)
+  (format-date "%Y-%m-%d %H:%M:%S"))
+#+END_SRC
+** Reveal to PDF
+#+BEGIN_SRC emacs-lisp
+  (defun reveal-to-pdf ()
+  "print reveal.js slides to pdf"
+  (interactive)
+  (async-shell-command "phantomjs /Users/Roambot/bin/print-pdf.js 'file:///Users/Roambot/projects/phil101/content/slides/lecture_outline.html?print-pdf'")) 
+#+END_SRC
 ** Other functions
 Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
 #+BEGIN_SRC emacs-lisp
@@ -3621,23 +3678,6 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     "Write the file under new name."
     (interactive)
     (call-interactively 'write-file))
-#+END_SRC
-** Jump to sexp
-#+BEGIN_SRC emacs-lisp
-(defun forward-or-backward-sexp (&optional arg)
-  "Go to the matching parenthesis character if one is adjacent to point."
-  (interactive "^p")
-  (cond ((looking-at "\\s(") (forward-sexp arg))
-        ((looking-back "\\s)" 1) (backward-sexp arg))
-        ;; Now, try to succeed from inside of a bracket
-        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
-        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
-#+END_SRC
-** Goto journal 
-#+BEGIN_SRC emacs-lisp
-  (defun goto-journal ()
-    (interactive)
-    (find-file "/Users/Roambot/Dropbox/journal.org"))
 #+END_SRC
 * Keybindings
 I use a lot of keybindings, with <SPC> as my "leader" key
