@@ -460,7 +460,25 @@ This was taken from [[https://github.com/alanpearce/dotfiles/blob/master/tag-ema
    (lambda (result)
      (message "Init tangling completed: %s" result))))
 #+END_SRC
-
+** Garbage Collection
+By binding this temporarily to a large number, you can effectively
+prevent garbage collection during a part of the program. I increase the
+value when enter minibuffer, this will help to improve minibuffer speed
+with large package like helm, flx. I got this from [[http://coldnew.github.io/coldnew-emacs/#orgheadline152][coldnew]] who got it
+from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/][bling's blog]].
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load 'minibuffer
+  '(progn
+     (lexical-let ((default-threshold gc-cons-threshold))
+       (defun my/minibuffer-gc-setup-hook ()
+         (setq gc-cons-threshold most-positive-fixnum))
+       (add-hook 'minibuffer-setup-hook #'my/minibuffer-gc-setup-hook)
+       ;; When exit, set back to default threshold
+       (defun my/minibuffer-gc-exit-hook ()
+         (setq gc-cons-threshold default-threshold))
+       (add-hook 'minibuffer-exit-hook #'my/minibuffer-gc-exit-hook))))
+       (setq garbage-collection-messages t)
+#+END_SRC
 ** Other settings
 #+BEGIN_SRC emacs-lisp
   ;; Keep focus while navigating help buffers
