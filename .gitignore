@@ -21,3 +21,5 @@ config.el*
 /core-funcs.el
 /core-keybindings.el
 /evilify.el
+/slides.pdf
+.cache/
