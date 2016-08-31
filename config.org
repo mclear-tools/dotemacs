@@ -1,8 +1,8 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Colin McLear
 
-This is my emacs configuration file. I use org-mode to organize it and then
-"tangle" the file using org-babel. You can find a helpful discussion of this
+This is my emacs configuration file. I use [[http://orgmode.org][org-mode]] to organize it and then
+"tangle" the file using [[http://orgmode.org/worg/org-contrib/babel/][org-babel]]. You can find a helpful discussion of this
 method [[http://stackoverflow.com/questions/17416738/emacs-initialization-as-org-file-how-can-i-get-the-right-version-of-org-mode][here]]. 
 
 I use emacs for all my academic work. The configuration tends in that direction,
@@ -10,7 +10,7 @@ as opposed to programming or literary work. If you don't tend to want to think
 about your text editor, but like emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] as a way
 of managing your configuration. For a more traditional emacs feel there are also
 the configurations of [[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]]. For a minimally sane setup
-you might also look at [[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
+you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
 
 * Installing Emacs
 
@@ -33,7 +33,7 @@ For =emacs-mac= use:
 brew install emacs-mac --with-gnutls --with-imagemagick --with-librsvg
 #+END_SRC
      
-For =emacs 25= use the following:
+For =GNU emacs 25= use the following:
 
 #+BEGIN_SRC sh :tangle no
 brew install emacs --with-cocoa --HEAD --use-git-head --devel --with-gnutls --with-imagemagick --with-librsvg
@@ -123,7 +123,7 @@ Tell emacs who you are.
       user-mail-address "mclear@fastmail.com")
 #+end_src
 
-* Default settings
+* Defaults
 Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
 ** Environment settings
 Make sure emacs correctly sets up your PATH.
