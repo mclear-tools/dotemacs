@@ -2459,6 +2459,7 @@ Auto-revert buffers of changed files
     :config
     (progn 
       (setq auto-revert-verbose nil ; Shut up, please!
+            revert-without-query '(".*") ;; disable revert query
             ;; Revert Dired buffers, too
             global-auto-revert-non-file-buffers t)))
 #+END_SRC
