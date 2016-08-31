@@ -3364,6 +3364,20 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
 (global-set-key (kbd "H-w") 'formatted-copy)
 
 #+END_SRC
+** Don't export Org-mode headlines
+#+BEGIN_SRC emacs-lisp
+  (defun org-remove-headlines (backend)
+  "Remove headlines with :no_title: tag."
+  (org-map-entries (lambda () (let ((beg (point)))
+                                (outline-next-visible-heading 1)
+                                (backward-char)
+                                (delete-region beg (point))))
+                   "no_export" tree)
+  (org-map-entries (lambda () (delete-region (point-at-bol) (point-at-eol)))
+                   "no_title"))
+
+  (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
+#+END_SRC
 ** Pandoc conversion from clipboard
 #+BEGIN_SRC emacs-lisp
   (defun cpm/org-to-markdown ()
