@@ -1390,7 +1390,8 @@ keybindings to access magit and related packages.
     (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
     :config
       (setq vc-follow-symlinks t)
-      (setq-default git-magit-status-fullscreen nil)
+      ;; make magit go fullscreen
+      ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
       (setq magit-diff-refine-hunk 'all)
       (global-git-commit-mode t) ; use emacs as editor for git commits
       (setq magit-push-always-verify nil)
