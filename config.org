@@ -47,7 +47,7 @@ in =config.org= up and running. The original source for much of this code
 is from [[https://github.com/sriramkswamy/dotemacs][sriramkswamy/dotemacs]]. I've also been inspired by [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's
 configuration]]. There are also many other sources from around the
 Internet whose names I've forgotten. Thanks to all of you for making
-your configurations public! This config is fed into the [[https://github.com/mclear-tools/dotemacs/blob/master/init.el][real init file]].
+your configurations public! This config is [[https://github.com/mclear-tools/dotemacs/blob/7e86c823ae3d5a9d1b0ff12c4bc1e7248dcf4f01/init.el#L56-L71][fed into]] the [[https://github.com/mclear-tools/dotemacs/blob/master/init.el][init file]].
 [[http://orgmode.org][Org mode]] is installed if not already present, as is [[https://github.com/jwiegley/use-package][use-package]]. There
 is no need for any other package management. 
 
