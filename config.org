@@ -928,7 +928,11 @@ A completion framework and much more. For a complete overview see [[http://tuhdo
 ** Helm packages
 *** Helm ag
 #+begin_src emacs-lisp :tangle yes
-(use-package helm-ag :ensure t :defer t)
+(use-package helm-ag 
+  :ensure t 
+  :defer t
+  :config
+  (setq helm-ag-fuzzy-match t))
 #+end_src
 *** Helm descbinds
 #+begin_src emacs-lisp :tangle yes
@@ -3976,6 +3980,8 @@ Keybindings for managing packages
     "sp" 'helm-ag-project-root
     "so" 'helm-occur
     "sd" 'helm-do-ag ;; search with directory prompt
+    "sb" 'helm-ag-buffers
+    "sf" 'helm-ag-this-file
     "sj" 'forward-or-backward-sexp
     "/"  'helm-ag  ;; search in directory with word prompt
     "sl" 'last-search-buffer
