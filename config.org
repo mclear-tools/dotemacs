@@ -1618,6 +1618,7 @@ Like the title says...
             (require 'ox-pandoc)
           :config
           ;; default options for all output formats
+          (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
           (setq org-pandoc-options '((standalone . t)))
           ;; cancel above settings only for 'docx' format
           (setq org-pandoc-options-for-docx '((standalone . nil)))
