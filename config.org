@@ -3093,7 +3093,12 @@ Numbered window shortcuts for Emacs
               (rainbow-delimiters-mode)))
               
 #+END_SRC
-
+** Haskell
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :ensure t
+    :defer t)
+#+END_SRC
 ** Html
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
