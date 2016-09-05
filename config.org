@@ -412,6 +412,14 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
        (add-hook 'minibuffer-exit-hook #'my/minibuffer-gc-exit-hook))))
        (setq garbage-collection-messages t)
 #+END_SRC
+** Time stamps
+#+BEGIN_SRC emacs-lisp
+  (setq 
+    time-stamp-active t          ; do enable time-stamps
+    time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp: 
+    time-stamp-format "Last modified on %04y-%02m-%02d %02H:%02M:%02S (%U)") ; date format
+  (add-hook 'write-file-hooks 'time-stamp) ; update when saving
+#+END_SRC
 ** Other settings
 #+BEGIN_SRC emacs-lisp
   ;; Keep focus while navigating help buffers
