@@ -2383,6 +2383,14 @@ I mostly don't use this in favor of helm-bibtex
 
 #+END_SRC
  
+** Auto-compile
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-compile
+    :ensure t
+    :config
+    (setq auto-compile-display-buffer nil)
+    (setq auto-compile-mode-line-counter t))
+#+END_SRC
 ** Autopair
 #+BEGIN_SRC emacs-lisp
 (use-package electric-pair-mode
