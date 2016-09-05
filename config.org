@@ -610,7 +610,7 @@ There are some other useful setup packages for evil
       (setq undo-tree-visualizer-timestamps t)
       (setq undo-tree-visualizer-diff t)
       (let ((undo-dir (concat user-cache-directory "undo")))
-      (setq undo-tree-history-directory-alist `((".*" . ,undo-dir))))
+      (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
     :config
     (global-undo-tree-mode)
     )
