@@ -442,7 +442,7 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
 
 ** Evil leader
 Use a leader key for [[*Keybindings][Keybindings]]. This has to come before =evil= is
-called, otherwise =<leader>= won't be available gloablly (e.g. in =*Messages*=).
+called, otherwise =<leader>= won't be available globally (e.g. in =*Messages*=).
 #+BEGIN_SRC emacs-lisp
   (use-package evil-leader
     :ensure t
