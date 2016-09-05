@@ -294,7 +294,7 @@ Center the cursor, and line numbers for programming modes.
   (add-hook 'prog-mode-hook 'linum-mode)
 #+END_SRC
 ** OSX settings
-There are configurations to make when running Emacs on OS X (hence the
+There is some configuration to do when running Emacs on OS X (hence the
 "darwin" system-type check).
 
 #+begin_src emacs-lisp
