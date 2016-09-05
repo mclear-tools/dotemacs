@@ -1276,23 +1276,22 @@ Sane settings for ansi-term
 ** Shell Pop
 A popup shell
 #+begin_src emacs-lisp :tangle yes
-     (use-package shell-pop
-        :defer t
-        :ensure t
-        :init
-        (evil-leader/set-key "'" 'shell-pop)
-        :config
-         (defun ansi-term-handle-close ()
-          "Close current term buffer when `exit' from term buffer."
-          (when (ignore-errors (get-buffer-process (current-buffer)))
-            (set-process-sentinel (get-buffer-process (current-buffer))
-                                  (lambda (proc change)
-                                    (when (string-match "\\(finished\\|exited\\)" change)
-                                      (kill-buffer (process-buffer proc))
-                                      (delete-window))))))
-        (add-hook 'term-mode-hook 'ansi-term-handle-close)
-        (add-hook 'term-mode-hook (lambda () (linum-mode -1)))
-        )
+  (use-package shell-pop
+     :defer t
+     :ensure t
+     :init
+     (evil-leader/set-key "'" 'shell-pop)
+     :config
+      (defun ansi-term-handle-close ()
+       "Close current term buffer when `exit' from term buffer."
+       (when (ignore-errors (get-buffer-process (current-buffer)))
+         (set-process-sentinel (get-buffer-process (current-buffer))
+                               (lambda (proc change)
+                                 (when (string-match "\\(finished\\|exited\\)" change)
+                                   (kill-buffer (process-buffer proc))
+                                   (delete-window))))))
+     (add-hook 'shell-pop-out-hook 'kill-this-buffer)
+     (add-hook 'term-mode-hook (lambda () (linum-mode -1) (ansi-term-handle-close))))
 #+end_src
 
 ** Shell settings
@@ -1300,7 +1299,9 @@ Other useful shell settings
 #+begin_src emacs-lisp
     ;; basic settings
     (setq explicit-shell-file-name "/usr/local/bin/zsh")
-    
+    ;; kill process buffers without query
+    (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+    (global-set-key (kbd "C-x k") 'kill-this-buffer) 
     ;; kill ansi-buffer on exit
     (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
       (if (memq (process-status proc) '(signal exit))
