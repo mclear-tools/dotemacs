@@ -351,6 +351,7 @@ There is some configuration to do when running Emacs on OS X (hence the
                                iterm-app-path
                              iterm-brew-path)))
           (shell-command (concat "open -a " iterm-path " ."))))
+          (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
 
       ;; Not going to use these commands
       (put 'ns-print-buffer 'disabled t)
