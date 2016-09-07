@@ -290,8 +290,8 @@ customize settings in [[file:init.el][init.el]].
 ** Text settings
 Center the cursor, and line numbers for programming modes.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook 'centered-cursor-mode)
-  (add-hook 'prog-mode-hook 'linum-mode)
+  (add-hook 'text-mode-hook (lambda () (centered-cursor-mode) (hl-line-mode 1)))
+  (add-hook 'prog-mode-hook (lambda () (linum-mode) (centered-cursor-mode) (hl-line-mode 1)))
 #+END_SRC
 ** OSX settings
 There is some configuration to do when running Emacs on OS X (hence the
@@ -4256,6 +4256,7 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
 (custom-set-faces (if (not window-system) '(default ((t (:background "nil"))))))
 #+END_SRC
+
 * Server
 Start server
 #+BEGIN_SRC emacs-lisp
