@@ -2534,6 +2534,10 @@ I mostly don't use this in favor of helm-bibtex
 #+BEGIN_SRC emacs-lisp
   (use-package auto-compile
     :ensure t
+    :defer 2
+    :init
+    (auto-compile-on-load-mode)
+    (auto-compile-on-save-mode)
     :config
     (setq auto-compile-display-buffer t)
     (setq auto-compile-mode-line-counter t))
