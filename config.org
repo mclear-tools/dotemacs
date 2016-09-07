@@ -430,7 +430,7 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
   (setq help-window-select 't)
 
   ;; highlight current line
-  (global-hl-line-mode t)
+  (global-hl-line-mode -1)
 
   ;; Save clipboard contents into kill-ring before replace them
   (setq save-interprogram-paste-before-kill t)
