@@ -1193,9 +1193,6 @@ An svg modeline.
   (display-time-mode)
 #+end_src
 
-#+RESULTS:
-: t
-
 ** Hide mode line
 Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
 
@@ -1439,6 +1436,7 @@ Basic settings
 
 
 #+END_SRC
+
 ** Eshell Prompt 
 Make the prompt display more useful info. I got a lot of help from looking
 at [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]].
@@ -2634,9 +2632,6 @@ A collection of ridiculously useful extensions. Indeed.
   (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
   (eval-after-load "projectile" '(diminish 'projectile-mode ""))
   #+END_SRC
-
-#+RESULTS:
-|   |
 
 ** Doc View Mode
 #+begin_src emacs-lisp :tangle yes
