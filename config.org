@@ -2911,6 +2911,7 @@ Better dired navigation using ranger-like settings
 ** Recent files
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
+  :defer 2
   :init
   (setq recentf-save-file (expand-file-name "recentf" user-cache-directory))
   :config
