@@ -306,6 +306,9 @@ There is some configuration to do when running Emacs on OS X (hence the
 
       ;; Don't make new frames when opening a new file with Emacs
       (setq ns-pop-up-frames nil)
+      
+      ;; non-lion fullscreen
+      (setq ns-use-native-fullscreen nil)
 
       ;; Set modifier keys
       (setq mac-option-modifier 'meta) ;; Bind meta to ALT
