@@ -24,3 +24,5 @@ alias FF find-file-other-window $1
 alias emacs find-file $1
 alias ed (eshell/cd "~/.emacs.d")
 alias pd (eshell/cd "~/projects")
+alias lc (find-file "~/.emacs.d/config.org")
+alias qq (evil-quit-all)
