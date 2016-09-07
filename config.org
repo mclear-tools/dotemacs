@@ -9,11 +9,11 @@ I use emacs for all my academic work. The configuration tends in that
 direction, as opposed to programming or literary work. It also uses [[http://www.vim.org][vim]]
 keybindings. I used vim (or [[https://neovim.io][neovim]]) previously. I think vim's modal
 editing is the best way to use a text-editor. If you like vim bindings
-but don't tend to want to think about your text editor, but like emacs,
-I strongly recommend [[http://spacemacs.org][spacemacs]] as a way of managing your configuration.
-For a more traditional emacs feel there are also the configurations of
-[[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]]. For a minimally sane setup you might also
-look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
+but don't tend to want to think about configuring emacs, I strongly
+recommend [[http://spacemacs.org][spacemacs]] as a way of managing your configuration. For a more
+traditional emacs feel there are also the configurations of [[https://github.com/purcell/emacs.d][purcell]] and
+[[https://github.com/bbatsov/prelude][batsov (prelude)]]. For a minimally sane setup you might also look at some
+[[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
 
 * Installing Emacs
 
