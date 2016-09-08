@@ -3910,6 +3910,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "?" 'helm-descbinds
     "<SPC>" 'helm-M-x
     "d" 'deer
+    "D" 'deer-jump-other-window
     "e" 'server-edit
     "h" 'helm-resume
     "j" 'ace-jump-mode
