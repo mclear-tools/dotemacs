@@ -580,15 +580,20 @@ There are some other useful setup packages for evil
 
 *** Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
-  (use-package evil-surround
-    :ensure t
-    :defer t
-    :commands (evil-surround-region)
-    :init 
-    (progn 
-      (global-evil-surround-mode 1)
-      (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
-      (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)))
+    (require 'evil-surround)
+    (global-evil-surround-mode 1)
+    (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
+    (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+
+  ;; (use-package evil-surround
+  ;;   :ensure t
+  ;;   :defer t
+  ;;   :commands (evil-surround-region)
+  ;;   :init 
+  ;;   (progn 
+  ;;     (global-evil-surround-mode)
+  ;;     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
+  ;;     (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)))
 #+end_src 
 
 *** Commenting 
