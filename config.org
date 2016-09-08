@@ -4308,3 +4308,9 @@ Functions to run at startup
 #+BEGIN_SRC emacs-lisp
 (eshell)
 #+END_SRC
+* Private 
+#+BEGIN_SRC emacs-lisp
+  (let ((private "~/.emacs.d/private.el"))
+  (if (file-exists-p private)
+	  (load-file private)))
+#+END_SRC
