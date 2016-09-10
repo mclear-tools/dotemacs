@@ -16,6 +16,8 @@
    (quote
     ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(desktop-path (quote ("~/.emacs.d/" "~" "~/.emacs.d/.cache/desktop")))
+ '(doc-view-continuous t)
+ '(doc-view-resolution 300)
  '(fancy-battery-mode t)
  '(fancy-battery-show-percentage t)
  '(fill-column 72)
@@ -93,7 +95,7 @@
      ("b" "#+REVEAL: split?"))))
  '(package-selected-packages
    (quote
-    (tabbar shell-switcher eshell-prompt-extras virtualenvwrapper better-shell auto-compile haskell-mode lorem-ipsum dired-k helm-hunks crux dired-async lispy ox-reveal lispyville ox-clip palimpsest palimpsest-mode smooth-scrolling init-open-recentf magit smart-mode-line-powerline-theme smart-mode-line color-theme-solarized emacs-color-theme-solarized org-journal bind-map interleave wttrin org-ref helm-projectile projectile hc-zenburn-theme zenburn-theme badger-theme vimrc-mode yaml-mode pandoc-mode markdown-mode web-mode elisp-slime-nav company-math company-auctex company yasnippet window-numbering which-key visual-regexp sunshine evil-smartparens smartparens reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-mode org-pdfview pdf-tools paradox hl-todo highlight-numbers info+ iedit centered-cursor-mode ag ace-jump-mode deft centered-window-mode back-button dash-at-point sr-speedbar helm-bibtex helm-dired-recent-dirs helm-flyspell helm-swoop helm-ls-git helm-descbinds helm-ag helm git-gutter-fringe+ git-gutter+ git-timemachine evil-magit shell-pop sane-term multi-term fancy-battery spaceline toc-org htmlize org-bullets ox-pandoc evil-org helm-themes solarized-theme material-theme darktooth-theme gruvbox-theme evil-commentary evil-surround evil-args evil-terminal-cursor-changer evil-numbers evil-leader evil-indent-textobject evil-escape evil s dash async use-package org-plus-contrib)))
+    (workgroups2 tabbar shell-switcher eshell-prompt-extras virtualenvwrapper better-shell auto-compile haskell-mode lorem-ipsum dired-k helm-hunks crux dired-async lispy ox-reveal lispyville ox-clip palimpsest palimpsest-mode smooth-scrolling init-open-recentf magit smart-mode-line-powerline-theme smart-mode-line color-theme-solarized emacs-color-theme-solarized org-journal bind-map interleave wttrin org-ref helm-projectile projectile hc-zenburn-theme zenburn-theme badger-theme vimrc-mode yaml-mode pandoc-mode markdown-mode web-mode elisp-slime-nav company-math company-auctex company yasnippet window-numbering which-key visual-regexp sunshine evil-smartparens smartparens reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-mode org-pdfview pdf-tools paradox hl-todo highlight-numbers info+ iedit centered-cursor-mode ag ace-jump-mode deft centered-window-mode back-button dash-at-point sr-speedbar helm-bibtex helm-dired-recent-dirs helm-flyspell helm-swoop helm-ls-git helm-descbinds helm-ag helm git-gutter-fringe+ git-gutter+ git-timemachine evil-magit shell-pop sane-term multi-term fancy-battery spaceline toc-org htmlize org-bullets ox-pandoc evil-org helm-themes solarized-theme material-theme darktooth-theme gruvbox-theme evil-commentary evil-surround evil-args evil-terminal-cursor-changer evil-numbers evil-leader evil-indent-textobject evil-escape evil s dash async use-package org-plus-contrib)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(safe-local-variable-values
