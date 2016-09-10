@@ -1433,7 +1433,8 @@ Basic settings
         eshell-scroll-to-bottom-on-input 'all
         eshell-list-files-after-cd t
         eshell-aliases-file (concat user-emacs-directory "eshell/alias")
-        eshell-banner-message "What would you like to do?\n\n"
+        eshell-banner-message ""
+        ;; eshell-banner-message "What would you like to do?\n\n"
         )
         ;; Visual commands
         (setq eshell-visual-commands '("vi" "screen" "top" "less" "more" "lynx"
@@ -1441,7 +1442,7 @@ Basic settings
                                        "nmtui" "alsamixer" "htop" "el" "elinks"
                                        ))
         (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
-        
+      
         (defun my/truncate-eshell-buffers ()
           "Truncates all eshell buffers"
           (interactive)
@@ -1471,7 +1472,7 @@ Basic settings
     (hl-line-mode -1)
     (define-key eshell-mode-map (kbd "M-l")
       'helm-eshell-history))
-    
+  
   (add-hook 'eshell-mode-hook
             (lambda ()
                 (my/setup-eshell)
