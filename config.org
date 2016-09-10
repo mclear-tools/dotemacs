@@ -4248,6 +4248,12 @@ Keybindings for managing packages
     "qq" 'evil-quit-all
     "qr" 'restart-emacs)
 #+END_SRC
+* Private 
+#+BEGIN_SRC emacs-lisp
+  (let ((private "~/.emacs.d/private.el"))
+  (if (file-exists-p private)
+	  (load-file private)))
+#+END_SRC
 * Test code
 #+BEGIN_SRC emacs-lisp
   ;; define text objects
