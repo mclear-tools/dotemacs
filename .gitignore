@@ -24,3 +24,4 @@ config.el*
 /slides.pdf
 .cache/
 /private.el
+.cask/
