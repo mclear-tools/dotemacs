@@ -3102,6 +3102,16 @@ Numbered window shortcuts for Emacs
   )
 )
 #+END_SRC
+** Workgroups
+#+BEGIN_SRC emacs-lisp
+  (use-package workgroups2
+    :ensure t
+    :defer t
+    :commands (wg-create-workgroup wg-open-session wg-save-session)
+    :config
+      ;; Disable loading multiple frames
+      (setq wg-control-frames nil))
+#+END_SRC
 ** Add some useful libraries
 
 [[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
@@ -4221,7 +4231,16 @@ Keybindings for managing packages
   "wm" 'delete-other-windows
   )
 #+END_SRC
+** Workgroups bindings
+#+BEGIN_SRC emacs-lisp
+(which-key-declare-prefixes "<SPC>W" "Workgroups")
+(evil-leader/set-key "Wc" 'wg-create-workgroup
+  "Wr" 'wg-rename-workgroup
+  "Wk" 'wg-kill-workgroup
+  "Ws" 'wg-switch-to-workgroup
+  "WS" 'wg-save-session)
 
+#+END_SRC
 ** Quitting
 #+BEGIN_SRC emacs-lisp
     (which-key-declare-prefixes "<SPC>q" "Quit")
