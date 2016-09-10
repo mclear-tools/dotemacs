@@ -2896,6 +2896,7 @@ Better dired navigation using ranger-like settings
   (use-package ranger
   :ensure t
   :defer t
+  :commands (deer deer-jump-other-window)
   :init
   (progn
     (setq ranger-override-dired t
@@ -3883,6 +3884,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "fr" 'helm-recentf
     "fy" 'spacemacs/show-and-copy-buffer-filename
       )
+   (global-set-key (kbd "s-f") 'helm-locate)
+   (global-set-key (kbd "s-F") 'isearch-forward)
 #+END_SRC
 
 ** General
@@ -3899,7 +3902,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key
     "k" 'helm-show-kill-ring
     "n" 'research-notes
     "N" 'big-notes
-    "W" 'woman
+    "M" 'woman
     "." 'quick-commit
     ";" 'evil-commentary-line
     "[" 'spacemacs/previous-useful-buffer
