@@ -4317,11 +4317,33 @@ Start server
 * Startup
 Functions to run at startup
 #+BEGIN_SRC emacs-lisp
-(eshell)
+  (eshell)
 #+END_SRC
-* Private 
-#+BEGIN_SRC emacs-lisp
-  (let ((private "~/.emacs.d/private.el"))
-  (if (file-exists-p private)
-	  (load-file private)))
+* Archive                                       :noexport:archive:
+** Org-ref
+I mostly don't use this in favor of helm-bibtex
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package org-ref
+  :ensure t
+  :defer t
+  :disabled t
+  :after org
+  :init
+  (setq reftex-default-bibliography '("~/Dropbox/Work/master.bib"))
+  (setq org-ref-bibliography-notes "~/Dropbox/Notes/ResearchNotes/"
+        org-ref-default-bibliography '("~/Dropbox/Work/master.bib")
+        org-ref-pdf-directory "~/Dropbox/Work/MasterLib/")
+
+  ;; helm-bibtex
+  (setq bibtex-completion-pdf-field "File")
+  (setq helm-bibtex-bibliography "~/Dropbox/Work/master.bib")
+  (setq helm-bibtex-library-path "~/Dropbox/Work/MasterLib/")
+  (setq bibtex-completion-notes-path "/Users/Roambot/Dropbox/Notes/ResearchNotes/")
+
+  (setq helm-bibtex-pdf-open-function
+        (lambda (fpath)
+          (start-process "open" "*open*" "open" fpath)))
+
+  (setq helm-bibtex-notes-path "~/Dropbox/Notes/ResearchNotes/")
+)
 #+END_SRC
