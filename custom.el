@@ -8,6 +8,8 @@
  '(back-button-mode t)
  '(battery-update-interval 10)
  '(compilation-message-face (quote default))
+ '(counsel-ag-base-command "ag --color --group %s")
+ '(counsel-locate-cmd (quote counsel-locate-cmd-mdfind))
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#839496")
  '(cua-overwrite-cursor-color "#b58900")
@@ -46,6 +48,13 @@
     ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
  '(hl-sexp-background-color "#1c1f26")
  '(interleave-org-notes-dir-list (quote ("~/projects/notebook/content/org_notes" ".")))
+ '(ivy-count-format "(%d/%d) ")
+ '(ivy-minibuffer-faces
+   (quote
+    (ivy-minibuffer-match-face-1 ivy-minibuffer-match-face-2 ivy-minibuffer-match-face-3 ivy-minibuffer-match-face-4)))
+ '(ivy-mode t)
+ '(ivy-use-virtual-buffers t)
+ '(ivy-wrap t)
  '(magit-diff-use-overlays nil)
  '(nrepl-message-colors
    (quote
@@ -95,7 +104,7 @@
      ("b" "#+REVEAL: split?"))))
  '(package-selected-packages
    (quote
-    (workgroups2 tabbar shell-switcher eshell-prompt-extras virtualenvwrapper better-shell auto-compile haskell-mode lorem-ipsum dired-k helm-hunks crux dired-async lispy ox-reveal lispyville ox-clip palimpsest palimpsest-mode smooth-scrolling init-open-recentf magit smart-mode-line-powerline-theme smart-mode-line color-theme-solarized emacs-color-theme-solarized org-journal bind-map interleave wttrin org-ref helm-projectile projectile hc-zenburn-theme zenburn-theme badger-theme vimrc-mode yaml-mode pandoc-mode markdown-mode web-mode elisp-slime-nav company-math company-auctex company yasnippet window-numbering which-key visual-regexp sunshine evil-smartparens smartparens reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-mode org-pdfview pdf-tools paradox hl-todo highlight-numbers info+ iedit centered-cursor-mode ag ace-jump-mode deft centered-window-mode back-button dash-at-point sr-speedbar helm-bibtex helm-dired-recent-dirs helm-flyspell helm-swoop helm-ls-git helm-descbinds helm-ag helm git-gutter-fringe+ git-gutter+ git-timemachine evil-magit shell-pop sane-term multi-term fancy-battery spaceline toc-org htmlize org-bullets ox-pandoc evil-org helm-themes solarized-theme material-theme darktooth-theme gruvbox-theme evil-commentary evil-surround evil-args evil-terminal-cursor-changer evil-numbers evil-leader evil-indent-textobject evil-escape evil s dash async use-package org-plus-contrib)))
+    (helm-files uniquify em-cmpl counsel general workgroups2 tabbar shell-switcher eshell-prompt-extras virtualenvwrapper better-shell auto-compile haskell-mode lorem-ipsum dired-k helm-hunks crux dired-async lispy ox-reveal lispyville ox-clip palimpsest palimpsest-mode smooth-scrolling init-open-recentf magit smart-mode-line-powerline-theme smart-mode-line color-theme-solarized emacs-color-theme-solarized org-journal bind-map interleave wttrin org-ref helm-projectile projectile hc-zenburn-theme zenburn-theme badger-theme vimrc-mode yaml-mode pandoc-mode markdown-mode web-mode elisp-slime-nav company-math company-auctex company yasnippet window-numbering which-key visual-regexp sunshine evil-smartparens smartparens reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-mode org-pdfview pdf-tools paradox hl-todo highlight-numbers info+ iedit centered-cursor-mode ag ace-jump-mode deft centered-window-mode back-button dash-at-point sr-speedbar helm-bibtex helm-dired-recent-dirs helm-flyspell helm-swoop helm-ls-git helm-descbinds helm-ag helm git-gutter-fringe+ git-gutter+ git-timemachine evil-magit shell-pop sane-term multi-term fancy-battery spaceline toc-org htmlize org-bullets ox-pandoc evil-org helm-themes solarized-theme material-theme darktooth-theme gruvbox-theme evil-commentary evil-surround evil-args evil-terminal-cursor-changer evil-numbers evil-leader evil-indent-textobject evil-escape evil s dash async use-package org-plus-contrib)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(safe-local-variable-values
@@ -137,5 +146,6 @@
  '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
  '(markdown-comment-face ((t (:weight bold :strike-through nil))))
  '(org-block ((t (:foreground "#2E8B57" :slant italic))))
- '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal)))))
+ '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+ )
 
