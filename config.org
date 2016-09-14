@@ -814,8 +814,7 @@ Distinguish buffers with the same name
 ** Crux
 A collection of ridiculously useful extensions. Indeed.
 #+BEGIN_SRC emacs-lisp
-  (use-package crux
-    :ensure t)
+  (use-package crux :defer 2)
 #+END_SRC
 ** Config functions
 #+BEGIN_SRC emacs-lisp
@@ -2978,8 +2977,8 @@ Better than doc-view, but doesn't render well on retina screens :(
 When one shell isn't enough
 #+BEGIN_SRC emacs-lisp
 (use-package multi-term
-    :defer t
-    :config
+  :commands multi-term 
+  :config
     (setq multi-term-program "/usr/local/bin/zsh")
     (add-hook 'term-mode-hook
             (lambda ()
@@ -2989,7 +2988,7 @@ When one shell isn't enough
 Sane settings for ansi-term
 #+BEGIN_SRC emacs-lisp
   (use-package sane-term
-    :defer t
+    :commands sane-term
     :init
     ;; shell to use for sane-term
     (setq sane-term-shell-command "/usr/local/bin/zsh")
@@ -3004,8 +3003,8 @@ Sane settings for ansi-term
 A popup shell
 #+begin_src emacs-lisp 
   (use-package shell-pop
-     :defer t
-     :config
+    :commands shell-pop
+    :config
       (defun ansi-term-handle-close ()
        "Close current term buffer when `exit' from term buffer."
        (when (ignore-errors (get-buffer-process (current-buffer)))
@@ -3593,10 +3592,11 @@ well with org-mode using org-indent. So I don't use it globally.
 ** Autopair
 #+BEGIN_SRC emacs-lisp
 (use-package electric-pair-mode
-  :defer t
+  :commands (electric-pair-mode)
   :ensure nil
   :init 
-  (electric-pair-mode 1))
+  (add-hook 'prog-mode-hook 'electric-pair-mode)
+  (add-hook 'text-mode-hook 'electric-pair-mode))
 #+END_SRC
 ** Autorevert
 Auto-revert buffers of changed files
