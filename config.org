@@ -293,8 +293,8 @@ customize settings in [[file:init.el][init.el]].
 ** Text settings
 Center the cursor, and line numbers for programming modes.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook (lambda () (pandoc-mode) (centered-cursor-mode) (hl-line-mode 1)))
-  (add-hook 'prog-mode-hook (lambda () (linum-mode) (centered-cursor-mode) (hl-line-mode 1)))
+  (add-hook 'text-mode-hook (lambda () (back-button-mode) (pandoc-mode) (centered-cursor-mode) (hl-line-mode 1)))
+  (add-hook 'prog-mode-hook (lambda () (back-button-mode) (linum-mode) (centered-cursor-mode) (hl-line-mode 1)))
 #+END_SRC
 ** OSX settings
 There is some configuration to do when running Emacs on OS X (hence the
@@ -1251,9 +1251,7 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
   :defer 2
   :diminish back-button-mode
   :init
-  (setq back-button-show-toolbar-buttons nil)
-  :config
-  (back-button-mode 1))
+  (setq back-button-show-toolbar-buttons nil))
 #+END_SRC
 ** General
 A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
