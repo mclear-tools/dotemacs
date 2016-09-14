@@ -138,10 +138,11 @@ Start up with a clean scratch buffer.
   (setq initial-scratch-message "")
 #+END_SRC
 
-*** Start scratch in text mode 
-Useful to get a faster Emacs load time because it avoids autoloads of elisp modes
+*** Start scratch in fundamental mode 
+Useful to get a faster Emacs load time because it avoids autoloads of
+elisp modes or other minor modes
 #+BEGIN_SRC emacs-lisp
-  (setq initial-major-mode 'text-mode)
+  (setq initial-major-mode 'fundamental-mode)
 #+END_SRC
 
 *** These functions are useful. Activate them.
