@@ -292,7 +292,7 @@ customize settings in [[file:init.el][init.el]].
 ** Text settings
 Center the cursor, and line numbers for programming modes.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook (lambda () (centered-cursor-mode) (hl-line-mode 1)))
+  (add-hook 'text-mode-hook (lambda () (pandoc-mode) (centered-cursor-mode) (hl-line-mode 1)))
   (add-hook 'prog-mode-hook (lambda () (linum-mode) (centered-cursor-mode) (hl-line-mode 1)))
 #+END_SRC
 ** OSX settings
@@ -460,12 +460,14 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
 #+END_SRC
 ** Diminish
 #+BEGIN_SRC emacs-lisp
-(use-package diminish)
+(use-package diminish :defer 2)
 #+END_SRC
 *** Diminish minor modes
 #+BEGIN_SRC emacs-lisp
   (diminish 'visual-line-mode)
   (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
+  (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
+  (eval-after-load "lispyville" '(diminish 'lispyville-mode "Ⓛ")) 
   (eval-after-load "org-indent" '(diminish 'org-indent-mode))
   (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
   (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
@@ -571,9 +573,8 @@ highlight TODO statements in comments
 ** Modeline
 *** Spaceline
 This is a really nice powerline-ish modeline.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
   (use-package spaceline
-    :ensure t
     :init 
     (progn 
       ;; size of modeline
@@ -599,6 +600,7 @@ This is a really nice powerline-ish modeline.
               (setq vc-mode gitlogo)))))
     :config
     (require 'spaceline-config)
+    (spaceline-toggle-buffer-size-off)
     (spaceline-spacemacs-theme)
     (setq spaceline-buffer-encoding-abbrev-p nil
           spaceline-window-numbers-unicode t
@@ -613,7 +615,6 @@ This is a really nice powerline-ish modeline.
 *** Fancy Battery
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery
-    :ensure t
     :defer t
     :init (fancy-battery-mode))
 #+END_SRC
@@ -657,7 +658,7 @@ Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
 ** Smooth Scrolling
 #+BEGIN_SRC emacs-lisp
   (use-package smooth-scrolling
-    :ensure t
+    :defer 2
     :config (setq smooth-scroll-margin 2)
     :init (smooth-scrolling-mode 1))
     (setq mouse-wheel-scroll-amount '(1 ((shift) .1) ((control) . nil)))
@@ -782,8 +783,6 @@ A dark and relatively high-contrast theme
 *** Convenient theme functions
 #+begin_src emacs-lisp
 (use-package helm-themes
-  :ensure t
-  :defer t
   :commands helm-themes) 
 #+end_src
 
@@ -792,6 +791,7 @@ Distinguish buffers with the same name
 #+begin_src emacs-lisp :tangle yes
 (use-package uniquify
   :ensure nil
+  :defer t
   :config
   (setq uniquify-buffer-name-style 'forward
         uniquify-separator "/"
@@ -801,7 +801,7 @@ Distinguish buffers with the same name
 ** Which-key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
-  :ensure t
+  :defer 2
   :diminish ""
   :config
   (setq which-key-special-keys nil)
@@ -1247,8 +1247,9 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
 
 #+BEGIN_SRC emacs-lisp
 (use-package back-button
-  :diminish back-button-mode
+  :commands (back-button-mode)
   :defer 2
+  :diminish back-button-mode
   :init
   (setq back-button-show-toolbar-buttons nil)
   :config
@@ -1261,7 +1262,7 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
 (use-package general
   :config
   (general-create-definer cpm-leader1 
-    :states '(normal insert visual emacs) 
+    :states '(normal insert visual motion emacs) 
     :keymaps 'global 
     :prefix "SPC" 
     :non-normal-prefix "C-SPC"))
@@ -1450,25 +1451,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "mf"   'markdown-follow-thing-at-point
     "mP"   'markdown-previous-link
     "<RET>" 'markdown-jump
-   )
-   
-   ;; Header navigation in normal state movements
-      (general-define-key 'normal markdown-mode-map
-        "gj" 'outline-forward-same-level
-        "gk" 'outline-backward-same-level
-        "gh" 'outline-up-heading
-        ;; next visible heading is not exactly what we want but close enough
-        "gl" 'outline-next-visible-heading)
-        
-      ;; Cycle headers like in org-mode
-      (general-define-key 'normal markdown-mode-map "TAB" 'markdown-cycle)
-
-      ;; Promotion, Demotion
-      (general-define-key markdown-mode-map "M-h" 'markdown-promote)
-      (general-define-key markdown-mode-map "M-j" 'markdown-move-down)
-      (general-define-key markdown-mode-map "M-k" 'markdown-move-up)
-      (general-define-key markdown-mode-map "M-l" 'markdown-demote))
-#+END_SRC
+   ))
+  #+END_SRC
 
 *** Miscellaneous
 #+BEGIN_SRC emacs-lisp
@@ -1639,8 +1623,8 @@ Keybindings for managing packages
     "ta" 'company-mode
     "tb" 'fancy-battery-mode
     "tc" 'centered-cursor-mode
-    ;; "tC" 'centered-window-mode
-    ;; "td" 'distraction-free
+    "tC" 'centered-window-mode
+    "td" 'distraction-free
     "tf" 'toggle-frame-fullscreen
     "tg" 'git-gutter+-mode
     "th" 'global-hl-line-mode
@@ -1771,6 +1755,12 @@ Better dired navigation using ranger-like settings
         ranger-width-parents 0.25
         ranger-width-preview 0.55 
         ))
+ (use-package dired
+  :ensure nil
+  :after ranger
+  :config
+  (setq dired-recursive-deletes 'always
+		dired-recursive-copies 'always))
 #+END_SRC
 ** Recent files
 #+BEGIN_SRC emacs-lisp
@@ -1800,7 +1790,7 @@ Better dired navigation using ranger-like settings
     (save-place-mode 1)
     ;; (setq-default save-place t)
     :config
-    (setq save-place-file "~/.emacs.d/saved-places")
+    (setq save-place-file "~/.emacs.d/.cache/saved-places")
     (setq save-place-forget-unreadable-files nil)
   )
 #+END_SRC
@@ -2096,13 +2086,23 @@ There are some other useful setup packages for evil
 
 *** Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
-(use-package evil-surround)
-(require 'evil-surround)
-(global-evil-surround-mode 1)
-(general-define-key
- :states '(visual)
- "s" 'evil-surround-region
- "S" 'evil-substitute)
+    (use-package evil-surround
+      :ensure t
+      :defer t
+      :commands (evil-surround-region)
+      :init 
+      (general-define-key
+      :states '(visual)
+      "s" 'evil-surround-region
+      "S" 'evil-substitute))
+
+  ;; (use-package evil-surround)
+  ;; (require 'evil-surround)
+  ;; (global-evil-surround-mode 1)
+  ;; (general-define-key
+  ;;  :states '(visual)
+  ;;  "s" 'evil-surround-region
+  ;;  "S" 'evil-substitute)
 #+end_src 
 
 *** Commenting 
@@ -2116,45 +2116,313 @@ There are some other useful setup packages for evil
 
 *** Graphical undo
 #+begin_src emacs-lisp
-    (use-package undo-tree
-      :ensure t
-      :init
-      (global-undo-tree-mode)
-      (setq undo-tree-visualizer-timestamps t)
-      (setq undo-tree-visualizer-diff t)
-      (let ((undo-dir (concat user-cache-directory "undo")))
-        (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
+  (use-package undo-tree
+    :commands (undo-tree-undo undo-tree-visualize)
+    :init
+    ;; (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)
+    (let ((undo-dir (concat user-cache-directory "undo")))
+      (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
 
-    ;; (use-package undo-tree
-    ;;   :ensure t
-    ;;   :init
-    ;;   (progn
-    ;;     (global-undo-tree-mode)
-    ;;     (setq undo-tree-mode-lighter "")
-    ;;     ;; (setq undo-tree-auto-save-history t)
-    ;;     (setq undo-tree-visualizer-timestamps t)
-    ;;     (setq undo-tree-visualizer-diff t)
-    ;;     (let ((undo-dir (concat user-cache-directory "undo")))
-    ;;     (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
-    ;;   )
+  ;; (use-package undo-tree
+  ;;   :ensure t
+  ;;   :init
+  ;;   (progn
+  ;;     (global-undo-tree-mode)
+  ;;     (setq undo-tree-mode-lighter "")
+  ;;     ;; (setq undo-tree-auto-save-history t)
+  ;;     (setq undo-tree-visualizer-timestamps t)
+  ;;     (setq undo-tree-visualizer-diff t)
+  ;;     (let ((undo-dir (concat user-cache-directory "undo")))
+  ;;     (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
+  ;;   )
 #+end_src
 
 * Writing & Research
 I use emacs primarily for writing and doing research. These are some of
 the packages that are most helpful for this. 
+** Devonthink
+#+BEGIN_SRC emacs-lisp
+;;; org-devonthink.el - Support for links to dtp messages by their UUID
+
+;; version 1.1, by John Wiegley <johnw@gnu.org>
+
+(with-eval-after-load "org"
+
+(org-add-link-type "x-devonthink-item" 'org-dtp-open)
+
+(defun org-dtp-open (record-location)
+  "Visit the dtp message with the given Message-ID."
+  (shell-command (concat "open x-devonthink-item:" record-location)))
+
+(defun org-get-dtp-link (&optional given-name)
+  (interactive)
+  (let ((name (or given-name
+                  (substring (do-applescript (format "
+	tell application \"DEVONthink Pro\"
+		get name of content record
+	end tell")) 1 -1)))
+	(location (substring (do-applescript (format "
+	tell application \"DEVONthink Pro\"
+		get uuid of content record
+	end tell")) 1 -1)))
+    (org-make-link-string
+     (concat "x-devonthink-item://" location) name)))
+
+(defun org-insert-dtp-link ()
+  (interactive)
+  (let (name)
+    (when (region-active-p)
+      (setq name (buffer-substring-no-properties (region-beginning)
+                                                 (region-end)))
+      (delete-region (region-beginning) (region-end)))
+    (insert (org-get-dtp-link name))))
+
+(defun org-dtp-store-link ()
+  "Store a link to an dtp e-mail message by Message-ID."
+  (let ((link-name
+	 (with-temp-buffer
+	   (clipboard-yank)
+	   (buffer-string))))
+    (org-store-link-props
+     :type "x-devonthink-item"
+     :link (cons (concat "x-devonthink-item://" link-name)
+		 (concat "x-devonthink-item://" link-name))
+     :description (file-name-nondirectory link-name))))
+)
+
+
+;;; org-devonthink.el ends here
+#+END_SRC
+** BROKEN Distraction free mode
+This simulates programs like writeroom that provide a distraction-free
+mode of writing. But it tends not to work very well. 
+#+BEGIN_SRC emacs-lisp
+(use-package centered-window-mode
+  :commands centered-window-mode
+  :diminish centered-window-mode
+  :init
+  (setq cwm-centered-window-width 90))
+
+  (defun distraction-free ()
+  "distraction free writing"
+    (interactive)
+    (toggle-frame-fullscreen) 
+    (git-gutter+-mode 0) 
+    (linum-mode 0) 
+    (visual-line-mode)
+    (hidden-mode-line-mode)
+    (centered-window-mode) 
+    )
+#+END_SRC
+** Helm-Bibtex
+Great for managing citations and notes
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-bibtex
+    :commands helm-bibtex
+    :config
+    (setq bibtex-completion-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
+          bibtex-completion-library-path "/Users/Roambot/Dropbox/Work/MasterLib/"
+          bibtex-completion-pdf-field "File"
+          bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
+          bibtex-completion-additional-search-fields '(keywords)
+          bibtex-completion-notes-extension ".org"
+          helm-bibtex-full-frame nil) ;; Set insert citekey with markdown citekeys for org-mode
+    (setq bibtex-completion-format-citation-functions
+          '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-default)))
+    ;; Set default action for helm-bibtex as inserting citation
+    (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
+    (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
+    (setq bibtex-completion-pdf-symbol "⌘")
+    (setq bibtex-completion-notes-symbol "✎")
+    )
+
+  ;; Set global shortcut for calling helm-bibtex
+   (general-define-key "H-b" 'helm-bibtex)
+#+end_src
+
+** Interleave
+Useful when taking notes
+#+BEGIN_SRC emacs-lisp
+(use-package interleave
+  :commands interleave)
+#+END_SRC
+** Lorem ipsum
+Make arbitrary blocks or sentences of text.
+#+BEGIN_SRC emacs-lisp
+  (use-package lorem-ipsum
+    :ensure t
+    :defer t
+    :config 
+    (lorem-ipsum-use-default-bindings)
+    )
+
+#+END_SRC
+** Markdown mode
+*** Markdown settings
+#+begin_src emacs-lisp
+    (use-package markdown-mode
+      :defer t
+      :mode (("\\.markdown\\'" . markdown-mode)
+             ("\\.md\\'"       . markdown-mode))
+      :init
+      ;; markdown hooks
+      (add-hook 'markdown-mode-hook
+            '(lambda()
+               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 72) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
+      (setq markdown-command "pandoc"
+              markdown-enable-math t
+              ;; markdown-footnote-location "end"
+              markdown-nested-imenu-heading-index t
+              markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
+              )
+         ;; (global-git-gutter+-mode t)
+         ;; (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
+         ;; (add-hook 'markdown-mode-hook #'pandoc-mode) 
+         ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
+         ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
+         ;; add keybindings to hook
+       :config
+       ;; Header navigation in normal state movements
+       (general-define-key :states '(normal) :keymaps 'markdown-mode-map
+            "TAB" 'markdown-cycle
+            "gj"  'outline-forward-same-level
+            "gk"  'outline-backward-same-level
+            "gh"  'outline-up-heading
+            ;; next visible heading is not exactly what we want but close enough
+            "gl"  'outline-next-visible-heading)
+            ;; "<return>" 'markdown-jump
+
+         ;; Promotion, Demotion
+       (general-define-key :states '(normal insert emacs) :keymaps 'markdown-mode-map
+         "M-h" 'markdown-promote
+         "M-j" 'markdown-move-down
+         "M-k" 'markdown-move-up
+         "M-l" 'markdown-demote
+         ;; fix wrong emacs keybindings
+         "C-c C-j" 'markdown-jump
+         "C-c C-l" 'markdown-insert-list-item
+         )
+         (add-hook 'markdown-mode-hook #'my-markdown-config)
+    )
+ 
+  ;; autofill for markdown
+  (defun markdown-auto-fill ()
+    "turn on autofill and settings"
+    (turn-on-auto-fill)
+    (set-fill-column 72))
+#+end_src
+
+*** Pandoc
+Pandoc mode for markdown conversion
+#+BEGIN_SRC emacs-lisp
+  (use-package pandoc-mode
+    :defer t  
+    :config
+    (progn
+      (defun run-pandoc ()
+        "Start pandoc for the buffer and open the menu"
+        (interactive)
+        (pandoc-mode)
+        (pandoc-main-hydra/body))
+      (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+
+      (defun pandoc-pdf-open ()
+        "Open created PDF file"  
+        (interactive)
+        (find-file (concat (file-name-sans-extension buffer-file-name) ".pdf")))
+        )
+    :init
+    (progn
+      (setq pandoc-data-dir "~/.emacs.d/pandoc-mode/")
+      ;; help pandoc find xelatex
+      (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))))
+#+END_SRC
+
+*** DISABLED Critic markup
+#+BEGIN_SRC emacs-lisp
+  (use-package cm-mode
+    :defer t
+    :ensure t
+    :disabled t ;; causes font-lock error in markdown mode
+    :init
+    (add-hook 'markdown-mode-hook 'cm-mode))
+#+END_SRC
+
+** Notes
+#+BEGIN_SRC emacs-lisp
+(use-package deft
+  :commands (deft deft-find-file cpm/deft)
+  :init
+  (progn
+    (setq deft-extensions '("org" "md" "txt")
+          deft-directory "~/projects/notebook/content/org_notes"
+          deft-text-mode 'org-mode
+          deft-use-filter-string-for-filename t ;; use filter string as filename
+          deft-org-mode-title-prefix t ;; add #+TITLE prefix
+          deft-recursive t  ;; search recursively in folders
+          deft-use-filename-as-title t)
+
+    (defun cpm/deft ()
+      "Helper to call deft and then fix things so that it is nice and works"
+      (interactive)
+      (require 'org)
+      (deft)
+      ;; Hungry delete wrecks deft's DEL override
+      (when (fboundp 'hungry-delete-mode)
+        (hungry-delete-mode -1))
+      ;; When opening it you always want to filter right away
+      (evil-insert-state nil)))
+  :config
+  (progn
+    (general-define-key :states '(normal) :keymaps 'deft-mode-map
+      "d" 'deft-delete-file
+      "i" 'deft-toggle-incremental-search
+      "n" 'deft-new-file
+      "r" 'deft-rename-file)))
+;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
+;;advise deft-new-file-named to replace spaces in file names with -
+(defun bjm-deft-strip-spaces (args)
+  "Replace spaces with - in the string contained in the first element of the list args. Used to advise deft's file naming function."
+  (list (replace-regexp-in-string " " "-" (car args)))
+  )
+(advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
+
+;;function to run deft in specified directory
+(defun any-deft (dir)
+  "Run deft in directory DIR"
+  (setq deft-directory dir)
+  (switch-to-buffer "*Deft*")
+  (kill-this-buffer)
+  (require 'org)
+  (deft)
+  )
+(defun big-notes ()
+  "Goto main notes with deft"
+  (interactive)
+  (any-deft "~/Dropbox/Notes"))
+(defun research-notes ()
+  "Goto research notes"
+  (interactive)
+  (any-deft "~/projects/notebook/content/org_notes"))
+#+END_SRC
 ** Org
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 *** Base settings
 #+BEGIN_SRC emacs-lisp
-(use-package org 
-  :defer t
-  :init
+  (use-package org 
+    :defer t
+    :init
     (setq org-src-fontify-natively t ;; better looking source code
+          org-return-follows-link t ;; make RET follow links
           org-hide-emphasis-markers t  ;; hide markers
           org-pretty-entities t ;; make latex look good
           org-fontify-quote-and-verse-blocks t ;; make quotes stand out
           org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-          org-return-follows-link t ;; make RET follow links
           org-ellipsis "↴"  ;; nicer elipses
           org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
           org-startup-indented t ;; start in indent mode
@@ -2162,36 +2430,77 @@ the packages that are most helpful for this.
           ; org-edit-src-content-indentation t
           org-imenu-depth 4
           imenu-auto-rescan t
-          ))
+          )
+    ;; normal state shortcuts
+    (general-define-key :states '(normal) :keymaps 'org-mode-map
+      "RET" 'org-open-at-point     ;; Open with return in evil
+      "gh" 'outline-up-heading
+      "gp" 'outline-previous-heading
+      "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
+     	       'org-forward-same-level
+	             'org-forward-heading-same-level)
+      "gk" (if (fboundp 'org-backward-same-level) 
+                 'org-backward-same-level 'org-backward-heading-same-level)
+      "gl" 'outline-next-visible-heading
+      "L" 'org-shiftright
+      "H" 'org-shiftleft
+      "$" 'org-end-of-line
+      "^" 'org-beginning-of-line
+      "<" 'org-metaleft
+      ">" 'org-metaright
+      "-" 'org-cycle-list-bullet)
+    ;; normal & insert state shortcuts.
+    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+      "s-l" 'org-metaright
+      "s-h" 'org-metaleft
+      "s-k" 'org-metaup
+      "s-j" 'org-metadown
+      "s-L" 'org-shiftmetaright
+      "s-H" 'org-shiftmetaleft
+      "s-K" 'org-shiftmetaup
+      "s-J" 'org-shiftmetadown
+      "s-o" '(lambda () (interactive)
+                         (evil-org-eol-call
+                          '(lambda()
+                              (org-insert-heading)
+                              (org-metaright))))
+      "s-t" '(lambda () (interactive)
+                        (evil-org-eol-call
+                          '(lambda()
+                              (org-insert-todo-heading nil)
+                              (org-metaright)))))
+    ;; Use tab in insert mode
+    (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
+        
 
-    (use-package ox-pandoc
-      :commands ox-pandoc
-      :init
-      (with-eval-after-load 'org)
-      (require 'ox-pandoc)
-      :config
-      ;; default options for all output formats
-      (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
-      (setq org-pandoc-options '((standalone . t)))
-      ;; cancel above settings only for 'docx' format
-      (setq org-pandoc-options-for-docx '((standalone . nil)))
-      ;; special settings for beamer-pdf and latex-pdf exporters
-      (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
-      (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
+      (use-package ox-pandoc
+        :commands ox-pandoc
+        :init
+        (with-eval-after-load 'org)
+        (require 'ox-pandoc)
+        :config
+        ;; default options for all output formats
+        (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
+        (setq org-pandoc-options '((standalone . t)))
+        ;; cancel above settings only for 'docx' format
+        (setq org-pandoc-options-for-docx '((standalone . nil)))
+        ;; special settings for beamer-pdf and latex-pdf exporters
+        (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
+        (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
 
-    (use-package org-bullets
-      :defer t
-      :ensure t
-      :init (add-hook 'org-mode-hook 'org-bullets-mode))
+      (use-package org-bullets
+        :defer t
+        :ensure t
+        :init (add-hook 'org-mode-hook 'org-bullets-mode))
 
-    (use-package htmlize :after org :ensure t)
+      (use-package htmlize :after org :ensure t)
 
-    (use-package toc-org
-      :defer t
-      :init
-      (progn
-        (setq toc-org-max-depth 10)
-        (add-hook 'org-mode-hook 'toc-org-enable)))
+      (use-package toc-org
+        :defer t
+        :init
+        (progn
+          (setq toc-org-max-depth 10)
+          (add-hook 'org-mode-hook 'toc-org-enable)))
 #+END_SRC
 *** Org-reveal
 #+BEGIN_SRC emacs-lisp
@@ -2289,7 +2598,6 @@ same day of the month, but will be the same day of the week."
                (hl-todo-mode) 
                (imenu-add-to-menubar "Imenu") 
                (git-gutter+-mode 0)
-               (eldoc-mode 1)
                (org-eldoc-load)))
 #+END_SRC
 *** Org publish
@@ -2304,7 +2612,7 @@ same day of the month, but will be the same day of the week."
       (lambda (path desc backend)
         (cond
          ((eq backend 'org)
-          (format "[[file:{filename}/%s][%s]]" path (or desc "")))
+          (format "[[file:{filename}/notes/%s][%s]]" path (or desc "")))
          ((eq backend 'html)
           (format "<a href=\"%s\">%s</a>" path (or desc "")))
          ((eq backend 'md)
@@ -2450,109 +2758,6 @@ Make source blocks look better.
     (turn-on-prettify-symbols-mode)
     (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
   (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
-#+END_SRC
-** Helm-Bibtex
-Great for managing citations and notes
-#+begin_src emacs-lisp :tangle yes
-  (use-package helm-bibtex
-    :commands helm-bibtex
-    :config
-    (setq bibtex-completion-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-          bibtex-completion-library-path "/Users/Roambot/Dropbox/Work/MasterLib/"
-          bibtex-completion-pdf-field "File"
-          bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
-          bibtex-completion-additional-search-fields '(keywords)
-          bibtex-completion-notes-extension ".org"
-          helm-bibtex-full-frame nil) ;; Set insert citekey with markdown citekeys for org-mode
-    (setq bibtex-completion-format-citation-functions
-          '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
-          (latex-mode    . bibtex-completion-format-citation-cite)
-          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-          (default       . bibtex-completion-format-citation-default)))
-    ;; Set default action for helm-bibtex as inserting citation
-    (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
-    (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
-    (setq bibtex-completion-pdf-symbol "⌘")
-    (setq bibtex-completion-notes-symbol "✎")
-    )
-
-  ;; Set global shortcut for calling helm-bibtex
-   (general-define-key "H-b" 'helm-bibtex)
-#+end_src
-
-** Interleave
-Useful when taking notes
-#+BEGIN_SRC emacs-lisp
-(use-package interleave
-  :commands interleave)
-#+END_SRC
-** Lorem ipsum
-Make arbitrary blocks or sentences of text.
-#+BEGIN_SRC emacs-lisp
-  (use-package lorem-ipsum
-    :ensure t
-    :defer t
-    :config 
-    (lorem-ipsum-use-default-bindings)
-    )
-
-#+END_SRC
-** Notes
-#+BEGIN_SRC emacs-lisp
-(use-package deft
-  :commands (deft deft-find-file cpm/deft)
-  :init
-  (progn
-    (setq deft-extensions '("org" "md" "txt")
-          deft-directory "~/projects/notebook/content/org_notes"
-          deft-text-mode 'org-mode
-          deft-use-filter-string-for-filename t ;; use filter string as filename
-          deft-org-mode-title-prefix t ;; add #+TITLE prefix
-          deft-recursive t  ;; search recursively in folders
-          deft-use-filename-as-title t)
-
-    (defun cpm/deft ()
-      "Helper to call deft and then fix things so that it is nice and works"
-      (interactive)
-      (require 'org)
-      (deft)
-      ;; Hungry delete wrecks deft's DEL override
-      (when (fboundp 'hungry-delete-mode)
-        (hungry-delete-mode -1))
-      ;; When opening it you always want to filter right away
-      (evil-insert-state nil)))
-  :config
-  (progn
-    (evil-define-key 'normal deft-mode-map
-      "d" 'deft-delete-file
-      "i" 'deft-toggle-incremental-search
-      "n" 'deft-new-file
-      "r" 'deft-rename-file)))
-;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
-;;advise deft-new-file-named to replace spaces in file names with -
-(defun bjm-deft-strip-spaces (args)
-  "Replace spaces with - in the string contained in the first element of the list args. Used to advise deft's file naming function."
-  (list (replace-regexp-in-string " " "-" (car args)))
-  )
-(advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
-
-;;function to run deft in specified directory
-(defun any-deft (dir)
-  "Run deft in directory DIR"
-  (setq deft-directory dir)
-  (switch-to-buffer "*Deft*")
-  (kill-this-buffer)
-  (require 'org)
-  (deft)
-  )
-(defun big-notes ()
-  "Goto main notes with deft"
-  (interactive)
-  (any-deft "~/Dropbox/Notes"))
-(defun research-notes ()
-  "Goto research notes"
-  (interactive)
-  (any-deft "~/projects/notebook/content/org_notes"))
 #+END_SRC
 ** Palimpsest mode
 #+BEGIN_SRC emacs-lisp
@@ -2766,59 +2971,6 @@ Better than doc-view, but doesn't render well on retina screens :(
       )
 
 #+END_SRC
-** Devonthink
-#+BEGIN_SRC emacs-lisp
-;;; org-devonthink.el - Support for links to dtp messages by their UUID
-
-;; version 1.1, by John Wiegley <johnw@gnu.org>
-
-(with-eval-after-load "org"
-
-(org-add-link-type "x-devonthink-item" 'org-dtp-open)
-
-(defun org-dtp-open (record-location)
-  "Visit the dtp message with the given Message-ID."
-  (shell-command (concat "open x-devonthink-item:" record-location)))
-
-(defun org-get-dtp-link (&optional given-name)
-  (interactive)
-  (let ((name (or given-name
-                  (substring (do-applescript (format "
-	tell application \"DEVONthink Pro\"
-		get name of content record
-	end tell")) 1 -1)))
-	(location (substring (do-applescript (format "
-	tell application \"DEVONthink Pro\"
-		get uuid of content record
-	end tell")) 1 -1)))
-    (org-make-link-string
-     (concat "x-devonthink-item://" location) name)))
-
-(defun org-insert-dtp-link ()
-  (interactive)
-  (let (name)
-    (when (region-active-p)
-      (setq name (buffer-substring-no-properties (region-beginning)
-                                                 (region-end)))
-      (delete-region (region-beginning) (region-end)))
-    (insert (org-get-dtp-link name))))
-
-(defun org-dtp-store-link ()
-  "Store a link to an dtp e-mail message by Message-ID."
-  (let ((link-name
-	 (with-temp-buffer
-	   (clipboard-yank)
-	   (buffer-string))))
-    (org-store-link-props
-     :type "x-devonthink-item"
-     :link (cons (concat "x-devonthink-item://" link-name)
-		 (concat "x-devonthink-item://" link-name))
-     :description (file-name-nondirectory link-name))))
-)
-
-
-;;; org-devonthink.el ends here
-#+END_SRC
  
 * Shell
 ** Multi-term
@@ -2945,7 +3097,7 @@ Basic settings
 #+BEGIN_SRC emacs-lisp 
   (use-package eshell
     :commands eshell
-    :bind ("C-x e" . eshell)
+    ;; :bind ("C-x e" . eshell)
     :init
     (use-package em-cmpl :ensure nil)
     (use-package em-prompt :ensure nil)
@@ -2973,7 +3125,7 @@ Basic settings
                                        "nmtui" "alsamixer" "htop" "el" "elinks"
                                        ))
     (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
-      
+    
         (defun my/truncate-eshell-buffers ()
           "Truncates all eshell buffers"
           (interactive)
@@ -3003,7 +3155,7 @@ Basic settings
     (hl-line-mode -1)
     (define-key eshell-mode-map (kbd "M-l")
       'helm-eshell-history))
-  
+
   (add-hook 'eshell-mode-hook
             (lambda ()
                 (my/setup-eshell)
@@ -3194,7 +3346,7 @@ well with org-mode using org-indent. So I don't use it globally.
 (use-package dash-at-point :commands (dash-at-point))
 #+END_SRC
 
-** Rainbow Delimiters
+** Rainbow delimiters
    #+BEGIN_SRC emacs-lisp
    (use-package rainbow-delimiters 
       :defer t
@@ -3226,8 +3378,7 @@ well with org-mode using org-indent. So I don't use it globally.
       (add-hook 'markdown-mode-hook #'yas-minor-mode)
       ;; Develop in ~/emacs.d/mysnippets, but also
       ;; try out snippets in ~/Downloads/interesting-snippets
-      (setq yas-snippet-dirs '("/Users/Roambot/.emacs.d/snippets/"
-               "/Users/Roambot/Downloads/interesting-snippets/"))
+      (setq yas-snippet-dirs '("/Users/Roambot/.emacs.d/snippets/"))
                
       ;; (add-hook 'term-mode-hook (lambda()
       ;;     (setq yas-dont-activate t)))
@@ -3315,13 +3466,11 @@ well with org-mode using org-indent. So I don't use it globally.
     :commands eldoc-mode)
 
   (use-package lispy 
-    :ensure t
     :defer t
     :init
     (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1))))
 
   (use-package lispyville
-    :ensure t 
     :defer t
     :init
     (add-hook 'lispy-mode-hook #'lispyville-mode))
@@ -3340,131 +3489,41 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Haskell
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
-    :ensure t
     :defer t)
 #+END_SRC
 *** Html
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :defer t
-    :ensure t
   )
 #+END_SRC
  
-*** Markdown mode
-**** Markdown settings
-#+begin_src emacs-lisp
-    (use-package markdown-mode
-      :ensure t
-      :defer t
-      :mode (("\\.markdown\\'" . markdown-mode)
-             ("\\.md\\'"       . markdown-mode))
-      :init
-      (progn
-        (setq markdown-command "pandoc"
-              markdown-enable-math t
-              ;; markdown-footnote-location "end"
-              markdown-nested-imenu-heading-index t
-              markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
-              )
-         ;; (global-git-gutter+-mode t)
-         ;; (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
-         ;; (add-hook 'markdown-mode-hook #'pandoc-mode) 
-         ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
-         ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
-         ;; add keybindings to hook
-         )
-       :config
-       (progn
-         ;; Header navigation in normal state movements
-         (evil-define-key 'normal markdown-mode-map
-            (kbd "TAB") 'markdown-cycle
-            "gj" 'outline-forward-same-level
-            "gk" 'outline-backward-same-level
-            "gh" 'outline-up-heading
-            ;; next visible heading is not exactly what we want but close enough
-            "gl" 'outline-next-visible-heading)
-            ;; "<return>" 'markdown-jump
-
-         ;; Promotion, Demotion
-          (define-key markdown-mode-map (kbd "M-h") 'markdown-promote)
-          (define-key markdown-mode-map (kbd "M-j") 'markdown-move-down)
-          (define-key markdown-mode-map (kbd "M-k") 'markdown-move-up)
-          (define-key markdown-mode-map (kbd "M-l") 'markdown-demote)
-          ;; (define-key markdown-mode-map (kbd "<return>") 'markdown-jump)
-         ;; fix wrong emacs keybindings
-          (define-key markdown-mode-map (kbd "C-c C-j") 'markdown-jump)
-          (define-key markdown-mode-map (kbd "C-c C-l") 'markdown-insert-list-item)
-          (add-hook 'markdown-mode-hook #'my-markdown-config)
-    ))
-
-    ;; markdown hooks
-  (add-hook 'markdown-mode-hook
-            '(lambda()
-               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 72) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
-
-  ;; autofill for markdown
-  (defun markdown-auto-fill ()
-    "turn on autofill and settings"
-    (turn-on-auto-fill)
-    (set-fill-column 72))
-#+end_src
-
-**** Pandoc
-Pandoc mode for markdown conversion
-#+BEGIN_SRC emacs-lisp
-  (use-package pandoc-mode
-    :ensure t
-    :defer t  
-    :config
-    (progn
-      (defun run-pandoc ()
-        "Start pandoc for the buffer and open the menu"
-        (interactive)
-        (pandoc-mode)
-        (pandoc-main-hydra/body))
-      (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
-
-      (defun pandoc-pdf-open ()
-        "Open created PDF file"  
-        (interactive)
-        (find-file (concat (file-name-sans-extension buffer-file-name) ".pdf")))
-        )
-    :init
-    (progn
-      (setq pandoc-data-dir "~/.emacs.d/pandoc-mode/")
-      ;; help pandoc find xelatex
-      (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))))
-#+END_SRC
-
-**** Critic markup
-Disabled due to errors
-#+BEGIN_SRC emacs-lisp
-  (use-package cm-mode
-    :defer t
-    :ensure t
-    :disabled t ;; causes font-lock error in markdown mode
-    :init
-    (add-hook 'markdown-mode-hook 'cm-mode))
-#+END_SRC
 *** Shell scripts
 #+BEGIN_SRC emacs-lisp
   (use-package sh-script
     :defer t
-    :ensure t
     :init
     (progn
-      (defun emacs//setup-shell ()
+      ;; Use sh-mode when opening `.zsh' files, and when opening Prezto runcoms.
+      (dolist (pattern '("\\.zsh\\'"
+                         "zlogin\\'"
+                         "zlogout\\'"
+                         "zpreztorc\\'"
+                         "zprofile\\'"
+                         "zshenv\\'"
+                         "zshrc\\'"))
+        (add-to-list 'auto-mode-alist (cons pattern 'sh-mode)))
+        
+    (defun spacemacs//setup-shell ()
         (when (and buffer-file-name
                    (string-match-p "\\.zsh\\'" buffer-file-name))
           (sh-set-shell "zsh")))
-      (add-hook 'sh-mode-hook 'emacs//setup-shell)))
+      (add-hook 'sh-mode-hook 'spacemacs//setup-shell)))
 #+END_SRC
  
 *** Yaml
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
-    :ensure t
     :defer t
     :config
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
@@ -3475,7 +3534,6 @@ Disabled due to errors
 *** Vim
 #+BEGIN_SRC emacs-lisp
   (use-package vimrc-mode
-    :ensure t
     :defer t)
 #+END_SRC
 * Other Packages
@@ -3591,6 +3649,7 @@ Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package url
     :ensure nil
+    :defer t
     :config
     (setq url-configuration-directory
            (file-name-as-directory
@@ -3601,6 +3660,7 @@ Auto-revert buffers of changed files
 (use-package wttrin
   :commands (wttrin wttrin-exit)
   :init
+  (evil-set-initial-state 'wttrin 'emacs)
   (setq wttrin-default-cities '("Providence" "Lincoln, NE")))
 #+END_SRC
 
@@ -3613,7 +3673,7 @@ Auto-revert buffers of changed files
 
   (use-package cl-lib)
 
-  (use-package dash :defer 2)
+  (use-package dash :defer 3)
 
   (use-package s)
 #+END_SRC
@@ -3640,7 +3700,7 @@ Start server
 #+END_SRC
 ** Functions to run at startup
 #+BEGIN_SRC emacs-lisp
-(eshell)
+  (eshell)
 #+END_SRC
 
 * Archive
