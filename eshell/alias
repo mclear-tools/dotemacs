@@ -1,29 +1,31 @@
-alias qr restart-emacs
-alias qq (evil-quit-all)
-alias cc (find-file "~/.emacs.d/config.org")
-alias pd (eshell/cd "~/projects")
-alias ed (eshell/cd "~/.emacs.d")
-alias emacs find-file $1
-alias FF find-file-other-window $1
-alias ff find-file $1
-alias vim find-file $1
-alias ec find-file $1
-alias ex exit
-alias ll ls -lh $*
-alias sudo *sudo $*
-alias gd git diff --color $*
-alias gsr git svn rebase
-alias gsc git svn dcommit
-alias gsp git stash pop
-alias gs git stash
-alias gbr git branch $*
-alias gco git checkout $*
-alias gst git status
-alias grb git rebase $*
-alias grh git reset --hard
-alias gl git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-alias gl2 git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n'' %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-alias la ls -lah
-alias g git $*
-alias d deer $1
+alias rf (cousel-recentf)
 alias s eshell/magit
+alias d deer $1
+alias g git $*
+alias la ls -lah
+alias gl2 git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n'' %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+alias gl git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+alias grh git reset --hard
+alias grb git rebase $*
+alias gst git status
+alias gco git checkout $*
+alias gbr git branch $*
+alias gs git stash
+alias gsp git stash pop
+alias gsc git svn dcommit
+alias gsr git svn rebase
+alias gd git diff --color $*
+alias sudo *sudo $*
+alias ll ls -lh $*
+alias ex exit
+alias ec find-file $1
+alias vim find-file $1
+alias ff find-file $1
+alias fl (counsel-locate)
+alias FF find-file-other-window $1
+alias emacs find-file $1
+alias ed (eshell/cd "~/.emacs.d")
+alias pd (eshell/cd "~/projects")
+alias cc (find-file "~/.emacs.d/config.org")
+alias qq (evil-quit-all)
+alias qr restart-emacs
