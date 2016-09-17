@@ -476,7 +476,7 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
   (eval-after-load "company" '(diminish 'company-mode "Ⓒ"))
   (eval-after-load "cm-mode" '(diminish 'cm-mode "ⓒ"))
   (eval-after-load "reftex" '(diminish 'reftex-mode "ⓡ"))
-  ;; (eval-after-load "autorevert" '(diminish 'auto-revert-mode))
+  (eval-after-load "autorevert" '(diminish 'auto-revert-mode "Ⓡ"))
   (eval-after-load "simple" '(diminish 'auto-revert-mode "Ⓡ"))
   (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
   (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
@@ -677,7 +677,7 @@ The best low-contrast theme out there.
       (progn
           ;; don't make the fringe stand out from the background
           (setq solarized-distinct-fringe-background nil)
-
+          
           ;; change the font for some headings and titles
           (setq solarized-use-variable-pitch t)
 
