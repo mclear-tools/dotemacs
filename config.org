@@ -1282,6 +1282,7 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
 *** Workgroups
 #+BEGIN_SRC emacs-lisp
   (use-package workgroups2
+    :disabled t
     :commands (wg-create-workgroup wg-open-session wg-save-session)
     :config
       ;; Disable loading multiple frames
@@ -1306,8 +1307,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+BEGIN_SRC emacs-lisp
     (cpm-leader1
       "b"  '(:ignore t :which-key "Buffers")
-      "bb" 'helm-mini
-      "bB" 'ivy-switch-buffer
+      "bB" 'helm-mini
+      "bb" 'ivy-switch-buffer
       "bc" 'spacemacs/new-empty-buffer
       "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
@@ -1461,96 +1462,96 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 *** Org Keybindings
 Keybindings for org mode 
 #+BEGIN_SRC emacs-lisp
-(cpm-leader1 
-  "o"  '(:ignore t :which-key "Org")
-  "oh" '(:ignore t :which-key "headers")
-  "oi" '(:ignore t :which-key "insert")
-  "oS" '(:ignore t :which-key "subtree")
-  "ot" '(:ignore t :which-key "tables")
-  "or" '(:ignore t :which-key "org-reveal")
-  "oj" 'cpm/org-journal
-  "oc" 'org-capture
-  "of" 'org-footnote-action
-  "oP" 'org-set-property
-  ;; "P" 'org-publish-current-project
-  "op" 'org-publish-current-file
-  "o:" 'org-set-tags
-  "oa" 'org-agenda
-  "ob" 'org-tree-to-indirect-buffer
-  "oA" 'org-archive-subtree
-  "ol" 'org-open-at-point
-  "oT" 'org-show-todo-tree
+  (cpm-leader1 
+    "o"  '(:ignore t :which-key "Org")
+    "oh" '(:ignore t :which-key "headers")
+    "oi" '(:ignore t :which-key "insert")
+    "oS" '(:ignore t :which-key "subtree")
+    "ot" '(:ignore t :which-key "tables")
+    "or" '(:ignore t :which-key "org-reveal")
+    "oj" 'cpm/org-journal
+    "oc" 'org-capture
+    "of" 'org-footnote-action
+    "oP" 'org-set-property
+    ;; "P" 'org-publish-current-project
+    "op" 'org-publish-current-file
+    "o:" 'org-set-tags
+    "oa" 'org-agenda
+    "ob" 'org-tree-to-indirect-buffer
+    "oA" 'org-archive-subtree
+    "ol" 'org-open-at-point
+    "oT" 'org-show-todo-tree
   
-  "orr" 'org-reveal-export-to-html-and-browse
-  "ors" 'org-reveal-export-current-subtree
-  "orp" 'reveal-to-pdf
+    "orr" 'org-reveal-export-to-html-and-browse
+    "ors" 'org-reveal-export-current-subtree
+    "orp" 'reveal-to-pdf
   
-  "o." 'org-time-stamp
-  "o!" 'org-time-stamp-inactive
+    "o." 'org-time-stamp
+    "o!" 'org-time-stamp-inactive
   
-  ;; headings
-  "ohi" 'org-insert-heading-after-current
-  "ohI" 'org-insert-heading
+    ;; headings
+    "ohi" 'org-insert-heading-after-current
+    "ohI" 'org-insert-heading
   
-  ;; More cycling options (timestamps, headlines, items, properties)
-  "oL" 'org-shiftright
-  "oH" 'org-shiftleft
-  "oJ" 'org-shiftdown
-  "oK" 'org-shiftup
+    ;; More cycling options (timestamps, headlines, items, properties)
+    "oL" 'org-shiftright
+    "oH" 'org-shiftleft
+    "oJ" 'org-shiftdown
+    "oK" 'org-shiftup
   
-  ;; Subtree editing
-  "oSl" 'org-demote-subtree
-  "oSh" 'org-promote-subtree
-  "oSj" 'org-move-subtree-down
-  "oSk" 'org-move-subtree-up
+    ;; Subtree editing
+    "oSl" 'org-demote-subtree
+    "oSh" 'org-promote-subtree
+    "oSj" 'org-move-subtree-down
+    "oSk" 'org-move-subtree-up
   
-  ;; tables
-  "ota" 'org-table-align
-  "otb" 'org-table-blank-field
-  "otc" 'org-table-convert
-  "otdc" 'org-table-delete-column
-  "otdr" 'org-table-kill-row
-  "ote" 'org-table-eval-formula
-  "otE" 'org-table-export
-  "oth" 'org-table-previous-field
-  "otH" 'org-table-move-column-left
-  "otic" 'org-table-insert-column
-  "otih" 'org-table-insert-hline
-  "otiH" 'org-table-hline-and-move
-  "otir" 'org-table-insert-row
-  "otI" 'org-table-import
-  "otj" 'org-table-next-row
-  "otJ" 'org-table-move-row-down
-  "otK" 'org-table-move-row-up
-  "otl" 'org-table-next-field
-  "otL" 'org-table-move-column-right
-  "otn" 'org-table-create
-  "otN" 'org-table-create-with-table.el
-  "otr" 'org-table-recalculate
-  "ots" 'org-table-sort-lines
-  "ottf" 'org-table-toggle-formula-debugger
-  "otto" 'org-table-toggle-coordinate-overlays
-  "otw" 'org-table-wrap-region
+    ;; tables
+    "ota" 'org-table-align
+    "otb" 'org-table-blank-field
+    "otc" 'org-table-convert
+    "otdc" 'org-table-delete-column
+    "otdr" 'org-table-kill-row
+    "ote" 'org-table-eval-formula
+    "otE" 'org-table-export
+    "oth" 'org-table-previous-field
+    "otH" 'org-table-move-column-left
+    "otic" 'org-table-insert-column
+    "otih" 'org-table-insert-hline
+    "otiH" 'org-table-hline-and-move
+    "otir" 'org-table-insert-row
+    "otI" 'org-table-import
+    "otj" 'org-table-next-row
+    "otJ" 'org-table-move-row-down
+    "otK" 'org-table-move-row-up
+    "otl" 'org-table-next-field
+    "otL" 'org-table-move-column-right
+    "otn" 'org-table-create
+    "otN" 'org-table-create-with-table.el
+    "otr" 'org-table-recalculate
+    "ots" 'org-table-sort-lines
+    "ottf" 'org-table-toggle-formula-debugger
+    "otto" 'org-table-toggle-coordinate-overlays
+    "otw" 'org-table-wrap-region
   
-  ;; Multi-purpose keys
-  "o*" 'org-ctrl-c-star
-  "oRET" 'org-ctrl-c-ret
-  "o-" 'org-ctrl-c-minus
-  "o^" 'org-sort
-  "o/" 'org-sparse-tree
+    ;; Multi-purpose keys
+    ;; "o*" 'org-ctrl-c-star
+    ;; "oRET" 'org-ctrl-c-ret
+    "o-" 'org-ctrl-c-minus
+    "o^" 'org-sort
+    "o/" 'org-sparse-tree
   
-  "oI" 'org-clock-in
-  "on" 'org-narrow-to-subtree
-  "oN" 'widen
-  "oO" 'org-clock-out
-  "oq" 'org-clock-cancel
-  "oR" 'org-refile
-  "os" 'org-schedule
+    "oI" 'org-clock-in
+    "on" 'org-narrow-to-subtree
+    "oN" 'widen
+    "oO" 'org-clock-out
+    "oq" 'org-clock-cancel
+    "oR" 'org-refile
+    "os" 'org-schedule
   
-  ;; insertion of common elements
-  "oil" 'org-insert-link
-  "oif" 'org-footnote-new
-  )
+    ;; insertion of common elements
+    "oil" 'org-insert-link
+    "oif" 'org-footnote-new
+    )
 #+END_SRC
 *** Packages
 Keybindings for managing packages
@@ -1563,32 +1564,30 @@ Keybindings for managing packages
 #+END_SRC
 *** Projects
 #+BEGIN_SRC emacs-lisp
-(cpm-leader1 
-  "p" '(:ignore t :which-key "Projects")
-  "p!"  'projectile-run-shell-command-in-root
-  "p&"  'projectile-run-async-shell-command-in-root
-  "pa"  'projectile-toggle-between-implementation-and-test
-  "pb"  'helm-projectile-switch-to-buffer
-  "pc"  'projectile-compile-project
-  "pd"  'helm-projectile-find-dir
-  "pD"  'projectile-dired
-  "pf"  'helm-projectile-find-file
-  "pg"  'goto-projects
-  "ph"  'helm-projectile
-  "pG"  'projectile-regenerate-tags
-  "pI"  'projectile-invalidate-cache
-  "pk"  'projectile-kill-buffers
-  "po"  'projectile-multi-occur
-  "pp"  'helm-projectile-switch-project
-  "pr"  'helm-projectile-recentf
-  "pR"  'projectile-replace
-  "ps"  'desktop-save
-  "pS"  'desktop-read
-  "pT"  'projectile-find-test-file
-  "pv"  'projectile-vc
-  "py"  'projectile-find-tag
-  "sgp" 'helm-projectile-grep
-)
+  (cpm-leader1 
+    "p" '(:ignore t :which-key "Projects")
+    "p!"  'projectile-run-shell-command-in-root
+    "p&"  'projectile-run-async-shell-command-in-root
+    "pa"  'projectile-toggle-between-implementation-and-test
+    "pb"  'counsel-projectile-switch-to-buffer
+    "pc"  'projectile-compile-project
+    "pd"  'conusel-projectile-find-dir
+    "pD"  'projectile-dired
+    "pf"  'counsel-projectile-find-file
+    "pg"  'goto-projects
+    "ph"  'counsel-projectile
+    "pG"  'projectile-regenerate-tags
+    "pI"  'projectile-invalidate-cache
+    "pk"  'projectile-kill-buffers
+    "po"  'projectile-multi-occur
+    "pp"  'counsel-projectile
+    "pR"  'projectile-replace
+    "ps"  'desktop-save
+    "pS"  'desktop-read
+    "pT"  'projectile-find-test-file
+    "pv"  'projectile-vc
+    "py"  'projectile-find-tag
+  )
 #+END_SRC
 *** Quitting
 #+BEGIN_SRC emacs-lisp
@@ -1599,19 +1598,24 @@ Keybindings for managing packages
 #+END_SRC
 *** Search
 #+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "s" '(:ignore t :which-key "Search")
-  "ss" 'swiper ;; search in file
-  "sp" 'helm-ag-project-root
-  "so" 'helm-occur
-  "sd" 'helm-do-ag ;; search with directory prompt
-  "sb" 'helm-ag-buffers
-  "sf" 'helm-ag-this-file
-  "sj" 'forward-or-backward-sexp
-  ;; "/"  'helm-ag  ;; search in directory with word prompt
-  "/"  'counsel-ag
-  "sl" 'last-search-buffer
-   )
+  (cpm-leader1
+    "s" '(:ignore t :which-key "Search")
+    "ss" 'swiper ;; search in file
+    "sp" 'counsel-projectile
+    "so" 'ivy-occur
+    "sB" 'swiper-all ;; search all buffers
+    "sb" 'swiper-multi ;; search some buffers
+    "sd" 'counsel-ag ;; search with directory prompt
+    "sG" 'counsel-git-grep
+    "sg" 'counsel-grep-or-swiper
+    ;; "sb" 'helm-ag-buffers
+    ;; "sf" 'helm-ag-this-file
+    "sj" 'forward-or-backward-sexp
+    "sk" 'counsel-yank-pop
+    ;; "/"  'helm-ag  ;; search in directory with word prompt
+    "/"  'counsel-ag
+    "sl" 'last-search-buffer
+     )
 #+END_SRC
  
 *** Toggles
@@ -1635,7 +1639,7 @@ Keybindings for managing packages
     "tp" 'smartparens-mode
     "tr" 'rainbow-identifiers-mode
     "ts" 'toggle-dark-light-theme
-    "tt" 'helm-themes
+    "tt" 'counsel-load-theme
   )
 #+END_SRC
  
@@ -1697,6 +1701,30 @@ Keybindings for managing packages
   "WS" 'wg-save-session)
 #+END_SRC
 
+** Perspectives
+This package provides tagged workspaces in Emacs, similar to workspaces in windows managers such as Awesome and XMonad (and somewhat similar to multiple desktops in Gnome or Spaces in OS X).
+#+BEGIN_SRC emacs-lisp
+(use-package perspective
+  :commands (persp-switch persp-next persp-prev persp-rename persp-kill)
+  :init
+  (cpm-leader1
+    "W"  '(:ignore t :which-key "Workspaces")
+    "Wa" 'persp-add-buffer
+    "WA" 'persp-set-buffer
+    "Ws" 'persp-switch
+    "Wk" 'persp-kill
+    "Wr" 'persp-remove-buffer
+    "WR" 'persp-rename
+    "}"  'persp-next
+    "{"  'persp-prev))
+  
+  
+(use-package persp-projectile
+  :commands projectile-persp-switch-project
+  :config
+  (general-define-key '(normal insert emacs) 'projectile-mode-map
+    "s-p" 'projectile-persp-switch-project))
+#+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
  (use-package projectile
@@ -1730,6 +1758,10 @@ Keybindings for managing packages
        (concat user-cache-directory "projectile.cache"))
    (progn
      (projectile-global-mode)))
+     
+(use-package counsel-projectile
+  :after counsel
+  :commands counsel-projectile)
 #+END_SRC
 ** Ranger & Deer
 Better dired navigation using ranger-like settings
@@ -1800,25 +1832,51 @@ framework is [[https://github.com/emacs-helm/helm][helm]], which is very impress
 lot to configure. [[https://github.com/abo-abo/swiper][Ivy,]] and its related packages swiper and counsel, are
 lightweight and perform much of the same work as helm.
 #+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :defer 2
-  :diminish ivy-mode
-  :init
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t
-        ivy-count-format "(%d/%d) "
-        ivy-display-style 'fancy
-        )
-  (general-define-key
-    :keymaps 'ivy-minibuffer-map
-    "C-j" 'ivy-next-line
-    "C-k" 'ivy-previous-line)
-  :config
-  (setq ivy-wrap t))
-(use-package swiper
-  :after ivy)
-(use-package counsel
-  :after ivy)
+  (use-package ivy
+    :defer 2
+    :diminish ivy-mode
+    :init
+    (setq ivy-use-virtual-buffers t
+          ivy-virtual-abbreviate 'full
+          ivy-count-format "(%d/%d) "
+          ;; Always ignore buffers set in `ivy-ignore-buffers'
+          ivy-use-ignore-default 'always
+          ivy-display-style 'fancy
+          )
+    (setq ivy-re-builders-alist
+      ;; allow input not in order
+          '((t   . ivy--regex-ignore-order)))
+    (general-define-key
+      :keymaps 'ivy-minibuffer-map
+      "C-j" 'ivy-next-line
+      "C-k" 'ivy-previous-line)
+    (ivy-mode 1)
+    :config
+    (defun modi/ivy-kill-buffer ()
+      (interactive)
+      (ivy-set-action 'kill-buffer)
+      (ivy-done))
+    (bind-keys
+     :map ivy-switch-buffer-map
+      ("C-;" . modi/ivy-kill-buffer))
+    (setq ivy-wrap t)
+    (dolist (buffer '("^\\*Backtrace\\*$"
+                  "^\\*Compile-Log\\*$"
+                  "^\\*.+Completions\\*$"
+                  "^\\*Flycheck error messages\\*$"
+                  "^\\*Help\\*$"
+                  "^\\*Ibuffer\\*$"
+                  "^\\*helm mini\\*$"
+                  ;; "^\\*Messages\\*$"
+                  "^\\*inferior-lisp\\*$"
+                  ;; "^\\*scratch\\*$"
+                  "^\\*slime-compilation\\*$"
+                  "^\\*slime-description\\*$"
+                  "^\\*slime-events\\*$"))
+    (add-to-list 'ivy-ignore-buffers buffer)))
+
+  (use-package swiper :defer 2)
+  (use-package counsel :defer 2)
 #+END_SRC
 *** Helm
 I still use helm for a few completion functions
@@ -2806,168 +2864,100 @@ Better than doc-view, but doesn't render well on retina screens :(
           )
       (general-define-key :states '(insert) :keymaps 'pdf-view-mode-map
           "y" 'pdf-view-kill-ring-save )
-
-      ;; for annotation and jumping to file
-      (eval-after-load 'org '(require 'org-pdfview))
-      (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
-      (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))))      
+      ))      
 #+END_SRC
 *** Extract annotations
 #+BEGIN_SRC emacs-lisp
-  (use-package org-pdfview
-    :commands (org-pdfview-open))
+(use-package pdf-tools-org
+  :load-path "~/.emacs.d/elpa/pdf-tools-org"
+  :ensure nil
+  :commands pdf-tools-org-export-to-org
+  :config
+  (add-hook 'after-save-hook
+          (lambda ()
+            (when (eq major-mode 'pdf-view-mode) (pdf-tools-org-export-to-org)))))
+  ;; (use-package org-pdfview
+  ;;   :commands (org-pdfview-open)
+  ;;   :after org
+  ;;   :init
+  ;;   ;; for annotation and jumping to file
+  ;;   (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+  ;;   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open)))
+#+END_SRC
 
-    ;; Extracting annotations using pdf-tools
-    ;; modified from https://github.com/politza/pdf-tools/pull/133 
-    ;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
+#+BEGIN_SRC emacs-lisp :tangle no
+;; modified from https://github.com/politza/pdf-tools/pull/133 
+;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
 
-      (defun mwp/pdf-multi-extract (sources)
-      "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
-      and links back to page of highlight."
-      (let (
-            (output ""))
-        (dolist (thispdf sources)
-          (setq output (concat output (pdf-annot-markups-as-org-text thispdf nil level ))))
-        (princ output))
-      )
+(defun mwp/pdf-multi-extract (sources)
+  "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
+and links back to page of highlight."
+  (let (
+        (output ""))
+    (dolist (thispdf sources)
+      (setq output (concat output (pdf-annot-markups-as-org-text thispdf nil level ))))
+    (princ output))
+  )
 
-      (defun cpm/pdf-summary-extract (sources)
-      "Helper function to print underlined text from a list of pdf's, with one org header per pdf, 
-      and links back to page of highlight."
-      (let (
-            (output ""))
-        (dolist (thispdf sources)
-          (setq output (concat output (pdf-annot-summary-as-org-text thispdf nil level ))))
-        (princ output))
-      )
+;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
+(defun pdf-annot-edges-to-region (edges)
+  "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
+We need this to import annotations and to get marked-up text, because annotations
+are referenced by its edges, but functions for these tasks need region."
 
-      ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
-      (defun pdf-annot-edges-to-region (edges)
-      "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
-      We need this to import annotations and to get marked-up text, because annotations
-      are referenced by its edges, but functions for these tasks need region."
+  (let ((left0 (nth 0 (car edges)))
+        (top0 (nth 1 (car edges)))
+        (bottom0 (nth 3 (car edges)))
+        (top1 (nth 1 (car (last edges))))
+        (right1 (nth 2 (car (last edges))))
+        (bottom1 (nth 3 (car (last edges))))
+        (n (safe-length edges)))
+    ;; we try to guess the line height to move
+    ;; the region away from the boundary and
+    ;; avoid double lines
+    (list left0
+          (+ top0 (/ (- bottom0 top0) 2))
+          right1
+          (- bottom1 (/ (- bottom1 top1) 2 )))))
 
-      (let ((left0 (nth 0 (car edges)))
-            (top0 (nth 1 (car edges)))
-            (bottom0 (nth 3 (car edges)))
-            (top1 (nth 1 (car (last edges))))
-            (right1 (nth 2 (car (last edges))))
-            (bottom1 (nth 3 (car (last edges))))
-            (n (safe-length edges)))
-        ;; we try to guess the line height to move
-        ;; the region away from the boundary and
-        ;; avoid double lines
-        (list left0
-              (+ top0 (/ (- bottom0 top0) 2))
-              right1
-              (- bottom1 (/ (- bottom1 top1) 2 )))))
+(defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
+  "Acquire highligh annotations as text, and return as org-heading"
 
-      (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
-      "Acquire highligh annotations as text, and return as org-heading"
+  (interactive "fPath to PDF: ")  
+  (let* ((outputstring "") ;; the text to be returned
+         (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
+         (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
+         (levelstring (make-string level ?*)) ;; set headline to proper level
+         (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
+                       'pdf-annot-compare-annotations))
+         )
+    ;; create the header
+    (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
 
-      (interactive "fPath to PDF: ")  
-      (let* ((outputstring "") ;; the text to be returned
-              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
-              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
-              (levelstring (make-string level ?*)) ;; set headline to proper level
-              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
-                            'pdf-annot-compare-annotations)))
-        ;; create the header
-        (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
+    ;; extract text
+    (mapc
+     (lambda (annot) ;; traverse all annotations
+       (if (eq 'highlight (assoc-default 'type annot))
+           (let* ((page (assoc-default 'page annot))
+                  ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
+                  (real-edges (pdf-annot-edges-to-region
+                               (pdf-annot-get annot 'markup-edges)))
+                  (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                            (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath)
+                                                      ) ))
 
-        ;; extract text
-        (mapc
-          (lambda (annot) ;; traverse all annotations
-            (if (eq 'highlight (assoc-default 'type annot))
-                (let* ((page (assoc-default 'page annot))
-                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
-                      (real-edges (pdf-annot-edges-to-region
-                                    (pdf-annot-get annot 'markup-edges)))
-                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                      (height (nth 1 real-edges)) ;; distance down the page
-                      ;; use pdfview link directly to page number
-                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                        "++" (number-to-string height) "][" title  "]]" )))
-                  (setq outputstring (concat outputstring text " ("
-                                            linktext ", " (number-to-string page) ")\n\n"))
-                  ))
-
-            (if (eq 'text (assoc-default 'type annot))
-                (let* ((page (assoc-default 'page annot))
-                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
-                      (real-edges (pdf-annot-edges-to-region
-                                    (pdf-annot-get annot 'markup-edges)))
-                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                      (height (nth 1 real-edges)) ;; distance down the page
-                      ;; use pdfview link directly to page number
-                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                        "++" (number-to-string height) "][" title  "]]" )))
-                  (setq outputstring (concat outputstring text " ("
-                                            linktext ", " (number-to-string page) ")\n\n"))
-                  ))
-
-              (if (eq 'underline (assoc-default 'type annot))
-                  (let* ((page (assoc-default 'page annot))
-                        ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
-                        (real-edges (pdf-annot-edges-to-region
-                                      (pdf-annot-get annot 'markup-edges)))
-                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                        (height (nth 1 real-edges)) ;; distance down the page
-                        ;; use pdfview link directly to page number
-                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                          "++" (number-to-string height) "][" title  "]]" )))
-                    (setq outputstring (concat outputstring text " ("
-                                              linktext ", " (number-to-string page) ")\n\n"))
-                    ))
+                  (height (nth 1 real-edges)) ;; distance down the page
+                  ;; use pdfview link directly to page number
+                  (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                    "++" (number-to-string height) "][" title  "]]" ))
                   )
-          annots)
-        outputstring ;; return the header
-        )
-      )
-
-      (defun pdf-annot-summary-as-org-text (pdfpath &optional title level)
-      "Acquire underlined annotations as text, and return as org-heading"
-
-      (interactive "fPath to PDF: ")  
-      (let* ((outputstring "") ;; the text to be returned
-              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
-              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
-              (levelstring (make-string level ?*)) ;; set headline to proper level
-              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
-                            'pdf-annot-compare-annotations)))
-        ;; create the header
-        (setq outputstring (concat levelstring " Summary from " title "\n\n")) ;; create heading
-
-        ;; extract text
-        (mapc
-          (lambda (annot) ;; traverse all annotations
-              (if (eq 'underline (assoc-default 'type annot))
-                  (let* ((page (assoc-default 'page annot))
-                        ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
-                        (real-edges (pdf-annot-edges-to-region
-                                      (pdf-annot-get annot 'markup-edges)))
-                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
-                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
-
-                        (height (nth 1 real-edges)) ;; distance down the page
-                        ;; use pdfview link directly to page number
-                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
-                                          "++" (number-to-string height) "][" title  "]]" )))
-                    (setq outputstring (concat outputstring text " ("
-                                              linktext ", " (number-to-string page) ")\n\n"))
-                    ))
-                  )
-          annots)
-        outputstring ;; return the header
-        )
-      )
-
+             (setq outputstring (concat outputstring text " ("
+                                        linktext ", " (number-to-string page) ")\n\n"))
+             )))
+     annots)
+    outputstring ;; return the header
+    )
+  )
 #+END_SRC
  
 * Shell
