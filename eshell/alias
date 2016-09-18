@@ -1,4 +1,4 @@
-alias rf (cousel-recentf)
+alias rf (counsel-recentf)
 alias s eshell/magit
 alias d deer $1
 alias g git $*
