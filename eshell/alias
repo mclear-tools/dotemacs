@@ -1,4 +1,4 @@
-alias rf (counsel-recentf)
+alias rf (helm-recentf)
 alias s eshell/magit
 alias d deer $1
 alias g git $*
@@ -18,10 +18,12 @@ alias gd git diff --color $*
 alias sudo *sudo $*
 alias ll ls -lh $*
 alias ex exit
+alias x exit
 alias ec find-file $1
+alias e find-file $1
 alias vim find-file $1
 alias ff find-file $1
-alias fl (counsel-locate)
+alias fl (helm-locate) 
 alias FF find-file-other-window $1
 alias emacs find-file $1
 alias ed (eshell/cd "~/.emacs.d")

@@ -1307,8 +1307,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+BEGIN_SRC emacs-lisp
     (cpm-leader1
       "b"  '(:ignore t :which-key "Buffers")
-      "bB" 'helm-mini
-      "bb" 'ivy-switch-buffer
+      "bb" 'helm-mini
       "bc" 'spacemacs/new-empty-buffer
       "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
@@ -1348,31 +1347,35 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 
 *** Files
 #+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "f"  '(:ignore t :which-key "Files")
-  ;; "ff" 'helm-find-files
-  "ff" 'counsel-find-files
-  "fl" 'counsel-locate
-  ;;  "fl" 'helm-locate
-  "fo" 'crux-open-with
-  "fs" 'save-buffer
-  ;; "fr" 'helm-recentf
-  "fr" 'counsel-recentf
-  "fy" 'spacemacs/show-and-copy-buffer-filename
-  )
+  (cpm-leader1
+    "f"  '(:ignore t :which-key "Files")
+    "ff" 'helm-find-files
+    ;; "ff" 'counsel-find-files
+    ;; "fl" 'counsel-locate
+    "fl" 'helm-locate
+    "fo" 'crux-open-with
+    "fs" 'save-buffer
+    "fr" 'helm-recentf
+    "fr" 'counsel-recentf
+    "fy" 'spacemacs/show-and-copy-buffer-filename
+    )
 #+END_SRC
 
 *** General
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1
     "A" 'helm-apropos
-    "?" 'counsel-descbinds
-    "<SPC>" 'counsel-M-x
+    "?" 'helm-descbinds
+    ;; "?" 'counsel-descbinds
+    "<SPC>" 'helm-M-x
+    ;; "<SPC>" 'counsel-M-x
     "d" 'deer
     "D" 'deer-jump-other-window
     "e" 'server-edit
-    "r" 'ivy-resume
+    "h" 'helm-resume
+    ;; "r" 'ivy-resume
     "j" 'avy-goto-char
+    "k" 'helm-show-kill-ring
     "n" 'research-notes
     "N" 'big-notes
     "M" 'woman
@@ -1569,18 +1572,19 @@ Keybindings for managing packages
     "p!"  'projectile-run-shell-command-in-root
     "p&"  'projectile-run-async-shell-command-in-root
     "pa"  'projectile-toggle-between-implementation-and-test
-    "pb"  'counsel-projectile-switch-to-buffer
+    "pb"  'helm-projectile-switch-to-buffer
     "pc"  'projectile-compile-project
-    "pd"  'conusel-projectile-find-dir
+    "pd"  'helm-projectile-find-dir
     "pD"  'projectile-dired
-    "pf"  'counsel-projectile-find-file
+    "pf"  'helm-projectile-find-file
     "pg"  'goto-projects
-    "ph"  'counsel-projectile
+    "ph"  'helm-projectile
     "pG"  'projectile-regenerate-tags
     "pI"  'projectile-invalidate-cache
     "pk"  'projectile-kill-buffers
     "po"  'projectile-multi-occur
-    "pp"  'counsel-projectile
+    "pp"  'helm-projectile-switch-project
+    "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
     "ps"  'desktop-save
     "pS"  'desktop-read
@@ -1600,21 +1604,16 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1
     "s" '(:ignore t :which-key "Search")
-    "ss" 'swiper ;; search in file
-    "sp" 'counsel-projectile
-    "so" 'ivy-occur
-    "sB" 'swiper-all ;; search all buffers
-    "sb" 'swiper-multi ;; search some buffers
-    "sd" 'counsel-ag ;; search with directory prompt
-    "sG" 'counsel-git-grep
-    "sg" 'counsel-grep-or-swiper
-    ;; "sb" 'helm-ag-buffers
-    ;; "sf" 'helm-ag-this-file
+    "sd" 'helm-do-ag ;; search with directory prompt
+    "sb" 'helm-ag-buffers
+    "sf" 'helm-ag-this-file
     "sj" 'forward-or-backward-sexp
-    "sk" 'counsel-yank-pop
-    ;; "/"  'helm-ag  ;; search in directory with word prompt
-    "/"  'counsel-ag
+    "sk" 'helm-show-kill-ring
     "sl" 'last-search-buffer
+    "so" 'helm-occur
+    "sp" 'helm-ag-project-root
+    "ss" 'helm-swoop-without-pre-input ;; search in file
+    "/"  'helm-ag  ;; search in directory with word prompt
      )
 #+END_SRC
  
@@ -1693,30 +1692,31 @@ Keybindings for managing packages
 *** Workgroups bindings
 #+BEGIN_SRC emacs-lisp
 (cpm-leader1
-  "W"  '(:ignore t :which-key "Workgroups")
-  "Wc" 'wg-create-workgroup
-  "Wr" 'wg-rename-workgroup
-  "Wk" 'wg-kill-workgroup
-  "Ws" 'wg-switch-to-workgroup
-  "WS" 'wg-save-session)
+  "W"  '(:ignore t :which-key "Workspaces")
+  "Wa" 'persp-add-buffer
+  "WA" 'persp-set-buffer
+  "Ws" 'persp-switch
+  "Wk" 'persp-kill
+  "Wr" 'persp-remove-buffer
+  "WR" 'persp-rename
+  "}"  'persp-next
+  "{"  'persp-prev)
+
+  ;; (cpm-leader1
+  ;;   "W"  '(:ignore t :which-key "Workgroups")
+  ;;   "Wc" 'wg-create-workgroup
+  ;;   "Wr" 'wg-rename-workgroup
+  ;;   "Wk" 'wg-kill-workgroup
+  ;;   "Ws" 'wg-switch-to-workgroup
+  ;;   "WS" 'wg-save-session)
 #+END_SRC
 
 ** Perspectives
 This package provides tagged workspaces in Emacs, similar to workspaces in windows managers such as Awesome and XMonad (and somewhat similar to multiple desktops in Gnome or Spaces in OS X).
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
-  :commands (persp-switch persp-next persp-prev persp-rename persp-kill)
-  :init
-  (cpm-leader1
-    "W"  '(:ignore t :which-key "Workspaces")
-    "Wa" 'persp-add-buffer
-    "WA" 'persp-set-buffer
-    "Ws" 'persp-switch
-    "Wk" 'persp-kill
-    "Wr" 'persp-remove-buffer
-    "WR" 'persp-rename
-    "}"  'persp-next
-    "{"  'persp-prev))
+  :commands (persp-switch persp-next persp-prev persp-rename persp-kill))
+
   
   
 (use-package persp-projectile
@@ -1827,11 +1827,11 @@ Better dired navigation using ranger-like settings
 ** Search and completion framework
 *** Ivy
 There are packages that make working with buffers and searching much
-easier than with emacs's built in incremental search. One popular
-framework is [[https://github.com/emacs-helm/helm][helm]], which is very impressive. I like it, but there is a
-lot to configure. [[https://github.com/abo-abo/swiper][Ivy,]] and its related packages swiper and counsel, are
-lightweight and perform much of the same work as helm.
-#+BEGIN_SRC emacs-lisp
+easier than with emacs's built in incremental search. [[https://github.com/abo-abo/swiper][Ivy,]] and its
+related packages swiper and counsel, are lightweight and fairly simple
+to configure. But I've had trouble with swiper freezing, and I think Ivy
+is somewhat ugly in comparison to helm. So I use helm. YMMV. 
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package ivy
     :defer 2
     :diminish ivy-mode
@@ -1879,7 +1879,8 @@ lightweight and perform much of the same work as helm.
   (use-package counsel :defer 2)
 #+END_SRC
 *** Helm
-I still use helm for a few completion functions
+[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite
+a lot]]. 
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :diminish (helm-mode . "")
@@ -1904,6 +1905,7 @@ I still use helm for a few completion functions
       (define-key helm-map (kbd "C-h") 'helm-next-source)
       (define-key helm-map (kbd "C-S-h") 'describe-key)
       (define-key helm-map (kbd "C-l") (kbd "RET"))
+      (general-define-key "M-x" 'helm-M-x)
 
       (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
       (helm-autoresize-mode 1)
@@ -1921,6 +1923,89 @@ I still use helm for a few completion functions
 
       (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
       (helm-mode 1)))
+#+END_SRC
+*** Helm packages
+**** Helm ag
+#+begin_src emacs-lisp
+(use-package helm-ag  
+  :defer t
+  :config
+  (setq helm-ag-fuzzy-match t))
+#+end_src
+**** Helm descbinds
+#+begin_src emacs-lisp 
+(use-package helm-descbinds 
+  :defer t
+  :config
+  (setq helm-descbinds-window-style 'same-window)
+  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
+#+end_src
+**** Helm git list
+#+begin_src emacs-lisp
+(use-package helm-ls-git :defer t)
+#+end_src
+**** Helm hunks
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-hunks
+    :defer t
+    :commands helm-hunks)
+
+#+END_SRC
+
+**** Helm swoop
+[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
+#+begin_src emacs-lisp
+  (use-package helm-swoop
+    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
+    :config
+    (setq helm-swoop-use-fuzzy-match t)
+  )
+#+end_src
+**** Helm flyspell
+Use helm with flyspell
+#+begin_src emacs-lisp
+  (use-package helm-flyspell
+    :defer t
+    :commands helm-flyspell-correct
+  )
+#+end_src
+
+**** Helm recent directories
+Recent directories
+#+begin_src emacs-lisp
+  (use-package helm-dired-recent-dirs
+    :defer t)
+#+end_src
+**** Helm files
+#+begin_src emacs-lisp
+  (use-package helm-files
+    :defer t
+    :ensure nil
+    :config
+    (setq helm-ff-skip-boring-files t)
+    (setq helm-idle-delay 0.05)
+    (setq helm-input-idle-delay 0.05)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (setq helm-boring-file-regexp-list
+    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
+      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+#+end_src
+
+**** Helm-projectile
+#+BEGIN_SRC emacs-lisp
+(use-package helm-projectile
+  :defer t
+  :commands (helm-projectile-switch-to-buffer
+             helm-projectile-find-dir
+             helm-projectile-dired-find-dir
+             helm-projectile-recentf
+             helm-projectile-find-file
+             helm-projectile-grep
+             helm-projectile
+             helm-projectile-switch-project)
+  :init
+    (progn
+      (setq projectile-switch-project-action 'helm-projectile)))
 #+END_SRC
 *** Visual replace
 This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
