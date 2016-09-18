@@ -58,6 +58,14 @@
  '(package-selected-packages
    (quote
     (yaml-mode wttrin workgroups2 window-numbering which-key web-mode visual-regexp virtualenvwrapper vimrc-mode use-package toc-org sr-speedbar spaceline solarized-theme smooth-scrolling shell-switcher shell-pop sane-term reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-projectile paradox pandoc-mode palimpsest ox-reveal ox-pandoc org-plus-contrib org-pdfview org-bullets multi-term material-theme markdown-mode lorem-ipsum lispyville interleave info+ htmlize hl-todo highlight-numbers helm-themes helm-bibtex haskell-mode gruvbox-theme git-timemachine git-gutter-fringe+ general fancy-battery evil-surround evil-numbers evil-magit evil-indent-textobject evil-escape evil-commentary elisp-slime-nav deft dash-at-point crux counsel-projectile company-math company-auctex centered-window-mode centered-cursor-mode bind-map back-button ag)))
+ '(safe-local-variable-values
+   (quote
+    ((org-footnote-section)
+     (eval when
+           (fboundp
+            (quote rainbow-mode))
+           (rainbow-mode 1))
+     (kill-buffer-hook org-publish-current-file))))
  '(shell-pop-shell-type
    (quote
     ("ansi-term" "*ansi-term*"
@@ -75,6 +83,10 @@
  '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
  '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))
  '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+ ;; '(ivy-minibuffer-match-face-1 ((t (:background "#64b5ea" :foreground "#f7f438"))))
  '(markdown-comment-face ((t (:weight bold :strike-through nil))))
  '(org-block ((t (:foreground "#2E8B57" :slant italic))))
- '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal)))))
+ '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+ ;; '(swiper-line-face ((t (:background "#64b5ea" :foreground "#f7f438"))))
+ )
+
