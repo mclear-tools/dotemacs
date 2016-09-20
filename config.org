@@ -1357,7 +1357,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "fo" 'crux-open-with
     "fs" 'save-buffer
     "fr" 'helm-recentf
-    "fr" 'counsel-recentf
+    ;; "fr" 'counsel-recentf
     "fy" 'spacemacs/show-and-copy-buffer-filename
     )
 #+END_SRC
@@ -1886,6 +1886,9 @@ a lot]].
   (use-package helm
     :diminish (helm-mode . "")
     :defer 2
+    :init
+    (setq helm-locate-fuzzy-match nil
+          helm-locate-command "mdfind -interpret -name %s %s")
     :config
     (progn
       (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
@@ -1897,10 +1900,8 @@ a lot]].
             helm-display-header-line nil
             helm-always-two-windows nil                       
             helm-split-window-in-side-p t
-            helm-echo-input-in-header-line t
-            helm-locate-fuzzy-match nil
-            helm-locate-command "mdfind -interpret -name %s %s")
-      ;;; helm vim-bindings in buffer ;;
+            helm-echo-input-in-header-line t)
+                  ;;; helm vim-bindings in buffer ;;
       (define-key helm-map (kbd "C-j") 'helm-next-line)
       (define-key helm-map (kbd "C-k") 'helm-previous-line)
       (define-key helm-map (kbd "C-h") 'helm-next-source)
