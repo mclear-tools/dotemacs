@@ -3114,6 +3114,27 @@ Other useful shell settings
     (defun my-term-hook ()
       (goto-address-mode) (global-hl-line-mode 0))
     (add-hook 'term-mode-hook 'my-term-hook)
+    
+  ;; paste and navigation
+  (defun term-send-tab ()
+      "Send tab in term mode."
+      (interactive)
+      (term-send-raw-string "\t"))
+
+    ;; hack to fix pasting issue, the paste micro-state won't
+    ;; work in term
+    (general-define-key :states '(normal) :keymaps 'term-raw-map 
+      "p" 'term-paste
+      "C-k" 'term-send-up
+      "C-j" 'term-send-down)
+
+    (general-define-key :states '(insert) :keymaps 'term-raw-map 
+      "C-c C-d" 'term-send-eof
+      "C-c C-z" 'term-stop-subjob
+      "<tab>"   'term-send-tab
+      "s-v"     'term-paste
+      "C-k"     'term-send-up
+      "C-j"     'term-send-down)
 #+end_src
 ** Compilation buffer
 
