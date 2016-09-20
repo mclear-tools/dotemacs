@@ -2448,6 +2448,8 @@ Pandoc mode for markdown conversion
   :commands (deft deft-find-file cpm/deft)
   :init
   (progn
+    ;; start in insert mode
+    (add-to-list 'evil-insert-state-modes 'deft-mode)
     (setq deft-extensions '("org" "md" "txt")
           deft-directory "~/projects/notebook/content/org_notes"
           deft-text-mode 'org-mode
@@ -2455,17 +2457,6 @@ Pandoc mode for markdown conversion
           deft-org-mode-title-prefix t ;; add #+TITLE prefix
           deft-recursive t  ;; search recursively in folders
           deft-use-filename-as-title t)
-
-    (defun cpm/deft ()
-      "Helper to call deft and then fix things so that it is nice and works"
-      (interactive)
-      (require 'org)
-      (deft)
-      ;; Hungry delete wrecks deft's DEL override
-      (when (fboundp 'hungry-delete-mode)
-        (hungry-delete-mode -1))
-      ;; When opening it you always want to filter right away
-      (evil-insert-state nil)))
   :config
   (progn
     (general-define-key :states '(normal) :keymaps 'deft-mode-map
