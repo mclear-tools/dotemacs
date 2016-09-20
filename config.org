@@ -1826,62 +1826,15 @@ Better dired navigation using ranger-like settings
   )
 #+END_SRC
 ** Search and completion framework
-*** Ivy
 There are packages that make working with buffers and searching much
 easier than with emacs's built in incremental search. [[https://github.com/abo-abo/swiper][Ivy,]] and its
 related packages swiper and counsel, are lightweight and fairly simple
 to configure. But I've had trouble with swiper freezing, and I think Ivy
 is somewhat ugly in comparison to helm. So I use helm. YMMV. 
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package ivy
-    :defer 2
-    :diminish ivy-mode
-    :init
-    (setq ivy-use-virtual-buffers t
-          ivy-virtual-abbreviate 'full
-          ivy-count-format "(%d/%d) "
-          ;; Always ignore buffers set in `ivy-ignore-buffers'
-          ivy-use-ignore-default 'always
-          ivy-display-style 'fancy
-          )
-    (setq ivy-re-builders-alist
-      ;; allow input not in order
-          '((t   . ivy--regex-ignore-order)))
-    (general-define-key
-      :keymaps 'ivy-minibuffer-map
-      "C-j" 'ivy-next-line
-      "C-k" 'ivy-previous-line)
-    (ivy-mode 1)
-    :config
-    (defun modi/ivy-kill-buffer ()
-      (interactive)
-      (ivy-set-action 'kill-buffer)
-      (ivy-done))
-    (bind-keys
-     :map ivy-switch-buffer-map
-      ("C-;" . modi/ivy-kill-buffer))
-    (setq ivy-wrap t)
-    (dolist (buffer '("^\\*Backtrace\\*$"
-                  "^\\*Compile-Log\\*$"
-                  "^\\*.+Completions\\*$"
-                  "^\\*Flycheck error messages\\*$"
-                  "^\\*Help\\*$"
-                  "^\\*Ibuffer\\*$"
-                  "^\\*helm mini\\*$"
-                  ;; "^\\*Messages\\*$"
-                  "^\\*inferior-lisp\\*$"
-                  ;; "^\\*scratch\\*$"
-                  "^\\*slime-compilation\\*$"
-                  "^\\*slime-description\\*$"
-                  "^\\*slime-events\\*$"))
-    (add-to-list 'ivy-ignore-buffers buffer)))
 
-  (use-package swiper :defer 2)
-  (use-package counsel :defer 2)
-#+END_SRC
 *** Helm
 [[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite
-a lot]]. 
+a lot]].
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :diminish (helm-mode . "")
@@ -3800,3 +3753,51 @@ Start server
 #+END_SRC
 
 * Archive
+** Ivy
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package ivy
+    :defer 2
+    :diminish ivy-mode
+    :init
+    (setq ivy-use-virtual-buffers t
+          ivy-virtual-abbreviate 'full
+          ivy-count-format "(%d/%d) "
+          ;; Always ignore buffers set in `ivy-ignore-buffers'
+          ivy-use-ignore-default 'always
+          ivy-display-style 'fancy
+          )
+    (setq ivy-re-builders-alist
+      ;; allow input not in order
+          '((t   . ivy--regex-ignore-order)))
+    (general-define-key
+      :keymaps 'ivy-minibuffer-map
+      "C-j" 'ivy-next-line
+      "C-k" 'ivy-previous-line)
+    (ivy-mode 1)
+    :config
+    (defun modi/ivy-kill-buffer ()
+      (interactive)
+      (ivy-set-action 'kill-buffer)
+      (ivy-done))
+    (bind-keys
+     :map ivy-switch-buffer-map
+      ("C-;" . modi/ivy-kill-buffer))
+    (setq ivy-wrap t)
+    (dolist (buffer '("^\\*Backtrace\\*$"
+                  "^\\*Compile-Log\\*$"
+                  "^\\*.+Completions\\*$"
+                  "^\\*Flycheck error messages\\*$"
+                  "^\\*Help\\*$"
+                  "^\\*Ibuffer\\*$"
+                  "^\\*helm mini\\*$"
+                  ;; "^\\*Messages\\*$"
+                  "^\\*inferior-lisp\\*$"
+                  ;; "^\\*scratch\\*$"
+                  "^\\*slime-compilation\\*$"
+                  "^\\*slime-description\\*$"
+                  "^\\*slime-events\\*$"))
+    (add-to-list 'ivy-ignore-buffers buffer)))
+
+  (use-package swiper :defer 2)
+  (use-package counsel :defer 2)
+#+END_SRC
