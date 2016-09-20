@@ -469,6 +469,7 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
   (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
   (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
   (eval-after-load "lispyville" '(diminish 'lispyville-mode "Ⓛ")) 
+  (eval-after-load "centered-window-mode" '(diminish 'centered-window-mode "⦿"))
   (eval-after-load "org-indent" '(diminish 'org-indent-mode))
   (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
   (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
@@ -2340,22 +2341,21 @@ the packages that are most helpful for this.
 This simulates programs like writeroom that provide a distraction-free
 mode of writing. But it tends not to work very well. 
 #+BEGIN_SRC emacs-lisp
-(use-package centered-window-mode
-  :commands centered-window-mode
-  :diminish centered-window-mode
-  :init
-  (setq cwm-centered-window-width 90))
+  (use-package centered-window-mode
+    :commands centered-window-mode
+    :init
+    (setq cwm-centered-window-width 90))
 
-  (defun distraction-free ()
-  "distraction free writing"
-    (interactive)
-    (toggle-frame-fullscreen) 
-    (git-gutter+-mode 0) 
-    (linum-mode 0) 
-    (visual-line-mode)
-    (hidden-mode-line-mode)
-    (centered-window-mode) 
-    )
+    (defun distraction-free ()
+    "distraction free writing"
+      (interactive)
+      (toggle-frame-fullscreen) 
+      (git-gutter+-mode 0) 
+      (linum-mode 0) 
+      (visual-line-mode)
+      (hidden-mode-line-mode)
+      (centered-window-mode) 
+      )
 #+END_SRC
 ** Helm-Bibtex
 Great for managing citations and notes
