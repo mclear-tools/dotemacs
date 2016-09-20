@@ -54,13 +54,6 @@ your configurations public! This config is [[https://github.com/mclear-tools/dot
 [[http://orgmode.org][Org mode]] is installed if not already present, as is [[https://github.com/jwiegley/use-package][use-package]]. There
 is no need for any other package management. 
 
-* Personal Information
-Tell emacs who you are. 
-
-#+begin_src emacs-lisp
-(setq user-full-name "Colin McLear"
-      user-mail-address "mclear@fastmail.com")
-#+end_src
 * Settings
 ** Defaults
 Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
