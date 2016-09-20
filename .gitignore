@@ -25,3 +25,4 @@ config.el*
 .cache/
 /private.el
 .cask/
+/games/tetris-scores
