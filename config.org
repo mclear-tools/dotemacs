@@ -2284,7 +2284,7 @@ the packages that are most helpful for this.
 
 ;;; org-devonthink.el ends here
 #+END_SRC
-** BROKEN Distraction free mode
+** CHECK Distraction free mode
 This simulates programs like writeroom that provide a distraction-free
 mode of writing. But it tends not to work very well (turns on randomly
 in buffers). 
