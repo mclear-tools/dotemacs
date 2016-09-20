@@ -2286,7 +2286,8 @@ the packages that are most helpful for this.
 #+END_SRC
 ** BROKEN Distraction free mode
 This simulates programs like writeroom that provide a distraction-free
-mode of writing. But it tends not to work very well. 
+mode of writing. But it tends not to work very well (turns on randomly
+in buffers). 
 #+BEGIN_SRC emacs-lisp
   (use-package centered-window-mode
     :commands centered-window-mode
