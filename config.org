@@ -1373,8 +1373,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     ;; "r" 'ivy-resume
     "j" 'avy-goto-char
     "k" 'helm-show-kill-ring
-    "n" 'research-notes
-    "N" 'big-notes
+    "N" 'research-notes
+    "n" 'big-notes
     "M" 'woman
     "'" 'shell-pop
     "." 'quick-commit
@@ -2462,11 +2462,14 @@ Pandoc mode for markdown conversion
           deft-use-filename-as-title t)
   :config
   (progn
+    (general-define-key :states '(insert) :keymaps 'deft-mode-map
+      "C-j" 'next-line
+      "C-k" 'previous-line)
     (general-define-key :states '(normal) :keymaps 'deft-mode-map
       "d" 'deft-delete-file
       "i" 'deft-toggle-incremental-search
       "n" 'deft-new-file
-      "r" 'deft-rename-file)))
+      "r" 'deft-rename-file))))
 ;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
 ;;advise deft-new-file-named to replace spaces in file names with -
 (defun bjm-deft-strip-spaces (args)
@@ -2487,7 +2490,10 @@ Pandoc mode for markdown conversion
 (defun big-notes ()
   "Goto main notes with deft"
   (interactive)
-  (any-deft "~/Dropbox/Notes"))
+  (any-deft "~/Dropbox/Notes")
+  (kill-this-buffer)
+  (any-deft "~/Dropbox/Notes")
+)
 (defun research-notes ()
   "Goto research notes"
   (interactive)
