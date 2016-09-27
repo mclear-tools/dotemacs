@@ -1764,31 +1764,32 @@ This package provides tagged workspaces in Emacs, similar to workspaces in windo
 ** Ranger & Deer
 Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
-  (use-package ranger
-    :commands (ranger deer deer-jump-other-window)
-    :init
-    (setq ranger-override-dired t
-          ranger-cleanup-eagerly t)
-    ;; set up image-dired to allow picture resize
-    (setq image-dired-dir (concat user-cache-directory "image-dir"))
-    (unless (file-directory-p image-dired-dir)
-      (make-directory image-dired-dir))
-    :config
-    (setq 
-        ranger-dont-show-binary t
-        ranger-excluded-extensions '("mkv" "iso" "mp4")
-        ranger-max-preview-size 25
-        ranger-preview-file t
-        ranger-show-dotfiles t
-        ranger-width-parents 0.25
-        ranger-width-preview 0.55 
-        ))
- (use-package dired
-  :ensure nil
-  :after ranger
-  :config
-  (setq dired-recursive-deletes 'always
-		dired-recursive-copies 'always))
+   (use-package ranger
+     :commands (ranger deer deer-jump-other-window)
+     :init
+     (setq ranger-override-dired t
+           ranger-cleanup-eagerly t)
+     ;; set up image-dired to allow picture resize
+     (setq image-dired-dir (concat user-cache-directory "image-dir"))
+     (unless (file-directory-p image-dired-dir)
+       (make-directory image-dired-dir))
+     :config
+     (setq 
+         ranger-dont-show-binary t
+         ranger-excluded-extensions '("mkv" "iso" "mp4")
+         ranger-max-preview-size 25
+         ranger-preview-file t
+         ranger-show-dotfiles t
+         ranger-width-parents 0.25
+         ranger-width-preview 0.55 
+         ))
+
+  ;; (use-package dired
+  ;;  :ensure nil
+  ;;  :after ranger
+  ;;  :config
+  ;;  (setq dired-recursive-deletes 'always
+  ;;        dired-recursive-copies 'always))
 #+END_SRC
 ** Recent files
 #+BEGIN_SRC emacs-lisp
