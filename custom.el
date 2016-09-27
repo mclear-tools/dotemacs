@@ -4,6 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(battery-update-interval 10)
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
  '(counsel-locate-cmd (quote counsel-locate-cmd-mdfind))
  '(custom-safe-themes
    (quote
@@ -57,7 +58,7 @@
 #+END_NOTES"))))
  '(package-selected-packages
    (quote
-    (helm-projectile helm-files helm-dired-recent-dirs helm-flyspell helm-swoop helm-hunks helm-ls-git helm-descbinds helm-ag yaml-mode wttrin workgroups2 window-numbering which-key web-mode visual-regexp virtualenvwrapper vimrc-mode use-package toc-org sr-speedbar spaceline solarized-theme smooth-scrolling shell-switcher shell-pop sane-term reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-projectile paradox pandoc-mode palimpsest ox-reveal ox-pandoc org-plus-contrib org-pdfview org-bullets multi-term material-theme markdown-mode lorem-ipsum lispyville interleave info+ htmlize hl-todo highlight-numbers helm-themes helm-bibtex haskell-mode gruvbox-theme git-timemachine git-gutter-fringe+ general fancy-battery evil-surround evil-numbers evil-magit evil-indent-textobject evil-escape evil-commentary elisp-slime-nav deft dash-at-point crux counsel-projectile company-math company-auctex centered-window-mode centered-cursor-mode bind-map back-button ag)))
+    (lispy company yasnippet git-gutter+ magit pdf-tools evil helm projectile avy bookmark+ helm-projectile helm-files helm-dired-recent-dirs helm-flyspell helm-swoop helm-hunks helm-ls-git helm-descbinds helm-ag yaml-mode wttrin workgroups2 window-numbering which-key web-mode visual-regexp virtualenvwrapper vimrc-mode use-package toc-org sr-speedbar spaceline solarized-theme smooth-scrolling shell-switcher shell-pop sane-term reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters persp-projectile paradox pandoc-mode palimpsest ox-reveal ox-pandoc org-plus-contrib org-pdfview org-bullets multi-term material-theme markdown-mode lorem-ipsum lispyville interleave info+ htmlize hl-todo highlight-numbers helm-themes helm-bibtex haskell-mode gruvbox-theme git-timemachine git-gutter-fringe+ general fancy-battery evil-surround evil-numbers evil-magit evil-indent-textobject evil-escape evil-commentary elisp-slime-nav deft dash-at-point crux counsel-projectile company-math company-auctex centered-window-mode centered-cursor-mode bind-map back-button ag)))
  '(safe-local-variable-values
    (quote
     ((org-footnote-section)
