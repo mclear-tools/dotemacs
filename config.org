@@ -3641,7 +3641,7 @@ Start server
            (server-start)))
     )
 #+END_SRC
-** Functions to run at startup
+** Things to run at startup
 #+BEGIN_SRC emacs-lisp
   (eshell)
 #+END_SRC
