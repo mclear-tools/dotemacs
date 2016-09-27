@@ -1676,7 +1676,7 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
 
 (cpm-leader1 
-  "w"  '(:ignore t :which-key "windows")
+  "w"  '(:ignore t :which-key "Windows")
   "wc" 'delete-window
   "w-" 'evil-window-split
   "w_" 'split-window-below-and-focus
