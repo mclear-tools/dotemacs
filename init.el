@@ -18,22 +18,29 @@
 
   ;; Show elapsed start-up time in mini-buffer
   (let ((emacs-start-time (current-time)))
-     (add-hook 'emacs-startup-hook
-               (lambda ()
-                 (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
-                   (message "[Emacs initialized in %.3fs]" elapsed)))))
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
+                  (message "[Emacs initialized in %.3fs]" elapsed)))))
 
   ;; List package archives and initialize them
+  ;; (setq package-enable-at-startup nil) ; tells emacs not to load any packages before starting up
   (setq load-prefer-newer t)
   (require 'package)
-  (when (>= emacs-major-version 24)
-    (require 'package)
-    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t))
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+  (setq package-archives '(("org"       . "http://orgmode.org/elpa/")
+                           ("gnu"       . "http://elpa.gnu.org/packages/")
+                           ("melpa"     . "https://melpa.org/packages/")))
   (package-initialize)
+;; ("marmalade" . "http://marmalade-repo.org/packages/")
+  ;; (when (>= emacs-major-version 24)
+  ;;   (require 'package)
+  ;;   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  ;;   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  ;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t))
+  ;; (when (< emacs-major-version 24)
+  ;;   ;; For important compatibility libraries like cl-lib
+  ;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+
   ;; Make sure Org is installed
   (unless (package-installed-p 'org)
     (package-refresh-contents)
