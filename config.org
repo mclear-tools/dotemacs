@@ -2180,13 +2180,13 @@ There are some other useful setup packages for evil
 #+begin_src emacs-lisp
     (use-package evil-surround
       :ensure t
-      :defer t
-      :commands (evil-surround-region)
+      ;; :commands (evil-surround-region evil-surround-change)
       :init 
       (general-define-key
       :states '(visual)
       "s" 'evil-surround-region
-      "S" 'evil-substitute))
+      "S" 'evil-substitute)
+      :config (global-evil-surround-mode 1))
 
   ;; (use-package evil-surround)
   ;; (require 'evil-surround)
