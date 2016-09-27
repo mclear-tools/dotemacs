@@ -430,9 +430,12 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
 
   ;; Single space between sentences is more widespread than double
   (setq-default sentence-end-double-space nil)
-  
+
   ;; use-package default installs all packages
   (setq use-package-always-ensure t)
+
+  ;; don't use dired-ls-dired
+  (setq dired-use-ls-dired nil)
 #+END_SRC
 
 * Appearance & UI
