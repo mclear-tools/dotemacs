@@ -1269,18 +1269,19 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
   :commands (avy-goto-char))
 #+END_SRC
 *** Bookmark
-#+BEGIN_SRC emacs-lisp 
-  (use-package bookmark
-    :defer t
-    :config
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package bookmark+
+    :after bookmark
+    :commands bmkp-set-desktop-bookmark
+    :init
     (setq bookmark-default-file
              (concat user-cache-directory "bookmarks")))
 #+END_SRC 
-*** Workgroups
+*** DISABLED Workgroups
 #+BEGIN_SRC emacs-lisp
   (use-package workgroups2
-    :disabled t
     :commands (wg-create-workgroup wg-open-session wg-save-session)
+    :disabled t
     :config
       ;; Disable loading multiple frames
       (setq wg-control-frames nil))
