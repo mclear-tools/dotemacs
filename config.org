@@ -2726,6 +2726,94 @@ same day of the month, but will be the same day of the week."
             :publishing-function (org-org-publish-to-org)
             ;; :publishing-function (org-pandoc-publish-to-html)
             )
+                       ("notebook"
+            ;; Path to org files
+            :base-directory "~/projects/notebook/content/org_notes"
+            :base-extension "org"
+            ;; Path to pelican project
+            :publishing-directory "~/projects/notebook/content/notes" 
+            ;; settings
+            :author "Colin McLear"
+            :email "mclear@unl.edu"
+            :recursive t
+            :auto-preamble nil ;; Don't add any kind of html before the content
+            :export-with-tags nil
+            :with-timestamps nil
+            :time-stamp-file nil
+            :with-creator nil
+            :auto-postamble nil ;; Don't add any kind of html after the content
+            :html-postamble nil ;; same thing
+            ;; :publishing-function (org-html-publish-to-html)
+            ;; :publishing-function (org-md-publish-to-md)
+            :publishing-function (org-org-publish-to-org)
+            ;; :publishing-function (org-pandoc-publish-to-html)
+            )
+           ("notebook"
+            ;; Path to org files
+            :base-directory "~/projects/notebook/content/org_notes"
+            :base-extension "org"
+            ;; Path to pelican project
+            :publishing-directory "~/projects/notebook/content/notes" 
+            ;; settings
+            :author "Colin McLear"
+            :email "mclear@unl.edu"
+            :recursive t
+            :auto-preamble nil ;; Don't add any kind of html before the content
+            :export-with-tags nil
+            :with-timestamps nil
+            :time-stamp-file nil
+            :with-creator nil
+            :auto-postamble nil ;; Don't add any kind of html after the content
+            :html-postamble nil ;; same thing
+            ;; :publishing-function (org-html-publish-to-html)
+            ;; :publishing-function (org-md-publish-to-md)
+            :publishing-function (org-org-publish-to-org)
+            ;; :publishing-function (org-pandoc-publish-to-html)
+            )
+           ("notebook"
+            ;; Path to org files
+            :base-directory "~/projects/notebook/content/org_notes"
+            :base-extension "org"
+            ;; Path to pelican project
+            :publishing-directory "~/projects/notebook/content/notes" 
+            ;; settings
+            :author "Colin McLear"
+            :email "mclear@unl.edu"
+            :recursive t
+            :auto-preamble nil ;; Don't add any kind of html before the content
+            :export-with-tags nil
+            :with-timestamps nil
+            :time-stamp-file nil
+            :with-creator nil
+            :auto-postamble nil ;; Don't add any kind of html after the content
+            :html-postamble nil ;; same thing
+            ;; :publishing-function (org-html-publish-to-html)
+            ;; :publishing-function (org-md-publish-to-md)
+            :publishing-function (org-org-publish-to-org)
+            ;; :publishing-function (org-pandoc-publish-to-html)
+            )
+           ("big-notes"
+            ;; Path to org files
+            :base-directory "~/Dropbox/Notes/"
+            :base-extension "org"
+            ;; Path to pelican project
+            :publishing-directory "~/projects/notebook/content/notes" 
+            ;; settings
+            :author "Colin McLear"
+            :email "mclear@unl.edu"
+            :recursive t
+            :auto-preamble nil ;; Don't add any kind of html before the content
+            :export-with-tags nil
+            :with-timestamps nil
+            :time-stamp-file nil
+            :with-creator nil
+            :auto-postamble nil ;; Don't add any kind of html after the content
+            :html-postamble nil ;; same thing
+            ;; :publishing-function (org-html-publish-to-html)
+            ;; :publishing-function (org-md-publish-to-md)
+            :publishing-function (org-org-publish-to-org)
+            ;; :publishing-function (org-pandoc-publish-to-html)
+            )
             ("test"
             :base-directory "~/test/source"
             :base-extension "org"
