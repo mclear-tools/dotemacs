@@ -1635,7 +1635,8 @@ Keybindings for managing packages
     "tp" 'smartparens-mode
     "tr" 'rainbow-identifiers-mode
     "ts" 'toggle-dark-light-theme
-    "tt" 'counsel-load-theme
+    "tt" 'helm-themes
+    ;; "tt" 'counsel-load-theme
   )
 #+END_SRC
  
@@ -1834,30 +1835,40 @@ a lot]].
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :diminish (helm-mode . "")
-    :defer 2
+    :defer 1
     :init
     (setq helm-locate-fuzzy-match nil
           helm-locate-command "mdfind -interpret -name %s %s")
     :config
     (progn
+      ;; Use helm to provide :ls, unless ibuffer is used
+      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
       (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
+            helm-apropos-fuzzy-match t
             helm-buffers-fuzzy-matching t
+            helm-imenu-fuzzy-match t
             helm-recentf-fuzzy-match t
             helm-prevent-escaping-from-minibuffer t
             helm-bookmark-show-location t
             helm-find-files-sort-directories t
             helm-display-header-line nil
-            helm-always-two-windows nil                       
+            ;; helm-move-to-line-cycle-in-source t
+            helm-always-two-windows t                       
             helm-split-window-in-side-p t
+            ;; helm-split-window-default-side 'other
             helm-echo-input-in-header-line t)
-                  ;;; helm vim-bindings in buffer ;;
+      (general-define-key "M-x" 'helm-M-x)
+      ;;; helm vim-bindings in buffer ;;
       (define-key helm-map (kbd "C-j") 'helm-next-line)
       (define-key helm-map (kbd "C-k") 'helm-previous-line)
       (define-key helm-map (kbd "C-h") 'helm-next-source)
       (define-key helm-map (kbd "C-S-h") 'describe-key)
       (define-key helm-map (kbd "C-l") (kbd "RET"))
-      (general-define-key "M-x" 'helm-M-x)
-
+      (general-define-key :keymaps 'helm-map 
+        "TAB"  'helm-execute-persistent-action ; rebind tab to do persistent action
+        "C-i"    'helm-execute-persistent-action ; make TAB works in terminal
+        "C-z"    'helm-select-action ; list actions using C-z
+      )
       (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
@@ -1872,8 +1883,10 @@ a lot]].
                               `(:background ,bg-color :foreground ,bg-color)))
                               (setq-local cursor-type nil))))
 
-      (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
-      (helm-mode 1)))
+      (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)      
+      (helm-mode 1)
+      ))
+
 #+END_SRC
 *** Helm packages
 **** Helm ag
@@ -1910,7 +1923,7 @@ a lot]].
     :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
     :config
     (setq helm-swoop-use-fuzzy-match t)
-  )
+    (setq helm-swoop-split-with-multiple-windows t))
 #+end_src
 **** Helm flyspell
 Use helm with flyspell
