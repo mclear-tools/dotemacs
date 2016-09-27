@@ -1687,34 +1687,39 @@ Keybindings for managing packages
   "wm" 'delete-other-windows
   )
 #+END_SRC
-*** Workgroups bindings
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "W"  '(:ignore t :which-key "Workspaces")
-  "Wa" 'persp-add-buffer
-  "WA" 'persp-set-buffer
-  "Ws" 'persp-switch
-  "Wk" 'persp-kill
-  "Wr" 'persp-remove-buffer
-  "WR" 'persp-rename
-  "}"  'persp-next
-  "{"  'persp-prev)
-
+*** DISABLED Workgroups bindings
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; (cpm-leader1
-  ;;   "W"  '(:ignore t :which-key "Workgroups")
-  ;;   "Wc" 'wg-create-workgroup
-  ;;   "Wr" 'wg-rename-workgroup
-  ;;   "Wk" 'wg-kill-workgroup
-  ;;   "Ws" 'wg-switch-to-workgroup
-  ;;   "WS" 'wg-save-session)
+  ;;   "W"  '(:ignore t :which-key "Workspaces")
+  ;;   "Wa" 'persp-add-buffer
+  ;;   "WA" 'persp-set-buffer
+  ;;   "Ws" 'persp-switch
+  ;;   "Wk" 'persp-kill
+  ;;   "Wr" 'persp-remove-buffer
+  ;;   "WR" 'persp-rename
+  ;;   "}"  'persp-next
+  ;;   "{"  'persp-prev)
+
+    ;; (cpm-leader1
+    ;;   "W"  '(:ignore t :which-key "Workgroups")
+    ;;   "Wc" 'wg-create-workgroup
+    ;;   "Wr" 'wg-rename-workgroup
+    ;;   "Wk" 'wg-kill-workgroup
+    ;;   "Ws" 'wg-switch-to-workgroup
+    ;;   "WS" 'wg-save-session)
 #+END_SRC
 
-** Perspectives
-This package provides tagged workspaces in Emacs, similar to workspaces in windows managers such as Awesome and XMonad (and somewhat similar to multiple desktops in Gnome or Spaces in OS X).
-#+BEGIN_SRC emacs-lisp
-(use-package perspective
-  :commands (persp-switch persp-next persp-prev persp-rename persp-kill))
-
+** DISABLED Perspectives
+[[https://github.com/Bad-ptr/persp-mode.el][This package]] provides tagged workspaces in Emacs, similar to workspaces in windows managers such as Awesome and XMonad (and somewhat similar to multiple desktops in Gnome or Spaces in OS X).
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package persp-mode
+  :commands (persp-switch persp-next persp-prev persp-rename persp-kill)
+  :disabled t
+  :config
+  (with-eval-after-load "persp-mode-autoloads"
+  (setq wg-morph-on nil) ;; switch off animation
+  (setq persp-autokill-buffer-on-remove 'kill-weak)
+  (add-hook 'after-init-hook #'(lambda () (persp-mode 1)))))
   
   
 (use-package persp-projectile
