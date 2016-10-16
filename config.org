@@ -162,7 +162,7 @@ elisp modes or other minor modes
 
 *** Turn off the blinking cursor
 #+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode -1)
+  (blink-cursor-mode 1)
 #+END_SRC
 
 *** Only use spaces
@@ -580,17 +580,20 @@ This is a really nice powerline-ish modeline.
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       (setq-default powerline-default-separator nil) 
       ;; (setq-default powerline-default-separator 'utf-8) 
+
       ;; small triangles
       ;; (setq powerline-utf-8-separator-left 9654 
       ;;      powerline-utf-8-separator-right 9664)
+
       ;; half circles
       ;; (setq powerline-utf-8-separator-left 9687 
       ;;       powerline-utf-8-separator-right 9686)
+
       ;; slant (requires srbg support)
       ;; (setq-default powerline-default-separator 'slant) 
       ;; (setq spaceline-separator-dir-left '(right . right))
       ;; (setq spaceline-separator-dir-right '(right . right))
- 
+
       ;; fancy git icon for the modeline
       (defadvice vc-mode-line (after strip-backend () activate)
       (when (stringp vc-mode)
@@ -694,6 +697,15 @@ The best low-contrast theme out there.
           (setq solarized-scale-org-headlines t)
           (load-theme 'solarized-dark t)
       
+          ;; don't italicize line numbers
+          (add-hook 'after-make-frame-functions
+          (lambda (frame)
+          (select-frame frame)
+          (if (display-graphic-p)
+          (set-face-attribute 'linum frame
+          :background (face-attribute 'default :background)
+          :foreground (face-attribute 'linum :foreground) :slant 'normal))))
+
           ;; Theme toggle
           (setq active-theme 'solarized-dark)
           (defun toggle-dark-light-theme ()
@@ -711,6 +723,7 @@ The best low-contrast theme out there.
           ;; (setq solarized-height-plus-2 1)
           ;; (setq solarized-height-plus-3 1)
           ;; (setq solarized-height-plus-4 1))
+         
 
     ;; An alternative solarized theme
       (use-package color-theme-sanityinc-solarized
@@ -1452,6 +1465,15 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "mP"   'markdown-previous-link
     "<RET>" 'markdown-jump
    ))
+   
+(which-key-add-major-mode-key-based-replacements 'markdown-mode
+    "C-c C-a" "insert"
+    "C-c C-c" "export"
+    "C-c TAB" "images"
+    "C-c C-s" "text"
+    "C-c C-t" "header"
+    "C-c C-x" "move"
+    )
   #+END_SRC
 
 *** Miscellaneous
@@ -2311,11 +2333,11 @@ the packages that are most helpful for this.
 This simulates programs like writeroom that provide a distraction-free
 mode of writing. But it tends not to work very well (turns on randomly
 in buffers). 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (use-package centered-window-mode
-    :commands centered-window-mode
+    :defer t
     :init
-    (setq cwm-centered-window-width 90))
+    (setq cwm-centered-window-width 80))
 
     (defun distraction-free ()
     "distraction free writing"
@@ -3007,6 +3029,108 @@ Better than doc-view, but doesn't render well on retina screens :(
           "y" 'pdf-view-kill-ring-save )
       ))      
 #+END_SRC
+** LaTeX
+
+#+BEGIN_SRC emacs-lisp
+;; Basic settings
+(use-package auctex
+  :ensure t
+  :defer t
+  :mode ("\\.tex\\'" . latex-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :init
+  (progn
+    (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+    (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+    (setq TeX-auto-save t
+          TeX-parse-self t
+          TeX-save-query nil
+          TeX-PDF-mode t)
+    (setq-default TeX-master nil)))
+
+(use-package preview
+  :ensure nil
+  :defer t
+  :commands LaTeX-preview-setup
+  :init
+  (progn
+    (setq-default preview-scale 1.4
+      preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+
+(use-package reftex
+  :defer t
+  :commands turn-on-reftex
+  :init
+  (progn
+    (setq reftex-plug-into-AUCTeX t)))
+
+(use-package bibtex
+  :defer t
+  :mode ("\\.bib" . bibtex-mode)
+  :init
+  (progn
+    (setq bibtex-align-at-equal-sign t)
+    (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
+
+
+;; Auto-fill for LaTeX
+(defun schnouki/latex-auto-fill ()
+  "Turn on auto-fill for LaTeX mode."
+  (turn-on-auto-fill)
+  (set-fill-column 80)
+  (setq default-justification 'left))
+(add-hook 'LaTeX-mode-hook #'schnouki/latex-auto-fill)
+
+;; Compilation command
+(add-hook 'LaTeX-mode-hook (lambda () (setq compile-command "latexmk -pdflatex=xelatex -f -pdf %f")))
+
+;; Prevent ispell from verifying some LaTeX commands
+;; http://stat.genopole.cnrs.fr/dw/~jchiquet/fr/latex/emacslatex
+(defvar schnouki/ispell-tex-skip-alists
+      '("cite" "nocite"
+  "includegraphics"
+  "author" "affil"
+  "ref" "eqref" "pageref"
+  "label"))
+(setq ispell-tex-skip-alists
+      (list
+       (append (car ispell-tex-skip-alists)
+         (mapcar #'(lambda (cmd) (list (concat "\\\\" cmd) 'ispell-tex-arg-end)) schnouki/ispell-tex-skip-alists))
+       (cadr ispell-tex-skip-alists)))
+
+;; Indentation with align-current in LaTeX environments
+(defvar schnouki/LaTeX-align-environments '("tabular" "tabular*"))
+(add-hook 'LaTeX-mode-hook
+    (lambda ()
+      (require 'align)
+      (setq LaTeX-indent-environment-list
+      ;; For each item in the list...
+      (mapcar (lambda (item)
+          ;; The car is an environment
+          (let ((env (car item)))
+            ;; If this environment is in our list...
+            (if (member env schnouki/LaTeX-align-environments)
+          ;; ...then replace this item with a correct one
+          (list env 'align-current)
+        ;; else leave it alone
+        item)))
+        LaTeX-indent-environment-list))))
+
+;; Use dvipdfmx to convert DVI files to PDF in AUCTeX
+(eval-after-load 'tex
+  '(add-to-list 'TeX-command-list
+                '("DVI to PDF" "dvipdfmx %d" TeX-run-command t t) t))
+
+;; SyncTeX (http://www.emacswiki.org/emacs/AUCTeX#toc19)
+(defun synctex/un-urlify (fname-or-url)
+  "A trivial function that replaces a prefix of file:/// with just /."
+  (if (string= (substring fname-or-url 0 8) "file:///")
+      (substring fname-or-url 7)
+    fname-or-url))
+
+#+END_SRC
+ 
 * Shell
 ** Multi-term
 When one shell isn't enough
@@ -3454,8 +3578,8 @@ well with org-mode using org-indent. So I don't use it globally.
           (add-hook 'prog-mode-hook 'company-mode)
           (add-hook 'org-mode-hook 'company-mode)
           (add-hook 'markdown-mode-hook 'company-mode)  
-          (setq company-idle-delay 0.2
-                company-minimum-prefix-length 2
+          (setq company-idle-delay 0.4
+                company-minimum-prefix-length 4
                 company-require-match nil
                 company-dabbrev-ignore-case nil
                 company-dabbrev-downcase nil))
