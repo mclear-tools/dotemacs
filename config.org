@@ -41,7 +41,14 @@ brew install emacs-mac --with-gnutls --with-imagemagick --with-librsvg
 For =GNU emacs 25= use the following:
 
 #+BEGIN_SRC sh :tangle no
-brew install emacs --with-cocoa --HEAD --use-git-head --devel --with-gnutls --with-imagemagick --with-librsvg
+brew install emacs --with-cocoa --HEAD --with-gnutls --with-imagemagick --with-librsvg
+#+END_SRC
+
+If you use [[https://caskroom.github.io][homebrew cask]] you can install an emacs binary from [[https://emacsformacosx.com][emacs for mac]],
+like so:
+
+#+BEGIN_SRC sh :tangle no
+brew cask install emacs
 #+END_SRC
 
 * Bootstrapping
