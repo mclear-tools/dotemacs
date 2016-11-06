@@ -250,12 +250,30 @@ elisp modes or other minor modes
         version-control t                 ; version numbers for backup files
         delete-old-versions t             ; delete excess backup files silently
         delete-by-moving-to-trash t
-        kept-old-versions 4               ; oldest versions to keep when a new numbered backup is made
+        kept-old-versions 2               ; oldest versions to keep when a new numbered backup is made
         kept-new-versions 6               ; newest versions to keep when a new numbered backup is made
         auto-save-default t               ; auto-save every buffer that visits a file
         auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
         auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
         )
+  (setq vc-make-backup-files t) ;;  backup versioned files, which Emacs does not do by default
+   
+  (defun force-backup-of-buffer ()
+  ;; Make a special "per session" backup at the first save of each
+  ;; emacs session.
+  (when (not buffer-backed-up)
+    ;; Override the default parameters for per-session backups.
+    (let ((backup-directory-alist '(("" . "~/.emacs.d/backup/per-session")))
+          (kept-new-versions 3))
+      (backup-buffer)))
+  ;; Make a "per save" backup on each save.  The first save results in
+  ;; both a per-session and a per-save backup, to keep the numbering
+  ;; of per-save backups consistent.
+  (let ((buffer-backed-up nil))
+    (backup-buffer)))
+
+(add-hook 'before-save-hook  'force-backup-of-buffer)
+
 #+END_SRC
 *** Auto Save
 I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in the cache directory.
