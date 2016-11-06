@@ -129,6 +129,12 @@ Start up with a clean scratch buffer.
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
+  ;; And bury the scratch buffer, don't kill it
+  (defadvice kill-buffer (around kill-buffer-around-advice activate)
+  (let ((buffer-to-kill (ad-get-arg 0)))
+    (if (equal buffer-to-kill "*scratch*")
+        (bury-buffer)
+      ad-do-it)))
 #+END_SRC
 
 *** Start scratch in fundamental mode 
