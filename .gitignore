@@ -26,3 +26,4 @@ config.el*
 /private.el
 .cask/
 /games/tetris-scores
+bak.*
