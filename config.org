@@ -554,7 +554,8 @@ And here's how we tell Emacs to use the font we want to use.
 
 ** Fringe helper
 #+BEGIN_SRC emacs-lisp
-(use-package fringe-helper)
+(use-package fringe-helper
+  :defer t)
 #+END_SRC
 ** Highlight line numbers
 #+BEGIN_SRC emacs-lisp 
