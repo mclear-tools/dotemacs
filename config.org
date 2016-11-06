@@ -279,7 +279,31 @@ I also make emacs just outright save all buffers.
 
 ** Desktop save
 #+BEGIN_SRC emacs-lisp
-  (setq desktop-dirname (concat user-cache-directory "desktop"))
+(setq desktop-dirname             (concat user-cache-directory "desktop")
+      desktop-base-file-name      "emacs.desktop"
+      desktop-base-lock-name      "lock"
+      desktop-path                (list desktop-dirname)
+      desktop-save                t
+      desktop-files-not-to-save   (concat "^$" ".*magit$")
+      desktop-load-locked-desktop nil)
+(setq desktop-buffers-not-to-save
+        (concat "\\("
+                "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+                "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+	        "\\)$"))
+(desktop-save-mode 0)
+(defun my-desktop ()
+  "Load the desktop and enable autosaving"
+  (interactive)
+  (let ((desktop-load-locked-desktop "ask"))
+    (desktop-read)
+    (desktop-save-mode 1)))
+
+(defun save-desktop-save-buffers-kill-emacs ()
+  "Save buffers and current desktop every time when quitting emacs."
+  (interactive)
+  (desktop-save-in-desktop-dir)
+  (save-buffers-kill-emacs))
 #+END_SRC
 ** Custom file settings
 Set up the customize file to its own separate file, instead of saving
@@ -1299,7 +1323,7 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
   :commands (avy-goto-char))
 #+END_SRC
 *** Bookmark
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp 
   (use-package bookmark+
     :after bookmark
     :commands bmkp-set-desktop-bookmark
@@ -1625,8 +1649,8 @@ Keybindings for managing packages
     "pp"  'helm-projectile-switch-project
     "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
-    "ps"  'desktop-save
-    "pS"  'desktop-read
+    "ps"  'bmkp-set-desktop-bookmark
+    "pS"  'bmkp-desktop-jump
     "pT"  'projectile-find-test-file
     "pv"  'projectile-vc
     "py"  'projectile-find-tag
@@ -1636,7 +1660,8 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
 (cpm-leader1 
     "q"  '(:ignore t :which-key "Quit")
-    "qq" 'evil-quit-all
+    "qq" 'save-desktop-save-buffers-kill-emacs
+    "qQ" 'evil-quit-all
     "qr" 'restart-emacs)
 #+END_SRC
 *** Search
@@ -1694,10 +1719,11 @@ Keybindings for managing packages
     "us" 'sb-expand-current-file
     "uS" 'just-one-space
     "ud" 'distraction-free
-    "uD" 'osx-dictionary-search-input
+    "uD" 'my-desktop
     "uj" 'goto-journal
     ;; "op" 'pandoc-convert-to-pdf
     "uw" 'count-words
+    "uW" 'osx-dictionary-search-input
     "ux" 'helm-bibtex
     )
 #+END_SRC
