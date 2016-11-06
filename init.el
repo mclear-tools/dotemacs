@@ -12,7 +12,9 @@
   ;; Which means on every .el and .elc file loaded during start up, it has to runs those regexps against the filename.
  ;;setting this should ease startup time
 (let ((file-name-handler-alist nil))
-
+  ;; debug
+  (setq debug-on-error t)
+  (setq debug-on-quit t)
   ;; Increase the garbage collection threshold to decrease startup time
   (setq gc-cons-threshold 100000000)
 
@@ -31,7 +33,7 @@
                            ("gnu"       . "http://elpa.gnu.org/packages/")
                            ("melpa"     . "https://melpa.org/packages/")))
   (package-initialize)
-;; ("marmalade" . "http://marmalade-repo.org/packages/")
+  ;; ("marmalade" . "http://marmalade-repo.org/packages/")
   ;; (when (>= emacs-major-version 24)
   ;;   (require 'package)
   ;;   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -84,5 +86,9 @@
      (setq gc-cons-threshold 1000000)
      (message "gc-cons-threshold restored to %S"
               gc-cons-threshold)))
+
+  ;; turn debug off
+  (setq debug-on-error nil)
+  (setq debug-on-quit nil)
 ;;; init.el ends here
   )
