@@ -509,6 +509,7 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
   (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
   (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
   (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
+  (eval-after-load "org-zotxt" '(diminish 'org-zotxt-mode ""))
   ;; (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
   (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
   (eval-after-load "projectile" '(diminish 'projectile-mode ""))
@@ -3110,7 +3111,15 @@ Better than doc-view, but doesn't render well on retina screens :(
     fname-or-url))
 
 #+END_SRC
- 
+** Zotero
+Interface with Zotero.
+#+BEGIN_SRC emacs-lisp
+(use-package zotxt
+  :diminish (org-zoxt zotxt org-zotxt-mode)
+  :config
+  ;; Activate org-zotxt-mode in org-mode buffers
+  (add-hook 'org-mode-hook (lambda () (org-zotxt-mode 1))))
+#+END_SRC
 * Shell
 ** Multi-term
 When one shell isn't enough
