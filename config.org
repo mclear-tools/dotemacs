@@ -998,6 +998,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (org-map-entries (lambda () (delete-region (point-at-bol) (point-at-eol)))
                    "no_title"))
 
+  ;; the following isn't currently working with org-mode 9
   ;; (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
 #+END_SRC
 ** Pandoc conversion from clipboard
