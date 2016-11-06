@@ -197,12 +197,13 @@ elisp modes or other minor modes
 *** Line wrap
 #+BEGIN_SRC emacs-lisp
   (global-visual-line-mode)
+  (setq line-move-visual t) ;; move via visual lines
  ;; (diminish 'visual-line-mode)
 #+END_SRC
 
 *** Fill column
 #+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 72)
+  (setq-default fill-column 78)
 #+END_SRC
 *** Give buffers unique names
 #+BEGIN_SRC emacs-lisp
@@ -506,7 +507,7 @@ And here's how we tell Emacs to use the font we want to use.
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-                      :family "Inconsolata LGC for Powerline"
+                      :family "Inconsolata LGC"
                       :height 120
                       :weight 'normal
                       :width 'normal
@@ -517,44 +518,18 @@ And here's how we tell Emacs to use the font we want to use.
 #+end_src
 
 ** Fringe helper
+#+BEGIN_SRC emacs-lisp
+(use-package fringe-helper)
+#+END_SRC
 ** Highlight line numbers
 #+BEGIN_SRC emacs-lisp 
-  ; Turn on line numbers for hooked modes
-  (add-hook 'prog-mode-hook 'linum-mode)
-  (add-hook 'markdown-mode-hook 'linum-mode)
-  ;; line number spacing
-  (setq linum-format "%4d")
-  ;; Highlight current line number
-    (defvar linum-current-line 1 "Current line number.")
-    (defvar linum-border-width 1 "Border width for linum.")
-
-    (defface linum-current-line
-    `((t :inherit linum
-        :foreground "goldenrod"
-        :weight bold
-        ))
-    "Face for displaying the current line number."
-    :group 'linum)
-
-    (defadvice linum-update (before advice-linum-update activate)
-    "Set the current line."
-    (setq linum-current-line (line-number-at-pos)
-        ;; It's the same algorithm that linum dynamic. I only had added one
-        ;; space in front of the first digit.
-        linum-border-width (number-to-string
-                            (+ 1 (length
-                                    (number-to-string
-                                    (count-lines (point-min) (point-max))))))))
-
-    (defun linum-highlight-current-line (line-number)
-    "Highlight the current line number using `linum-current-line' face."
-    (let ((face (if (= line-number linum-current-line)
-                    'linum-current-line
-                'linum)))
-    (propertize (format (concat "%" linum-border-width "d") line-number)
-                'face face)))
-
-    (setq linum-format 'linum-highlight-current-line)
+;; line number spacing
+(setq linum-format "%4d ")
+;; Highlight current line number
+(use-package hlinum
+  :commands hlinum-mode
+  :init
+  (add-hook 'linum-mode-hook 'hlinum-activate))
 #+END_SRC
 ** Highlight numbers
 #+BEGIN_SRC emacs-lisp
@@ -758,6 +733,12 @@ The best low-contrast theme out there.
         :disabled t
        (load-theme 'darktooth t))
       #+end_src
+*** Creamsody
+Another gruvbox/darktooth variant
+#+BEGIN_SRC emacs-lisp
+(use-package creamsody-theme
+  :defer t)
+#+END_SRC
 *** Zenburn 
 Another popular low-contrast theme
 #+BEGIN_SRC emacs-lisp
@@ -797,6 +778,26 @@ A dark and relatively high-contrast theme
     (progn
       (load-theme 'badger t)))
 #+END_SRC
+
+*** Other themes
+These are other themes I'm testing out.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package badwolf-theme)
+  (use-package atom-dark-theme)
+  (use-package apropospriate-theme)
+  (use-package clues-theme)
+  (use-package dakrone-theme)
+  (use-package darkokai-theme)
+  (use-package darktooth-theme)
+  (use-package flatland-theme)
+  (use-package lush-theme)
+  (use-package minimal-theme)
+  (use-package monochrome-theme)
+  (use-package monokai-theme)
+  ;; (use-package org-beautify-theme)
+  (use-package paganini-theme)
+  (use-package paper-theme)
+#+END_SRC
 *** Convenient theme functions
 #+begin_src emacs-lisp
 (use-package helm-themes
@@ -825,6 +826,16 @@ Distinguish buffers with the same name
   ;; Set the time delay (in seconds) for the which-key popup to appear.
   (setq which-key-idle-delay .2)
   (which-key-mode))
+#+END_SRC
+** Popup Windows
+Put an end to popped up buffers not behaving they way you'd like them to.
+#+BEGIN_SRC emacs-lisp
+(use-package shackle
+  :config
+  ;; make helm pop-ups behave
+  (setq helm-display-function #'pop-to-buffer)
+  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
+  (shackle-mode 1))
 #+END_SRC
 * Useful Functions
 ** Crux
@@ -951,7 +962,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (org-map-entries (lambda () (delete-region (point-at-bol) (point-at-eol)))
                    "no_title"))
 
-  (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
+  ;; (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
 #+END_SRC
 ** Pandoc conversion from clipboard
 #+BEGIN_SRC emacs-lisp
@@ -1486,6 +1497,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+BEGIN_SRC emacs-lisp
 ;; Show which-key top-level bindings
 (global-set-key (kbd "H-k") 'which-key-show-top-level)
+;; override evil insert for kill line
+(general-define-key :states '(insert) "C-k" 'kill-line)
 #+END_SRC
  
 *** Org Keybindings
@@ -1889,7 +1902,7 @@ a lot]].
             helm-display-header-line nil
             ;; helm-move-to-line-cycle-in-source t
             helm-always-two-windows t                       
-            helm-split-window-in-side-p t
+            helm-split-window-in-side-p nil
             ;; helm-split-window-default-side 'other
             helm-echo-input-in-header-line t)
       (general-define-key "M-x" 'helm-M-x)
@@ -1921,7 +1934,6 @@ a lot]].
       (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)      
       (helm-mode 1)
       ))
-
 #+END_SRC
 *** Helm packages
 **** Helm ag
@@ -2413,10 +2425,10 @@ Make arbitrary blocks or sentences of text.
       ;; markdown hooks
       (add-hook 'markdown-mode-hook
             '(lambda()
-               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 72) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
+               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
       (setq markdown-command "pandoc"
               markdown-enable-math t
-              ;; markdown-footnote-location "end"
+              markdown-footnote-location "immediately"
               markdown-nested-imenu-heading-index t
               markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
@@ -2454,7 +2466,7 @@ Make arbitrary blocks or sentences of text.
   (defun markdown-auto-fill ()
     "turn on autofill and settings"
     (turn-on-auto-fill)
-    (set-fill-column 72))
+    (set-fill-column 78))
 #+end_src
 
 *** Pandoc
@@ -2588,6 +2600,7 @@ Pandoc mode for markdown conversion
       "-" 'org-cycle-list-bullet)
     ;; normal & insert state shortcuts.
     (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+      "TAB" 'org-cycle
       "s-l" 'org-metaright
       "s-h" 'org-metaleft
       "s-k" 'org-metaup
@@ -2730,7 +2743,7 @@ same day of the month, but will be the same day of the week."
   (add-hook 'org-mode-hook
             '(lambda()
                (turn-on-auto-fill) 
-               (set-fill-column 72) 
+               (set-fill-column 78) 
                (flyspell-mode 1) 
                (hl-todo-mode) 
                (imenu-add-to-menubar "Imenu") 
@@ -2758,72 +2771,6 @@ same day of the month, but will be the same day of the week."
    ;;; Org-publish settings
        (setq org-publish-project-alist
          '(
-           ("notebook"
-            ;; Path to org files
-            :base-directory "~/projects/notebook/content/org_notes"
-            :base-extension "org"
-            ;; Path to pelican project
-            :publishing-directory "~/projects/notebook/content/notes" 
-            ;; settings
-            :author "Colin McLear"
-            :email "mclear@unl.edu"
-            :recursive t
-            :auto-preamble nil ;; Don't add any kind of html before the content
-            :export-with-tags nil
-            :with-timestamps nil
-            :time-stamp-file nil
-            :with-creator nil
-            :auto-postamble nil ;; Don't add any kind of html after the content
-            :html-postamble nil ;; same thing
-            ;; :publishing-function (org-html-publish-to-html)
-            ;; :publishing-function (org-md-publish-to-md)
-            :publishing-function (org-org-publish-to-org)
-            ;; :publishing-function (org-pandoc-publish-to-html)
-            )
-                       ("notebook"
-            ;; Path to org files
-            :base-directory "~/projects/notebook/content/org_notes"
-            :base-extension "org"
-            ;; Path to pelican project
-            :publishing-directory "~/projects/notebook/content/notes" 
-            ;; settings
-            :author "Colin McLear"
-            :email "mclear@unl.edu"
-            :recursive t
-            :auto-preamble nil ;; Don't add any kind of html before the content
-            :export-with-tags nil
-            :with-timestamps nil
-            :time-stamp-file nil
-            :with-creator nil
-            :auto-postamble nil ;; Don't add any kind of html after the content
-            :html-postamble nil ;; same thing
-            ;; :publishing-function (org-html-publish-to-html)
-            ;; :publishing-function (org-md-publish-to-md)
-            :publishing-function (org-org-publish-to-org)
-            ;; :publishing-function (org-pandoc-publish-to-html)
-            )
-           ("notebook"
-            ;; Path to org files
-            :base-directory "~/projects/notebook/content/org_notes"
-            :base-extension "org"
-            ;; Path to pelican project
-            :publishing-directory "~/projects/notebook/content/notes" 
-            ;; settings
-            :author "Colin McLear"
-            :email "mclear@unl.edu"
-            :recursive t
-            :auto-preamble nil ;; Don't add any kind of html before the content
-            :export-with-tags nil
-            :with-timestamps nil
-            :time-stamp-file nil
-            :with-creator nil
-            :auto-postamble nil ;; Don't add any kind of html after the content
-            :html-postamble nil ;; same thing
-            ;; :publishing-function (org-html-publish-to-html)
-            ;; :publishing-function (org-md-publish-to-md)
-            :publishing-function (org-org-publish-to-org)
-            ;; :publishing-function (org-pandoc-publish-to-html)
-            )
            ("notebook"
             ;; Path to org files
             :base-directory "~/projects/notebook/content/org_notes"
@@ -2988,7 +2935,8 @@ Make source blocks look better.
 #+BEGIN_SRC emacs-lisp
   (use-package palimpsest
     :defer t
-    :config 
+    :diminish palimpsest-mode
+    :init 
     (add-hook 'markdown-mode-hook 'palimpsest-mode)
     (add-hook 'org-mode-hook 'palimpsest-mode))
 #+END_SRC
@@ -3524,6 +3472,11 @@ well with org-mode using org-indent. So I don't use it globally.
 #+END_SRC
 
 * Programming
+** Basic settings
+#+BEGIN_SRC emacs-lisp
+; Turn on line numbers 
+(add-hook 'prog-mode-hook 'linum-mode)
+#+END_SRC
 ** Code documentation
 
 [[https://kapeli.com/dash][Dash]] is a nice little app that stores documents offline for reference. Let's [[https://github.com/stanaka/dash-at-point][bring that to Emacs]].
