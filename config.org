@@ -3853,6 +3853,14 @@ Auto-revert buffers of changed files
 (use-package bind-map)
 #+END_SRC
 
+** Dashboard
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path (concat user-emacs-directory "elpa/dashboard/"))
+(use-package dashboard
+  :ensure nil
+  :config
+  (dashboard-setup-startup-hook))
+#+END_SRC
 ** Info+
 #+BEGIN_SRC emacs-lisp
 (use-package info+
@@ -3873,6 +3881,20 @@ Auto-revert buffers of changed files
         paradox-automatically-star nil))
 #+END_SRC
 
+** Page Breaks
+Dashboard depends on this. 
+#+BEGIN_SRC emacs-lisp
+(use-package page-break-lines)
+#+END_SRC
+** Persistent Scratch
+#+BEGIN_SRC emacs-lisp
+(use-package persistent-scratch
+  :config
+  (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch"))
+  (persistent-scratch-setup-default)
+  (persistent-scratch-autosave-mode)
+)
+#+END_SRC
 ** Restart emacs
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
