@@ -1738,7 +1738,7 @@ Keybindings for managing packages
     "tf" 'toggle-serif
     "tF" 'toggle-frame-fullscreen
     "tg" 'git-gutter+-mode
-    "th" 'global-hl-line-mode
+    "th" 'hl-line-mode
     "te" 'toggle-indicate-empty-lines
     "tE" 'eldoc-mode
     "tm" 'hidden-mode-line-mode
@@ -2648,6 +2648,10 @@ Pandoc mode for markdown conversion
 #+BEGIN_SRC emacs-lisp
   (use-package org 
     :defer t
+    :config
+    ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
+    (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
+    (modify-syntax-entry ?= "(=" org-mode-syntax-table)
     :init
     (setq org-src-fontify-natively t ;; better looking source code
           org-return-follows-link t ;; make RET follow links
@@ -3248,11 +3252,14 @@ Other useful shell settings
       (goto-address-mode) (global-hl-line-mode 0))
     (add-hook 'term-mode-hook 'my-term-hook)
     
-  ;; paste and navigation
-  (defun term-send-tab ()
+    ;; paste and navigation
+    (defun term-send-tab ()
       "Send tab in term mode."
       (interactive)
       (term-send-raw-string "\t"))
+
+    ;; Emacs doesn’t handle less well, so use cat instead for the shell pager 
+    (setenv "PAGER" "cat")
 
     ;; hack to fix pasting issue, the paste micro-state won't
     ;; work in term
@@ -3318,8 +3325,8 @@ Kill the completion buffer
 #+END_SRC
 
 ** Eshell
-Eshell is an [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][elisp shell]]. It has its own configuration parameters,
-distinct from those of shell or ansi-terminal.
+Eshell is an [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][elisp shell]]. It has its own configuration parameters, distinct
+from those of shell or ansi-terminal.
 *** Eshell Settings
 Basic settings
 #+BEGIN_SRC emacs-lisp 
@@ -3855,7 +3862,7 @@ Auto-revert buffers of changed files
 
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path (concat user-emacs-directory "elpa/dashboard/"))
+(add-to-list 'load-path (concat user-emacs-directory "elisp/dashboard/"))
 (use-package dashboard
   :ensure nil
   :config
