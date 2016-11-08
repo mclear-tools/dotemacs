@@ -27,3 +27,4 @@ config.el*
 .cask/
 /games/tetris-scores
 bak.*
+/.persistent-scratch

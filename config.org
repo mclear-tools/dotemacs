@@ -173,9 +173,9 @@ elisp modes or other minor modes
   (prefer-coding-system 'utf-8) 
 #+END_SRC
 
-*** Turn on the blinking cursor
+*** Turn off the blinking cursor
 #+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode 1)
+  (blink-cursor-mode 0)
 #+END_SRC
 
 *** Only use spaces
@@ -352,6 +352,8 @@ There is some configuration to do when running Emacs on OS X (hence the
 #+begin_src emacs-lisp
   (let ((is-mac (string-equal system-type "darwin")))
     (when is-mac
+      ;; make fonts look better with anti-aliasing
+      (setq mac-allow-anti-aliasing t)
       ;; delete files by moving them to the trash
       (setq delete-by-moving-to-trash t)
       (setq trash-directory "~/.Trash")
@@ -495,6 +497,11 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
   ;; stop asking about recurisve actions
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
+  
+  ;; Save whatever’s in the current (system) clipboard before
+  ;; replacing it with the Emacs’ text.
+  ;; https://github.com/dakrone/eos/blob/master/eos.org
+  (setq save-interprogram-paste-before-kill t)
 #+END_SRC
 
 * Appearance & UI
@@ -560,11 +567,18 @@ And here's how we tell Emacs to use the font we want to use.
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-                      :family "Inconsolata LGC"
-                      :height 120
+                      :family "Bitstream Vera Sans Mono"
+                      :height 130
                       :weight 'normal
                       :width 'normal
                       )
+  (setq-default line-spacing 3)
+  ;; (set-face-attribute 'default nil
+  ;;                     :family "Inconsolata LGC"
+  ;;                     :height 120
+  ;;                     :weight 'normal
+  ;;                     :width 'normal
+  ;;                     )
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
   ;; C-x C-0 restores the default font size
@@ -2431,13 +2445,14 @@ Great for managing citations and notes
   (use-package helm-bibtex
     :commands helm-bibtex
     :config
-    (setq bibtex-completion-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-          bibtex-completion-library-path "/Users/Roambot/Dropbox/Work/MasterLib/"
-          bibtex-completion-pdf-field "File"
+    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
+          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
+          bibtex-completion-pdf-field "file"
           bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
           bibtex-completion-additional-search-fields '(keywords)
           bibtex-completion-notes-extension ".org"
-          helm-bibtex-full-frame nil) ;; Set insert citekey with markdown citekeys for org-mode
+          helm-bibtex-full-frame nil) 
+          ;; Set insert citekey with markdown citekeys for org-mode
     (setq bibtex-completion-format-citation-functions
           '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
           (latex-mode    . bibtex-completion-format-citation-cite)
@@ -3905,7 +3920,7 @@ Start server
 #+END_SRC
 ** Things to run at startup
 #+BEGIN_SRC emacs-lisp
-  (eshell)
+  ;; (eshell)
 #+END_SRC
 
 * Archive
