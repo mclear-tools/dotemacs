@@ -173,9 +173,9 @@ elisp modes or other minor modes
   (prefer-coding-system 'utf-8) 
 #+END_SRC
 
-*** Turn on the blinking cursor
+*** Turn off the blinking cursor
 #+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode 1)
+  (blink-cursor-mode 0)
 #+END_SRC
 
 *** Only use spaces
@@ -567,11 +567,18 @@ And here's how we tell Emacs to use the font we want to use.
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-                      :family "Inconsolata LGC"
-                      :height 120
+                      :family "Bitstream Vera Sans Mono"
+                      :height 130
                       :weight 'normal
                       :width 'normal
                       )
+  (setq-default line-spacing 3)
+  ;; (set-face-attribute 'default nil
+  ;;                     :family "Inconsolata LGC"
+  ;;                     :height 120
+  ;;                     :weight 'normal
+  ;;                     :width 'normal
+  ;;                     )
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
   ;; C-x C-0 restores the default font size
