@@ -1,0 +1,1459 @@
+---
+affiliation: 'University of Nebraska--Lincoln'
+author: Colin McLear
+authoremail: '<mclear@unl.edu>'
+bibliography: '/Users/Roambot/Dropbox/Work/Master'
+colorlinks: True
+csl: '/Users/Roambot/.pandoc/styles/chicago-author-date.csl'
+original-date: June 23, 2016
+date: 'Draft -- \today'
+geometry: 'letterpaper,centering,margin=1.75in'
+lfoot: '\footnotesize{\thedate}'
+lhead: 'Apperception & the Substantial Subject'
+linestretch: '1.15'
+link-citations: True
+no-cite: |
+  @descartes1984
+numbersections: t
+secnumdepth: 4
+rhead: Colin McLear
+tags: 'introspection, self-knowledge, self-consciousness'
+title: '"I am the original of all objects" -- Apperception & the Substantial Subject'
+---
+
+<!-- TODO: Read @tester2014; @sethi2015; indregard2009; indregard2016-manuscript -->
+
+\epigraph{[An] object can only be represented in accordance with its
+relations and is nothing other than the subjective representation of the
+subject itself, but made general, for I am the original of all
+objects.}{R4674, \emph{Duisburg Nachlaß} 17:646
+(1773-5)\\\textsc{Immanuel Kant}}
+
+---
+# Introduction
+---
+
+\phantomsection
+\addcontentsline{toc}{section}{Introduction}
+    
+\lettrine[lines=3]{T}\ \textsc{he Delphic oracle advises}, "know
+thyself." This injunction takes on special urgency in the Modern period.
+Several notable figures, including Descartes, Locke, and Leibniz,
+construe self-reflection as central to all knowledge, including
+knowledge of the natural world. Hume then levies a variety of criticisms
+against the epistemological and metaphysical presuppositions of these
+views, and Kant attempts to reconcile much of Hume's critique with a
+non-skeptical position regarding our knowledge of nature. Though this
+dialectic is no doubt familiar, Kant's evolving views with respect to it
+bear closer scrutiny.
+
+Kant, of course, is famous for proclaiming a "Copernican revolution"
+according to which "we can cognize of things a priori only what we
+ourselves have put into them" (Bxviii). Emphasizing the centrality of
+the cognizing subject, Kant claims that "the standing and lasting I (of
+pure apperception) constitutes the correlate of all of our
+representations" (A123; see also B138) such that
+
+> we ourselves bring into the appearances that order and regularity
+> in them that we call nature, and moreover we would not be able to find
+> it there if we, or the nature of our mind, had not originally put it
+> there. (A125; see also B165)
+
+\noindent Critical reflection on the "I" of apperception thus yields
+knowledge of the most general laws of nature, where "\[t\]he synthetic
+unity of consciousness is...an objective condition of all cognition"
+(B138) and
+
+> all appearances of nature, as far as their combination is concerned,
+> stand under the categories, on which nature (considered merely as
+> nature in general) depends, as the original ground of its necessary
+> lawfulness (as *natura formaliter spectata*). (B165)
+
+Kant's startling emphasis on the role of the subject in the constitution
+of the laws of nature, and thus in the constitution of scientific
+knowledge of nature, is relatively well-known. But agreement that the
+subject plays such a role in organizing nature does not tell us how or why
+it plays this role. In particular, it is not clear why Kant would think
+that *self-consciousness*, as modeled by his theory of pure
+apperception, would be central to an account of how knowledge of nature
+is possible. 
+
+In what follows, I explicate one way in which pure apperception plays a
+crucial role for Kant in explaining the possibility of a science of
+nature. I argue that Kant must appeal to pure apperception as the only
+possible source of the content of the categorical concept `<substance>`,
+in so far as this concept is understood to have anything more than
+purely logical or grammatical significance. Kant of course distinguishes
+between the logical/grammatical notion of a concept's always taking the
+subject place in a categorical judgment, from the "schematized" or
+temporal conception of a substance as a permanent being. However,
+between these two notions lies the conception of a substance purely as a
+metaphysical subject, as that in which a property (an "accident")
+inheres. This notion is necessary for Kant to carry out his account of
+the possibility of a science of nature, but it cannot be analytically
+derived from the purely logical conception of a subject. I argue that
+pure apperception is the only possible source for such a representation.[^69]
+
+In section one, I clarify this intermediary sense of a substance
+understood purely as the subject of inherent properties. I also indicate
+its role in Kant's conception of a science of nature. Section two
+briefly discusses why Kant cannot appeal to the content of intuition in
+order to resolve the question of the source of the content of the
+concept, before turning to pure apperception. I then provide a positive
+account of the nature of apperception and its role in provisioning the
+content of our concept `<substance>`, after which I discuss a variety of
+objections that arise concerning the way in which the interpretation
+integrates with other aspects of Kant's mature critical theory of
+cognition. I thus argue that, despite important differences, Kant's
+strategy is one whose outline is broadly similar to that pursued by
+(among others) Descartes, Leibniz, and the pre-critical Kant, according
+to which the 'I' is the original basis for all scientific knowledge of
+nature.
+
+# The Problem of the Subject #
+
+We can better understand Kant's position on self-knowledge and its
+significance for knowledge of nature by situating it with respect to a
+problem I call "the problem of the subject." The problem stems from
+holding both that our senses are our primary access to reality and that
+the senses provide no access to the ultimate subjects of
+properties.[^65] Instead, the senses present only properties. This
+problem seems to have been widely recognized.[^175133] For example, in
+the General Scholium to the *Principia* Issac Newton writes,
+
+[^175133]: See also [@locke1970, 546 (EHU IV.iii.14)]; [@boyle1991-ch1,
+    13]; [@kant1992a, 385 (ID 2:393)]; [@herz1771, 123]. 
+
+> we certainly do not know what is the substance of any thing. We see
+> only the shapes and colors of bodies, we hear only their sounds, we
+> touch only their external surfaces, we smell only their odors, and we
+> taste their flavors. But there is no direct sense and there are no
+> indirect reflected actions by which we know innermost substances
+> [@newton2004, 91]
+
+\noindent For Newton, neither the senses nor reflection on the material
+provided by the senses leads to knowledge concerning the metaphysical
+subject of presented sensory qualities. This raises the question as to
+how, if the senses provide no access to the metaphysical subjects of
+properties, we can think about, much less have knowledge concerning,
+such subjects, including ourselves.
+
+The problem of the subject thus is the problem that arises because the
+senses do not give access to the metaphysical subjects of the manifest
+qualities we perceive in the world around us. Let me briefly expand on
+what I mean by "metaphysical subject" and "access" before going on to
+look at the issue as it is addressed by Kant.
+
+The basic notion of a metaphysical subject is a substance, understood as
+that in which properties inhere. Substances thus *substand*, and they
+also *subsist*, or exist independently of other things. Because of these
+two features, substances are loci of explanation. Non-substantial
+beings, such as properties or events, might stand in as loci of
+explanation in limited cases. For example, one might say of a fight that
+it is vicious, or of a rainbow that it is beautiful. Similarly, one
+might hope of justice that it is blind. But the fight and the rainbow
+are adjectival on the beings which constitute them (respectively, the
+fighters and the raindrops), while talk of the blindness of justice, if
+we are to avoid reifying the property, is purely metaphorical. Hence,
+substance plays its explanatory role because the inherence relation that
+a property has to the substance which has it is a dependence relation
+that the substance does not stand in to anything else.[^70]
+
+<!-- TODO: Fix the above discussion! -->
+
+Proper or scientific knowledge of nature requires, in the broadly
+Aristotelian tradition within which Kant is enmeshed, knowledge of why
+things are the way that they are.[^1] Because properties depend
+asymmetrically on the substances that have them, the study of substance
+is what is supposed to tell us why some property or pattern of
+properties may be instantiated. Hence, the object of proper scientific
+study is substance. Such knowledge, in the seventeenth and eighteenth
+centuries was typically regarded as a priori, not (or not just) because
+(as in our contemporary usage of "a priori") it is supposedly knowable
+independently of experience, but rather because experience can at best
+provide knowledge of what is the case. For example, experience
+only tells one that some determinate quality is instantiated. It cannot
+tell one *why* that is the case.[^2] 
+
+Leibniz provides one well-known account of the apriori source of our
+concept of a substance.[^71] Leibniz argues that it is via introspection or
+"reflection" that one first grasps the concept of a substance in virtue
+of reflecting on one's self as a substance with causal powers. Leibniz
+develops this view in his reply to Locke's objections concerning innate
+ideas, arguing that reflection is a form of non-sensory awareness of our
+mind and its states. Commenting on Locke's theory concerning the origin
+of all of our ideas in his *New Essays on Human Understanding*, Leibniz
+says:
+
+> Perhaps our able author will not entirely disagree with my opinion.
+> For...he admits...that the ideas which do not originate in sensation
+> come from reflection. Now, reflection is nothing other than attention
+> to what is within us, and the senses do not give us what we already
+> bring with us. Given this, can anyone deny that there is a great deal
+> innate in our mind, since we are innate to ourselves, so to speak, and
+> since we have within ourselves being, unity, substance, duration,
+> change, action, perception, pleasure, and a thousand other objects of
+> our intellectual ideas? And since these objects are immediate and
+> always present to our understanding (though they may not always be
+> perceived consciously on account of our distractions and our needs),
+> why should it be surprising that we say that these ideas, and
+> everything that depends upon them, are innate in us? [@leibniz1996,
+> 294]
+
+\noindent Since reflection is simply "attention to what is within us",
+all relevant ideas (concepts) of a substantial subject are gained by
+reflection on ourselves. We might not always attend to the fact that we
+are simple, active, (etc.) substances, but this fact is available to us
+on reflection. In the *Monadology* Leibniz further emphasizes this
+position, arguing that
+
+> it is the knowledge of necessary and eternal truths which
+> distinguishes us from simple animals and gives us reason and the
+> sciences, lifting us to the knowledge of ourselves and of God...it is
+> thus, as we think of ourselves, that we think of being, of substance,
+> of the simple and the compound, of the immaterial, and of God himself,
+> conceiving of that which is limited in us as being without limits in
+> him. These reflective acts provide us with the principal objects of
+> our reasonings \[@leibniz1969b, 645-6; §§29-30\].
+
+\noindent In these passages I take Leibniz to make two claims.
+First, the scientific knowledge that we have of nature depends on, and
+is posterior to, our epistemic grasp of ourselves. Second, the priority
+of self-knowledge in our understanding of nature comes from the role the
+self plays as a *source* of the content of our ideas (or concepts).
+
+In arguing that the self is a privileged source of representational
+content, Leibniz endorses what I call the "Difference Thesis" regarding
+introspection.[^13] Introspection provides a relation to ourselves as
+subjects that is epistemically distinctive from our relation to any
+other part of nature. The privileged and peculiar epistemic access we
+have to ourselves, coupled with claims concerning what the self
+is---viz. a simple unitary substance---thus provides a basis for
+resolving the problem of the subject. It is this access that we each
+have to ourselves that is thus the basis of our knowledge of anything
+external to us as a substantial thing. Rejecting the Difference Thesis
+would, according to these thinkers, thus be tantamount to rejecting the
+possibility of knowledge of nature *tout court*.
+
+Kant explicitly indicates his endorsement of such a position in a 1769
+note on Baumgarten's *Metaphysica*.[^9]
+
+<!-- TODO: connect the discussin of something = x to Kant's notion of a -->
+<!-- transcedental object (Tobias's suggestion) -->
+
+> by means of our senses only the relations of things can be
+> revealed, and we can represent the absolute or the subject only from
+> our selves. The idea of substance actually comes from the
+> *repraesentatione sui ipsius*, insofar as we represent that something
+> is separate from us, and predicates cannot be thought without a
+> subject and without an ultimate subject; the constant predicates
+> together are then called the subject. (R3921, 17:346; see also
+> R5290,18:144; R5297, 18:146; R4493, 17:571-2; AC 25:14)
+    
+\noindent Here Kant argues that the senses present only (in the outer
+case) determinate instances of determinables such as extension,
+solidity, rest, and motion. The senses by themselves do not present us
+with a subject of such qualities. The only presentation of such a
+subject comes in the intuition of the self---the "idea of substance
+actually comes from the *repraesentatione sui ipsius*." We then move to
+a thought of external substances by treating the "constant predicates
+together" as a stand-in for the metaphysical subject.
+
+Kant continues to endorse the idea that the self is the source of our
+conception of a substantial thing well into the 1770's. In the quote
+that forms the epigraph to the present paper, Kant writes that an object
+may be represented only "according to its relations", i.e., only
+according to the qualities, and relations between those qualities, that
+are presented in sense experience. However, in contrast to his position
+concerning external objects, Kant claims that we possess special access
+to a self whose qualities are not presented in this manner.[^11] The
+self is thus the "original of all objects" in the sense that, as Allison
+Laywine puts it, "we somehow transfer our representations of the one
+true subject and apply it derivatively or by analogy to our thought of
+anything else."[^12] For the pre-critical Kant, introspection
+provides a form of non-sensory intuitive acquaintance with the self as a
+metaphysical subject, and it is via this acquaintance that we can then
+form by analogy the representations of objects (construed as
+metaphysical subjects of properties) distinct from us.
+
+Hence, despite Kant's somewhat radical departure from German rationalism
+in 1769, with the recognition of two distinct stems of cognition---viz.
+sensibility and intellect, Kant nevertheless continues to pursue a
+strategy for resolving the problem of the subject that is deeply
+sympathetic to the rationalist tradition. By means of the Difference
+Thesis Kant, like Leibniz, argues for the legitimacy of central
+metaphysical concepts including, but not limited to, the concept of a
+metaphysical subject or substance. 
+
+<!-- TODO: Explain more clearly the sense in which the self is the -->
+<!-- "source" of the concept of substance. Is it just that the concept -->
+<!-- is innate? That it is a priori?  -->
+
+Hume famously challenges the Difference Thesis, and with it the priority
+and source claims. He undermines the priority claim by arguing against
+the source claim. There is no substantial self that is disclosed
+by virtue of any possible act of introspection. Hence there is no
+way in which self-knowledge has any peculiar epistemic priority to
+knowledge of the rest of nature. 
+
+> Philosophers begin to be reconcil'd to the principle, that we have no
+> idea of external substance, distinct from the ideas of particular
+> qualities. This must pave the way for a like principle with regard to
+> the mind, that we have no notion of it, distinct from the particular
+> perceptions. [@hume1888, 635]
+
+\noindent Our concept of a self, just like our concept of any other
+member of the natural world, is ultimately of nothing more than a bundle
+of perceived properties. Anything else is just an invented fiction.
+
+Similarly, for the critical Kant, there is no deep psychological or
+epistemological sense in which intuition of one's states differs from
+intuition of the states of other objects. We see this by considering
+that, for Kant, "a manifold’s combination (*Verbindung*) as such can
+never come to us through the senses" (B129). Predication is a form of
+combination. It's categorial counterpart is *inherence*. The senses
+cannot present anything as predicated of anything, and correspondingly,
+of any quality as inhering in anything.[^48]
+
+Kant also makes various statements concerning the fact that there is no
+intuition of the self as object. For example, 
+
+> Inner sense, by means of which the mind intuits itself, or its inner
+> state, gives, to be sure, no intuition of the soul itself, as object
+> [*Object*]. (A22/B37)
+
+> The consciousness of ourself in accordance with the determinations of
+> our state in internal perception is merely empirical, forever
+> variable; it can give no standing or abiding self in this stream of
+> inner appearances [*es kann kein stehendes oder bleibendes Selbst in
+> diesem Flusse innrer Erscheinungen geben*], and is customarily called
+> **inner sense** or **empirical apperception**. (A107)
+
+\noindent Passages like these have led various interpreters to the
+conclusion that Kant, much like Hume, endorses an "elusiveness thesis"
+regarding the appearance (or, more accurately, lack thereof) of the self
+in inner sense. I take Kant's endorsement of the elusiveness of the
+subject in sensory introspection to be required by his view concerning
+the nature of the structure or content of intuition. Intuition cannot
+provision a cognitive subject with representations whose content
+involves predication or the presentation of one thing's inhering in
+something else. There is nothing special, in this regard, concerning
+inner sense. As we saw above, the point about predication and inherence
+being absent in intuition is a wholly general claim, and holds of outer
+sense just as of inner. In general, as I argued above, intuition does
+not say anything "of" anything. It simply presents, and Kant takes
+sensory intuition to present qualities or states, not subjects thereof.[^72]
+
+Thus, in contrast to Kant's views in the 1770's, where he explicitly
+contrasts the nature of what is given in introspection vs extrospection,
+the critical Kant rejects the Difference Thesis, at least with regard to
+what is available *in intuition*.[^27] There is no intuition of the self
+as subject that provides the basis for our awareness of other substances
+distinct from ourselves. Empirical introspection and extrospection are
+psychologically and epistemically on par.[^16]
+
+# Apperception, Self-Ascription, & Knowledge of Nature #
+
+As we've seen, at least by the publication of the first *Critique* Kant
+no longer unqualifiedly endorses the Difference Thesis. He now denies
+that we can have anything like a privileged *intuition* of the self, and
+so no longer thinks that we obtain a representation of a substantial
+being by virtue of an intuition of the self.
+
+However, the centrality of the transcendental unity of apperception,
+especially in the B-Deduction, indicates that there is *some* sense to
+be made of the centrality of self-knowledge to resolving the problem of
+the subject. Certainly Kant is clear that the way in which the subject
+is represented in pure apperception, involves its existence, but not its
+(e.g.) simplicity or incorporeality. Moreover, the awareness of oneself
+as subject is purely intellectual. For example, he says,
+
+> this representation [viz. the "I think"] is an act [*Actus*] of
+> spontaneity, i.e., it cannot be regarded as belonging to sensibility.
+> (B-Deduction §16, B132)
+
+> In the transcendental synthesis of the manifold of representations in
+> general, on the contrary, hence in the synthetic original unity of
+> apperception, I am conscious of myself not as I appear to myself, nor
+> as I am in myself, but only that I am. This representation is a
+> thinking, not an intuiting. (B-Deduction §25, B157)
+
+> The consciousness of myself in the representation I is no intuition at
+> all, but a merely intellectual representation of the self-activity of
+> a thinking subject. (Refutation of Idealism, B278)
+
+> if I have called the proposition "I think" an empirical proposition, I
+> would not say by this that the I in this proposition is an empirical
+> representation; for it is rather purely intellectual, because it
+> belongs to thinking in general. (Refutation of Mendelssohn's proof of
+> the persistence of the soul, B423)
+
+\noindent Kant's position in these passages is that sensory
+introspection provides only an awareness of states of thinking, feeling,
+sensation, etc. It provides no awareness of a subject of such states. In
+contrast, the awareness of one's self as *subject*, as an existing being
+in which mental states inhere, is not sensory at all, but is itself an
+act of thought---viz. apperception.[^63] It is here, in pure
+apperception, that the critical Kant reaches for the source of our
+representation of a substance. Kant says that "in the synthetic original
+unity of apperception, I am conscious...that I am" (B157). If, as Kant
+says, I am conscious in apperception of my own existence, then I am
+conscious of myself as the subject of the thought "I exist". In being
+conscious of myself as the subject of the thought "I exist" I am
+conscious of that thought as possessed by and thus dependent upon
+myself. Moreover, if what I have argued so far in this paper is correct,
+there would seem to be no other form of representation (i.e.
+intellectually, or in inner or outer sense) in which such a relation
+between subject and property or state could be presented. Apperception,
+as the vehicle through which a subject becomes aware of their mental
+states as states of a particular subject---viz. oneself---is thus also
+the only possible means by which a cognizer could grasp this relation of
+dependence (as opposed to the merely grammatical relation between
+subject and predicate) between a metaphysical subject and a
+property.[^44]
+
+<!-- TODO: Discuss difference between "I think" and "I am" -->
+<!-- TODO: Kant says that the 'I think' is empirical (B428) -- why? -->
+
+---
+## Positive Proposal
+---
+
+My suggestion then is that the subject remains a cognitive model for the
+conception of a substance as an underlying subject of properties even in
+the Deduction, as well as in the critical period more generally. Since
+Kant no longer thinks we have any legitimate epistemic access to such a
+subject, in either extro or introspection, the only source left which
+could present such a relation is the "mineness" of thought itself. In
+having a first-person thought, one must be able to self-ascribe that
+thought, and so must be able to grasp the fact that the thought belongs
+to or depends on the subject having it.[^39] Given that we in fact do
+plausibly represent properties as inhering in subjects (whether
+ourselves or external objects), each of us must in fact have actualized
+this capacity for self-ascription in introspection in our history as thinkers.
+
+---
+## Evidence for proposal
+---
+
+We can appreciate Kant's emphasis on apperceptive self-ascription by
+noting four things. First, the emphasis Kant places, in §15 of the
+B-Deduction, on the awareness of the act of synthesis, and not merely
+the products of such synthesis (B130; see also A108).[^40] It is in the
+having of a first-person thought that one is in a position to explicitly
+acknowledge oneself as a subject in the just the relevant sense---viz.
+as a subject of properties. This is something that one is not, and never
+could be, in a position to do (or so I have argued that Kant believed)
+merely by entertaining sensible representations. Kant's claim concerning
+the need for awareness of synthesis is not a claim that the cognizing
+subject must *intuit* themself as possessing some mental state, or as
+engaged in some mental act. If it were then the very same objection
+concerning the absence of combination in sense would arise as Kant
+initially raises in §15 of the Deduction. So instead, Kant must be
+conceiving of such self-awareness as a kind of reflexive and
+non-empirical awareness of one's activity *as one's own* and thus as
+dependent upon one's self.
+
+Second, immediately after introducing the need for an awareness of the
+act of synthesis as the ultimate condition of the unity of
+representation, Kant goes on to argue, in §16, that the source of this
+is in the "I think" (B131-2). It is precisely the potentially explicit
+awareness of ownership inherent in the act of self-ascribing a thought
+that allows one to move from the mere having of a sensory consciousness
+awareness of (what are in fact) one's states to being aware of oneself
+as being in some state or other, and thus as the subject of those states.
+
+> The thought that these representations given in intuition all together
+> belong to me means, accordingly, the same as that I unite them in a
+> self-consciousness, or at least can unite them therein, and although
+> it is itself not yet the consciousness of the synthesis of the
+> representations, it still presupposes the possibility of the latter,
+> i.e., only because I can comprehend their manifold in a consciousness
+> do I call them all together my representations; for otherwise I would
+> have as multicolored, diverse a self as I have representations of
+> which I am conscious. (B134)
+
+\noindent Kant need not be construed here as arguing that we grasp the
+underlying metaphysical identity of the subject in the having of
+I-thoughts. He thus need not be read as conflating the metaphysical
+issue of what it is that constitutes the connection between distinct
+properties or representations in a single subject with the
+epistemological question of their (self-)ascription.[^41] Instead, Kant
+argues here that we are only in a position to even be able to think
+about the metaphysical question of the connection between properties or
+representations and the subject which has them because we already grasp
+one such instance of such a connection in the having of an 'I-thought'.
+
+Third, and relatedly, Kant emphasizes that pure apperception is
+"original" because "it is that self-consciousness which, because it
+produces the representation I think...cannot be accompanied by any
+further representation" (B132). This "intellectual consciousness" (Bxl)
+of oneself as the subject and owner of one's mental states cannot itself
+be derived from any other kind of representation. Kant goes so far to
+say that the principles of "the objective determination of all
+representations, insofar as cognition can come from them....are all
+derived from the principle of the transcendental unity of apperception"
+(B142). Thus, Kant is not trying to give an account or theory of how we
+can answer the epistemic question of the basis of the "mineness" of a
+thought. Instead, he is using the fact that thinking presupposes the
+grasp (or capacity thereto) of one's thoughts as one's own as a way of
+supplying a potential answer to the question of how we can think of a
+metaphysical subject that is the unity of any given set of appearances
+at all.[^62]
+
+Fourth, Kant's entire strategy in the critical period involves
+elucidating the cognitive powers of the *cognizing subject*. Kant
+repeatedly, and throughout his career, characterizes a power as a
+relation of a substance to its accidents and explicitly denies that the
+soul, as cognizing subject, could itself be regarded as a power, as
+e.g., Wolff did (ML~1~, 28:261; see also MH, 28:25, 145; R 4762, 17:720
+[1775–78]<!-- TODO: need more citations -->).[^60] Moreover, accidents,
+as Kant clearly states in the first *Critique*, are "determinations of a
+substance that are nothing other than particular ways for it to exist"
+(A186/B229), the existence of which is called "inherence, in contrast to
+the existence of the substance, which is called 'subsistence'"
+(A187-7/B230).[^61] While Kant's conception of the cognizing subject as
+a subject whose powers explain the existence of its accidents (as mental
+states), doesn't entail anything in particular about his view concerning
+pure apperception, his theory of cognition does require some explanation
+of the source of the representation of such a metaphysical subject, and
+pure apperception seems to be the best (and in fact only remaining)
+explanation.
+
+## Objections ##
+
+Nevertheless, there are several important objections to this account
+that deserve discussion. In brief, we need to consider whether this
+position is consistent with Kant's argument in the first Paralogism,
+whether it is consistent with his strategy in the Metaphysical
+Deduction, and whether it ultimately can make sense even as a qualified
+solution to the problem of the subject. I take these in turn.
+
+### The First Paralogism ###
+
+First, one might object that the position I attribute to Kant violates
+his commitment to epistemic humility, particularly concerning the
+nature of the subject as a substance. Essentially, one worries that I
+attribute to Kant a position similar or identical to the position in
+rational psychology against which he argues in the first Paralogism.
+
+In the A-edition, Kant agrees that "in all our thinking the **I** is
+subject" but asks what sort of use we are to make of knowledge (A349). Here
+he is primarily concerned with the issue of the supposed *permanence* of
+the soul, 
+
+> That I, as a thinking being, **endure** for myself, that naturally I
+> **neither arise** nor **perish** - this I can by no means infer, and
+> yet it is for that alone that the concept of the substantiality of my
+> thinking subject can be useful to me; without that I could very well
+> dispense with it altogether. (A349)
+
+\noindent Kant's primary aim here is not to argue against the
+position that the soul is substance, but rather to argue against the
+epistemic fecundity of an argument from the first-person concept to a
+conclusion about permanence.[^50] 
+
+Looking at the B-edition, one might reply that this defense is not
+cogent, for Kant appears to explicitly deny that pure apperception
+reveals anything about the subject.
+
+> Thinking, taken in itself [*für sich*], is merely the logical function
+> and hence the sheer spontaneity of combining the manifold of a merely
+> possible intuition; and in no way does it present the subject of
+> consciousness as appearance...In this way I represent myself to myself
+> neither as I am nor as I appear to myself, but rather I think myself
+> only as I do every object in general from whose kind of intuition I
+> abstract. If here I represent myself as **subject** of a thought or
+> even as **ground** of thinking, then these ways of representing do not
+> signify the categories of substance or cause, for these categories are
+> those functions of thinking (of judging) applied to our sensible
+> intuition, which would obviously be demanded if I wanted to
+> **cognize** myself. (B428-9)
+
+\noindent Kant here denies that pure apperception ("I think") presents
+any sort of sensory or intellectual appearance, but he also might seem
+to deny that pure apperception presents anything as subject or ground,
+in the metaphysical sense with which the categories are concerned.
+However, there are three points that mitigate these concerns.
+
+First, Kant is focussed on the issue of cognition, as the last clause of
+the passage indicates, so his rhetoric is directed at the position that
+we have cognition of the subject as permanent (using the category of
+substance) or as the causal basis (as ground) of thought. That is,
+Kant's position is exactly the same as was stated in the A-edition of
+the first Paralogism. 
+
+Second, and reinforcing the concern with cognition, Kant goes on to say
+that "in the consciousness of myself in mere thinking I am the **being
+itself**" (B429), which indicates that though I have no cognition of
+myself (that would require intuition, of which there are none in pure
+apperception), I nevertheless am conscious of myself as the subject of
+my thoughts.[^52] 
+
+Finally, the fact that, in pure apperception, I am aware of my thoughts
+as *mine*, goes beyond any merely logical or grammatical claim, as might
+be granted merely to the form of categorical judgment or the
+unschematized category of substance. The awareness of a thought as mine
+is not simply the awareness of a grammatical subject of predication. It
+is an awareness of *me*, and specifically, of myself as think*er*.[^51]
+Kant allows that we have such awareness of ourselves as thinkers (indeed
+he argues for this) in the B-Deduction. He does not renounce this
+position in the first Paralogism (or in the Paralogisms more generally),
+and nothing he argues there goes against it. If this is correct, it does
+mean that Kant's argument in the Paralogisms is perhaps more limited
+than some have taken it to be. But it doesn't mean ascribing to him either the
+kind of position in rational psychology that he criticizes or in
+limiting him to a wholly austere position regarding the self as subject. 
+
+A further objection, raised by Karl Ameriks, is that the admission that
+the 'I' is "absolute" in the metaphysical sense here at issue does not
+actually prove what is needed.  
+
+> The representation 'I' is absolute here in that there is no proper way
+> of representing these thoughts which leaves no room for the phrase 'I
+> think'. Yet this does not mean that I am truly the absolute subject of
+> my thoughts as a substantial mental being...as long as it is
+> metaphysically possible...that what I take to be a substantial soul is
+> ultimately a set of (individually) non-mental beings...In such a case
+> I (as the thinking personality that I take myself to be) would really
+> be an accident or resultant of those beings, and so but a prima-facie
+> or relative and not absolute subject, and yet the representation 'I'
+> would retain its ultimacy [in the sense at issue].[^54]
+
+\noindent Ameriks takes this possibility to be simply ignored in the
+A-edition Paralogisms, but then taken up in the B-edition, where Kant
+provides an argument against the "mere assertion" of the substantiality
+of the soul at B410-12 [-@ameriks2000a, 70]. Ameriks puts his challenge
+in terms of realization by multiple substances, but the issue could just
+as well be pressed by appeal to a single substance (such as God) of
+which we are all accidents. This is also suggested by the fact that Kant
+goes on to claim that "it is not determined whether I could exist and be
+thought of only as subject and not as predicate of another thing"
+(B419).[^56]
+
+However, all that these passages show is that Kant denies that we can
+cognize or otherwise come to *know* ourselves as ultimate subjects.
+Kant's arguments do not show that it is unwarranted to *believe* that
+the self is substantial.[^58]<!-- TODO: Is this right? Say more about
+belief --> The arguments are also perfectly compatible with the central
+interpretive claim that I advance---viz. that it is in pure
+apperception, and nowhere else, that we come to be able to represent a
+metaphysical subject. Perhaps pure apperception is provisioning us with
+a misrepresentation. Sufficient theoretical grounds could never be given
+to demonstrate the truth of it or its opposite.[^55]
+
+### The Metaphysical Deduction ###
+
+The second objection to my proposed interpretation is that in
+maintaining that the 'I' remains the original of all objects by
+providing us with a model of a metaphysical subject, the interpretation
+goes against Kant's strategy in the so-called "Metaphysical Deduction" (MD)
+to derive the categories from the structure of judgment. Why would Kant
+need to appeal to self-knowledge in the provisioning of the concept of a
+substance if he took his argument in the MD, an argument that appears
+*before* the discussion of apperception, as broadly cogent?
+
+In reply, it is important to note that the MD provides only a "clue" to
+the categories. Moreover, these unschematized categories are themselves
+merely logical in nature. For example, the form of judgment from which
+Kant derives the category of substance is the categorical judgment --
+i.e. judgment with subject-predicate structure. As far as logic is
+concerned any concept may be used either as subject or as predicate. The
+category of substance is used to specify that which "in experience must
+always be considered as subject, never as mere predicate" (B129). It is
+interesting that Kant continues to speak here of substance in
+logico-grammatical terms. When he then discusses the "schematized"
+version of the category of substance he says that it "is the persistence
+of the real in time" (A144/B183). But what falls between these two
+conceptions of substance is precisely that which Kant requires in
+resolving the problem of the subject---viz. a metaphysical subject of
+accidents or properties broadly construed---and is available neither
+from any experience of phenomenal substance as the permanent (which
+presupposes this conception) nor from the merely logico-grammatical
+conception of a subject of predicates. So, whence comes the conception
+of this metaphysical subject?[^68] If my discussion above is correct, it
+comes from the only source it *could* come from---viz. the subject's
+grasp of itself and its states as its own.[^53]
+
+At best, however, this just shows that Kant *needs* to appeal to
+apperception to fill a gap in his view concerning the sources of
+representational content and the content of our a priori concepts. It
+doesn't tell us that he was aware of such a gap, or that he intended to
+appeal to apperception to fill it. The existence of the Metaphysical
+Deduction might then be seen as evidence against both of these latter
+points. Connected to this, we can also articulate an additional concern
+that, if I am correct, Kant's reliance on apperception in the way I claim might
+undermine his argumentative strategy for *all* the categories, insofar
+as they are supposed to be derived or derivable from the forms of
+judgment.[^175134] Does apperception therefore make the Metaphysical Deduction
+otiose?
+
+I want to make three points in response to such worries. First, as I
+have already noted in introducing my positive proposal, Kant actually
+says in the B-Deduction that the principles of “the objective
+determination of all representations, insofar as cognition can come from
+them...are all derived from the principle of the transcendental unity of
+apperception” (B142). Moreover, the structure of his argument in the
+B-Deduction also strongly suggests, and possibly even requires,
+construing the categories as depending on apperception. For example,
+Kant is clear in §15 that all unity of concepts, including the
+categories, depends on a unity "someplace higher" (B131). Given the
+content of §16, this is clearly apperception that Kant has in mind. 
+
+Second, it is not at all clear that *all* of the categories might be
+derivable (much less derived) from apperception.[^175135] For example, perhaps
+only the categories of relation are so connected to apperception that
+they gain at least part of their content from it.[^175136]
+
+Finally, even if the categories all owe at least some of their structure
+or content to apperception, this does not render otiose the strategy
+Kant pursues in the argument of the Metaphysical Deduction, for there
+Kant is primarily concerned to provide some unitary and a priori basis
+for determining exactly which of our concepts are cognitively
+fundamental and a priori. 
+
+> Transcendental philosophy has the advantage but also the obligation to
+> seek its concepts in accordance with a principle, since they spring
+> pure and unmixed from the understanding, as absolute unity, and must
+> therefore be connected among themselves in accordance with a concept
+> or idea. Such a connection, however, provides a rule by means of which
+> the place of each pure concept of the understanding and the
+> completeness of all of them together can be determined *a priori*, which
+> would otherwise depend upon whim or chance. (A67/B92)
+
+\noindent This then is the central role for the argument of the
+Metaphysical Deduction, in providing a principled and a priori basis for
+*exhaustively* determining which are the fundamental concepts. Kant
+wants an argument which,
+
+> has not arisen rhapsodically from a haphazard search for pure
+> concepts, of the completeness of which one could never be certain,
+> since one would only infer it through induction, without reflecting
+> that in this way one would never see why just these and not other
+> concepts should inhabit the pure understanding. (A81/B106-7)
+
+\noindent Hence, even if I am right concerning the connection between
+apperception and the content of the concept `<substance>`, and it is
+true that there is a similar connection for all the other categories,
+there would still remain, for Kant, a need for a derivation like the
+kind he sketches in the Metaphysical Deduction. 
+
+<!-- TODO: Why can't we get the requisite content by *analogy* to the
+grammatical notion? -->
+
+### Indeterminacy ###
+
+One further objection concerns the status of such indeterminate
+"consciousness" of oneself as subject. As I've argued above, this
+consciousness is not something that is or could ever rise to the level
+of cognition or knowledge. How then could a mental state that counts as
+neither cognition nor knowledge provide anything of sufficiently
+determinate content that it could resolve the problem of the subject I've outlined
+here? Even worse, if the consciousness of the 'I' as subject is bereft
+of all qualities, as it must be if the apperception is "pure" in the
+sense with which Kant is concerned, how is it that one is aware of any
+feature of the self at all?
+
+In reply to the first point, all that is being claimed concerning Kant's
+argument in the first *Critique* is that consciousness of the self in
+pure apperception remains the sole basis for the possession of
+representational states presenting a metaphysical subject. This is
+compatible with that representation being had in a context where
+cognition or knowledge is nevertheless impossible. Concerning the second
+point, as Kant says, "I am the being itself" that is thinking, but
+whatever I am aware of with respect to myself beyond this fact in any
+act of thought (or any self-ascription of a mental state more broadly),
+that awareness is dependent (or "determined") by some empirical
+intuition. This means that one is not aware of any feature of the
+*noumenal* self other than that the appearance of such and such ways
+(e.g. as upset, hungry, believing that it will rain, etc.) of existing.
+With respect to how one appears to oneself, it is via an empirical grasp
+of some quality in introspection (via inner sense---e.g. pain) and then
+the self-ascription of that quality to oneself via the intellectual act
+of pure apperception---e.g. that *I* am in pain---which apprehends only
+the "mineness" of whatever was given in inner sense.
+
+# Conclusion #
+
+We have seen that Kant must provide an account of how we come to have
+the representation of a subject of accidents or properties broadly
+construed---viz. a substance. While the Kant of the 1770s attempts to
+provide a broadly Leibnizian account, according to which we have special
+intuitive access to the self as a substantial subject, this route is no
+longer an option in the critical period. We thus see that the mature
+critical Kant confronts the problem of explaining our representation of
+substance in its most acute form. Given Kant's prohibition in intuition
+of the self, and his broader epistemic humility regarding the
+possibility of cognition of any robust feature of the self (such as its
+immortality or simplicity), he would seem to be entirely without the
+cognitive resources necessary for explaining the experience and
+knowledge that we seemingly do possess concerning a world of substantial
+bodies in physical interaction, and the empirical subjects who cognize
+them.
+
+Kant's ingenious move is to argue that, even amongst such limited
+resources as allowed by the epistemic humility characteristic of the
+critical period, the 'I' still remains the original of all objects. It
+does so in the sense that the act of self-ascription itself is
+sufficient for grasping the dependence of the thought on its "owner",
+and thus grasping the basic relationship between a subject and its
+properties necessary for understanding anything as a substance, and thus
+as the potential object of properly scientific knowledge. Such
+self-ascription doesn't tell us anything about what the subject is.
+Indeed, we cannot even know whether this representation accurately
+describes the reality of our own existence as ultimate subjects. Thus
+nothing about the position I've ascribed to Kant on this matter violates
+his overarching epistemic humility. Further, while the
+I-as-subject-model grasped in the act of having a first-person thought
+is sufficient for satisfying a necessary condition of scientific
+knowledge of objects, it may well be that there are other conditions
+that are also necessary for properly scientific knowledge of some domain
+to be had, and that these might differ with respect to the objects of
+inner vs. outer sense.[^42]
+
+A further attraction of this interpretation is that it clarifies at least
+one line of response that Kant provides to Hume. Hume is notoriously
+critical of the position that we have any knowledge of the nature of the
+self (as a substance), or any knowledge derived from our knowledge of
+the nature of the self (e.g. as being a *simple* substance).
+
+> THERE are some philosophers, who imagine we are every moment
+> intimately conscious of what we call our SELF; that we feel its
+> existence and its continuance in existence; and are certain, beyond
+> the evidence of a demonstration, both of its perfect identity and
+> simplicity. ... Unluckily all these positive assertions are contrary
+> to that very experience, which is pleaded for them, nor have we any
+> idea of *self*, after the manner it is here explain'd. For from what
+> impression cou'd this idea be deriv'd ? [@hume1888, THN I.iv.6, p. 251]
+
+Hume's argument seems particularly cutting to anyone who accepts, as
+Kant does, that sense provides no original subject, and that there are
+no innate ideas to which one could appeal in order to remedy this fact.
+However, Kant is able to agree with much of Hume's critique while
+nevertheless avoiding the position at which Hume ultimately
+arrives---viz. that the (non-fictitious) concept of the self, as well as
+other 'external' objects, is nothing but that of a 'bundle' of
+properties (representations).[^175137] According to Kant, there is a
+source for the idea of a subject of properties that is inherent in the
+structure of self-ascriptive thought, and which cannot be, as Hume
+thinks, a 'fiction', since mere relations amongst the 'bundle' could
+never explain the "mineness" of self-ascribed thought---of the thinker
+as *subject*. There is no basis in association for making this so that
+does not already presuppose what is meant to be explained.
+
+This point may in fact explain Hume famous skeptical apostasy in the
+Appendix to the *Treatise*.[^43] He says,
+
+> having thus loosen'd all our particular perceptions, when I proceed to
+> explain the principle of connexion, which binds them together, and
+> makes us attribute to them a real simplicity and identity; I am
+> sensible, that my account is very defective, and that nothing but the
+> seeming evidence of the precedent reasonings cou'd have induc'd me to
+> receive it...For my part, I must plead the privilege of a sceptic, and
+> confess, that this difficulty is too hard for my understanding. I
+> pretend not, however, to pronounce it absolutely insuperable. Others,
+> perhaps, or myself, upon more mature reflexions, may discover some
+> hypothesis, that will reconcile those contradictions.
+> [@hume1888, 635-6]
+
+\noindent If I am right, Kant has the "hypothesis" which might effect
+the desired reconciliation. On the position I take Kant to hold, we need
+neither the sensory apprehension of some simple substance, nor the
+sensory grasp of necessary connections in order to explain the grasp we
+have of the self as subject. The act of self-ascription presents the
+subject with the opportunity to reflect on its mental states as
+belonging to it---whatever else "it" is---and thus present it with the
+exemplar of a metaphysical subject. In this very limited sense then the
+'I' remains the original of all objects.[^67]
+
+<!-- TODO: am I arguing for necessary or for sufficient conditions?  -->
+
+# References {-}
+
+\setlength{\parindent}{-0.2in} \setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt} \vspace*{-0.2in} \noindent
+
+<!-- -->
+
+
+---
+# Footnotes
+---
+
+
+[^1]: This is true even of philosophers, such as Descartes, Locke, and
+    Newton, who were otherwise seen to reject "scholastic" ways. For
+    discussion see [@dejong2010; -@dejong2010a]; [@pasnau2013a; -@pasnau2014].
+
+[^2]: A priori knowability in this sense of knowledge of that in virtue
+   of which something is the case, and not merely that it is the case,
+   was widely held in the seventeenth and eighteenth centuries to be the
+   epistemic ideal towards which all doxastic states aim; see
+   [@pasnau2014] for discussion. The influential *Port Royal Logic* of
+   Arnauld and Nicole includes a definition of the apriori in terms of
+   the "demonstration of effects by their causes"
+   [@arnauld1683, 233; see also @adams1994, 109; @smit2009; @hogan2009, 53-4].
+   Leibniz argued that there is “no true or existent fact, no true
+   assertion, without there being a sufficient reason why it is thus and
+   not otherwise” [-@leibniz1969b, 646 (§32)], and took the
+   investigation of such grounds to be one of the central tasks of the
+   intellect. Closer to Kant, Wolff provides a general definition of
+   ground in terms of ‘that through which one can understand why
+   something \[i.e. what is grounded\] is the case' [@wolff1751, §29].
+   Kant's pre-critical conception of an antecedently determining ground
+   seems to straightforwardly connect with these older notions. For
+   discussion see [@longuenesse2001, 69-70; @hogan2009, 53].
+
+[^7]: See [@pasnau2013a, 139] for expression of a similar view. The
+    position I ascribe to Descartes here is not uncontroversial. At
+    least some interpreters deny that Descartes is interested in arguing
+    here for the intellectual grasp of an underlying subject of
+    properties. See, e.g. [@williams1978, 220-1] and [@carriero2009,
+    440, note 32]; cf. [@morris2014].
+
+[^8]: For discussion of Locke's conception of the problem of the subject and
+    its solution in the self see [@pasnau2013a]. I discuss Locke's
+    relation to Kant in [@mclear2015, §3].
+
+[^9]: See also the discussion of this note in [@laywine2005, 8-9].
+
+[^10]: In his commentary on the *Dissertation*, Markus Herz also
+    presents part of the problematic as concerning the fact that "Every
+    part of our cognition is a judgment in which we attribute some
+    determination to a thing as a predicate to a subject" [@herz1771,
+    123] and that there is no obvious basis for determining what is to
+    count as subject. He takes this to be a special epistemological
+    challenge for our cognition of nature, with which Locke was
+    concerned, and which Kant seeks to overcome.
+
+[^11]: In a reflexion from the mid-1770's Kant says that "The I is the
+    intuition of a substance" (R4493, 17:571 (1772-5)). In the
+    *Metaphysics L~1~* lectures, from roughly the same period, Kant
+    contrasts consciousness of external objects with consciousness of
+    the self. One intuits oneself immediately, but the same is not true
+    of external objects (28:224). The self (as intelligence) so intuited
+    is substantial, simple, and immaterial (28:225-6). For discussion of
+    the various texts in the *Duisburg Nachlaß* and Kant's endorsement
+    of the rational psychology he would come to criticize see
+    [@guyer1987; @carl1989a; @carl1989; @serck-hanssen2001; @laywine2005; @laywine2006; @kitcher2011].
+
+[^12]: [@laywine2005, 9]; see also
+    [@carl1989, 91-2, 97; @kitcher2011, 73-4; @wuerth2014, 104]. For
+    criticism of Carl's, and to a lesser degree Laywine's, position see
+    [@allison2015, 121-30].
+
+[^13]: For discussion of the Difference Thesis in contemporary
+    philosophizing about self-knowledge see [@gertler2011, 10-12] and
+    [@smithies2012a, 4-6].
+
+[^14]: In the *Anthropology* Kant distinguishes between inner sense or
+    "*sensus internus*" and interior sense or "*sensus interior*"
+    (7:153). Kant argues that whereas inner sense is a faculty of
+    empirical intuition, interior sense is a "receptivity of the subject
+    to be determined by certain ideas for the preservation or rejection
+    of the condition of these ideas". The salient difference here is
+    that Kant does not take states of pleasure or pain to be
+    *representational* in the way in which he takes intuitions to be
+    (cf. CPJ 5:206). Pleasure and pain are rather conative states aiming
+    at the prolongation or cessation of one's current state. However,
+    this distinction aside, it does not seem that Kant would want to
+    deny that pleasure and pain (or feeling \[*Gefühl*\] more generally)
+    are temporally located, and thus elements of inner sense broadly
+    construed. For related discussion see [@vogel1993, 879].
+
+
+[^16]: Note that here and throughout, unless otherwise indicated, I am
+    referring specifically to *intuition* and the intuitive awareness of
+    what is presented in inner and outer sense. Such intuitions do not
+    straightforwardly count as "perceptions" in Kant's sense, nor as
+    "experiences". For discussion of these distinctions see
+    [@mclear2014a, 770-2]. For further discussion of Kant's rejection of
+    the Difference Thesis in the 1780's and thus the parity of inner and
+    outer sense see [@mclear-manuscript-parity]. Below, I also discuss
+    the fact that the critical Kant allows for non-empirical access of
+    the subject in pure apperception.
+
+[^17]: Kant makes similar claims in the *Prolegomena*. See 4:336-7. Kant
+    does change his mind about the status of psychology as a science
+    (4:295) after he writes the *Prolegomena*. At least by the time the
+    *Metaphysical Foundations of Natural Science* (1786), Kant
+    explicitly rejects the idea that a doctrine of the soul could rise
+    to "the rank of a science properly so-called" (MFNS 4:471) But this
+    change of position needn't be understood as a repudiation of the
+    parity of inner and outer sense with respect to the Difference
+    Thesis.
+
+[^18]: For discussion see [@caranti2007].
+
+[^19]: Arthur Collins goes so far as to claim that "it is impossible to
+    imagine what sensation could possibly be in the setting of inner
+    sense" [@collins1999, 113; cf. @schmitz2015, 1045].
+
+[^20]: In an annotation to the B-Preface Kant also says that it is the
+    things outside of us "from which we after all get the whole matter
+    for our cognitions, even for our inner sense" (Bxxxix, ann.); cf
+    [@schmitz2015, 1045]. It is important to note, however, that Kant is
+    here talking about material for *cognition* rather than
+    representation simpliciter. More on this point below.
+
+[^21]: See [@paton1936b, 389; but cf. -@paton1936a, 99-100];
+    see also [@pippin1982, 175]; [@allison1983, 258-63]; [@aquila1983, 158-171];
+    [@allison2004, 278-80]; [@valaris2008, 2-4]; [@schmitz2015, 1045-50].
+
+[^22]: Because of his focus on the relation between inner sense and
+    Kant's writings on idealism, Allison seems to make this slide. See
+    [@allison2004, 294]. Allison also moves too quickly from claims
+    concerning what is present in *experience*, construed as the outcome
+    of conceptual synthesis, and what is strictly speaking present in
+    *sense*, construed as the intuitions delivered by sensibility
+    [-@allison2004, 279]. For further criticism of Allison's position
+    see [@vogel1993, 879-91]. Valaris [-@valaris2008], in contrast,
+    argues for the lack of content in inner sense by moving from Kant's
+    statements regarding subjective states (such as pains and
+    pleasures) as non-representational, to the conclusion that only
+    representational states are part of the subject matter of inner
+    sense (3). While this is not an unreasonable inference, nothing
+    about what Kant actually says requires that we take him in the
+    manner Valaris suggests, and there are further reasons not to take
+    him so.
+
+[^23]: [@rosefeldt2000, 13] notes this as well. For extensive discussion
+    of Kant's views on mental illness, and their relation to inner sense
+    see [@frierson2009a; -@frierson2009b].
+
+[^24]: Henry Allison [-@allison2004, 278; cf. 292], for example, explicitly
+    connects Kant's position to Hume's. See also [@guyer1987,
+    283-4; @dicker2004, 3, 81; @kraus2013, 18]. For a more nuanced
+    approach to the issue of the self's elusiveness, focussing not on
+    the issue of sensory representation of the self, but rather
+    *cognition*, see [@chignell-forthcoming].
+
+[^25]: Kant sometimes distinguishes between *intelligence* and *soul*.
+    An intelligence is sometime characterized as a noumenal entity, at
+    best an “object of reason” (LM-K~2~ 28:773). See also LM-M 29:926;
+    Gr 4:446ff; CPrR 5:114; and LM-K~2~ 28:775. However, Kant does
+    sometimes characterize the spontaneous cognizing self as an
+    "intelligence" (e.g. B155, B157-58, B158n). He also sometimes
+    identifies this cognizing self or intelligence as a noumenal entity
+    (e.g., *Reflexionen to the first _Critique_*, 23:34, 35). Kant’s
+    considered position on the difference between soul and intelligence
+    (as well as the metaphysical status of and epistemological
+    connections to such beings) has been an issue of dispute amongst
+    commentators. See, e.g., [@allison1996, 65-6];
+    [@vancleve1999, 182-3]; [@wuerth2014, 43,63-4]. Compare also early
+    Kitcher -- [-@kitcher1984, 121]; [-@kitcher1990, 139-40] -- with
+    later Kitcher [-@kitcher2011, 193-7]. What seems fairly clear is
+    that a soul is or has necessarily a "principle of life," which Kant
+    construes as a faculty for acting on the basis of representations
+    (LM-D 28:682, LM-K~2~ 28:755, inter alia). Kant also allows that
+    animals are alive in this sense, while lacking an intelligence, in
+    his more substantive sense. See e.g., LM-L~1~ 28:275, 276, LM-L~2~
+    28:594, LM-D 28:679, 690. For further discussion of life as an
+    internal principle or determination of action, as opposed to an
+    external physical determination see [@frierson2014, 54-6]. For
+    helpful discussion of many of the above texts, along with further
+    historical commentary see [@choi-manuscript]. I'm indebted to her
+    paper for bringing many of these texts to my attention.
+
+[^26]: For a contrasting position, which takes inner sense to constitute
+    the basis for the *mineness* of our mental states, see
+    [@valaris2008, 3]. As I see things, this is a mistake, for it
+    assumes that a subject could be given in empirical introspection
+    such that what is introspected is taken as belonging to the subject
+    as part of themself.
+
+[^27]: One might object here that these considerations show at best that
+    there is no *de dicto* awareness of a subject. But perhaps there is
+    *de re* awareness. Insofar as intuition allows for the tracking and
+    responsive differential discrimination of objects then this might
+    count as a form of *de re* awareness; cf.
+    [@mclear2015, 104-5 and note 60]. But there is no further sense in
+    which the awareness of sensory qualities in intuition extends to a
+    sensory awareness of the metaphysical subject of those qualities,
+    else the objections considered above would hold. For additional
+    discussion of this issue see
+    [@mclear2015, 97-106; -@mclear2016b, §3.2].\label{dere}
+
+[^28]: For extensive argument concerning the content of intuition see
+    [@mclear2016d].
+
+[^29]: [@caranti2007, 134]. For the distinction between belonging to as
+    opposed to being representations of the mind see also [@allison2004,
+    279]. For criticism of Caranti's position see
+    [@chignell-forthcoming, 14-15].
+
+[^30]: Thus I'm opting to "dissolve" the problem of why inner sense
+    fails to provide a subject with knowledge of time determination, as
+    argued in [@vogel1993, 877]. For discussion of why this does not
+    conflict with Kant's argument in the Refutation, see below.
+
+[^31]: Note that this interpretation does not require endorsing a
+    reductive phenomenalist conception of empirical objects. On the
+    reading I advocate here, intuition presents to a cognizing subject
+    qualities arrayed in space and time, not merely subjective "raw
+    feels," which require further intellectual work to be made into
+    representations of an outer (or inner) world. For further discussion
+    of the issue of phenomenalism and objectivity see
+    [@allais2007; -@allais2009; -@allais2015; @mclear2016b].
+
+[^32]: See especially [@allais2015, ch. 7].
+
+[^33]: Advocates of such an "intellectualist" position include
+    [@george1981; @pereboom1988; @grune2009; @stephenson2015]. For
+    criticism of the phenomenalist view these positions suggest or
+    outright commit themselves to see [@allais2015, ch. 2].
+
+[^34]: A similar distinction is employed by Allais. See, e.g.,
+    [@allais2015, 154-5].
+
+[^35]: See [@mclear2014a, 770-2]; see also [mclear-manuscript-a, §5;
+    @tolley_manuscript] for further discussion.
+
+[^36]: Kant does here appeal to the intuition of *matter*, but this is
+    compatible with my point. As Kant makes clear in the *Metaphysical
+    Foundations of Natural Science*, the "metaphysical" sense of
+    "matter", with which he is concerned in the first *Critique* (on
+    this see [@watkins1998; cf. @friedman2013, 44-5]) is one according
+    to which it is explicated "not via a predicate that belongs to it
+    itself as object, but only via relation to that cognitive faculty in
+    which the representation can first of all be given to me,
+    \[such that\] every object of the outer senses is matter" (4:481).
+    In other words, every object of outer sense is matter with respect
+    to outer intuition's form. 
+        Moreover, in the *Prolegomena* Kant says that "all real properties
+    by which we cognize bodies are mere accidents for which we lack a
+    subject -- even impenetrability, which must always be conceived only
+    as the effect of a force" (P 4:333-4). This suggests that we may not
+    even count as *cognizing* genuinely substantial subjects. Plausibly
+    though, Kant here means only to indicate that we do not have
+    cognition of an *ultimate* subject, as a thing in itself.
+
+[^37]: This point about the quantification of time according to discrete
+    magnitude is compatible with thinking that the content of inner
+    sense is also quantifiable in other ways, ways moreover that might
+    be independent of any appeal to outer objects or outer sense. For
+    one such argument see [@kraus2013]. For extensive discussion of ways
+    in which quantification of inner sense depends on outer sense see
+    [@friedman2013, 61-7]. For argument that it is quantity of spatially
+    extended matter that is paramount in Kant's conception of substance,
+    as opposed to intensive magnitude, see Kant's discussion at MFNS
+    4:542 and Friedman's commentary [-@friedman2013, 315-18].
+
+[^38]: See also Kant's discussion of introspective psychology as
+    lacking the mathematizable structure necessary for proper science at
+    MFNS 4:471.
+
+[^39]: It is in this sense that the 'I' is the "substratum of all
+    empirical judgments" (R5453 18:186; cf. [@allison2004, 279]). My
+    interpretation contrasts sharply with that of [@valaris2008, 3], who
+    argues that inner sense, not apperception, is responsible for the
+    awareness of a mental state as one's own. It also contrasts with
+    Allison's position that "Since inner sense has no manifold of its
+    own, there are no sensible representations through which the self
+    can represent itself to itself as object" [@allison2004, 279]. I
+    deny the first part of this claim---inner sense *does* have its own
+    "manifold"---so there are representations in inner sense that are
+    the basis for representation of the self as object. However, these
+    representations, just like those of outer sense, do not provide a
+    subject of properties (mental states). That only happens in inner
+    experience, which is the result of synthesis by the categories.
+    Hence, just as with the outer objects of extrospection,
+    introspection reveals an empirical subject only because of
+    synthesis, which in turn depends on the grasp of a subject of
+    properties in the act of self-ascribing one's representations in the
+    "I think".
+
+[^40]: For criticism of this claim see, e.g., Kitcher's disparagement of
+    "synthesis watching" in [@kitcher1990, 126-7; cf. @kitcher2011, 243].
+
+[^41]: Kitcher [-@kitcher1990, 128] makes such an accusation.
+
+[^42]: For example, Kant claims in several places that knowledge of
+    outer objects as substances requires that we have *touched* things
+    and felt the filling of space that comes along with this. Kant
+    states in the MFNS, for example, in the Remark to Proposition 5 of
+    the Dynamics, that the awareness of repulsive force is acquired via
+    the sense of touch (4:510). He also seems to endorse this position
+    in the *Anthropology*, which is one of the reasons touch is the “most
+    important” of the senses (7:155) and, in the anthropology lectures,
+    explicitly says that touch is necessary for acquiring the concept of
+    a substance (*Anthropology Friedländer* (1775/6), 25:494; cf.
+    *Anthropology Mrongovius* (1784/5), 25:1242). Kant's position thus
+    seems to be that we cannot even *think* of matter as filling (as
+    opposed to merely occupying) space, unless we have had sensations of
+    resistance, and that it is the space-filling property of matter that
+    renders it *substantial*.
+
+[^43]: Jonathan Bennett [-@bennett2001b, §309] argues that Hume's aporia
+    is based on his inability to provide a "continuing substance account
+    of persons" given the meagre resources of his theory. However, if I
+    am correct, Hume's position is worse than this, for it isn't just
+    that he cannot provide an account of a "continuing" or persistent
+    substance. It is that he can provide no account, even at a time
+    (i.e. synchronic unity) of the sense in which a subject is aware (at
+    least potentially so) of themself as the owner of the
+    representations which they self-ascribe, and thus of themself as
+    *subject*. 
+
+[^44]: That Kant believed we could be so conscious of the self as
+    subject in this sense is also on display in his criticism of
+    spinozism. In the Pölitz lectures on religion, Kant argues that the
+    spinozist is faced with a dilemma. Since there is only one substance
+    in which everything inheres either I, as subject, am this substance,
+    and therefore God---which contradicts my dependence, or I am an
+    accident---which contradicts my awareness of myself as subject, as
+    "I" (28:1052; cf. 28:1042). See [@allison1980, 207] for relevant
+    discussion.\label{spinoza}
+
+[^45]: For a survey and defense of reading Kant as making metaphysical,
+    as opposed to merely epistemological or logical claims (as is widely
+    held amongst contemporary interpreters of Kant) concerning the self
+    see [@marshall2010].
+
+[^46]: For examples of this sort of position see [@bird1962, 130-1];
+    [@george1981]; [@guyer1987, 11-24]; [@pereboom1988; -@pereboom2006, 160]; [@haag2007, ch. 2].
+
+[^47]: In her discussion of this passage Stefanie Grüne
+    [-@grune2009, 41] argues that there is not an intuition prior to the
+    establishment of a relation between one's mental states (sensations)
+    and a determinate object of that state. Grüne thus combines the
+    position that Kant is articulating a mechanism by which mental
+    states gain intentional content, which I deny, with the point that I
+    have argued for---viz. that the senses present only qualities. For
+    criticism of Grüne's subjective starting point see [@mclear2016].
+
+[^48]: Kant's position on this matter is also clear from his statement
+    that the dynamical categories (relation and modality) apply
+    necessarily only to *experience* and not unconditionally to
+    *intuition*. The mathematical categories (of extensive and intensive
+    magnitude) are the only categories that apply "apodictically" to
+    intuition (A160-1/B199-200; see also A178-80/B220-3). 
+
+[^49]: For extensive treatment of this issue in philosophical work
+    throughout the late medieval period see [@pasnau2013a].<!-- TODO:
+    Add citations to other early modern figures -->
+
+[^50]: Karl Ameriks [-@ameriks2000a, 67] argues that the A-edition first
+    Paralogism fails to provide any non-spurious argument against the
+    status of soul as a noumenal substance. I agree with Ameriks that
+    Kant does not argue against the status of the soul as a substance,
+    but deny that he ever intends to do so. His main aim concerns the
+    claim that we could have knowledge of the *permanence* of the soul,
+    which he consistently denies. For a similar position see
+    [@wuerth2014, 166-7].
+
+[^51]: Here Stephen Engstrom [-@engstrom2013, 52-3] disagrees, arguing
+    that "I cannot identify the I of original apperception with myself
+    as an individual person or as one subject distinguished from other
+    possible subjects" (52). He justifies this claim by the fact that
+    apperception in §16 of the B-Deduction is "pure, not empirical" (52)
+    and thus contains the formal ground for any particular 'I' but not a
+    particular 'I' (viz. *me*, as thinker) itself. If the argument of
+    the present paper is correct then this position is mistaken. There
+    could be no empirical presentation of a subject in intuition,
+    because intuition provides only properties. Therefore, there is only
+    one way to be aware of oneself as subject -- i.e. as think*er* --
+    and that is via (non-empirical) pure apperception. Engstrom thus
+    saddles Kant with a problem he does not in fact have---viz.
+    concerning how one moves from such a "formal 'I'" to the particular
+    'I' that is oneself. It is not obvious to me how this problem is
+    answered on Engstrom's interpretation. It seems we can avoid the
+    problem altogether by noting that while pure apperception involves
+    an awareness of the self absent any predicate, this is compatible
+    with one's awareness being of *oneself*, since, as has been much
+    discussed in the philosophy of mind, self-ascription need not
+    involve any appeal to identifying information, on pain of regress.
+    For discussion see, e.g. [@shoemaker1988; -@shoemaker1994a, 257-8].
+    
+[^52]: For a similar point see [@wuerth2014, 167-8].
+
+[^53]: Note that I make no claim here concerning how the cognizing
+    subject determines, for any given quality or cluster of qualities
+    presented in sense, which are the accidents and which the substance.
+    It may well depend on the cognizer's ability to distinguish one or
+    more predicates as more stable with respect to others (e.g.
+    impenetrability vs. color), and of some concepts as reciprocially
+    interchangeable (e.g. `<body>` and `<divisible>`). For discussion of
+    these issues see [@longuenesse1998, 327-30; @rosefeldt2000, 33-5].
+    However, I disagree with Longuenesse's claim that "the concept of
+    substance has no other meaning than that of being the referent of
+    the term x to which all concepts of real determinations are
+    attributed in judgment" [-@longuenesse1998, 331]. This makes the
+    concept of substance too much the thin grammatical version of the
+    Metaphysical Deduction. 
+
+[^54]: [@ameriks2000a, 69-70].
+
+[^55]: For one sketch of how a kantian metaphysics of the self could be
+    fleshed out in terms of something other than a single substance see
+    [@marshall2010, §4]. However, there may well be practical grounds on
+    which Kant thinks we could have cognition of the self as substance,
+    particularly in terms of its freedom, activity, and moral status.
+    For discussion see, e.g. [@schafer2014a; -@schafer2015].
+
+[^56]: [@wuerth2014, 169] attempts to address this problem by means of
+    an appeal to Kant's Virgil argument, asserting that *multiple*
+    substances could *not* together have unified thoughts characteristic
+    of a single subject employing the first-person concept. Even if we
+    allow that this is true (though Kant's criticism of the "Virgil" or
+    "Achilles" argument at A352-3 tells against this), it does not
+    resolve the real problem at issue, which is how we can know that we
+    are substances rather than accidents. Wuerth does, however, point
+    out the compatibility of Kant's view with our being *dependent*
+    substances; see [@wuerth2014, 170-1, cf. 85]. Wuerth also argues,
+    concerning a passage from ML~2~ discussing Spinoza and addressed
+    above in note \ref{spinoza}, that Kant denies the coherence of
+    considering the self as an accident of another substance. This seems
+    correct. Unfortunately, the dating of the lecture notes is to
+    1783/4, and the issue that Ameriks raises are prompted by statements
+    Kant makes in the B-edition of 1787. This doesn't show that Kant
+    changes his mind (and his later notes suggest that he does not). But
+    it may suggest that Kant denies that we could, on the basis of the
+    testimony of consciousness, *cognize* or *know* that we are not
+    accidents of the single world-substance.
+
+[^57]: There is a further issue as to whether the immediate awareness of
+    one's own mental acts entails that we better know the *nature* of
+    the mind as opposed to body. Malebranche famously criticizes
+    Descartes on this issue. For discussion see
+    [@schmaltz1996, ch. 2; @lolordo2005; @nolan2005b; @jolley2009]
+
+[^58]: Kant may in fact think that we are *required* to take ourselves
+    as substances insofar as we take our mental states to be accidents
+    inhering in us as metaphysical subjects. Kant may think that it is
+    incoherent for an accident to itself have accidents. 
+
+[^59]: A further issue, which I do not address here, concerns Kant's
+    evolving views regarding singular concepts. By the time of the first
+    *Critique* Kant no longer believes that we have any genuinely
+    singular concepts, in the Leibnizian sense, but rather only concepts
+    that are singular in *use*; e.g. WL 24:910-11; PL 24:569; JL 9:91,
+    97; B683-4. See also [@thompson1972]; [@longuenesse1998, 247-8];
+    [@rosefeldt2000, 39-42; -@rosefeldt2003, 144].
+
+[^60]: Kant comments extensively on the relation between a substance and
+    its accidents in the Herder lectures. For discussion see
+    [@watkins2005, ch. 2]. And as Watkins [-@watkins2005, ch. 6] makes
+    clear, Kant's conception of substances as possessing powers
+    continues into the critical period and is integral to the argument
+    of the Analogies. 
+
+[^61]: See also R5861 18:371 (1783-4). For discussion see
+    [@longuenesse1998, 331-2 and note 17]; [@rosefeldt2000, 38 and note 59]). One
+    means of downplaying Kant's appeals to a cognizing subject of such
+    accidents is to argue that the existence of cognitive powers does
+    not, for Kant, imply the existence of a metaphysical subject.
+    [@kitcher1990] presents one such argument by attempting to
+    contextualize Kant's view as accepting several Humean premises,
+    including a "bundle view" of the self. For criticism of the
+    plausibility of Kitcher's position see
+    [@allison1990, ch. 4; @wuerth2006; @wuerth2014, ch. 1].
+
+[^62]: Kant was not the first to argue that self-consciousness is
+    fundamental in this way. For discussion of the intellectual context
+    of Kant's claims concerning apperception see
+    [@thiel1997; -@thiel2001]. Of particular note is Thiel's discussion
+    of Johann Berhard Merian in [@thiel1996]. As he notes there, Merian
+    is the first to utilize the phrase "original apperception" and also
+    construes "apperception" in a way which bears at least some
+    similarity to Kant's usage. I disagree with Thiel, however, in his
+    statement that Kant, like Merian, does not utilze a notion of the
+    self as a mental substance in the account of pure apperception. See
+    [@thiel2001, 476]. As we will see below, rather than denying the
+    awareness of the self as a metaphysical subject, Kant rather
+    carefully tries to thread his way between the excesses of rational
+    psychology and the rather austere position typically attributed to
+    him.
+
+[^63]: Kant, in the *Anthropology* also contrasts the "feeling of self"
+    [*Selbstgefühl*] possessed by the infant with the use of the
+    first-person pronoun. "When [the child] starts to speak by means of
+    'I' a light seems to dawn on him, as it were...Before he merely felt
+    himself, now he thinks himself" (An 7:127). Thus Kant rejects what,
+    in contemporary discussion of this issue, has been called the
+    "Uniformity Thesis" regarding self-knowledge. See, e.g.,
+    [@boyle2009a, 141]; cf. [@shoemaker1988]; [@burge1996;
+    -@burge2013b]; [@moran2001]. Boyle [-@boyle2009a], however,
+    attributes to Kant the view that it is in inner sense that we are
+    aware of ourselves as subjects (see p. 142, note 12), whereas I
+    distinguish inner sense, as a form of intuiting, from pure
+    apperception.
+
+[^64]: For further discussion of Kant's views in the *Dissertation* and
+    their relation to Kant's subsequently evolving views in the 1770's
+    see [@dyck2016]. For speculation that Kant is influenced in his view
+    here by his reading of Leibniz see [@allison2015, 59].
+
+[^65]: Of course, this is only a problem if the senses are our only
+    means of access to reality. As we will see, Descartes, Leibniz, and
+    the pre-critical Kant all deny this.
+
+[^66]: As mentioned in note \ref{dere} above, this is compatible with
+    intuition's allowing for *de re* psychological states concerning the subject.
+
+[^67]: Thanks to [...] Special thanks to Colin Marshall and Yoon Choi
+    for their extensive comments and helpful discussion.
+
+[^68]: One might object here that similar worries could be raised
+    concerning the other categories, and particularly the relational
+    categories. While this may be true, it does not seem to be an
+    object, but perhaps evidence as to why Kant would hold that the
+    categories are derived from the principle of apperception (B142),
+    and would further cement my claim that pure apperception is playing
+    an analogous role in the critical period (albeit suitably pared of
+    much of its metaphysical excess) as intuition of the subject played
+    in the 1770's. 
+
+[^69]: Note that the issue is one concerning the *source* of the
+    representational content, not the justification of applying the
+    concept. I take it that the issue of justification is the "quid
+    juris" question with which the Transcendental Deduction is
+    concerned. The question I pursue here is more along the lines of the
+    "quid facti" presupposed by much of the argument of the Deduction. 
+
+[^70]: It is nevertheless compatible with the concept of a substance, so
+    understood, that it *does* depend on something else. Descartes and
+    Leibniz, for example, both consider finite substance to depend on
+    the activity of God. What they deny is the claim that this
+    dependence relation be understood in the same terms as the inherence
+    relation. 
+
+[^71]: Descartes is another obvious proponent of the importance of
+    self-knowledge for knowledge of nature. For Descartes, all knowledge
+    of substance is purely intellectual, as is indicated by his famous
+    'wax argument' in the *Second Meditation*. As he puts it, “when I
+    distinguish the wax from its outward forms - take the clothes off,
+    as it were, and consider it naked” (CSM II:22; AT VII:32) then what
+    is grasped purely intellectually is the nature of the wax as an
+    enduring thing with determinable features (consisting of being
+    extended, flexible, and changeable (CSM II:20; AT VII:31)), and
+    possessing a particular modal profile (of taking on “countless”
+    possible forms (CSM II:21; AT VII:31)). Descartes argues that “the
+    perception I have of it [the wax] is a case not of vision or touch
+    or imagination - nor has it ever been, despite previous
+    appearances - but of purely mental scrutiny” (CSMII:21; AT VII:31).
+    He also says in the *Third Meditation* that, “[m]y understanding of
+    what a thing is, what truth is, and what thought is, seems to derive
+    simply from my own nature” (CSMII:26; AT VII:38). For further
+    discussion along these lines see [@pasnau2013a, 139]. For objections
+    to this reading see [@williams1978, 220-1];
+    [@carriero2009, 440, note 32]; cf. [@morris2014].
+
+[^72]: For further discussion of the content of intuition see
+    [@mclear2016d; -@mclear2016].
+
+[^175134]: Thanks to Colin Marshall, Eric Watkins, and Tobias Rosefeldt
+    for discussion of this point. 
+
+[^175135]: For an attempt to show that Kant not only intends to derive
+    the categories from apperception, but does so successfully, if not
+    fully explicitly, in the first *Critique*, see [@schulting2012a]. I
+    make no such strong claims here. 
+
+[^175136]: It is also interesting to note here that in Kant's notes for
+    a deduction in the 1770s, of the three "titles of the understanding"
+    with which he is concerned, two are relational categories (i.e.
+    cause-effect, and substance). See [@guyer1987]; [@carl1989a,
+    82-103]; [@laywine2005; -@laywine2006] for relevant discussion.
+
+[^175137]: See, e.g., [@hume1888, I.iv.6, p. 253].

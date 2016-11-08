@@ -1,0 +1,4274 @@
+#+TITLE: Philosophy 101
+#+AUTHOR: Colin McLear
+#+DATE: Fall 2016
+#+OPTIONS: reveal_title_slide:"<h1>%t</h1><h3>%d</h3><h4>phil101.colinmclear.net</h4>"
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:nil reveal_control:t
+#+OPTIONS: reveal_rolling_links:t reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: toc:2 reveal_slide_number:c/t 
+#+REVEAL_TRANS: convex
+#+REVEAL_THEME: solarized
+#+REVEAL_HLEVEL: 2
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="PHIL 101 Slides">
+#+REVEAL_POSTAMBLE: <p> Created by Colin McLear. </p>
+#+REVEAL_PLUGINS: (markdown notes highlight)
+#+REVEAL_EXTRA_CSS: /Users/Roambot/projects/phil101/content/slides/local.css
+#+EXCLUDE_TAGS: noexport
+
+# #+OPTIONS: toc:1 reveal_slide_number:c/t 
+# #+OPTIONS: reveal_single_file:t
+
+* Class Info
+** Course Website: http://phil101.colinmclear.net
+#+ATTR_REVEAL: :frag (appear)
+- syllabus
+- course assignments
+- readings (posted online)
+- announcements
+
+** Evaluation
+#+ATTR_REVEAL: :frag (appear)
+- Essay: 25%
+- Two Exams: 45%
+- Quizzes: 20%
+- Participation: 10%
+  
+#+BEGIN_NOTES
+- There will be prompts for the essay
+- We will review material for both exams (non-cumulative)
+- Note that there will be at least 10 quizzes
+  - Quiz sections on Thursday will have different questions from
+    sections on Friday
+  - Drop two lowest quizzes and count highest twice
+- Starting next week there will attendance taken in both lecture and section
+#+END_NOTES
+
+** Clickers
+- Always bring to class
+- Available at the bookstore
+- Available on your phone (Reef Polling)
+* What is Philosophy?
+** The Origins of Western Philosophy
+#+ATTR_REVEAL: :frag (appear)
+- Originates with ancient Greek study of nature
+- Philosophy means "love of wisdom" (φιλοσοφία, "/philosophia/")
+# - Original form of organized inquiry
+
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  The aim of philosophy, abstractly formulated, is to understand how
+  things in the broadest possible sense of the term hang together in the
+  broadest possible sense of the term
+  
+  ---Wilfrid Sellars
+#+END_QUOTE
+
+#+BEGIN_NOTES
+  We'll look at how things hang together in a variety of areas. 
+  
+  - metaphysics: is reality ultimately physical?
+  - mind: consciousness and representation
+  - ethics: what is goodness? is there a meaning to life?
+  - epistemology: what can we be certain about?
+#+END_NOTES
+
+** Philosophy as Argument
+*** What is an argument?
+
+#+ATTR_REVEAL: :frag (appear)
+#+REVEAL_HTML: <iframe src="http://giphy.com/embed/Ivl3H0owX7JjW" width="480" height="359" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+
+#+REVEAL: split
+
+-  Argument: :: A statement or sequence of statements (truth claims
+   called ‘premises') which logically support the truth of some further
+   statement (a truth claim called a ‘conclusion').
+   
+#+BEGIN_NOTES
+Contrast argument w/rhetoric: 
+- rhetoric aims to persuade
+- argument aims at truth
+#+END_NOTES
+
+*** Parts of an Argument
+
+#+ATTR_REVEAL: :frag (appear)
+-  Evidence ("premises")
+-  What follows from the premises ("conclusion")
+#+ATTR_REVEAL: :frag appear
+Both premises and conclusion must consist of statements or
+propositions---i.e. sentences that can be true or false
+
+#+ATTR_REVEAL: :frag (appear)
+-  Declarative statements: "This class is boring"
+-  Hypothetical statements: "If the class is boring it is probably easy"
+-  False statements: "PHIL 101 is an easy A"
+-  +Questions+: "What is the meaning of life?"
+-  +Commands+: "Run away!"
+
+*** Kinds of Argument
+#+ATTR_REVEAL: :frag (appear)
+-  Deductive Argument: :: the conclusion follows from the premises
+   /necessarily/
+-  Inductive Argument: :: the conclusion is made /probable/ by the
+   premises
+-  Abductive Argument: :: the conclusion is the /best explanation/ of
+   the truth of the premises
+     
+*** A Simple Deductive Argument
+
+#+ATTR_REVEAL: :frag (appear)
+1. All humans are mortal
+2. John is human
+3. \therefore John is mortal
+
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+- Assessing the argument
+  #+ATTR_REVEAL: :frag (appear)
+  - Assuming that the premises are true, could the conclusion be false?
+  - Does the conclusion follow from the premises?
+
+#+BEGIN_NOTES
+-  Philosophers understand the notion of "following from" in terms of
+   the /structure/ of the deductive argument
+-  Arguments with the right structure are /valid/ deductive arguments
+#+END_NOTES
+  
+*** Structure
+1. All humans are mortal  
+2. John is human
+3. \therefore John is mortal
+   
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+1. All A are B
+2. x is A
+3. ∴ x is B
+   
+*** Validity & Soundness
+#+ATTR_REVEAL: :frag (appear)
+-  Valid Argument: :: An argument whose structure /guarantees/ that, if
+   the premises are true, the conclusion must also be true
+-  Sound Argument: :: A valid argument whose premises are /true/
+
+*** Argument Extraction
+#+ATTR_REVEAL: :frag (appear)
+1. Is there an argument being made?
+2. What's the conclusion of the argument?
+3. What support does the conclusion have?
+4. What material is essential to the argument and what is extraneous?
+5. Is the argument valid?
+6. Is the argument sound?
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  There is no reason to think that there are any absolute moral truths.
+  We can see this when we consider different cultural outlooks
+  concerning what is morally required. For example, indigenous Inuit
+  culture considered infanticide to be morally permissible in some
+  situations. But modern American culture clearly thinks infanticide is
+  always morally wrong. So what's morally right or wrong is just a
+  matter of opinion, which can vary from culture to culture. (James
+  Rachels, /The Elements of Moral Theory/)
+#+END_QUOTE
+
+#+BEGIN_NOTES
+- Conclusion?
+  - There are no absolute moral truths
+- Support?
+  - If moral truths were absolute then they would not vary from culture
+    to culture
+  - Morals do vary from culture to culture
+#+END_NOTES
+
+*** Sample Extraction
+#+ATTR_REVEAL: :frag (appear)
+1. If moral truths were absolute then they would not vary from culture
+   to culture
+2. What's considered morally right or wrong does vary from culture to
+   culture
+3. $\therefore$ There are no absolute moral truths
+
+* The Logic of Argument
+
+** Parts of an Argument
+#+ATTR_REVEAL: :frag (highlight-current-blue)
+- Premise (evidence) 
+- Conclusion (what follows from the evidence) 
+  
+#+BEGIN_NOTES
+- An argument consists of *statements*, which can be true or false
+- No *questions* or *commands* as part of an argument
+#+END_NOTES
+
+** Kinds of Argument
+#+ATTR_REVEAL: :frag (highlight-current-blue)
+-  Deductive Argument: :: the conclusion follows from the premises
+   /necessarily/
+-  Inductive Argument: :: the conclusion is made /probable/ by the
+   premises
+-  Abductive Argument: :: the conclusion is the best explanation of the
+   truth of the premises
+     
+#+BEGIN_NOTES
+- Why do we want to make arguments in the first place? (convince others rationally)
+#+END_NOTES
+
+** Characteristics of Deductive Argument
+#+ATTR_REVEAL: :frag (highlight-current-blue)
+-  Validity
+-  Soundness
+
+** Validity
+
+#+ATTR_REVEAL: :frag (appear)
+-  An argument whose form /guarantees/ that, if the premises are true, the
+  conclusion must also be true
+  
+#+BEGIN_NOTES
+- Can a valid argument have a false conclusion?
+- Can a valid argument have a false premise?
+#+END_NOTES
+
+*** Form vs. Content
+
+#+ATTR_REVEAL: :frag (appear)
+1. All humans are mortal
+2. John is human
+3. $\therefore$ John is mortal
+
+#+ATTR_REVEAL: :frag (appear)
+1. All A is B
+2. x is A
+3. $\therefore$ x is B
+
+#+ATTR_REVEAL: :frag (appear)
+Whatever the content of this argument form, it will /always/ be valid
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style height:auto; max-width:60%; margin:auto; display:block; text-align:center
+[[/Users/Roambot/projects/phil101/content/slides/venn.png]]
+
+#+BEGIN_NOTES
+- This is a Venn diagram, a way to visualize logical relationships
+  - There are discussions of Venn diagrams on the website. Follow the
+    critical thinking link under resources and look under "learning modules"
+#+END_NOTES
+
+** Soundness
+
+#+ATTR_REVEAL: :frag (appear)
+- An argument which is (i) valid and (ii) has true premises
+
+\\
+          
+#+ATTR_REVEAL: :frag (appear)
+- Whether an argument is sound concerns both its /form/ and its
+  /content/
+  #+ATTR_REVEAL: :frag (appear)
+  - Not all valid arguments are sound arguments
+  - Not all arguments with true premises and a true conclusion are sound
+
+** Two Basic Deductive Argument Forms
+***  Modus ponens: "the affirming mode"
+#+ATTR_REVEAL: :frag (appear)
+1. If P, then Q
+2. P
+3. $\therefore$ Q
+
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+1. If there is beer in the fridge then today will not be dull
+2. There is beer in the fridge 
+3. $\therefore$ Today will not be dull
+   
+#+BEGIN_NOTES
+- The most basic inferential form
+- The most used inferential form
+#+END_NOTES
+
+***  Modus tollens: "the denying mode"
+#+ATTR_REVEAL: :frag (appear)
+1. If P, then Q
+2. ~ Q
+3. $\therefore$ ~ P
+
+\\
+   
+#+ATTR_REVEAL: :frag (appear)
+1. If there is beer in the fridge then today will not be dull
+2. Today will be dull
+3. $\therefore$ There is no beer in the fridge
+   
+#+BEGIN_NOTES
+- important argument form for denying certain premises in an opponent's argument
+#+END_NOTES
+
+** Interpreting Arguments
+
+*** Argument Markers
+#+ATTR_REVEAL: :frag (appear)
+-  Arguments are /constructed/ from statements but they typically don't
+   appear as lists of statements
+-  (Good) Arguments often contain "marker" words, which indicate what is
+   evidence or conclusion
+
+*** Sample Evidence Markers
+
+#+ATTR_REVEAL: :frag (appear)
+- as
+- because
+- for
+- from
+- since
+  
+#+BEGIN_NOTES
+Example: The streets are wet /because/ it is raining
+#+END_NOTES
+
+*** Sample Conclusion Markers
+#+ATTR_REVEAL: :frag (appear)
+- hence
+- so
+- then
+- therefore
+- thus
+
+#+BEGIN_NOTES
+Example: It is raining, /therefore/ the streets are wet
+#+END_NOTES
+
+*** Argument Extraction
+
+#+ATTR_REVEAL: :frag (appear)
+-  Is there an argument being made?
+-  What's the conclusion of the argument?
+-  What support does the conclusion have?
+-  What material is essential to the argument and what is extraneous?
+-  Is the argument valid?
+-  Is the argument sound?
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  There is no reason to think that there are any absolute moral truths.
+  We can see this when we consider different cultural outlooks
+  concerning what is morally required. For example, indigenous Inuit
+  culture considered infanticide to be morally permissible in some
+  situations. But modern American culture clearly thinks infanticide is
+  always morally wrong. So what's morally right or wrong is just a
+  matter of opinion, which can vary from culture to culture. (James
+  Rachels, /The Elements of Moral Theory/)
+#+END_QUOTE
+
+#+BEGIN_NOTES
+-  Conclusion?
+   -  There are no absolute moral truths
+-  Support?
+   -  If moral truths were absolute then they would not vary from
+      culture to culture
+   -  What's considered morally right or wrong does vary from culture to
+      culture
+#+END_NOTES
+
+*** A Sample Extraction
+#+ATTR_REVEAL: :frag (appear)
+1. If moral truths were absolute then they would not vary from culture
+   to culture
+2. What's considered morally right or wrong does vary from culture to
+   culture
+3. $\therefore$ There are no absolute moral truths
+
+#+BEGIN_NOTES
+- What form does this argument look to have (modus tollens)
+- Is the argument really MT? (No)
+- There is an equivocation with respect to (2). So the argument as
+  actually stated is invalid. There is a difference between:
+  1. What is considered morally right/wrong varies with culture
+  2. What *is* morally right/wrong varies with culture
+- For the argument to be valid we need the latter version of (2) 
+#+END_NOTES
+ 
+*** Argument Extraction II
+
+#+BEGIN_QUOTE
+  There are, moreover, seemingly unanswerable arguments that, if they
+  are correct, demonstrate that the existence of moral responsibility
+  entails the existence of free will, and, therefore, if free will does
+  not exist, moral responsibility does not exist either. It is, however,
+  evident that moral responsibility does exist: if there were no such
+  thing as moral responsibility nothing would be anyone's fault, and it
+  is evident that there are states of affairs to which one can point and
+  say, correctly, to certain people: That's your fault. (van Inwagen
+  “How to Think”)
+#+END_QUOTE
+
+#+BEGIN_NOTES
+1. If there were no such thing as moral responsibility, then no one
+   would be at fault for anything
+2. But people do correctly fault others for performing certain kinds of
+   actions
+3. $\therefore$ There must be moral responsibility
+4. If there were no free will, then there would be no moral
+   responsibility
+5. There is moral responsibility (from 3)
+6. $\therefore$ There is free will
+#+END_NOTES
+
+*** Sample Extraction II
+#+ATTR_REVEAL: :frag (appear)
+1. If there were no such thing as moral responsibility, then no one
+   would be at fault for anything
+2. But people do correctly fault others for performing certain kinds of
+   actions
+3. $\therefore$ There must be moral responsibility 
+4. If there were no free will, then there would be no moral
+   responsibility
+5. There is moral responsibility 
+6. $\therefore$ There is free will
+
+\\ 
+
+#+ATTR_REVEAL: :frag (appear)
+1. If A, then B
+2. ~B
+3. $\therefore$ ~A (by 1, 2, modus tollens)
+
+** Logical Fallacies
+#+ATTR_REVEAL: :frag (appear)
+-  Logical fallacy: :: A defect in the logical form or content of an
+   argument
+
+#+ATTR_REVEAL: :frag (appear)
+- formal fallacy (defect of logical form)
+- informal fallacy (defect of content)
+
+#+BEGIN_NOTES
+-  Bad arguments tend to have patterns or forms
+-  Some bad arguments nevertheless may initially appear to be good
+   arguments
+#+END_NOTES
+
+** Formal Fallacies
+#+ATTR_REVEAL: :frag (appear)
+-  Denying the Antecedent: :: denying the consequent of a hypothetical
+   by denying the antecedent
+
+\\
+#+ATTR_REVEAL: :frag (appear)
+1. If the dog is outside, then he is barking
+2. The dog is not outside
+3. $\therefore$ The dog is not barking
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+   1. If P, then Q
+   2. ~ P
+   3. $\therefore$ ~ Q
+#+END_QUOTE
+
+
+#+REVEAL: split
+
+-  Affirming the Consequent: :: Accepting the antecedent of a
+   hypothetical by accepting the consequent
+
+\\
+#+ATTR_REVEAL: :frag (appear)      
+1. If the dog is outside, then he is barking
+2. The dog is barking
+3. $\therefore$ The dog is outside
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+   1. If P, then Q
+   2. Q
+   3. $\therefore$ P
+#+END_QUOTE
+
+** Informal Fallacies
+#+BEGIN_NOTES
+- an argument containing an informal fallacy might employ a valid logical form while nevertheless remaining rationally unpersuasive.
+- there are common forms of reasoning that are (or should be)
+  unpersuasive, but don't involve defects of logical form
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (appear)
+-  Straw Man: :: Purposely misrepresenting a view so that it can be more
+   easily attacked or criticized
+      
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  Mary: We must not betray the principles of justice and democracy.
+  Suspected terrorists must be granted basic rights as well as legal
+  representation and access to a fair court.
+
+  Tom: Mary is advocating the release of known terrorists. We cannot
+  afford to allow our enemies to move freely in our society.
+#+END_QUOTE
+
+#+REVEAL: split
+-  Genetic Fallacy: :: Accepting or rejecting a statement or argument on
+   the basis of its source
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  The US Senate is arguing for various proposals to reduce social
+  inequality. But anything they come up with will be ridiculous because
+  they are all rich white people.
+#+END_QUOTE
+
+#+REVEAL: split
+
+-  Appeal to the Person (/ad hominem/): :: Rejecting a statement or
+   argument because it comes from a particular person or group, rather
+   than because the statement or argument is false or dubious
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  President Obama says that the United States health care system is in
+  need of serious reform, and should be changed so that more people can
+  affordably receive adequate coverage. But Obama is a socialist and we
+  shouldn't believe anything he says.
+#+END_QUOTE
+
+#+REVEAL: split
+
+-  Begging the Question: :: Attempting to prove the truth of a statement
+   by using that very statement as evidence
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  We know that God exists because the bible says so, and everything the
+  bible says is true because God wrote it.
+#+END_QUOTE
+* Physicalism & Consciousness
+** What is Metaphysics?
+#+REVEAL_HTML: <iframe src="http://giphy.com/embed/l396LZ8Q75V1lEDvO" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+
+#+BEGIN_NOTES
+  - Not concerned with mysticism or crystals 
+  - Means "after physics"
+    - More than a hundred years after Aristotle's death, an editor of
+      his works (in all probability, Andronicus of Rhodes) titled those
+      fourteen books "/Ta meta ta phusika/"—"the after the physicals" or
+      "the ones after the physical ones"
+#+END_NOTES
+
+** Metaphysical Questions
+
+#+ATTR_REVEAL: :frag (appear)
+-  What kinds of things exist?
+-  What is fundamental?
+  
+#+BEGIN_NOTES
+  - Kinds
+    - abstract vs. concrete
+    - complex vs. simple
+  - Fundamental
+    - simples?
+    - physical or mental?
+#+END_NOTES
+
+** Physics as Metaphysics
+#+ATTR_REVEAL: :frag (appear)
+-  Physicalism: :: Everything that is or could exist is ultimately
+   physical in nature
+     
+#+BEGIN_NOTES
+  Ask clicker question concerning the truth of physicalism. "A" for its
+  truth, "B" for its falsity
+#+END_NOTES
+
+** Alternatives to Physicalism
+
+#+ATTR_REVEAL: :frag (appear)
+-  Dualism: :: Physical things exist but some things that do (or could)
+   exist are not (or are not ultimately) physical in nature (e.g. minds,
+   souls, God)
+-  Idealism: :: Everything that is or could exist is ultimately /mental/
+   in nature
+     
+#+BEGIN_NOTES
+  So (reductive) physicalism is a kind of *monism*---only one kind of thing really exists
+#+END_NOTES
+
+** Why be a Physicalist?
+#+ATTR_REVEAL: :frag (appear)
+1. Against supernaturalism
+2. Explanation
+
+*** Against Supernaturalism
+
+-  Supernatural explanations are lazy explanations -- they don't really
+   tell us anything
+  
+#+BEGIN_NOTES
+ - We appeal to things we don't understand (like God) to "explain"
+   things we don't understand
+ - All things considered, the better explanation is one which doesn't
+   appeal to supernatural entities or forces
+#+END_NOTES
+
+*** The Argument from Explanation
+#+ATTR_REVEAL: :frag (appear)
+1. Our physical theories are highly successful at predicting and
+   controlling our experience of the world
+2. If our physical theories are highly successful then they correctly
+   describe the nature of reality
+3. \therefore Our physical theories correctly describe the nature of
+   reality (by 1, 2, MP)
+4. If our physical theories correctly describe the nature of reality
+   then physicalism is true
+5. \therefore Physicalism is true (by 3, 4, MP)
+
+#+BEGIN_NOTES
+- Questionable Assumptions? 
+  - Premise (2) 
+     -  Assumes that the correctness of our theories is required for/best
+      explains their success
+        -  What if the success of physics is a mere coincidence?
+  - Premise (4)
+     -  Assumes that our physical theories are /exhaustive/
+#+END_NOTES
+
+** Proving the Truth of Physicalism
+#+ATTR_REVEAL: :frag (appear)
+-  Show that our physical theories are not merely /coincidentally/ true
+-  Show that our physical theories are /exhaustivly/ true
+
+** Reductionism
+
+  Deducing, explaining, or otherwise showing a dependence relation to
+  exist between one set of properties, facts, or concepts, and another
+  priviliged set of properties, facts, or concepts.
+  
+** Reducing Consciousness
+#+ATTR_REVEAL: :frag (appear)
+-  Reduce features of conscious experience to matter/energy organized
+   according to physical laws (reduction base)
+   #+ATTR_REVEAL: :frag (appear)
+   -  Can we deduce, explain, or otherwise show that conscious
+      experience depends solely on matter/energy operating under
+      physical laws?
+   -  If the answer is “yes” then we have “reduced” or “given a
+      reduction” of conscious experience in terms of physics
+     
+#+BEGIN_NOTES
+  - Reduction of heat to molecular motion (quantity of kinetic energy transferred between systems of molecules)
+#+END_NOTES
+#+REVEAL: split
+
+-  The "Hard Problem" of Consciousness: :: Why do the physical processes
+   that characterize life result in conscious experience?
+     
+#+BEGIN_NOTES
++ "easy" vs. "hard" problems
+  - how does the brain process information from its environment?
+  - How does it integrate information? 
+  - How do we produce reports on internal states?
+#+END_NOTES
+* Nagel on the Problem of Consciousness
+** Physicalism
+Everything that is or could exist is ultimately physical in nature
+     
+#+BEGIN_NOTES
+  Ask clicker question surveying confidence in truth of physicalism. "A" for its
+  truth, "B" for its falsity, "C" for agnosticism
+#+END_NOTES
+
+** The Mind-Body Problem
+
+#+BEGIN_NOTES
+ - Say something concerning the history of the mind-body problem
+ - Difference between minds as things (substances) and mental properties
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  Consciousness is what makes the mind-body problem really intractable
+  (435)
+#+END_QUOTE
+
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  The "Hard Problem" of Consciousness: :: Why do the physical processes
+   that characterize life result in conscious experience?
+
+** What is Consciousness?
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  fundamentally an organism has conscious mental states if and only if
+  there is something that it is like to /be/ that organism---something
+  it is like /for/ the organism (436).
+#+END_QUOTE
+
+** Varieties of Consciousness
+#+ATTR_REVEAL: :frag (appear)
+1. *Sentience*: being able to discriminate, categorize, and react to
+   environmental stimuli
+2. *Wakefulness*: being awake and capable of attending to something
+3. *Autonomy*: deliberate control of one's behavior
+4. *Introspection*: the internal accessibility of one's mental states
+5. *Communicability*: the reportability of one's mental states
+6. *Phenomenal consciousness*: the first-person experience --- what it
+   is like to be something
+
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  Nagel means to indicate consciousness in the sense of (6) ---
+   phenomenal experience
+  
+#+BEGIN_NOTES
+  - What does the consciousness of a bat have to do with physicalism?
+#+END_NOTES
+
+** Can We Reduce Consciousness?
+
+#+BEGIN_QUOTE
+  we have at present no conception of what an explanation of the
+  physical nature of a mental phenomenon would be...The most important
+  and characteristic feature of conscious mental phenomena is very
+  poorly understood. Most reductionist theories do not even try to
+  explain it. And careful examination will show that no currently
+  available concept of reduction is applicable to it. Perhaps a new
+  theoretical form can be devised for the purpose, but such a solution,
+  if it exists, lies in the distant intellectual future (436).
+#+END_QUOTE
+
+#+BEGIN_NOTES
+  - What is it for a fact to be available from many points of view?
+    - color facts in human vision vs color facts as mathematical
+      representations of energy reflectance patterns
+#+END_NOTES
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  If physicalism is to be defended, the phenomenological features must
+  themselves be given a physical account. But when we examine their
+  subjective character it seems that such a result is impossible. The
+  reason is that every subjective phenomenon is essentially connected
+  with a single point of view, and it seems inevitable that an
+  objective, physical theory will abandon that point of view (437).
+#+END_QUOTE
+
+#+BEGIN_NOTES
+  - Nagel is articulating a tension between scientific inquiry and
+    certain kinds of facts. What is the tension?
+#+END_NOTES
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  if the facts of experience---facts about what it is like for the
+  experiencing organism---are accessible only from one point of view,
+  then it is a mystery how the true character of experiences could be
+  revealed in the physical operation of that organism. The latter is a
+  domain of objective facts par excellence---the kind that can be
+  observed and understood from many points of view and by individuals
+  with differing perceptual systems (442).
+#+END_QUOTE
+
+#+BEGIN_NOTES
+-  What is it about consciousness that presents a problem for
+   physicalism?
+    - why can't facts about conscious states be observed from many
+      points of view?
+#+END_NOTES
+
+** The Argument from Consciousness
+#+ATTR_REVEAL: :frag (appear)
+1. If Physicalism is true then all aspects of reality are amenable to
+   being “given a physical account”
+2. Giving a physical account of something means giving an account that
+   is accessible from many different points of view
+3. Facts about phenomenal consciousness are accessible from only one
+   point of view
+4. There are phenomenal facts (i.e. facts about phenomenal
+   consciousness)
+5. \therefore Physicalism is false (or we can't conceive of how it could be true)
+
+#+BEGIN_NOTES
+-  Is the argument valid?
+#+END_NOTES
+
+** Examining the Argument -- Validity
+#+ATTR_REVEAL: :frag (appear)
+1. P \rightarrow A
+2. A \rightarrow M
+3. C \rightarrow ~M
+4. C
+5. \therefore ~M (3, 4, MP)
+6. \therefore ~A (2, 5, MT)
+7. \therefore ~P (1, 6, MT)
+   
+#+BEGIN_NOTES
+1. If Physicalism is true then all aspects of reality are amenable to
+   being “given a physical account”
+2. Giving a physical account of something means giving an account that
+   is accessible from many different points of view
+3. Facts about phenomenal consciousness are accessible from only one
+   point of view
+4. There are phenomenal facts (i.e. facts about phenomenal
+   consciousness)
+5. $\therefore$ Physicalism is false (or we can't understand how it
+   could be true)
+#+END_NOTES
+
+** Examining the Argument -- Soundness
+
+1. P \rightarrow A
+2. A \rightarrow M
+3. C \rightarrow ~M
+4. C
+5. \therefore ~M (3, 4, MP)
+6. \therefore ~A (2, 5, MT)
+7. \therefore ~P (1, 6, MT)
+   
+#+BEGIN_NOTES
+- What do we need to do in evaluating the argument's soundness?
+  - look at the truth of the premises
+- Given (1)-(7), what can we ignore in investigating soundness of the
+  argument?
+  - (5)-(7)
+  - (1) as definition of physicalism
+- What premises might we reject?
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (appear)
+(2) Giving a physical account of something means giving an account that
+   is accessible from many different points of view
+#+ATTR_REVEAL: :frag (appear)
+(3) Facts about phenomenal consciousness are accessible from only one
+point of view
+
+#+BEGIN_NOTES
+  Why think that the notion of a “point of view” is relevant to the
+  truth of physicalism?
+#+END_NOTES
+
+** Nagel's  “General Difficulty”
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  We appear to be faced with a general difficulty about psycho-physical
+  reduction. In other areas the process of reduction is a move in the
+  direction of greater objectivity, toward a more accurate view of the
+  real nature of things...Experience itself, however, does not seem to
+  fit the pattern. The idea of moving from appearance to reality seems
+  to make no sense here. What is the analogue in this case to pursuing a
+  more objective understanding of the same phenomena by abandoning the
+  initial subjective viewpoint toward them in favor of another that is
+  more objective but concerns the same thing? (444)
+#+END_QUOTE
+
+** Facts & Points of View
+#+ATTR_REVEAL: :frag (appear)
+1. All (possible) facts are physical facts (assume for /reductio/)
+2. Physical facts are objective facts
+3. Objective facts are independent of any particular point of view
+4. Facts about consciousness depend on particular points of view
+5. \therefore Facts about consciousness are not objective
+6. \therefore Facts about consciousness are not physical
+7. \therefore There are non-physical facts (i.e. (1) is false)
+   
+#+BEGIN_NOTES
+1. P \rightarrow F_p
+2. F_P \rightarrow F_O
+3. F_O \rightarrow I
+4. F_C \rightarrow ~I
+5. F_C \neq F_O (since F_C → ~I & ~I → ~F_O)
+6. F_C \neq F_P (since ~F_O → ~F_P)
+   
+- See if people understand why (5) and (6) hold
+#+END_NOTES
+
+** Physicalism & Objectivity
+#+ATTR_REVEAL: :frag (appear)
+-  Why assume that all physical facts are objective facts in Nagel's
+   sense?
+-  Why assume that all objective facts are facts that are independent of
+   any particular point of view?
+-  Are there alternative conceptions of objectivity?
+
+#+BEGIN_NOTES
+- Varieties of objectivity?
+  - not from any particular point of view
+  - independent, “there anyway”
+  - absolute, not relative to any perciever
+  - necessary for conceivability
+#+END_NOTES
+
+** Physicalism & Alternatives
+#+ATTR_REVEAL: :frag (appear)
+-  Physicalism: :: Everything that is or could exist is ultimately
+   physical in nature
+-  Dualism: :: Physical things exist but some things that do (or could)
+   exist are not (or are not ultimately) physical in nature (e.g. minds,
+   souls, God)
+-  Idealism: :: Everything that is or could exist is ultimately /mental/
+   in nature
+* The Knowledge Argument
+** Qualia
+
+-  Qualia: :: properties of at least some experiences (e.g. bodily
+   sensations like pains and tickles) which determines what it is like
+   to subjectively undergo the experience
+   
+** Three Arguments Against Physicalism
+#+ATTR_REVEAL: :frag (appear)
+1. The “What it's like” Argument
+2. The Modal Argument
+3. The Knowledge Argument
+
+** Nagel's Argument on "What it's like"
+
+#+BEGIN_QUOTE
+  Nagel speaks as if the problem he is raising is one of extrapolating
+  from knowledge of one experience to another, of imagining what an
+  unfamiliar experience would be like on the basis of familiar ones...It
+  is hard to see an objection to Physicalism here. Physicalism makes no
+  special claims about the imaginative or extrapolative powers of human
+  beings, and it is hard to see why it need do so. (Jackson, 132)
+#+END_QUOTE
+
+** The Modal Argument
+#+ATTR_REVEAL: :frag (appear)
+1. If physicalism were true, then the complete physical information
+   about a subject would entail an answer as to whether she was
+   phenomenally conscious
+2. But no amount of physical information about a person logically
+   entails that a person is phenomenally conscious---i.e. phenomenal
+   zombies are logically possible
+3. \therefore Physicalism is false
+
+** Objecting to the Modal Argument
+#+ATTR_REVEAL: :frag (appear)
+-  Premise (2) is very controversial
+  #+ATTR_REVEAL: :frag (appear)
+   -  only people who are antecedently suspicious of physicalism would
+      be likely to agree with (2)
+#+ATTR_REVEAL: :frag (appear)
+-  Anti-physicalists need an argument whose premises are not going to
+   seem as controversial to someone sympathetic to physicalism
+
+** The Knowledge Argument
+
+#+BEGIN_QUOTE
+  Mary is a brilliant scientist who is, for whatever reason, forced to
+  investigate the world from a black and white room via a black and
+  white television monitor. She specialises in the neurophysiology of
+  vision and acquires, let us suppose, all the physical information
+  there is to obtain about what goes on when we see ripe tomatoes, or
+  the sky, and use terms like ‘red', ‘blue', and so on....What will
+  happen when Mary is released from her black and white room or is given
+  a colour television monitor? Will she learn anything or not?
+  (Jackson, 130)
+#+END_QUOTE
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  It seems just obvious that she will learn something about the world
+  and our visual experience of it. But then it is inescapable that her
+  previous knowledge was incomplete. But she had all the physical
+  information. Ergo there is more to have than that, and Physicalism is
+  false (Jackson, 130).
+#+END_QUOTE
+
+** What Does Mary Know?
+#+ATTR_REVEAL: :frag (appear)
+-  Mary knows all the relevant physical information concerning human
+   color vision
+   #+ATTR_REVEAL: :frag (appear)
+   -  spectral reflectance profiles
+   -  human physiology
+   -  neurological basis of visual perception
+
+** The Basic Argument
+#+ATTR_REVEAL: :frag (appear)
+1. Before her release from the B&W room Mary has all the physical
+   information concerning human color vision
+2. Mary learns something new about color when she leaves the room
+3. \therefore There is some information about human color vision which
+   Mary doesn't know
+4. \therefore Not all information is physical information
+   (i.e. physicalism is false)
+
+** Qualia & Color
+#+ATTR_HTML: :style margin:auto; display:block; text-align:center
+[[/Users/Roambot/projects/phil101/content/slides/RothkoRed.jpg]]
+
+#+ATTR_HTML: :style text-align:center
+Mark Rothko: 'Orange, Red & Red' (1962)
+
+** An Ambiguity in the Argument
+
+#+BEGIN_QUOTE
+(2) Mary learns something new about color when she leaves the room
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  talk of ‘physical information' is ambiguous between:
+   #+ATTR_REVEAL: :frag (appear)
+   -  epistemic sense of ‘information': the kinds of concepts used to
+      think about the world
+   -  metaphysical sense of ‘information': the kinds of facts which
+      constitute reality
+
+#+BEGIN_QUOTE
+(4) \therefore Not all information is physical information (i.e. physicalism is false)
+#+END_QUOTE
+
+** Two Versions of the Knowledge Argument
+
+*** The Weaker (Epistemological) Version
+#+ATTR_REVEAL: :frag (appear)
+1. Mary has complete physical knowledge of the facts about human color
+   vision before her release from the room
+2. But there is some kind of knowledge she lacks before leaving the room
+3. $\therefore$ There is some kind of knowledge concerning human color
+   vision that is non-physical knowledge
+
+*** The Stronger (Metaphysical) Version
+#+ATTR_REVEAL: :frag (appear)
+1. Mary knows all the physical facts regarding color/color vision
+2. But there are some facts about color/color vision which Mary doesn't
+   know prior to her release
+3. \therefore There are non-physical facts concerning color/color
+   vision
+
+*** Which Argument?
+#+ATTR_REVEAL: :frag (appear)
+-  Physicalism is compatible with there being ways of knowing physical
+   facts that don't use physical concepts---“old facts in new guises”
+-  Only the stronger metaphysical version of the argument is a threat to
+   physicalism
+   #+ATTR_REVEAL: :frag (appear)
+   -  Physicalism must deny the existence of any non-physical facts
+
+** Advantages of the Knowledge Argument
+#+ATTR_REVEAL: :frag (appear)
+-  Does not make controversial assumptions about points of view or the
+   connection between objectivity and scientific inquiry (Nagel's
+   argument)
+-  Does not make controversial assumptions about conceivability and
+   possibility (the Modal argument)
+
+** Which Argument is Best?
+
+1.) Has Jackson succeeded in formulating a non-controversial argument
+   against physicalism?
+
+#+BEGIN_QUOTE
+  A. Yes\\
+  B. No
+#+END_QUOTE
+
+#+REVEAL: split
+2.) Which argument against physicalism do you find most convincing?
+
+#+BEGIN_QUOTE
+  A. Nagel's 'what it is like' argument\\
+  B. The modal argument concerning 'phenomenal zombies'\\
+  C. Jackson's 'Mary' argument\\
+  D. None of the above
+#+END_QUOTE
+
+** Are Qualia Epiphenomenal?
+#+ATTR_REVEAL: :frag (appear)
+- Epiphenomenalism: :: Mental events/properties are caused by physical
+  events/properties in the brain but have no causal effect on physical
+  events/properties
+
+#+BEGIN_NOTES
+- analogous to the movements of one's shadow being epiphenomena of the
+  movements of one's body
+  - movements of the shadow are determined by movements of the body
+    not vice versa
+#+END_NOTES
+
+** The Objection to Epiphenomenalism
+
+#+BEGIN_QUOTE
+  [qualia] serve merely to soothe the intuitions of dualists, and it is left
+  a total mystery how they fit into the world view of science In short
+  we do not and cannot understand the how and why of them. (Jackson, 135)
+#+END_QUOTE
+
+#+REVEAL: split
+
+-  Why think that we are in a position to understand the causal basis
+   and nature of everything that exists?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Physicalism assumes that we are in a position to know the basic
+      nature of everything that does or could exist
+   -  But perhaps there is reason to be humble about what we could
+      possibly know of the natural world
+
+** The Humility Argument
+#+BEGIN_QUOTE
+  consider the antecedent probability that everything in the Universe be
+  of a kind that is relevant in some way or other to the survival of
+  homosapiens. It is very low surely. But then one must admit that it is
+  very likely that there is a part of the whole scheme of things, maybe
+  a big part, which no amount of evolution will ever bring us near to
+  knowledge about or understanding. For the simple reason that such
+  knowledge and understanding is irrelevant to survival (Jackson, 135)
+#+END_QUOTE
+
+#+REVEAL: split
+
+#+ATTR_REVEAL: :frag (none appear appear appear)
+1. Our capacity to understand the natural world depends on our evolved
+   acquisition of various cognitive capacities
+2. The acquisition of cognitive capacities via evolution depends on
+   their conduciveness to human survival
+3. At least some cognitive capacities conducive to knowing the natural
+   world are not conducive to survival
+4. $\therefore$ At least some knowledge of the world is unavailable to
+   us because it is not conducive to our survival
+
+** Physicalist Optimism
+
+-  Are we being overly optimistic in thinking that our physical science
+   is broadly complete and correct?
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  The wonder is that we understand as much as we do, and there is no
+  wonder that there should be matters which fall quite outside our
+  comprehension. Perhaps exactly how epiphenomenal qualia fit into the
+  scheme of things is one such. (Jackson, 135)
+#+END_QUOTE
+
+* Lewis's Defense of Physicalism
+** What the Physicalist Needs
+#+ATTR_REVEAL: :frag (appear)
+-  Tell us why doesn't Mary know what it is like to see color if she
+   knows all the physical information?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Explain what changes about Mary when she leaves the room
+   -  Deny that any new /fact/ is learned
+
+** Lewis on What it is Like
+*** Experience is the Best Teacher
+   :PROPERTIES:
+   :CUSTOM_ID: experience-is-the-best-teacher
+   :END:
+
+#+BEGIN_QUOTE
+  They say that experience is the best teacher, and the classroom is no
+  substitute for Real Life. There's truth to this. If you want to know
+  what some new and different experience is like, you can learn it by
+  going out and really having that experience. You can't learn it by
+  being told about the experience, however thorough your lessons may be.
+  Does this prove much of anything about the metaphysics of mind and the
+  limits of science? I think not. (Lewis, 262)
+#+END_QUOTE
+
+*** Physicalism & Materialism
+   :PROPERTIES:
+   :CUSTOM_ID: physicalism-materialism
+   :END:
+
+-  Physicalism: :: Everything that is or could exist is ultimately
+   physical in nature
+
+#+ATTR_REVEAL: :frag (appear)
+-  Minimal Materialism: :: Any two possibilities that are just alike
+   physically are just alike---there is no difference without a physical
+   difference
+
+*** Information
+   :PROPERTIES:
+   :CUSTOM_ID: information
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+-  Thinking is of ways the world might possibly be
+-  When we gain information about the world we eliminate some (maybe all
+   but one) of these possibilities
+
+\\
+  
+#+ATTR_REVEAL: :frag (appear)
+-  Physical information: :: Information about the world which helps us
+   to eliminate physical possibilities
+
+#+BEGIN_NOTES
+-  Why doesn't Mary know what it is like to see color if she knows all
+   the physical information?
+#+END_NOTES
+
+*** Phenomenal Information
+   :PROPERTIES:
+   :CUSTOM_ID: phenomenal-information
+   :END:
+
+-  The Hypothesis of Phenomenal Information (HPI): :: Besides physical
+   information, there is an irreducibly different kind of
+   information---viz. information about aspects of experience
+
+*** Phenomenal Information & Physicalism
+   :PROPERTIES:
+   :CUSTOM_ID: phenomenal-information-physicalism
+   :END:
+
+-  If HPI is true then how things are physically does not fix how things
+   are phenomenally
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  if there is a kind of information --- namely, phenomenal information
+  --- that can eliminate possibilities that any amount of physical
+  information leaves open, then there must be possibilities that are
+  just alike physically, but not just alike simpliciter. That is just
+  what minimal Materialism denies. (Lewis, 274)
+#+END_QUOTE
+
+*** Minimal Materialism & the Modal Argument
+   :PROPERTIES:
+   :CUSTOM_ID: minimal-materialism-the-modal-argument
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+1. If physicalism were true, then the complete physical information
+   about a subject would entail an answer as to whether she was
+   phenomenally conscious
+2. But no amount of physical information about a person logically
+   entails that a person is phenomenally conscious---i.e. phenomenal
+   zombies are logically possible
+3. \therefore Physicalism is false
+   
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  Minimal Materialism denies premise (2)
+-  What about the Knowledge Argument?
+
+*** Phenomenal Information & Physicalism
+   :PROPERTIES:
+   :CUSTOM_ID: phenomenal-information-physicalism-1
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  The Knowledge Argument works. There is no way to grant the Hypothesis
+  of Phenomenal Information and still uphold Materialism. Therefore I
+  deny the Hypothesis. I cannot refute it outright. But later I shall
+  argue, first, that it is more peculiar, and therefore less tempting,
+  that it may at first seem; and, second, that we are not forced to
+  accept it, since an alternative hypothesis does justice to the way
+  experience best teaches us what it's like. (Lewis, 277)
+#+END_QUOTE
+
+*** Inference to the Best Explanation
+   :PROPERTIES:
+   :CUSTOM_ID: inference-to-the-best-explanation
+   :END:
+#+ATTR_REVEAL: :frag (none appear)
+-  We should always accept the explanation that is simplest and incurs
+   the fewest oddities
+-  Lewis argues that the best explanation of Mary's change is one which
+   does not appeal to HPI
+
+** The Ability Hypothesis
+  :PROPERTIES:
+  :CUSTOM_ID: the-ability-hypothesis
+  :END:
+
+*** Knowing That vs. Knowing How
+   :PROPERTIES:
+   :CUSTOM_ID: knowing-that-vs.-knowing-how
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+- /Knowing that/ is propositional
+  #+ATTR_REVEAL: :frag (appear)
+  - You know that ...
+    - 2 + 2 = 4
+    - the sky is blue
+    - Lincoln is the capitol of Nebraska
+- Propositional knowledge is of, or corresponds to, facts in the world
+
+*** Knowing That vs. Knowing How
+   :PROPERTIES:
+   :CUSTOM_ID: knowing-that-vs.-knowing-how-1
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+-  /Knowing how/ is /not/ propositional
+   #+ATTR_REVEAL: :frag (appear)
+   -  You know how ...
+      -  to tie your shoes
+      -  to knit a sweater
+      -  to shoot a free throw
+-  Knowing how to ... is not propositional, there are no facts to which
+   "know how" corresponds
+
+*** Lewis's Strategy
+   :PROPERTIES:
+   :CUSTOM_ID: lewiss-strategy
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+-  The Knowledge Argument presupposes that the best way to explain the
+   change in Mary after she leaves the room is in terms of what it is
+   /that/ she knows
+   #+ATTR_REVEAL: :frag (appear)
+   -  Assumes what Mary knows after leaving is /propositional/
+
+#+REVEAL: split
+-  Perhaps a better explanation is one which describes what she /knows
+   how to do/ after leaving the room
+   #+ATTR_REVEAL: :frag (appear)
+   -  Perhaps what Mary comes to know isn't propositional knowledge but
+      /know how/
+
+*** Phenomenal Abilities
+   :PROPERTIES:
+   :CUSTOM_ID: phenomenal-abilities
+   :END:
+#+BEGIN_QUOTE
+  The Ability Hypothesis says that knowing what an experience is like
+  just is the possession of these abilities to remember, imagine, and
+  recognize. It isn't the possession of any kind of information,
+  ordinary or peculiar. It isn't knowing that certain possibilities
+  aren't actualized. It isn't knowing-that. It's knowing-how. (Lewis, 288)
+#+END_QUOTE
+
+#+REVEAL: split
+-  Learning "what it is like" to experience something is not learning a
+   new bit of propositional knowledge, it is learning how to:
+   #+ATTR_REVEAL: :frag (appear)
+   -  remember
+   -  imagine
+   -  recognize
+
+*** Lewis's Argument
+   :PROPERTIES:
+   :CUSTOM_ID: lewiss-argument
+   :END:
+
+#+ATTR_REVEAL: :frag (none appear)
+1. The only relevant alternative to the Ability Hypothesis (AH) is the
+   Hypothesis of Phenomenal Information (HPI)
+2. HPI is incompatible with physicalism
+3. AH is both compatible with physicalism and explains everything that
+   HPI explains
+4. $\therefore$ We should choose AH over HPI
+
+#+REVEAL: split
+
+-  If Lewis is correct then there is no such thing as phenomenal
+   information
+   #+ATTR_REVEAL: :frag (appear)
+   -  There is no propositional knowledge ('knowledge-that') about
+      experience or what it is like to have an experience that is not
+      propositional knowledge of the physical world
+      #+ATTR_REVEAL: :frag (appear)
+      -  If Mary knows all the propositional knowledge concerning the
+         physical world, she knows all there is to know (in the sense of
+         'knowing-that') about experience
+
+*** Lewis's Inference to the Best Explanation
+
+#+BEGIN_QUOTE
+  1. The only relevant alternative to the Ability Hypothesis (AH) is the
+     Hypothesis of Phenomenal Information (HPI)
+  2. HPI is incompatible with physicalism
+  3. AH is both compatible with physicalism and explains everything that
+     HPI explains
+  4. $\therefore$ We should choose AH over HPI
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Is the argument correct -- is AH the /best/ explanation?
+-  What premise might we reject?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Does AH explain everything we want to explain about phenomenal
+      consciousness or "what it is like" to experience something?
+
+** Objections to the Ability Hypothesis
+   :PROPERTIES:
+   :CUSTOM_ID: objections-to-the-ability-hypothesis
+   :END:
+
+*** The Definition
+-  AH says that "knowing what it is like" consists in having a set of
+   practical abilities
+#+ATTR_REVEAL: :frag (appear)
+   -  KWL \rightarrow {Rem, Imag, Rec} (abilities are /necessary/ for
+      KWL)
+   -  {Rem, Imag, Rec} \rightarrow KWL (abilities are /sufficient/ for
+      KWL)
+
+*** Objecting to a Definition
+
+#+ATTR_REVEAL: :frag (none appear)
+-  Can we develop a counterexample to the Ability Hypothesis?
+-  Two possible cases
+   #+ATTR_REVEAL: :frag (appear)
+   -  Case where KWL to /X/ but cannot Rem, Imag, Rec /X/
+   -  Case where Rem, Imag, Rec /X/ but do not KWL to /X/
+
+*** A Necessary Condition?
+
+-  Imaginative abilities aren't /necessary/ for knowledge of what it is
+   like to experience color
+   #+ATTR_REVEAL: :frag (appear)
+   -  Couldn't a subject with no capacity to imagine what it's like to
+      see green nevertheless see the greenness of grass when confronted
+      with it?
+
+*** A Sufficient Condition?
+
+-  Imaginative abilities aren't /sufficient/ for knowledge of what it is
+   like to experience color
+   #+ATTR_REVEAL: :frag (appear)
+   -  There seems to be an important difference between /having/ the
+      ability to imagine the requisite experience, and actually
+      /exercising/ that ability
+
+* Confusion about the Function of Consciousness
+** Consciousness --- What, Why, & How
+#+BEGIN_NOTES
+- We've focused mainly on what and how. Now we'll look a bit at why.
+- But note that answering why depends on knowing what we're talking
+  about -- which brings us back to asking what is consciousness anyway!
+#+END_NOTES 
+-  Distinguish three questions:
+   #+ATTR_REVEAL: :frag (appear)
+   1. What is consciousness (what is its nature)?
+   2. Why is there consciousness (what is its function)?
+   3. How could there be beings with consciousness (given assumptions
+      about what kinds of things there could be)?
+
+** The "Target Reasoning" Concerning Functions of Consciousness
+#+ATTR_REVEAL: :frag (appear)
+-  Consciousness has a function
+-  We can find out what the function of consciousness is by studying the
+   cognitive psychology of patients with specific cognitive impairments
+   or abnormalities
+
+** Consciousness & Abnormal Psychology
+*** Two Instances of Abnormal Psychology
+#+ATTR_REVEAL: :frag (appear)
+-  Blindsight
+-  Epileptic Seizure
+   #+ATTR_REVEAL: :frag (appear)
+   -  'petit mal' or 'absence' seizure
+
+*** Blindsight
+#+BEGIN_QUOTE
+  Blindsight is a syndrome involving patients who have brain damage in
+  the first stage of visual processing, the primary visual cortex. These
+  patients seem to have ‘‘holes'' in their visual fields. If the
+  experimenter flashes stimuli in these holes and asks the patient what
+  was flashed, the patient claims to see nothing but can often guess at
+  high levels of accuracy, choosing between two locations or directions
+  or whether what was flashed was an X or an O (Block, 278)
+#+END_QUOTE
+
+#+REVEAL: split
+
+
+#+ATTR_HTML: :style margin:auto; display:block; text-align:center
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/blindsight.jpg]]
+#+ATTR_HTML: :style text-align:center
+The Blindsighted Patient
+
+#+REVEAL: split
+
+-  'Blindsighted' patients lack consciousness (in some sense) of regions
+   of their visual field but have a better than chance ability to
+   discriminate objects in those "blind" parts of the visual field
+
+*** Absence Seizures
+#+BEGIN_QUOTE
+  In such cases [of epileptic seizure], electrical disorder leads to a
+  loss of function in the higher brain stem...As a result the patient
+  suffers a loss of conscious experience in the phenomenal sense
+  although he can continue to react selectively to environmental stimuli
+  (Block, 239)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+- 'Absent' patients continue to exhibit complex behaviour towards parts
+  of their environment, though they lack "awareness" (in some sense) of
+  this environment
+
+*** The Function of Consciousness
+#+ATTR_REVEAL: :frag (appear)
+1. Abnormal psychological conditions, such as blindsight and "absent"
+   seizures, may indicate the function of consciousness
+2. When consciousness is missing under such conditions, subjects
+   cannot\\
+   #+ATTR_REVEAL: :frag (appear)
+   * report or reason about the relevant nonconscious representations, nor use them in guiding action\\
+   * exhibit flexibility and creativity in their thought and action\\
+3. $\therefore$ Consciousness enables information represented in the
+   brain to be used in reasoning, reporting, and rationally guiding
+   action
+4. $\therefore$ Consciousness promotes flexibility and creativity in
+   thought and action
+
+#+BEGIN_NOTES
+- Note that this is either an inductive or an abductive argument
+*Target reasoning*: Is it correct?
+-  Consciousness has a function
+-  We can find out what the function of consciousness is by studying the
+   cognitive psychology of patients with specific cognitive impairments
+   or abnormalities
+#+END_NOTES
+** Confusion about Consciousness
+*** The Concept of Consciousness is a 'Mongrel' Concept
+-  The concept =<consciousness>= is a 'mongrel' in the sense that it is
+   ambiguous between a number of different and independent notions of
+   being 'conscious'
+
+*** The Concept of Consciousness is a 'Mongrel' Concept
+
+1. *Sentience*: being able to discriminate, categorize, and react to
+   environmental stimuli
+2. *Wakefulness*: being awake and capable of attending to something
+3. *Autonomy*: deliberate control of one's behavior
+4. *Introspection*: the internal accessibility of one's mental states
+5. *Communicability*: the reportability of one's mental states
+6. *Phenomenal consciousness*: first-person experience --- what it is
+   like to be something
+
+*** Two Kinds of Consciousness
+#+ATTR_REVEAL: :frag (appear)
+-  Phenomenal Consciousness: :: A mental state with "experiential
+   properties" that constitute "what it is like" to experience something
+
+#+ATTR_REVEAL: :frag (appear)
+-  A state is P-conscious if it has experiential properties
+   #+ATTR_REVEAL: :frag (appear)
+   -  We have P-conscious states when we see, hear, smell, taste, and
+      have pains
+-  The totality of the experiential properties of a state are "what it
+   is like" to have it
+
+*** Two Kinds of Consciousness
+
+-  Access Consciousness: :: A mental state that is poised for free use
+   in reasoning and for direct ‘‘rational'' control of action and
+   speech.
+
+#+ATTR_REVEAL: :frag (appear)
+-  Construes mental states in terms of information and its transfer, not
+   what it is like to have or be in a mental state
+   #+ATTR_REVEAL: :frag (appear)
+   -  Believing that the desk is brown on the basis of seeing that the
+      desk is brown
+   -  Perception of visual form on the basis of belief or suggestion
+     
+#+BEGIN_NOTES
+- Emphasize the notion of information transfer, that sensory information
+  becomes available to belief
+- Argue that a robot or computer might be conscious in this manner
+- Animals might be conscious in this manner
+#+END_NOTES
+
+*** Access Consciousness
+
+#+ATTR_HTML: :style height:auto; max-width:40%; margin:auto; display:block; text-align:center; 
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/YoungOldWoman.jpg]]
+#+ATTR_HTML: :style text-align:center
+Old Woman
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style height:auto; max-width:40%; margin:auto; display:block; text-align:center
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/YoungOldWoman.jpg]]
+#+ATTR_HTML: :style text-align:center
+Young Woman
+
+#+BEGIN_NOTES
+- Emphasize that the aspect switch involves the availability of
+  different information to higher reasoning (belief system)
+#+END_NOTES
+
+*** Block's Worry
+#+BEGIN_NOTES
+- Block argues that we need clarity with respect to the concept of
+  consciousness if we're going to make proper scientific advancements
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (none appear)
+-  Cognitive scientists and philosophers often begin discussion
+   consciousness by pointing to phenomena involving P-consciousness.
+-  But the theories they construct to explain the relevant phenomena
+   typically end of addressing cognitive issues involving
+   A-consciousness
+-  Phenomenal and access consciousness are distinct kinds of
+   consciousness but are easily confused in both philosophy and in
+   empirical research on consciousness
+
+** Access without Phenomenal Consciousness
+*** Two Examples of A without P-Consciousness
+#+ATTR_REVEAL: :frag (appear)
+-  Phenomenal 'Zombies'
+-  Cases of 'super' blindsight
+
+*** Phenomenal 'Zombies'
+#+BEGIN_QUOTE
+  If there could be a full-fledged phenomenal zombie, say a robot
+  computationally identical to a person, but whose silicon brain did not
+  support P-consciousness, that would do the trick. I think such cases
+  conceptually possible, but this is controversial. (Block, 172)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+- Possesses A-consciousness
+- /Global/ lack of P-consciousness
+- Information available to the 'Zombie' is poised for use in
+  rational control of thought and action
+- Behaviorally indiscriminable from a regular person
+
+*** Blindsight
+#+ATTR_REVEAL: :frag (appear)
+- Lacks visual 'consciousness' of some region of their visual field
+- Is nevertheless sensitive to information contained in regions of the
+  blank visual field
+- Has a better than chance basis to correctly answer questions
+
+#+ATTR_REVEAL: :frag (appear)  
+/Does the blindsighted patient have access consciousness?/
+
+#+REVEAL: split
+
+-  Block says 'no' --- Why?
+   #+ATTR_REVEAL: :frag (appear)
+   -  not 'globally' available for rational control of thought and
+      action
+      #+ATTR_REVEAL: :frag (appear)
+      -  blindsighter's access requires external prompting
+      -  a thirsty blindsighted patient won't reach for a glass of water
+         in their 'blind' visual field
+
+*** Super-Blindsight
+#+BEGIN_QUOTE
+  Now imagine something that may not exist, what we might call
+  super-blindsight. A real blindsight patient can only guess when given
+  a choice from a small set of alternatives. But suppose...that a
+  blindsight patient could be trained to prompt himself at will,
+  guessing what is in the blind field without being told to guess. The
+  super-blindsighter spontaneously says ‘‘Now I know that there is a
+  horizontal line in my blind field even though I don't actually see
+  it.'' Visual information from his blind field simply pops into his
+  thoughts in the way that solutions to problems we've been worrying
+  about pop into our thoughts, or in the way some people just know the
+  time or which way is north without having any perceptual experience of
+  it (Block, 283)
+#+END_QUOTE
+
+*** Features of Super-Blindsight
+#+ATTR_REVEAL: :frag (appear)
+-  No P-Consciousness
+-  Spontaneous access (the super-blindsighter is "self-prompting")
+-  Information available to the blindsighter is poised for use in
+   reasoning and rational action
+-  The super-blindsighter plausibly has A-consciousness but no
+   P-consciousness
+
+** Phenomenal without Access Consciousness
+*** Three Examples
+#+ATTR_REVEAL: :frag (appear)
+1. Brain damaged animals
+   #+ATTR_REVEAL: :frag (appear)
+   - still have phenomenal awareness but such states play no role in
+     reasoning or the rational control of action
+2. Cognitive subsystems (e.g. visual or auditory)
+3. Lack or conflicts of attention
+
+*** Attention -- The Conversation and the Drill
+#+BEGIN_QUOTE
+  Suppose that you are engaged in intense conversation when suddenly at
+  noon you realize that right outside your window, there is---and has
+  been for some time---a pneumatic drill digging up the street. You were
+  aware of the noise all along, one might say, but only at noon are you
+  consciously aware of it. That is, you were P-conscious of the noise
+  all along, but at noon you are both P-conscious and A-conscious of it
+  (Block, 285).
+#+END_QUOTE
+
+*** Attention -- The Conversation and the Drill
+#+ATTR_REVEAL: :frag (appear)
+-  Subject is in a state that is P-conscious
+   -  state has 'experiential properties'
+-  P-conscious state is not, for some stretch of time,
+   accessed/accessible
+** Criticizing the "Target Reasoning"
+#+BEGIN_NOTES
+- Remind students of how we criticize a definition
+  - is condition necessary for x to be F?
+  - is condition sufficient for x to be F?
+#+END_NOTES
+*** 'Absent' Seizures
+#+ATTR_REVEAL: :frag (appear)
+-  In some cases of epileptic seizure, a subject loses consciousness but
+   retains the ability to perform complex goal-directed behavior
+   -  driving a car
+   -  playing a musical instrument
+
+*** Block's Objection
+-  Why suppose that P-consciousness is missing in 'Absent' seizure
+   cases?
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  For example, Searle, quoting Penfield, describes the epileptic walker
+  as ‘‘thread[ing] his way'' through the crowd. Doesn't he see the
+  obstacles he avoids? Suppose he gets home by turning right at a red
+  wall. Isn't there something it is like for him to see the red
+  wall---and isn't it different from what it is like for him to see a
+  green wall? (Block, 188)
+#+END_QUOTE
+
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (none appear)
+1. In Penfield's seizure cases it is the subject's thought processes
+   that are most obviously deficient, including a clear lack of
+   A-consciousness
+2. P-consciousness is a feature of mental /states/ not /subjects/
+3. There is no reason to think that the states which occur in the
+   subjects of Penfield cases lack P-consciousness
+4. $\therefore$ There is no reason to think that a function of
+   P-consciousness is to make possible flexible and creative complex
+   behavior
+
+*** Blindsight
+
+-  'Blindsighted' patients lack consciousness (in some sense) of regions
+   of their visual field but have a better than chance ability to
+   discriminate objects in those "blind" parts of the visual field
+
+*** The Blindsight Case:
+#+BEGIN_QUOTE
+  Conscious awareness of a water fountain to my right will lead me to
+  drink from it if I am thirsty. But the thirsty blindsighted person
+  will make no move towards the fountain unless pressed to do so. The
+  inference to the best explanation is that conscious awareness of the
+  environment facilitates semantic comprehension and adaptive motor
+  actions in creatures like us (Flanagan, quoted in Block, pp. 192-3)
+#+END_QUOTE
+
+*** Block's Objection
+#+ATTR_REVEAL: :frag (appear)
+1. Assume that, in blindsighted subjects, /both/ A and P-consciousness
+   are missing
+2. The explanation of the blindsighter's degraded behavior only requires
+   an appeal to A-consciousness and its absence
+3. A-consciousness and P-consciousness are at least conceptually
+   distinct
+4. $\therefore$ Nothing can be inferred in the blindsight case
+   concerning the function of P-consciousness
+
+*** Is P-Consciousness Necessary for A-Consciousness?
+#+ATTR_REVEAL: :frag (appear)
+-  It is possible that P-consciousness is necessary for A-consciousness,
+   and that it is a necessary condition for creative flexible behavior
+   #+ATTR_REVEAL: :frag (appear)
+   -  But analysis of abnormal psych cases cannot show this
+-  P and A-consciousness may be closely linked biologically
+  #+ATTR_REVEAL: :frag (appear)
+   -  evidential support for this based on no recorded cases of
+      "super"-blindsight
+
+#+REVEAL: split
+
+-  We need to distinguish the cognitive/information processing aspects
+   of our mental life from the less obviously cognitive, and more
+   explicitly phenomenal aspects
+
+* The Puzzle of Representation
+** What is a Representation?
+#+ATTR_REVEAL: :frag (appear)
+- Representation: :: something that represents something (either itself or something else)
+     
+\\
+
+  #+ATTR_REVEAL: :frag (appear)
+  - goes proxy; stands for; symbolizes something
+  - refers to something; is accurate/inaccurate; is true/false
+
+** Examples of Representational Kinds
+#+ATTR_REVEAL: :frag (appear)
+-  Pictorial Representation
+-  Linguistic Representation
+-  Mental Representation
+
+** Two Questions
+#+ATTR_REVEAL: :frag (appear)
+1. How does a representation represent?
+2. Are some kinds of representation more fundamental than others?
+
+** Test Cases
+
+#+ATTR_REVEAL: :frag (appear)
+1. How does a representation represent?
+   #+ATTR_REVEAL: :frag (appear)
+   - Resemblance
+2. Are some kinds of representation more fundamental than others?
+   #+ATTR_REVEAL: :frag (appear)
+   - Pictorial representation
+   - Linguistic representation
+
+** Test Case 1 -- Representation as Resemblance 
+
+#+ATTR_HTML: :style max-width:45%; height:auto; margin:auto; display:block; text-align:center; 
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/SelfPortrait.jpg]]
+#+ATTR_HTML: :style text-align:center
+Vincent Van Gogh, 1889
+
+#+BEGIN_NOTES
+-  How does Van Gogh's portrait represent him?
+   -  Represents him in virtue of resembling him
+-  Is the fact of resemblance both necessary and sufficient for the
+   portrait to resemble Van Gogh?
+#+END_NOTES
+
+# #+REVEAL: split
+# #+ATTR_REVEAL: :frag (none appear)
+# -  How does Van Gogh's portrait represent him?
+#    #+ATTR_REVEAL: :frag (appear)
+#    -  represents him in virtue of resembling him
+# -  Is the fact of resemblance both necessary and sufficient for the
+#    portrait to resemble Van Gogh?
+
+#+REVEAL: split
+#+ATTR_HTML: :style min-width:110%; margin:auto; display:block; text-align:center
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/Santa.jpg]]
+#+ATTR_HTML: :style text-align:center
+Who do I resemble?
+
+#+REVEAL: split
+-  Resemblance is neither necessary nor sufficient for representation
+   #+ATTR_REVEAL: :frag (appear)
+   -  Not necessary: pictures can /represent/ non-existent objects but
+      they cannot /resemble/ non-existent objects
+   -  Not sufficient: everything resembles something but not everything
+      represents something
+
+** Test Case 2 -- Are Pictures Fundamental?
+
+#+ATTR_HTML: :style margin:auto; display:block; text-align:center
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/OldMan.jpg]]
+#+ATTR_HTML: :style text-align:center
+Walking Uphill or Sliding Down?
+
+#+REVEAL: split
+- Objections to pictorial fundamentality
+     #+ATTR_REVEAL: :frag (appear)
+     1. Interpretation
+     2. Logical relations
+      #+ATTR_REVEAL: :frag (appear) 
+         - if...then...
+         - ...and...
+         - either...or...
+         - not...
+          
+#+BEGIN_NOTES
+- Crane seems to consider fundamentality as all or nothing
+- Maybe some forms of representation are fundamental for some kinds of
+  tasks and other for others?
+#+END_NOTES
+     
+# #+REVEAL: split
+# -  Pictorial representations:
+#    #+ATTR_REVEAL: :frag (appear)
+#    -  require interpretation
+#    -  cannot represent logical relations
+
+** Test Case 3 -- Is Language Fundamental?
+#+BEGIN_QUOTE
+  The cat is on the mat
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  How does the string of symbols 'the cat is on the mat' come to
+   represent a particular situation---viz. the cat's /being on the mat/?
+-  Language is not /intrinsically/ representational
+   #+ATTR_REVEAL: :frag (appear)
+   -  Convention
+   -  Expression of 'ideas' or mental states
+
+*** Convention
+#+ATTR_REVEAL: :frag (appear)
+-  Convention is not sufficient to explain the representation relation, only why some things
+   represent other things
+   #+ATTR_REVEAL: :frag (appear)
+   -  The word 'dog' represents dogs by convention
+     #+ATTR_REVEAL: :frag (appear)
+      -  Convention cannot explain /how/ 'dog' represents without
+         appealing to the mental states of subjects /doing the
+         representing/
+
+*** Convention & Interpretation
+#+BEGIN_QUOTE
+  words, like pictures, do not represent in themselves
+  (‘intrinsically'). They need interpreting -- they need an
+  interpretation assigned to them in some way. But how can we explain
+  this? The natural answer, I think, is that interpretation is something
+  which the mind bestows upon words. (Crane, p. 22)
+#+END_QUOTE
+
+*** Fundamentality
+#+ATTR_REVEAL: :frag (appear)
+1. Any representational system that depends on interpretation or
+   convention is not fundamental
+2. Linguistic and pictoral representation depend on interpretation and
+   convention
+3. $\therefore$ Linguistic and pictoral representation are not
+   fundamental
+
+** Is Mental Representation Fundamental?
+
+*** Mental representation is not conventional
+#+ATTR_REVEAL: :frag (appear)
+- Conventions rely on the intentions of a subject or subjects
+- Intentions are a kind of mental representation
+- Convention cannot be used to /explain/ mental representation
+
+*** Mental representation does not depend on interpretation
+#+ATTR_REVEAL: :frag (appear)
+1. If mental representation required interpretation then we would need
+   to be able to think about the interpretations in some way, in order
+   to use them as interpretations
+2. But thoughts are a form of mental representation, so we would need a
+   further interpretation to make sense of those thoughts
+3. But a further thought would be needed to think /that/ interpretation,
+   etc.
+4. $\therefore$ We would have an infinite regress of thoughts and interpretations of them
+5. $\therefore$ Mental representations do not require interpretation
+
+** Mental Representation
+#+ATTR_REVEAL: :frag (appear)
+- According to Crane, only mental representation could plausibly be
+  fundamental because only mental representation is /intrinsically/
+  representational
+- What kinds of things might have representational states?
+  #+ATTR_REVEAL: :frag (appear)
+  - Could machines have representational states?
+
+** Thoughts & Propositional Attitudes :noexport:
+#+ATTR_REVEAL: :frag (appear)
+-  Thought: :: A state of mind that represents a state of the world (a
+   'fact' or 'situation')
+     
+#+BEGIN_NOTES
+- On this view of thought, one of the things done by language is it
+  expresses what is thought
+- But language is not (or not entirely) *prior* to thought
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (appear)
+-  Some thoughts---'Propositional Attitudes'---have a particular
+   structure
+   #+ATTR_REVEAL: :frag (appear)
+   -  The situation represented
+   -  The 'attitude' taken towards the represented situation
+     
+#+REVEAL: split
+
+#+ATTR_REVEAL: :frag (none appear)
+-  John believes *that it is raining outside*
+-  Jane hopes *that class will be canceled*
+-  /S/ \phi's that ... /F/ ...
+
+** Intentionality                                                 :noexport:
+
+-  Intentionality: :: The 'directedness' of a mental state at some
+   (existing or non-existing) thing
+     
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  Are all mental states 'intentional' or directed at some thing, fact, or situation?
+  
+#+BEGIN_NOTES
+- Consider whether only non-sensory reps are intentional or whether even
+  sensory ones are
+#+END_NOTES
+
+** Intentionality & Mentality                                     :noexport:
+#+ATTR_REVEAL: :frag (appear)
+- If something exhibits intentionality, does that thing have a mind?
+- If something exhibits /intrinsic/ intentionality (i.e. not derived
+  in like pictorial or linguistic intentionality) is it a mind?
+
+* Can Machines Think?
+** Two Questions
+
+#+BEGIN_NOTES
+- Crane construes mental representation as fundamental but doesn't
+  explain what it is about mental representation that allows it to
+  represent 
+- Question 2 is in Crane's terms: Could a machine exhibit states that are intrinsically representational?
+#+END_NOTES
+
+#+ATTR_REVEAL: :frag (appear)
+1. Can a physical system capable of performing certain functions think?
+2. Can a sufficiently sophisticated computer program think?
+   #+ATTR_REVEAL: :frag (appear)
+   - Is the mind related to the brain like software is to hardware?
+
+#+REVEAL: split
+Could a sufficiently advanced computer qualify as a thinking being?
+
+#+BEGIN_QUOTE
+  A. Yes\\
+  B. No
+#+END_QUOTE
+
+** Strong & Weak AI
+#+ATTR_REVEAL: :frag (appear)
+-  Strong AI: :: thinking is constituted by the manipulation of formal
+   symbols, such as occurs in a computer program
+-  Weak AI: :: thinking may be modeled by formal symbol systems, such as
+   computer programs
+
+** The Imitation Game
+#+ATTR_REVEAL: :frag (appear)
+-  Can you guess, using a series of questions, which of two conversation
+   partners is a machine and which a human?
+-  Questions may be of all kinds:
+  #+ATTR_REVEAL: :frag (appear)
+   -  what's your name
+   -  what's your favorite color?
+   -  what does the smell of freshly cut grass remind you of?
+
+** The Turing Test
+#+BEGIN_QUOTE
+  I believe that in about fifty years' time it will be possible to
+  programme computers...to make them play the imitation game so well
+  that an average interrogator will not have more than 70 percent chance
+  of making the right identification after five minutes of
+  questioning...I believe that at the end of the century the use of
+  words and general educated opinion will have altered so much that one
+  will be able to speak of machines thinking without expecting to be
+  contradicted. (Alan Turing)
+#+END_QUOTE
+
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (none appear)
+1. For some arbitrary time period, there may be no discernible
+   difference between the linguistic behavior of a person and that of a
+   machine
+2. If there is no discernible difference in linguistic behavior between
+   man and machine, then there is no reason to think that there is any
+   underlying difference in the causes of that behavior
+3. $\therefore$ If we are willing to say that it is intelligent thought
+   that is the cause of the linguistic behavior in the person we should
+   be willing to say the same thing about the machine
+
+** Strong AI & the Turing Test
+
+-  Any computer that can pass the Turing Test for arbitrarily long
+   periods of time will, according to strong AI, qualify as a thinking
+   machine
+
+** The Chinese Room Argument
+#+BEGIN_QUOTE
+  suppose I am placed in a room containlng baskets full of Chinese
+  symbols. Suppose also that I am given a rule book in English for
+  matching Chinese symbols with other Chinese symbols. The rules
+  identify the symbols entirely by their shapes and do not require that
+  I understand any of them. The rules might say such things as, "Take
+  a...sign from basket number one and put it next to a...sign from
+  basket number two." Imagine that people outside the room who
+  understand Chinese hand in small bunches of symbols and that in
+  response I manipulate the symbols according to the rule book and hand
+  back more small bunches of symbols.
+#+END_QUOTE
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  Now, the rule book is the "computer program." The people who wrote it
+  are "programmers," and I am the "computer." The baskets full of
+  symbols are the "data base," the small bunches that are handed in to
+  me are "questions" and the bunches I then hand out are "answers."
+#+END_QUOTE
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style margin:auto; display:block; text-align:center; min-width: 90%; height: auto;
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/rulebook.jpg]]
+#+ATTR_HTML: :style text-align:center
+The rulebook 
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style margin:auto; display:block; text-align:center; min-width: 100%; height: auto
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/CRoom.jpg]]
+#+ATTR_HTML: :style text-align:center
+The Chinese room
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  Now suppose that the rule book is written in such a way that my
+  "answers" to the "questions" are indistinguishable from those of a
+  native Chinese speaker. For example, the people outside might hand me
+  some symbols that unknown to me mean, "What's your favorite color?"
+  and I might after going through the rules give back symbols that, also
+  unknown to me, mean, "My favorite is blue, but I also like green a
+  lot." I satisfy the Turing test for understanding Chinese. All the
+  same, I am totally ignorant of Chinese. And there is no way I could
+  come to understand Chinese in the system as described, since there is
+  no way that I can learn the meanings of any of the symbols. Like a
+  computer, I manipulate symbols, but I attach no meaning to the
+  symbols. (Searle, 26)
+#+END_QUOTE
+
+#+REVEAL: split
+
+#+ATTR_HTML: :style margin:auto; display:block; text-align:center; min-width: 100%; height: auto
+[[/Users/Roambot/Dropbox/Work/Teaching/Phil101/MarkdownSlides/CRoom2.jpg]]
+#+ATTR_HTML: :style text-align:center
+The Chinese room 
+
+** Syntax & Semantics
+#+ATTR_REVEAL: :frag (appear)
+-  Syntax: :: the formal or structural features of a symbol system which
+   determine which expressions are legitimate members of the system and
+   which are not
+
+\\
+#+ATTR_REVEAL: :frag (appear)
+-  The syntax of English (its grammar) requires that all complete
+   sentences have a noun phrase and a verb phrase
+   #+ATTR_REVEAL: :frag (appear)
+   -  'John goes to school' vs. 'school John to goes'
+
+** Syntax & Semantics
+
+-  Semantics: :: The system of meanings assigned to a symbol system,
+   given by determining the referents of the symbols and the truth
+   conditions of symbol strings
+
+\\
+#+ATTR_REVEAL: :frag (appear)
+-  'Schnee' refers to snow
+-  'weiß' refers to the property of being white
+-  'Schnee ist weiß' is true just in case snow is white
+
+** The  Argument Clarified
+#+ATTR_REVEAL: :frag (appear)
+1. Programs are purely formal (syntactic)
+2. Human minds have mental contents (semantics)
+3. Syntax by itself is neither constitutive of, nor sufficient for,
+   semantic content
+4. $\therefore$ Programs by themselves are not constitutive of nor
+   sufficient for minds
+
+** What Does the Argument Intend to Prove?
+#+ATTR_REVEAL: :frag (appear)
+-  You can't get semantic content from syntax alone
+-  A system must have more than purely syntactic properties in order to
+   possess intentional states
+** Objections to the Chinese Room Argument
+*** Two Objections
+#+ATTR_REVEAL: :frag (appear)
+1. The 'Systems' Objection
+2. The 'Implementation' Objection
+
+*** The 'Systems' Objection
+#+ATTR_REVEAL: :frag (appear)
+-  Perhaps the person /in/ the Chinese room does not understand Chinese
+   but the /Chinese Room itself/ understands Chinese
+-  Since the Chinese room is the proper analogue to the computer
+   program, and not the person /in/ the Chinese room, Searle's example
+   proves nothing
+
+*** Searle's Reply
+#+BEGIN_QUOTE
+  My response to the systems theory is quite simple: let the individual
+  internalize all of these elements of the system. He memorizes the
+  rules in the ledger and the data banks of Chinese symbols, and he does
+  all the calculations in his head. The individual then incorporates the
+  entire system. There isn't anything at all to the system that he does
+  not encompass. We can even get rid of the room and suppose he works
+  outdoors. All the same, he understands nothing of the Chinese, and a
+  fortiori neither does the system, because there isn't anything in the
+  system that isn't in him. If he doesn't understand, then there is no
+  way that the system could understand because the system is just a part
+  of him.
+#+END_QUOTE
+
+*** Pryor's Rebuttal (I) Searle's argument is invalid
+#+BEGIN_QUOTE
+  Searle: "[The man who has "memorized" the room] understands nothing of
+  the Chinese, and [therefore] neither does the system, because there
+  isn't anything in the system that isn't in him"
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  This is a bad inference---compare:
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  Searle doesn't weigh 1 pound, and therefore neither does his heart,
+  because there is nothing in Searle's heart that isn't in him
+#+END_QUOTE
+
+#+REVEAL: split
+
+-  the form of inference Searle uses here doesn't generalize to other
+   inferences with the same kind of form
+   #+ATTR_REVEAL: :frag (appear)
+   -  leaves open the possibility that the particular argument Searle
+      makes here is true
+
+*** Pryor's Rebuttal (II) Internalization is irrelevant
+#+BEGIN_QUOTE
+  Searle: "If he doesn't understand, then there is no way that the
+  system could understand because the system is just a part of him."
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+- Consider a software emulator
+  #+ATTR_REVEAL: :frag (appear)
+  - allows one operating system to run 'on top of' another using the
+    same hardware
+#+BEGIN_NOTES
+  - Mac computers can emulate the Windows OS
+#+END_NOTES
+
+#+REVEAL: split
+
+-  Assume a Mac runnning its OS /plus/ an emulation of Windows OS
+   #+ATTR_REVEAL: :frag (appear)
+   1. The Windows OS is integrated or incorporated into the Mac OS
+   2. Nevertheless, the states of the 'incorporated' Windows OS are in
+      many ways independent of the Mac OS and its states
+#+BEGIN_NOTES
+   -  Windows may crash and become unresponsive, while the Mac software
+      (including the emulator) keeps running
+   -  Windows might be treating Internet Explorer as the frontmost,
+      active program; but--if you don't have the emulator software
+      active in your Mac--the Mac software could be treating Safari as
+      its frontmost, active program
+#+END_NOTES
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  when Jack memorizes all the instructions in the Chinese book, he
+  becomes like the Mac software, and the Chinese room software becomes
+  like the emulated Windows software. Jack fully incorporates the
+  Chinese room software. That does not mean that Jack shares all the
+  states of the Chinese room software, nor that it shares all of his
+  states. If the Chinese room software crashes, Jack may keep going
+  fine. If the Chinese room software is in a state of believing that
+  China was at its cultural peak during the Han dynasty, that does not
+  mean that Jack is also in that state. And so on. In particular, for
+  the Chinese room software to understand some Chinese symbol, it is not
+  required that Jack also understand that symbol.
+#+END_QUOTE
+
+#+REVEAL: split
+
+-  Problem 2: 'Internalizing' the Chinese room program is irrelevant
+  #+ATTR_REVEAL: :frag (appear)
+   -  two programs running on the same hardware need not share all of
+      the same (or perhaps any of the same) states
+
+*** Summary of Pryor's Rebuttals:
+#+ATTR_REVEAL: :frag (appear)
+1. Searle's argument is invalid
+   #+ATTR_REVEAL: :frag (appear)
+   -  the form of inference Searle uses here doesn't generalize to other
+      inferences with the same kind of form in a way that preserves
+      truth
+2. 'Internalization' is irrelevant
+   #+ATTR_REVEAL: :frag (appear)
+   -  two programs running on the same hardware need not share all of
+      the same (or any of the same) states
+
+*** The Implementation Objection
+
+*** Programs vs. Implementations
+#+BEGIN_QUOTE
+
+  1. Programs are purely formal (syntactic)
+  2. Human minds have mental contents (semantics)
+  3. Syntax by itself is neither constitutive of, nor sufficient for,
+     semantic content
+  4. $\therefore$ Programs by themselves are not constitutive of nor
+     sufficient for minds
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  We need to distinguish between a /program/ and an /implementation of
+   the program/
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  Programs are abstract computational objects and are purely syntactic.
+  Certainly, no mere program is a candidate for possession of a mind.
+  Implementations of programs, on the other hand, are concrete systems
+  with causal dynamics, and are not purely syntactic. An implementation
+  has causal heft in the real world, and it is in virtue of this causal
+  heft that consciousness and intentionality arise. It is the program
+  that is syntactic; it is the implementation that has semantic content.
+  (Chalmers 1996, 327)
+#+END_QUOTE
+
+*** Chalmers's Parody:
+#+ATTR_REVEAL: :frag (appear)
+1. Recipes are syntactic.
+2. Syntax is not sufficient for crumbliness.
+3. Cakes are crumbly.
+4. $\therefore$ Implementing a recipe is insufficient for a cake.
+
+#+REVEAL: split
+
+#+BEGIN_QUOTE
+  A recipe implicitly specifies a class of physical systems that qualify
+  as implementations of the recipe, and it is these systems that have
+  such features as crumbliness. Similarly, a program implicitly
+  specifies a class of physical systems that qualify as implementations
+  of the program, and it is these systems that give rise to such
+  features as minds. (Chalmers, 327)
+#+END_QUOTE
+
+* Mid-Term Review
+** Physicalism & Consciousness
+   :PROPERTIES:
+   :CUSTOM_ID: reducing-consciousness
+   :END:
+
+-  Physicalism: :: Everything that is or could exist is ultimately
+   physical in nature
+-  The "Hard Problem" of Consciousness: :: Why do the physical processes
+   that characterize life result in conscious experience?
+
+** Nagel's "What its like" Argument
+   :PROPERTIES:
+   :CUSTOM_ID: nagels-what-its-like-argument
+   :END:
+
+#+BEGIN_QUOTE
+
+  1. If Physicalism is true then all aspects of reality are amenable to
+     being “given a physical account”
+  2. Giving a physical account of something means giving an account that
+     is accessible from many different points of view
+  3. Facts about phenomenal consciousness are accessible from only one
+     point of view
+  4. There are phenomenal facts (i.e. facts about phenomenal
+     consciousness)
+  5. \therefore Physicalism is false (or we can't understand how it
+     could be true)
+#+END_QUOTE
+
+** The Phenomenal Zombie Argument
+   :PROPERTIES:
+   :CUSTOM_ID: the-phenomenal-zombie-argument
+   :END:
+
+#+BEGIN_QUOTE
+
+  1. If physicalism were true, then the complete physical information
+     about a subject would entail an answer as to whether she was
+     phenomenally conscious
+  2. But no amount of physical information about a person /logically
+     entails/ that a person is phenomenally conscious---i.e. phenomenal
+     zombies are logically possible
+  3. $\therefore$ Physicalism is false
+#+END_QUOTE
+
+#+BEGIN_NOTES
+-  Premise (2) is too controversial for the argument to make any headway
+   with defenders of physicalism
+#+END_NOTES
+
+** Jackson's "Knowledge" Argument
+   :PROPERTIES:
+   :CUSTOM_ID: jacksons-knowledge-argument
+   :END:
+
+#+BEGIN_QUOTE
+
+  1. Before her release from the B&W room Mary has all the physical
+     information concerning human color vision
+  2. Mary learns something new about color when she leaves the room
+  3. $\therefore$ There is some information about human color vision
+     which Mary doesn't know
+  4. $\therefore$ Not all information is physical information
+     (i.e. physicalism is false)
+#+END_QUOTE
+
+#+BEGIN_NOTES
+-  Ambiguous use of 'information' (metaphysical v. epistemological)
+-  Assumes we can adequately conceive of having 'all' the relevant
+   information about color
+#+END_NOTES
+
+** Lewis's "Ability Hypothesis"
+   :PROPERTIES:
+   :CUSTOM_ID: lewiss-ability-hypothesis
+   :END:
+
+-  Learning "what it is like" to experience something is not learning a
+   new bit of propositional knowledge, it is learning how to:
+
+   -  remember
+   -  imagine
+   -  recognize
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+
+  1. The only relevant alternative to the Ability Hypothesis (AH) is the
+     Hypothesis of Phenomenal Information (HPI)
+  2. HPI is incompatible with physicalism
+  3. AH is both compatible with physicalism and explains everything that
+     HPI explains
+  4. $\therefore$ We should choose AH over HPI
+#+END_QUOTE
+
+
+#+BEGIN_NOTES
+-  Ability to remember, imagine, and recognize is not obviously
+   equivalent to knowing what it is like to /X/
+-  Is AH the best explanation available to the physicalist?
+#+END_NOTES
+
+** Block on Consciousness
+-  Phenomenal Consciousness: :: A mental state with "experiential
+   properties" that constitute "what it is like" to experience something
+-  Access Consciousness: :: A mental state that is poised for free use
+   in reasoning and for direct ‘‘rational'' control of action and
+   speech.
+   
+#+REVEAL: split
+1. Abnormal psychological conditions, such as blindsight and "absent"
+   seizures, may indicate the function of consciousness
+2. When consciousness is missing under such conditions, subjects
+   cannot\\
+   * report or reason about the relevant nonconscious representations, nor use them in guiding action\\
+   * exhibit flexibility and creativity in their thought and action\\
+3. $\therefore$ Consciousness enables information represented in the
+   brain to be used in reasoning, reporting, and rationally guiding
+   action
+4. $\therefore$ Consciousness promotes flexibility and creativity in
+   thought and action
+
+\\
+   
+- Block argues that the confusion between A & P consciousness foils this
+  kind of reasoning
+
+** Representation 
+- What is a representation?
+- How do representations represent?
+- Is there a fundamental representational kind?
+- How might mental representation be different from other kinds?
+  
+#+BEGIN_NOTES
+- representation: something that represents, stands for, or goes proxy
+- Resemblance: not necessary, not sufficient
+- 3 representation kinds: picture, language, mental rep
+- Thought is not conventional & does not require interpretation 
+#+END_NOTES
+  
+** AI & The Chinese Room Argument
+
+-  Strong AI: :: thinking is constituted by the manipulation of formal
+   symbols, such as occurs in a computer program
+-  Weak AI: :: thinking may be modeled by formal symbol systems, such as
+   computer programs
+
+#+REVEAL: split
+- Turing test
+- Set-up of Chinese Room argument
+
+#+REVEAL: split
+-  Syntax: :: the formal or structural features of a symbol system which
+   determine which expressions are legitimate members of the system and
+   which are not
+-  Semantics: :: The system of meanings assigned to a symbol system,
+   given by determining the referents of the symbols and the truth
+   conditions of symbol strings
+   
+#+REVEAL: split
+- Systems objection
+- Implementation objection
+
+** Mid-Term Format
+  :PROPERTIES:
+  :CUSTOM_ID: mid-term
+  :END:
+
+*** Structure
+   :PROPERTIES:
+   :CUSTOM_ID: format
+   :END:
+
+1. Argument extraction (2, 10 pts)
+2. Definitions (2, 5 pts)
+3. Multiple choice (10, 3 pts)
+4. Short essay (2, 20 pts)
+
+*** Argument Extraction
+   :PROPERTIES:
+   :CUSTOM_ID: argument-extraction
+   :END:
+
+Analyze the text and extract the argument in premise/conclusion form.
+Pick /two/ of three:
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  There is no reason to think that there are any absolute moral truths.
+  We can see this when we consider different cultural outlooks
+  concerning what is morally required. For example, indigenous Inuit
+  culture considered infanticide to be morally permissible. But modern
+  American culture clearly thinks infanticide is morally wrong. So
+  what's morally right or wrong is just a matter of opinion, which can
+  vary from culture to culture.
+#+END_QUOTE
+
+#+BEGIN_NOTES
+-  What's the conclusion of the argument?
+-  What support does the conclusion have?
+-  What material is essential to the argument and what is extraneous?
+-  Is the argument valid?
+-  Is the argument sound?
+#+END_NOTES
+
+#+REVEAL: split
+1. If moral truths were absolute then they would not vary from culture
+   to culture
+2. What's considered morally right or wrong does vary from culture to
+   culture
+3. \therefore There are no absolute moral truths
+
+#+BEGIN_NOTES
+- What form does this argument look to have (modus tollens)
+- Is the argument really MT? (No)
+- There is an equivocation with respect to (2). So the argument as
+  actually stated is invalid. There is a difference between:
+  1. What is considered morally right/wrong varies with culture
+  2. What *is* morally right/wrong varies with culture
+- For the argument to be valid we need the latter version of (2) 
+#+END_NOTES
+
+*** Definitions
+   :PROPERTIES:
+   :CUSTOM_ID: definitions
+   :END:
+
+Give the definition of the word. Pick *two* of three:
+
+-  Physicalism: :: everything that could exist is either physical or
+   depends on the physical
+
+*** Multiple Choice
+   :PROPERTIES:
+   :CUSTOM_ID: multiple-choice
+   :END:
+
+Nagel's argument concerning consciousness aims to show what?
+
+#+BEGIN_QUOTE
+  A. What it is like to be a bat\\
+  B. That physicalism is false\\
+  C. That we cannot understand how physicalism could be true\\
+  D. That physicalism is true
+#+END_QUOTE
+
+*** Short Essay
+   :PROPERTIES:
+   :CUSTOM_ID: short-essay
+   :END:
+
+Write a /short/ essay---two to three paragraphs. Pick /two/ of three:
+
+-  Explain how the knowledge argument is a challenge to physicalism
+   #+REVEAL: split
+   -  explain what physicalism is
+   -  state the knowledge argument
+   -  state the challenge which the knowledge argument poses to
+      physicalism
+
+* Free Will
+** What is Freedom of the Will?
+
+-  Freedom of Will: :: (1) a capacity of an agent to (2) choose
+   according to her preferences (3) from amongst a set of relevant
+   alternatives such that (4) the agent is responsible for that choice or
+   action
+
+** Why is Freedom of the Will Important?
+
+#+ATTR_REVEAL: :frag (appear)
+-  Desert & Moral responsibility
+   #+ATTR_REVEAL: :frag (appear)
+   -  praise & blame
+   -  distribution of resources  
+-  Punishment
+
+** How to Talk about Freedom
+
+#+ATTR_REVEAL: :frag (appear)
+-  Analysis of cases (casuistry)
+   #+ATTR_REVEAL: :frag (appear)
+   -  Testing philosophical 'intuitions'
+      #+ATTR_REVEAL: :frag (appear)
+      -  How do we respond to different cases?
+      -  Why do we respond the way that we do?
+
+** Kinds of Freedom
+#+ATTR_REVEAL: :frag (appear)
+-  Freedom from coercion (mental or physical)
+-  Freedom from manipulation
+
+** Coercion
+
+#+ATTR_REVEAL: :frag (appear)
+#+BEGIN_QUOTE
+  Jane didn't want to share her chocolate bar with John, but the teacher
+  threatened her with detention (or worse) if she didn't, so she gave
+  John half.
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Did Jane act freely?
+-  Is she to be (morally) praised for sharing the chocolate?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Deserving praise vs. praising to shape an agent's future behavior
+
+#+BEGIN_NOTES
+- Discuss praise and blame as linked not to desert & responsibility but
+  rather to behavioral conditioning
+#+END_NOTES
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  Jane is attacked by a mugger. Under threat of her life, she gives up
+  her jewelry, including cherished family heirlooms like her
+  grandmother's engagement ring. Her family will be very upset about
+  their loss.
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Did Jane act freely?
+-  Is Jane (morally) blameworthy for giving up the jewelry?
+
+** Manipulation
+
+#+BEGIN_QUOTE
+  John is a nice guy, who would never intentionally hurt someone. But
+  government agents have brainwashed him into attempting to assassinate
+  the President.
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Is John acting freely in his assassination attempt?
+-  Is John morally blameworthy?
+  
+#+BEGIN_NOTES
+- Other kinds of manipulation
+  - Advertising
+  - Subway's "baking bread" smell
+#+END_NOTES
+
+** Incompatibilism
+#+ATTR_REVEAL: :frag (appear)
+-  An agent who is coerced or manipulated is (typically) not morally
+   responsible for her actions
+-  Moral responsibility and coercion/manipulation are '/incompatible/'
+
+** What Generates the Incompatibility?
+
+#+ATTR_REVEAL: :frag (appear)
+- Control?
+- Self-initiation?
+- Options?
+- Something else?
+
+** Nagel on Alternate Possibilities
+
+#+BEGIN_QUOTE
+  If you believed that about yourself and other people [i.e. that you
+  couldn't have acted any other way] , it would probably change the way
+  you felt about things. For instance, could you blame yourself for
+  giving in to temptation and having the cake? Would it make sense to
+  say, “I really should have had a peach instead,” if you /couldn't/ have
+  chosen a peach instead? It certainly wouldn't make sense to say it if
+  there /was no/ fruit. So how can it make sense if there /was/ fruit, but
+  you couldn't have chosen it because it was determined in advance that
+  you would choose cake? (Nagel, 53)
+#+END_QUOTE
+
+#+REVEAL: split
+
+-  The Principle of Alternate Possibilities (PAP): :: a person is
+   morally responsible for what they have done only if they could have
+   done (or chosen) otherwise
+
+#+REVEAL: split
+-  What explains why an agent is not morally responsible in cases of
+   coercion/manipulation?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Proposal: PAP is violated -- The agent could not have done
+      otherwise
+     
+#+BEGIN_NOTES
+- Discuss Nagel's notion of something's being "determined in advance"
+  - It *seems* like one's future is "open"
+  - Might things be different from how they seem?
+- Is *prediction* a problem here?
+#+END_NOTES
+
+* Frankfurt on Alternate Possibilities
+** Alternate Possibilities & Determinism
+#+ATTR_REVEAL: :frag (appear)
+-  What explains why an agent is not morally responsible in cases of
+   coercion/manipulation?
+-  The Principle of Alternate Possibilities (PAP): :: a person is
+   morally responsible for what they have done only if they could have
+   done (or chosen) otherwise
+
+#+BEGIN_NOTES
+- Proposal: PAP is violated -- The agent could not have done
+  otherwise
+#+END_NOTES
+     
+#+REVEAL: split
+-  Determinism: :: For any state of the subject, that subject's states
+   are necessitated by the condition of its previous states plus the
+   laws of nature.
+
+#+REVEAL: split
+-  The following are all compatible with determinism
+   #+ATTR_REVEAL: :frag (appear)
+   -  choice
+   -  the causal efficacy of choice & effort
+   -  deliberation
+   -  unpredictability
+
+#+REVEAL: split
+-  Is determinism compatible with free will?
+  #+ATTR_REVEAL: :frag (appear)
+   -  Yes: ‘Compatibilism'
+   -  No: ‘Incompatibilism'
+      #+ATTR_REVEAL: :frag (appear)
+      -  Incompatibilism says /why/ determinism & freedom are
+        incompatible, but not /whether we are in fact/ free or determined
+        
+#+BEGIN_NOTES
+- The question we're interested in is whether freedom & determinism are
+  compatible and why/why not.
+- There is a further question as to whether determinism is true
+#+END_NOTES
+
+** Alternative Possibilities & Incompatibilism
+#+ATTR_REVEAL: :frag (appear)
+-  Why might determinism & freedom be incompatible?
+-  Determinism deprives us of the /power or ability to do or choose
+   otherwise/.
+ 
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  Leeway Incompatibilism: :: The truth of determinism is incompatible
+   with an agent's having the capacity to do otherwise than as she did
+
+** Coercion & PAP
+
+#+BEGIN_QUOTE
+  When we excuse a person who has been coerced, we do not excuse him
+  because he was unable to do otherwise. Even though a person is subject
+  to a coercive force that precludes his performing any action but one,
+  he may nonetheless bear full moral responsibility for performing that
+  action. (Frankfurt, 834)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Frankfurt denies that PAP is the relevant explanation of why in
+   coercion (or manipulation) one is not morally responsible
+
+** The Case of Jones
+
+#+BEGIN_QUOTE
+  Jones decides for reasons of his own to do something, then someone
+  threatens him with a very harsh penalty (so harsh that any reasonable
+  person would submit to the threat) unless he does precisely that, and
+  Jones does it. Will we hold Jones morally responsible for what he has
+  done? I think this will depend on the roles we think were played, in
+  leading him to act, by his original decision and by the threat.
+  (Frankfurt, 831)
+#+END_QUOTE
+
+** Versions of the Case
+
+-  Jones_{1}: Always does what he decides to do; the threat plays no
+   role
+   #+ATTR_REVEAL: :frag (appear)
+   -  responsible for acting
+#+ATTR_REVEAL: :frag (appear)
+-  Jones_{2}: The threat totally overpowers Jones; he does what the
+   threat says, no matter what he decided earlier
+   #+ATTR_REVEAL: :frag (appear)
+   -  not responsible for acting
+#+ATTR_REVEAL: :frag (appear)
+-  Jones_{3}: Weighs decision and threat evenly, but ultimately acts on
+   his original reasons rather than the threat
+   #+ATTR_REVEAL: :frag (appear)
+   -  responsible for acting
+
+** Responsibility & PAP
+
+-  Claim: Jones_{1-3} show that PAP plays no role in evaluation of moral
+   responsibility
+#+ATTR_REVEAL: :frag (appear)
+-  Assignment of moral responsibility depends on evaluating /the reasons
+   for which one acted/, not whether one could have done otherwise
+   #+ATTR_REVEAL: :frag (appear)
+   -  Jones_{1} and Jones_{3} acted on the basis of bad motives, that is
+      why they are responsible
+
+** Coercion with Responsibility?
+
+-  The Jones case counts as coercion only if Jones acts /because of/ the
+   threat
+#+ATTR_REVEAL: :frag (appear)
+-  Coercion requires that the coerced subject act /because of/ the
+   coercive force exerted on her
+   #+ATTR_REVEAL: :frag (appear)
+   -  Only the case of Jones_{2} is a case of genuine coercion
+     
+#+BEGIN_NOTES
+- Emphasize the difference between action in the *presence* of a threat
+  and action *on the basis* of a threat.
+  - Only the latter counts as coercion
+#+END_NOTES
+     
+** Objection 
+
+-  Is the case of Jones_{3} a clear counterexample to the claim that
+   coercion/manipulation excuses?
+   #+ATTR_REVEAL: :frag (appear)
+   -  The presence of the threat in the Jones_{3} case does not meant
+      that he /could not/ have done otherwise
+     
+#+BEGIN_NOTES
+- Is this case relevantly like the "your money or your life" (or the jewelry) situation?
+
+#+BEGIN_QUOTE
+  His knowledge that he stands to suffer an intolerably harsh penalty
+  does not mean that Jones_{3}, strictly speaking, /cannot/ perform any
+  action but the one he does perform. After all it is still open to him,
+  and this is crucial, to defy the threat if he wishes to do so and to
+  accept the penalty his action would bring down upon him. In the sense
+  in which the principle of alternate possibilities employs the concept
+  of "could have done otherwise," Jones_{3}'s inability to resist the
+  threat does not mean that he cannot do otherwise than perform the
+  action he performs. Hence the case of Jones_{3} does not constitute an
+  instance contrary to the principle. (Frankfurt, 834)
+#+END_QUOTE
+
+#+END_NOTES
+
+** Response -- Jones_{4}
+
+- Jones_4: acts for his own reasons, but if there was any sign of his
+  acting differently, would have been forced to carry out the act anyway
+
+#+BEGIN_NOTES
+
+  Suppose someone--Black, let us say--wants Jones_{4} to perform a
+  certain action. Black is prepared to go to considerable lengths to get
+  his way, but he prefers to avoid showing his hand unnecessarily. So he
+  waits until Jones_{4} is about to make up his mind what to do, and he
+  does nothing unless it is clear to him (Black is an excellent judge of
+  such things) that Jones_{4} is going to decide to do something /other/
+  than what he wants him to do. If it does become clear that Jones_{4}
+  is going to decide to do something else, Black takes effective steps
+  to ensure that Jones_{4} decides to do, and that he does do, what he
+  wants him to do. Whatever Jones_{4}'s initial preferences and
+  inclinations, then, Black will have his way. (Frankfurt, 835)
+
+  suppose that Black never has to show his hand because Jones_{4}, for
+  reasons of his own, decides to perform and does perform the very
+  action Black wants him to perform. In that case, it seems clear,
+  Jones_{4} will bear precisely the same moral responsibility for what
+  he does as he would have borne if Black had not been ready to take
+  steps to ensure that he do it. (Frankfurt, 836)
+
+#+END_NOTES
+
+** Frankfurt's Conclusion
+
+-  The relevant explanation of why someone is responsible concerns the
+   reasons for which they act, not whether they could have done
+   otherwise
+   #+ATTR_REVEAL: :frag (appear)
+   -  In cases of coercion or manipulation, one is not responsible
+      because of the relationship one has to the reasons for which one
+      acts
+
+** Leeway Incompatibilism
+#+ATTR_REVEAL: :frag (appear)
+- If Frankfurt is correct then Leeway Incompatibilism is false
+- Might there be other ways in which determinism & freedom are incompatible?
+
+* Free Will & Determinism
+** Determinism
+
+-  Determinism: :: For any state of the subject, that subject's states
+   are necessitated by the condition of its previous states plus the
+   laws of nature.
+
+#+REVEAL: split
+-  The following are all compatible with determinism
+
+   -  choice
+   -  the causal efficacy of choice & effort
+   -  deliberation
+   -  unpredictability
+
+#+REVEAL: split
+-  Is determinism compatible with free will?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Yes: ‘Compatibilism'
+   -  No: ‘Incompatibilism'
+      #+ATTR_REVEAL: :frag (appear)
+      -  Incompatibilism says /why/ determinism & freedom are
+         incompatible, but not /whether we are in fact/ free or
+         determined
+         
+** Alternative Possibilities & Incompatibilism
+#+ATTR_REVEAL: :frag (appear)
+-  Why might determinism & freedom be incompatible?
+-  Determinism deprives us of the /power or ability to do or choose
+   otherwise/.
+#+ATTR_REVEAL: :frag (appear)
+-  Leeway Incompatibilism: :: The truth of determinism is incompatible
+   with an agent's having the capacity to do otherwise than as she did
+
+** Do We Have Free Will?
+
+-  What about the factual question of whether we have free will?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Yes: Libertarianism
+   -  No: Hard Incompatibilism
+
+** There is Free Will
+
+-  Libertarianism: :: determinism is false and there is free will
+
+** There is No Free Will -- Hard Incompatibilism
+
+-  Hard Incompatibilism: :: There is no free will of the kind necessary
+   for moral responsibility and desert
+
+** Key Concepts
+
+#+ATTR_REVEAL: :frag (appear)
+-  Conception of Free Will
+-  Principle of Alternate Possibilities
+-  Determinism
+-  Compatibilism & Incompatibilism
+   #+ATTR_REVEAL: :frag (appear)
+   -  Libertarianism
+   -  Hard Incompatibilism
+
+** Questions
+#+ATTR_REVEAL: :frag (appear)
+-  Is free will necessary for moral responsibility?
+-  Is free will compatible with determinism?
+-  Is moral responsibility compatible with determinism?
+
+* Control & Moral Responsibility
+** Review
+*** Free Will
+
+-  Freedom of Will: :: (1) a capacity of an agent to (2) choose
+   according to her preferences (3) from amongst a set of relevant
+   alternatives such that (4) the agent is responsible for that choice or
+   action
+
+*** Question 1
+
+Determinism says that there is no free will.
+
+#+BEGIN_QUOTE
+  A. True\\
+  B. False\\
+#+END_QUOTE
+
+*** Determinism
+
+-  Determinism: :: For any state of the subject, that subject's states
+   are necessitated by the condition of its previous states plus the
+   laws of nature.
+
+\\
+#+ATTR_REVEAL: :frag (appear)
+-  Is determinism compatible with free will?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Yes: ‘Compatibilism'
+   -  No: ‘Incompatibilism'
+#+BEGIN_NOTES
+1. Is the truth of determinism compatible with free will?
+2. Is determinism true?
+#+END_NOTES
+
+*** Alternative Possibilities & Incompatibilism
+
+-  Why might determinism & freedom be incompatible?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Determinism is like /coercion/ or /manipulation/
+   -  Coercion/manipulation deprives us of the /power or ability to do
+      or choose otherwise/.
+
+*** Question 2
+
+The Principle of Alternate Possibilities says:
+
+#+BEGIN_QUOTE
+  A. Moral responsibility requires being able to do otherwise\\
+  B. Moral responsibility requires being able to act on reasons\\
+  C. We could never do otherwise than what we have done\\
+  D. We could at least sometimes do otherwise that what we do\\
+#+END_QUOTE
+
+*** Alternative Possibilities & Incompatibilism
+
+#+ATTR_REVEAL: :frag (appear)
+-  The Principle of Alternate Possibilities (PAP): :: a person is
+   morally responsible for what s/he has done only if s/he could have
+   done otherwise (or chosen otherwise)
+-  Leeway Incompatibilism: :: The truth of determinism is incompatible
+   with an agent's having the capacity to do otherwise than as she did
+
+*** Question 3
+
+According to Frankfurt, if determinism and free will are incompatible
+then it *isn't* because:
+
+#+BEGIN_QUOTE
+  A. We couldn't have chosen otherwise\\
+  B. Responsibility is based on the reasons for which we act\\
+  C. Determinism is false\\
+  D. We can always choose to do otherwise\\
+#+END_QUOTE
+
+** Alternative Possibilities & Incompatibilism
+
+-  Frankfurt cases suggest that responsibility depends on the source of
+   the agent's decision for acting rather than the ability to do
+   otherwise
+
+** Source of Agency
+#+ATTR_REVEAL: :frag (appear)
+-  The agent must have control over the production of her decision to
+   act if she is to be morally responsible for it
+-  If an agent does /not/ have control over the production of her
+   decision to act then she is not morally responsible for it
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  Jane is considering what to eat in the student union. She deliberates
+  about her choices and decides that, of the options available, Subway's
+  offerings most closely match what she desires, and so she decides to
+  order a sub.
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Did Jane play an appropriate role in the production of this decision?
+-  Is she responsible for the decision?
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  Jane is considering what to eat in the student union. Unbeknownst to
+  her, Subway is filling the air with a chemical that subliminally
+  generates in subjects an intention to eat a sandwich. Jane forms the
+  intention, and decides on Subway accordingly. She enjoys her sandwich.
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Did Jane play an appropriate role in the production of this decision?
+-  Is she responsible for the decision?
+
+#+REVEAL: split
+-  The Source Requirement: :: If an agent is morally responsible for her
+   deciding to perform an action, then the production of this decision
+   must be something over which the agent has /control/, and an agent is
+   not morally responsible for the decision if it is produced by a
+   source over which she has no control
+
+** Another Kind of Incompatibilism
+
+-  Source Incompatibilism: :: The truth of determinism is incompatible
+   with an agent's having a causal history of a sort that allows the
+   agent to be the source of her action, and thus have the action be
+   under her control in the manner required for moral responsibility
+
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  If determinism were false would people be the appropriate sources of
+   their decisions?
+
+** Free Will & Indeterminism
+
+#+BEGIN_QUOTE
+  perhaps [determinism] isn't true. Many scientists now believe that it
+  isn't true for the basic particles of matter-that in a given
+  situation, there's more than one thing that an electron may do.
+  Perhaps if determinism isn't true for human actions, either, this
+  leaves room for free will and responsibility. What if human actions,
+  or at least some of them, are not determined in advance? (Nagel, 55)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  If actions aren't determined 'in advance' then what determines them?
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  is even [indeterminism] enough for free will? Is this all you mean
+  when you say, “I could have chosen fruit instead?”-that the choice
+  wasn't determined in advance? No, you believe something more. You
+  believe that /you/ determined what you would do, by /doing/ it. It
+  wasn't determined in advance, but it didn't /just happen/, either.
+  /You did it/, and you could have done the opposite. (Nagel, 53)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+- Is indeterminism enough for freedom?
+  #+ATTR_REVEAL: :frag (appear)
+  - No: Indeterminism is equally incompatible with the source requirement
+  - Source of intention must issue in the right way from the subject
+
+** Strawson's 'Basic Argument'
+*** First Statement
+#+ATTR_REVEAL: :frag (appear)
+1. Nothing can be the cause of itself
+2. In order to be truly morally responsible for one's actions one would
+   have to be the cause of oneself in some crucial respects
+3. \therefore No one can be truly morally responsible
+
+*** Questions About the Basic Argument
+#+ATTR_REVEAL: :frag (appear)
+-  Why does being morally responsible require being self-caused?
+-  What 'crucial respects' must be caused?
+   #+ATTR_REVEAL: :frag (appear)
+   -  character
+   -  evaluative dispositions & preferences
+
+*** Strawson's Revision
+#+ATTR_REVEAL: :frag (appear)
+1. You do what you do because of the way you are.
+2. To be morally responsible for what you do you must be truly morally
+   responsible for the way you are -- at least in certain crucial mental
+   respects.
+3. To be truly responsible for the way you are, you must have
+   intentionally brought it about that you are the way you are, and this
+   is impossible.
+4. \therefore You cannot be truly morally responsible for what you do,
+   because you cannot be truly responsible for the way you are.
+   
+\\
+
+#+ATTR_REVEAL: :frag (appear)
+-  Is the argument valid? Sound?
+
+*** Questions about Strawson's Revision
+#+ATTR_REVEAL: :frag (appear)
+-  /Premise 2/: Why does moral responsibility require that one be
+   responsible for how one is 'in certain crucial mental respects'?
+-  /Premise 3/: Why is it impossible to have intentionally brought about
+   how one is?
+-  /Conclusion/: Why think that if one cannot be morally responsible for
+   the way one is, one cannot be morally responsible for what one does?
+
+* The Basic Argument (Continued)
+** The Argument
+#+ATTR_REVEAL: :frag (appear)
+1. Nothing can be the cause of itself
+2. In order to be truly morally responsible for one's actions one would
+   have to be the cause of oneself in some crucial respects
+3. \therefore No one can be truly morally responsible
+
+** What is 'True moral responsibility'?
+
+#+BEGIN_QUOTE
+  As I understand it, true moral responsibility is responsibility of
+  such a kind that, if we have it, then it makes sense, at least, to
+  suppose that it could be just to punish some of us with (eternal)
+  torment in hell and reward others with (eternal) bliss in heaven...The
+  story of heaven and hell is useful simply because it illustrates, in a
+  particularly vivid way, the kind of absolute or ultimate
+  accountability or responsibility that many have supposed themselves to
+  have, and that many do still suppose themselves to have. (Strawson,
+  9-10)
+#+END_QUOTE
+
+** Questions About the Basic Argument
+#+ATTR_REVEAL: :frag (appear)
+-  Why does being morally responsible require being self-caused?
+-  What 'crucial respects' must be caused?
+   #+ATTR_REVEAL: :frag (appear)
+   -  character
+   -  evaluative dispositions & preferences
+-  Why can't we be self-caused in these respects?
+
+** Strawson's Revised Argument
+#+ATTR_REVEAL: :frag (appear)
+1. You do what you do because of the way you are.
+2. To be morally responsible for what you do you must be truly morally
+   responsible for the way you are -- at least in certain crucial mental
+   respects.
+3. To be truly responsible for the way you are, you must have
+   intentionally brought it about that you are the way you are
+4. It is impossible to have intentionally brought about how one is
+5. \therefore You cannot be truly morally responsible for what you do,
+   because you cannot be truly responsible for the way you are
+   
+\\
+#+ATTR_REVEAL: :frag (appear)
+-  Is the argument valid? Sound?
+  
+#+BEGIN_NOTES
+#+BEGIN_QUOTE
+  1. D \rightarrow A
+  2. MD \rightarrow MA
+  3. MA \rightarrow IA
+  4. \neg IA
+  5. \therefore \neg MA (3, 4, Modus Tollens)
+  6. \therefore \neg MD (2, 5, Modus Tollens)
+#+END_QUOTE
+#+END_NOTES
+
+** Strawson's Argument (Validity)
+
+#+BEGIN_QUOTE
+  1. D \rightarrow A
+  2. MD \rightarrow MA
+  3. MA \rightarrow IA
+  4. \neg IA
+  5. \therefore \neg MA (3, 4, Modus Tollens)
+  6. \therefore \neg MD (2, 5, Modus Tollens)
+#+END_QUOTE
+
+#+BEGIN_NOTES
+1. You do what you do because of the way you are.
+2. To be morally responsible for what you do you must be truly morally
+   responsible for the way you are -- at least in certain crucial mental
+   respects.
+3. To be truly responsible for the way you are, you must have
+   intentionally brought it about that you are the way you are
+4. It is impossible to have intentionally brought about how one is
+5. \therefore You cannot be truly morally responsible for what you do,
+   because you cannot be truly responsible for the way you are
+#+END_NOTES
+
+** Questions about Strawson's Argument (Soundness)
+#+ATTR_REVEAL: :frag (appear)
+-  Premise 2: :: Why think that if one cannot be morally responsible for
+   the way one is, one cannot be morally responsible for what one does?
+-  Premise 4: :: Why is it impossible to have intentionally brought
+   about how one is?
+
+** Defending Premise 2
+
+#+BEGIN_QUOTE
+  Why think that if one cannot be morally responsible for the way one
+  is, one cannot be morally responsible for what one does?
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  We aren't responsible for those aspects of ourselves over which we
+   have no control
+   #+ATTR_REVEAL: :frag (appear)
+   -  hair color
+   -  skin color
+   -  social-economic class
+
+#+REVEAL: split
+-  Our control over what decisions we make depends in part on our
+   character and evaluative dispositions
+#+ATTR_REVEAL: :frag (appear)
+-  If we have no control over our character and evaluative dispositions
+   then we have no ultimate control over the decisions we make which
+   depend on them
+   
+** Defending Premise 4
+
+#+BEGIN_QUOTE
+  Why is it impossible to have intentionally brought about how one is?
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Intentionally bringing about how one is entails an absurdity
+
+#+BEGIN_NOTES
+- Explain what a reductio ad absurdam argument is
+#+END_NOTES
+
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (none appear appear appear appear appear) 
+1. Suppose that you have somehow intentionally brought it about that you
+   are the way you now are, and that you have brought this about in such
+   a way that you can now be said to be truly responsible for being the
+   way you now are
+2. Your intentional act, for which you are responsible, is due to some
+   nature N
+3. If you are truly responsible for this act you must be truly
+   responsible for having the nature N in virtue of which you
+   intentionally brought it about that you are the way you now are
+4. \therefore You must have intentionally brought about N, which
+   requires that you have some further nature N1, in virtue of which you
+   brought about your nature N... (absurd infinite regress ensues)
+5. \therefore It is impossible for you to have intentionally brought
+   it about that you are as you are now
+
+* Review
+** Strawson's Revised Argument
+
+1. You do what you do because of the way you are.
+2. To be morally responsible for what you do you must be truly morally
+   responsible for the way you are -- at least in certain crucial mental
+   respects.
+3. To be truly responsible for the way you are, you must have
+   intentionally brought it about that you are the way you are
+4. It is impossible to have intentionally brought about how one is
+5. \therefore You cannot be truly morally responsible for what you do,
+   because you cannot be truly responsible for the way you are
+
+-  Is the argument valid? Sound?
+
+** Strawson's Argument (Validity)
+
+#+BEGIN_QUOTE
+
+  1. D \rightarrow A
+  2. MD \rightarrow MA
+  3. MA \rightarrow IA
+  4. \neg IA
+  5. \therefore \neg MA (3, 4, Modus Tollens)
+  6. \therefore \neg MD (2, 5, Modus Tollens)
+#+END_QUOTE
+
+** Questions about Strawson's Argument (Soundness)
+
+-  Premise 2: :: Why think that if one cannot be morally responsible for
+   the way one is, one cannot be morally responsible for what one does?
+-  Premise 4: :: Why is it impossible to have intentionally brought
+   about how one is?
+
+** Defending Premise 2
+
+#+BEGIN_QUOTE
+  Why think that if one cannot be morally responsible for the way one
+  is, one cannot be morally responsible for what one does?
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  We aren't responsible for those aspects of ourselves over which we
+   have no control
+   #+ATTR_REVEAL: :frag (appear)
+   -  hair color
+   -  skin color
+   -  social-economic class
+
+** Agency & Control
+
+-  The Source Requirement: :: If an agent is morally responsible for her
+   deciding to perform an action, then the production of this decision
+   must be something over which the agent has /control/, and an agent is
+   not morally responsible for the decision if it is produced by a
+   source over which she has no control
+
+** Defending Premise 2
+
+1. We are only truly responsible for that over which we could have
+   appropriate control (source requirement)
+2. The decisions we make depend in part on our character/evaluative
+   dispositions (premise)
+3. \therefore We are only truly responsible for what we do if we have
+   appropriate control over our character/evaluative dispositions
+
+** Counterexamples?
+
+#+ATTR_REVEAL: :frag (appear)
+-  Sometimes attributions of responsibility depend on 'moral luck'
+   #+ATTR_REVEAL: :frag (appear)
+   -  In particular cases we treat people as morally responsible
+      (actions as worthy of praise/blame) even though there were
+      significant aspects of the situation that were beyond their
+      control
+      #+ATTR_REVEAL: :frag (appear)
+      -  murder vs. attempted murder
+      -  circumstances (e.g. unlucky driver, Nazi collaborator)
+
+#+REVEAL: split
+-  We are responsible for things that don't have to do with
+   character/evaluative dispositions
+   #+ATTR_REVEAL: :frag (appear)
+   -  promises
+   -  relationships (e.g. to parents, children, friends)
+
+** Defending Premise 4
+
+#+BEGIN_QUOTE
+  Why is it impossible to have intentionally brought about how one is?
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Intentionally bringing about how one is entails an absurdity
+
+** Defending Premise 4
+#+ATTR_HTML: :height 50%, :width 50%
+1. Suppose that you've intentionally brought it about that you are the
+   way you now are, and that you are truly responsible for being this
+   way
+2. Your intentional act, for which you are responsible, is due to some
+   nature N_1
+3. If you are truly responsible for this act you must be truly
+   responsible for having the nature N_1 in virtue of which you
+   intentionally brought it about that you are the way you now are
+4. $\therefore$ You must have intentionally brought about N_1, which
+   requires that you have some further nature N_2, in virtue of which you
+   brought about your nature N_1... (absurd infinite regress ensues)
+5. $\therefore$ It is impossible for you to have intentionally brought
+   it about that you are as you are now
+
+** Defending Premise 4
+#+ATTR_REVEAL: :frag (appear)
+1. IA (assumption for reductio)
+2. I\phi \leftrightarrow R\phi (premise)
+3. \therefore RA (1, 2, substitution, MP)
+4. I\phi \rightarrow N_i (premise)
+5. IA \rightarrow N_1 (4, substitution)
+6. \therefore N_1 (1, 5, substitution, MP)
+7. RA \rightarrow RN_{1} (premise)
+8. \therefore RN_{1} (3, 7, MP)
+9. \therefore IN_{1} (2, 8, substitution, MP)
+10. IN_{1} \rightarrow N_{2} (4, 9, substitution)
+11. Infinite regress ensues (repeat steps 6-8) ...
+12. \therefore \neg IA
+
+* The Libet Experiments
+  :PROPERTIES:
+  :CUSTOM_ID: the-libet-experiments
+  :END:
+  
+#+BEGIN_NOTES
+- Died in 2007
+- Libet was a researcher in the physiology department of UC-San Francisco
+- Best known for experiments in early 80s
+- Inaugurates the significance of neuroscience for free will debate
+#+END_NOTES
+
+** The Experiment
+   :PROPERTIES:
+   :CUSTOM_ID: the-efficacy-of-conscious-willing
+   :END:
+
+#+BEGIN_QUOTE
+  Libet asked his subjects to flex their wrists at any time they wanted
+  and then report the location of a dot moving quickly around a clock
+  face when they first felt the urge or intention to flex their wrists.
+  Throughout this process, he recorded their neural activity (with EEG)
+  as well as their wrist movements (with EMG)...That activity [called a
+  ‘Readiness Potential' or RP] ramped up slowly, reaching its pinnacle
+  at the time when bodily movement began, and then fell quickly after
+  movement...(Sinnott-Armstrong, 238)
+#+END_QUOTE
+
+#+REVEAL: split
+#+ATTR_HTML: :style min-width:105%; margin:auto; display:block; text-align:center
+[[/Users/Roambot/projects/phil101/content/slides/libet_experiment.jpg]]
+#+ATTR_HTML: :style text-align:center
+The Libet experiment
+
+** A Surprising Outcome
+   :PROPERTIES:
+   :CUSTOM_ID: the-efficacy-of-conscious-willing-1
+   :END:
+
+#+BEGIN_QUOTE
+  What was surprising was the order: The readiness potential with
+  unplanned actions (type II RP) began around 550 ms before the hand
+  movement (M) began, and the reported time of conscious will (W) was
+  around 150--200 ms before the hand movement (M) began, so the
+  readiness potential...began around 350--400 ms before the reported
+  time of conscious will (W). This order suggests that conscious will
+  does not initiate the readiness potential...This implication is
+  surprising, because most people think that their conscious choice is
+  what begins the process that makes their body move in such cases.
+  (Sinnott-Armstrong, 238-9)
+#+END_QUOTE
+
+#+REVEAL: split
+#+ATTR_HTML: :style min-width:105%; margin:auto; display:block; text-align:center
+[[/Users/Roambot/projects/phil101/content/slides/libet_rp.png]]
+#+ATTR_HTML: :style text-align:center
+The readiness potential graph
+
+** The Efficacy of Conscious Willing
+   :PROPERTIES:
+   :CUSTOM_ID: the-efficacy-of-conscious-willing-2
+   :END:
+#+ATTR_REVEAL: :frag (appear)
+-  On one interpretation of the experiment, conscious willing is not
+   casually efficacious in the generation of behavior
+-  Are there other potential functions for conscious willing with
+   respect to action?
+  
+#+BEGIN_NOTES
+- Talk about difference between conscious willing and unconscious processes
+  - epiphenomenalism of consciousness
+#+END_NOTES
+
+** Veto Power
+   :PROPERTIES:
+   :CUSTOM_ID: the-efficacy-of-conscious-willing-3
+   :END:
+
+#+BEGIN_QUOTE
+  Potentially available to the conscious function is the possibility of
+  stopping or vetoing the final progress of the volitional process, so
+  that no actual muscle action ensues. /Conscious-will could thus affect
+  the outcome/ of the volitional process even though the latter was
+  initiated by unconscious cerebral processes. Conscious-will might
+  block or veto the process, so that no act occurs. (Libet, 5)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  According to Libet, the role of conscious willing is to /control/ not
+   /initiate/ action
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  The role of conscious free will would be, then, not to initiate a
+  voluntary act, but rather to control whether the act takes place.
+  (Libet, 7)
+#+END_QUOTE
+
+#+ATTR_REVEAL: :frag (appear)
+-  Conscious willing may not play a causal role in the initiation of
+   action
+-  Conscious willing may play a role in the ‘veto' of an intention to
+   act
+   #+ATTR_REVEAL: :frag (appear)
+   -  No free will, but free "won't"
+
+* Sinnott-Armstrong on Libet
+  :PROPERTIES:
+  :CUSTOM_ID: sinnott-armstrong-on-libet
+  :END:
+
+** Review of Libet
+  :PROPERTIES:
+  :CUSTOM_ID: review-of-libet
+  :END:
+
+*** The Experiment
+   :PROPERTIES:
+   :CUSTOM_ID: the-experiment
+   :END:
+
+-  The temporal order of an spontaneous voluntary choice and the neural
+   activity (readiness potential) leading to the action is the reverse
+   of what was expected
+   #+ATTR_REVEAL: :frag (appear)
+   -  Expected: choice, readiness potential, action
+   -  Actual result: readiness potential, choice, action
+
+*** The Efficacy of Conscious Willing
+
+#+ATTR_REVEAL: :frag (appear)
+-  On one interpretation of the experiment, conscious willing is not
+   casually efficacious in the generation of behavior
+-  According to Libet, the role of conscious willing is to /control/ not
+   /initiate/ action
+-  Conscious willing may not play a causal role in the initiation of
+   action
+-  Conscious willing may play a role in the ‘veto' of an intention to
+   act
+   #+ATTR_REVEAL: :frag (appear)
+   -  We have 'free won't' instead of free will
+
+** What Libet's Experiment Does Not Show
+#+ATTR_REVEAL: :frag (appear)
+-  All actions are determined
+   #+ATTR_REVEAL: :frag (appear)                                                   
+   -  Libet's experiments examine whether conscious willings are
+      causally efficacious, not whether willings in general are
+      free/determined
+
+#+REVEAL: split
+-  There are no such things as intentions or willings
+   #+ATTR_REVEAL: :frag (appear)
+   -  The experiments only concern conscious willings or consciousness
+      of will, not intentions or willings generally
+
+#+REVEAL: split
+-  Conscious states (or conscious willings) in general are epiphenomenal
+   #+ATTR_REVEAL: :frag (appear)
+   -  Appeal to conscious intentions seems necessary to explain why the
+      subjects of the experiments were there in the first place and
+      followed Libet's directions
+
+#+REVEAL: split
+-  There are no casually efficacious ‘proximal' willings or intentions
+   #+ATTR_REVEAL: :frag (appear)
+   -  There are in action generally (e.g. willings may have ‘veto'
+      power)
+   -  Conscious willing may well play a role in the initiation of other
+      kinds of actions
+
+** What Libet's Experiment Does Show
+
+#+BEGIN_QUOTE
+  What do Libet's results show? He showed that, in /some/ cases, a
+  /conscious proximal/ will to move now does /not initiate/ the brain
+  activity (or RP) that begins the process that produces the bodily
+  movement or action. (Sinnott-Armstrong, 239)
+#+END_QUOTE
+
+** Conscious Willing & Legal Responsibility
+
+-  Our legal practices (e.g. the Model Penal Code) presuppose the causal
+   efficacy of conscious willing for attribution of legal responsibility
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  /The Model Penal Code (MPC) Section 2.01:/ (1) A person is not guilty
+  of an offense unless his liability is based on conduct that includes a
+  voluntary act or the omission to perform an act of which he is
+  physically capable. (2) The following are not voluntary acts within
+  the meaning of this Section: (a) a reflex or convulsion; (b) a bodily
+  movement during unconsciousness or sleep; (c) conduct during hypnosis
+  or resulting from hypnotic suggestion; (d) a bodily movement that
+  otherwise is not a product of the effort or determination of the
+  actor, either conscious or habitual.
+#+END_QUOTE
+
+#+REVEAL: split
+-  Libet's results suggest that quick, unplanned actions may be the
+   result of automatic processes over which the subject has little to no
+   control or ‘veto' power
+#+ATTR_REVEAL: :frag (appear)
+-  Legal attribution of responsibility may need to take into account
+   Libet's results
+
+** Conscious Willing & Moral Responsibility
+
+-  Is the causal efficacy of conscious willing necessary for /moral/
+   responsibility?
+   #+ATTR_REVEAL: :frag (appear)
+   -  legal evidence suggests that it is
+   -  examination of cases also provides support
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  Consider someone who is asleep but grabs a knife, walks into an
+  adjoining bedroom, stabs her daughter, walks back to her own bedroom,
+  and is completely surprised in the morning to find her daughter
+  dead...many people would view it as morally unfair to hold real
+  sleepwalkers responsible. Why? The answer seems to be that they are
+  seen as lacking consciousness and, hence, control. (Sinnott-Armstrong, 237)
+#+END_QUOTE
+
+#+REVEAL: split
+Is the sleepwalker (morally) responsible for killing her daughter?
+
+#+BEGIN_QUOTE
+  A. Yes\\
+  B. No\\
+  C. Not sure\\
+#+END_QUOTE
+
+** Conscious Willing & Control
+
+#+ATTR_REVEAL: :frag (appear)
+-  Presumption that consciousness is necessary for control, and that
+   control is necessary for moral responsibility
+   #+ATTR_REVEAL: :frag (appear)
+   -  presumes something like the Source Requirement
+#+ATTR_REVEAL: :frag (appear)
+-  General consciousness is not enough
+   #+ATTR_REVEAL: :frag (appear)
+   -  disorders such as Tourette's Syndrome and ‘Alien Hand' Syndrome
+      are examples in which consciousness is present but not causally
+      efficacious, so there is no attribution of responsibility
+
+** Conscious Willing & Moral Responsibility
+
+#+BEGIN_QUOTE
+  Imagine that someone plans to kill a rival by running him over at 9:00
+  as the rival jogs by his house. It is 9:00 now, but the driver thinks
+  it is 8:00, since he forgot daylight saving time, so the driver
+  decides to go buy breakfast. As he drives carefully out of his
+  driveway, the jogger appears unexpectedly and is run over and killed
+  by accident. The driver did will to kill the jogger, had that will at
+  the time when he killed the jogger, and killed him in the intended way
+  at the intended place and time. (Sinnott-Armstrong, 237)
+#+END_QUOTE
+
+#+REVEAL: split
+Is the driver morally responsible for his rival's death?
+
+#+BEGIN_QUOTE
+  A. Yes\\
+  B. No\\
+  C. Not sure\\
+#+END_QUOTE
+
+#+REVEAL: split
+-  Is the driver morally responsible for his rival's death?
+   #+ATTR_REVEAL: :frag (appear)
+   -  No: the relevant intention was the driver's desire for breakfast,
+      which accidentally resulted in the death of his rival
+#+ATTR_REVEAL: :frag (appear)
+-  For an intention to morally culpable it must be causally relevant
+
+** The Significance of Libet's Results 
+
+-  Libet's experiments show that /some/ acts of /proximal willing/ are
+   not obviously casually efficacious in the production of /certain
+   kinds/ of behavior
+
+#+REVEAL: split
+#+BEGIN_QUOTE
+  Various moves are available if an act does not seem to result from
+  conscious will: Either (a) we cannot hold the person responsible at
+  all or (b) we need to remove consciousness from the requirements for
+  responsibility or (c) we need to specify that only general
+  consciousness is required or (d) we need to stretch the “action” to
+  include a prior voluntary act or (e) we need to reduce the legal
+  effects of minimal or automatic acts (e.g., by mitigation).
+  (Sinnott-Armstrong, 245)
+#+END_QUOTE
+
+
+* Quizzes
+** Week 1 - Argument
+1. An argument consists of two parts -- the evidence, and what follows
+   from it. What do we call each of these two parts?
+2. The parts of an argument must be statements. What is a statement?
+3. If the premises of a valid argument are true, is the conclusion true?
+4. Can a valid argument have a false conclusion?
+5. Is a sound argument also valid?
+
+1. An argument consists of two parts -- the evidence, and what follows
+   from it. What do we call each of these two parts?
+2. The parts of an argument must be statements. Is a question a
+   statement?
+3. Can a valid argument have false premises?
+4. Can a sound argument have false premises?
+5. Can a sound argument have a false conclusion?
+** Week 2 - Nagel on Physicalism
+1. Which form of consciousness does Nagel think is a threat to physicalism?
+
+A. autonomy
+B. sentience
+C. introspection
+D. phenomenal consciousness
+
+2. True or false?: Nagel thinks that facts about phenomenal consciousness are available from multiple points of view.
+
+A. True
+B. False
+
+3. Nagel conceives of objectivity in what way?
+
+A. available only from one point of view
+B. existing independently of any living being
+C. available in principle from multiple points of view
+D. not relative to any perceiver
+
+4. Why does Nagel think that consideration of the bat’s experience is important?
+
+A. we don’t know whether bats have experience
+B. the perceptual experience of a bat is radically different from our own
+C. bats are cool
+D. bats lack intelligence
+
+D, B, C, B
+
+----
+
+1. Which form of consciousness does Nagel think is a threat to physicalism?
+
+A. phenomenal consciousness
+B. sentience
+C. introspection
+D. wakefulness
+
+2. True or false?: Nagel thinks that physical facts are available from multiple points of view.
+
+A. True
+B. False
+
+3. Nagel conceives of subjectivity in what way?
+
+A. available only from one point of view
+B. existing independently of any living being
+C. available in principle from multiple points of view
+D. not relative to any perceiver
+
+4. Why does Nagel think that consideration of the bat’s experience is important?
+
+A. we don’t know whether bats have experience
+B. the perceptual experience of a bat is radically different from our own
+C. bats are cool
+D. bats lack intelligence
+
+A, A, A, B
+** Week 4 - the Knowledge argument
+1. Before Mary leaves the B&W room she knows:
+
+a. all the phenomenal information concerning color
+b. all the physical information concerning color
+c. that physicalism is false
+d. that qualia exist
+
+2. True or False: According to the Knowledge Argument there is more to knowing what it is like to see a color than just knowing the physical information/facts.
+
+3. True or False: Jackson thinks that qualia are epiphenomenal
+
+4. True or False: The physicalist must deny that Mary learns anything when she leaves the B&W room
+
+Answers: b, T, T, F
+
+1. According to Jackson, after Mary leaves the B&W room she learns
+
+a. all the physical information about color
+b. new physical information about color
+c. new phenomenal information (or new phenomenal facts) about color
+d. no new information
+
+2. True or False: According to the Knowledge Argument there is more to knowing what it is like to see a color than just knowing the physical information/facts.
+
+3. True or False: The physicalist asserts that Mary learns phenomenal
+   information when she leaves the B&W room
+
+4. True or False: Jackson does not think that qualia are epiphenomenal
+
+** Week 5 - P vs. A Consciousness
+1. According to the "target reasoning" the function of consciousness is to tell about what it like to experience something
+A. True \\
+B. False \\
+
+2. Block defines access consciousness in terms of what it is like to have an experience
+A. True \\
+B. False \\
+
+3. Is the following argument valid?
+
+i. If it is raining then the streets are wet
+ii. It is not raining
+iii. Therefore, the streets are not wet
+
+4. According to Block, for a state to be phenomenally conscious, we must be attending to it
+A. True \\
+B. False \\
+
+----
+
+1. Is the following argument valid?
+
+i. If it is raining then the streets are wet
+ii. The streets are not wet
+iii. Therefore, it is not raining
+
+2. Block defines phenomenal consciousness in terms of a property or
+   properties possessed by a mental state such that they constitute what
+   it is like to be in that state
+A. True \\
+B. False \\
+
+3. Block thinks that regular blindsight patients have access consciousness 
+A. True \\
+B. False \\
+
+4. According to Block, for a state to be phenomenally conscious, we must be attending to it
+A. True \\
+B. False \\
+
+** Week 6 - Representation
+1. Crane argues that pictorial representation is not fundamental because
+
+     A. it requires imagination
+     B. it requires pictures
+     C. it requires interpretation
+     D. it requires drawing
+
+2. Pictorial representations cannot, without further interpretation, represent logical relationships. True or False?
+
+3. Crane argues that linguistic representation is not fundamental
+   because
+
+   A. it must be spoken
+   B. it must be written
+   C. the meaning of a word is conventional and must be interpreted
+   D. the meaning of a word depends on its context
+
+4. Crane argues that mental representation is fundamental in part because
+
+     A. it is conventional
+     B. it is pictorial
+     C. it requires interpretation
+     D. it requires neither convention nor interpretation
+
+Answers: C, T, C, D
+
+** Week 7 - AI
+1. Strong AI says that 
+
+A. Robots can lift more than humans \\
+B. Robots live are tougher than humans \\
+C. A computer program of sufficient complexity can model the function of
+human thought \\
+D. A computer program of sufficient complexity can think
+
+2.  According to Turing we know other people's minds via their behaviour
+A. True \\ 
+B. False \\
+
+3. According to Searle, Strong AI fails because 
+A. Syntax cannot be derived from semantics \\
+B. The room is not a perfect imitation of a Chinese speaker \\
+C. Semantics cannot be derived from syntax \\
+D. Computer programs are more than just semantics \\
+
+4.  According to Strong AI the person in the room understands Chinese
+A. True \\
+B. False 
+
+** Week 10 - Moral responsibility
+1. Determinism says that
+     A. There are no choices
+     B. The current state of the subject is necessitated by its previous states plus the laws of nature
+     C. The current state of the subject is necessitated by its previous states alone
+     D. We do not have free will
+2. T/F: Incompatibilism says that there is no free will of the kind necessary for moral responsibility
+3. T/F: Determinism is incompatible with the appearance of choice
+4. T/F: According to the principle of alternate possibilities, being morally responsible for an action requires that one could have done otherwise
+
+Answers: B, F, F, T
+** Week 11 - Control
+1. Determinism says that:
+
+A. we cannot make any choices   
+B. our choices are not causally effective   
+C. the state of subject, plus the laws of nature, necessitate the future
+states of the subject   
+D. we are free
+
+2. Showing that determinism is false is sufficient for showing that we
+   have free will  
+
+A. True    
+B. False
+
+3. Strawson argues that you cannot be truly responsible for the way you
+   are because
+
+A. you cannot do otherwise than you do    
+B. indeterminism is true    
+C. determinism is false   
+D. you cannot have intentionally brought it about that you are as you are now in certain crucial respects
+
+4. Leeway incompatibilism says that
+
+A. determinism is false  
+B. determinism is true  
+C. if determinism is true then one could not do otherwise than one does  
+D. if determinism is true then one cannot be the proper source of one's actions
+
+Answers: C, B, D, C
+
+* Clicker Questions
+** Logic & Argument
+*** Every argument must have a premise and a conclusion 
+A. True  \\
+B. False  
+*** Can a valid argument have a false conclusion?
+A. Yes  \\
+B. No  
+*** Can a sound argument have a false conclusion?
+A. Yes  \\
+B. No  
+*** In a deductive argument the truth of the conclusion is made probable by the truth of the premises
+A. True  \\
+B. False  
+** Physicalism & Consciousness
+** The knowledge argument
+*** A phenomenal zombie is really good at being a zombie
+A. True  \\
+B. False
+*** According to the Knowledge Argument there is more to knowing what it is like to see a color than just knowing the physical information/facts
+A. True  \\
+B. False
+*** Jackson thinks that qualia are epiphenomenal
+A. True \\
+B. False \\
+*** Lewis defends physicalism by arguing for the hypothesis of phenomenal information
+A. True \\
+B. False \\
+** Confusion about consciousness
+*** According to the "target reasoning" the function of consciousness is to tell about what it like to experience something
+A. True \\
+B. False \\
+*** Block defines access consciousness in terms of what it is like to have an experience
+A. True \\
+B. False \\
+*** Block thinks that regular blindsight patients have access consciousness only
+A. True \\
+B. False \\
+*** According to Block, for a state to be phenomenally conscious, we must be attending to it
+A. True \\
+B. False \\
+** Representation
+*** Crane argues that pictorial representation is not fundamental because
+
+     A. it requires imagination \\  
+     B. it requires pictures \\
+     C. it requires interpretation \\
+     D. it requires language \\
+
+*** Crane argues that pictorial representations cannot, without further interpretation, represent logical relationships 
+
+A. True \\
+B. False \\
+
+*** Crane argues that mental representation is fundamental in part because
+
+     A. it is conventional \\
+     B. it is not conventional \\
+     C. it requires interpretation \\
+     D. it requires neither convention nor interpretation \\
+** AI & The Turing Test
+*** Strong AI says that
+A. Robots can lift more than humans \\
+B. Robots live are tougher than humans \\
+C. A computer program of sufficient complexity can model the function of
+human thought \\
+D. A computer program of sufficient complexity can think
+
+#+BEGIN_NOTES
+-  Strong AI: :: thinking is constituted by the manipulation of formal
+   symbols, such as occurs in a computer program
+-  Weak AI: :: thinking may be modeled by formal symbol systems, such as
+   computer programs
+#+END_NOTES
+
+*** The imitation game assumes  human linguistic behaviour is...
+A. The result of emotion \\
+B. The easiest way to see if a computer can think \\
+C. The cause of complex linguistic behaviour  \\
+D. The most difficult thing for a computer program to emulate 
+
+*** According to Turing we know other people's minds via their behaviour
+A. True \\ 
+B. False \\
+
+#+BEGIN_NOTES
+1. For some arbitrary time period, there may be no discernible
+   difference between the linguistic behavior of a person and that of a
+   machine
+2. If there is no discernible difference in linguistic behavior between
+   man and machine, then there is no reason to think that there is any
+   underlying difference in the causes of that behavior
+3. $\therefore$ If we are willing to say that it is intelligent thought
+   that is the cause of the linguistic behavior in the person we should
+   be willing to say the same thing about the machine
+#+END_NOTES
+** The Chinese Room Argument
+*** According to Searle, the person in the 'Chinese Room' does not understand Chinese, no matter how good they are at manipulating symbols
+A. True \\
+B. False \\ 
+*** According to Searle, Strong AI fails because 
+A. Syntax cannot be derived from semantics \\
+B. The room is not a perfect imitation of a Chinese speaker \\
+C. Semantics cannot be derived from syntax \\
+D. Computer programs are more than just semantics \\
+*** The person in the Chinese Room does not understand Chinese 
+A. True \\
+B. False \\
+*** According to Strong AI the person in the room understands Chinese
+A. True \\
+B. False 
+
+** Free Will & PAP
+*** Question 1
+
+Determinism says that there is no free will.
+
+#+BEGIN_QUOTE
+  A. True\\
+  B. False\\
+#+END_QUOTE
+
+*** Determinism
+
+-  Determinism: :: For any state of the subject, that subject's states
+   are necessitated by the condition of its previous states plus the
+   laws of nature.
+
+-  Is determinism compatible with free will?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Yes: ‘Compatibilism'
+   -  No: ‘Incompatibilism'
+#+BEGIN_NOTES
+1. Is the truth of determinism compatible with free will?
+2. Is determinism true?
+#+END_NOTES
+
+*** Determinism & Free Will
+
+1. Is the truth of determinism compatible with free will?
+
+   -  Yes: Compatibilism
+   -  No: Incompatibilism
+
+
+*** Alternative Possibilities & Incompatibilism
+
+-  Why might determinism & freedom be incompatible?
+   #+ATTR_REVEAL: :frag (appear)
+   -  Determinism is like /coercion/ or /manipulation/
+   -  Coercion/manipulation deprives us of the /power or ability to do
+      or choose otherwise/.
+
+*** Question 2
+
+The Principle of Alternate Possibilities says:
+
+#+BEGIN_QUOTE
+  A. Moral responsibility requires being able to do otherwise\\
+  B. Moral responsibility requires being able to act on reasons\\
+  C. We could never do otherwise than what we have done\\
+  D. We could at least sometimes do otherwise that what we do\\
+#+END_QUOTE
+
+*** Alternative Possibilities & Incompatibilism
+
+#+ATTR_REVEAL: :frag (appear)
+-  The Principle of Alternate Possibilities (PAP): :: a person is
+   morally responsible for what s/he has done only if s/he could have
+   done otherwise (or chosen otherwise)
+-  Leeway Incompatibilism: :: The truth of determinism is incompatible
+   with an agent's having the capacity to do otherwise than as she did
+
+*** Question 3
+
+According to Frankfurt, determinism and free will are compatible
+because:
+
+#+BEGIN_QUOTE
+  A. We couldn't have chosen otherwise\\
+  B. Responsibility is based on the reasons for which we act\\
+  C. Determinism is false\\
+  D. We can always choose to do otherwise\\
+#+END_QUOTE
+
+** Free Will & Control
+*** Question 1
+
+The source requirement says that
+
+A. we have free will\\
+B. moral responsibility depends on being able to do otherwise\\
+C. control is irrelevant to moral responsibility\\
+D. responsibility for a choice requires that one be the appropriate source of
+the choice
+
+*** Agency & Control
+
+-  The Source Requirement: :: If an agent is morally responsible for her
+   deciding to perform an action, then the production of this decision
+   must be something over which the agent has /control/, and an agent is
+   not morally responsible for the decision if it is produced by a
+   source over which she has no control
+
+*** Question 2
+
+Determinism says that:
+
+A. we cannot make any choices\\
+B. our choices are not causally effective\\
+C. our current states are necessitated by our past states in
+conjunction with physical laws\\
+D. we are free
+
+*** Determinism
+
+-  Determinism: :: For any state of the subject, that subject's states
+   are necessitated by the condition of its previous states plus the
+   laws of nature.
+
+*** Question 3
+
+If determinism is false then we have free will
+
+A. True\\
+B. False
+
+*** Question 4
+
+You cannot be truly responsible for the way you are because
+
+A. you cannot do otherwise than you do\\
+B. determinism is true\\
+C. determinism is false\\
+D. in certain crucial respects you cannot have intentionally brought
+it about that you are as you are now
+
+*** Strawson's Argument
+1. You do what you do because of the way you are.
+2. To be morally responsible for what you do you must be truly morally
+   responsible for the way you are -- at least in certain crucial mental
+   respects.
+3. To be truly responsible for the way you are, you must have
+   intentionally brought it about that you are the way you are
+4. It is impossible to have intentionally brought about how one is
+5. \therefore You cannot be truly morally responsible for what you do,
+   because you cannot be truly responsible for the way you are
+
+*** Question 5
+
+Why does Strawson think that it is absurd to believe that you could have
+intentionally brought it about that you are the way you are now?
+
+A. Determinism is true\\
+B. We cannot do otherwise than we do\\
+C. No one is truly morally responsible\\
+D. We would need to appeal to an infinite number of different characters or
+natures to explain any intentional action
+
+#+REVEAL: split
+1. Suppose that you have somehow intentionally brought it about that you
+   are the way you now are, and that you have brought this about in such
+   a way that you can now be said to be truly responsible for being the
+   way you now are
+2. Your intentional act, for which you are responsible, is due to some
+   nature N
+3. If you are truly responsible for this act you must be truly
+   responsible for having the nature N in virtue of which you
+   intentionally brought it about that you are the way you now are
+4. \therefore You must have intentionally brought about N, which
+   requires that you have some further nature N1, in virtue of which you
+   brought about your nature N... (absurd infinite regress ensues)
+5. \therefore It is impossible for you to have intentionally brought
+   it about that you are as you are now
+
+#+REVEAL: split
+Are we truly morally responsible for our actions?
+
+A. Yes\\
+B. No
