@@ -1,0 +1,3 @@
+[submodule "elisp/dashboard"]
+	path = elisp/dashboard
+	url = https://github.com/rakanalh/emacs-dashboard
