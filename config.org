@@ -568,11 +568,11 @@ And here's how we tell Emacs to use the font we want to use.
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
                       :family "Bitstream Vera Sans Mono"
-                      :height 130
+                      :height 120
                       :weight 'normal
                       :width 'normal
                       )
-  (setq-default line-spacing 3)
+  (setq-default line-spacing 2)
   ;; (set-face-attribute 'default nil
   ;;                     :family "Inconsolata LGC"
   ;;                     :height 120

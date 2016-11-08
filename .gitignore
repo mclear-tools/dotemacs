@@ -28,3 +28,7 @@ config.el*
 /games/tetris-scores
 bak.*
 /.persistent-scratch
+*.git!COMMIT_EDITMSG
+*COMMIT_EDITMSG
+*.git!COMMIT_EDITMSG
+*.git!COMMIT_EDITMSG
