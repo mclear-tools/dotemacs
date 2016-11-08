@@ -1735,7 +1735,8 @@ Keybindings for managing packages
     "tc" 'centered-cursor-mode
     "tC" 'centered-window-mode
     "td" 'distraction-free
-    "tf" 'toggle-frame-fullscreen
+    "tf" 'toggle-serif
+    "tF" 'toggle-frame-fullscreen
     "tg" 'git-gutter+-mode
     "th" 'global-hl-line-mode
     "te" 'toggle-indicate-empty-lines
@@ -1748,6 +1749,7 @@ Keybindings for managing packages
     "tr" 'rainbow-identifiers-mode
     "ts" 'toggle-dark-light-theme
     "tt" 'helm-themes
+    "tw" 'writeroom-mode
     ;; "tt" 'counsel-load-theme
   )
 #+END_SRC
@@ -2420,23 +2422,32 @@ the packages that are most helpful for this.
 #+END_SRC
 ** CHECK Distraction free mode
 This simulates programs like writeroom that provide a distraction-free
-mode of writing. But it tends not to work very well (turns on randomly
-in buffers). 
+mode of writing. 
+#+BEGIN_SRC emacs-lisp
+(use-package writeroom-mode
+  :commands (writeroom-mode)
+)
+#+END_SRC
+
+Not bad, but tends not to work very well (turns on randomly
+in buffers). :(
 #+BEGIN_SRC emacs-lisp 
   (use-package centered-window-mode
     :defer t
+    :disabled t
     :init
     (setq cwm-centered-window-width 80))
 
     (defun distraction-free ()
     "distraction free writing"
       (interactive)
-      (toggle-frame-fullscreen) 
+      ;; (toggle-frame-fullscreen) 
       (git-gutter+-mode 0) 
       (linum-mode 0) 
-      (visual-line-mode)
-      (hidden-mode-line-mode)
-      (centered-window-mode) 
+      ;; (visual-line-mode)
+      (writeroom-mode)
+      ;; (hidden-mode-line-mode)
+      ;; (centered-window-mode) 
       )
 #+END_SRC
 ** Helm-Bibtex
