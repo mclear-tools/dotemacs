@@ -31,8 +31,8 @@ bak.*
 *.git!COMMIT_EDITMSG
 *COMMIT_EDITMSG
 *.git!COMMIT_EDITMSG
-*.git!COMMIT_EDITMSG
-backup/*
+backup/
 delted
 deleted
 backup/*
+backup/
