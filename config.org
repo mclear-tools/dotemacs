@@ -3740,7 +3740,14 @@ well with org-mode using org-indent. So I don't use it globally.
     :defer t
   )
 #+END_SRC
- 
+*** PHP
+#+BEGIN_SRC emacs-lisp
+(use-package php-mode
+  :defer t
+  :init
+  (dolist (pattern '("\\.php\\'"))
+  (add-to-list 'auto-mode-alist (cons pattern 'php-mode))))
+#+END_SRC
 *** Shell script mode
 #+BEGIN_SRC emacs-lisp
   (use-package sh-script
