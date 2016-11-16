@@ -566,19 +566,19 @@ brew cask install font-inconsolata
 And here's how we tell Emacs to use the font we want to use.
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil
-                      :family "Bitstream Vera Sans Mono"
-                      :height 120
-                      :weight 'normal
-                      :width 'normal
-                      )
-  (setq-default line-spacing 2)
   ;; (set-face-attribute 'default nil
-  ;;                     :family "Inconsolata LGC"
+  ;;                     :family "Bitstream Vera Sans Mono"
   ;;                     :height 120
   ;;                     :weight 'normal
   ;;                     :width 'normal
   ;;                     )
+  ;; (setq-default line-spacing 2)
+  (set-face-attribute 'default nil
+                      :family "Inconsolata LGC"
+                      :height 120
+                      :weight 'normal
+                      :width 'normal
+                      )
   (global-set-key (kbd "C-+") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
   ;; C-x C-0 restores the default font size
@@ -627,21 +627,24 @@ This is a really nice powerline-ish modeline.
       ;; size of modeline
       (setq powerline-height 21)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-      (setq-default powerline-default-separator nil) 
+      ;; (setq-default powerline-default-separator nil) 
       ;; (setq-default powerline-default-separator 'utf-8) 
+      ;; (setq powerline-utf-8-separator-left #xe0b0)
+      ;; (setq powerline-utf-8-separator-right #xe0b2)
+      ;; (set-face-attribute 'mode-line nil :font "Source Code Pro-14")
 
       ;; small triangles
-      ;; (setq powerline-utf-8-separator-left 9654 
-      ;;      powerline-utf-8-separator-right 9664)
-
+      ;; (setq powerline-utf-8-separator-left #x25ba)
+      ;; (setq powerline-utf-8-separator-right #x25c4)
+      ;; (setq powerline-text-scale-factor .3)
       ;; half circles
       ;; (setq powerline-utf-8-separator-left 9687 
       ;;       powerline-utf-8-separator-right 9686)
 
       ;; slant (requires srbg support)
-      ;; (setq-default powerline-default-separator 'slant) 
-      ;; (setq spaceline-separator-dir-left '(right . right))
-      ;; (setq spaceline-separator-dir-right '(right . right))
+      (setq-default powerline-default-separator 'slant) 
+      (setq spaceline-separator-dir-left '(right . right))
+      (setq spaceline-separator-dir-right '(right . right))
 
       ;; fancy git icon for the modeline
       (defadvice vc-mode-line (after strip-backend () activate)
@@ -2348,7 +2351,7 @@ There are some other useful setup packages for evil
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
     (let ((undo-dir (concat user-cache-directory "undo")))
-      (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
+      (setq undo-tree-history-directory-alist '((".*" . ,undo-dir)))))
 
   ;; (use-package undo-tree
   ;;   :ensure t
