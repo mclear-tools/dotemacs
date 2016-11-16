@@ -2423,7 +2423,7 @@ the packages that are most helpful for this.
 
 ;;; org-devonthink.el ends here
 #+END_SRC
-** CHECK Distraction free mode
+** Distraction free mode
 This simulates programs like writeroom that provide a distraction-free
 mode of writing. 
 #+BEGIN_SRC emacs-lisp
@@ -2461,7 +2461,7 @@ Great for managing citations and notes
     :config
     (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
           bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
-          bibtex-completion-pdf-field "file"
+          bibtex-completion-pdf-field nil
           bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
           bibtex-completion-additional-search-fields '(keywords)
           bibtex-completion-notes-extension ".org"
@@ -2645,7 +2645,7 @@ Pandoc mode for markdown conversion
   (interactive)
   (any-deft "~/projects/notebook/content/org_notes"))
 #+END_SRC
-** Org
+** Org-mode
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 *** Base settings
 #+BEGIN_SRC emacs-lisp
@@ -2660,7 +2660,7 @@ Pandoc mode for markdown conversion
           org-return-follows-link t ;; make RET follow links
           org-hide-emphasis-markers t  ;; hide markers
           org-pretty-entities t ;; make latex look good
-          org-fontify-quote-and-verse-blocks t ;; make quotes stand out
+          org-fontify-quote-and-verse-blocks nil ;; make quotes stand out
           org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
           org-ellipsis "↴"  ;; nicer elipses
           org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
