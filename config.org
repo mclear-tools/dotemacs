@@ -480,29 +480,33 @@ from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-thres
 #+END_SRC
 ** Other settings
 #+BEGIN_SRC emacs-lisp
-  ;; Keep focus while navigating help buffers
-  (setq help-window-select 't)
+   ;; Keep focus while navigating help buffers
+   (setq help-window-select 't)
 
-  ;; Save clipboard contents into kill-ring before replace them
-  (setq save-interprogram-paste-before-kill t)
+   ;; Save clipboard contents into kill-ring before replace them
+   (setq save-interprogram-paste-before-kill t)
 
-  ;; Single space between sentences is more widespread than double
-  (setq-default sentence-end-double-space nil)
+   ;; Single space between sentences is more widespread than double
+   (setq-default sentence-end-double-space nil)
 
-  ;; use-package default installs all packages
-  (setq use-package-always-ensure t)
+   ;; use-package default installs all packages
+   (setq use-package-always-ensure t)
 
-  ;; don't use dired-ls-dired
-  (setq dired-use-ls-dired nil)
-  ;; stop asking about recurisve actions
-  (setq dired-recursive-copies 'always)
-  (setq dired-recursive-deletes 'always)
-  
-  ;; Save whatever’s in the current (system) clipboard before
-  ;; replacing it with the Emacs’ text.
-  ;; https://github.com/dakrone/eos/blob/master/eos.org
-  (setq save-interprogram-paste-before-kill t)
+   ;; don't use dired-ls-dired
+  ;; (setq dired-use-ls-dired nil)
+  (setq insert-directory-program "gls" dired-use-ls-dired t)
+   ;; stop asking about recurisve actions
+   (setq dired-recursive-copies 'always)
+   (setq dired-recursive-deletes 'always)
+
+   ;; Save whatever’s in the current (system) clipboard before
+   ;; replacing it with the Emacs’ text.
+   ;; https://github.com/dakrone/eos/blob/master/eos.org
+   (setq save-interprogram-paste-before-kill t)
 #+END_SRC
+
+#+RESULTS:
+: t
 
 * Appearance & UI
 ** Centered Cursor Mode
@@ -617,6 +621,7 @@ highlight TODO statements in comments
   :config
   (setq global-hl-todo-mode t))
 #+END_SRC
+
 ** Modeline
 *** Spaceline
 This is a really nice powerline-ish modeline.
@@ -642,9 +647,9 @@ This is a really nice powerline-ish modeline.
       ;;       powerline-utf-8-separator-right 9686)
 
       ;; slant (requires srbg support)
-      (setq-default powerline-default-separator 'slant) 
-      (setq spaceline-separator-dir-left '(right . right))
-      (setq spaceline-separator-dir-right '(right . right))
+      (setq-default powerline-default-separator 'arrow) 
+      ;; (setq spaceline-separator-dir-left '(right . right))
+      ;; (setq spaceline-separator-dir-right '(right . right))
 
       ;; fancy git icon for the modeline
       (defadvice vc-mode-line (after strip-backend () activate)
@@ -711,6 +716,7 @@ Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
 ** Smooth Scrolling
 #+BEGIN_SRC emacs-lisp
   (use-package smooth-scrolling
+    :disabled t
     :defer 2
     :config (setq smooth-scroll-margin 2)
     :init (smooth-scrolling-mode 1))
@@ -1035,6 +1041,16 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
 
   ;; the following isn't currently working with org-mode 9
   ;; (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
+#+END_SRC
+** Move File
+#+BEGIN_SRC emacs-lisp
+(defun move-file ()
+  "Write this file to a new location, and delete the old one."
+  (interactive)
+  (let ((old-location (buffer-file-name)))
+    (call-interactively #'write-file)
+    (when old-location
+      (delete-file old-location))))
 #+END_SRC
 ** Pandoc conversion from clipboard
 #+BEGIN_SRC emacs-lisp
@@ -1395,6 +1411,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+BEGIN_SRC emacs-lisp
 (cpm-leader1 
 "a"  '(:ignore t :which-key "Applications") 
+"ac" '(:ignore t :which-key "Cmus")
 "ad" 'deer
 "ae" 'eshell
 "am" 'multi-term
@@ -1848,41 +1865,40 @@ Keybindings for managing packages
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
- (use-package projectile
-   :commands (projectile-ack
-              projectile-ag
-              projectile-compile-project
-              projectile-dired
-              projectile-find-dir
-              projectile-find-file
-              projectile-find-tag
-              projectile-find-test-file
-              projectile-grep
-              projectile-invalidate-cache
-              projectile-kill-buffers
-              projectile-multi-occur
-              projectile-project-p
-              projectile-project-root
-              projectile-recentf
-              projectile-regenerate-tags
-              projectile-replace
-              projectile-run-async-shell-command-in-root
-              projectile-run-shell-command-in-root
-              projectile-switch-project
-              projectile-switch-to-buffer
-              projectile-vc)
-   :config
-   ;; save projectile-known-projects-file in cache folder
-   (setq projectile-known-projects-file
-       (concat user-cache-directory "projectile-bookmarks.eld"))
-   (setq projectile-cache-file
-       (concat user-cache-directory "projectile.cache"))
-   (progn
-     (projectile-global-mode)))
+   (use-package projectile
+     ;; :commands (projectile-ack
+     ;;            projectile-ag
+     ;;            projectile-compile-project
+     ;;            projectile-dired
+     ;;            projectile-find-dir
+     ;;            projectile-find-file
+     ;;            projectile-find-tag
+     ;;            projectile-find-test-file
+     ;;            projectile-grep
+     ;;            projectile-invalidate-cache
+     ;;            projectile-kill-buffers
+     ;;            projectile-multi-occur
+     ;;            projectile-project-p
+     ;;            projectile-project-root
+     ;;            projectile-recentf
+     ;;            projectile-regenerate-tags
+     ;;            projectile-replace
+     ;;            projectile-run-async-shell-command-in-root
+     ;;            projectile-run-shell-command-in-root
+     ;;            projectile-switch-project
+     ;;            projectile-switch-to-buffer
+     ;;            projectile-vc)
+     :config
+     ;; save projectile-known-projects-file in cache folder
+     (setq projectile-known-projects-file
+         (concat user-cache-directory "projectile-bookmarks.eld"))
+     (setq projectile-cache-file
+         (concat user-cache-directory "projectile.cache"))
+     (projectile-global-mode))
      
-(use-package counsel-projectile
-  :after counsel
-  :commands counsel-projectile)
+  (use-package counsel-projectile
+    :after counsel
+    :commands counsel-projectile)
 #+END_SRC
 ** Ranger & Deer
 Better dired navigation using ranger-like settings
@@ -2208,8 +2224,8 @@ Numbered window shortcuts for Emacs
 * Evil Mode
 I'm coming from vim, and want modal keybidings in emacs. There are other, less
 radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
-package for modal editing. But nothing beats full vim keybindings. And that is
-what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
+package for modal editing (see also [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]]). But nothing beats full vim
+keybindings. And that is what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
 ** Evil mode
 The essential stuff
 #+begin_src emacs-lisp 
@@ -2430,11 +2446,19 @@ mode of writing.
 (use-package writeroom-mode
   :commands (writeroom-mode)
 )
+    (defun distraction-free ()
+    "distraction free writing"
+      (interactive)
+      (git-gutter+-mode 0) 
+      (linum-mode 0) 
+      (writeroom-mode)
+      )
+
 #+END_SRC
 
 Not bad, but tends not to work very well (turns on randomly
 in buffers). :(
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package centered-window-mode
     :defer t
     :disabled t
@@ -2472,6 +2496,8 @@ Great for managing citations and notes
           (latex-mode    . bibtex-completion-format-citation-cite)
           (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
           (default       . bibtex-completion-format-citation-default)))
+    (setq bibtex-completion-display-formats
+          '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
     ;; Set default action for helm-bibtex as inserting citation
     (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
     (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
@@ -2514,7 +2540,7 @@ Make arbitrary blocks or sentences of text.
                (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
       (setq markdown-command "pandoc"
               markdown-enable-math t
-              markdown-footnote-location "immediately"
+              ;; markdown-footnote-location "end"
               markdown-nested-imenu-heading-index t
               markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
@@ -2547,7 +2573,7 @@ Make arbitrary blocks or sentences of text.
          )
          (add-hook 'markdown-mode-hook #'my-markdown-config)
     )
- 
+
   ;; autofill for markdown
   (defun markdown-auto-fill ()
     "turn on autofill and settings"
@@ -2655,6 +2681,13 @@ Pandoc mode for markdown conversion
     ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
     (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
     (modify-syntax-entry ?= "(=" org-mode-syntax-table)
+    ;; don't underline indents
+    (defface org-dont-underline-indents '((t :underline nil))
+    "Avoid underlining of indentation.")
+    (defun org-dont-underline-indents ()
+    "Remove underlining at indents."
+    (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
+    (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
     :init
     (setq org-src-fontify-natively t ;; better looking source code
           org-return-follows-link t ;; make RET follow links
@@ -2711,7 +2744,7 @@ Pandoc mode for markdown conversion
                               (org-metaright)))))
     ;; Use tab in insert mode
     (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
-        
+
 
       (use-package ox-pandoc
         :commands ox-pandoc
@@ -2720,7 +2753,7 @@ Pandoc mode for markdown conversion
         (require 'ox-pandoc)
         :config
         ;; default options for all output formats
-        (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
+        ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
         (setq org-pandoc-options '((standalone . t)))
         ;; cancel above settings only for 'docx' format
         (setq org-pandoc-options-for-docx '((standalone . nil)))
@@ -2734,7 +2767,7 @@ Pandoc mode for markdown conversion
         :init (add-hook 'org-mode-hook 'org-bullets-mode))
 
       (use-package htmlize :after org :ensure t)
-
+      (use-package org-inlinetask :ensure nil :after org)
       (use-package toc-org
         :defer t
         :init
@@ -3326,6 +3359,7 @@ Interface with Zotero.
   (use-package zotxt
     :diminish (org-zoxt zotxt org-zotxt-mode)
     :config
+    ;; (setq zotxt-default-bibliography-style "mkbehr-short")
     ;; Activate org-zotxt-mode in org-mode buffers
     (add-hook 'org-mode-hook (lambda () (org-zotxt-mode 1)))
     ;; Activate in markdown
@@ -3882,9 +3916,18 @@ well with org-mode using org-indent. So I don't use it globally.
 #+END_SRC
 *** Html
 #+BEGIN_SRC emacs-lisp
-  (use-package web-mode
-    :defer t
-  )
+(use-package web-mode
+  :ensure t
+  :config
+	(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+	(setq web-mode-engines-alist
+      '(("django"    . "\\.html\\'")))
+	(setq web-mode-ac-sources-alist
+      '(("css" . (ac-source-css-property))
+  	 ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+
+  (setq web-mode-enable-auto-closing t)
+  (setq web-mode-enable-auto-quoting t)) ; this fixes the quote problem I mentioned
 #+END_SRC
 *** PHP
 #+BEGIN_SRC emacs-lisp
@@ -4018,11 +4061,13 @@ Auto-revert buffers of changed files
 
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path (concat user-emacs-directory "elisp/dashboard/"))
 (use-package dashboard
-  :ensure nil
   :config
-  (dashboard-setup-startup-hook))
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 5)
+			              (projects . 5)))
+  (dashboard-setup-startup-hook)
+  (evil-set-initial-state 'dashboard-mode 'emacs))
 #+END_SRC
 ** Info+
 #+BEGIN_SRC emacs-lisp
@@ -4104,6 +4149,7 @@ Dashboard depends on this.
 	  (load-file private)))
 #+END_SRC
 * Test Code
+** Serif Fonts
 #+BEGIN_SRC emacs-lisp
 (defvar serif-preserve-default-list nil
   "A list holding the faces that preserve the default family and
@@ -4165,6 +4211,140 @@ Dashboard depends on this.
                (setq default-cookie nil)
                (setq preserve-default-cookies-list nil)
                (message "Restored default fonts."))))))
+#+END_SRC
+** Cmus
+#+BEGIN_SRC emacs-lisp
+;;;; define commands for controlling cmus from emacs
+
+;;; utility (non-interactive) functions
+(defun cmus-status ()
+  "Return the current cmus status."
+  (split-string
+   (shell-command-to-string "cmus-remote -Q")
+   "\n"))
+
+(defun cmus-get-status-property (status property)
+  "Search the status for the requested property."
+  (replace-regexp-in-string property ""
+                            (car
+                             (delq nil
+                                   (mapcar (lambda (prop-line)
+                                             (if (string-match property prop-line)
+                                                 prop-line
+                                               nil))
+                                           status)))))
+
+(defun cmus-get-artist (status)
+  "Return the currently playing track."
+  (cmus-get-tag status "artist"))
+
+(defun cmus-get-album (status)
+  "Return the album for the current track."
+  (cmus-get-tag status "album"))
+
+(defun cmus-get-title (status)
+  "Return the track title for the current track"
+  (cmus-get-tag status "title"))
+
+(defun cmus-get-tag (status tag)
+  "Return the matching tag from the status."
+  (let ((tag-match (concat "^tag " tag " ")))
+    (cmus-get-status-property status tag-match)))
+
+(defun cmus-playingp ()
+  "Returns true if cmus is currently playing."
+  (let ((status (cmus-get-status-property (cmus-status) "status ")))
+    (if (equal status "playing")
+        (progn
+          (message "playing")
+          t)
+      (progn
+        (message "paused")
+        nil))))
+
+;;; interactive functions
+
+(defun cmus-next-track ()
+  "Play the next track in cmus."
+  (interactive)
+  (shell-command-to-string "cmus-remote -n"))
+
+(defun cmus-prev-track ()
+  "Go back a track in cmus."
+  (interactive)
+  (shell-command-to-string "cmus-remote -r"))
+
+(defun cmus-play-pause ()
+  "If cmus is playing, pause it. If it is paused or stopped, start playing."
+  (interactive)
+  (if (cmus-playingp)
+      (progn
+        (message "Pausing..")
+        (shell-command-to-string "cmus-remote --pause"))
+    (progn
+      (message "Playing.")
+      (shell-command-to-string "cmus-remote --play"))))
+
+(defun cmus-stop ()
+  "Stop cmus."
+  (interactive)
+  (shell-command-to-string "cmus-remote --stop"))
+
+(defun cmus-now-playing ()
+  "Show the currently playing track."
+  (interactive)
+  (let ((status (cmus-status)))
+    (let ((artist (cmus-get-artist status))
+          (album (cmus-get-album status))
+          (title (cmus-get-title status))
+          (status (cmus-get-status-property status "status ")))
+      (message (concat artist " - " title " (" album ")")))))
+
+(defun cmus-set-volume (volume)
+  "Set the current volume in cmus"
+  (interactive (let ((volume (read-string "Volume: ")))
+                 (list volume)))
+  (let ((volume (if (stringp volume) volume (car volume))))
+    (shell-command-to-string (concat "cmus-remote -v " volume "%"))))
+
+(defun cmus-toggle-shuffle ()
+  "Toggle playing shuffle."
+  (interactive)
+  (shell-command-to-string "cmus-remote -S")
+  (message
+   (concat "shuffle is "
+           (if (equal "true" (cmus-get-status-property (cmus-status) "set shuffle "))
+               "on"
+             "off"))))
+
+(defun cmus-toggle-repeat ()
+  "Toggle playing repeat."
+  (interactive)
+  (shell-command-to-string "cmus-remote -R")
+  (message
+   (concat "repeat is "
+           (if (equal "true" (cmus-get-status-property (cmus-status) "set repeat "))
+               "on"
+             "off"))))
+
+(defun cmus-toggle-mode ()
+  "Toggle between artist, album and all modes."
+  (interactive)
+  (shell-command-to-string "cmus-remote -C \"toggle aaa_mode\"")
+  (message
+   (concat "current mode: "
+           (cmus-get-status-property (cmus-status) "set aaa_mode "))))
+
+(cpm-leader1
+"acx" 'cmus-play-pause
+"acn" 'cmus-next-track
+"acp" 'cmus-prev-track
+"ack" 'cmus-stop
+"acs" 'cmus-now-playing
+"acv" 'cmus-set-volume
+"ach" 'cmus-toggle-shuffle
+"acr" 'cmus-toggle-repeat
+"acm" 'cmus-toggle-mode)
 #+END_SRC
 * Startup
 ** Server
