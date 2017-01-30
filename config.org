@@ -1207,7 +1207,6 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
 *** Bookmark
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark+
-    :after bookmark
     :commands bmkp-set-desktop-bookmark
     :init
     (setq bookmark-default-file
@@ -2228,710 +2227,6 @@ There are some other useful setup packages for evil
   ;;   )
 #+end_src
 
-
-* Writing & Research
-I use emacs primarily for writing and doing research. These are some of
-the packages that are most helpful for this. 
-
-** Helm-Bibtex
-Great for managing citations and notes
-#+begin_src emacs-lisp
-  (use-package helm-bibtex
-    :ensure t
-    :commands helm-bibtex
-    :config
-    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
-          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
-          bibtex-completion-pdf-field nil
-          bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
-          bibtex-completion-additional-search-fields '(keywords)
-          bibtex-completion-notes-extension ".org"
-          helm-bibtex-full-frame nil) 
-          ;; Set insert citekey with markdown citekeys for org-mode
-    (setq bibtex-completion-format-citation-functions
-          '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
-          (latex-mode    . bibtex-completion-format-citation-cite)
-          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-          (default       . bibtex-completion-format-citation-default)))
-    (setq bibtex-completion-display-formats
-          '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
-    ;; Set default action for helm-bibtex as inserting citation
-    (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
-    (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
-    (setq bibtex-completion-pdf-symbol "⌘")
-    (setq bibtex-completion-notes-symbol "✎")
-    )
-
-  ;; Set global shortcut for calling helm-bibtex
-   (general-define-key "H-b" 'helm-bibtex)
-#+end_src
-
-** Markdown mode
-*** Markdown settings
-#+begin_src emacs-lisp
-    (use-package markdown-mode
-      :defer t
-      :mode (("\\.markdown\\'" . markdown-mode)
-             ("\\.md\\'"       . markdown-mode))
-      :init
-      ;; markdown hooks
-      (add-hook 'markdown-mode-hook
-            '(lambda()
-               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
-      (setq markdown-command "pandoc"
-              markdown-enable-math t
-              ;; markdown-footnote-location "end"
-              markdown-nested-imenu-heading-index t
-              markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
-              )
-         ;; (global-git-gutter+-mode t)
-         ;; (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
-         ;; (add-hook 'markdown-mode-hook #'pandoc-mode) 
-         ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
-         ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
-         ;; add keybindings to hook
-       :config
-       ;; Header navigation in normal state movements
-       (general-define-key :states '(normal) :keymaps 'markdown-mode-map
-            "TAB" 'markdown-cycle
-            "gj"  'outline-forward-same-level
-            "gk"  'outline-backward-same-level
-            "gh"  'outline-up-heading
-            ;; next visible heading is not exactly what we want but close enough
-            "gl"  'outline-next-visible-heading)
-            ;; "<return>" 'markdown-jump
-
-         ;; Promotion, Demotion
-       (general-define-key :states '(normal insert emacs) :keymaps 'markdown-mode-map
-         "M-h" 'markdown-promote
-         "M-j" 'markdown-move-down
-         "M-k" 'markdown-move-up
-         "M-l" 'markdown-demote
-         ;; fix wrong emacs keybindings
-         "C-c C-j" 'markdown-jump
-         "C-c C-l" 'markdown-insert-list-item
-         )
-         (add-hook 'markdown-mode-hook #'my-markdown-config)
-    )
-
-  ;; autofill for markdown
-  (defun markdown-auto-fill ()
-    "turn on autofill and settings"
-    (turn-on-auto-fill)
-    (set-fill-column 78))
-#+end_src
-
-*** Pandoc
-Pandoc mode for markdown conversion
-#+BEGIN_SRC emacs-lisp
-  (use-package pandoc-mode
-    :defer t  
-    :config
-    (progn
-      (defun run-pandoc ()
-        "Start pandoc for the buffer and open the menu"
-        (interactive)
-        (pandoc-mode)
-        (pandoc-main-hydra/body))
-      (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
-
-      (defun pandoc-pdf-open ()
-        "Open created PDF file"  
-        (interactive)
-        (find-file (concat (file-name-sans-extension buffer-file-name) ".pdf")))
-        )
-    :init
-    (progn
-      (setq pandoc-data-dir "~/.emacs.d/pandoc-mode/")
-      ;; help pandoc find xelatex
-      (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))))
-#+END_SRC
-
-*** DISABLED Critic markup
-#+BEGIN_SRC emacs-lisp
-  (use-package cm-mode
-    :defer t
-    :ensure t
-    :disabled t ;; causes font-lock error in markdown mode
-    :init
-    (add-hook 'markdown-mode-hook 'cm-mode))
-#+END_SRC
-
-** Deft Notes
-#+BEGIN_SRC emacs-lisp
-(use-package deft
-  :commands (deft deft-find-file cpm/deft)
-  :init
-  (progn
-    ;; start in insert mode
-    (add-to-list 'evil-insert-state-modes 'deft-mode)
-    (setq deft-extensions '("org" "md" "txt")
-          deft-directory "~/projects/notebook/content/org_notes"
-          deft-text-mode 'org-mode
-          deft-use-filter-string-for-filename t ;; use filter string as filename
-          deft-org-mode-title-prefix t ;; add #+TITLE prefix
-          deft-recursive t  ;; search recursively in folders
-          deft-use-filename-as-title t)
-  :config
-  (progn
-    (general-define-key :states '(insert) :keymaps 'deft-mode-map
-      "C-j" 'next-line
-      "C-k" 'previous-line)
-    (general-define-key :states '(normal) :keymaps 'deft-mode-map
-      "d" 'deft-delete-file
-      "I" 'deft-toggle-incremental-search
-      "n" 'deft-new-file
-      "r" 'deft-rename-file))))
-;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
-;;advise deft-new-file-named to replace spaces in file names with -
-(defun bjm-deft-strip-spaces (args)
-  "Replace spaces with - in the string contained in the first element of the list args. Used to advise deft's file naming function."
-  (list (replace-regexp-in-string " " "-" (car args)))
-  )
-(advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
-
-;;function to run deft in specified directory
-(defun any-deft (dir)
-  "Run deft in directory DIR"
-  (setq deft-directory dir)
-  (switch-to-buffer "*Deft*")
-  (kill-this-buffer)
-  (require 'org)
-  (deft)
-  )
-(defun big-notes ()
-  "Goto main notes with deft"
-  (interactive)
-  (any-deft "~/Dropbox/Notes")
-  (kill-this-buffer)
-  (any-deft "~/Dropbox/Notes")
-)
-(defun research-notes ()
-  "Goto research notes"
-  (interactive)
-  (any-deft "~/projects/notebook/content/org_notes"))
-#+END_SRC
-** Palimpsest mode
-#+BEGIN_SRC emacs-lisp
-  (use-package palimpsest
-    :defer t
-    :diminish palimpsest-mode
-    :init 
-    (add-hook 'markdown-mode-hook 'palimpsest-mode)
-    (add-hook 'org-mode-hook 'palimpsest-mode))
-#+END_SRC
-
-** Org-mode
-[[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
-*** Base settings
-#+BEGIN_SRC emacs-lisp
-  (use-package org 
-    :defer t
-    :config
-    ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
-    (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
-    (modify-syntax-entry ?= "(=" org-mode-syntax-table)
-    ;; don't underline indents
-    (defface org-dont-underline-indents '((t :underline nil))
-    "Avoid underlining of indentation.")
-    (defun org-dont-underline-indents ()
-    "Remove underlining at indents."
-    (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
-    (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
-    :init
-    (setq org-src-fontify-natively t ;; better looking source code
-          org-return-follows-link t ;; make RET follow links
-          org-list-allow-alphabetical t ;; allow alphabetical list
-          org-hide-emphasis-markers t  ;; hide markers
-          org-pretty-entities t ;; make latex look good
-          org-fontify-quote-and-verse-blocks t ;; make quotes stand out
-          org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-          org-ellipsis "↴"  ;; nicer elipses
-          org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
-          org-startup-indented t ;; start in indent mode
-          ; org-src-preserve-indentation nil 
-          ; org-edit-src-content-indentation t
-          org-imenu-depth 4
-          imenu-auto-rescan t
-          )
-    ;; normal state shortcuts
-    (general-define-key :states '(normal) :keymaps 'org-mode-map
-      "RET" 'org-open-at-point     ;; Open with return in evil
-      "gh" 'outline-up-heading
-      "gp" 'outline-previous-heading
-      "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
-     	       'org-forward-same-level
-	             'org-forward-heading-same-level)
-      "gk" (if (fboundp 'org-backward-same-level) 
-                 'org-backward-same-level 'org-backward-heading-same-level)
-      "gl" 'outline-next-visible-heading
-      "L" 'org-shiftright
-      "H" 'org-shiftleft
-      "$" 'org-end-of-line
-      "^" 'org-beginning-of-line
-      "<" 'org-metaleft
-      ">" 'org-metaright
-      "-" 'org-cycle-list-bullet)
-    ;; normal & insert state shortcuts.
-    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-      "TAB" 'org-cycle
-      "s-l" 'org-metaright
-      "s-h" 'org-metaleft
-      "s-k" 'org-metaup
-      "s-j" 'org-metadown
-      "s-L" 'org-shiftmetaright
-      "s-H" 'org-shiftmetaleft
-      "s-K" 'org-shiftmetaup
-      "s-J" 'org-shiftmetadown
-      "s-o" '(lambda () (interactive)
-                         (evil-org-eol-call
-                          '(lambda()
-                              (org-insert-heading)
-                              (org-metaright))))
-      "s-t" '(lambda () (interactive)
-                        (evil-org-eol-call
-                          '(lambda()
-                              (org-insert-todo-heading nil)
-                              (org-metaright)))))
-    ;; Use tab in insert mode
-    (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
-
-
-      (use-package ox-pandoc
-        :commands ox-pandoc
-        :init
-        (with-eval-after-load 'org)
-        (require 'ox-pandoc)
-        :config
-        ;; default options for all output formats
-        ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
-        (setq org-pandoc-options '((standalone . t)))
-        ;; cancel above settings only for 'docx' format
-        (setq org-pandoc-options-for-docx '((standalone . nil)))
-        ;; special settings for beamer-pdf and latex-pdf exporters
-        (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
-        (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
-
-      (use-package org-bullets
-        :defer t
-        :ensure t
-        :init (add-hook 'org-mode-hook 'org-bullets-mode)
-        :config 
-        (setq org-bullets-bullet-list '("⁕" "⁑" "⁂" "⁘" "⁙" "⁜" "⌾" "⊢" "⁖" "⋮" "⋱" "⋯" ))
-        )
-       
-      (use-package htmlize :after org :ensure t)
-      (use-package org-inlinetask :ensure nil :after org)
-      (use-package toc-org
-        :defer t
-        :init
-        (progn
-          (setq toc-org-max-depth 10)
-          (add-hook 'org-mode-hook 'toc-org-enable)))
-      ;; ignore export of headlines marked with :ignore: tag
-      (use-package ox-extra
-        :ensure nil
-        :after org
-        :config
-        (ox-extras-activate '(ignore-headlines)))
-#+END_SRC
-
-*** Org-reveal
-#+BEGIN_SRC emacs-lisp
-  (use-package ox-reveal
-  :ensure t
-  :after org
-  :config
-  (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
-        org-reveal-theme "moon"
-        org-reveal-default-frag-style "roll-in"
-        org-reveal-hlevel 2
-        ))
-#+END_SRC
-*** Org capture
-#+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-      '(
-        ("j" "Journal entry" plain
-         (file+datetree "~/Dropbox/journal.org")
-         "**** %<%H:%M>\n%?")
-
-        ;; other entries
-        ))
-#+END_SRC
-*** Journal
-**** Org-journal
-#+BEGIN_SRC emacs-lisp
-(defun cpm/org-journal ()
-  (interactive) (org-capture nil "j"))
-
-  (use-package org-journal
-  :ensure t
-  :disabled t
-  :defer t
-  :init
-   (setq org-journal-dir "~/Dropbox/journal/")
-   (setq org-journal-date-format "%Y-%b-%d (%A)"))
-#+END_SRC
-**** Journal functions
-I got all of these from Howard Abrams' great [[https://github.com/howardabrams/dot-files/blob/master/emacs-org.org][config file]]. 
-***** Today's entry
-#+begin_src emacs-lisp
-(defun get-journal-file-today ()
-  "Return filename for today's journal entry."
-  (let ((daily-name (format-time-string "%Y%m%d")))
-    (expand-file-name (concat org-journal-dir daily-name))))
-(defun journal-file-today ()
-  "Create and load a journal file based on today's date."
-  (interactive)
-  (find-file (get-journal-file-today)))
-#+END_SRC
-***** Yesterday's (new) entry
-#+BEGIN_SRC emacs-lisp
-(defun get-journal-file-yesterday ()
-  "Return filename for yesterday's journal entry."
-  (let ((daily-name (format-time-string "%Y%m%d" (time-subtract (current-time) (days-to-time 1)))))
-    (expand-file-name (concat org-journal-dir daily-name))))
-
-(defun journal-file-yesterday ()
-  "Creates and load a file based on yesterday's date."
-  (interactive)
-  (find-file (get-journal-file-yesterday)))
-#+END_SRC
-***** Last year
-#+BEGIN_SRC emacs-lisp
-(defun journal-last-year-file ()
-  "Returns the string corresponding to the journal entry that
-happened 'last year' at this same time (meaning on the same day
-of the week)."
-(let* ((last-year-seconds (- (float-time) (* 365 24 60 60)))
-       (last-year (seconds-to-time last-year-seconds))
-       (last-year-dow (nth 6 (decode-time last-year)))
-       (this-year-dow (nth 6 (decode-time)))
-       (difference (if (> this-year-dow last-year-dow)
-                       (- this-year-dow last-year-dow)
-                     (- last-year-dow this-year-dow)))
-       (target-date-seconds (+ last-year-seconds (* difference 24 60 60)))
-       (target-date (seconds-to-time target-date-seconds)))
-  (format-time-string "%Y%m%d" target-date)))
-
-(defun journal-last-year ()
-  "Loads last year's journal entry, which is not necessary the
-same day of the month, but will be the same day of the week."
-  (interactive)
-  (let ((journal-file (concat org-journal-dir (journal-last-year-file))))
-    (find-file journal-file)))
-#+END_SRC
-*** Org hooks
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook
-            '(lambda()
-               (turn-on-auto-fill) 
-               (set-fill-column 78) 
-               (flyspell-mode 1) 
-               (hl-todo-mode) 
-               (imenu-add-to-menubar "Imenu") 
-               (git-gutter+-mode 0)
-               (org-eldoc-load)))
-#+END_SRC
-*** Org publish
-#+BEGIN_SRC emacs-lisp
-
-;;; Org and website (pelican)
-    (with-eval-after-load 'org
-    (org-add-link-type
-     "pelican"
-     (lambda (path) (org-open-file path))
-     ;; ; export
-     (lambda (path desc backend)
-       (cond
-        ((eq backend 'org)
-         (format "[[file:{filename}/notes/%s][%s]]" path (or desc "")))
-        ((eq backend 'html)
-         (format "<a href=\"%s\">%s</a>" path (or desc "")))
-        ((eq backend 'md)
-         (format "[{filename}/%s](%s)" path (or desc "")))))))
-                
-             ;;; Org-publish settings
-                 (setq org-publish-project-alist
-                   '(
-
-                   ("testing"
-                   :base-directory "~/test/source"
-                   :base-extension "org"
-                   :publishing-directory "~/test/output"
-                   :publishing-function (org-pandoc-publish-to-html5)
-                   :org-pandoc-table-of-contents t
-                   :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-                   :org-pandoc-toc-depth 2)
-
-                     ("notebook"
-                      ;; Path to org files
-                      :base-directory "~/projects/notebook/content/org_notes"
-                      :base-extension "org"
-                      ;; Path to pelican project
-                      :publishing-directory "~/projects/notebook/content/notes" 
-                      ;; settings
-                      :author "Colin McLear"
-                      :email "mclear@unl.edu"
-                      :recursive t
-                      :auto-preamble nil ;; Don't add any kind of html before the content
-                      :export-with-tags nil
-                      :with-timestamps nil
-                      :time-stamp-file nil
-                      :with-creator nil
-                      :auto-postamble nil ;; Don't add any kind of html after the content
-                      :html-postamble nil ;; same thing
-                      ;; :publishing-function (org-html-publish-to-html)
-                      ;; :publishing-function (org-md-publish-to-md)
-                      :publishing-function (org-org-publish-to-org)
-                      ;; :publishing-function (org-pandoc-publish-to-html)
-                      )
-                     ("big-notes"
-                      ;; Path to org files
-                      :base-directory "~/Dropbox/Notes/"
-                      :base-extension "org"
-                      ;; Path to pelican project
-                      :publishing-directory "~/projects/notebook/content/notes" 
-                      ;; settings
-                      :author "Colin McLear"
-                      :email "mclear@unl.edu"
-                      :recursive t
-                      :auto-preamble nil ;; Don't add any kind of html before the content
-                      :export-with-tags nil
-                      :with-timestamps nil
-                      :time-stamp-file nil
-                      :with-creator nil
-                      :auto-postamble nil ;; Don't add any kind of html after the content
-                      :html-postamble nil ;; same thing
-                      ;; :publishing-function (org-html-publish-to-html)
-                      ;; :publishing-function (org-md-publish-to-md)
-                      :publishing-function (org-org-publish-to-org)
-                      ;; :publishing-function (org-pandoc-publish-to-html)
-                      )
-                      ("test"
-                      :base-directory "~/test/source"
-                      :base-extension "org"
-                      :publishing-directory "~/test/output" 
-                      ;; settings
-                      :author "Colin McLear"
-                      :email "mclear@unl.edu"
-                      :publishing-function (org-org-publish-to-org)
-                      )
-                      ))
-
-                 ;; (defun org-pandoc-publish-to-html (plist filename pub-dir)
-                 ;;   "Publish an org file to html using ox-pandoc. Return output file name."
-                 ;;   (org-publish-org-to 'org-pandoc-export-to-html filename ".html" plist pub-dir))
-
-        ;; Pandoc publishing functions 
-        (defun org-pandoc-publish-to (format plist filename pub-dir)
-          (setq org-pandoc-format format)
-          (let ((tempfile
-           (org-publish-org-to
-            'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
-          (outfile (format "%s.%s"
-		           (concat
-		            pub-dir
-		            (file-name-sans-extension (file-name-nondirectory filename)))
-		           (assoc-default format org-pandoc-extensions))))
-            (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
-            (let ((process
-             (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
-		             org-pandoc-option-table))
-            (local-hook-symbol
-             (intern (format "org-pandoc-after-processing-%s-hook" format))))
-              (process-put process 'files (list tempfile))
-              (process-put process 'output-file filename)
-              (process-put process 'local-hook-symbol local-hook-symbol))))
-
-        ;; helper functions
-        (defun org-pandoc-publish-to-html5 (p f pd)
-            (org-pandoc-publish-to 'html5 p f pd))
-
-        (defun org-pandoc-pan-to-pub (o)
-          (intern (format ":org-pandoc-%s" o)))
-
-        (defun org-pandoc-pub-to-pan (o)
-          (intern (substring (symbol-name o) 12)))
-
-        (defconst org-pandoc-publish-options
-          (mapcar 'org-pandoc-pan-to-pub
-	          (append org-pandoc-valid-options org-pandoc-colon-separated-options
-		          org-pandoc-file-options)))
-
-        (defun org-pandoc-plist-to-alist (plist)
-          (let ((alist '()))
-            (while plist
-              (let ((p (car plist)) (v (cadr plist)))
-	        (when (member p org-pandoc-publish-options)
-	          (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
-              (setq plist (cddr plist)))
-            alist))
-#+END_SRC
-
-*** Org pomodoro
-Helps with time tracking
-#+BEGIN_SRC emacs-lisp
-  (use-package org-pomodoro
-    :defer t
-    :ensure t
-    :init
-    (progn
-      (setq org-pomodoro-audio-player "/usr/bin/afplay")))
-#+END_SRC emacs-lisp
-*** Open docx files in default application (ie msword)
-Open exported docx files in Word/Open Office rather than emacs
-#+BEGIN_SRC emacs-lisp
-  (setq org-file-apps
-        '(("\\.docx\\'" . default)
-          ("\\.mm\\'" . default)
-          ("\\.x?html?\\'" . default)
-          ("\\.pdf\\'" . default)
-          (auto-mode . emacs)))
-#+END_SRC
-*** Prettify blocks
-Make source blocks look better.
-#+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org
-  (defvar-local rasmus/org-at-src-begin -1
-    "Variable that holds whether last position was a ")
-
-  (defvar rasmus/ob-header-symbol ?☰
-    "Symbol used for babel headers")
-
-  (defun rasmus/org-prettify-src--update ()
-    (let ((case-fold-search t)
-          (re "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*")
-          found)
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward re nil t)
-          (goto-char (match-end 0))
-          (let ((args (org-trim
-                       (buffer-substring-no-properties (point)
-                                                       (line-end-position)))))
-            (when (org-string-nw-p args)
-              (let ((new-cell (cons args rasmus/ob-header-symbol)))
-                (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
-                (cl-pushnew new-cell found :test #'equal)))))
-        (setq prettify-symbols-alist
-              (cl-set-difference prettify-symbols-alist
-                                 (cl-set-difference
-                                  (cl-remove-if-not
-                                   (lambda (elm)
-                                     (eq (cdr elm) rasmus/ob-header-symbol))
-                                   prettify-symbols-alist)
-                                  found :test #'equal)))
-        ;; Clean up old font-lock-keywords.
-        (font-lock-remove-keywords nil prettify-symbols--keywords)
-        (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
-        (font-lock-add-keywords nil prettify-symbols--keywords)
-        (while (re-search-forward re nil t)
-          (font-lock-flush (line-beginning-position) (line-end-position))))))
-
-  (defun rasmus/org-prettify-src ()
-    "Hide src options via `prettify-symbols-mode'.
-
-  `prettify-symbols-mode' is used because it has uncollpasing. It's
-  may not be efficient."
-    (let* ((case-fold-search t)
-           (at-src-block (save-excursion
-                           (beginning-of-line)
-                           (looking-at "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*"))))
-      ;; Test if we moved out of a block.
-      (when (or (and rasmus/org-at-src-begin
-                     (not at-src-block))
-                ;; File was just opened.
-                (eq rasmus/org-at-src-begin -1))
-        (rasmus/org-prettify-src--update))
-      ;; Remove composition if at line; doesn't work properly.
-      ;; (when at-src-block
-      ;;   (with-silent-modifications
-      ;;     (remove-text-properties (match-end 0)
-      ;;                             (1+ (line-end-position))
-      ;;                             '(composition))))
-      (setq rasmus/org-at-src-begin at-src-block)))
-
-  (defun rasmus/org-prettify-symbols ()
-    (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
-          (cl-reduce 'append
-                     (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                             `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
-                               ("#+end_src"   . ?╩) ;; □
-                               ("#+header:" . ,rasmus/ob-header-symbol)
-                               ("#+begin_comment" . ?✎)
-                               ("#+end_comment" . ?✎)
-                               ("#+begin_notes" . ?➤)
-                               ("#+end_notes" . ?➤)
-                               ("#+begin_quote" . ?»)
-                               ("#+end_quote" . ?«)))))
-    (turn-on-prettify-symbols-mode)
-    (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
-  (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
-#+END_SRC
-*** Org seek
-Searching Org-mode with search tools.
-#+BEGIN_SRC emacs-lisp
-(use-package org-seek
-  :ensure t
-  :commands (org-seek-string org-seek-regexp org-seek-headlines)
-  )
-#+END_SRC
-*** Org-Wiki
-#+BEGIN_SRC emacs-lisp
-    (use-package org-wiki
-      :ensure nil
-      :init 
-      (setq org-wiki-location "~/Dropbox/Work/wiki")
-    )
-
-  (defun org-wiki-export-html-sync ()
-    "Export all pages to html in synchronous mode."
-    (interactive)
-    (let ((org-html-htmlize-output-type 'css)
-          (org-html-htmlize-font-prefix "org-")
-          )
-      (org-publish
-       `("html"
-         :base-directory       ,org-wiki-location
-         :base-extension        "org"
-         :publishing-directory  "~/Dropbox/Work/wiki/html"
-         ;; :publishing-function    org-html-publish-to-html
-         :publishing-function (org-pandoc-publish-to-html5)
-         :org-pandoc-table-of-contents t
-         :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-
-         )
-       t
-       )))
-     
-  (defun org-wiki-header ()
-    "Insert a header at the top of the file."
-    (interactive)
-    (save-excursion
-       (goto-char (point-min))
-       (insert (format
-                (string-trim "
-  ,#+TITLE: %s
-  ,#+DESCRIPTION:
-  ,#+KEYWORDS:
-  ,#+SETUPFILE: ~/.emacs.d/elisp/org-html-themes/setup/theme-bigblow.setup
-  ,#+STARTUP:  overview
-
-  Related:
-
-  [[wiki:index][Index]]")
-                 (file-name-base (buffer-file-name))
-                       ))))
-#+END_SRC
-*** Org-twitter-bootstrap
-Publish using twitter bootstrap css
-#+BEGIN_SRC emacs-lisp
-(use-package ox-twbs
-  :commands org-twbs-export-to-html)
-#+END_SRC
-
 * Shell
 ** Multi-term
 When one shell isn't enough
@@ -3056,6 +2351,7 @@ Kill the completion buffer
 ** Virtualenvwrapper
 #+BEGIN_SRC emacs-lisp
   (use-package virtualenvwrapper
+    :defer t
     :config
     (venv-initialize-interactive-shells) ;; if you want interactive shell support
     (venv-initialize-eshell) ;; if you want eshell support
@@ -3549,6 +2845,825 @@ well with org-mode using org-indent. So I don't use it globally.
   (use-package vimrc-mode
     :defer t)
 #+END_SRC
+* Writing & Research
+I use emacs primarily for writing and doing research. These are some of
+the packages that are most helpful for this. 
+
+** Org-mode
+[[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
+*** Base settings
+#+BEGIN_SRC emacs-lisp
+  (use-package org 
+    :defer t
+    :config
+    ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
+    (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
+    (modify-syntax-entry ?= "(=" org-mode-syntax-table)
+    ;; don't underline indents
+    (defface org-dont-underline-indents '((t :underline nil))
+    "Avoid underlining of indentation.")
+    (defun org-dont-underline-indents ()
+    "Remove underlining at indents."
+    (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
+    (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
+    :init
+    (setq org-src-fontify-natively t ;; better looking source code
+          org-return-follows-link t ;; make RET follow links
+          org-list-allow-alphabetical t ;; allow alphabetical list
+          org-hide-emphasis-markers t  ;; hide markers
+          org-pretty-entities t ;; make latex look good
+          org-fontify-quote-and-verse-blocks t ;; make quotes stand out
+          org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
+          org-ellipsis "↴"  ;; nicer elipses
+          org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
+          org-startup-indented t ;; start in indent mode
+          ; org-src-preserve-indentation nil 
+          ; org-edit-src-content-indentation t
+          org-imenu-depth 4
+          imenu-auto-rescan t
+          )
+    ;; normal state shortcuts
+    (general-define-key :states '(normal) :keymaps 'org-mode-map
+      "RET" 'org-open-at-point     ;; Open with return in evil
+      "gh" 'outline-up-heading
+      "gp" 'outline-previous-heading
+      "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
+     	       'org-forward-same-level
+	             'org-forward-heading-same-level)
+      "gk" (if (fboundp 'org-backward-same-level) 
+                 'org-backward-same-level 'org-backward-heading-same-level)
+      "gl" 'outline-next-visible-heading
+      "L" 'org-shiftright
+      "H" 'org-shiftleft
+      "$" 'org-end-of-line
+      "^" 'org-beginning-of-line
+      "<" 'org-metaleft
+      ">" 'org-metaright
+      "-" 'org-cycle-list-bullet)
+    ;; normal & insert state shortcuts.
+    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+      "TAB" 'org-cycle
+      "s-l" 'org-metaright
+      "s-h" 'org-metaleft
+      "s-k" 'org-metaup
+      "s-j" 'org-metadown
+      "s-L" 'org-shiftmetaright
+      "s-H" 'org-shiftmetaleft
+      "s-K" 'org-shiftmetaup
+      "s-J" 'org-shiftmetadown
+      "s-o" '(lambda () (interactive)
+                         (evil-org-eol-call
+                          '(lambda()
+                              (org-insert-heading)
+                              (org-metaright))))
+      "s-t" '(lambda () (interactive)
+                        (evil-org-eol-call
+                          '(lambda()
+                              (org-insert-todo-heading nil)
+                              (org-metaright)))))
+    ;; Use tab in insert mode
+    (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
+
+
+      (use-package ox-pandoc
+        :commands ox-pandoc
+        :init
+        (with-eval-after-load 'org)
+        (require 'ox-pandoc)
+        :config
+        ;; default options for all output formats
+        ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
+        (setq org-pandoc-options '((standalone . t)))
+        ;; cancel above settings only for 'docx' format
+        (setq org-pandoc-options-for-docx '((standalone . nil)))
+        ;; special settings for beamer-pdf and latex-pdf exporters
+        (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
+        (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
+
+      (use-package org-bullets
+        :defer t
+        :ensure t
+        :init (add-hook 'org-mode-hook 'org-bullets-mode)
+        :config 
+        (setq org-bullets-bullet-list '("⁕" "⁑" "⁂" "⁘" "⁙" "⁜" "⌾" "⊢" "⁖" "⋮" "⋱" "⋯" ))
+        )
+       
+      (use-package htmlize :after org :ensure t)
+      (use-package org-inlinetask :ensure nil :after org)
+      (use-package toc-org
+        :defer t
+        :init
+        (progn
+          (setq toc-org-max-depth 10)
+          (add-hook 'org-mode-hook 'toc-org-enable)))
+      ;; ignore export of headlines marked with :ignore: tag
+      (use-package ox-extra
+        :ensure nil
+        :after org
+        :config
+        (ox-extras-activate '(ignore-headlines)))
+#+END_SRC
+*** Org-reveal
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+  :ensure t
+  :after org
+  :config
+  (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
+        org-reveal-theme "moon"
+        org-reveal-default-frag-style "roll-in"
+        org-reveal-hlevel 2
+        ))
+#+END_SRC
+*** Org capture
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+      '(
+        ("j" "Journal entry" plain
+         (file+datetree "~/Dropbox/journal.org")
+         "**** %<%H:%M>\n%?")
+
+        ;; other entries
+        ))
+#+END_SRC
+*** Journal
+**** Org-journal
+#+BEGIN_SRC emacs-lisp
+(defun cpm/org-journal ()
+  (interactive) (org-capture nil "j"))
+
+  (use-package org-journal
+  :ensure t
+  :disabled t
+  :defer t
+  :init
+   (setq org-journal-dir "~/Dropbox/journal/")
+   (setq org-journal-date-format "%Y-%b-%d (%A)"))
+#+END_SRC
+**** Journal functions
+I got all of these from Howard Abrams' great [[https://github.com/howardabrams/dot-files/blob/master/emacs-org.org][config file]]. 
+***** Today's entry
+#+begin_src emacs-lisp
+(defun get-journal-file-today ()
+  "Return filename for today's journal entry."
+  (let ((daily-name (format-time-string "%Y%m%d")))
+    (expand-file-name (concat org-journal-dir daily-name))))
+(defun journal-file-today ()
+  "Create and load a journal file based on today's date."
+  (interactive)
+  (find-file (get-journal-file-today)))
+#+END_SRC
+***** Yesterday's (new) entry
+#+BEGIN_SRC emacs-lisp
+(defun get-journal-file-yesterday ()
+  "Return filename for yesterday's journal entry."
+  (let ((daily-name (format-time-string "%Y%m%d" (time-subtract (current-time) (days-to-time 1)))))
+    (expand-file-name (concat org-journal-dir daily-name))))
+
+(defun journal-file-yesterday ()
+  "Creates and load a file based on yesterday's date."
+  (interactive)
+  (find-file (get-journal-file-yesterday)))
+#+END_SRC
+***** Last year
+#+BEGIN_SRC emacs-lisp
+(defun journal-last-year-file ()
+  "Returns the string corresponding to the journal entry that
+happened 'last year' at this same time (meaning on the same day
+of the week)."
+(let* ((last-year-seconds (- (float-time) (* 365 24 60 60)))
+       (last-year (seconds-to-time last-year-seconds))
+       (last-year-dow (nth 6 (decode-time last-year)))
+       (this-year-dow (nth 6 (decode-time)))
+       (difference (if (> this-year-dow last-year-dow)
+                       (- this-year-dow last-year-dow)
+                     (- last-year-dow this-year-dow)))
+       (target-date-seconds (+ last-year-seconds (* difference 24 60 60)))
+       (target-date (seconds-to-time target-date-seconds)))
+  (format-time-string "%Y%m%d" target-date)))
+
+(defun journal-last-year ()
+  "Loads last year's journal entry, which is not necessary the
+same day of the month, but will be the same day of the week."
+  (interactive)
+  (let ((journal-file (concat org-journal-dir (journal-last-year-file))))
+    (find-file journal-file)))
+#+END_SRC
+*** Org publish
+#+BEGIN_SRC emacs-lisp
+  ;;; Org-publish settings
+      (setq org-publish-project-alist
+        '(
+
+        ("testing"
+        :base-directory "~/test/source"
+        :base-extension "org"
+        :publishing-directory "~/test/output"
+        :publishing-function (org-pandoc-publish-to-html5)
+        :org-pandoc-table-of-contents t
+        :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
+        :org-pandoc-toc-depth 2)
+
+          ("notebook"
+           ;; Path to org files
+           :base-directory "~/projects/notebook/content/org_notes"
+           :base-extension "org"
+           ;; Path to pelican project
+           :publishing-directory "~/projects/notebook/content/notes" 
+           ;; settings
+           :author "Colin McLear"
+           :email "mclear@unl.edu"
+           :recursive t
+           :auto-preamble nil ;; Don't add any kind of html before the content
+           :export-with-tags nil
+           :with-timestamps nil
+           :time-stamp-file nil
+           :with-creator nil
+           :auto-postamble nil ;; Don't add any kind of html after the content
+           :html-postamble nil ;; same thing
+           ;; :publishing-function (org-html-publish-to-html)
+           ;; :publishing-function (org-md-publish-to-md)
+           :publishing-function (org-org-publish-to-org)
+           ;; :publishing-function (org-pandoc-publish-to-html)
+           )
+          ("big-notes"
+           ;; Path to org files
+           :base-directory "~/Dropbox/Notes/"
+           :base-extension "org"
+           ;; Path to pelican project
+           :publishing-directory "~/projects/notebook/content/notes" 
+           ;; settings
+           :author "Colin McLear"
+           :email "mclear@unl.edu"
+           :recursive t
+           :auto-preamble nil ;; Don't add any kind of html before the content
+           :export-with-tags nil
+           :with-timestamps nil
+           :time-stamp-file nil
+           :with-creator nil
+           :auto-postamble nil ;; Don't add any kind of html after the content
+           :html-postamble nil ;; same thing
+           ;; :publishing-function (org-html-publish-to-html)
+           ;; :publishing-function (org-md-publish-to-md)
+           :publishing-function (org-org-publish-to-org)
+           ;; :publishing-function (org-pandoc-publish-to-html)
+           )
+           ("test"
+           :base-directory "~/test/source"
+           :base-extension "org"
+           :publishing-directory "~/test/output" 
+           ;; settings
+           :author "Colin McLear"
+           :email "mclear@unl.edu"
+           :publishing-function (org-org-publish-to-org)
+           )
+           ))
+
+      ;; (defun org-pandoc-publish-to-html (plist filename pub-dir)
+      ;;   "Publish an org file to html using ox-pandoc. Return output file name."
+      ;;   (org-publish-org-to 'org-pandoc-export-to-html filename ".html" plist pub-dir))
+
+        ;; Pandoc publishing functions 
+        (defun org-pandoc-publish-to (format plist filename pub-dir)
+          (setq org-pandoc-format format)
+          (let ((tempfile
+           (org-publish-org-to
+            'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
+          (outfile (format "%s.%s"
+		           (concat
+		            pub-dir
+		            (file-name-sans-extension (file-name-nondirectory filename)))
+		           (assoc-default format org-pandoc-extensions))))
+            (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
+            (let ((process
+             (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
+		             org-pandoc-option-table))
+            (local-hook-symbol
+             (intern (format "org-pandoc-after-processing-%s-hook" format))))
+              (process-put process 'files (list tempfile))
+              (process-put process 'output-file filename)
+              (process-put process 'local-hook-symbol local-hook-symbol))))
+
+        ;; helper functions
+        (defun org-pandoc-publish-to-html5 (p f pd)
+            (org-pandoc-publish-to 'html5 p f pd))
+
+        (defun org-pandoc-pan-to-pub (o)
+          (intern (format ":org-pandoc-%s" o)))
+
+        (defun org-pandoc-pub-to-pan (o)
+          (intern (substring (symbol-name o) 12)))
+
+        (defconst org-pandoc-publish-options
+          (mapcar 'org-pandoc-pan-to-pub
+	          (append org-pandoc-valid-options org-pandoc-colon-separated-options
+		          org-pandoc-file-options)))
+
+        (defun org-pandoc-plist-to-alist (plist)
+          (let ((alist '()))
+            (while plist
+              (let ((p (car plist)) (v (cadr plist)))
+	        (when (member p org-pandoc-publish-options)
+	          (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
+              (setq plist (cddr plist)))
+            alist))
+#+END_SRC
+
+*** Org pomodoro
+Helps with time tracking
+#+BEGIN_SRC emacs-lisp
+  (use-package org-pomodoro
+    :defer t
+    :ensure t
+    :init
+    (progn
+      (setq org-pomodoro-audio-player "/usr/bin/afplay")))
+#+END_SRC emacs-lisp
+*** Open docx files in default application (ie msword)
+Open exported docx files in Word/Open Office rather than emacs
+#+BEGIN_SRC emacs-lisp
+  (setq org-file-apps
+        '(("\\.docx\\'" . default)
+          ("\\.mm\\'" . default)
+          ("\\.x?html?\\'" . default)
+          ("\\.pdf\\'" . default)
+          (auto-mode . emacs)))
+#+END_SRC
+*** Prettify blocks
+Make source blocks look better.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
+  (defvar-local rasmus/org-at-src-begin -1
+    "Variable that holds whether last position was a ")
+
+  (defvar rasmus/ob-header-symbol ?☰
+    "Symbol used for babel headers")
+
+  (defun rasmus/org-prettify-src--update ()
+    (let ((case-fold-search t)
+          (re "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*")
+          found)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward re nil t)
+          (goto-char (match-end 0))
+          (let ((args (org-trim
+                       (buffer-substring-no-properties (point)
+                                                       (line-end-position)))))
+            (when (org-string-nw-p args)
+              (let ((new-cell (cons args rasmus/ob-header-symbol)))
+                (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
+                (cl-pushnew new-cell found :test #'equal)))))
+        (setq prettify-symbols-alist
+              (cl-set-difference prettify-symbols-alist
+                                 (cl-set-difference
+                                  (cl-remove-if-not
+                                   (lambda (elm)
+                                     (eq (cdr elm) rasmus/ob-header-symbol))
+                                   prettify-symbols-alist)
+                                  found :test #'equal)))
+        ;; Clean up old font-lock-keywords.
+        (font-lock-remove-keywords nil prettify-symbols--keywords)
+        (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
+        (font-lock-add-keywords nil prettify-symbols--keywords)
+        (while (re-search-forward re nil t)
+          (font-lock-flush (line-beginning-position) (line-end-position))))))
+
+  (defun rasmus/org-prettify-src ()
+    "Hide src options via `prettify-symbols-mode'.
+
+  `prettify-symbols-mode' is used because it has uncollpasing. It's
+  may not be efficient."
+    (let* ((case-fold-search t)
+           (at-src-block (save-excursion
+                           (beginning-of-line)
+                           (looking-at "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*"))))
+      ;; Test if we moved out of a block.
+      (when (or (and rasmus/org-at-src-begin
+                     (not at-src-block))
+                ;; File was just opened.
+                (eq rasmus/org-at-src-begin -1))
+        (rasmus/org-prettify-src--update))
+      ;; Remove composition if at line; doesn't work properly.
+      ;; (when at-src-block
+      ;;   (with-silent-modifications
+      ;;     (remove-text-properties (match-end 0)
+      ;;                             (1+ (line-end-position))
+      ;;                             '(composition))))
+      (setq rasmus/org-at-src-begin at-src-block)))
+
+  (defun rasmus/org-prettify-symbols ()
+    (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
+          (cl-reduce 'append
+                     (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                             `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
+                               ("#+end_src"   . ?╩) ;; □
+                               ("#+header:" . ,rasmus/ob-header-symbol)
+                               ("#+begin_comment" . ?✎)
+                               ("#+end_comment" . ?✎)
+                               ("#+begin_notes" . ?➤)
+                               ("#+end_notes" . ?➤)
+                               ("#+begin_quote" . ?»)
+                               ("#+end_quote" . ?«)))))
+    (turn-on-prettify-symbols-mode)
+    (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
+  (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
+#+END_SRC
+*** Org seek
+Searching Org-mode with search tools.
+#+BEGIN_SRC emacs-lisp
+(use-package org-seek
+  :ensure t
+  :commands (org-seek-string org-seek-regexp org-seek-headlines)
+  )
+#+END_SRC
+*** Org-Wiki
+#+BEGIN_SRC emacs-lisp
+    (use-package org-wiki
+      :ensure nil
+      :init 
+      (setq org-wiki-location "~/Dropbox/Work/wiki")
+    )
+
+  (defun org-wiki-export-html-sync ()
+    "Export all pages to html in synchronous mode."
+    (interactive)
+    (let ((org-html-htmlize-output-type 'css)
+          (org-html-htmlize-font-prefix "org-")
+          )
+      (org-publish
+       `("html"
+         :base-directory       ,org-wiki-location
+         :base-extension        "org"
+         :publishing-directory  "~/Dropbox/Work/wiki/html"
+         ;; :publishing-function    org-html-publish-to-html
+         :publishing-function (org-pandoc-publish-to-html5)
+         :org-pandoc-table-of-contents t
+         :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
+
+         )
+       t
+       )))
+     
+  (defun org-wiki-header ()
+    "Insert a header at the top of the file."
+    (interactive)
+    (save-excursion
+       (goto-char (point-min))
+       (insert (format
+                (string-trim "
+  ,#+TITLE: %s
+  ,#+DESCRIPTION:
+  ,#+KEYWORDS:
+  ,#+SETUPFILE: ~/.emacs.d/elisp/org-html-themes/setup/theme-bigblow.setup
+  ,#+STARTUP:  overview
+
+  Related:
+
+  [[wiki:index][Index]]")
+                 (file-name-base (buffer-file-name))
+                       ))))
+    ;; (defun org-wiki-export-html-sync ()
+    ;;   "Export all pages to html in synchronous mode."
+    ;;   (interactive)
+    ;;   (let ((org-html-htmlize-font-prefix "org-")
+    ;;         )
+
+    ;; (defun org-wiki-export-html-sync ()
+    ;;   "Export all pages to html in synchronous mode."
+    ;;   (interactive)
+    ;;   (let ((org-html-htmlize-output-type 'css)
+    ;;         (org-html-htmlize-font-prefix "org-")
+    ;;         )
+
+        ;; (org-publish
+        ;;  `("html"
+        ;;    :base-directory       ,org-wiki-location
+        ;;    :base-extension        "org"
+        ;;    :publishing-directory  "~/Dropbox/work/wiki/html"
+        ;;    :publishing-function   org-twbs-publish-to-html
+        ;;    ;; settings
+        ;;    :author "Colin McLear"
+        ;;    :email "mclear@unl.edu"
+        ;;    :toc nil
+        ;;    :with-timestamps nil
+        ;;    :time-stamp-file nil
+        ;;    :timestamp nil
+        ;;    ;; :org-pandoc-bibliography "~/Dropbox/Work/Master.bib"
+        ;;    ;; :org-pandoc-csl "~/.pandoc/styles/chicago-author-date.csl"
+        ;;    )
+        ;;  t
+        ;;  )))
+
+    ;; (defun org-wiki-export-html ()
+    ;;   "Export all pages to html.
+    ;; Note: This function doesn't freeze Emacs since it starts another Emacs process."
+    ;;   (interactive)
+    ;;   (compile (mapconcat 'identity
+    ;;                       `(,org-wiki-emacs-path
+    ;;                         "--batch"
+    ;;                         "-l" ,user-init-file
+    ;;                         "-f" "org-wiki-export-html-sync"
+    ;;                         "--kill"
+    ;;                         )
+    ;;                       " "
+    ;;                       )))
+#+END_SRC
+*** Org-twitter-bootstrap
+Publish using twitter bootstrap css
+#+BEGIN_SRC emacs-lisp
+(use-package ox-twbs
+  :commands org-twbs-export-to-html)
+#+END_SRC
+** Helm-Bibtex
+Great for managing citations and notes
+#+begin_src emacs-lisp
+  (use-package helm-bibtex
+    :ensure t
+    :commands helm-bibtex
+    :config
+    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
+          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
+          bibtex-completion-pdf-field nil
+          bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
+          bibtex-completion-additional-search-fields '(keywords)
+          bibtex-completion-notes-extension ".org"
+          helm-bibtex-full-frame nil) 
+          ;; Set insert citekey with markdown citekeys for org-mode
+    (setq bibtex-completion-format-citation-functions
+          '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-default)))
+    (setq bibtex-completion-display-formats
+          '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
+    ;; Set default action for helm-bibtex as inserting citation
+    (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
+    (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
+    (setq bibtex-completion-pdf-symbol "⌘")
+    (setq bibtex-completion-notes-symbol "✎")
+    )
+
+  ;; Set global shortcut for calling helm-bibtex
+   (general-define-key "H-b" 'helm-bibtex)
+#+end_src
+** Markdown mode
+*** Markdown settings
+#+begin_src emacs-lisp
+    (use-package markdown-mode
+      :defer t
+      :mode (("\\.markdown\\'" . markdown-mode)
+             ("\\.md\\'"       . markdown-mode))
+      :init
+      ;; markdown hooks
+      (add-hook 'markdown-mode-hook
+            '(lambda()
+               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter+-mode t)))
+      (setq markdown-command "pandoc"
+              markdown-enable-math t
+              ;; markdown-footnote-location "end"
+              markdown-nested-imenu-heading-index t
+              markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
+              )
+         ;; (global-git-gutter+-mode t)
+         ;; (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
+         ;; (add-hook 'markdown-mode-hook #'pandoc-mode) 
+         ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
+         ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
+         ;; add keybindings to hook
+       :config
+       ;; Header navigation in normal state movements
+       (general-define-key :states '(normal) :keymaps 'markdown-mode-map
+            "TAB" 'markdown-cycle
+            "gj"  'outline-forward-same-level
+            "gk"  'outline-backward-same-level
+            "gh"  'outline-up-heading
+            ;; next visible heading is not exactly what we want but close enough
+            "gl"  'outline-next-visible-heading)
+            ;; "<return>" 'markdown-jump
+
+         ;; Promotion, Demotion
+       (general-define-key :states '(normal insert emacs) :keymaps 'markdown-mode-map
+         "M-h" 'markdown-promote
+         "M-j" 'markdown-move-down
+         "M-k" 'markdown-move-up
+         "M-l" 'markdown-demote
+         ;; fix wrong emacs keybindings
+         "C-c C-j" 'markdown-jump
+         "C-c C-l" 'markdown-insert-list-item
+         )
+         (add-hook 'markdown-mode-hook #'my-markdown-config)
+    )
+
+  ;; autofill for markdown
+  (defun markdown-auto-fill ()
+    "turn on autofill and settings"
+    (turn-on-auto-fill)
+    (set-fill-column 78))
+#+end_src
+
+*** Pandoc
+Pandoc mode for markdown conversion
+#+BEGIN_SRC emacs-lisp
+  (use-package pandoc-mode
+    :defer t  
+    :config
+    (progn
+      (defun run-pandoc ()
+        "Start pandoc for the buffer and open the menu"
+        (interactive)
+        (pandoc-mode)
+        (pandoc-main-hydra/body))
+      (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+
+      (defun pandoc-pdf-open ()
+        "Open created PDF file"  
+        (interactive)
+        (find-file (concat (file-name-sans-extension buffer-file-name) ".pdf")))
+        )
+    :init
+    (progn
+      (setq pandoc-data-dir "~/.emacs.d/pandoc-mode/")
+      ;; help pandoc find xelatex
+      (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))))
+#+END_SRC
+
+*** DISABLED Critic markup
+#+BEGIN_SRC emacs-lisp
+  (use-package cm-mode
+    :defer t
+    :ensure t
+    :disabled t ;; causes font-lock error in markdown mode
+    :init
+    (add-hook 'markdown-mode-hook 'cm-mode))
+#+END_SRC
+
+** Deft Notes
+#+BEGIN_SRC emacs-lisp
+(use-package deft
+  :commands (deft deft-find-file cpm/deft)
+  :init
+  (progn
+    ;; start in insert mode
+    (add-to-list 'evil-insert-state-modes 'deft-mode)
+    (setq deft-extensions '("org" "md" "txt")
+          deft-directory "~/projects/notebook/content/org_notes"
+          deft-text-mode 'org-mode
+          deft-use-filter-string-for-filename t ;; use filter string as filename
+          deft-org-mode-title-prefix t ;; add #+TITLE prefix
+          deft-recursive t  ;; search recursively in folders
+          deft-use-filename-as-title t)
+  :config
+  (progn
+    (general-define-key :states '(insert) :keymaps 'deft-mode-map
+      "C-j" 'next-line
+      "C-k" 'previous-line)
+    (general-define-key :states '(normal) :keymaps 'deft-mode-map
+      "d" 'deft-delete-file
+      "I" 'deft-toggle-incremental-search
+      "n" 'deft-new-file
+      "r" 'deft-rename-file))))
+;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
+;;advise deft-new-file-named to replace spaces in file names with -
+(defun bjm-deft-strip-spaces (args)
+  "Replace spaces with - in the string contained in the first element of the list args. Used to advise deft's file naming function."
+  (list (replace-regexp-in-string " " "-" (car args)))
+  )
+(advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
+
+;;function to run deft in specified directory
+(defun any-deft (dir)
+  "Run deft in directory DIR"
+  (setq deft-directory dir)
+  (switch-to-buffer "*Deft*")
+  (kill-this-buffer)
+  (require 'org)
+  (deft)
+  )
+(defun big-notes ()
+  "Goto main notes with deft"
+  (interactive)
+  (any-deft "~/Dropbox/Notes")
+  (kill-this-buffer)
+  (any-deft "~/Dropbox/Notes")
+)
+(defun research-notes ()
+  "Goto research notes"
+  (interactive)
+  (any-deft "~/projects/notebook/content/org_notes"))
+#+END_SRC
+** Palimpsest mode
+#+BEGIN_SRC emacs-lisp
+  (use-package palimpsest
+    :defer t
+    :diminish palimpsest-mode
+    :init 
+    (add-hook 'markdown-mode-hook 'palimpsest-mode)
+    (add-hook 'org-mode-hook 'palimpsest-mode))
+#+END_SRC
+
+** LaTeX
+
+#+BEGIN_SRC emacs-lisp
+;; Basic settings
+(use-package auctex
+  :ensure t
+  :defer t
+  :mode ("\\.tex\\'" . latex-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :init
+  (progn
+    (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+    (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+    (setq-default TeX-engine 'xetex)
+    (setq TeX-auto-save t
+          TeX-parse-self t
+          TeX-save-query nil
+          TeX-PDF-mode t)
+    (setq-default TeX-master nil)))
+
+(use-package preview
+  :ensure nil
+  :defer t
+  :commands LaTeX-preview-setup
+  :init
+  (progn
+    (setq-default preview-scale 1.4
+      preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+
+(use-package reftex
+  :defer t
+  :commands turn-on-reftex
+  :init
+  (progn
+    (setq reftex-plug-into-AUCTeX t)))
+
+(use-package bibtex
+  :defer t
+  :mode ("\\.bib" . bibtex-mode)
+  :init
+  (progn
+    (setq bibtex-align-at-equal-sign t)
+    (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
+
+
+;; Auto-fill for LaTeX
+(defun schnouki/latex-auto-fill ()
+  "Turn on auto-fill for LaTeX mode."
+  (turn-on-auto-fill)
+  (set-fill-column 80)
+  (setq default-justification 'left))
+(add-hook 'LaTeX-mode-hook #'schnouki/latex-auto-fill)
+
+;; Compilation command
+(add-hook 'LaTeX-mode-hook (lambda () (setq compile-command "latexmk -pdflatex=xelatex -f -pdf %f")))
+
+;; Prevent ispell from verifying some LaTeX commands
+;; http://stat.genopole.cnrs.fr/dw/~jchiquet/fr/latex/emacslatex
+(defvar schnouki/ispell-tex-skip-alists
+      '("cite" "nocite"
+  "includegraphics"
+  "author" "affil"
+  "ref" "eqref" "pageref"
+  "label"))
+(setq ispell-tex-skip-alists
+      (list
+       (append (car ispell-tex-skip-alists)
+         (mapcar #'(lambda (cmd) (list (concat "\\\\" cmd) 'ispell-tex-arg-end)) schnouki/ispell-tex-skip-alists))
+       (cadr ispell-tex-skip-alists)))
+
+;; Indentation with align-current in LaTeX environments
+(defvar schnouki/LaTeX-align-environments '("tabular" "tabular*"))
+(add-hook 'LaTeX-mode-hook
+    (lambda ()
+      (require 'align)
+      (setq LaTeX-indent-environment-list
+      ;; For each item in the list...
+      (mapcar (lambda (item)
+          ;; The car is an environment
+          (let ((env (car item)))
+            ;; If this environment is in our list...
+            (if (member env schnouki/LaTeX-align-environments)
+          ;; ...then replace this item with a correct one
+          (list env 'align-current)
+        ;; else leave it alone
+        item)))
+        LaTeX-indent-environment-list))))
+
+;; Use dvipdfmx to convert DVI files to PDF in AUCTeX
+(eval-after-load 'tex
+  '(add-to-list 'TeX-command-list
+                '("DVI to PDF" "dvipdfmx %d" TeX-run-command t t) t))
+
+;; SyncTeX (http://www.emacswiki.org/emacs/AUCTeX#toc19)
+(defun synctex/un-urlify (fname-or-url)
+  "A trivial function that replaces a prefix of file:/// with just /."
+  (if (string= (substring fname-or-url 0 8) "file:///")
+      (substring fname-or-url 7)
+    fname-or-url))
+
+#+END_SRC
 * Other Packages
 ** Ag
 #+BEGIN_SRC emacs-lisp
@@ -3769,207 +3884,9 @@ Tidy Up modeline modes.
 
 * Private
 #+BEGIN_SRC emacs-lisp
-  (let ((private "~/.emacs.d/private.el"))
+  (let ((private (expand-file-name "private.el" user-cache-directory))) 
   (if (file-exists-p private)
 	  (load-file private)))
-#+END_SRC
-* Test Code
-** Serif Fonts
-#+BEGIN_SRC emacs-lisp
-(defvar serif-preserve-default-list nil
-  "A list holding the faces that preserve the default family and
-  height when TOGGLE-SERIF is used.")
-(setq serif-preserve-default-list
-      '(;; LaTeX markup
-        font-latex-math-face
-        font-latex-sedate-face
-        font-latex-warning-face
-        ;; org markup
-        org-latex-and-related
-        org-meta-line
-        org-verbatim
-        org-block-begin-line
-        ;; syntax highlighting using font-lock
-        font-lock-builtin-face
-        font-lock-comment-delimiter-face
-        font-lock-comment-face
-        font-lock-constant-face
-        font-lock-doc-face
-        font-lock-function-name-face
-        font-lock-keyword-face
-        font-lock-negation-char-face
-        font-lock-preprocessor-face
-        font-lock-regexp-grouping-backslash
-        font-lock-regexp-grouping-construct
-        font-lock-string-face
-        font-lock-type-face
-        font-lock-variable-name-face
-        font-lock-warning-face))
-
-(defun toggle-serif ()
-  "Change the default face of the current buffer to use a serif family."
-  (interactive)
-  (when (display-graphic-p)  ;; this is only for graphical emacs
-    ;; the serif font familiy and height, save the default attributes
-    (let ((serif-fam "Minion Pro")
-          (serif-height 140)
-          (default-fam (face-attribute 'default :family))
-          (default-height (face-attribute 'default :height)))
-      (if (not (bound-and-true-p default-cookie))
-          (progn (make-local-variable 'default-cookie)
-                 (make-local-variable 'preserve-default-cookies-list)
-                 (setq preserve-default-cookies-list nil)
-                 ;; remap default face to serif
-                 (setq default-cookie
-                       (face-remap-add-relative
-                        'default :family serif-fam :height serif-height))
-                 ;; keep previously defined monospace fonts the same
-                 (dolist (face serif-preserve-default-list)
-                   (add-to-list 'preserve-default-cookies-list
-                                (face-remap-add-relative
-                                 face :family default-fam :height default-height)))
-                 (message "Turned on serif writing font."))
-        ;; undo changes
-        (progn (face-remap-remove-relative default-cookie)
-               (dolist (cookie preserve-default-cookies-list)
-                 (face-remap-remove-relative cookie))
-               (setq default-cookie nil)
-               (setq preserve-default-cookies-list nil)
-               (message "Restored default fonts."))))))
-#+END_SRC
-** Cmus
-#+BEGIN_SRC emacs-lisp
-;;;; define commands for controlling cmus from emacs
-
-;;; utility (non-interactive) functions
-(defun cmus-status ()
-  "Return the current cmus status."
-  (split-string
-   (shell-command-to-string "cmus-remote -Q")
-   "\n"))
-
-(defun cmus-get-status-property (status property)
-  "Search the status for the requested property."
-  (replace-regexp-in-string property ""
-                            (car
-                             (delq nil
-                                   (mapcar (lambda (prop-line)
-                                             (if (string-match property prop-line)
-                                                 prop-line
-                                               nil))
-                                           status)))))
-
-(defun cmus-get-artist (status)
-  "Return the currently playing track."
-  (cmus-get-tag status "artist"))
-
-(defun cmus-get-album (status)
-  "Return the album for the current track."
-  (cmus-get-tag status "album"))
-
-(defun cmus-get-title (status)
-  "Return the track title for the current track"
-  (cmus-get-tag status "title"))
-
-(defun cmus-get-tag (status tag)
-  "Return the matching tag from the status."
-  (let ((tag-match (concat "^tag " tag " ")))
-    (cmus-get-status-property status tag-match)))
-
-(defun cmus-playingp ()
-  "Returns true if cmus is currently playing."
-  (let ((status (cmus-get-status-property (cmus-status) "status ")))
-    (if (equal status "playing")
-        (progn
-          (message "playing")
-          t)
-      (progn
-        (message "paused")
-        nil))))
-
-;;; interactive functions
-
-(defun cmus-next-track ()
-  "Play the next track in cmus."
-  (interactive)
-  (shell-command-to-string "cmus-remote -n"))
-
-(defun cmus-prev-track ()
-  "Go back a track in cmus."
-  (interactive)
-  (shell-command-to-string "cmus-remote -r"))
-
-(defun cmus-play-pause ()
-  "If cmus is playing, pause it. If it is paused or stopped, start playing."
-  (interactive)
-  (if (cmus-playingp)
-      (progn
-        (message "Pausing..")
-        (shell-command-to-string "cmus-remote --pause"))
-    (progn
-      (message "Playing.")
-      (shell-command-to-string "cmus-remote --play"))))
-
-(defun cmus-stop ()
-  "Stop cmus."
-  (interactive)
-  (shell-command-to-string "cmus-remote --stop"))
-
-(defun cmus-now-playing ()
-  "Show the currently playing track."
-  (interactive)
-  (let ((status (cmus-status)))
-    (let ((artist (cmus-get-artist status))
-          (album (cmus-get-album status))
-          (title (cmus-get-title status))
-          (status (cmus-get-status-property status "status ")))
-      (message (concat artist " - " title " (" album ")")))))
-
-(defun cmus-set-volume (volume)
-  "Set the current volume in cmus"
-  (interactive (let ((volume (read-string "Volume: ")))
-                 (list volume)))
-  (let ((volume (if (stringp volume) volume (car volume))))
-    (shell-command-to-string (concat "cmus-remote -v " volume "%"))))
-
-(defun cmus-toggle-shuffle ()
-  "Toggle playing shuffle."
-  (interactive)
-  (shell-command-to-string "cmus-remote -S")
-  (message
-   (concat "shuffle is "
-           (if (equal "true" (cmus-get-status-property (cmus-status) "set shuffle "))
-               "on"
-             "off"))))
-
-(defun cmus-toggle-repeat ()
-  "Toggle playing repeat."
-  (interactive)
-  (shell-command-to-string "cmus-remote -R")
-  (message
-   (concat "repeat is "
-           (if (equal "true" (cmus-get-status-property (cmus-status) "set repeat "))
-               "on"
-             "off"))))
-
-(defun cmus-toggle-mode ()
-  "Toggle between artist, album and all modes."
-  (interactive)
-  (shell-command-to-string "cmus-remote -C \"toggle aaa_mode\"")
-  (message
-   (concat "current mode: "
-           (cmus-get-status-property (cmus-status) "set aaa_mode "))))
-
-(cpm-leader1
-"acx" 'cmus-play-pause
-"acn" 'cmus-next-track
-"acp" 'cmus-prev-track
-"ack" 'cmus-stop
-"acs" 'cmus-now-playing
-"acv" 'cmus-set-volume
-"ach" 'cmus-toggle-shuffle
-"acr" 'cmus-toggle-repeat
-"acm" 'cmus-toggle-mode)
 #+END_SRC
 * Startup
 ** Server
@@ -3989,52 +3906,3 @@ Start server
   ;; (eshell)
 #+END_SRC
 
-* Archive
-** Ivy
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package ivy
-    :defer 2
-    :diminish ivy-mode
-    :init
-    (setq ivy-use-virtual-buffers t
-          ivy-virtual-abbreviate 'full
-          ivy-count-format "(%d/%d) "
-          ;; Always ignore buffers set in `ivy-ignore-buffers'
-          ivy-use-ignore-default 'always
-          ivy-display-style 'fancy
-          )
-    (setq ivy-re-builders-alist
-      ;; allow input not in order
-          '((t   . ivy--regex-ignore-order)))
-    (general-define-key
-      :keymaps 'ivy-minibuffer-map
-      "C-j" 'ivy-next-line
-      "C-k" 'ivy-previous-line)
-    (ivy-mode 1)
-    :config
-    (defun modi/ivy-kill-buffer ()
-      (interactive)
-      (ivy-set-action 'kill-buffer)
-      (ivy-done))
-    (bind-keys
-     :map ivy-switch-buffer-map
-      ("C-;" . modi/ivy-kill-buffer))
-    (setq ivy-wrap t)
-    (dolist (buffer '("^\\*Backtrace\\*$"
-                  "^\\*Compile-Log\\*$"
-                  "^\\*.+Completions\\*$"
-                  "^\\*Flycheck error messages\\*$"
-                  "^\\*Help\\*$"
-                  "^\\*Ibuffer\\*$"
-                  "^\\*helm mini\\*$"
-                  ;; "^\\*Messages\\*$"
-                  "^\\*inferior-lisp\\*$"
-                  ;; "^\\*scratch\\*$"
-                  "^\\*slime-compilation\\*$"
-                  "^\\*slime-description\\*$"
-                  "^\\*slime-events\\*$"))
-    (add-to-list 'ivy-ignore-buffers buffer)))
-
-  (use-package swiper :defer 2)
-  (use-package counsel :defer 2)
-#+END_SRC
