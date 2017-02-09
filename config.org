@@ -4190,7 +4190,7 @@ Dashboard depends on this.
 (use-package restart-emacs
   :commands restart-emacs)
 #+END_SRC
-** Simpleclip
+** DISABLED Simpleclip
 Better management between clipboard and kill ring, courtesy of [[https://github.com/rolandwalker/simpleclip][simpleclip]]. 
 #+BEGIN_SRC emacs-lisp
 (use-package simpleclip
