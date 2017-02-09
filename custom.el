@@ -93,11 +93,13 @@
  '(org-wiki-location "~/Dropbox/Work/wiki")
  '(package-selected-packages
    (quote
-    (zweilight-theme simpleclip evil-embrace embrace lua-mode evil-surround evil-numbers evil-indent-textobject general use-package solarized-theme org-plus-contrib material-theme gruvbox-theme evil-escape)))
+    (guess-language pdf-tools zweilight-theme simpleclip evil-embrace embrace lua-mode evil-surround evil-numbers evil-indent-textobject general use-package solarized-theme org-plus-contrib material-theme gruvbox-theme evil-escape)))
  '(paradox-github-token t)
  '(safe-local-variable-values
    (quote
-    ((org-footnote-section)
+    ((org-list-allow-alphabetical . t)
+     (org-list-allow-alphabetical)
+     (org-footnote-section)
      (eval when
            (fboundp
             (quote rainbow-mode))

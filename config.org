@@ -1,3 +1,4 @@
+
 #+TITLE: Emacs Configuration
 #+AUTHOR: Colin McLear
 #+TODO: BROKEN DISABLED CHECK TODO
@@ -19,13 +20,11 @@ traditional emacs feel there are also the configurations of [[https://github.com
 
 * Installing Emacs
 
-On OS X, which I use, [[http://brew.sh/][homebrew]] is an easy way to install emacs. Starting
-out on OS X I would recommend using the [[https://github.com/railwaycat/homebrew-emacsmacport][emacs mac port]] version of emacs,
-which has a variety of options set that make for smoother running on OS
-X. The one downside is that it loads a bit slower than regular GNU
-emacs. I've also found that the regular =GNU emacs 24.5= doesn't work well
-on OS X and =emacs 25= is great though perhaps still a bit unstable. For
-more info on the various configurations use =brew info=.
+On OS X, which I use, [[http://brew.sh/][homebrew]] is an easy way to install emacs. Starting out
+on OS X I would recommend using the [[https://github.com/railwaycat/homebrew-emacsmacport][emacs mac port]] version of emacs, which has
+a variety of options set that make for smoother running on OS X. The one
+downside is that it loads a bit slower than regular GNU emacs. For more info
+on the various configurations available for OS X use =brew info=.
 
 Here's what some example parameters mean.
 - ~--with-cocoa~ :: installs emacs with the OS X GUI version
@@ -246,29 +245,13 @@ elisp modes or other minor modes
         version-control t                 ; version numbers for backup files
         delete-old-versions t             ; delete excess backup files silently
         delete-by-moving-to-trash t
-        kept-old-versions 2               ; oldest versions to keep when a new numbered backup is made
+        kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made
         kept-new-versions 6               ; newest versions to keep when a new numbered backup is made
         auto-save-default t               ; auto-save every buffer that visits a file
         auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
         auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
         )
   (setq vc-make-backup-files t) ;;  backup versioned files, which Emacs does not do by default
-   
-  (defun force-backup-of-buffer ()
-  ;; Make a special "per session" backup at the first save of each
-  ;; emacs session.
-  (when (not buffer-backed-up)
-    ;; Override the default parameters for per-session backups.
-    (let ((backup-directory-alist '(("" . "~/.emacs.d/backup/per-session")))
-          (kept-new-versions 3))
-      (backup-buffer)))
-  ;; Make a "per save" backup on each save.  The first save results in
-  ;; both a per-session and a per-save backup, to keep the numbering
-  ;; of per-save backups consistent.
-  (let ((buffer-backed-up nil))
-    (backup-buffer)))
-
-(add-hook 'before-save-hook  'force-backup-of-buffer)
 
 #+END_SRC
 *** Auto Save
@@ -407,12 +390,16 @@ There is some configuration to do when running Emacs on OS X (hence the
       (put 'ns-print-buffer 'disabled t)
       (put 'suspend-frame 'disabled t)
 #+end_src
-** Garbage Collection
+** DISABLED Garbage Collection
 By binding this temporarily to a large number, you can effectively
 prevent garbage collection during a part of the program. I increase the
 value when enter minibuffer, this will help to improve minibuffer speed
 with large package like helm, flx. I got this from [[http://coldnew.github.io/coldnew-emacs/#orgheadline152][coldnew]] who got it
 from [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/][bling's blog]].
+
+NOTE: I've been having problems with random freezes that seem to be due to
+this setting. So I've disabled it for now. 
+
 #+BEGIN_SRC emacs-lisp :tangle no
   (eval-after-load 'minibuffer
   '(progn
@@ -1729,6 +1716,7 @@ Keybindings for managing packages
         (concat user-cache-directory "projectile-bookmarks.eld"))
      (setq projectile-cache-file
         (concat user-cache-directory "projectile.cache"))
+     (setq projectile-enable-caching t)
      (projectile-global-mode))
 
   (use-package counsel-projectile
@@ -2351,7 +2339,7 @@ Kill the completion buffer
 ** Virtualenvwrapper
 #+BEGIN_SRC emacs-lisp
   (use-package virtualenvwrapper
-    :defer t
+    :defer 2
     :config
     (venv-initialize-interactive-shells) ;; if you want interactive shell support
     (venv-initialize-eshell) ;; if you want eshell support
@@ -2849,6 +2837,23 @@ well with org-mode using org-indent. So I don't use it globally.
 I use emacs primarily for writing and doing research. These are some of
 the packages that are most helpful for this. 
 
+** Distraction free mode
+This simulates programs like writeroom that provide a distraction-free
+mode of writing. 
+#+BEGIN_SRC emacs-lisp
+(use-package writeroom-mode
+  :commands (writeroom-mode)
+)
+    (defun distraction-free ()
+    "distraction free writing"
+      (interactive)
+      (git-gutter+-mode 0) 
+      (linum-mode 0) 
+      (writeroom-mode)
+      )
+
+#+END_SRC
+
 ** Org-mode
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 *** Base settings
@@ -2867,6 +2872,12 @@ the packages that are most helpful for this.
     (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
     (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
     :init
+     (add-hook 'org-mode-hook
+        (lambda () 
+          (turn-on-auto-fill)
+          (flyspell-mode 1)
+          (global-git-gutter+-mode 0)
+          (imenu-add-to-menubar "Imenu")))
     (setq org-src-fontify-natively t ;; better looking source code
           org-return-follows-link t ;; make RET follow links
           org-list-allow-alphabetical t ;; allow alphabetical list
@@ -3664,6 +3675,367 @@ Pandoc mode for markdown conversion
     fname-or-url))
 
 #+END_SRC
+** Doc View Mode
+#+begin_src emacs-lisp
+(use-package doc-view
+    :defer t
+    :init
+    (fset 'doc-prev "\C-xo\C-x[\C-xo")
+    (fset 'doc-next "\C-xo\C-x]\C-xo")
+    (global-set-key (kbd "M-[") 'doc-prev)
+    (global-set-key (kbd "M-]") 'doc-next)
+    (evil-set-initial-state 'doc-view-mode 'normal)
+    (evil-define-key 'normal doc-view-mode-map
+      "/"  'spacemacs/doc-view-search-new-query
+      "?"  'spacemacs/doc-view-search-new-query-backward
+      "gg" 'doc-view-first-page
+      "G"  'doc-view-last-page
+      "gt" 'doc-view-goto-page
+      "h"  'doc-view-previous-page
+      "j"  'doc-view-next-line-or-next-page
+      "k"  'doc-view-previous-line-or-previous-page
+      "K"  'doc-view-kill-proc-and-buffer
+      "l"  'doc-view-next-page
+      "n"  'doc-view-search
+      "N"  'doc-view-search-backward
+      (kbd "C-d") 'doc-view-scroll-up-or-next-page
+      (kbd "C-k") 'doc-view-kill-proc
+      (kbd "C-u") 'doc-view-scroll-down-or-previous-page)
+    :config
+    (progn
+      (defun spacemacs/doc-view-search-new-query ()
+        "Initiate a new query."
+        (interactive)
+        (doc-view-search 'newquery))
+
+      (defun spacemacs/doc-view-search-new-query-backward ()
+        "Initiate a new query."
+        (interactive)
+        (doc-view-search 'newquery t))
+
+      ;; fixed a weird issue where toggling display does not
+      ;; swtich to text mode
+      (defadvice doc-view-toggle-display
+          (around spacemacs/doc-view-toggle-display activate)
+        (if (eq major-mode 'doc-view-mode)
+            (progn
+              ad-do-it
+              (text-mode)
+              (doc-view-minor-mode))
+          ad-do-it))
+          
+(defcustom doc-view-autofit-timer-start 1.0
+"Initial value (seconds) for the timer that delays the fitting when
+`doc-view-autofit-fit' is called (Which is when a window
+configuration change occurs and a document needs to be fitted)."
+:type 'number
+:group 'doc-view)
+
+(defcustom doc-view-autofit-timer-inc 0.02
+"Value to increase (seconds) the timer (see `doc-view-autofit-timer-start')
+by, if there is another window configuration change occuring, before
+it runs out."
+:type 'number
+:group 'doc-view)
+
+(defcustom doc-view-autofit-default-fit 'width
+"The fitting type initially used when mode is enabled.
+Valid values are: width, height, page."
+:type 'symbol
+:group 'doc-view)
+
+(defvar doc-view-autofit-mode-map
+(let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c W") 'doc-view-autofit-width)
+    (define-key map (kbd "C-c H") 'doc-view-autofit-height)
+    (define-key map (kbd "C-c P") 'doc-view-autofit-page)
+    map)
+"Keymap used by `doc-view-autofit-mode'.")
+
+(defun doc-view-autofit-set (type)
+"Set autofitting to TYPE for current buffer."
+(when doc-view-autofit-mode
+    (setq doc-view-autofit-type type)
+    (doc-view-autofit-fit)))
+
+(defun doc-view-autofit-width ()
+"Set autofitting to width for current buffer."
+(interactive) (doc-view-autofit-set 'width))
+
+(defun doc-view-autofit-height ()
+"Set autofitting to height for current buffer."
+(interactive) (doc-view-autofit-set 'height))
+
+(defun doc-view-autofit-page ()
+"Set autofitting to page for current buffer."
+(interactive) (doc-view-autofit-set 'page))
+
+(defun doc-view-autofit-fit ()
+"Fits the document in the selected window's buffer
+delayed with a timer, so multiple calls in succession
+don't cause as much overhead."
+(lexical-let
+    ((window (selected-window)))
+    (if (equal doc-view-autofit-timer nil)
+        (setq doc-view-autofit-timer
+            (run-with-timer
+            doc-view-autofit-timer-start nil
+            (lambda ()
+                (if (window-live-p window)
+                    (save-selected-window
+                    (select-window window)
+                    (cancel-timer doc-view-autofit-timer)
+                    (setq doc-view-autofit-timer nil)
+                    (cond
+                        ((equal 'width doc-view-autofit-type)
+                        (doc-view-fit-width-to-window))
+                        ((equal 'height doc-view-autofit-type)
+                        (doc-view-fit-height-to-window))
+                        ((equal 'page doc-view-autofit-type)
+                        (doc-view-fit-page-to-window))))))))
+    (timer-inc-time doc-view-autofit-timer doc-view-autofit-timer-inc))))
+
+(define-minor-mode doc-view-autofit-mode
+"Minor mode for automatic (timer based) fitting in DocView."
+:lighter " AFit" :keymap doc-view-autofit-mode-map :group 'doc-view
+(when doc-view-autofit-mode
+    (set (make-local-variable 'doc-view-autofit-type)
+        doc-view-autofit-default-fit)
+    (set (make-local-variable 'doc-view-autofit-timer) nil)
+    (add-hook 'window-configuration-change-hook
+            'doc-view-autofit-fit nil t)
+    (doc-view-autofit-fit))
+(when (not doc-view-autofit-mode)
+    (remove-hook 'window-configuration-change-hook
+                'doc-view-autofit-fit t)
+    (when doc-view-autofit-timer
+    (cancel-timer doc-view-autofit-timer)
+    (setq doc-view-autofit-timer nil))
+    (setq doc-view-autofit-type nil)))
+
+(add-hook 'doc-view-mode-hook 'doc-view-autofit-mode)
+;; reload when file changes
+(add-hook 'doc-view-mode-hook 'auto-revert-mode)
+;; continuous scroll mode
+(setq doc-view-continuous t)
+))
+#+end_src
+** DISABLED PDF-Tools
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+Better than doc-view, but doesn't render well on retina screens :(
+#+BEGIN_SRC emacs-lisp 
+  (use-package pdf-tools
+    :defer t
+    :ensure nil
+    ;; :mode (("\\.pdf$" . pdf-view-mode))
+    :config
+    (progn
+      (pdf-tools-install)
+      (evil-set-initial-state 'pdf-view-mode 'normal)
+      (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
+      (evil-define-key 'normal pdf-view-mode-map
+          ;; Navigation
+          "j"  'pdf-view-next-line-or-next-page
+          "k"  'pdf-view-previous-line-or-previous-page
+          "l"  'image-forward-hscroll
+          "h"  'image-backward-hscroll
+          "J"  'pdf-view-next-page
+          "K"  'pdf-view-previous-page
+          "gg"  'pdf-view-first-page
+          "G"  'pdf-view-last-page
+          "gt"  'pdf-view-goto-page
+          "gl"  'pdf-view-goto-label
+          "u" 'pdf-view-scroll-down-or-previous-page
+          "d" 'pdf-view-scroll-up-or-next-page
+          "-"  'pdf-view-shrink
+          "+"  'pdf-view-enlarge
+          "="  'pdf-view-fit-page-to-window
+          (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
+          (kbd "C-d") 'pdf-view-scroll-up-or-next-page
+          (kbd "``")  'pdf-history-backward
+          ;; Search
+          "/" 'isearch-forward
+          "?" 'isearch-backward
+          ;; Actions
+          "r"   'pdf-view-revert-buffer
+          "o"   'pdf-links-action-perform
+          "O"   'pdf-outline
+          )
+      (evil-define-key 'insert pdf-view-mode-map
+          "y" 'pdf-view-kill-ring-save )
+
+      ;; for annotation and jumping to file
+      (eval-after-load 'org '(require 'org-pdfview))
+      (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+      (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))))      
+#+END_SRC
+*** Extract annotations
+#+BEGIN_SRC emacs-lisp
+  (use-package org-pdfview
+    :defer t
+    :commands (org-pdfview-open)
+    :ensure t)
+
+  (use-package pdf-tools-org 
+    :defer t
+    :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
+    :init
+    (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/"))
+
+      ;; Extracting annotations using pdf-tools
+      ;; modified from https://github.com/politza/pdf-tools/pull/133 
+      ;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
+
+      (defun mwp/pdf-multi-extract (sources)
+      "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
+      and links back to page of highlight."
+      (let (
+            (output ""))
+        (dolist (thispdf sources)
+          (setq output (concat output (pdf-annot-markups-as-org-text thispdf nil level ))))
+        (princ output))
+      )
+
+      (defun cpm/pdf-summary-extract (sources)
+      "Helper function to print underlined text from a list of pdf's, with one org header per pdf, 
+      and links back to page of highlight."
+      (let (
+            (output ""))
+        (dolist (thispdf sources)
+          (setq output (concat output (pdf-annot-summary-as-org-text thispdf nil level ))))
+        (princ output))
+      )
+
+      ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
+      (defun pdf-annot-edges-to-region (edges)
+      "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
+      We need this to import annotations and to get marked-up text, because annotations
+      are referenced by its edges, but functions for these tasks need region."
+
+      (let ((left0 (nth 0 (car edges)))
+            (top0 (nth 1 (car edges)))
+            (bottom0 (nth 3 (car edges)))
+            (top1 (nth 1 (car (last edges))))
+            (right1 (nth 2 (car (last edges))))
+            (bottom1 (nth 3 (car (last edges))))
+            (n (safe-length edges)))
+        ;; we try to guess the line height to move
+        ;; the region away from the boundary and
+        ;; avoid double lines
+        (list left0
+              (+ top0 (/ (- bottom0 top0) 2))
+              right1
+              (- bottom1 (/ (- bottom1 top1) 2 )))))
+
+      (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
+      "Acquire highligh annotations as text, and return as org-heading"
+
+      (interactive "fPath to PDF: ")  
+      (let* ((outputstring "") ;; the text to be returned
+              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
+              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
+              (levelstring (make-string level ?*)) ;; set headline to proper level
+              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
+                            'pdf-annot-compare-annotations)))
+        ;; create the header
+        (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
+
+        ;; extract text
+        (mapc
+          (lambda (annot) ;; traverse all annotations
+            (if (eq 'highlight (assoc-default 'type annot))
+                (let* ((page (assoc-default 'page annot))
+                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
+                      (real-edges (pdf-annot-edges-to-region
+                                    (pdf-annot-get annot 'markup-edges)))
+                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                      (height (nth 1 real-edges)) ;; distance down the page
+                      ;; use pdfview link directly to page number
+                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                        "++" (number-to-string height) "][" title  "]]" )))
+                  (setq outputstring (concat outputstring text " ("
+                                            linktext ", " (number-to-string page) ")\n\n"))
+                  ))
+
+            (if (eq 'text (assoc-default 'type annot))
+                (let* ((page (assoc-default 'page annot))
+                      ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
+                      (real-edges (pdf-annot-edges-to-region
+                                    (pdf-annot-get annot 'markup-edges)))
+                      (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                      (height (nth 1 real-edges)) ;; distance down the page
+                      ;; use pdfview link directly to page number
+                      (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                        "++" (number-to-string height) "][" title  "]]" )))
+                  (setq outputstring (concat outputstring text " ("
+                                            linktext ", " (number-to-string page) ")\n\n"))
+                  ))
+
+              (if (eq 'underline (assoc-default 'type annot))
+                  (let* ((page (assoc-default 'page annot))
+                        ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
+                        (real-edges (pdf-annot-edges-to-region
+                                      (pdf-annot-get annot 'markup-edges)))
+                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                        (height (nth 1 real-edges)) ;; distance down the page
+                        ;; use pdfview link directly to page number
+                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                          "++" (number-to-string height) "][" title  "]]" )))
+                    (setq outputstring (concat outputstring text " ("
+                                              linktext ", " (number-to-string page) ")\n\n"))
+                    ))
+                  )
+          annots)
+        outputstring ;; return the header
+        )
+      )
+
+      (defun pdf-annot-summary-as-org-text (pdfpath &optional title level)
+      "Acquire underlined annotations as text, and return as org-heading"
+
+      (interactive "fPath to PDF: ")  
+      (let* ((outputstring "") ;; the text to be returned
+              (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
+              (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
+              (levelstring (make-string level ?*)) ;; set headline to proper level
+              (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
+                            'pdf-annot-compare-annotations)))
+        ;; create the header
+        (setq outputstring (concat levelstring " Summary from " title "\n\n")) ;; create heading
+
+        ;; extract text
+        (mapc
+          (lambda (annot) ;; traverse all annotations
+              (if (eq 'underline (assoc-default 'type annot))
+                  (let* ((page (assoc-default 'page annot))
+                        ;; use pdf-annot-edges-to-region to get correct boundaries of annotation
+                        (real-edges (pdf-annot-edges-to-region
+                                      (pdf-annot-get annot 'markup-edges)))
+                        (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                                  (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath))))
+
+                        (height (nth 1 real-edges)) ;; distance down the page
+                        ;; use pdfview link directly to page number
+                        (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                          "++" (number-to-string height) "][" title  "]]" )))
+                    (setq outputstring (concat outputstring text " ("
+                                              linktext ", " (number-to-string page) ")\n\n"))
+                    ))
+                  )
+          annots)
+        outputstring ;; return the header
+        )
+      )
+
+#+END_SRC
 * Other Packages
 ** Ag
 #+BEGIN_SRC emacs-lisp
@@ -3770,6 +4142,17 @@ Auto-revert buffers of changed files
       "m" (dashboard-insert--shortcut "m" "Bookmarks:")
       "p" (dashboard-insert--shortcut "p" "Projects:")
       ))
+#+END_SRC
+** Guess Languages
+#+BEGIN_SRC emacs-lisp
+(use-package guess-language         ; Automatically detect language for Flyspell
+  :ensure t
+  :defer t
+  :init (add-hook 'text-mode-hook #'guess-language-mode)
+  :config
+  (setq guess-language-languages '(en de)
+        guess-language-min-paragraph-length 35)
+  :diminish guess-language-mode)
 #+END_SRC
 ** Info+
 #+BEGIN_SRC emacs-lisp
