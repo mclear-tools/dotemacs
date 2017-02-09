@@ -1,4 +1,3 @@
-
 #+TITLE: Emacs Configuration
 #+AUTHOR: Colin McLear
 #+TODO: BROKEN DISABLED CHECK TODO
@@ -247,9 +246,6 @@ elisp modes or other minor modes
         delete-by-moving-to-trash t
         kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made
         kept-new-versions 6               ; newest versions to keep when a new numbered backup is made
-        auto-save-default t               ; auto-save every buffer that visits a file
-        auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-        auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
         )
   (setq vc-make-backup-files t) ;;  backup versioned files, which Emacs does not do by default
 
@@ -258,14 +254,15 @@ elisp modes or other minor modes
 I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in the cache directory.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((auto-save-dir (concat user-cache-directory "auto-save")))
-    ;; Move backup file to `~/.emacs.d/.cache/auto-save
-  (setq auto-save-file-name-transforms
-        `((".*" ,auto-save-dir t)))
-    ;; Makesure auto-save directory exist
-        (when (not (file-exists-p auto-save-dir))
-      (make-directory auto-save-dir t)))
-  (setq create-lockfiles nil)
+(setq auto-save-list-file-prefix
+      (concat user-cache-directory "auto-save-list/.saves-"))
+
+(setq auto-save-default t               ; auto-save every buffer that visits a file
+      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+      auto-save-visited-file-name nil
+      delete-auto-save-files t
+      create-lockfiles nil)
 #+END_SRC
 
 *** Full Auto Save
