@@ -2077,6 +2077,8 @@ The essential stuff
       (setq evil-operator-state-cursor '("red" hollow))
       ;; evil-normal-state is preferred, so revert when idle
       (run-with-idle-timer 20 t 'evil-normal-state)
+      ;; don't echo evil state
+      (setq evil-echo-state nil)
       ;; evil everywhere
       (evil-mode 1)))
 #+end_src
