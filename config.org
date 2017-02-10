@@ -286,6 +286,7 @@ I also make emacs just outright save all buffers.
       desktop-path                (list desktop-dirname)
       desktop-save                t
       desktop-files-not-to-save   (concat "^$" ".*magit$")
+      desktop-restore-eager 10
       desktop-load-locked-desktop nil)
 (setq desktop-buffers-not-to-save
         (concat "\\("
