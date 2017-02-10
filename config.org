@@ -1989,34 +1989,52 @@ A file tree and outliner
 *** Window Numbering
 Numbered window shortcuts for Emacs
 #+BEGIN_SRC emacs-lisp
-    (use-package window-numbering
-      :ensure t
-      :config
-      (defun window-numbering-install-mode-line (&optional position)
-      "Do nothing, the display is handled by the powerline.")
-      (setq window-numbering-auto-assign-0-to-minibuffer nil)
-      (cpm-leader1
-        "0" 'select-window-0
-        "1" 'select-window-1
-        "2" 'select-window-2
-        "3" 'select-window-3
-        "4" 'select-window-4
-        "5" 'select-window-5)
-        ;; "6" 'select-window-6
-        ;; "7" 'select-window-7
-        ;; "8" 'select-window-8
-        ;; "9" 'select-window-9)
-      (window-numbering-mode 1))
+   (use-package window-numbering
+     :ensure t
+     :config
+     (defun window-numbering-install-mode-line (&optional position)
+     "Do nothing, the display is handled by the powerline.")
+     (setq window-numbering-auto-assign-0-to-minibuffer nil)
+     (cpm-leader1
+       "0" 'select-window-0
+       "1" 'select-window-1
+       "2" 'select-window-2
+       "3" 'select-window-3
+       "4" 'select-window-4
+       "5" 'select-window-5)
+       ;; "6" 'select-window-6
+       ;; "7" 'select-window-7
+       ;; "8" 'select-window-8
+       ;; "9" 'select-window-9)
+     (window-numbering-mode 1)
 
-     (defun spacemacs//window-numbering-assign (windows)
-       "Custom number assignment for special buffers."
-       (mapc (lambda (w)
-               (when (and (boundp 'neo-global--window)
-                          (eq w neo-global--window))
-                 (window-numbering-assign w 0)))
-             windows))
-     (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)
-     (add-hook 'neo-after-create-hook '(lambda (w) (window-numbering-update)))
+  ;; make sure neotree is always 0
+   (defun spacemacs//window-numbering-assign ()
+     "Custom number assignment for neotree."
+     (when (and (boundp 'neo-buffer-name)
+                (string= (buffer-name) neo-buffer-name)
+                ;; in case there are two neotree windows. Example: when
+                ;; invoking a transient state from neotree window, the new
+                ;; window will show neotree briefly before displaying the TS,
+                ;; causing an error message. the error is eliminated by
+                ;; assigning 0 only to the top-left window
+                (eq (selected-window) (window-at 0 0)))
+       0))
+
+   ;; using lambda to work-around a bug in window-numbering, see
+   ;; https://github.com/nschum/window-numbering.el/issues/10
+   (setq window-numbering-assign-func
+         (lambda () (spacemacs//window-numbering-assign))))
+
+    ;; (defun spacemacs//window-numbering-assign (windows)
+    ;;   "Custom number assignment for special buffers."
+    ;;   (mapc (lambda (w)
+    ;;           (when (and (boundp 'neo-global--window)
+    ;;                      (eq w neo-global--window))
+    ;;             (window-numbering-assign w 0)))
+    ;;         windows))
+    ;; (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)
+    ;; (add-hook 'neo-after-create-hook '(lambda (w) (window-numbering-update)))
 #+END_SRC
 *** Windmove
 #+BEGIN_SRC emacs-lisp
@@ -4089,6 +4107,16 @@ Better than doc-view, but doesn't render well on retina screens :(
 
 #+END_SRC
  
+** All the icons
+Like the title says...
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons :diminish "")
+;; icons for dired
+(use-package all-the-icons-dired
+  :diminish ""
+  :config
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+#+END_SRC
 ** Autopair
 #+BEGIN_SRC emacs-lisp
 (use-package electric-pair-mode
@@ -4160,6 +4188,34 @@ Auto-revert buffers of changed files
   :defer t)
 #+END_SRC
  
+** Neotree
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :config 
+    (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+    (setq neo-window-fixed-size t)
+    (setq neo-window-width 32)
+    (cpm-leader1
+      ;; "T"  '(:ignore t :which-key "Neotree") 
+      "T"  'neotree-toggle)
+
+    (setq projectile-switch-project-action 'neotree-projectile-action)
+    (add-hook 'neotree-mode-hook
+      (lambda ()
+        (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+        (define-key evil-normal-state-local-map (kbd "I") 'neotree-hidden-file-toggle)
+        (define-key evil-normal-state-local-map (kbd "z") 'neotree-stretch-toggle)
+        (define-key evil-normal-state-local-map (kbd "R") 'neotree-refresh)
+        (define-key evil-normal-state-local-map (kbd "m") 'neotree-rename-node)
+        (define-key evil-normal-state-local-map (kbd "c") 'neotree-create-node)
+        (define-key evil-normal-state-local-map (kbd "d") 'neotree-delete-node)
+
+        (define-key evil-normal-state-local-map (kbd "s") 'neotree-enter-vertical-split)
+        (define-key evil-normal-state-local-map (kbd "S") 'neotree-enter-horizontal-split)
+
+        (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+  )
+#+END_SRC
 ** Paradox
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
