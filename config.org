@@ -650,7 +650,7 @@ Put an end to popped up buffers not behaving they way you'd like them to.
 ** Modeline
 *** Spaceline
 This is a really nice powerline-ish modeline.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (use-package spaceline
     :ensure t
     :init 
@@ -694,6 +694,7 @@ This is a really nice powerline-ish modeline.
           (powerline-reset)
   ;; nil - don't use srgb & get proper powerline faces
   (setq ns-use-srgb-colorspace t)
+
 #+END_SRC
 
 *** Fancy Battery
@@ -4233,7 +4234,8 @@ Auto-revert buffers of changed files
 ** Page Breaks
 Dashboard depends on this. 
 #+BEGIN_SRC emacs-lisp
-(use-package page-break-lines)
+(use-package page-break-lines
+  :diminish "")
 #+END_SRC
 ** Persistent Scratch
 #+BEGIN_SRC emacs-lisp
