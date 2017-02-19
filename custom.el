@@ -93,7 +93,7 @@
  '(org-wiki-location "~/Dropbox/Work/wiki")
  '(package-selected-packages
    (quote
-    (neotree spaceline-all-the-icons all-the-icons-dired all-the-icons guess-language pdf-tools zweilight-theme simpleclip evil-embrace embrace lua-mode evil-surround evil-numbers evil-indent-textobject general use-package solarized-theme org-plus-contrib material-theme gruvbox-theme evil-escape)))
+    (madhat2r-theme cyberpunk-theme afternoon-theme flatland-theme forest-blue-theme spacemacs-theme leuven-theme color-theme-modern zerodark-theme ample-theme waher-theme sublime-themes gotham-theme tango-2-theme molokai-theme base16-theme zenburn-theme monokai-theme elfeed visual-regexp-steroids pdf-tools-org org-pomodoro neotree spaceline-all-the-icons all-the-icons-dired all-the-icons guess-language pdf-tools zweilight-theme simpleclip evil-embrace embrace lua-mode evil-surround evil-numbers evil-indent-textobject general use-package solarized-theme org-plus-contrib material-theme gruvbox-theme evil-escape)))
  '(safe-local-variable-values
    (quote
     ((org-list-allow-alphabetical . t)
@@ -128,4 +128,5 @@
  '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
  '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
  '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
+ '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
  '(org-quote ((t (:inherit org-block :slant normal :weight normal)))))
