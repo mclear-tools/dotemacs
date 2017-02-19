@@ -78,13 +78,33 @@ Make sure emacs correctly sets up your PATH.
 *** Spelling
 Use flyspell and aspell
 #+BEGIN_SRC emacs-lisp
-  (setq flyspell-issue-welcome-flag nil)
-  (setq flyspell-issue-message-flag nil)
-  (if (eq system-type 'darwin)
-      (setq-default ispell-program-name "/usr/local/bin/aspell")
-    (setq-default ispell-program-name "/usr/bin/aspell"))
-  (setq-default ispell-list-command "list")
+(use-package flyspell
+ :diminish flyspell-mode
+ :commands (flyspell-mode flyspell-prog-mode)
+ :config
+ (setq flyspell-issue-welcome-flag nil)
+ (if (eq system-type 'darwin)
+     (setq-default ispell-program-name "/usr/local/bin/aspell")
+     (setq-default ispell-program-name "/usr/bin/aspell"))
+ (setq-default ispell-list-command "list")
+ )
 #+END_SRC 
+
+Flyspell is in elisp mode. And this in turn loads flyspell directly
+after launching emacs, which is a bit unfortunate.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-flyspell-prog-mode ()
+  (interactive)
+  (unless (string= (buffer-name) "*scratch*")
+	(flyspell-prog-mode)))
+(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+(add-hook 'text-mode-hook  #'flyspell-mode)
+(add-hook 'org-mode-hook   #'flyspell-mode)
+(add-hook 'latex-mode-hook #'flyspell-mode)
+(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+#+END_SRC
+
  
 *** Deal with warnings
 No bells and no visible "bell" either!
@@ -441,9 +461,19 @@ this setting. So I've disabled it for now.
    ;; replacing it with the Emacs’ text.
    ;; https://github.com/dakrone/eos/blob/master/eos.org
    (setq save-interprogram-paste-before-kill t)
+   
+   ;; Make sure your text files end in a newline
+   (setq require-final-newline t)
+
 #+END_SRC
 
 * Appearance & UI
+** Apropos
+
+#+BEGIN_SRC emacs-lisp
+(bind-key "C-h a" 'helm-apropos)
+#+END_SRC 
+
 ** Centered Cursor Mode
 #+BEGIN_SRC emacs-lisp
   (use-package centered-cursor-mode
@@ -532,7 +562,6 @@ highlight TODO statements in comments
 ** Smooth Scrolling
 #+BEGIN_SRC emacs-lisp
   (use-package smooth-scrolling
-    :disabled t
     :defer 2
     :config (setq smooth-scroll-margin 2)
     :init (smooth-scrolling-mode 1))
@@ -618,7 +647,35 @@ This is a great general-purpose theme. Use it in terminal.
   :config
   (load-theme 'gruvbox t))
 #+END_SRC 
+*** Other Themes
+Make sure that other themes I like are downloaded and available
+#+BEGIN_SRC emacs-lisp
+(defvar packages-appearance
+  '(monokai-theme solarized-theme zenburn-theme base16-theme molokai-theme
+                  tango-2-theme gotham-theme sublime-themes rainbow-delimiters
+                  waher-theme ample-theme material-theme zerodark-theme
+                  color-theme-modern leuven-theme spacemacs-theme gruvbox-theme
+                  forest-blue-theme flatland-theme afternoon-theme
+                  cyberpunk-theme madhat2r-theme)
+"A list of themes to ensure are installed at launch.")
 
+(defun appearance-packages-installed-p ()
+  (loop for p in packages-appearance
+        when (not (package-installed-p p)) do (return nil)
+        finally (return t)))
+
+(unless (appearance-packages-installed-p)
+  ;; check for new packages (package versions)
+  (message "%s" "Emacs is now refreshing its package themes...")
+  (package-refresh-contents)
+  (message "%s" " done.")
+  ;; install the missing packages
+  (dolist (p packages-appearance)
+    (when (not (package-installed-p p))
+      (package-install p))))
+
+(provide 'packages-appearance)
+#+END_SRC
 *** Convenient theme functions
 #+begin_src emacs-lisp
 (use-package helm-themes
@@ -1686,41 +1743,39 @@ Keybindings for managing packages
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
-   (use-package projectile
-     ;; :commands (projectile-ack
-     ;;            projectile-ag
-     ;;            projectile-compile-project
-     ;;            projectile-dired
-     ;;            projectile-find-dir
-     ;;            projectile-find-file
-     ;;            projectile-find-tag
-     ;;            projectile-find-test-file
-     ;;            projectile-grep
-     ;;            projectile-invalidate-cache
-     ;;            projectile-kill-buffers
-     ;;            projectile-multi-occur
-     ;;            projectile-project-p
-     ;;            projectile-project-root
-     ;;            projectile-recentf
-     ;;            projectile-regenerate-tags
-     ;;            projectile-replace
-     ;;            projectile-run-async-shell-command-in-root
-     ;;            projectile-run-shell-command-in-root
-     ;;            projectile-switch-project
-     ;;            projectile-switch-to-buffer
-     ;;            projectile-vc)
-     :config
-     ;; save projectile-known-projects-file in cache folder
-     (setq projectile-known-projects-file
-        (concat user-cache-directory "projectile-bookmarks.eld"))
-     (setq projectile-cache-file
-        (concat user-cache-directory "projectile.cache"))
-     (setq projectile-enable-caching t)
-     (projectile-global-mode))
+  (use-package projectile
+    ;; :commands (projectile-ack
+    ;;            projectile-ag
+    ;;            projectile-compile-project
+    ;;            projectile-dired
+    ;;            projectile-find-dir
+    ;;            projectile-find-file
+    ;;            projectile-find-tag
+    ;;            projectile-find-test-file
+    ;;            projectile-grep
+    ;;            projectile-invalidate-cache
+    ;;            projectile-kill-buffers
+    ;;            projectile-multi-occur
+    ;;            projectile-project-p
+    ;;            projectile-project-root
+    ;;            projectile-recentf
+    ;;            projectile-regenerate-tags
+    ;;            projectile-replace
+    ;;            projectile-run-async-shell-command-in-root
+    ;;            projectile-run-shell-command-in-root
+    ;;            projectile-switch-project
+    ;;            projectile-switch-to-buffer
+    ;;            projectile-vc)
+    :config
+    ;; save projectile-known-projects-file in cache folder
+    (setq projectile-known-projects-file
+       (concat user-cache-directory "projectile-bookmarks.eld"))
+    (setq projectile-cache-file
+       (concat user-cache-directory "projectile.cache"))
+    (setq projectile-enable-caching t)
+    :init
+    (projectile-global-mode))
 
-  (use-package counsel-projectile
-    :after counsel
-    :commands counsel-projectile)
 #+END_SRC
 ** Ranger & Deer
 Better dired navigation using ranger-like settings
@@ -1757,9 +1812,9 @@ Better dired navigation using ranger-like settings
   (use-package recentf
   :defer 2
   :init
-  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory))
-  :config
-  (recentf-mode 1))
+  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
+  ;; :config
+  ;; (recentf-mode 1))
 #+END_SRC
 
 ** Reveal in Finder
@@ -1775,7 +1830,6 @@ Better dired navigation using ranger-like settings
 ** Saveplace
 #+BEGIN_SRC emacs-lisp
   (use-package saveplace
-    :defer 2
     :init
     (save-place-mode 1)
     ;; (setq-default save-place t)
@@ -1793,6 +1847,7 @@ is somewhat ugly in comparison to helm. So I use helm. YMMV.
 
 *** Helm
 [[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
+**** Helm Settings
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :diminish (helm-mode . "")
@@ -1834,25 +1889,72 @@ is somewhat ugly in comparison to helm. So I use helm. YMMV.
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
       (setq helm-autoresize-min-height 35)
-
-      ;; enter text at eye level
-      (defun helm-hide-minibuffer-maybe ()
-        (when (with-helm-buffer helm-echo-input-in-header-line)
-        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-        (overlay-put ov 'window (selected-window))
-        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-                              `(:background ,bg-color :foreground ,bg-color)))
-                              (setq-local cursor-type nil))))
-
-      (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)      
       (helm-mode 1)
       ))
 #+END_SRC
+**** Hide Mode Lines
+Hide modelines of other windows while helm is open, again from
+https://github.com/hatschipuh/better-helm.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar my-helm-bottom-buffers nil
+	"List of bottom buffers before helm session.
+	Its element is a pair of `buffer-name' and `mode-line-format'.")
+
+  (defun my-helm-bottom-buffers-init ()
+	(setq-local mode-line-format (default-value 'mode-line-format))
+	(setq my-helm-bottom-buffers
+	  (cl-loop for w in (window-list)
+		   when (window-at-side-p w 'bottom)
+		   collect (with-current-buffer (window-buffer w)
+				 (cons (buffer-name) mode-line-format)))))
+
+  (defun my-helm-bottom-buffers-hide-mode-line ()
+	(setq-default cursor-in-non-selected-windows nil)
+	(mapc (lambda (elt)
+		(with-current-buffer (car elt)
+		  (setq-local mode-line-format nil)))
+	  my-helm-bottom-buffers))
+
+  (defun my-helm-bottom-buffers-show-mode-line ()
+	(setq-default cursor-in-non-selected-windows t)
+	(when my-helm-bottom-buffers
+	  (mapc (lambda (elt)
+		  (with-current-buffer (car elt)
+		(setq-local mode-line-format (cdr elt))))
+		my-helm-bottom-buffers)
+	  (setq my-helm-bottom-buffers nil)))
+
+  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
+	(my-helm-bottom-buffers-show-mode-line)
+	(apply orig-func args))
+
+  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
+  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
+  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
+  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
+  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
+#+END_SRC
+
+**** Hide Minibuffer
+Hide minibuffer while helm is active
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-helm-hide-minibuffer-maybe ()
+	(when (with-helm-buffer helm-echo-input-in-header-line)
+	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	(overlay-put ov 'window (selected-window))
+	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+				`(:background ,bg-color :foreground ,bg-color)))
+	(setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
+#+END_SRC
+
 *** Helm packages
 **** Helm ag
 #+begin_src emacs-lisp
 (use-package helm-ag  
-  :defer t
+  :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
   :config
   (setq helm-ag-fuzzy-match t))
 #+end_src
@@ -1871,7 +1973,6 @@ is somewhat ugly in comparison to helm. So I use helm. YMMV.
 **** Helm hunks
 #+BEGIN_SRC emacs-lisp
   (use-package helm-hunks
-    :defer t
     :commands helm-hunks)
 
 #+END_SRC
@@ -1888,10 +1989,13 @@ is somewhat ugly in comparison to helm. So I use helm. YMMV.
 **** Helm flyspell
 Use helm with flyspell
 #+begin_src emacs-lisp
-  (use-package helm-flyspell
-    :defer t
-    :commands helm-flyspell-correct
-  )
+(use-package helm-flyspell
+  :if (not noninteractive)
+  :ensure t
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+)
 #+end_src
 
 **** Helm recent directories
@@ -1918,7 +2022,6 @@ Recent directories
 **** Helm-projectile
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
-  :defer t
   :commands (helm-projectile-switch-to-buffer
              helm-projectile-find-dir
              helm-projectile-dired-find-dir
@@ -1928,8 +2031,7 @@ Recent directories
              helm-projectile
              helm-projectile-switch-project)
   :init
-    (progn
-      (setq projectile-switch-project-action 'helm-projectile)))
+  (setq projectile-switch-project-action 'helm-projectile))
 #+END_SRC
 *** Visual replace
 This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
@@ -2040,7 +2142,7 @@ Numbered window shortcuts for Emacs
 *** Windmove
 #+BEGIN_SRC emacs-lisp
 (use-package windmove
-  :defer t
+  :commands (windmove-up windmove-down windmove-left windmove-right)
   :config
   (defun split-window-right-and-focus ()
   "Split the window horizontally and focus the new window."
@@ -2094,6 +2196,8 @@ The essential stuff
       (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
       (setq evil-replace-state-cursor '("red" hbar))
       (setq evil-operator-state-cursor '("red" hollow))
+      (setq evil-visual-state-tag "VISUAL")
+      
       ;; evil-normal-state is preferred, so revert when idle
       (run-with-idle-timer 20 t 'evil-normal-state)
       ;; don't echo evil state
@@ -2125,13 +2229,13 @@ There are some other useful setup packages for evil
 #+end_src
 *** Evil indent
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-indent-textobject :ensure t)
+  (use-package evil-indent-textobject :commands (evil-indent))
 #+END_SRC
 *** Increment And Decrement Numbers
 #+begin_src emacs-lisp
   (use-package evil-numbers
     :ensure t
-    :defer t
+    :commands (evil-numbers/inc-at-pt evil-numbers/dec-at-pt)
     :init
     (general-define-key
       :states '(normal visual insert emacs)
@@ -2139,7 +2243,7 @@ There are some other useful setup packages for evil
       "H-a" 'evil-numbers/dec-at-pt))
 #+end_src
 
-*** Change Cursor In Terminal
+*** DISABLED Change Cursor In Terminal
 #+begin_src emacs-lisp
 (defun my-send-string-to-terminal (string)
   (unless (display-graphic-p) (send-string-to-terminal string)))
@@ -2173,6 +2277,7 @@ There are some other useful setup packages for evil
 #+begin_src emacs-lisp
 (use-package evil-surround
   :ensure t
+  :defer 2
   ;; :commands (evil-surround-region evil-surround-change)
   :init 
   (general-define-key
@@ -2386,9 +2491,9 @@ Basic settings
     :commands eshell
     ;; :bind ("C-x e" . eshell)
     :init
-    (use-package em-cmpl :ensure nil)
-    (use-package em-prompt :ensure nil)
-    (use-package em-term :ensure nil)
+    ;; (use-package em-cmpl :ensure nil)
+    ;; (use-package em-prompt :ensure nil)
+    ;; (use-package em-term :ensure nil)
     (setq
           eshell-highlight-prompt nil
           eshell-buffer-shorthand t
@@ -2412,7 +2517,7 @@ Basic settings
                                        "nmtui" "alsamixer" "htop" "el" "elinks"
                                        ))
     (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
-    
+
         (defun my/truncate-eshell-buffers ()
           "Truncates all eshell buffers"
           (interactive)
@@ -2500,9 +2605,11 @@ Useful for switching between [[https://github.com/DamienCassou/shell-switcher][m
 configure for any shell that you use.
 #+BEGIN_SRC emacs-lisp
 (use-package shell-switcher
+  :commands shell-switcher-switch-buffer
+  :init
+  (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
   :config
-  (setq shell-switcher-mode t)
-  (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell))
+  (setq shell-switcher-mode t))
 #+END_SRC
 *** Clear Eshell 
 Make eshell act like a standard unix terminal.
@@ -2570,7 +2677,7 @@ Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
 #+BEGIN_SRC emacs-lisp
   (use-package git-gutter+
-    :defer t
+    :commands git-gutter+-mode
     :init
     (progn
       (add-hook 'markdown-mode-hook #'git-gutter+-mode)
@@ -2641,14 +2748,14 @@ well with org-mode using org-indent. So I don't use it globally.
 ** Rainbow delimiters
    #+BEGIN_SRC emacs-lisp
    (use-package rainbow-delimiters 
-      :defer t
-      :init
-      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+     :commands rainbow-delimiters-mode
+     :init
+     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
    #+END_SRC
 ** Rainbow identifiers
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-identifiers
-  :defer t
+  :commands rainbow-identifiers-mode
   :init
   (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
 #+END_SRC
@@ -2661,7 +2768,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
-    :defer t
+    :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
     :init
     (progn
@@ -2690,7 +2797,7 @@ well with org-mode using org-indent. So I don't use it globally.
           (add-hook 'prog-mode-hook 'company-mode)
           (add-hook 'org-mode-hook 'company-mode)
           (add-hook 'markdown-mode-hook 'company-mode)  
-          (setq company-idle-delay 0.4
+          (setq company-idle-delay 0.3
                 company-minimum-prefix-length 4
                 company-require-match nil
                 company-dabbrev-ignore-case nil
@@ -2719,7 +2826,7 @@ well with org-mode using org-indent. So I don't use it globally.
 **** Auc-tex
 #+BEGIN_SRC emacs-lisp
 (use-package company-auctex
-  :defer t
+  :after latex-mode
  )
 #+END_SRC
 **** Company math
@@ -2781,14 +2888,16 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Haskell
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
-    :defer t)
+    :commands haskell-mode)
 #+END_SRC
 *** Html
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
+  :commands (web-mode)
   :ensure t
-  :config
+  :init
 	(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  :config
 	(setq web-mode-engines-alist
       '(("django"    . "\\.html\\'")))
 	(setq web-mode-ac-sources-alist
@@ -2801,7 +2910,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Lua
 #+BEGIN_SRC emacs-lisp
 (use-package lua-mode
-  :defer t
+  :commands lua-mode
   :init
   (dolist (pattern '("\\.lua\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'lua-mode))))
@@ -2809,7 +2918,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** PHP
 #+BEGIN_SRC emacs-lisp
 (use-package php-mode
-  :defer t
+  :commands php-mode
   :init
   (dolist (pattern '("\\.php\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'php-mode))))
@@ -2817,7 +2926,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Shell script mode
 #+BEGIN_SRC emacs-lisp
   (use-package sh-script
-    :defer t
+    :commands sh-script-mode
     :init
     (progn
       ;; Use sh-mode when opening `.zsh' files, and when opening Prezto runcoms.
@@ -2840,7 +2949,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Yaml
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
-    :defer t
+    :commands yaml-mode
     :config
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
     (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
@@ -2850,7 +2959,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Vim
 #+BEGIN_SRC emacs-lisp
   (use-package vimrc-mode
-    :defer t)
+    :commands vimrc-mode)
 #+END_SRC
 * Writing & Research
 I use emacs primarily for writing and doing research. These are some of
@@ -2890,6 +2999,21 @@ mode of writing.
     "Remove underlining at indents."
     (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
     (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
+    (setq org-src-fontify-natively t ;; better looking source code
+      org-return-follows-link t ;; make RET follow links
+      org-list-allow-alphabetical t ;; allow alphabetical list
+      org-hide-emphasis-markers t  ;; hide markers
+      org-pretty-entities t ;; make latex look good
+      org-fontify-quote-and-verse-blocks t ;; make quotes stand out
+      org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
+      org-ellipsis "↴"  ;; nicer elipses
+      org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
+      org-startup-indented t ;; start in indent mode
+      ; org-src-preserve-indentation nil 
+      ; org-edit-src-content-indentation t
+      org-imenu-depth 4
+      imenu-auto-rescan t
+      )
     :init
      (add-hook 'org-mode-hook
         (lambda () 
@@ -2897,21 +3021,6 @@ mode of writing.
           (flyspell-mode 1)
           (global-git-gutter+-mode 0)
           (imenu-add-to-menubar "Imenu")))
-    (setq org-src-fontify-natively t ;; better looking source code
-          org-return-follows-link t ;; make RET follow links
-          org-list-allow-alphabetical t ;; allow alphabetical list
-          org-hide-emphasis-markers t  ;; hide markers
-          org-pretty-entities t ;; make latex look good
-          org-fontify-quote-and-verse-blocks t ;; make quotes stand out
-          org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-          org-ellipsis "↴"  ;; nicer elipses
-          org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
-          org-startup-indented t ;; start in indent mode
-          ; org-src-preserve-indentation nil 
-          ; org-edit-src-content-indentation t
-          org-imenu-depth 4
-          imenu-auto-rescan t
-          )
     ;; normal state shortcuts
     (general-define-key :states '(normal) :keymaps 'org-mode-map
       "RET" 'org-open-at-point     ;; Open with return in evil
@@ -2953,46 +3062,43 @@ mode of writing.
                               (org-metaright)))))
     ;; Use tab in insert mode
     (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
-
-
-      (use-package ox-pandoc
-        :commands ox-pandoc
-        :init
-        (with-eval-after-load 'org)
-        (require 'ox-pandoc)
-        :config
-        ;; default options for all output formats
-        ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
-        (setq org-pandoc-options '((standalone . t)))
-        ;; cancel above settings only for 'docx' format
-        (setq org-pandoc-options-for-docx '((standalone . nil)))
-        ;; special settings for beamer-pdf and latex-pdf exporters
-        (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
-        (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
-
-      (use-package org-bullets
-        :defer t
-        :ensure t
-        :init (add-hook 'org-mode-hook 'org-bullets-mode)
-        :config 
-        (setq org-bullets-bullet-list '("⁕" "⁑" "⁂" "⁘" "⁙" "⁜" "⌾" "⊢" "⁖" "⋮" "⋱" "⋯" ))
-        )
-       
-      (use-package htmlize :after org :ensure t)
-      (use-package org-inlinetask :ensure nil :after org)
-      (use-package toc-org
-        :defer t
-        :init
-        (progn
-          (setq toc-org-max-depth 10)
-          (add-hook 'org-mode-hook 'toc-org-enable)))
-      ;; ignore export of headlines marked with :ignore: tag
-      (use-package ox-extra
-        :ensure nil
-        :after org
-        :config
-        (ox-extras-activate '(ignore-headlines)))
 #+END_SRC
+
+*** Org & Pandoc
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-pandoc
+    :after org
+    :config
+    ;; default options for all output formats
+    ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
+    (setq org-pandoc-options '((standalone . t)))
+    ;; cancel above settings only for 'docx' format
+    (setq org-pandoc-options-for-docx '((standalone . nil)))
+    ;; special settings for beamer-pdf and latex-pdf exporters
+    (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
+    (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
+#+END_SRC 
+
+*** Org miscellaneous packages  
+Other useful org packages
+
+#+BEGIN_SRC emacs-lisp
+ (use-package htmlize :after org :ensure t)
+ (use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
+ (use-package toc-org
+   :init
+   (progn
+     (setq toc-org-max-depth 10)
+     (add-hook 'org-mode-hook 'toc-org-enable)))
+ ;; ignore export of headlines marked with :ignore: tag
+ (use-package ox-extra
+   :ensure nil
+   :after org
+   :config
+   (ox-extras-activate '(ignore-headlines)))
+#+END_SRC 
+
 *** Org-reveal
 #+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
@@ -3015,13 +3121,14 @@ mode of writing.
 
         ;; other entries
         ))
-#+END_SRC
-*** Journal
-**** Org-journal
-#+BEGIN_SRC emacs-lisp
-(defun cpm/org-journal ()
+  (defun cpm/org-journal ()
   (interactive) (org-capture nil "j"))
 
+
+#+END_SRC
+*** Journal
+**** DISABLED Org-journal
+#+BEGIN_SRC emacs-lisp
   (use-package org-journal
   :ensure t
   :disabled t
@@ -3203,7 +3310,7 @@ same day of the month, but will be the same day of the week."
 Helps with time tracking
 #+BEGIN_SRC emacs-lisp
   (use-package org-pomodoro
-    :defer t
+    :commands org-pomodoro
     :ensure t
     :init
     (progn
@@ -3219,85 +3326,97 @@ Open exported docx files in Word/Open Office rather than emacs
           ("\\.pdf\\'" . default)
           (auto-mode . emacs)))
 #+END_SRC
-*** Prettify blocks
+*** Org Appearance
+Appearance settings for Org-mode
+**** Org bullets
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :defer t
+  :ensure t
+  :init (add-hook 'org-mode-hook 'org-bullets-mode)
+  :config 
+  (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "⁘" "⁙" "✶" "✵" "⁜" "✫" "⌾" "⁕" "✪" "⊢" "╏" "╞" "┇" "╠" "┋" "⁖" "⋮" "⋱" "⋯" ))
+  )
+#+END_SRC
+**** Org Prettify blocks
 Make source blocks look better.
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org
-  (defvar-local rasmus/org-at-src-begin -1
-    "Variable that holds whether last position was a ")
+  (with-eval-after-load 'org
+    (defvar-local rasmus/org-at-src-begin -1
+      "Variable that holds whether last position was a ")
 
-  (defvar rasmus/ob-header-symbol ?☰
-    "Symbol used for babel headers")
+    (defvar rasmus/ob-header-symbol ?☰
+      "Symbol used for babel headers")
 
-  (defun rasmus/org-prettify-src--update ()
-    (let ((case-fold-search t)
-          (re "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*")
-          found)
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward re nil t)
-          (goto-char (match-end 0))
-          (let ((args (org-trim
-                       (buffer-substring-no-properties (point)
-                                                       (line-end-position)))))
-            (when (org-string-nw-p args)
-              (let ((new-cell (cons args rasmus/ob-header-symbol)))
-                (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
-                (cl-pushnew new-cell found :test #'equal)))))
-        (setq prettify-symbols-alist
-              (cl-set-difference prettify-symbols-alist
-                                 (cl-set-difference
-                                  (cl-remove-if-not
-                                   (lambda (elm)
-                                     (eq (cdr elm) rasmus/ob-header-symbol))
-                                   prettify-symbols-alist)
-                                  found :test #'equal)))
-        ;; Clean up old font-lock-keywords.
-        (font-lock-remove-keywords nil prettify-symbols--keywords)
-        (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
-        (font-lock-add-keywords nil prettify-symbols--keywords)
-        (while (re-search-forward re nil t)
-          (font-lock-flush (line-beginning-position) (line-end-position))))))
+    (defun rasmus/org-prettify-src--update ()
+      (let ((case-fold-search t)
+            (re "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*")
+            found)
+        (save-excursion
+          (goto-char (point-min))
+          ;; (while (re-search-forward re nil t)
+          ;;   (goto-char (match-end 0))
+          ;;   (let ((args (org-trim
+          ;;                (buffer-substring-no-properties (point)
+          ;;                                                (line-end-position)))))
+          ;;     (when (org-string-nw-p args)
+          ;;       (let ((new-cell (cons args rasmus/ob-header-symbol)))
+          ;;         (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
+          ;;         (cl-pushnew new-cell found :test #'equal)))))
+          (setq prettify-symbols-alist
+                (cl-set-difference prettify-symbols-alist
+                                   (cl-set-difference
+                                    (cl-remove-if-not
+                                     (lambda (elm)
+                                       (eq (cdr elm) rasmus/ob-header-symbol))
+                                     prettify-symbols-alist)
+                                    found :test #'equal)))
+          ;; Clean up old font-lock-keywords.
+          (font-lock-remove-keywords nil prettify-symbols--keywords)
+          (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
+          (font-lock-add-keywords nil prettify-symbols--keywords)
+          (while (re-search-forward re nil t)
+            (font-lock-flush (line-beginning-position) (line-end-position))))))
 
-  (defun rasmus/org-prettify-src ()
-    "Hide src options via `prettify-symbols-mode'.
+    (defun rasmus/org-prettify-src ()
+      "Hide src options via `prettify-symbols-mode'.
 
-  `prettify-symbols-mode' is used because it has uncollpasing. It's
-  may not be efficient."
-    (let* ((case-fold-search t)
-           (at-src-block (save-excursion
-                           (beginning-of-line)
-                           (looking-at "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*"))))
-      ;; Test if we moved out of a block.
-      (when (or (and rasmus/org-at-src-begin
-                     (not at-src-block))
-                ;; File was just opened.
-                (eq rasmus/org-at-src-begin -1))
-        (rasmus/org-prettify-src--update))
-      ;; Remove composition if at line; doesn't work properly.
-      ;; (when at-src-block
-      ;;   (with-silent-modifications
-      ;;     (remove-text-properties (match-end 0)
-      ;;                             (1+ (line-end-position))
-      ;;                             '(composition))))
-      (setq rasmus/org-at-src-begin at-src-block)))
+    `prettify-symbols-mode' is used because it has uncollpasing. It's
+    may not be efficient."
+      (let* ((case-fold-search t)
+             (at-src-block (save-excursion
+                             (beginning-of-line)
+                             (looking-at "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*"))))
+        ;; Test if we moved out of a block.
+        (when (or (and rasmus/org-at-src-begin
+                       (not at-src-block))
+                  ;; File was just opened.
+                  (eq rasmus/org-at-src-begin -1))
+          (rasmus/org-prettify-src--update))
+        ;; Remove composition if at line; doesn't work properly.
+        ;; (when at-src-block
+        ;;   (with-silent-modifications
+        ;;     (remove-text-properties (match-end 0)
+        ;;                             (1+ (line-end-position))
+        ;;                             '(composition))))
+        (setq rasmus/org-at-src-begin at-src-block)))
 
-  (defun rasmus/org-prettify-symbols ()
-    (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
-          (cl-reduce 'append
-                     (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                             `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
-                               ("#+end_src"   . ?╩) ;; □
-                               ("#+header:" . ,rasmus/ob-header-symbol)
-                               ("#+begin_comment" . ?✎)
-                               ("#+end_comment" . ?✎)
-                               ("#+begin_notes" . ?➤)
-                               ("#+end_notes" . ?➤)
-                               ("#+begin_quote" . ?»)
-                               ("#+end_quote" . ?«)))))
-    (turn-on-prettify-symbols-mode)
-    (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
-  (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
+    (defun rasmus/org-prettify-symbols ()
+      (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
+            (cl-reduce 'append
+                       (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                               `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
+                                 ("#+end_src"   . ?╩) ;; □
+                                 ("#+header:" . ,rasmus/ob-header-symbol)
+                                 ("#+begin_comment" . ?✎)
+                                 ("#+end_comment" . ?✎)
+                                 ("#+begin_notes" . ?➤)
+                                 ("#+end_notes" . ?➤)
+                                 ("#+begin_quote" . ?»)
+                                 ("#+end_quote" . ?«)))))
+      (turn-on-prettify-symbols-mode)
+      (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
+    (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
 #+END_SRC
 *** Org seek
 Searching Org-mode with search tools.
@@ -3311,6 +3430,7 @@ Searching Org-mode with search tools.
 #+BEGIN_SRC emacs-lisp
     (use-package org-wiki
       :ensure nil
+      :commands (org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
       :init 
       (setq org-wiki-location "~/Dropbox/Work/wiki")
     )
@@ -3899,6 +4019,7 @@ Better than doc-view, but doesn't render well on retina screens :(
 
   (use-package pdf-tools-org 
     :defer t
+    :ensure nil
     :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
     :init
     (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/"))
@@ -4111,11 +4232,12 @@ Better than doc-view, but doesn't render well on retina screens :(
 ** All the icons
 Like the title says...
 #+BEGIN_SRC emacs-lisp
-(use-package all-the-icons :diminish "")
+(use-package all-the-icons :defer t :diminish "")
 ;; icons for dired
 (use-package all-the-icons-dired
   :diminish ""
-  :config
+  :commands (deer deer-jump-other-window all-the-icons-dired-mode dired-mode ranger)
+  :init
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
 ** Autopair
@@ -4153,9 +4275,9 @@ Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
     :config
-    (setq dashboard-items '((recents  . 5)
-                            (bookmarks . 5)
-			                (projects . 5)))
+    (setq dashboard-items '((recents  . 10)
+                            (bookmarks . 10)
+			                (projects . 10)))
     (setq dashboard-startup-banner "/Users/roambot/Pictures/emacs icons/64x64@2x.png")
     ;; Set the title
     (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
@@ -4172,11 +4294,139 @@ Auto-revert buffers of changed files
       "p" (dashboard-insert--shortcut "p" "Projects:")
       ))
 #+END_SRC
+** Elfeed - RSS feed reader
+
+| Key | Function                                              |
+|-----+-------------------------------------------------------|
+| RET | show article                                          |
+| G   | update feeds                                          |
+| b   | open in browser (browse-url)                          |
+| q   | quit                                                  |
+| +   | Apply TAG to all selected entries.                    |
+| -   | Remove TAG from all selected entries.                 |
+| S   | Set a new search filter for the elfeed-search buffer. |
+
+https://github.com/skeeto/elfeed
+Tips and Tricks: http://nullprogram.com/blog/2013/11/26/
+
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed
+  :ensure t
+  :commands elfeed
+  :config
+  (setq elfeed-feeds
+		'(;; emacs
+		  ("http://emacsredux.com/atom.xml" emacs)
+		  ("http://endlessparentheses.com/atom.xml" emacs)
+		  ("http://nullprogram.com/feed/" emacs)
+		  ("http://planet.emacsen.org/atom.xml" emacs)
+		  ("http://www.lunaryorn.com/feed.atom" emacs)
+		  ("http://www.masteringemacs.org/feed/" emacs)
+		  ("https://github.com/milkypostman/melpa/commits/master.atom" github emacs)
+		  ("http://oremacs.com/atom.xml" emacs)
+		  ("http://emacsnyc.org/atom.xml" emacs)
+		  ;; ("https://www.reddit.com/r/emacs/.rss" emacs reddit)
+		  ;; ("https://www.reddit.com/r/orgmode/.rss" emacs reddit)
+
+		  ;;("http://stackexchange.com/feeds/tagsets/152198/emacs?sort=active" emacs)
+		  ))
+
+  (setq elfeed-use-curl t)
+  (setq elfeed-search-filter "@1-week-ago +unread")
+
+  ;; Entries older than 4 weeks are marked as read
+  (add-hook 'elfeed-new-entry-hook
+			(elfeed-make-tagger :before "4 weeks ago"
+								:remove 'unread))
+
+  ;; fetch RSS/Atom feeds in the background
+  ;;
+  ;; A better approach would be to have a checker function that
+  ;; gets the feeds sorted by when they have last been downloaded
+  ;; it would then take one (!) of them and just feed it. That
+  ;; makes the idle function fast and we could increase it's
+  ;; timeout from 15 minutes to a minute or so.
+  (run-with-idle-timer (* 15 60) t #'elfeed-update)
+)
+#+END_SRC
+
+An example on how to prune old feeds:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun elfeed-dead-feeds (years)
+  "Return a list of feeds that haven't posted en entry in YEARS years."
+  (cl-block
+	  (macroexp-let* ((living-feeds (make-hash-table :test 'equal))
+					  (seconds (* years 365.0 24 60 60))
+					  (threshold (- (float-time) seconds)))
+					 (with-elfeed-db-visit (entry feed)
+					   (let ((date (elfeed-entry-date entry)))
+						 (when (> date threshold)
+						   (setf (gethash (elfeed-feed-url feed) living-feeds) t))))
+					 (cl-loop for url in (elfeed-feed-list)
+							  unless (gethash url living-feeds)
+							  collect url))))
+  (elfeed-dead-feeds 1.0)
+#+END_SRC
+
+Some more feeds to (eventually) check:
+
+- ("http://harryrschwartz.com/atom.xml" blog)
+- ("http://zinascii.com/writing-feed.xml" blog)
+- ("http://githubengineering.com/atom.xml" blog)
+- ("http://blog.smola.org/rss" blog)
+- ("http://briancarper.net/feed" blog)
+- ("https://kotka.de/blog/index.rss" blog)
+- ("http://fiftyfootshadows.net/feed/" blog)
+- ("http://blag.xkcd.com/feed/" blog)
+- ("http://youdisappear.net/files/page1.xml" blog music)
+- ("http://normanmaurer.me/blog.atom" blog)
+- ("http://blog.mikemccandless.com/feeds/posts/default" elasticsearch blog)
+- ("http://lethain.com/feeds/all/" blog)
+- ("http://whatthefuck.computer/rss.xml" blog)
+- ("http://feeds.feedburner.com/jamesshelley" blog)
+- ("http://www.marco.org/rss" blog)
+- ("http://gnuvince.wordpress.com/feed/" blog)
+- ("http://elliotth.blogspot.com/feeds/posts/default" blog)
+- ("http://feeds.feedburner.com/Hyperbole-and-a-half" blog)
+- ("http://lcamtuf.blogspot.com/feeds/posts/default" blog)
+- ("http://blog.isabel-drost.de/index.php/feed" blog)
+- ("http://feeds2.feedburner.com/CodersTalk" blog)
+- ("http://feeds.feedburner.com/codinghorror/" blog)
+- ("http://lambda-the-ultimate.org/rss.xml" blog)
+- ("http://danluu.com/atom.xml" blog)
+- ("http://ferd.ca/feed.rss" blog)
+- ("http://blog.fsck.com/atom.xml" blog)
+- ("http://jvns.ca/atom.xml" blog)
+- ("http://newartisans.com/rss.xml" blog emacs)
+- ("http://bling.github.io/index.xml" blog emacs)
+- ("https://rachelbythebay.com/w/atom.xml" blog)
+- ("http://blog.nullspace.io/feed.xml" blog)
+- ("http://www.mcfunley.com/feed/atom" blog)
+- ("https://codewords.recurse.com/feed.xml" blog)
+- ("http://akaptur.com/atom.xml" blog)
+- ("http://davidad.github.io/atom.xml" blog)
+- ("http://www.evanjones.ca/index.rss" blog)
+- ("http://neverworkintheory.org/feed.xml" blog)
+- ("http://blog.jessitron.com/feeds/posts/default" blog)
+- ("http://feeds.feedburner.com/GustavoDuarte?format=xml" blog)
+- ("http://blog.regehr.org/feed" blog)
+- ("https://www.snellman.net/blog/rss-index.xml" blog)
+- ("http://eli.thegreenplace.net/feeds/all.atom.xml" blog)
+- ("https://idea.popcount.org/rss.xml" blog)
+- ("https://aphyr.com/posts.atom" blog)
+- ("http://kamalmarhubi.com/blog/feed.xml" blog)
+- ("http://maryrosecook.com/blog/feed" blog)
+- ("http://www.tedunangst.com/flak/rss" blog)
+- ("http://yosefk.com/blog/feed" blog)
+- ("http://www.benkuhn.net/rss/" blog)
+- ("https://emacsgifs.github.io/feed.xml" blog emacs)
+
 ** Guess Languages
 #+BEGIN_SRC emacs-lisp
 (use-package guess-language         ; Automatically detect language for Flyspell
   :ensure t
-  :defer t
+  :commands guess-language-mode
   :init (add-hook 'text-mode-hook #'guess-language-mode)
   :config
   (setq guess-language-languages '(en de)
@@ -4186,12 +4436,13 @@ Auto-revert buffers of changed files
 ** Info+
 #+BEGIN_SRC emacs-lisp
 (use-package info+
-  :defer t)
+  :after info)
 #+END_SRC
  
 ** Neotree
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
+    :commands (neotree neotree-toggle)
     :config 
     (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
     (setq neo-window-fixed-size t)
@@ -4200,7 +4451,7 @@ Auto-revert buffers of changed files
       ;; "T"  '(:ignore t :which-key "Neotree") 
       "T"  'neotree-toggle)
 
-    (setq projectile-switch-project-action 'neotree-projectile-action)
+    ;; (setq projectile-switch-project-action 'neotree-projectile-action)
     (add-hook 'neotree-mode-hook
       (lambda ()
         (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
@@ -4220,7 +4471,7 @@ Auto-revert buffers of changed files
 ** Paradox
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
-  :defer t
+  :commands (paradox-list-packages paradox-upgrade-packages)
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
   (setq paradox-execute-asynchronously nil
@@ -4236,6 +4487,18 @@ Dashboard depends on this.
 #+BEGIN_SRC emacs-lisp
 (use-package page-break-lines
   :diminish "")
+#+END_SRC
+** Paperless
+A PDF management system. See the [[https://github.com/atgreen/paperless][Github repo]] for further details 
+#+BEGIN_SRC emacs-lisp
+(use-package paperless
+  :ensure nil
+  :load-path "/Users/roambot/.emacs.d/elisp/paperless/"
+  :commands (paperless-mode paperless-file paperless-rename paperless-display paperless-execute)
+  :config
+  (setq paperless-capture-directory "/Users/roambot/Downloads"
+        paperless-root-directory "/Users/roambot/Dropbox/Work/Documents")
+)
 #+END_SRC
 ** Persistent Scratch
 #+BEGIN_SRC emacs-lisp
@@ -4337,7 +4600,7 @@ Start server
     :defer 2
     :config
     (if (display-graphic-p)
-        (unless (server-running-p)
+        (unless (or (daemonp) (server-running-p))
            (message "Starting server..")
            (server-start)))
     )
