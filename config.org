@@ -533,12 +533,15 @@ And here's how we tell Emacs to use the font we want to use.
 ** Highlight line numbers
 #+BEGIN_SRC emacs-lisp 
 ;; line number spacing
-(setq linum-format "%4d ")
+(setq-default linum-format "%4d ")
 ;; Highlight current line number
 (use-package hlinum
   :commands hlinum-mode
   :init
-  (add-hook 'linum-mode-hook 'hlinum-activate))
+  (add-hook 'linum-mode-hook 'hlinum-activate)
+  :config
+  (set-face-attribute 'linum-highlight-face nil
+   :inherit 'default :background "#002b36" :foreground "goldenrod1"))
 #+END_SRC
 ** Highlight numbers
 #+BEGIN_SRC emacs-lisp
@@ -757,8 +760,15 @@ This is a really nice powerline-ish modeline.
 *** Fancy Battery
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery
-    :defer t
-    :init (fancy-battery-mode))
+    :init (fancy-battery-mode)
+    :config
+    (setq-default battery-update-interval 10)
+    (set-face-attribute 'fancy-battery-charging nil 
+    :foreground "dark blue" :weight 'bold)
+    (set-face-attribute 'fancy-battery-critical nil 
+    :foreground "dark red" :weight 'bold)
+    (set-face-attribute 'fancy-battery-discharging nil 
+    :foreground "dark magenta" :weight 'bold))
 #+END_SRC
  
 * Useful Functions
@@ -1253,7 +1263,9 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
     ;; :commands bmkp-set-desktop-bookmark
     :init
     (setq bookmark-default-file
-             (concat user-cache-directory "bookmarks")))
+             (concat user-cache-directory "bookmarks"))
+    (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
+)
 #+END_SRC 
 *** DISABLED Workgroups
 #+BEGIN_SRC emacs-lisp
@@ -1889,6 +1901,12 @@ is somewhat ugly in comparison to helm. So I use helm. YMMV.
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
       (setq helm-autoresize-min-height 35)
+      ;; helm selection faces
+      (set-face-attribute 'helm-selection nil
+      :foreground "#f7f438"
+      :background "#64b5ea"
+      :underline nil
+      :weight 'bold)
       (helm-mode 1)
       ))
 #+END_SRC
@@ -2371,6 +2389,9 @@ A popup shell
 #+begin_src emacs-lisp 
   (use-package shell-pop
     :commands shell-pop
+    :init
+    (setq shell-pop-term-shell "/usr/local/bin/zsh")
+    (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
     :config
       (defun ansi-term-handle-close ()
        "Close current term buffer when `exit' from term buffer."
@@ -3064,7 +3085,7 @@ mode of writing.
     (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
 #+END_SRC
 
-*** Org & Pandoc
+*** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
@@ -3418,6 +3439,22 @@ Make source blocks look better.
       (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
     (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
 #+END_SRC
+**** Org faces
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'org-block nil :foreground "#2E8B57")
+(set-face-attribute 'org-block-begin-line nil 
+:foreground "#74a8a4" :weight 'bold :slant 'normal)
+(set-face-attribute 'org-level-1 nil 
+:inherit 'variable-pitch :foreground "#268bd2" :height 1.3)
+(set-face-attribute 'org-level-2 nil 
+:inherit 'variable-pitch :foreground "medium sea green" :height 1.2)
+(set-face-attribute 'org-level-3 nil 
+:inherit 'variable-pitch :foreground "#cb4b16" :height 1.15)
+(set-face-attribute 'org-level-8 nil 
+:inherit 'variable-pitch :foreground "#9e1e86" :height 1.1)
+(set-face-attribute 'org-quote nil 
+:inherit 'org-block :slant 'normal :weight 'normal)
+#+END_SRC
 *** Org seek
 Searching Org-mode with search tools.
 #+BEGIN_SRC emacs-lisp
@@ -3525,6 +3562,19 @@ Publish using twitter bootstrap css
 (use-package ox-twbs
   :commands org-twbs-export-to-html)
 #+END_SRC
+*** Org template expansions
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-structure-template-alist
+  '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+(add-to-list 'org-structure-template-alist
+  '("n" "#+BEGIN_NOTES\n?\n#+END_NOTES"))
+(add-to-list 'org-structure-template-alist
+  '("t" "#+BEGIN_COMMENT TODO: ?  #+END_COMMENT"))
+(add-to-list 'org-structure-template-alist
+  '("b" "#+REVEAL: split?"))
+(add-to-list 'org-structure-template-alist
+  '("f" "#+ATTR_REVEAL: :frag (appear)?"))
+#+END_SRC
 ** Helm-Bibtex
 Great for managing citations and notes
 #+begin_src emacs-lisp
@@ -3582,6 +3632,11 @@ Great for managing citations and notes
          ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
          ;; add keybindings to hook
        :config
+       ;; remove strikout comment face
+       (set-face-attribute 'markdown-comment-face nil 
+       :weight 'bold :strike-through nil)
+       ;; footnote location
+       (setq markdown-footnote-location "end")
        ;; Header navigation in normal state movements
        (general-define-key :states '(normal) :keymaps 'markdown-mode-map
             "TAB" 'markdown-cycle
@@ -4609,4 +4664,5 @@ Start server
 #+BEGIN_SRC emacs-lisp
   ;; (eshell)
 #+END_SRC
+
 
