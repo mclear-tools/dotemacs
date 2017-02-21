@@ -1247,10 +1247,10 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
 (use-package avy
   :commands (avy-goto-char))
 #+END_SRC
-*** Bookmark
+*** CHECK Bookmark
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark+
-    :commands bmkp-set-desktop-bookmark
+    ;; :commands bmkp-set-desktop-bookmark
     :init
     (setq bookmark-default-file
              (concat user-cache-directory "bookmarks")))
