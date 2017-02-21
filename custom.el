@@ -3,15 +3,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default bold shadow italic underline bold bold-italic bold])
  '(battery-update-interval 10)
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
  '(compilation-message-face (quote default))
- '(counsel-locate-cmd (quote counsel-locate-cmd-mdfind))
  '(custom-safe-themes
    (quote
-    ("5d3e0746023fc5e246eb3e0e48c1ccb5ce0387fc4273896c6cf02ee349c2eba8" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+    ("6daa09c8c2c68de3ff1b83694115231faa7e650fdbb668bc76275f0f2ce2a437" "5d3e0746023fc5e246eb3e0e48c1ccb5ce0387fc4273896c6cf02ee349c2eba8" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(desktop-modes-not-to-save
    (quote
     (tags-table-mode dired-mode Info-mode info-lookup-mode fundamental-mode)))
@@ -20,19 +17,18 @@
  '(helm-mini-default-sources
    (quote
     (helm-source-buffers-list helm-source-recentf helm-source-buffer-not-found helm-source-bookmarks)))
- '(hl-sexp-background-color "#1c1f26")
  '(magit-diff-use-overlays nil)
- '(markdown-command "pandoc" t)
- '(markdown-enable-math t t)
+ '(markdown-command "pandoc")
+ '(markdown-enable-math t)
  '(markdown-footnote-location (quote end))
- '(markdown-nested-imenu-heading-index t t)
- '(markdown-open-command "/Users/Roambot/bin/scripts/mark.sh" t)
- '(org-confirm-babel-evaluate nil)
+ '(markdown-nested-imenu-heading-index t)
+ '(markdown-open-command "/Users/Roambot/bin/scripts/mark.sh")
+ '(org-confirm-babel-evaluate t)
  '(org-ellipsis "↴")
  '(org-fontify-quote-and-verse-blocks t)
  '(org-footnote-auto-adjust t)
  '(org-footnote-section "Footnotes")
- '(org-from-is-user-regexp "\\<Roambot\\>")
+ '(org-from-is-user-regexp "\\McLear\\")
  '(org-hide-emphasis-markers t)
  '(org-imenu-depth 4)
  '(org-link-translation-function (quote toc-org-unhrefify))
@@ -90,10 +86,12 @@
      ("n" "#+BEGIN_NOTES
 ?
 #+END_NOTES"))))
- '(org-wiki-location "~/Dropbox/Work/wiki")
+ '(org-wiki-location "~/Dropbox/Work/wiki" t)
  '(package-selected-packages
    (quote
     (madhat2r-theme cyberpunk-theme afternoon-theme flatland-theme forest-blue-theme spacemacs-theme leuven-theme color-theme-modern zerodark-theme ample-theme waher-theme sublime-themes gotham-theme tango-2-theme molokai-theme base16-theme zenburn-theme monokai-theme elfeed visual-regexp-steroids pdf-tools-org org-pomodoro neotree spaceline-all-the-icons all-the-icons-dired all-the-icons guess-language pdf-tools zweilight-theme simpleclip evil-embrace embrace lua-mode evil-surround evil-numbers evil-indent-textobject general use-package solarized-theme org-plus-contrib material-theme gruvbox-theme evil-escape)))
+ '(pos-tip-background-color "#073642")
+ '(pos-tip-foreground-color "#93a1a1")
  '(safe-local-variable-values
    (quote
     ((org-list-allow-alphabetical . t)
@@ -104,12 +102,37 @@
             (quote rainbow-mode))
            (rainbow-mode 1))
      (kill-buffer-hook org-publish-current-file))))
- '(save-place-forget-unreadable-files nil)
+ '(save-place-forget-unreadable-files t)
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
  '(shell-pop-term-shell "/usr/local/bin/zsh")
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#839496" 0.2))
+ ;; '(term-default-bg-color "#002b36")
+ ;; '(term-default-fg-color "#839496")
  '(toc-org-max-depth 10)
  '(vc-annotate-background nil)
- '(vc-annotate-background-mode nil))
+ '(vc-annotate-background-mode nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dc322f")
+     (40 . "#c85d17")
+     (60 . "#be730b")
+     (80 . "#b58900")
+     (100 . "#a58e00")
+     (120 . "#9d9100")
+     (140 . "#959300")
+     (160 . "#8d9600")
+     (180 . "#859900")
+     (200 . "#669b32")
+     (220 . "#579d4c")
+     (240 . "#489e65")
+     (260 . "#399f7e")
+     (280 . "#2aa198")
+     (300 . "#2898af")
+     (320 . "#2793ba")
+     (340 . "#268fc6")
+     (360 . "#268bd2"))))
+ '(vc-annotate-very-old-color nil)
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
