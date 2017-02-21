@@ -2604,12 +2604,12 @@ at [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling'
 Useful for switching between [[https://github.com/DamienCassou/shell-switcher][multiple instances]] of eshell. But you can
 configure for any shell that you use.
 #+BEGIN_SRC emacs-lisp
-(use-package shell-switcher
-  :commands shell-switcher-switch-buffer
-  :init
-  (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
-  :config
-  (setq shell-switcher-mode t))
+  (use-package shell-switcher
+    :defer 2
+    :init
+    (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
+    :config
+    (setq shell-switcher-mode t))
 #+END_SRC
 *** Clear Eshell 
 Make eshell act like a standard unix terminal.
