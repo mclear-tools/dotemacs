@@ -1822,6 +1822,8 @@ Keybindings for managing packages
   "gc" 'magit-commit
   "gd" 'magit-diff
   "gl" 'magit-log
+  "gn" 'git-gutter:next-hunk
+  "gp" 'git-gutter:previous-hunk
   "gr" 'magit-reflog
   "gs" 'magit-status
   )
