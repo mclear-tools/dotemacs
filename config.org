@@ -538,10 +538,10 @@ And here's how we tell Emacs to use the font we want to use.
   (use-package hlinum
     :commands hlinum-mode
     :init
-    (add-hook 'linum-mode-hook 'hlinum-activate)
-    :config
-    (set-face-attribute 'linum-highlight-face nil
-      :foreground "black"))
+    (add-hook 'linum-mode-hook 'hlinum-activate))
+    ;; :config
+    ;; (set-face-attribute 'linum-highlight-face nil
+    ;;   :foreground "black"))
 #+END_SRC
 ** Highlight numbers
 #+BEGIN_SRC emacs-lisp
@@ -672,7 +672,7 @@ The best low-contrast theme out there.
                    ;; helm faces
                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                    ;; line highlighting 
-                    '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                    '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
                    ;; battery faces
                    '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
                    '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
