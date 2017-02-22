@@ -532,16 +532,16 @@ And here's how we tell Emacs to use the font we want to use.
 #+END_SRC
 ** Highlight line numbers
 #+BEGIN_SRC emacs-lisp 
-;; line number spacing
-(setq-default linum-format "%4d ")
-;; Highlight current line number
-(use-package hlinum
-  :commands hlinum-mode
-  :init
-  (add-hook 'linum-mode-hook 'hlinum-activate)
-  :config
-  (set-face-attribute 'linum-highlight-face nil
-   :inherit 'default :background "#002b36" :foreground "goldenrod1"))
+  ;; line number spacing
+  (setq-default linum-format "%4d ")
+  ;; Highlight current line number
+  (use-package hlinum
+    :commands hlinum-mode
+    :init
+    (add-hook 'linum-mode-hook 'hlinum-activate)
+    :config
+    (set-face-attribute 'linum-highlight-face nil
+      :foreground "black"))
 #+END_SRC
 ** Highlight numbers
 #+BEGIN_SRC emacs-lisp
@@ -573,7 +573,7 @@ highlight TODO statements in comments
 #+END_SRC
 
 ** Theme
-*** Solarized
+*** CHECK Solarized
 The best low-contrast theme out there.
 #+BEGIN_SRC emacs-lisp
   (use-package solarized-theme
@@ -583,7 +583,7 @@ The best low-contrast theme out there.
       (progn
           ;; don't make the fringe stand out from the background
           (setq solarized-distinct-fringe-background nil)
-          
+
           ;; change the font for some headings and titles
           (setq solarized-use-variable-pitch t)
 
@@ -601,16 +601,15 @@ The best low-contrast theme out there.
 
           ;; Don't change size of org-mode headlines (but keep other size-changes)
           (setq solarized-scale-org-headlines t)
-          (load-theme 'solarized-dark t)
-      
+
           ;; don't italicize line numbers
-          (add-hook 'after-make-frame-functions
-          (lambda (frame)
-          (select-frame frame)
-          (if (display-graphic-p)
-          (set-face-attribute 'linum frame
-          :background (face-attribute 'default :background)
-          :foreground (face-attribute 'linum :foreground) :slant 'normal))))
+          ;; (add-hook 'after-make-frame-functions
+          ;; (lambda (frame)
+          ;; (select-frame frame)
+          ;; (if (display-graphic-p)
+          ;; (set-face-attribute 'linum frame
+          ;; :background (face-attribute 'default :background)
+          ;; :foreground (face-attribute 'linum :foreground) :slant 'normal))))
 
           ;; Theme toggle
           (setq active-theme 'solarized-dark)
@@ -621,7 +620,67 @@ The best low-contrast theme out there.
             (setq active-theme 'solarized-light))
           (load-theme active-theme)
           (powerline-reset))
-          ))
+          )
+          :config
+           (progn
+             (defvar after-load-theme-hook nil
+               "Hook run after a color theme is loaded using `load-theme'.")
+             (defadvice load-theme (after run-after-load-theme-hook activate)
+               "Run `after-load-theme-hook'."
+               (run-hooks 'after-load-theme-hook))
+             (defun customize-solarized-dark ()
+               "Customize solarized theme"
+               (if (member 'solarized-dark custom-enabled-themes)
+                   (custom-theme-set-faces
+                   'solarized-dark
+                   ;; org faces
+                   '(org-block ((t (:foreground "#2E8B57"))))
+                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
+                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
+                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
+                   '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
+                   '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
+                   ;; markdown faces
+                   '(markdown-comment-face ((t (:weight bold :strike-through nil))))
+                   ;; helm faces
+                   '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+                   ;; line highlighting 
+                    '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                   ;; battery faces
+                   '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
+                   '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
+                   '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
+
+            (add-hook 'after-load-theme-hook 'customize-solarized-dark)
+
+            (defun customize-solarized-light ()
+               "Customize solarized theme"
+               (if (member 'solarized-light custom-enabled-themes)
+                   (custom-theme-set-faces
+                   'solarized-light
+                   ;; org faces
+                   '(org-block ((t (:foreground "#2E8B57"))))
+                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
+                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
+                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
+                   '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
+                   '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
+                   ;; markdown faces
+                   '(markdown-comment-face ((t (:weight bold :strike-through nil))))
+                   ;; helm faces
+                   '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+                   ;; line highlighting 
+                    '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                   ;; battery faces
+                   '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
+                   '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
+                   '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
+
+            (add-hook 'after-load-theme-hook 'customize-solarized-light)
+            )
+            (load-theme 'solarized-dark t))
 
           ;; Avoid all font-size changes
           ;; (setq solarized-height-minus-1 1)
@@ -629,7 +688,7 @@ The best low-contrast theme out there.
           ;; (setq solarized-height-plus-2 1)
           ;; (setq solarized-height-plus-3 1)
           ;; (setq solarized-height-plus-4 1))
-         
+
 
     ;; An alternative solarized theme
       (use-package color-theme-sanityinc-solarized
@@ -654,8 +713,8 @@ This is a great general-purpose theme. Use it in terminal.
 Make sure that other themes I like are downloaded and available
 #+BEGIN_SRC emacs-lisp
 (defvar packages-appearance
-  '(monokai-theme solarized-theme zenburn-theme base16-theme molokai-theme
-                  tango-2-theme gotham-theme sublime-themes rainbow-delimiters
+  '(monokai-theme solarized-theme zenburn-theme molokai-theme darktooth-theme
+                  tango-2-theme gotham-theme sublime-themes 
                   waher-theme ample-theme material-theme zerodark-theme
                   color-theme-modern leuven-theme spacemacs-theme gruvbox-theme
                   forest-blue-theme flatland-theme afternoon-theme
@@ -679,12 +738,6 @@ Make sure that other themes I like are downloaded and available
 
 (provide 'packages-appearance)
 #+END_SRC
-*** Convenient theme functions
-#+begin_src emacs-lisp
-(use-package helm-themes
-  :commands helm-themes) 
-#+end_src
-
 ** Which-key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
@@ -761,14 +814,50 @@ This is a really nice powerline-ish modeline.
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery
     :init (fancy-battery-mode)
-    :config
-    (setq-default battery-update-interval 10)
-    (set-face-attribute 'fancy-battery-charging nil 
-    :foreground "dark blue" :weight 'bold)
-    (set-face-attribute 'fancy-battery-critical nil 
-    :foreground "dark red" :weight 'bold)
-    (set-face-attribute 'fancy-battery-discharging nil 
-    :foreground "dark magenta" :weight 'bold))
+    (setq-default battery-update-interval 10))
+    ;; :config
+    ;; (set-face-attribute 'fancy-battery-charging nil 
+    ;; :foreground "dark blue" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-discharging nil 
+    ;; :foreground "dark magenta" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-critical nil 
+    ;; :foreground "dark red" :weight 'bold))
+#+END_SRC
+ 
+*** Display Time
+#+begin_src emacs-lisp :tangle yes
+  (setq display-time-format "%a %b %d | %H:%M |")
+  (display-time-mode)
+#+end_src
+
+*** Hide mode line
+Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
+
+#+BEGIN_SRC emacs-lisp
+(defvar-local hidden-mode-line-mode nil)
+(defvar-local hide-mode-line nil)
+(define-minor-mode hidden-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global t
+  :variable hidden-mode-line-mode
+  :group 'editing-basics
+  (if hidden-mode-line-mode
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
+    (setq mode-line-format hide-mode-line
+          hide-mode-line nil))
+  (force-mode-line-update)
+  ;; Apparently force-mode-line-update is not always enough to
+  ;; redisplay the mode-line
+  (redraw-display)
+  (when (and (called-interactively-p 'interactive)
+             hidden-mode-line-mode)
+    (run-with-idle-timer
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+
 #+END_SRC
  
 * Useful Functions
@@ -1902,11 +1991,11 @@ is somewhat ugly in comparison to helm. So I use helm. YMMV.
       (setq helm-autoresize-max-height 40)
       (setq helm-autoresize-min-height 35)
       ;; helm selection faces
-      (set-face-attribute 'helm-selection nil
-      :foreground "#f7f438"
-      :background "#64b5ea"
-      :underline nil
-      :weight 'bold)
+      ;; (set-face-attribute 'helm-selection nil
+      ;;     :foreground "#f7f438"
+      ;;     :background "#64b5ea"
+      ;;     :underline nil
+      ;;     :weight 'bold))
       (helm-mode 1)
       ))
 #+END_SRC
@@ -2051,6 +2140,13 @@ Recent directories
   :init
   (setq projectile-switch-project-action 'helm-projectile))
 #+END_SRC
+**** CHECK Helm interface for themes (helm-themes)
+#+begin_src emacs-lisp
+  (use-package helm-themes
+    :commands helm-themes)
+  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (powerline-reset)) 
+  ;; (ad-unadvise 'helm-themes--load-theme)
+#+end_src
 *** Visual replace
 This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
 
@@ -3439,7 +3535,7 @@ Make source blocks look better.
       (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
     (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
 #+END_SRC
-**** Org faces
+**** DISABLED Org faces
 #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'org-block nil :foreground "#2E8B57")
 (set-face-attribute 'org-block-begin-line nil 
