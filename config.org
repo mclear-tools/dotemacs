@@ -1446,7 +1446,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
       "bc" 'spacemacs/new-empty-buffer
       "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
-      "bf" 'reveal-in-osx-finder
+      "bf" 'browse-file-directory
       "bj" 'jump-in-buffer 
       "bk" 'evil-delete-buffer
       "bK" 'spacemacs/kill-other-buffers
@@ -1977,12 +1977,12 @@ Better dired navigation using ranger-like settings
 
 ** Reveal in Finder
 #+BEGIN_SRC emacs-lisp
-(use-package reveal-in-osx-finder
-  :defer t
-   ;;:commands reveal-in-osx-finder
-  :init
-  (global-set-key (kbd "C-c f") 'reveal-in-osx-finder)
-)
+(defun browse-file-directory ()
+  "Open the current file's directory however the OS would."
+  (interactive)
+  (if default-directory
+      (browse-url-of-file (expand-file-name default-directory))
+    (error "No `default-directory' to open")))
 #+END_SRC
  
 ** Saveplace
