@@ -3185,7 +3185,7 @@ mode of writing.
       org-startup-indented t ;; start in indent mode
       ; org-src-preserve-indentation nil 
       ; org-edit-src-content-indentation t
-      org-imenu-depth 4
+      org-imenu-depth 8
       imenu-auto-rescan t
       )
     :init
