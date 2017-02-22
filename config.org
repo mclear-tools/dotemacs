@@ -2846,55 +2846,41 @@ evil bindings for magit
 )
 #+END_SRC
  
+** Fringe
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter-fringe)
+#+END_SRC 
+ 
 ** Git gutter
 Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
+
 #+BEGIN_SRC emacs-lisp
-  (use-package git-gutter+
-    :commands git-gutter+-mode
-    :init
-    (progn
-      (add-hook 'markdown-mode-hook #'git-gutter+-mode)
-      (add-hook 'prog-mode-hook #'git-gutter+-mode)))
-      ;; ;; If you enable global minor mode
-      ;;   (add-hook 'magit-pre-refresh-hook 'git-gutter+-refresh)
-        ;; (global-git-gutter+-mode t)))
-#+END_SRC
- 
-** Fringe
-#+BEGIN_SRC emacs-lisp
-(use-package git-gutter-fringe+
-  :commands git-gutter+-mode
+(use-package git-gutter
+  :commands (git-gutter-mode)
+  :diminish ""
   :init
-    (progn
-      (when (display-graphic-p)
-        (with-eval-after-load 'git-gutter+
-          (require 'git-gutter-fringe+)))
-      (setq git-gutter-fr+-side 'right-fringe))
+  (add-hook! (text-mode prog-mode conf-mode) 'git-gutter-mode)
   :config
-    (progn
-      ;; custom graphics that works nice with half-width fringes
-      (fringe-helper-define 'git-gutter-fr+-added nil
-        "..X...."
-        "..X...."
-        "XXXXX.."
-        "..X...."
-        "..X...."
-        )
-      (fringe-helper-define 'git-gutter-fr+-deleted nil
-        "......."
-        "......."
-        "XXXXX.."
-        "......."
-        "......."
-        )
-      (fringe-helper-define 'git-gutter-fr+-modified nil
-        "..X...."
-        ".XXX..."
-        "XX.XX.."
-        ".XXX..."
-        "..X...."
-        )))
+  (require 'git-gutter-fringe)
+  (def-popup! "^\\*git-gutter.\\*$" :align below :size 15 :noselect t :regexp t)
+  ;; NOTE If you want the git gutter to be on the outside of the margins (rather
+  ;; than inside), `fringes-outside-margins' should be non-nil.
+
+  ;; colored fringe "bars"
+  (define-fringe-bitmap 'git-gutter-fr:added
+    [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+    nil nil 'center)
+  (define-fringe-bitmap 'git-gutter-fr:modified
+    [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+    nil nil 'center)
+  (define-fringe-bitmap 'git-gutter-fr:deleted
+    [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+    nil nil 'center)
+
+  ;; Refreshing git-gutter
+  (advice-add 'evil-force-normal-state :after 'git-gutter)
+  (add-hook 'focus-in-hook 'git-gutter:update-all-windows))
 #+END_SRC
 
 ** Quick commits
