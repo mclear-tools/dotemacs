@@ -560,29 +560,21 @@ brew cask install font-inconsolata
 And here's how we tell Emacs to use the font we want to use.
 
 #+begin_src emacs-lisp
-  ;; (set-face-attribute 'default nil
-  ;;                     :family "Bitstream Vera Sans Mono"
-  ;;                     :height 120
-  ;;                     :weight 'normal
-  ;;                     :width 'normal
-  ;;                     )
-  ;; (setq-default line-spacing 2)
-  (set-face-attribute 'default nil
-                      :family "Inconsolata LGC"
-                      :height 120
-                      :weight 'normal
-                      :width 'normal
-                      )
-  (global-set-key (kbd "C-+") 'text-scale-increase)
-  (global-set-key (kbd "C--") 'text-scale-decrease)
-  ;; C-x C-0 restores the default font size
+  ;; deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
+  (use-package dynamic-fonts
+    :config (dynamic-fonts-setup) 
+     :init
+     (progn (setq dynamic-fonts-preferred-proportional-fonts
+                  '("Avenir Next" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
+            (setq dynamic-fonts-preferred-monospace-fonts
+               '("Inconsolata LGC" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+                 "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
+  )
+    (global-set-key (kbd "C-+") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
+    ;; C-x C-0 restores the default font size
 #+end_src
 
-** Fringe helper
-#+BEGIN_SRC emacs-lisp
-(use-package fringe-helper
-  :defer t)
-#+END_SRC
 ** Highlight line numbers
 #+BEGIN_SRC emacs-lisp 
   ;; line number spacing
@@ -590,11 +582,11 @@ And here's how we tell Emacs to use the font we want to use.
   ;; Highlight current line number
   (use-package hlinum
     :commands hlinum-mode
+    :config
+    (custom-set-faces
+     '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1")))))
     :init
     (add-hook 'linum-mode-hook 'hlinum-activate))
-    ;; :config
-    ;; (set-face-attribute 'linum-highlight-face nil
-    ;;   :foreground "black"))
 #+END_SRC
 ** Highlight numbers
 #+BEGIN_SRC emacs-lisp
@@ -771,7 +763,7 @@ Make sure that other themes I like are downloaded and available
                   waher-theme ample-theme material-theme zerodark-theme
                   color-theme-modern leuven-theme spacemacs-theme gruvbox-theme
                   forest-blue-theme flatland-theme afternoon-theme
-                  cyberpunk-theme madhat2r-theme)
+                  cyberpunk-theme madhat2r-theme kaolin-theme)
 "A list of themes to ensure are installed at launch.")
 
 (defun appearance-packages-installed-p ()
@@ -3221,7 +3213,7 @@ mode of writing.
       org-pretty-entities t ;; make latex look good
       org-fontify-quote-and-verse-blocks t ;; make quotes stand out
       org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-      org-ellipsis "↴"  ;; nicer elipses
+      ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼" 
       org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
       org-startup-indented t ;; start in indent mode
       ; org-src-preserve-indentation nil 
