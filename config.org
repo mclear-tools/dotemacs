@@ -1,6 +1,6 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Colin McLear
-#+TODO: BROKEN DISABLED CHECK TODO
+#+TODO: BROKEN DISABLED CHECK TESTING TODO 
 #+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
 
 This is my emacs configuration file. I use [[http://orgmode.org][org-mode]] to organize it and
