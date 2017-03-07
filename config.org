@@ -83,29 +83,76 @@ Use flyspell and aspell
  :commands (flyspell-mode flyspell-prog-mode)
  :config
  (setq flyspell-issue-welcome-flag nil)
- (if (eq system-type 'darwin)
-     (setq-default ispell-program-name "/usr/local/bin/aspell")
-     (setq-default ispell-program-name "/usr/bin/aspell"))
+ (setq-default ispell-program-name "hunspell")
  (setq-default ispell-list-command "list")
  )
 #+END_SRC 
 
+*** Spelling Autocrorrect
+Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
+#+BEGIN_SRC emacs-lisp
+(define-key ctl-x-map "\C-i"
+  #'endless/ispell-word-then-abbrev)
+
+(defun endless/simple-get-word ()
+  (car-safe (save-excursion (ispell-get-word nil))))
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+With prefix P, create local abbrev. Otherwise it will
+be global.
+If there's nothing wrong with the word at point, keep
+looking for a typo until the beginning of buffer. You can
+skip typos you don't want to fix with `SPC', and you can
+abort completely with `C-g'."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (if (setq bef (endless/simple-get-word))
+                 ;; Word was corrected or used quit.
+                 (if (ispell-word nil 'quiet)
+                     nil ; End the loop.
+                   ;; Also end if we reach `bob'.
+                   (not (bobp)))
+               ;; If there's no word at point, keep looking
+               ;; until `bob'.
+               (not (bobp)))
+        (backward-word)
+        (backward-char))
+      (setq aft (endless/simple-get-word)))
+    (if (and aft bef (not (equal aft bef)))
+        (let ((aft (downcase aft))
+              (bef (downcase bef)))
+          (define-abbrev
+            (if p local-abbrev-table global-abbrev-table)
+            bef aft)
+          (message "\"%s\" now expands to \"%s\" %sally"
+                   bef aft (if p "loc" "glob")))
+      (user-error "No typo at or before point"))))
+
+(setq save-abbrevs 'silently)
+
+(use-package abbrev-mode
+  :ensure nil
+  :commands (abbrev-mode))
+
+#+END_SRC
+
 Flyspell is in elisp mode. And this in turn loads flyspell directly
 after launching emacs, which is a bit unfortunate.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun my-flyspell-prog-mode ()
   (interactive)
   (unless (string= (buffer-name) "*scratch*")
 	(flyspell-prog-mode)))
-(add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
-(add-hook 'text-mode-hook  #'flyspell-mode)
-(add-hook 'org-mode-hook   #'flyspell-mode)
-(add-hook 'latex-mode-hook #'flyspell-mode)
-(add-hook 'LaTeX-mode-hook #'flyspell-mode)
+    (add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
+    (add-hook 'text-mode-hook  #'flyspell-mode)
+    (add-hook 'org-mode-hook   #'flyspell-mode)
+    (add-hook 'latex-mode-hook #'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook #'flyspell-mode)
 #+END_SRC
 
- 
 *** Deal with warnings
 No bells and no visible "bell" either!
 #+BEGIN_SRC emacs-lisp
@@ -339,7 +386,7 @@ customize settings in [[file:init.el][init.el]].
 ** Text settings
 Center the cursor, and line numbers for programming modes.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook (lambda () (back-button-mode) (pandoc-mode) (centered-cursor-mode) (hl-line-mode 1)))
+  (add-hook 'text-mode-hook (lambda () (back-button-mode) (abbrev-mode) (pandoc-mode) (centered-cursor-mode) (hl-line-mode 1)))
   (add-hook 'prog-mode-hook (lambda () (back-button-mode) (linum-mode) (centered-cursor-mode) (hl-line-mode 1)))
 #+END_SRC
 ** OSX settings
@@ -4759,6 +4806,7 @@ Tidy Up modeline modes.
 #+BEGIN_SRC emacs-lisp
   (diminish 'visual-line-mode)
   (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
+  (eval-after-load "abbrev" '(diminish 'abbrev-mode "Ⓐ"))
   (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
   (eval-after-load "lispyville" '(diminish 'lispyville-mode "Ⓛ")) 
   (eval-after-load "centered-window-mode" '(diminish 'centered-window-mode "⦿"))
