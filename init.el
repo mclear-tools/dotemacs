@@ -10,6 +10,7 @@
   ;; ("\\`/[^/|:][^/|]*:" . tramp-file-name-handler)
   ;; ("\\`/:" . file-name-non-special))
   ;; Which means on every .el and .elc file loaded during start up, it has to runs those regexps against the filename.
+
  ;;setting this should ease startup time
 (let ((file-name-handler-alist nil))
   ;; startup time
@@ -19,7 +20,7 @@
   (setq debug-on-error t)
   (setq debug-on-quit t)
   ;; Increase the garbage collection threshold to decrease startup time
-  (setq gc-cons-threshold 100000000)
+  (setq gc-cons-threshold 500000000)
 
   ;; Show elapsed start-up time in mini-buffer
   ;; (let ((emacs-start-time (current-time)))
