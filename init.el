@@ -12,6 +12,9 @@
   ;; Which means on every .el and .elc file loaded during start up, it has to runs those regexps against the filename.
  ;;setting this should ease startup time
 (let ((file-name-handler-alist nil))
+  ;; startup time
+  (defvar my-start-time (current-time)
+    "Time when Emacs was started")
   ;; debug
   (setq debug-on-error t)
   (setq debug-on-quit t)
@@ -19,11 +22,11 @@
   (setq gc-cons-threshold 100000000)
 
   ;; Show elapsed start-up time in mini-buffer
-  (let ((emacs-start-time (current-time)))
-    (add-hook 'emacs-startup-hook
-              (lambda ()
-                (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
-                  (message "[Emacs initialized in %.3fs]" elapsed)))))
+  ;; (let ((emacs-start-time (current-time)))
+  ;;   (add-hook 'emacs-startup-hook
+  ;;             (lambda ()
+  ;;               (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
+  ;;                 (message "[Emacs initialized in %.3fs]" elapsed)))))
 
   ;; List package archives and initialize them
   ;; (setq package-enable-at-startup nil) ; tells emacs not to load any packages before starting up
@@ -153,5 +156,7 @@
   ;; turn debug off
   (setq debug-on-error nil)
   (setq debug-on-quit nil)
+
+  (message "Emacs initialized in %.2fs" (float-time (time-subtract (current-time) my-start-time)))
 ;;; init.el ends here
   )
