@@ -37,15 +37,6 @@
                            ("gnu"       . "http://elpa.gnu.org/packages/")
                            ("melpa"     . "https://melpa.org/packages/")))
   (package-initialize)
-  ;; ("marmalade" . "http://marmalade-repo.org/packages/")
-  ;; (when (>= emacs-major-version 24)
-  ;;   (require 'package)
-  ;;   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  ;;   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-  ;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t))
-  ;; (when (< emacs-major-version 24)
-  ;;   ;; For important compatibility libraries like cl-lib
-  ;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 
   ;; Make sure Org is installed
   (unless (package-installed-p 'org)
