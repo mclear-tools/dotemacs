@@ -60,11 +60,14 @@
   ;; This is GPLv2. If you still don't know the details, read
   ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
   ;; From Holger Schurig's config.
+
   (defun my-tangle-section-canceled ()
-    "Return t if the current section header was DISABLED, else nil."
+    "Checks if the previous section header was DISABLED"
     (save-excursion
       (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
-          (string-prefix-p "DISABLED" (match-string 1))
+          (progn
+            ;; (message "FOUND '%s'" (match-string 1))
+            (string-prefix-p "DISABLED" (match-string 1)))
         nil)))
 
   ;; This uses partially derived code from ob-core.el. So this snippet
@@ -101,24 +104,15 @@
                        (not (string-match-p ":tangle\\s-+no" args))
                        (not canc))
               (add-to-list 'body-list body)))))
-      (with-temp-file elfile
-        (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
-        (apply 'insert (reverse body-list)))
-      (message "Wrote %s ..." elfile)))
+        (with-temp-file elfile
+          (insert ";; *- lexical-binding: t; -*-\n")
+          (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
+          ;; (insert (apply 'concat (reverse body-list)))
+          (apply 'insert (reverse body-list)))
+        (message "Wrote %s ..." elfile)
+        (byte-compile-file elfile)))
 
   (let ((orgfile (locate-user-emacs-file "config.org"))
-      (elfile (locate-user-emacs-file "config.el")))
-  (when (or (not (file-exists-p elfile))
-            (file-newer-than-file-p orgfile elfile))
-    (my-tangle-config-org orgfile elfile))
-  (load-file elfile))
-
-  (defun my-tangle-config-org-hook-func ()
-    (when (string= "config.org" (buffer-name))
-  	(let ((orgfile (locate-user-emacs-file "config.org"))
-  		  (elfile (locate-user-emacs-file "config.el")))
-  	  (my-tangle-config-org orgfile elfile))))
-  (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 
   ;; load config -- Note that config file must exist & have source code for tangling, otherwise errors get thrown!!
   ;; (defvar init-source-org-file (expand-file-name "config.org" user-emacs-directory)
@@ -136,6 +130,11 @@
   ;;         (message "Function not found: org-babel-load-file")
   ;;         (load-file init-source-el-file)))
   ;;   (error "Init org file '%s' missing." init-source-org-file))
+        (elfile (locate-user-emacs-file "config.el")))
+    (when (or (not (file-exists-p elfile))
+              (file-newer-than-file-p orgfile elfile))
+      (my-tangle-config-org orgfile elfile))
+    (load-file elfile))
 
   ;; Garbage collector - decrease threshold back to 5 MB
   (run-with-idle-timer
