@@ -70,6 +70,14 @@
             (string-prefix-p "DISABLED" (match-string 1)))
         nil)))
 
+  ;; tangle on save
+  (defun my-tangle-config-org-hook-func ()
+    (when (string= "config.org" (buffer-name))
+      (let ((orgfile (locate-user-emacs-file "config.org"))
+            (elfile (locate-user-emacs-file "config.el")))
+        (my-tangle-config-org orgfile elfile))))
+  (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
+
   ;; This uses partially derived code from ob-core.el. So this snippet
   ;; is GPLv3 or later. If you still don't know the details, read
   ;; http://www.gnu.org/licenses/
