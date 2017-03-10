@@ -3813,6 +3813,12 @@ Publish using twitter bootstrap css
 (add-to-list 'org-structure-template-alist
   '("f" "#+ATTR_REVEAL: :frag (appear)?"))
 #+END_SRC
+*** Org Indirect Buffer
+Some advice to automatically switch to a new indirect buffer upon creation
+#+BEGIN_SRC emacs-lisp
+(defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
+#+END_SRC
+
 ** Helm-Bibtex
 Great for managing citations and notes
 #+begin_src emacs-lisp
