@@ -4718,7 +4718,7 @@ Some more feeds to (eventually) check:
 - ("http://www.benkuhn.net/rss/" blog)
 - ("https://emacsgifs.github.io/feed.xml" blog emacs)
 
-** Guess Languages
+** DISABLED Guess Languages
 #+BEGIN_SRC emacs-lisp
 (use-package guess-language         ; Automatically detect language for Flyspell
   :ensure t
