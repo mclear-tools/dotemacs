@@ -78,17 +78,28 @@ Make sure emacs correctly sets up your PATH.
 *** Spelling
 Use flyspell and aspell
 #+BEGIN_SRC emacs-lisp
+(use-package ispell
+  :defer 10
+  :config
+  ;; Save a new word to personal dictionary without asking
+  (setq ispell-silently-savep t)
+  (setq-default ispell-program-name "aspell")
+  (setq-default ispell-list-command "list"))
+
 (use-package flyspell
- :diminish flyspell-mode
- :commands (flyspell-mode flyspell-prog-mode)
- :config
- (setq flyspell-issue-welcome-flag nil)
- (setq-default ispell-program-name "hunspell")
- (setq-default ispell-list-command "list")
- )
+  :diminish flyspell-mode
+  :defer 11
+  ;; :commands (flyspell-mode flyspell-prog-mode)
+  :init
+  (progn
+  ;; Below variables need to be set before `flyspell' is loaded.
+    (setq flyspell-use-meta-tab nil))
+  :config
+  ;; Save a new word to personal dictionary without asking
+  (setq flyspell-issue-welcome-flag nil))
 #+END_SRC 
 
-*** Spelling Autocrorrect
+*** Spelling Autocorrect
 Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
 #+BEGIN_SRC emacs-lisp
 (define-key ctl-x-map "\C-i"
