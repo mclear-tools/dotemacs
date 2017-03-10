@@ -4031,7 +4031,7 @@ Pandoc mode for markdown conversion
 
 (use-package preview
   :ensure nil
-  :defer t
+  :after auctex
   :commands LaTeX-preview-setup
   :init
   (progn
@@ -4039,7 +4039,6 @@ Pandoc mode for markdown conversion
       preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
 (use-package reftex
-  :defer t
   :commands turn-on-reftex
   :init
   (progn
