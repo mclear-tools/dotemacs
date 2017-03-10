@@ -3464,7 +3464,7 @@ same day of the month, but will be the same day of the week."
         :base-directory "~/test/source"
         :base-extension "org"
         :publishing-directory "~/test/output"
-        :publishing-function (org-pandoc-publish-to-html5)
+        :publishing-function (org-pandoc-publish-to-markdown)
         :org-pandoc-table-of-contents t
         :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
         :org-pandoc-toc-depth 2)
@@ -3489,6 +3489,7 @@ same day of the month, but will be the same day of the week."
            ;; :publishing-function (org-html-publish-to-html)
            ;; :publishing-function (org-md-publish-to-md)
            :publishing-function (org-org-publish-to-org)
+           :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
            ;; :publishing-function (org-pandoc-publish-to-html)
            )
           ("big-notes"
@@ -3552,6 +3553,12 @@ same day of the month, but will be the same day of the week."
         ;; helper functions
         (defun org-pandoc-publish-to-html5 (p f pd)
             (org-pandoc-publish-to 'html5 p f pd))
+
+        (defun org-pandoc-publish-to-org (p f pd)
+            (org-pandoc-publish-to 'org p f pd))
+            
+        (defun org-pandoc-publish-to-markdown (p f pd)
+            (org-pandoc-publish-to 'markdown p f pd))
 
         (defun org-pandoc-pan-to-pub (o)
           (intern (format ":org-pandoc-%s" o)))
