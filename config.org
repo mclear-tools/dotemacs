@@ -4489,6 +4489,19 @@ Better than doc-view, but doesn't render well on retina screens :(
 
 #+END_SRC
 
+** DISABLED Zotero
+Interface with Zotero.
+#+BEGIN_SRC emacs-lisp
+  (use-package zotxt
+    :diminish (org-zoxt zotxt org-zotxt-mode)
+    :config
+    ;; (setq zotxt-default-bibliography-style "mkbehr-short")
+    ;; Activate org-zotxt-mode in org-mode buffers
+    (add-hook 'org-mode-hook (lambda () (org-zotxt-mode 1)))
+    ;; Activate in markdown
+    (add-hook 'markdown-mode-hook (lambda () (zotxt-easykey-mode 0))))
+
+#+END_SRC
 * Other Packages
 ** Ag
 #+BEGIN_SRC emacs-lisp
