@@ -4576,7 +4576,8 @@ Auto-revert buffers of changed files
 			                (projects . 10)))
     (setq dashboard-startup-banner "/Users/roambot/Pictures/emacs icons/64x64@2x.png")
     ;; Set the title
-    (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
+    ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
+    (setq dashboard-banner-logo-title (message "Emacs initialized in %.2fs" (float-time (time-subtract (current-time) my-start-time))))
     (dashboard-setup-startup-hook)
     (general-define-key :states '(normal) :keymaps 'dashboard-mode-map
       "TAB" 'widget-forward
