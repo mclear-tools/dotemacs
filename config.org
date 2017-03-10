@@ -3865,7 +3865,6 @@ Great for managing citations and notes
                (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
       (setq markdown-command "pandoc"
               markdown-enable-math t
-              markdown-footnote-location "end"
               markdown-nested-imenu-heading-index t
               markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
               )
