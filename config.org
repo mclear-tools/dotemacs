@@ -4004,6 +4004,17 @@ Useful when taking notes
 (use-package interleave
   :commands interleave)
 #+END_SRC
+** Lorem ipsum
+Make arbitrary blocks or sentences of text.
+#+BEGIN_SRC emacs-lisp
+  (use-package lorem-ipsum
+    :ensure t
+    :defer t
+    :config 
+    (lorem-ipsum-use-default-bindings)
+    )
+
+#+END_SRC
 ** Palimpsest mode
 #+BEGIN_SRC emacs-lisp
   (use-package palimpsest
