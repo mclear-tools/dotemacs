@@ -208,9 +208,16 @@ Ditto for the terminal.
     (menu-bar-mode -1))
 #+END_SRC
 
+*** No startup message
+#+BEGIN_SRC emacs-lisp
+  ;; Change the echo message
+(defun display-startup-echo-area-message ()
+  (message ""))
+#+END_SRC
 *** Start from scratch
 Start up with a clean scratch buffer.
 #+BEGIN_SRC emacs-lisp
+  (setq inhibit-splash-screen t)
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
   ;; And bury the scratch buffer, don't kill it
