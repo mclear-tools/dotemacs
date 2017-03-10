@@ -3237,6 +3237,8 @@ mode of writing.
 #+BEGIN_SRC emacs-lisp
 (use-package writeroom-mode
   :commands (writeroom-mode)
+  :config
+  (setq writeroom-width 85)
 )
     (defun distraction-free ()
     "distraction free writing"
