@@ -9,13 +9,12 @@ discussion of this method [[http://stackoverflow.com/questions/17416738/emacs-in
 
 I use emacs for all my academic work. The configuration tends in that
 direction, as opposed to programming or literary work. It also uses [[http://www.vim.org][vim]]
-keybindings. I used vim (or [[https://neovim.io][neovim]]) previously. I think vim's modal
-editing is the best way to use a text-editor. If you like vim bindings
-but don't tend to want to think about configuring emacs, I strongly
-recommend [[http://spacemacs.org][spacemacs]] as a way of managing your configuration. For a more
-traditional emacs feel there are also the configurations of [[https://github.com/purcell/emacs.d][purcell]] and
-[[https://github.com/bbatsov/prelude][batsov (prelude)]]. For a minimally sane setup you might also look at some
-[[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
+keybindings. I used vim (or [[https://neovim.io][neovim]]) previously. I think vim's modal editing is
+the best way to use a text-editor. If you like vim bindings but don't tend to
+want to think about configuring emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] as a way
+of managing your configuration. For a more traditional emacs feel there are
+also the configurations of [[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]]. For a minimally sane
+setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
 
 * Installing Emacs
 
@@ -70,6 +69,7 @@ Make sure emacs correctly sets up your PATH.
   (setenv "PATH" (concat usr-local-bin ":" (getenv "PATH") ":" cpm-local-bin))
   (setq exec-path (append exec-path (list cpm-local-bin usr-local-bin)))
 #+END_SRC 
+
 *** Don't send to debug on error
 #+BEGIN_SRC emacs-lisp
   (setq debug-on-error nil)
@@ -520,6 +520,1179 @@ this setting. So I've disabled it for now.
 
 #+END_SRC
 
+* Evil Mode
+I'm coming from vim, and want modal keybidings in emacs. There are other, less
+radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
+package for modal editing (see also [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]]). But nothing beats full vim
+keybindings. And that is what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
+** Evil mode
+The essential stuff
+#+begin_src emacs-lisp 
+  (use-package evil
+    :ensure t
+    :config
+    (progn
+    ;; Cursor shape and color
+      (defcustom dotemacs-evil/emacs-cursor
+      "red"
+      "The color of the cursor when in Emacs state."
+      :type 'color
+      :group 'dotemacs-evil)
+
+      (defcustom dotemacs-evil/emacs-insert-mode
+      nil
+      "If non-nil, insert mode will act as Emacs state."
+      :type 'boolean
+      :group 'dotemacs-evil)
+
+      (setq evil-search-module 'evil-search)
+      (setq evil-magic 'very-magic)
+
+      (setq evil-emacs-state-cursor `(,dotemacs-evil/emacs-cursor box))
+      (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
+      (setq evil-visual-state-cursor '("gray" box)) 
+      (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
+      (setq evil-replace-state-cursor '("red" hbar))
+      (setq evil-operator-state-cursor '("red" hollow))
+      (setq evil-visual-state-tag "VISUAL")
+      
+      ;; evil-normal-state is preferred, so revert when idle
+      (run-with-idle-timer 20 t 'evil-normal-state)
+      ;; don't echo evil state
+      (setq evil-echo-state nil)
+      ;; evil everywhere
+      (evil-mode 1)))
+#+end_src
+
+** Evil escape
+Use a key sequence for [[https://github.com/syl20bnr/evil-escape#install][escaping]].
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-escape
+    :ensure t
+    :diminish ""
+    :init
+    (evil-escape-mode)
+    ;; use "fd" for escape
+    (setq-default evil-escape-key-sequence "fd"))
+#+END_SRC 
+
+** Evil packages & settings
+There are some other useful setup packages for evil
+*** Navigate Using Visual Lines Rather Than True Lines
+#+begin_src emacs-lisp
+(general-define-key 
+  :states '(normal visual)
+  "j" 'evil-next-visual-line
+  "k" 'evil-previous-visual-line)
+#+end_src
+*** Evil indent
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-indent-textobject :commands (evil-indent))
+#+END_SRC
+*** Increment And Decrement Numbers
+#+begin_src emacs-lisp
+  (use-package evil-numbers
+    :ensure t
+    :commands (evil-numbers/inc-at-pt evil-numbers/dec-at-pt)
+    :init
+    (general-define-key
+      :states '(normal visual insert emacs)
+      "H-s" 'evil-numbers/inc-at-pt
+      "H-a" 'evil-numbers/dec-at-pt))
+#+end_src
+
+*** DISABLED Change Cursor In Terminal
+#+begin_src emacs-lisp
+(defun my-send-string-to-terminal (string)
+  (unless (display-graphic-p) (send-string-to-terminal string)))
+
+(defun my-evil-terminal-cursor-change ()
+  (when (string= (getenv "TERM_PROGRAM") "iTerm.app")
+    (add-hook 'evil-insert-state-entry-hook (lambda () (my-send-string-to-terminal "\e]50;CursorShape=1\x7")))
+    (add-hook 'evil-insert-state-exit-hook  (lambda () (my-send-string-to-terminal "\e]50;CursorShape=0\x7"))))
+  (when (and (getenv "TMUX") (string= (getenv "TERM_PROGRAM") "iTerm.app"))
+    (add-hook 'evil-insert-state-entry-hook (lambda () (my-send-string-to-terminal "\ePtmux;\e\e]50;CursorShape=1\x7\e\\")))
+    (add-hook 'evil-insert-state-exit-hook  (lambda () (my-send-string-to-terminal "\ePtmux;\e\e]50;CursorShape=0\x7\e\\")))))
+
+(add-hook 'after-make-frame-functions (lambda (frame) (my-evil-terminal-cursor-change)))
+(my-evil-terminal-cursor-change)
+
+  (use-package evil-terminal-cursor-changer
+    :ensure t
+    :disabled t
+    :defer t
+    :init
+     (unless (display-graphic-p)
+             (require 'evil-terminal-cursor-changer)
+    (progn 
+     (setq evil-visual-state-cursor '("red" box)); █
+     (setq evil-insert-state-cursor '("green" bar)); ⎸
+     (setq evil-emacs-state-cursor '("blue" hbar)); _
+     )))
+#+end_src
+
+*** Surround Commands Like Vim-Surround
+#+begin_src emacs-lisp
+(use-package evil-surround
+  :ensure t
+  :defer 2
+  ;; :commands (evil-surround-region evil-surround-change)
+  :init 
+  (general-define-key
+  :states '(visual)
+  "s" 'evil-surround-region
+  "S" 'evil-substitute)
+  :config (global-evil-surround-mode 1)
+  (defun evil-surround-org-pairs ()
+    (push '(?= . ("=" . "=")) evil-surround-pairs-alist)
+    (push '(?~ . ("~" . "~")) evil-surround-pairs-alist))
+ )
+ ;; Enhancements to evil-surround
+(use-package embrace
+ :ensure t)
+(use-package evil-embrace
+ :ensure t
+ :config
+ (evil-embrace-enable-evil-surround-integration)
+ (setq evil-embrace-show-help-p nil)
+ (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+ (add-hook 'LaTeX-mode-hook
+    (lambda ()
+        (embrace-add-pair ?a "`" "'")
+        (embrace-add-pair ?e "\\emph{" "}"))))
+
+#+end_src 
+
+*** Commenting 
+#+begin_src emacs-lisp
+  (use-package evil-commentary
+    :commands (evil-commentary evil-commentary-line)
+    :diminish evil-commentary-mode
+    :config
+    (evil-commentary-mode))
+#+end_src
+
+*** Graphical undo
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :commands (undo-tree-undo undo-tree-visualize)
+    :init
+    ;; (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)
+    (let ((undo-dir (concat user-cache-directory "undo")))
+      (setq undo-tree-history-directory-alist '((".*" . ,undo-dir)))))
+
+  ;; (use-package undo-tree
+  ;;   :ensure t
+  ;;   :init
+  ;;   (progn
+  ;;     (global-undo-tree-mode)
+  ;;     (setq undo-tree-mode-lighter "")
+  ;;     ;; (setq undo-tree-auto-save-history t)
+  ;;     (setq undo-tree-visualizer-timestamps t)
+  ;;     (setq undo-tree-visualizer-diff t)
+  ;;     (let ((undo-dir (concat user-cache-directory "undo")))
+  ;;     (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
+  ;;   )
+#+end_src
+ 
+* Navigation
+** Back button
+ [[https://www.emacswiki.org/emacs/BackButton][Back button mode]] provides a similar navigation in Emacs where you
+ navigate to the points where you made changes previously. Comes in
+ really handy at times.
+
+#+BEGIN_SRC emacs-lisp
+(use-package back-button
+  :commands (back-button-mode)
+  :defer 2
+  :diminish back-button-mode
+  :init
+  (setq back-button-show-toolbar-buttons nil))
+#+END_SRC
+** General
+A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
+discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
+#+BEGIN_SRC emacs-lisp
+(use-package general
+  :config
+  (general-create-definer cpm-leader1 
+    :states '(normal insert visual motion emacs) 
+    :keymaps 'global 
+    :prefix "SPC" 
+    :non-normal-prefix "C-SPC"))
+#+END_SRC
+** Buffers
+*** Avy
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :commands (avy-goto-char))
+#+END_SRC
+*** CHECK Bookmark
+#+BEGIN_SRC emacs-lisp
+  (use-package bookmark+
+    ;; :commands bmkp-set-desktop-bookmark
+    :init
+    (setq bookmark-default-file
+             (concat user-cache-directory "bookmarks"))
+    (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
+)
+#+END_SRC 
+*** DISABLED Workgroups
+#+BEGIN_SRC emacs-lisp
+  (use-package workgroups2
+    :commands (wg-create-workgroup wg-open-session wg-save-session)
+    :disabled t
+    :config
+      ;; Disable loading multiple frames
+      (setq wg-control-frames nil))
+#+END_SRC
+
+** Namespaced Keybindings
+I use a lot of keybindings, with <SPC> as my "leader" key.
+*** Applications
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1 
+"a"  '(:ignore t :which-key "Applications") 
+"ac" '(:ignore t :which-key "Cmus")
+"ad" 'deer
+"ae" 'eshell
+"am" 'multi-term
+"ar" 'ranger
+"as" 'sane-term
+"aw" 'wttrin
+)
+#+END_SRC
+*** Buffers
+#+BEGIN_SRC emacs-lisp
+    (cpm-leader1
+      "b"  '(:ignore t :which-key "Buffers")
+      "bb" 'helm-mini
+      "bc" 'spacemacs/new-empty-buffer
+      "bD" 'kill-buffer-and-window
+      "bd" 'kill-this-buffer
+      "bf" 'browse-file-directory
+      "bj" 'jump-in-buffer 
+      "bk" 'evil-delete-buffer
+      "bK" 'spacemacs/kill-other-buffers
+      "bn" 'spacemacs/new-empty-buffer
+      ;; "bN" 'crux-kill-other-buffers
+      "br" 'revert-buffer
+      "bR" 'spacemacs/rename-current-buffer-file
+      "bt" 'open-dir-in-iterm
+  )
+#+END_SRC
+*** Commenting
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "c"  '(:ignore t :which-key "Commenting")
+  "cb" 'org-block-wrap
+  "cc" 'evil-commentary
+  "cl" 'evil-commentary-line
+  "cy" 'evil-commentary-yank-line
+ )
+#+END_SRC
+ 
+*** Config
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "C"  '(:ignore t :which-key "Config")
+  "Cc" 'goto-config.org
+  "Cl" 'load-config
+  "Ci" 'goto-init.el
+  "Cs" 'goto-custom.el
+  )
+
+#+END_SRC
+
+*** Files
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1
+    "f"  '(:ignore t :which-key "Files")
+    "fd" 'fzf-directory
+    "ff" 'helm-find-files
+    ;; "ff" 'counsel-find-files
+    ;; "fl" 'counsel-locate
+    "fl" 'helm-locate
+    "fo" 'crux-open-with
+    "fs" 'save-buffer
+    "fr" 'helm-recentf
+    ;; "fr" 'counsel-recentf
+    "fy" 'spacemacs/show-and-copy-buffer-filename
+    "fz" 'fzf
+    )
+#+END_SRC
+
+*** General
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1
+    "A" 'helm-apropos
+    "?" 'helm-descbinds
+    ;; "?" 'counsel-descbinds
+    "<SPC>" 'helm-M-x
+    ;; "<SPC>" 'counsel-M-x
+    "d" 'deer
+    "D" 'deer-jump-other-window
+    "e" 'server-edit
+    "G" 'general-describe-keybindings
+    "h" 'helm-resume
+    ;; "r" 'ivy-resume
+    "j" 'avy-goto-char
+    "k" 'helm-show-kill-ring
+    "N" 'research-notes
+    "n" 'big-notes
+    "M" 'woman
+    "'" 'shell-pop
+    "." 'quick-commit
+    ";" 'evil-commentary-line
+    "[" 'spacemacs/previous-useful-buffer
+    "]" 'spacemacs/next-useful-buffer
+    "TAB" 'switch-to-previous-buffer)
+#+END_SRC
+*** Markdown
+#+BEGIN_SRC emacs-lisp
+(defun my-markdown-config ()
+  "Modify keymaps in markdown mode"
+  (cpm-leader1
+    "m"   '(:ignore t :which-key "Markdown")
+    "mc"  '(:ignore t :which-key "command")
+    "mh"  '(:ignore t :which-key "insert")
+    "mi"  '(:ignore t :which-key "lists")
+    "mx"  '(:ignore t :which-key "text")
+    ;; Movement
+    "m{"   'markdown-backward-paragraph
+    "m}"   'markdown-forward-paragraph
+    ;; Completion, and Cycling
+    "m]"   'markdown-complete
+    ;; Indentation
+    "m>"   'markdown-indent-region
+    "m<"   'markdown-exdent-region
+    ;; Buffer-wide commands
+    "mc]"  'markdown-complete-buffer
+    "mcc"  'markdown-check-refs
+    "mce"  'markdown-export
+    "mcm"  'markdown-other-window
+    "mcn"  'markdown-cleanup-list-numbers
+    "mco"  'markdown-open
+    "mcp"  'markdown-preview
+    "mcv"  'markdown-export-and-preview
+    "mcw"  'markdown-kill-ring-save
+    ;; headings
+    "mhi"  'markdown-insert-header-dwim
+    "mhI"  'markdown-insert-header-setext-dwim
+    "mh1"  'markdown-insert-header-atx-1
+    "mh2"  'markdown-insert-header-atx-2
+    "mh3"  'markdown-insert-header-atx-3
+    "mh4"  'markdown-insert-header-atx-4
+    "mh5"  'markdown-insert-header-atx-5
+    "mh6"  'markdown-insert-header-atx-6
+    "mh!"  'markdown-insert-header-setext-1
+    "mh@"  'markdown-insert-header-setext-2
+    ;; Insertion of common elements
+    "m-"   'markdown-insert-hr
+    "mif"  'markdown-insert-footnote
+    "mii"  'markdown-insert-image
+    "mik"  'spacemacs/insert-keybinding-markdown
+    "miI"  'markdown-insert-reference-image
+    "mil"  'markdown-insert-link
+    "miL"  'markdown-insert-reference-link-dwim
+    "miw"  'markdown-insert-wiki-link
+    "miu"  'markdown-insert-uri
+    ;; Element removal
+    "mk"   'markdown-kill-thing-at-point
+    ;; List editing
+    "mli"  'markdown-insert-list-item
+    ;; region manipulation
+    "mxb"  'markdown-insert-bold
+    "mxi"  'markdown-insert-italic
+    "mxc"  'markdown-insert-code
+    "mxC"  'markdown-insert-gfm-code-block
+    "mxq"  'markdown-insert-blockquote
+    "mxQ"  'markdown-blockquote-region
+    "mxp"  'markdown-insert-pre
+    "mxP"  'markdown-pre-region
+    ;; Following and Jumping
+    "mN"   'markdown-next-link
+    "mf"   'markdown-follow-thing-at-point
+    "mP"   'markdown-previous-link
+    "<RET>" 'markdown-jump
+   ))
+   
+(which-key-add-major-mode-key-based-replacements 'markdown-mode
+    "C-c C-a" "insert"
+    "C-c C-c" "export"
+    "C-c TAB" "images"
+    "C-c C-s" "text"
+    "C-c C-t" "header"
+    "C-c C-x" "move"
+    )
+  #+END_SRC
+
+*** Miscellaneous
+#+BEGIN_SRC emacs-lisp
+;; Show which-key top-level bindings
+(global-set-key (kbd "H-k") 'which-key-show-top-level)
+;; override evil insert for kill line
+(general-define-key :states '(insert) "C-k" 'kill-line)
+#+END_SRC
+ 
+*** Org Keybindings
+Keybindings for org mode 
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1 
+    "o"  '(:ignore t :which-key "Org")
+    "oh" '(:ignore t :which-key "headers")
+    "oi" '(:ignore t :which-key "insert")
+    "oS" '(:ignore t :which-key "subtree")
+    "ot" '(:ignore t :which-key "tables")
+    "or" '(:ignore t :which-key "org-reveal")
+    "oj" 'cpm/org-journal
+    "oc" 'org-capture
+    "of" 'org-footnote-action
+    "oP" 'org-set-property
+    ;; "P" 'org-publish-current-project
+    "op" 'org-publish-current-file
+    "o:" 'org-set-tags
+    "oa" 'org-agenda
+    "ob" 'org-tree-to-indirect-buffer
+    "oA" 'org-archive-subtree
+    "ol" 'org-open-at-point
+    "oT" 'org-show-todo-tree
+  
+    "orr" 'org-reveal-export-to-html-and-browse
+    "ors" 'org-reveal-export-current-subtree
+    "orp" 'reveal-to-pdf
+  
+    "o." 'org-time-stamp
+    "o!" 'org-time-stamp-inactive
+  
+    ;; headings
+    "ohi" 'org-insert-heading-after-current
+    "ohI" 'org-insert-heading
+  
+    ;; More cycling options (timestamps, headlines, items, properties)
+    "oL" 'org-shiftright
+    "oH" 'org-shiftleft
+    "oJ" 'org-shiftdown
+    "oK" 'org-shiftup
+  
+    ;; Subtree editing
+    "oSl" 'org-demote-subtree
+    "oSh" 'org-promote-subtree
+    "oSj" 'org-move-subtree-down
+    "oSk" 'org-move-subtree-up
+  
+    ;; tables
+    "ota" 'org-table-align
+    "otb" 'org-table-blank-field
+    "otc" 'org-table-convert
+    "otdc" 'org-table-delete-column
+    "otdr" 'org-table-kill-row
+    "ote" 'org-table-eval-formula
+    "otE" 'org-table-export
+    "oth" 'org-table-previous-field
+    "otH" 'org-table-move-column-left
+    "otic" 'org-table-insert-column
+    "otih" 'org-table-insert-hline
+    "otiH" 'org-table-hline-and-move
+    "otir" 'org-table-insert-row
+    "otI" 'org-table-import
+    "otj" 'org-table-next-row
+    "otJ" 'org-table-move-row-down
+    "otK" 'org-table-move-row-up
+    "otl" 'org-table-next-field
+    "otL" 'org-table-move-column-right
+    "otn" 'org-table-create
+    "otN" 'org-table-create-with-table.el
+    "otr" 'org-table-recalculate
+    "ots" 'org-table-sort-lines
+    "ottf" 'org-table-toggle-formula-debugger
+    "otto" 'org-table-toggle-coordinate-overlays
+    "otw" 'org-table-wrap-region
+  
+    ;; Multi-purpose keys
+    ;; "o*" 'org-ctrl-c-star
+    ;; "oRET" 'org-ctrl-c-ret
+    "o-" 'org-ctrl-c-minus
+    "o^" 'org-sort
+    "o/" 'org-sparse-tree
+  
+    "oI" 'org-clock-in
+    "on" 'org-narrow-to-subtree
+    "oN" 'widen
+    "oO" 'org-clock-out
+    "oq" 'org-clock-cancel
+    "oR" 'org-refile
+    "os" 'org-schedule
+  
+    ;; insertion of common elements
+    "oil" 'org-insert-link
+    "oif" 'org-footnote-new
+    )
+#+END_SRC
+*** Packages
+Keybindings for managing packages
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1 
+  "P" '(:ignore t :which-key "Packages")
+  "Pl" 'paradox-list-packages
+  "Pu" 'paradox-upgrade-packages
+  )
+#+END_SRC
+*** Projects
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1 
+    "p" '(:ignore t :which-key "Projects")
+    "p!"  'projectile-run-shell-command-in-root
+    "p&"  'projectile-run-async-shell-command-in-root
+    "pa"  'projectile-toggle-between-implementation-and-test
+    "pb"  'helm-projectile-switch-to-buffer
+    "pc"  'projectile-compile-project
+    "pd"  'helm-projectile-find-dir
+    "pD"  'projectile-dired
+    "pf"  'helm-projectile-find-file
+    "pg"  'goto-projects
+    "ph"  'helm-projectile
+    "pG"  'projectile-regenerate-tags
+    "pI"  'projectile-invalidate-cache
+    "pk"  'projectile-kill-buffers
+    "po"  'projectile-multi-occur
+    "pp"  'helm-projectile-switch-project
+    "pr"  'helm-projectile-recentf
+    "pR"  'projectile-replace
+    "ps"  'bmkp-set-desktop-bookmark
+    "pS"  'bmkp-desktop-jump
+    "pT"  'projectile-find-test-file
+    "pv"  'projectile-vc
+    "py"  'projectile-find-tag
+  )
+#+END_SRC
+*** Quitting
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1 
+    "q"  '(:ignore t :which-key "Quit")
+    "qq" 'save-desktop-save-buffers-kill-emacs
+    "qQ" 'evil-quit-all
+    "qr" 'restart-emacs)
+#+END_SRC
+*** Search
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1
+    "s" '(:ignore t :which-key "Search")
+    "sd" 'helm-do-ag ;; search with directory prompt
+    "sb" 'helm-ag-buffers
+    "sf" 'helm-ag-this-file
+    "sj" 'forward-or-backward-sexp
+    "sk" 'helm-show-kill-ring
+    "sl" 'last-search-buffer
+    "so" 'helm-occur
+    "sp" 'helm-ag-project-root
+    "ss" 'helm-swoop-without-pre-input ;; search in file
+    "/"  'helm-ag  ;; search in directory with word prompt
+     )
+#+END_SRC
+ 
+*** Toggles
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1 
+    "t"  '(:ignore t :which-key "Toggles")
+    "ta" 'company-mode
+    "tb" 'fancy-battery-mode
+    "tc" 'centered-cursor-mode
+    "tC" 'centered-window-mode
+    "td" 'distraction-free
+    "tf" 'toggle-serif
+    "tF" 'toggle-frame-fullscreen
+    "tg" 'git-gutter-mode
+    "th" 'hl-line-mode
+    "te" 'toggle-indicate-empty-lines
+    "tE" 'eldoc-mode
+    "tm" 'hidden-mode-line-mode
+    "tM" 'spaceline-toggle-minor-modes
+    "tn" 'linum-mode
+    "to" 'org-toggle-link-display
+    "tp" 'smartparens-mode
+    "tr" 'rainbow-identifiers-mode
+    "ts" 'toggle-dark-light-theme
+    "tt" 'helm-themes
+    "tw" 'writeroom-mode
+    "tz" 'zone
+    ;; "tt" 'counsel-load-theme
+  )
+#+END_SRC
+ 
+*** User
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1 
+    "u"  '(:ignore t :which-key "User")
+    "um" 'cpm/org-to-markdown   
+    "uc" 'pandoc-convert-to-pdf
+    "uo" 'cpm/markdown-to-org
+    "up" 'run-pandoc
+    "uP" 'pandoc-pdf-open
+    "us" 'sb-expand-current-file
+    "uS" 'just-one-space
+    "ud" 'distraction-free
+    "uD" 'my-desktop
+    "uj" 'goto-journal
+    ;; "op" 'pandoc-convert-to-pdf
+    "uw" 'count-words
+    "uW" 'osx-dictionary-search-input
+    "ux" 'helm-bibtex
+    )
+#+END_SRC
+
+*** Version Control
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "g"  '(:ignore t :which-key "Git")
+  "gb" 'magit-blame
+  "gc" 'magit-commit
+  "gd" 'magit-diff
+  "gl" 'magit-log
+  "gn" 'git-gutter:next-hunk
+  "gp" 'git-gutter:previous-hunk
+  "gr" 'magit-reflog
+  "gs" 'magit-status
+  )
+#+END_SRC
+*** Windows
+#+BEGIN_SRC emacs-lisp
+
+(cpm-leader1 
+  "w"  '(:ignore t :which-key "Windows")
+  "wc" 'delete-window
+  "w-" 'evil-window-split
+  "w_" 'split-window-below-and-focus
+  "wr" 'rotate-windows
+  "wR" 'rotate-windows-backward
+  "wv" 'split-window-right-and-focus
+  "wV" 'evil-window-vsplit
+  "wm" 'delete-other-windows
+  )
+#+END_SRC
+*** Wiki
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "W" '(:ignore t :which-key "Wiki")
+  "Wd" 'org-wiki-dired-all
+  "Wk" 'org-wiki-close
+  "Wh" 'org-wiki-helm
+  "WH" 'org-wiki-help
+  "WI" 'org-wiki-index
+  "Wi" 'org-wiki-insert
+  "Wl" 'org-wiki-link
+  "Wv" 'org-wiki-server-toggle
+  "We" 'org-wiki-export-html
+  "Wp" 'org-wiki-panel
+  "Ws" 'org-wiki-search
+)
+#+END_SRC
+*** DISABLED Workgroups bindings
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;; (cpm-leader1
+  ;;   "W"  '(:ignore t :which-key "Workspaces")
+  ;;   "Wa" 'persp-add-buffer
+  ;;   "WA" 'persp-set-buffer
+  ;;   "Ws" 'persp-switch
+  ;;   "Wk" 'persp-kill
+  ;;   "Wr" 'persp-remove-buffer
+  ;;   "WR" 'persp-rename
+  ;;   "}"  'persp-next
+  ;;   "{"  'persp-prev)
+
+    ;; (cpm-leader1
+    ;;   "W"  '(:ignore t :which-key "Workgroups")
+    ;;   "Wc" 'wg-create-workgroup
+    ;;   "Wr" 'wg-rename-workgroup
+    ;;   "Wk" 'wg-kill-workgroup
+    ;;   "Ws" 'wg-switch-to-workgroup
+    ;;   "WS" 'wg-save-session)
+#+END_SRC
+
+** DISABLED Perspectives
+[[https://github.com/Bad-ptr/persp-mode.el][This package]] provides tagged workspaces in Emacs, similar to workspaces in windows managers such as Awesome and XMonad (and somewhat similar to multiple desktops in Gnome or Spaces in OS X).
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package persp-mode
+  :commands (persp-switch persp-next persp-prev persp-rename persp-kill)
+  :disabled t
+  :config
+  (with-eval-after-load "persp-mode-autoloads"
+  (setq wg-morph-on nil) ;; switch off animation
+  (setq persp-autokill-buffer-on-remove 'kill-weak)
+  (add-hook 'after-init-hook #'(lambda () (persp-mode 1)))))
+  
+  
+(use-package persp-projectile
+  :commands projectile-persp-switch-project
+  :config
+  (general-define-key '(normal insert emacs) 'projectile-mode-map
+    "s-p" 'projectile-persp-switch-project))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    ;; :commands (projectile-ack
+    ;;            projectile-ag
+    ;;            projectile-compile-project
+    ;;            projectile-dired
+    ;;            projectile-find-dir
+    ;;            projectile-find-file
+    ;;            projectile-find-tag
+    ;;            projectile-find-test-file
+    ;;            projectile-grep
+    ;;            projectile-invalidate-cache
+    ;;            projectile-kill-buffers
+    ;;            projectile-multi-occur
+    ;;            projectile-project-p
+    ;;            projectile-project-root
+    ;;            projectile-recentf
+    ;;            projectile-regenerate-tags
+    ;;            projectile-replace
+    ;;            projectile-run-async-shell-command-in-root
+    ;;            projectile-run-shell-command-in-root
+    ;;            projectile-switch-project
+    ;;            projectile-switch-to-buffer
+    ;;            projectile-vc)
+    :init
+    ;; save projectile-known-projects-file in cache folder
+    (setq projectile-known-projects-file
+       (concat user-cache-directory "projectile-bookmarks.eld"))
+    (setq projectile-cache-file
+       (concat user-cache-directory "projectile.cache"))
+    (setq projectile-enable-caching t)
+    :config
+    (projectile-global-mode t))
+
+#+END_SRC
+** Ranger & Deer
+Better dired navigation using ranger-like settings
+#+BEGIN_SRC emacs-lisp
+   (use-package ranger
+     :commands (ranger deer deer-jump-other-window)
+     :init
+     (setq ranger-override-dired t
+           ranger-cleanup-eagerly t)
+     ;; set up image-dired to allow picture resize
+    (setq image-dired-dir (concat user-cache-directory "image-dir"))
+    (unless (file-directory-p image-dired-dir)
+      (make-directory image-dired-dir))
+     :config
+     (setq 
+         ranger-dont-show-binary t
+         ranger-excluded-extensions '("mkv" "iso" "mp4")
+         ranger-max-preview-size 25
+         ranger-preview-file t
+         ranger-show-dotfiles t
+         ranger-width-parents 0.25
+         ranger-width-preview 0.55 
+         ))
+
+  ;; (use-package dired
+  ;;  :ensure nil
+  ;;  :after ranger
+  ;;  :config
+  ;;  (setq dired-recursive-deletes 'always
+  ;;        dired-recursive-copies 'always))
+#+END_SRC
+** Recent files
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+  :defer 2
+  :init
+  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
+  ;; :config
+  ;; (recentf-mode 1))
+#+END_SRC
+
+** Reveal in Finder
+#+BEGIN_SRC emacs-lisp
+(defun browse-file-directory ()
+  "Open the current file's directory however the OS would."
+  (interactive)
+  (if default-directory
+      (browse-url-of-file (expand-file-name default-directory))
+    (error "No `default-directory' to open")))
+#+END_SRC
+ 
+** Saveplace
+#+BEGIN_SRC emacs-lisp
+  (use-package saveplace
+    :init
+    (save-place-mode 1)
+    ;; (setq-default save-place t)
+    :config
+    (setq save-place-file "~/.emacs.d/.cache/saved-places")
+    (setq save-place-forget-unreadable-files nil)
+  )
+#+END_SRC
+** Search and completion framework
+There are packages that make working with buffers and searching much
+easier than with emacs's built in incremental search. [[https://github.com/abo-abo/swiper][Ivy,]] and its
+related packages swiper and counsel, are lightweight and fairly simple
+to configure. But I've had trouble with swiper freezing, and I think Ivy
+is somewhat ugly in comparison to helm. So I use helm. YMMV. 
+
+*** Helm
+[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
+**** Helm Settings
+#+BEGIN_SRC emacs-lisp 
+  (use-package helm
+    :diminish (helm-mode . "")
+    :defer 1
+    :init
+    (setq helm-locate-fuzzy-match nil
+          helm-locate-command "mdfind -interpret -name %s %s")
+    :config
+    (progn
+      ;; Use helm to provide :ls, unless ibuffer is used
+      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
+      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
+            helm-apropos-fuzzy-match t
+            helm-buffers-fuzzy-matching t
+            helm-imenu-fuzzy-match t
+            helm-recentf-fuzzy-match t
+            helm-prevent-escaping-from-minibuffer t
+            helm-bookmark-show-location t
+            helm-ff-file-name-history-use-recentf t
+            helm-find-files-sort-directories t
+            helm-display-header-line nil
+            ;; helm-move-to-line-cycle-in-source t
+            helm-always-two-windows t                       
+            helm-split-window-in-side-p nil
+            ;; helm-split-window-default-side 'other
+            helm-echo-input-in-header-line t)
+      ;;keybindings
+      (general-define-key "M-x" 'helm-M-x)
+      ;;; helm vim-bindings in buffer ;;
+      (define-key helm-map (kbd "C-j") 'helm-next-line)
+      (define-key helm-map (kbd "C-k") 'helm-previous-line)
+      (define-key helm-map (kbd "C-h") 'helm-next-source)
+      (define-key helm-map (kbd "C-S-h") 'describe-key)
+      (define-key helm-map (kbd "C-l") (kbd "RET"))
+      (general-define-key :keymaps 'helm-map 
+        "TAB"  'helm-execute-persistent-action ; rebind tab to do persistent action
+        "C-i"    'helm-execute-persistent-action ; make TAB works in terminal
+        "C-z"    'helm-select-action ; list actions using C-z
+        )
+      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
+      (helm-autoresize-mode 1)
+      (setq helm-autoresize-max-height 40)
+      (setq helm-autoresize-min-height 35)
+      ;; helm selection faces
+      ;; (set-face-attribute 'helm-selection nil
+      ;;     :foreground "#f7f438"
+      ;;     :background "#64b5ea"
+      ;;     :underline nil
+      ;;     :weight 'bold))
+      (helm-mode 1)
+      ))
+#+END_SRC
+**** Hide Mode Lines
+Hide modelines of other windows while helm is open, again from
+https://github.com/hatschipuh/better-helm.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar my-helm-bottom-buffers nil
+	"List of bottom buffers before helm session.
+	Its element is a pair of `buffer-name' and `mode-line-format'.")
+
+  (defun my-helm-bottom-buffers-init ()
+	(setq-local mode-line-format (default-value 'mode-line-format))
+	(setq my-helm-bottom-buffers
+	  (cl-loop for w in (window-list)
+		   when (window-at-side-p w 'bottom)
+		   collect (with-current-buffer (window-buffer w)
+				 (cons (buffer-name) mode-line-format)))))
+
+  (defun my-helm-bottom-buffers-hide-mode-line ()
+	(setq-default cursor-in-non-selected-windows nil)
+	(mapc (lambda (elt)
+		(with-current-buffer (car elt)
+		  (setq-local mode-line-format nil)))
+	  my-helm-bottom-buffers))
+
+  (defun my-helm-bottom-buffers-show-mode-line ()
+	(setq-default cursor-in-non-selected-windows t)
+	(when my-helm-bottom-buffers
+	  (mapc (lambda (elt)
+		  (with-current-buffer (car elt)
+		(setq-local mode-line-format (cdr elt))))
+		my-helm-bottom-buffers)
+	  (setq my-helm-bottom-buffers nil)))
+
+  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
+	(my-helm-bottom-buffers-show-mode-line)
+	(apply orig-func args))
+
+  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
+  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
+  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
+  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
+  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
+#+END_SRC
+
+**** Hide Minibuffer
+Hide minibuffer while helm is active
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-helm-hide-minibuffer-maybe ()
+	(when (with-helm-buffer helm-echo-input-in-header-line)
+	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	(overlay-put ov 'window (selected-window))
+	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+				`(:background ,bg-color :foreground ,bg-color)))
+	(setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
+#+END_SRC
+
+*** Helm packages
+**** Helm ag
+#+begin_src emacs-lisp
+(use-package helm-ag  
+  :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
+  :config
+  (setq helm-ag-fuzzy-match t))
+#+end_src
+**** Helm descbinds
+#+begin_src emacs-lisp 
+(use-package helm-descbinds 
+  :defer t
+  :config
+  (setq helm-descbinds-window-style 'same-window)
+  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
+#+end_src
+**** Helm git list
+#+begin_src emacs-lisp
+(use-package helm-ls-git :defer t)
+#+end_src
+**** Helm hunks
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-hunks
+    :commands helm-hunks)
+
+#+END_SRC
+
+**** Helm swoop
+[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
+#+begin_src emacs-lisp
+  (use-package helm-swoop
+    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
+    :config
+    (setq helm-swoop-use-fuzzy-match t)
+    (setq helm-swoop-split-with-multiple-windows t))
+#+end_src
+**** Helm flyspell
+
+Use helm with flyspell
+#+begin_src emacs-lisp
+(use-package helm-flyspell
+  :if (not noninteractive)
+  :ensure t
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+)
+#+end_src
+
+**** Helm Flx
+     #+BEGIN_SRC emacs-lisp
+(use-package helm-flx
+  :defer t
+  :ensure nil
+)
+     #+END_SRC
+
+**** Helm recent directories
+Recent directories
+#+begin_src emacs-lisp
+  (use-package helm-dired-recent-dirs
+    :defer t)
+#+end_src
+**** Helm files
+#+begin_src emacs-lisp 
+  (use-package helm-files
+    :ensure nil
+    :config
+    (setq helm-ff-skip-boring-files t)
+    (setq helm-idle-delay 0.05)
+    (setq helm-input-idle-delay 0.05)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (setq helm-boring-file-regexp-list
+    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
+      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+#+end_src
+
+**** Helm-projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    ;; :commands (helm-projectile-switch-to-buffer
+    ;;            helm-projectile-find-dir
+    ;;            helm-projectile-dired-find-dir
+    ;;            helm-projectile-recentf
+    ;;            helm-projectile-find-file
+    ;;            helm-projectile-grep
+    ;;            helm-projectile
+    ;;            helm-projectile-switch-project)
+    :after projectile
+    :init
+    (setq projectile-switch-project-action 'helm-projectile))
+#+END_SRC
+**** Helm interface for themes (helm-themes)
+#+begin_src emacs-lisp
+  (use-package helm-themes
+    :commands helm-themes)
+  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (powerline-reset)) 
+  ;; (ad-unadvise 'helm-themes--load-theme)
+#+end_src
+*** Visual replace
+This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
+
+#+BEGIN_SRC emacs-lisp
+(use-package visual-regexp
+  :commands (vr/query-replace)
+  :config
+  (use-package visual-regexp-steroids
+    :commands (vr/select-query-replace)))
+#+END_SRC
+*** FZF - Fuzzy finder
+An emacs [[https://github.com/bling/fzf.el][front end]] for the terrific general-purpose command-line fuzzy finder [[https://github.com/junegunn/fzf][fzf]]
+#+BEGIN_SRC emacs-lisp
+(use-package fzf
+  :commands (fzf fzf-directory)
+  :init
+    (defadvice fzf/start (after normalize-fzf-mode-line activate)
+    (face-remap-add-relative 'mode-line '(:box nil)))
+
+  (defun disable-scroll-margin ()
+    (setq-local scroll-margin 0))
+  (add-hook 'term-mode-hook #'disable-scroll-margin)
+
+  (defadvice fzf/start (after normalize-fzf-mode-line activate)
+    "Hide the modeline so FZF will render properly."
+    (setq mode-line-format nil))
+  :config
+  (setq fzf/args "-x --color bw --margin 1,0"))
+#+END_SRC
+** Speedbar
+A file tree and outliner
+#+BEGIN_SRC emacs-lisp
+    (use-package sr-speedbar
+      :commands sb-expand-current-file
+      :config
+        (progn 
+          (setq sr-speedbar-width 60)
+          (setq sr-speedbar-max-width 60)
+          (setq sr-speedbar-right-side nil)
+          ;; Auto expand
+          (defun sb-expand-current-file ()
+          "Expand current file in speedbar buffer"
+          (interactive)
+          (setq current-file (buffer-file-name))
+          (sr-speedbar-toggle)
+          (speedbar-find-selected-file current-file)
+          (speedbar-toggle-line-expansion))
+          ;; Switch to window
+          (defun speedbar-edit-line-and-switch-to-window ()
+          (interactive)
+          (speedbar-edit-line)
+          (other-window 1))
+
+          ;; other settings
+          (setq speedbar-hide-button-brackets-flag t
+              speedbar-show-unknown-files t
+              speedbar-directory-button-trim-method 'trim
+              speedbar-use-images nil
+              speedbar-indentation-width 2
+              speedbar-use-imenu-flag t
+              speedbar-tag-hierarchy-method nil  ;; No grouping
+              speedbar-file-unshown-regexp "flycheck-.*"
+              speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|\\.\\.*$\\)\\'"    
+              speedbar-smart-directory-expand-flag t)
+          ;; Add markdown support
+          (speedbar-add-supported-extension ".md")
+          (speedbar-add-supported-extension ".org")
+          ;; More familiar keymap settings.
+          (add-hook 'speedbar-reconfigure-keymaps-hook
+                  '(lambda ()
+                      (define-key speedbar-mode-map [tab] 'speedbar-toggle-line-expansion)
+                      (define-key speedbar-mode-map [return] 'speedbar-edit-line-and-switch-to-window)))))
+
+#+END_SRC
+** Windows
+*** Window Numbering
+Numbered window shortcuts for Emacs
+#+BEGIN_SRC emacs-lisp
+   (use-package window-numbering
+     :ensure t
+     :config
+     (defun window-numbering-install-mode-line (&optional position)
+     "Do nothing, the display is handled by the powerline.")
+     (setq window-numbering-auto-assign-0-to-minibuffer nil)
+     (cpm-leader1
+       "0" 'select-window-0
+       "1" 'select-window-1
+       "2" 'select-window-2
+       "3" 'select-window-3
+       "4" 'select-window-4
+       "5" 'select-window-5)
+       ;; "6" 'select-window-6
+       ;; "7" 'select-window-7
+       ;; "8" 'select-window-8
+       ;; "9" 'select-window-9)
+     (window-numbering-mode 1)
+
+  ;; make sure neotree is always 0
+   (defun spacemacs//window-numbering-assign ()
+     "Custom number assignment for neotree."
+     (when (and (boundp 'neo-buffer-name)
+                (string= (buffer-name) neo-buffer-name)
+                ;; in case there are two neotree windows. Example: when
+                ;; invoking a transient state from neotree window, the new
+                ;; window will show neotree briefly before displaying the TS,
+                ;; causing an error message. the error is eliminated by
+                ;; assigning 0 only to the top-left window
+                (eq (selected-window) (window-at 0 0)))
+       0))
+
+   ;; using lambda to work-around a bug in window-numbering, see
+   ;; https://github.com/nschum/window-numbering.el/issues/10
+   (setq window-numbering-assign-func
+         (lambda () (spacemacs//window-numbering-assign))))
+
+    ;; (defun spacemacs//window-numbering-assign (windows)
+    ;;   "Custom number assignment for special buffers."
+    ;;   (mapc (lambda (w)
+    ;;           (when (and (boundp 'neo-global--window)
+    ;;                      (eq w neo-global--window))
+    ;;             (window-numbering-assign w 0)))
+    ;;         windows))
+    ;; (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)
+    ;; (add-hook 'neo-after-create-hook '(lambda (w) (window-numbering-update)))
+#+END_SRC
+*** Windmove
+#+BEGIN_SRC emacs-lisp
+(use-package windmove
+  :commands (windmove-up windmove-down windmove-left windmove-right)
+  :config
+  (defun split-window-right-and-focus ()
+  "Split the window horizontally and focus the new window."
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+  (defun split-window-below-and-focus ()
+  "Split the window vertically and focus the new window."
+  (interactive)
+  (split-window-below)
+  (windmove-down))
+  ;; add edit mode keybindings
+  (global-set-key (kbd "<H-up>")     'windmove-up)
+  (global-set-key (kbd "<H-down>")   'windmove-down)
+  (global-set-key (kbd "<H-left>")   'windmove-left)
+  (global-set-key (kbd "<H-right>")  'windmove-right)
+  )
+#+END_SRC
 * Appearance & UI
 ** Apropos
 
@@ -607,8 +1780,110 @@ highlight TODO statements in comments
   (setq global-hl-todo-mode t))
 #+END_SRC
 
-** Smooth Scrolling
+** Modeline
+*** Spaceline
+This is a really nice powerline-ish modeline.
+#+BEGIN_SRC emacs-lisp 
+  (use-package spaceline
+    :ensure t
+    :init 
+    (progn 
+      ;; size of modeline
+      (setq powerline-height 18)
+      (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+      ;; (setq-default powerline-default-separator nil) 
+      ;; (setq-default powerline-default-separator 'utf-8) 
+      ;; (setq powerline-utf-8-separator-left #xe0b0)
+      ;; (setq powerline-utf-8-separator-right #xe0b2)
+      ;; (set-face-attribute 'mode-line nil :font "Source Code Pro-14")
+
+      ;; small triangles
+      ;; (setq powerline-utf-8-separator-left #x25ba)
+      ;; (setq powerline-utf-8-separator-right #x25c4)
+      ;; (setq powerline-text-scale-factor .3)
+      ;; half circles
+      ;; (setq powerline-utf-8-separator-left 9687 
+      ;;       powerline-utf-8-separator-right 9686)
+
+      ;; slant (requires srbg support)
+      (setq-default powerline-default-separator 'slant) 
+      (setq spaceline-separator-dir-left '(right . right))
+      (setq spaceline-separator-dir-right '(right . right))
+
+      ;; fancy git icon for the modeline
+      (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
+              (setq vc-mode gitlogo)))))
+    :config
+    (require 'spaceline-config)
+    (spaceline-toggle-buffer-size-off)
+    (spaceline-spacemacs-theme)
+    (setq spaceline-buffer-encoding-abbrev-p nil
+          spaceline-window-numbers-unicode t
+          spaceline-line-column-p nil
+          spaceline-buffer-id-p nil
+          spaceline-minor-modes-separator nil))
+          (powerline-reset)
+  ;; nil - don't use srgb & get proper powerline faces
+  (setq ns-use-srgb-colorspace t)
+
+#+END_SRC
+
+*** Fancy Battery
 #+BEGIN_SRC emacs-lisp
+  (use-package fancy-battery
+    :init 
+    (fancy-battery-mode)
+    :config
+    (setq-default battery-update-interval 10))
+    ;; :config
+    ;; (set-face-attribute 'fancy-battery-charging nil 
+    ;; :foreground "dark blue" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-discharging nil 
+    ;; :foreground "dark magenta" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-critical nil 
+    ;; :foreground "dark red" :weight 'bold))
+#+END_SRC
+ 
+*** Display Time
+#+begin_src emacs-lisp :tangle yes
+  (setq display-time-format "%a %b %d | %H:%M |")
+  (display-time-mode)
+#+end_src
+
+*** Hide mode line
+Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
+
+#+BEGIN_SRC emacs-lisp
+(defvar-local hidden-mode-line-mode nil)
+(defvar-local hide-mode-line nil)
+(define-minor-mode hidden-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global t
+  :variable hidden-mode-line-mode
+  :group 'editing-basics
+  (if hidden-mode-line-mode
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
+    (setq mode-line-format hide-mode-line
+          hide-mode-line nil))
+  (force-mode-line-update)
+  ;; Apparently force-mode-line-update is not always enough to
+  ;; redisplay the mode-line
+  (redraw-display)
+  (when (and (called-interactively-p 'interactive)
+             hidden-mode-line-mode)
+    (run-with-idle-timer
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+
+#+END_SRC
+
+** Smooth Scrolling
+#+BEGIN_SRC emacs-lisp 
   (use-package smooth-scrolling
     :defer 2
     :config (setq smooth-scroll-margin 2)
@@ -783,6 +2058,14 @@ Make sure that other themes I like are downloaded and available
 
 (provide 'packages-appearance)
 #+END_SRC
+*** DISABLED Remember last theme
+Remember the [[(use-package remember-last-theme
+  :ensure t
+  :config (remember-last-theme-enable))][last theme]] used on a new start-up of emacs
+#+BEGIN_SRC emacs-lisp
+(use-package remember-last-theme
+  :config (remember-last-theme-enable))
+#+END_SRC
 ** Which-key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
@@ -805,106 +2088,6 @@ Put an end to popped up buffers not behaving they way you'd like them to.
   (shackle-mode 1))
 #+END_SRC
 
-** Modeline
-*** Spaceline
-This is a really nice powerline-ish modeline.
-#+BEGIN_SRC emacs-lisp 
-  (use-package spaceline
-    :ensure t
-    :init 
-    (progn 
-      ;; size of modeline
-      (setq powerline-height 21)
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-      ;; (setq-default powerline-default-separator nil) 
-      ;; (setq-default powerline-default-separator 'utf-8) 
-      ;; (setq powerline-utf-8-separator-left #xe0b0)
-      ;; (setq powerline-utf-8-separator-right #xe0b2)
-      ;; (set-face-attribute 'mode-line nil :font "Source Code Pro-14")
-
-      ;; small triangles
-      ;; (setq powerline-utf-8-separator-left #x25ba)
-      ;; (setq powerline-utf-8-separator-right #x25c4)
-      ;; (setq powerline-text-scale-factor .3)
-      ;; half circles
-      ;; (setq powerline-utf-8-separator-left 9687 
-      ;;       powerline-utf-8-separator-right 9686)
-
-      ;; slant (requires srbg support)
-      (setq-default powerline-default-separator 'arrow) 
-      ;; (setq spaceline-separator-dir-left '(right . right))
-      ;; (setq spaceline-separator-dir-right '(right . right))
-
-      ;; fancy git icon for the modeline
-      (defadvice vc-mode-line (after strip-backend () activate)
-      (when (stringp vc-mode)
-        (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
-              (setq vc-mode gitlogo)))))
-    :config
-    (require 'spaceline-config)
-    (spaceline-toggle-buffer-size-off)
-    (spaceline-spacemacs-theme)
-    (setq spaceline-buffer-encoding-abbrev-p nil
-          spaceline-window-numbers-unicode t
-          spaceline-line-column-p nil
-          spaceline-buffer-id-p nil
-          spaceline-minor-modes-separator nil))
-          (powerline-reset)
-  ;; nil - don't use srgb & get proper powerline faces
-  (setq ns-use-srgb-colorspace t)
-
-#+END_SRC
-
-*** Fancy Battery
-#+BEGIN_SRC emacs-lisp
-  (use-package fancy-battery
-    :init (fancy-battery-mode)
-    (setq-default battery-update-interval 10))
-    ;; :config
-    ;; (set-face-attribute 'fancy-battery-charging nil 
-    ;; :foreground "dark blue" :weight 'bold)
-    ;; (set-face-attribute 'fancy-battery-discharging nil 
-    ;; :foreground "dark magenta" :weight 'bold)
-    ;; (set-face-attribute 'fancy-battery-critical nil 
-    ;; :foreground "dark red" :weight 'bold))
-#+END_SRC
- 
-*** Display Time
-#+begin_src emacs-lisp :tangle yes
-  (setq display-time-format "%a %b %d | %H:%M |")
-  (display-time-mode)
-#+end_src
-
-*** Hide mode line
-Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
-
-#+BEGIN_SRC emacs-lisp
-(defvar-local hidden-mode-line-mode nil)
-(defvar-local hide-mode-line nil)
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
-
-#+END_SRC
- 
 * Useful Functions & Macros
 ** Crux
 A collection of ridiculously useful extensions. Indeed.
@@ -1415,1148 +2598,6 @@ Examples:
 (defmacro def-popup! (&rest params)
   `(push ',params shackle-rules))
 #+END_SRC
-
-* Navigation
-** Back button
- [[https://www.emacswiki.org/emacs/BackButton][Back button mode]] provides a similar navigation in Emacs where you
- navigate to the points where you made changes previously. Comes in
- really handy at times.
-
-#+BEGIN_SRC emacs-lisp
-(use-package back-button
-  :commands (back-button-mode)
-  :defer 2
-  :diminish back-button-mode
-  :init
-  (setq back-button-show-toolbar-buttons nil))
-#+END_SRC
-** General
-A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
-discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
-#+BEGIN_SRC emacs-lisp
-(use-package general
-  :config
-  (general-create-definer cpm-leader1 
-    :states '(normal insert visual motion emacs) 
-    :keymaps 'global 
-    :prefix "SPC" 
-    :non-normal-prefix "C-SPC"))
-#+END_SRC
-** Buffers
-*** Avy
-#+BEGIN_SRC emacs-lisp
-(use-package avy
-  :commands (avy-goto-char))
-#+END_SRC
-*** CHECK Bookmark
-#+BEGIN_SRC emacs-lisp
-  (use-package bookmark+
-    ;; :commands bmkp-set-desktop-bookmark
-    :init
-    (setq bookmark-default-file
-             (concat user-cache-directory "bookmarks"))
-    (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
-)
-#+END_SRC 
-*** DISABLED Workgroups
-#+BEGIN_SRC emacs-lisp
-  (use-package workgroups2
-    :commands (wg-create-workgroup wg-open-session wg-save-session)
-    :disabled t
-    :config
-      ;; Disable loading multiple frames
-      (setq wg-control-frames nil))
-#+END_SRC
-
-** Namespaced Keybindings
-I use a lot of keybindings, with <SPC> as my "leader" key.
-*** Applications
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1 
-"a"  '(:ignore t :which-key "Applications") 
-"ac" '(:ignore t :which-key "Cmus")
-"ad" 'deer
-"ae" 'eshell
-"am" 'multi-term
-"ar" 'ranger
-"as" 'sane-term
-"aw" 'wttrin
-)
-#+END_SRC
-*** Buffers
-#+BEGIN_SRC emacs-lisp
-    (cpm-leader1
-      "b"  '(:ignore t :which-key "Buffers")
-      "bb" 'helm-mini
-      "bc" 'spacemacs/new-empty-buffer
-      "bD" 'kill-buffer-and-window
-      "bd" 'kill-this-buffer
-      "bf" 'browse-file-directory
-      "bj" 'jump-in-buffer 
-      "bk" 'evil-delete-buffer
-      "bK" 'spacemacs/kill-other-buffers
-      "bn" 'spacemacs/new-empty-buffer
-      ;; "bN" 'crux-kill-other-buffers
-      "br" 'revert-buffer
-      "bR" 'spacemacs/rename-current-buffer-file
-      "bt" 'open-dir-in-iterm
-  )
-#+END_SRC
-*** Commenting
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "c"  '(:ignore t :which-key "Commenting")
-  "cb" 'org-block-wrap
-  "cc" 'evil-commentary
-  "cl" 'evil-commentary-line
-  "cy" 'evil-commentary-yank-line
- )
-#+END_SRC
- 
-*** Config
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "C"  '(:ignore t :which-key "Config")
-  "Cc" 'goto-config.org
-  "Cl" 'load-config
-  "Ci" 'goto-init.el
-  "Cs" 'goto-custom.el
-  )
-
-#+END_SRC
-
-*** Files
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1
-    "f"  '(:ignore t :which-key "Files")
-    "ff" 'helm-find-files
-    ;; "ff" 'counsel-find-files
-    ;; "fl" 'counsel-locate
-    "fl" 'helm-locate
-    "fo" 'crux-open-with
-    "fs" 'save-buffer
-    "fr" 'helm-recentf
-    ;; "fr" 'counsel-recentf
-    "fy" 'spacemacs/show-and-copy-buffer-filename
-    )
-#+END_SRC
-
-*** General
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1
-    "A" 'helm-apropos
-    "?" 'helm-descbinds
-    ;; "?" 'counsel-descbinds
-    "<SPC>" 'helm-M-x
-    ;; "<SPC>" 'counsel-M-x
-    "d" 'deer
-    "D" 'deer-jump-other-window
-    "e" 'server-edit
-    "G" 'general-describe-keybindings
-    "h" 'helm-resume
-    ;; "r" 'ivy-resume
-    "j" 'avy-goto-char
-    "k" 'helm-show-kill-ring
-    "N" 'research-notes
-    "n" 'big-notes
-    "M" 'woman
-    "'" 'shell-pop
-    "." 'quick-commit
-    ";" 'evil-commentary-line
-    "[" 'spacemacs/previous-useful-buffer
-    "]" 'spacemacs/next-useful-buffer
-    "TAB" 'switch-to-previous-buffer)
-#+END_SRC
-*** Markdown
-#+BEGIN_SRC emacs-lisp
-(defun my-markdown-config ()
-  "Modify keymaps in markdown mode"
-  (cpm-leader1
-    "m"   '(:ignore t :which-key "Markdown")
-    "mc"  '(:ignore t :which-key "command")
-    "mh"  '(:ignore t :which-key "insert")
-    "mi"  '(:ignore t :which-key "lists")
-    "mx"  '(:ignore t :which-key "text")
-    ;; Movement
-    "m{"   'markdown-backward-paragraph
-    "m}"   'markdown-forward-paragraph
-    ;; Completion, and Cycling
-    "m]"   'markdown-complete
-    ;; Indentation
-    "m>"   'markdown-indent-region
-    "m<"   'markdown-exdent-region
-    ;; Buffer-wide commands
-    "mc]"  'markdown-complete-buffer
-    "mcc"  'markdown-check-refs
-    "mce"  'markdown-export
-    "mcm"  'markdown-other-window
-    "mcn"  'markdown-cleanup-list-numbers
-    "mco"  'markdown-open
-    "mcp"  'markdown-preview
-    "mcv"  'markdown-export-and-preview
-    "mcw"  'markdown-kill-ring-save
-    ;; headings
-    "mhi"  'markdown-insert-header-dwim
-    "mhI"  'markdown-insert-header-setext-dwim
-    "mh1"  'markdown-insert-header-atx-1
-    "mh2"  'markdown-insert-header-atx-2
-    "mh3"  'markdown-insert-header-atx-3
-    "mh4"  'markdown-insert-header-atx-4
-    "mh5"  'markdown-insert-header-atx-5
-    "mh6"  'markdown-insert-header-atx-6
-    "mh!"  'markdown-insert-header-setext-1
-    "mh@"  'markdown-insert-header-setext-2
-    ;; Insertion of common elements
-    "m-"   'markdown-insert-hr
-    "mif"  'markdown-insert-footnote
-    "mii"  'markdown-insert-image
-    "mik"  'spacemacs/insert-keybinding-markdown
-    "miI"  'markdown-insert-reference-image
-    "mil"  'markdown-insert-link
-    "miL"  'markdown-insert-reference-link-dwim
-    "miw"  'markdown-insert-wiki-link
-    "miu"  'markdown-insert-uri
-    ;; Element removal
-    "mk"   'markdown-kill-thing-at-point
-    ;; List editing
-    "mli"  'markdown-insert-list-item
-    ;; region manipulation
-    "mxb"  'markdown-insert-bold
-    "mxi"  'markdown-insert-italic
-    "mxc"  'markdown-insert-code
-    "mxC"  'markdown-insert-gfm-code-block
-    "mxq"  'markdown-insert-blockquote
-    "mxQ"  'markdown-blockquote-region
-    "mxp"  'markdown-insert-pre
-    "mxP"  'markdown-pre-region
-    ;; Following and Jumping
-    "mN"   'markdown-next-link
-    "mf"   'markdown-follow-thing-at-point
-    "mP"   'markdown-previous-link
-    "<RET>" 'markdown-jump
-   ))
-   
-(which-key-add-major-mode-key-based-replacements 'markdown-mode
-    "C-c C-a" "insert"
-    "C-c C-c" "export"
-    "C-c TAB" "images"
-    "C-c C-s" "text"
-    "C-c C-t" "header"
-    "C-c C-x" "move"
-    )
-  #+END_SRC
-
-*** Miscellaneous
-#+BEGIN_SRC emacs-lisp
-;; Show which-key top-level bindings
-(global-set-key (kbd "H-k") 'which-key-show-top-level)
-;; override evil insert for kill line
-(general-define-key :states '(insert) "C-k" 'kill-line)
-#+END_SRC
- 
-*** Org Keybindings
-Keybindings for org mode 
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1 
-    "o"  '(:ignore t :which-key "Org")
-    "oh" '(:ignore t :which-key "headers")
-    "oi" '(:ignore t :which-key "insert")
-    "oS" '(:ignore t :which-key "subtree")
-    "ot" '(:ignore t :which-key "tables")
-    "or" '(:ignore t :which-key "org-reveal")
-    "oj" 'cpm/org-journal
-    "oc" 'org-capture
-    "of" 'org-footnote-action
-    "oP" 'org-set-property
-    ;; "P" 'org-publish-current-project
-    "op" 'org-publish-current-file
-    "o:" 'org-set-tags
-    "oa" 'org-agenda
-    "ob" 'org-tree-to-indirect-buffer
-    "oA" 'org-archive-subtree
-    "ol" 'org-open-at-point
-    "oT" 'org-show-todo-tree
-  
-    "orr" 'org-reveal-export-to-html-and-browse
-    "ors" 'org-reveal-export-current-subtree
-    "orp" 'reveal-to-pdf
-  
-    "o." 'org-time-stamp
-    "o!" 'org-time-stamp-inactive
-  
-    ;; headings
-    "ohi" 'org-insert-heading-after-current
-    "ohI" 'org-insert-heading
-  
-    ;; More cycling options (timestamps, headlines, items, properties)
-    "oL" 'org-shiftright
-    "oH" 'org-shiftleft
-    "oJ" 'org-shiftdown
-    "oK" 'org-shiftup
-  
-    ;; Subtree editing
-    "oSl" 'org-demote-subtree
-    "oSh" 'org-promote-subtree
-    "oSj" 'org-move-subtree-down
-    "oSk" 'org-move-subtree-up
-  
-    ;; tables
-    "ota" 'org-table-align
-    "otb" 'org-table-blank-field
-    "otc" 'org-table-convert
-    "otdc" 'org-table-delete-column
-    "otdr" 'org-table-kill-row
-    "ote" 'org-table-eval-formula
-    "otE" 'org-table-export
-    "oth" 'org-table-previous-field
-    "otH" 'org-table-move-column-left
-    "otic" 'org-table-insert-column
-    "otih" 'org-table-insert-hline
-    "otiH" 'org-table-hline-and-move
-    "otir" 'org-table-insert-row
-    "otI" 'org-table-import
-    "otj" 'org-table-next-row
-    "otJ" 'org-table-move-row-down
-    "otK" 'org-table-move-row-up
-    "otl" 'org-table-next-field
-    "otL" 'org-table-move-column-right
-    "otn" 'org-table-create
-    "otN" 'org-table-create-with-table.el
-    "otr" 'org-table-recalculate
-    "ots" 'org-table-sort-lines
-    "ottf" 'org-table-toggle-formula-debugger
-    "otto" 'org-table-toggle-coordinate-overlays
-    "otw" 'org-table-wrap-region
-  
-    ;; Multi-purpose keys
-    ;; "o*" 'org-ctrl-c-star
-    ;; "oRET" 'org-ctrl-c-ret
-    "o-" 'org-ctrl-c-minus
-    "o^" 'org-sort
-    "o/" 'org-sparse-tree
-  
-    "oI" 'org-clock-in
-    "on" 'org-narrow-to-subtree
-    "oN" 'widen
-    "oO" 'org-clock-out
-    "oq" 'org-clock-cancel
-    "oR" 'org-refile
-    "os" 'org-schedule
-  
-    ;; insertion of common elements
-    "oil" 'org-insert-link
-    "oif" 'org-footnote-new
-    )
-#+END_SRC
-*** Packages
-Keybindings for managing packages
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1 
-  "P" '(:ignore t :which-key "Packages")
-  "Pl" 'paradox-list-packages
-  "Pu" 'paradox-upgrade-packages
-  )
-#+END_SRC
-*** Projects
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1 
-    "p" '(:ignore t :which-key "Projects")
-    "p!"  'projectile-run-shell-command-in-root
-    "p&"  'projectile-run-async-shell-command-in-root
-    "pa"  'projectile-toggle-between-implementation-and-test
-    "pb"  'helm-projectile-switch-to-buffer
-    "pc"  'projectile-compile-project
-    "pd"  'helm-projectile-find-dir
-    "pD"  'projectile-dired
-    "pf"  'helm-projectile-find-file
-    "pg"  'goto-projects
-    "ph"  'helm-projectile
-    "pG"  'projectile-regenerate-tags
-    "pI"  'projectile-invalidate-cache
-    "pk"  'projectile-kill-buffers
-    "po"  'projectile-multi-occur
-    "pp"  'helm-projectile-switch-project
-    "pr"  'helm-projectile-recentf
-    "pR"  'projectile-replace
-    "ps"  'bmkp-set-desktop-bookmark
-    "pS"  'bmkp-desktop-jump
-    "pT"  'projectile-find-test-file
-    "pv"  'projectile-vc
-    "py"  'projectile-find-tag
-  )
-#+END_SRC
-*** Quitting
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1 
-    "q"  '(:ignore t :which-key "Quit")
-    "qq" 'save-desktop-save-buffers-kill-emacs
-    "qQ" 'evil-quit-all
-    "qr" 'restart-emacs)
-#+END_SRC
-*** Search
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1
-    "s" '(:ignore t :which-key "Search")
-    "sd" 'helm-do-ag ;; search with directory prompt
-    "sb" 'helm-ag-buffers
-    "sf" 'helm-ag-this-file
-    "sj" 'forward-or-backward-sexp
-    "sk" 'helm-show-kill-ring
-    "sl" 'last-search-buffer
-    "so" 'helm-occur
-    "sp" 'helm-ag-project-root
-    "ss" 'helm-swoop-without-pre-input ;; search in file
-    "/"  'helm-ag  ;; search in directory with word prompt
-     )
-#+END_SRC
- 
-*** Toggles
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1 
-    "t"  '(:ignore t :which-key "Toggles")
-    "ta" 'company-mode
-    "tb" 'fancy-battery-mode
-    "tc" 'centered-cursor-mode
-    "tC" 'centered-window-mode
-    "td" 'distraction-free
-    "tf" 'toggle-serif
-    "tF" 'toggle-frame-fullscreen
-    "tg" 'git-gutter+-mode
-    "th" 'hl-line-mode
-    "te" 'toggle-indicate-empty-lines
-    "tE" 'eldoc-mode
-    "tm" 'hidden-mode-line-mode
-    "tM" 'spaceline-toggle-minor-modes
-    "tn" 'linum-mode
-    "to" 'org-toggle-link-display
-    "tp" 'smartparens-mode
-    "tr" 'rainbow-identifiers-mode
-    "ts" 'toggle-dark-light-theme
-    "tt" 'helm-themes
-    "tw" 'writeroom-mode
-    ;; "tt" 'counsel-load-theme
-  )
-#+END_SRC
- 
-*** User
-#+BEGIN_SRC emacs-lisp
-  (cpm-leader1 
-    "u"  '(:ignore t :which-key "User")
-    "um" 'cpm/org-to-markdown   
-    "uc" 'pandoc-convert-to-pdf
-    "uo" 'cpm/markdown-to-org
-    "up" 'run-pandoc
-    "uP" 'pandoc-pdf-open
-    "us" 'sb-expand-current-file
-    "uS" 'just-one-space
-    "ud" 'distraction-free
-    "uD" 'my-desktop
-    "uj" 'goto-journal
-    ;; "op" 'pandoc-convert-to-pdf
-    "uw" 'count-words
-    "uW" 'osx-dictionary-search-input
-    "ux" 'helm-bibtex
-    )
-#+END_SRC
-
-*** Version Control
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "g"  '(:ignore t :which-key "Git")
-  "gb" 'magit-blame
-  "gc" 'magit-commit
-  "gd" 'magit-diff
-  "gl" 'magit-log
-  "gn" 'git-gutter:next-hunk
-  "gp" 'git-gutter:previous-hunk
-  "gr" 'magit-reflog
-  "gs" 'magit-status
-  )
-#+END_SRC
-*** Windows
-#+BEGIN_SRC emacs-lisp
-
-(cpm-leader1 
-  "w"  '(:ignore t :which-key "Windows")
-  "wc" 'delete-window
-  "w-" 'evil-window-split
-  "w_" 'split-window-below-and-focus
-  "wr" 'rotate-windows
-  "wR" 'rotate-windows-backward
-  "wv" 'split-window-right-and-focus
-  "wV" 'evil-window-vsplit
-  "wm" 'delete-other-windows
-  )
-#+END_SRC
-*** Wiki
-#+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "W" '(:ignore t :which-key "Wiki")
-  "Wd" 'org-wiki-dired-all
-  "Wk" 'org-wiki-close
-  "Wh" 'org-wiki-helm
-  "WH" 'org-wiki-help
-  "WI" 'org-wiki-index
-  "Wi" 'org-wiki-insert
-  "Wl" 'org-wiki-link
-  "Wv" 'org-wiki-server-toggle
-  "We" 'org-wiki-export-html
-  "Wp" 'org-wiki-panel
-  "Ws" 'org-wiki-search
-)
-#+END_SRC
-*** DISABLED Workgroups bindings
-#+BEGIN_SRC emacs-lisp :tangle no
-  ;; (cpm-leader1
-  ;;   "W"  '(:ignore t :which-key "Workspaces")
-  ;;   "Wa" 'persp-add-buffer
-  ;;   "WA" 'persp-set-buffer
-  ;;   "Ws" 'persp-switch
-  ;;   "Wk" 'persp-kill
-  ;;   "Wr" 'persp-remove-buffer
-  ;;   "WR" 'persp-rename
-  ;;   "}"  'persp-next
-  ;;   "{"  'persp-prev)
-
-    ;; (cpm-leader1
-    ;;   "W"  '(:ignore t :which-key "Workgroups")
-    ;;   "Wc" 'wg-create-workgroup
-    ;;   "Wr" 'wg-rename-workgroup
-    ;;   "Wk" 'wg-kill-workgroup
-    ;;   "Ws" 'wg-switch-to-workgroup
-    ;;   "WS" 'wg-save-session)
-#+END_SRC
-
-** DISABLED Perspectives
-[[https://github.com/Bad-ptr/persp-mode.el][This package]] provides tagged workspaces in Emacs, similar to workspaces in windows managers such as Awesome and XMonad (and somewhat similar to multiple desktops in Gnome or Spaces in OS X).
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package persp-mode
-  :commands (persp-switch persp-next persp-prev persp-rename persp-kill)
-  :disabled t
-  :config
-  (with-eval-after-load "persp-mode-autoloads"
-  (setq wg-morph-on nil) ;; switch off animation
-  (setq persp-autokill-buffer-on-remove 'kill-weak)
-  (add-hook 'after-init-hook #'(lambda () (persp-mode 1)))))
-  
-  
-(use-package persp-projectile
-  :commands projectile-persp-switch-project
-  :config
-  (general-define-key '(normal insert emacs) 'projectile-mode-map
-    "s-p" 'projectile-persp-switch-project))
-#+END_SRC
-** Projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    ;; :commands (projectile-ack
-    ;;            projectile-ag
-    ;;            projectile-compile-project
-    ;;            projectile-dired
-    ;;            projectile-find-dir
-    ;;            projectile-find-file
-    ;;            projectile-find-tag
-    ;;            projectile-find-test-file
-    ;;            projectile-grep
-    ;;            projectile-invalidate-cache
-    ;;            projectile-kill-buffers
-    ;;            projectile-multi-occur
-    ;;            projectile-project-p
-    ;;            projectile-project-root
-    ;;            projectile-recentf
-    ;;            projectile-regenerate-tags
-    ;;            projectile-replace
-    ;;            projectile-run-async-shell-command-in-root
-    ;;            projectile-run-shell-command-in-root
-    ;;            projectile-switch-project
-    ;;            projectile-switch-to-buffer
-    ;;            projectile-vc)
-    :config
-    ;; save projectile-known-projects-file in cache folder
-    (setq projectile-known-projects-file
-       (concat user-cache-directory "projectile-bookmarks.eld"))
-    (setq projectile-cache-file
-       (concat user-cache-directory "projectile.cache"))
-    (setq projectile-enable-caching t)
-    :init
-    (projectile-global-mode))
-
-#+END_SRC
-** Ranger & Deer
-Better dired navigation using ranger-like settings
-#+BEGIN_SRC emacs-lisp
-   (use-package ranger
-     :commands (ranger deer deer-jump-other-window)
-     :init
-     (setq ranger-override-dired t
-           ranger-cleanup-eagerly t)
-     ;; set up image-dired to allow picture resize
-    (setq image-dired-dir (concat user-cache-directory "image-dir"))
-    (unless (file-directory-p image-dired-dir)
-      (make-directory image-dired-dir))
-     :config
-     (setq 
-         ranger-dont-show-binary t
-         ranger-excluded-extensions '("mkv" "iso" "mp4")
-         ranger-max-preview-size 25
-         ranger-preview-file t
-         ranger-show-dotfiles t
-         ranger-width-parents 0.25
-         ranger-width-preview 0.55 
-         ))
-
-  ;; (use-package dired
-  ;;  :ensure nil
-  ;;  :after ranger
-  ;;  :config
-  ;;  (setq dired-recursive-deletes 'always
-  ;;        dired-recursive-copies 'always))
-#+END_SRC
-** Recent files
-#+BEGIN_SRC emacs-lisp
-  (use-package recentf
-  :defer 2
-  :init
-  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
-  ;; :config
-  ;; (recentf-mode 1))
-#+END_SRC
-
-** Reveal in Finder
-#+BEGIN_SRC emacs-lisp
-(defun browse-file-directory ()
-  "Open the current file's directory however the OS would."
-  (interactive)
-  (if default-directory
-      (browse-url-of-file (expand-file-name default-directory))
-    (error "No `default-directory' to open")))
-#+END_SRC
- 
-** Saveplace
-#+BEGIN_SRC emacs-lisp
-  (use-package saveplace
-    :init
-    (save-place-mode 1)
-    ;; (setq-default save-place t)
-    :config
-    (setq save-place-file "~/.emacs.d/.cache/saved-places")
-    (setq save-place-forget-unreadable-files nil)
-  )
-#+END_SRC
-** Search and completion framework
-There are packages that make working with buffers and searching much
-easier than with emacs's built in incremental search. [[https://github.com/abo-abo/swiper][Ivy,]] and its
-related packages swiper and counsel, are lightweight and fairly simple
-to configure. But I've had trouble with swiper freezing, and I think Ivy
-is somewhat ugly in comparison to helm. So I use helm. YMMV. 
-
-*** Helm
-[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
-**** Helm Settings
-#+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :diminish (helm-mode . "")
-    :defer 1
-    :init
-    (setq helm-locate-fuzzy-match nil
-          helm-locate-command "mdfind -interpret -name %s %s")
-    :config
-    (progn
-      ;; Use helm to provide :ls, unless ibuffer is used
-      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
-      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
-            helm-apropos-fuzzy-match t
-            helm-buffers-fuzzy-matching t
-            helm-imenu-fuzzy-match t
-            helm-recentf-fuzzy-match t
-            helm-prevent-escaping-from-minibuffer t
-            helm-bookmark-show-location t
-            helm-find-files-sort-directories t
-            helm-display-header-line nil
-            ;; helm-move-to-line-cycle-in-source t
-            helm-always-two-windows t                       
-            helm-split-window-in-side-p nil
-            ;; helm-split-window-default-side 'other
-            helm-echo-input-in-header-line t)
-      (general-define-key "M-x" 'helm-M-x)
-      ;;; helm vim-bindings in buffer ;;
-      (define-key helm-map (kbd "C-j") 'helm-next-line)
-      (define-key helm-map (kbd "C-k") 'helm-previous-line)
-      (define-key helm-map (kbd "C-h") 'helm-next-source)
-      (define-key helm-map (kbd "C-S-h") 'describe-key)
-      (define-key helm-map (kbd "C-l") (kbd "RET"))
-      (general-define-key :keymaps 'helm-map 
-        "TAB"  'helm-execute-persistent-action ; rebind tab to do persistent action
-        "C-i"    'helm-execute-persistent-action ; make TAB works in terminal
-        "C-z"    'helm-select-action ; list actions using C-z
-      )
-      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
-      (helm-autoresize-mode 1)
-      (setq helm-autoresize-max-height 40)
-      (setq helm-autoresize-min-height 35)
-      ;; helm selection faces
-      ;; (set-face-attribute 'helm-selection nil
-      ;;     :foreground "#f7f438"
-      ;;     :background "#64b5ea"
-      ;;     :underline nil
-      ;;     :weight 'bold))
-      (helm-mode 1)
-      ))
-#+END_SRC
-**** Hide Mode Lines
-Hide modelines of other windows while helm is open, again from
-https://github.com/hatschipuh/better-helm.
-
-#+BEGIN_SRC emacs-lisp
-  (defvar my-helm-bottom-buffers nil
-	"List of bottom buffers before helm session.
-	Its element is a pair of `buffer-name' and `mode-line-format'.")
-
-  (defun my-helm-bottom-buffers-init ()
-	(setq-local mode-line-format (default-value 'mode-line-format))
-	(setq my-helm-bottom-buffers
-	  (cl-loop for w in (window-list)
-		   when (window-at-side-p w 'bottom)
-		   collect (with-current-buffer (window-buffer w)
-				 (cons (buffer-name) mode-line-format)))))
-
-  (defun my-helm-bottom-buffers-hide-mode-line ()
-	(setq-default cursor-in-non-selected-windows nil)
-	(mapc (lambda (elt)
-		(with-current-buffer (car elt)
-		  (setq-local mode-line-format nil)))
-	  my-helm-bottom-buffers))
-
-  (defun my-helm-bottom-buffers-show-mode-line ()
-	(setq-default cursor-in-non-selected-windows t)
-	(when my-helm-bottom-buffers
-	  (mapc (lambda (elt)
-		  (with-current-buffer (car elt)
-		(setq-local mode-line-format (cdr elt))))
-		my-helm-bottom-buffers)
-	  (setq my-helm-bottom-buffers nil)))
-
-  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
-	(my-helm-bottom-buffers-show-mode-line)
-	(apply orig-func args))
-
-  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
-  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
-  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
-  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
-  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
-#+END_SRC
-
-**** Hide Minibuffer
-Hide minibuffer while helm is active
-
-#+BEGIN_SRC emacs-lisp
-  (defun my-helm-hide-minibuffer-maybe ()
-	(when (with-helm-buffer helm-echo-input-in-header-line)
-	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	(overlay-put ov 'window (selected-window))
-	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-				`(:background ,bg-color :foreground ,bg-color)))
-	(setq-local cursor-type nil))))
-  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
-#+END_SRC
-
-*** Helm packages
-**** Helm ag
-#+begin_src emacs-lisp
-(use-package helm-ag  
-  :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
-  :config
-  (setq helm-ag-fuzzy-match t))
-#+end_src
-**** Helm descbinds
-#+begin_src emacs-lisp 
-(use-package helm-descbinds 
-  :defer t
-  :config
-  (setq helm-descbinds-window-style 'same-window)
-  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
-#+end_src
-**** Helm git list
-#+begin_src emacs-lisp
-(use-package helm-ls-git :defer t)
-#+end_src
-**** Helm hunks
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-hunks
-    :commands helm-hunks)
-
-#+END_SRC
-
-**** Helm swoop
-[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
-#+begin_src emacs-lisp
-  (use-package helm-swoop
-    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
-    :config
-    (setq helm-swoop-use-fuzzy-match t)
-    (setq helm-swoop-split-with-multiple-windows t))
-#+end_src
-**** Helm flyspell
-Use helm with flyspell
-#+begin_src emacs-lisp
-(use-package helm-flyspell
-  :if (not noninteractive)
-  :ensure t
-  :commands helm-flyspell-correct
-  :config
-  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
-)
-#+end_src
-
-**** Helm recent directories
-Recent directories
-#+begin_src emacs-lisp
-  (use-package helm-dired-recent-dirs
-    :defer t)
-#+end_src
-**** Helm files
-#+begin_src emacs-lisp
-  (use-package helm-files
-    :defer t
-    :ensure nil
-    :config
-    (setq helm-ff-skip-boring-files t)
-    (setq helm-idle-delay 0.05)
-    (setq helm-input-idle-delay 0.05)
-    (setq helm-ff-file-name-history-use-recentf t)
-    (setq helm-boring-file-regexp-list
-    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
-      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
-#+end_src
-
-**** Helm-projectile
-#+BEGIN_SRC emacs-lisp
-(use-package helm-projectile
-  :commands (helm-projectile-switch-to-buffer
-             helm-projectile-find-dir
-             helm-projectile-dired-find-dir
-             helm-projectile-recentf
-             helm-projectile-find-file
-             helm-projectile-grep
-             helm-projectile
-             helm-projectile-switch-project)
-  :init
-  (setq projectile-switch-project-action 'helm-projectile))
-#+END_SRC
-**** CHECK Helm interface for themes (helm-themes)
-#+begin_src emacs-lisp
-  (use-package helm-themes
-    :commands helm-themes)
-  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (powerline-reset)) 
-  ;; (ad-unadvise 'helm-themes--load-theme)
-#+end_src
-*** Visual replace
-This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
-
-#+BEGIN_SRC emacs-lisp
-(use-package visual-regexp
-  :commands (vr/query-replace)
-  :config
-  (use-package visual-regexp-steroids
-    :commands (vr/select-query-replace)))
-#+END_SRC
-** Speedbar
-A file tree and outliner
-#+BEGIN_SRC emacs-lisp
-    (use-package sr-speedbar
-      :commands sb-expand-current-file
-      :config
-        (progn 
-          (setq sr-speedbar-width 60)
-          (setq sr-speedbar-max-width 60)
-          (setq sr-speedbar-right-side nil)
-          ;; Auto expand
-          (defun sb-expand-current-file ()
-          "Expand current file in speedbar buffer"
-          (interactive)
-          (setq current-file (buffer-file-name))
-          (sr-speedbar-toggle)
-          (speedbar-find-selected-file current-file)
-          (speedbar-toggle-line-expansion))
-          ;; Switch to window
-          (defun speedbar-edit-line-and-switch-to-window ()
-          (interactive)
-          (speedbar-edit-line)
-          (other-window 1))
-
-          ;; other settings
-          (setq speedbar-hide-button-brackets-flag t
-              speedbar-show-unknown-files t
-              speedbar-directory-button-trim-method 'trim
-              speedbar-use-images nil
-              speedbar-indentation-width 2
-              speedbar-use-imenu-flag t
-              speedbar-tag-hierarchy-method nil  ;; No grouping
-              speedbar-file-unshown-regexp "flycheck-.*"
-              speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|\\.\\.*$\\)\\'"    
-              speedbar-smart-directory-expand-flag t)
-          ;; Add markdown support
-          (speedbar-add-supported-extension ".md")
-          (speedbar-add-supported-extension ".org")
-          ;; More familiar keymap settings.
-          (add-hook 'speedbar-reconfigure-keymaps-hook
-                  '(lambda ()
-                      (define-key speedbar-mode-map [tab] 'speedbar-toggle-line-expansion)
-                      (define-key speedbar-mode-map [return] 'speedbar-edit-line-and-switch-to-window)))))
-
-#+END_SRC
-** Windows
-*** Window Numbering
-Numbered window shortcuts for Emacs
-#+BEGIN_SRC emacs-lisp
-   (use-package window-numbering
-     :ensure t
-     :config
-     (defun window-numbering-install-mode-line (&optional position)
-     "Do nothing, the display is handled by the powerline.")
-     (setq window-numbering-auto-assign-0-to-minibuffer nil)
-     (cpm-leader1
-       "0" 'select-window-0
-       "1" 'select-window-1
-       "2" 'select-window-2
-       "3" 'select-window-3
-       "4" 'select-window-4
-       "5" 'select-window-5)
-       ;; "6" 'select-window-6
-       ;; "7" 'select-window-7
-       ;; "8" 'select-window-8
-       ;; "9" 'select-window-9)
-     (window-numbering-mode 1)
-
-  ;; make sure neotree is always 0
-   (defun spacemacs//window-numbering-assign ()
-     "Custom number assignment for neotree."
-     (when (and (boundp 'neo-buffer-name)
-                (string= (buffer-name) neo-buffer-name)
-                ;; in case there are two neotree windows. Example: when
-                ;; invoking a transient state from neotree window, the new
-                ;; window will show neotree briefly before displaying the TS,
-                ;; causing an error message. the error is eliminated by
-                ;; assigning 0 only to the top-left window
-                (eq (selected-window) (window-at 0 0)))
-       0))
-
-   ;; using lambda to work-around a bug in window-numbering, see
-   ;; https://github.com/nschum/window-numbering.el/issues/10
-   (setq window-numbering-assign-func
-         (lambda () (spacemacs//window-numbering-assign))))
-
-    ;; (defun spacemacs//window-numbering-assign (windows)
-    ;;   "Custom number assignment for special buffers."
-    ;;   (mapc (lambda (w)
-    ;;           (when (and (boundp 'neo-global--window)
-    ;;                      (eq w neo-global--window))
-    ;;             (window-numbering-assign w 0)))
-    ;;         windows))
-    ;; (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)
-    ;; (add-hook 'neo-after-create-hook '(lambda (w) (window-numbering-update)))
-#+END_SRC
-*** Windmove
-#+BEGIN_SRC emacs-lisp
-(use-package windmove
-  :commands (windmove-up windmove-down windmove-left windmove-right)
-  :config
-  (defun split-window-right-and-focus ()
-  "Split the window horizontally and focus the new window."
-  (interactive)
-  (split-window-right)
-  (windmove-right))
-  (defun split-window-below-and-focus ()
-  "Split the window vertically and focus the new window."
-  (interactive)
-  (split-window-below)
-  (windmove-down))
-  ;; add edit mode keybindings
-  (global-set-key (kbd "<H-up>")     'windmove-up)
-  (global-set-key (kbd "<H-down>")   'windmove-down)
-  (global-set-key (kbd "<H-left>")   'windmove-left)
-  (global-set-key (kbd "<H-right>")  'windmove-right)
-  )
-#+END_SRC
- 
-* Evil Mode
-I'm coming from vim, and want modal keybidings in emacs. There are other, less
-radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
-package for modal editing (see also [[https://github.com/Kungsgeten/ryo-modal][ryo-modal]]). But nothing beats full vim
-keybindings. And that is what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]] is for.
-** Evil mode
-The essential stuff
-#+begin_src emacs-lisp 
-  (use-package evil
-    :ensure t
-    :config
-    (progn
-    ;; Cursor shape and color
-      (defcustom dotemacs-evil/emacs-cursor
-      "red"
-      "The color of the cursor when in Emacs state."
-      :type 'color
-      :group 'dotemacs-evil)
-
-      (defcustom dotemacs-evil/emacs-insert-mode
-      nil
-      "If non-nil, insert mode will act as Emacs state."
-      :type 'boolean
-      :group 'dotemacs-evil)
-
-      (setq evil-search-module 'evil-search)
-      (setq evil-magic 'very-magic)
-
-      (setq evil-emacs-state-cursor `(,dotemacs-evil/emacs-cursor box))
-      (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
-      (setq evil-visual-state-cursor '("gray" box)) 
-      (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
-      (setq evil-replace-state-cursor '("red" hbar))
-      (setq evil-operator-state-cursor '("red" hollow))
-      (setq evil-visual-state-tag "VISUAL")
-      
-      ;; evil-normal-state is preferred, so revert when idle
-      (run-with-idle-timer 20 t 'evil-normal-state)
-      ;; don't echo evil state
-      (setq evil-echo-state nil)
-      ;; evil everywhere
-      (evil-mode 1)))
-#+end_src
-
-** Evil escape
-Use a key sequence for [[https://github.com/syl20bnr/evil-escape#install][escaping]].
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-escape
-    :ensure t
-    :diminish ""
-    :init
-    (evil-escape-mode)
-    ;; use "fd" for escape
-    (setq-default evil-escape-key-sequence "fd"))
-#+END_SRC 
-
-** Evil packages & settings
-There are some other useful setup packages for evil
-*** Navigate Using Visual Lines Rather Than True Lines
-#+begin_src emacs-lisp
-(general-define-key 
-  :states '(normal visual)
-  "j" 'evil-next-visual-line
-  "k" 'evil-previous-visual-line)
-#+end_src
-*** Evil indent
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-indent-textobject :commands (evil-indent))
-#+END_SRC
-*** Increment And Decrement Numbers
-#+begin_src emacs-lisp
-  (use-package evil-numbers
-    :ensure t
-    :commands (evil-numbers/inc-at-pt evil-numbers/dec-at-pt)
-    :init
-    (general-define-key
-      :states '(normal visual insert emacs)
-      "H-s" 'evil-numbers/inc-at-pt
-      "H-a" 'evil-numbers/dec-at-pt))
-#+end_src
-
-*** DISABLED Change Cursor In Terminal
-#+begin_src emacs-lisp
-(defun my-send-string-to-terminal (string)
-  (unless (display-graphic-p) (send-string-to-terminal string)))
-
-(defun my-evil-terminal-cursor-change ()
-  (when (string= (getenv "TERM_PROGRAM") "iTerm.app")
-    (add-hook 'evil-insert-state-entry-hook (lambda () (my-send-string-to-terminal "\e]50;CursorShape=1\x7")))
-    (add-hook 'evil-insert-state-exit-hook  (lambda () (my-send-string-to-terminal "\e]50;CursorShape=0\x7"))))
-  (when (and (getenv "TMUX") (string= (getenv "TERM_PROGRAM") "iTerm.app"))
-    (add-hook 'evil-insert-state-entry-hook (lambda () (my-send-string-to-terminal "\ePtmux;\e\e]50;CursorShape=1\x7\e\\")))
-    (add-hook 'evil-insert-state-exit-hook  (lambda () (my-send-string-to-terminal "\ePtmux;\e\e]50;CursorShape=0\x7\e\\")))))
-
-(add-hook 'after-make-frame-functions (lambda (frame) (my-evil-terminal-cursor-change)))
-(my-evil-terminal-cursor-change)
-
-  (use-package evil-terminal-cursor-changer
-    :ensure t
-    :disabled t
-    :defer t
-    :init
-     (unless (display-graphic-p)
-             (require 'evil-terminal-cursor-changer)
-    (progn 
-     (setq evil-visual-state-cursor '("red" box)); █
-     (setq evil-insert-state-cursor '("green" bar)); ⎸
-     (setq evil-emacs-state-cursor '("blue" hbar)); _
-     )))
-#+end_src
-
-*** Surround Commands Like Vim-Surround
-#+begin_src emacs-lisp
-(use-package evil-surround
-  :ensure t
-  :defer 2
-  ;; :commands (evil-surround-region evil-surround-change)
-  :init 
-  (general-define-key
-  :states '(visual)
-  "s" 'evil-surround-region
-  "S" 'evil-substitute)
-  :config (global-evil-surround-mode 1)
-  (defun evil-surround-org-pairs ()
-    (push '(?= . ("=" . "=")) evil-surround-pairs-alist)
-    (push '(?~ . ("~" . "~")) evil-surround-pairs-alist))
- )
- ;; Enhancements to evil-surround
-(use-package embrace
- :ensure t)
-(use-package evil-embrace
- :ensure t
- :config
- (evil-embrace-enable-evil-surround-integration)
- (setq evil-embrace-show-help-p nil)
- (add-hook 'org-mode-hook 'embrace-org-mode-hook)
- (add-hook 'LaTeX-mode-hook
-    (lambda ()
-        (embrace-add-pair ?a "`" "'")
-        (embrace-add-pair ?e "\\emph{" "}"))))
-
-#+end_src 
-
-*** Commenting 
-#+begin_src emacs-lisp
-  (use-package evil-commentary
-    :commands (evil-commentary evil-commentary-line)
-    :diminish evil-commentary-mode
-    :config
-    (evil-commentary-mode))
-#+end_src
-
-*** Graphical undo
-#+begin_src emacs-lisp
-  (use-package undo-tree
-    :commands (undo-tree-undo undo-tree-visualize)
-    :init
-    ;; (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)
-    (let ((undo-dir (concat user-cache-directory "undo")))
-      (setq undo-tree-history-directory-alist '((".*" . ,undo-dir)))))
-
-  ;; (use-package undo-tree
-  ;;   :ensure t
-  ;;   :init
-  ;;   (progn
-  ;;     (global-undo-tree-mode)
-  ;;     (setq undo-tree-mode-lighter "")
-  ;;     ;; (setq undo-tree-auto-save-history t)
-  ;;     (setq undo-tree-visualizer-timestamps t)
-  ;;     (setq undo-tree-visualizer-diff t)
-  ;;     (let ((undo-dir (concat user-cache-directory "undo")))
-  ;;     (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
-  ;;   )
-#+end_src
-
 * Shell
 ** Multi-term
 When one shell isn't enough
@@ -3191,7 +3232,7 @@ mode of writing.
 
 ** Org-mode
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
-*** Base settings
+*** Org Base settings
 #+BEGIN_SRC emacs-lisp
   (use-package org 
     :defer t
@@ -3624,22 +3665,6 @@ Make source blocks look better.
       (turn-on-prettify-symbols-mode)
       (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
     (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
-#+END_SRC
-**** DISABLED Org faces
-#+BEGIN_SRC emacs-lisp
-(set-face-attribute 'org-block nil :foreground "#2E8B57")
-(set-face-attribute 'org-block-begin-line nil 
-:foreground "#74a8a4" :weight 'bold :slant 'normal)
-(set-face-attribute 'org-level-1 nil 
-:inherit 'variable-pitch :foreground "#268bd2" :height 1.3)
-(set-face-attribute 'org-level-2 nil 
-:inherit 'variable-pitch :foreground "medium sea green" :height 1.2)
-(set-face-attribute 'org-level-3 nil 
-:inherit 'variable-pitch :foreground "#cb4b16" :height 1.15)
-(set-face-attribute 'org-level-8 nil 
-:inherit 'variable-pitch :foreground "#9e1e86" :height 1.1)
-(set-face-attribute 'org-quote nil 
-:inherit 'org-block :slant 'normal :weight 'normal)
 #+END_SRC
 *** Org seek
 Searching Org-mode with search tools.
@@ -4415,6 +4440,7 @@ Better than doc-view, but doesn't render well on retina screens :(
       )
 
 #+END_SRC
+
 * Other Packages
 ** Ag
 #+BEGIN_SRC emacs-lisp
