@@ -3998,6 +3998,12 @@ Pandoc mode for markdown conversion
   (interactive)
   (any-deft "~/projects/notebook/content/org_notes"))
 #+END_SRC
+** Interleave
+Useful when taking notes
+#+BEGIN_SRC emacs-lisp
+(use-package interleave
+  :commands interleave)
+#+END_SRC
 ** Palimpsest mode
 #+BEGIN_SRC emacs-lisp
   (use-package palimpsest
