@@ -4908,4 +4908,9 @@ Start server
   ;; (eshell)
 #+END_SRC
 
+* Goals 
+Below are various things I want to perfect or try out in the config.
 
+- [] Fix load time of =config.org= file
+- [] Fix Helm locate so it loads faster
+- [X] Fix load time of Projectile (make cache persist across sessions)
