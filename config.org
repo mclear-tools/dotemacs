@@ -4285,7 +4285,7 @@ don't cause as much overhead."
 (setq doc-view-continuous t)
 ))
 #+end_src
-** DISABLED PDF-Tools
+** PDF-Tools
 :PROPERTIES:
 :header-args: :tangle no
 :END:
