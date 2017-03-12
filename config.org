@@ -4516,6 +4516,14 @@ Interface with Zotero.
     (add-hook 'markdown-mode-hook (lambda () (zotxt-easykey-mode 0))))
 
 #+END_SRC
+** Proselint
+#+BEGIN_SRC emacs-lisp
+(defun proselint ()
+  (interactive)
+  (flycheck-mode)
+  (flycheck-select-checker 'proselint))
+#+END_SRC
+
 * Other Packages
 ** Ag
 #+BEGIN_SRC emacs-lisp
