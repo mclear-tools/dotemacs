@@ -3258,8 +3258,8 @@ mode of writing.
     :defer t
     :config
     ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
-    (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
-    (modify-syntax-entry ?= "(=" org-mode-syntax-table)
+    ;; (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
+    ;; (modify-syntax-entry ?= "(=" org-mode-syntax-table)
     ;; don't underline indents
     (defface org-dont-underline-indents '((t :underline nil))
     "Avoid underlining of indentation.")
@@ -4566,15 +4566,6 @@ Like the title says...
   :init
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
-** Autopair
-#+BEGIN_SRC emacs-lisp
-(use-package electric-pair-mode
-  :commands (electric-pair-mode)
-  :ensure nil
-  :init 
-  (add-hook 'prog-mode-hook 'electric-pair-mode)
-  (add-hook 'text-mode-hook 'electric-pair-mode))
-#+END_SRC
 ** Autorevert
 Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
@@ -4850,6 +4841,21 @@ Better management between clipboard and kill ring, courtesy of [[https://github.
   (simpleclip-mode 1)
 )
 #+END_SRC
+** Smartparens (Autopair)
+Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens 
+  :defer 10
+  :init 
+  (add-hook 'prog-mode-hook 'smartparens-mode)
+  (add-hook 'org-mode-hook 'smartparens-mode)
+  (add-hook 'markdown-mode-hook 'smartparens-mode))
+  
+(use-package evil-smartparens
+  :init
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+)
+#+END_SRC
 ** Url
 #+BEGIN_SRC emacs-lisp
   (use-package url
@@ -4943,4 +4949,5 @@ Below are various things I want to perfect or try out in the config.
 
 - [] Fix load time of =config.org= file
 - [] Fix Helm locate so it loads faster
+- [] Fix visual surround delete of various characters (org markup, dollar signs)
 - [X] Fix load time of Projectile (make cache persist across sessions)
