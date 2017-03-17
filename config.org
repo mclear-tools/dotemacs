@@ -371,32 +371,46 @@ I also make emacs just outright save all buffers.
 
 ** Desktop save
 #+BEGIN_SRC emacs-lisp
-(setq desktop-dirname             (concat user-cache-directory "desktop")
-      desktop-base-file-name      "emacs.desktop"
-      desktop-base-lock-name      "lock"
-      desktop-path                (list desktop-dirname)
-      desktop-save                t
-      desktop-files-not-to-save   (concat "^$" ".*magit$")
-      desktop-restore-eager 10
-      desktop-load-locked-desktop nil)
-(setq desktop-buffers-not-to-save
-        (concat "\\("
-                "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-                "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-	        "\\)$"))
-(desktop-save-mode 0)
-(defun my-desktop ()
-  "Load the desktop and enable autosaving"
-  (interactive)
-  (let ((desktop-load-locked-desktop "ask"))
-    (desktop-read)
-    (desktop-save-mode 1)))
+  (setq desktop-dirname             (concat user-cache-directory "desktop")
+        desktop-base-file-name      "emacs.desktop"
+        desktop-base-lock-name      "lock"
+        desktop-path                (list desktop-dirname)
+        desktop-save                'ask-if-new
+        desktop-files-not-to-save   (concat "^$" ".*magit$")
+        desktop-restore-eager 10
+        desktop-load-locked-desktop nil)
+  (setq desktop-buffers-not-to-save
+          (concat "\\("
+                  "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+                  "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+	          "\\)$"))
+  (desktop-save-mode 0)
+  (defun my-desktop ()
+    "Load the desktop and enable autosaving"
+    (interactive)
+    (let ((desktop-load-locked-desktop "ask"))
+      (desktop-read)
+      (desktop-save-mode 1)))
 
-(defun save-desktop-save-buffers-kill-emacs ()
-  "Save buffers and current desktop every time when quitting emacs."
-  (interactive)
-  (desktop-save-in-desktop-dir)
-  (save-buffers-kill-emacs))
+  (defun save-desktop-save-buffers-kill-emacs ()
+    "Save buffers and current desktop every time when quitting emacs."
+    (interactive)
+    (desktop-save-in-desktop-dir)
+    (save-buffers-kill-emacs))
+
+  ;; better session management
+  (use-package desktop+
+    :ensure t
+    :commands (desktop+-create desktop+-load)
+    :config
+    (setq desktop+-base-dir (concat user-cache-directory "desktop"))
+    (defun my/desktop-frame-title-function (desktop-name)
+    (list (concat "%f | [" desktop-name "]")))
+
+    (setq desktop+-frame-title-function
+        'my/desktop-frame-title-function)
+  ) 
+
 #+END_SRC
 ** Custom file settings
 Set up the customize file to its own separate file, instead of saving
@@ -1075,11 +1089,13 @@ Keybindings for managing packages
     "pG"  'projectile-regenerate-tags
     "pI"  'projectile-invalidate-cache
     "pk"  'projectile-kill-buffers
+    "pl"  'desktop+-load
     "po"  'projectile-multi-occur
     "pp"  'helm-projectile-switch-project
     "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
-    "ps"  'bmkp-set-desktop-bookmark
+    ;; "ps"  'bmkp-set-desktop-bookmark
+    "ps"  'desktop+-create
     "pS"  'bmkp-desktop-jump
     "pT"  'projectile-find-test-file
     "pv"  'projectile-vc
