@@ -981,6 +981,9 @@ Keybindings for org mode
     "or" '(:ignore t :which-key "org-reveal")
     "oj" 'cpm/org-journal
     "oc" 'org-capture
+    "oe" '(:ignore t :which-key "export")
+    "oep" 'org-pandoc-export-to-latex-pdf
+    "oeP" 'org-pandoc-export-to-latex-pdf-and-open
     "of" 'org-footnote-action
     "oP" 'org-set-property
     ;; "P" 'org-publish-current-project
@@ -1406,16 +1409,16 @@ Fuzzy search
       ;;keybindings
       (general-define-key "M-x" 'helm-M-x)
       ;;; helm vim-bindings in buffer ;;
-      (define-key helm-map (kbd "C-j") 'helm-next-line)
-      (define-key helm-map (kbd "C-k") 'helm-previous-line)
-      (define-key helm-map (kbd "C-h") 'helm-next-source)
-      (define-key helm-map (kbd "C-S-h") 'describe-key)
-      (define-key helm-map (kbd "C-l") (kbd "RET"))
+      (define-key helm-map (kbd "C-g") (kbd "RET"))
       (general-define-key :keymaps 'helm-map 
-        "TAB"  'helm-execute-persistent-action ; rebind tab to do persistent action
-        "C-i"    'helm-execute-persistent-action ; make TAB works in terminal
-        "C-z"    'helm-select-action ; list actions using C-z
-        )
+        "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
+        "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
+        "C-z"   'helm-select-action ; list actions using C-z
+        "C-j"   'helm-next-line
+        "C-k"   'helm-previous-line
+        "C-h"   'helm-next-source
+        "C-l"   'helm-previous-source
+        "C-S-h" 'describe-key)
       (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
