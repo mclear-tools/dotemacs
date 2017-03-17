@@ -4219,17 +4219,6 @@ Make arbitrary blocks or sentences of text.
         (interactive)
         (doc-view-search 'newquery t))
 
-      ;; fixed a weird issue where toggling display does not
-      ;; swtich to text mode
-      (defadvice doc-view-toggle-display
-          (around spacemacs/doc-view-toggle-display activate)
-        (if (eq major-mode 'doc-view-mode)
-            (progn
-              ad-do-it
-              (text-mode)
-              (doc-view-minor-mode))
-          ad-do-it))
-          
 (defcustom doc-view-autofit-timer-start 1.0
 "Initial value (seconds) for the timer that delays the fitting when
 `doc-view-autofit-fit' is called (Which is when a window
