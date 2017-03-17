@@ -2015,6 +2015,9 @@ The best low-contrast theme out there.
                    '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
                    ;; markdown faces
                    '(markdown-comment-face ((t (:weight bold :strike-through nil))))
+                   '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
+                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
+                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
                    ;; helm faces
                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                    ;; line highlighting 
@@ -2041,6 +2044,10 @@ The best low-contrast theme out there.
                    '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
                    ;; markdown faces
                    '(markdown-comment-face ((t (:weight bold :strike-through nil))))
+                   '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
+                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
+                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+
                    ;; helm faces
                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                    ;; line highlighting 
