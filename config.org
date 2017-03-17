@@ -1401,7 +1401,7 @@ Fuzzy search
             helm-ff-file-name-history-use-recentf t
             helm-find-files-sort-directories t
             helm-display-header-line nil
-            ;; helm-move-to-line-cycle-in-source t
+            helm-move-to-line-cycle-in-source t
             helm-always-two-windows t                       
             helm-split-window-in-side-p nil
             ;; helm-split-window-default-side 'other
