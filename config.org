@@ -633,7 +633,7 @@ There are some other useful setup packages for evil
       "H-a" 'evil-numbers/dec-at-pt))
 #+end_src
 
-*** DISABLED Change Cursor In Terminal
+*** Change Cursor In Terminal
 #+begin_src emacs-lisp
 (defun my-send-string-to-terminal (string)
   (unless (display-graphic-p) (send-string-to-terminal string)))
@@ -1133,6 +1133,7 @@ Keybindings for managing packages
     "t"  '(:ignore t :which-key "Toggles")
     "ta" 'company-mode
     "tb" 'fancy-battery-mode
+    "tB" 'beacon-mode
     "tc" 'centered-cursor-mode
     "tC" 'centered-window-mode
     "td" 'distraction-free
@@ -1368,6 +1369,11 @@ related packages swiper and counsel, are lightweight and fairly simple
 to configure. But I've had trouble with swiper freezing, and I think Ivy
 is somewhat ugly in comparison to helm. So I use helm. YMMV. 
 
+*** Flx
+Fuzzy search
+#+BEGIN_SRC emacs-lisp
+(use-package flx) 
+#+END_SRC
 *** Helm
 [[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
 **** Helm Settings
@@ -1531,12 +1537,14 @@ Use helm with flyspell
 #+end_src
 
 **** Helm Flx
-     #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (use-package helm-flx
-  :defer t
-  :ensure nil
-)
-     #+END_SRC
+  :after helm
+  :config
+  (setq helm-flx-for-helm-find-files t ;; t by default
+        helm-flx-for-helm-locate t) ;; nil by default
+ )
+#+END_SRC
 
 **** Helm recent directories
 Recent directories
@@ -1916,6 +1924,13 @@ Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
 
 #+END_SRC
 
+** DISABLED Stripe Buffer
+This [[https://github.com/sabof/stripe-buffer][does what the title says]]
+#+BEGIN_SRC emacs-lisp
+(use-package stripe-buffer
+  :commands stripe-buffer-mode
+  :init (add-hook 'dired-mode-hook 'stripe-listify-buffer))
+#+END_SRC
 ** Smooth Scrolling
 #+BEGIN_SRC emacs-lisp 
   (use-package smooth-scrolling
@@ -4540,6 +4555,70 @@ Interface with Zotero.
   (flycheck-select-checker 'proselint))
 #+END_SRC
 
+** Serif Fonts
+#+BEGIN_SRC emacs-lisp
+(defvar serif-preserve-default-list nil
+  "A list holding the faces that preserve the default family and
+  height when TOGGLE-SERIF is used.")
+(setq serif-preserve-default-list
+      '(;; LaTeX markup
+        font-latex-math-face
+        font-latex-sedate-face
+        font-latex-warning-face
+        ;; org markup
+        org-latex-and-related
+        org-meta-line
+        org-verbatim
+        org-block-begin-line
+        ;; syntax highlighting using font-lock
+        font-lock-builtin-face
+        font-lock-comment-delimiter-face
+        font-lock-comment-face
+        font-lock-constant-face
+        font-lock-doc-face
+        font-lock-function-name-face
+        font-lock-keyword-face
+        font-lock-negation-char-face
+        font-lock-preprocessor-face
+        font-lock-regexp-grouping-backslash
+        font-lock-regexp-grouping-construct
+        font-lock-string-face
+        font-lock-type-face
+        font-lock-variable-name-face
+        font-lock-warning-face))
+
+(defun toggle-serif ()
+  "Change the default face of the current buffer to use a serif family."
+  (interactive)
+  (when (display-graphic-p)  ;; this is only for graphical emacs
+    ;; the serif font familiy and height, save the default attributes
+    (let ((serif-fam "Minion Pro")
+          (serif-height 150)
+          (default-fam (face-attribute 'default :family))
+          (default-height (face-attribute 'default :height)))
+      (if (not (bound-and-true-p default-cookie))
+          (progn (make-local-variable 'default-cookie)
+                 (make-local-variable 'preserve-default-cookies-list)
+                 (setq preserve-default-cookies-list nil)
+                 ;; remap default face to serif
+                 (setq default-cookie
+                       (face-remap-add-relative
+                        'default :family serif-fam :height serif-height))
+                 ;; keep previously defined monospace fonts the same
+                 (dolist (face serif-preserve-default-list)
+                   (add-to-list 'preserve-default-cookies-list
+                                (face-remap-add-relative
+                                 face :family default-fam :height default-height)))
+                 (message "Turned on serif writing font."))
+        ;; undo changes
+        (progn (face-remap-remove-relative default-cookie)
+               (dolist (cookie preserve-default-cookies-list)
+                 (face-remap-remove-relative cookie))
+               (setq default-cookie nil)
+               (setq preserve-default-cookies-list nil)
+               (message "Restored default fonts."))))))
+#+END_SRC
+
 * Other Packages
 ** Ag
 #+BEGIN_SRC emacs-lisp
@@ -4620,12 +4699,156 @@ Auto-revert buffers of changed files
             global-auto-revert-non-file-buffers t)))
 #+END_SRC
  
+** TESTING Beacon
+Useful for letting you know where the cursor is
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :ensure t
+  :diminish beacon-mode
+  :init (beacon-mode 1)
+  :config
+  (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
+#+END_SRC
 ** Bind map
 [[https://github.com/justbur/emacs-bind-map][Emacs macro for keybindings.]]
 #+BEGIN_SRC emacs-lisp
 (use-package bind-map)
 #+END_SRC
 
+** Cmus
+#+BEGIN_SRC emacs-lisp
+;;;; define commands for controlling cmus from emacs
+
+;;; utility (non-interactive) functions
+(defun cmus-status ()
+  "Return the current cmus status."
+  (split-string
+   (shell-command-to-string "cmus-remote -Q")
+   "\n"))
+
+(defun cmus-get-status-property (status property)
+  "Search the status for the requested property."
+  (replace-regexp-in-string property ""
+                            (car
+                             (delq nil
+                                   (mapcar (lambda (prop-line)
+                                             (if (string-match property prop-line)
+                                                 prop-line
+                                               nil))
+                                           status)))))
+
+(defun cmus-get-artist (status)
+  "Return the currently playing track."
+  (cmus-get-tag status "artist"))
+
+(defun cmus-get-album (status)
+  "Return the album for the current track."
+  (cmus-get-tag status "album"))
+
+(defun cmus-get-title (status)
+  "Return the track title for the current track"
+  (cmus-get-tag status "title"))
+
+(defun cmus-get-tag (status tag)
+  "Return the matching tag from the status."
+  (let ((tag-match (concat "^tag " tag " ")))
+    (cmus-get-status-property status tag-match)))
+
+(defun cmus-playingp ()
+  "Returns true if cmus is currently playing."
+  (let ((status (cmus-get-status-property (cmus-status) "status ")))
+    (if (equal status "playing")
+        (progn
+          (message "playing")
+          t)
+      (progn
+        (message "paused")
+        nil))))
+
+;;; interactive functions
+
+(defun cmus-next-track ()
+  "Play the next track in cmus."
+  (interactive)
+  (shell-command-to-string "cmus-remote -n"))
+
+(defun cmus-prev-track ()
+  "Go back a track in cmus."
+  (interactive)
+  (shell-command-to-string "cmus-remote -r"))
+
+(defun cmus-play-pause ()
+  "If cmus is playing, pause it. If it is paused or stopped, start playing."
+  (interactive)
+  (if (cmus-playingp)
+      (progn
+        (message "Pausing..")
+        (shell-command-to-string "cmus-remote --pause"))
+    (progn
+      (message "Playing.")
+      (shell-command-to-string "cmus-remote --play"))))
+
+(defun cmus-stop ()
+  "Stop cmus."
+  (interactive)
+  (shell-command-to-string "cmus-remote --stop"))
+
+(defun cmus-now-playing ()
+  "Show the currently playing track."
+  (interactive)
+  (let ((status (cmus-status)))
+    (let ((artist (cmus-get-artist status))
+          (album (cmus-get-album status))
+          (title (cmus-get-title status))
+          (status (cmus-get-status-property status "status ")))
+      (message (concat artist " - " title " (" album ")")))))
+
+(defun cmus-set-volume (volume)
+  "Set the current volume in cmus"
+  (interactive (let ((volume (read-string "Volume: ")))
+                 (list volume)))
+  (let ((volume (if (stringp volume) volume (car volume))))
+    (shell-command-to-string (concat "cmus-remote -v " volume "%"))))
+
+(defun cmus-toggle-shuffle ()
+  "Toggle playing shuffle."
+  (interactive)
+  (shell-command-to-string "cmus-remote -S")
+  (message
+   (concat "shuffle is "
+           (if (equal "true" (cmus-get-status-property (cmus-status) "set shuffle "))
+               "on"
+             "off"))))
+
+(defun cmus-toggle-repeat ()
+  "Toggle playing repeat."
+  (interactive)
+  (shell-command-to-string "cmus-remote -R")
+  (message
+   (concat "repeat is "
+           (if (equal "true" (cmus-get-status-property (cmus-status) "set repeat "))
+               "on"
+             "off"))))
+
+(defun cmus-toggle-mode ()
+  "Toggle between artist, album and all modes."
+  (interactive)
+  (shell-command-to-string "cmus-remote -C \"toggle aaa_mode\"")
+  (message
+   (concat "current mode: "
+           (cmus-get-status-property (cmus-status) "set aaa_mode "))))
+
+(cpm-leader1
+"acx" 'cmus-play-pause
+"acn" 'cmus-next-track
+"acp" 'cmus-prev-track
+"ack" 'cmus-stop
+"acs" 'cmus-now-playing
+"acv" 'cmus-set-volume
+"ach" 'cmus-toggle-shuffle
+"acr" 'cmus-toggle-repeat
+"acm" 'cmus-toggle-mode)
+#+END_SRC
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
@@ -4890,9 +5113,15 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
   (add-hook 'markdown-mode-hook 'smartparens-mode))
   
 (use-package evil-smartparens
+  :diminish ""
   :init
   (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 )
+#+END_SRC
+** TESTING Spotify
+[[https://github.com/wandersoncferreira/helm-spotify-plus][Helm controlled]] spotify client
+#+BEGIN_SRC emacs-lisp
+(use-package helm-spotify-plus) 
 #+END_SRC
 ** Url
 #+BEGIN_SRC emacs-lisp
