@@ -301,7 +301,7 @@ elisp modes or other minor modes
   (setq uniquify-buffer-name-style 'forward)
 #+END_SRC
 
-*** Bash aliases 
+*** DISABLED Bash aliases 
 -i gets alias definitions from .bash_profile
 #+BEGIN_SRC emacs-lisp
   (setq shell-command-switch "-ic")
