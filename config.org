@@ -1409,7 +1409,7 @@ Fuzzy search
       ;;keybindings
       (general-define-key "M-x" 'helm-M-x)
       ;;; helm vim-bindings in buffer ;;
-      (define-key helm-map (kbd "C-g") (kbd "RET"))
+      (define-key helm-map (kbd "C-a") (kbd "RET"))
       (general-define-key :keymaps 'helm-map 
         "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
         "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
