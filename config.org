@@ -5112,6 +5112,8 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens 
   :defer 10
+  :config
+  (require 'smartparens-config)
   :init 
   (add-hook 'prog-mode-hook 'smartparens-mode)
   (add-hook 'org-mode-hook 'smartparens-mode)
