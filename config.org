@@ -3083,10 +3083,10 @@ well with org-mode using org-indent. So I don't use it globally.
       (add-hook 'prog-mode-hook #'yas-minor-mode)
       (add-hook 'org-mode-hook #'yas-minor-mode)
       (add-hook 'markdown-mode-hook #'yas-minor-mode)
-      ;; Develop in ~/emacs.d/mysnippets, but also
-      ;; try out snippets in ~/Downloads/interesting-snippets
-      (setq yas-snippet-dirs '("/Users/Roambot/.emacs.d/snippets/"))
-               
+      ;; snippet directory
+      (setq yas-snippet-dirs (concat user-cache-directory "snippets"))
+      (unless (file-directory-p yas-snippet-dirs)
+        (make-directory yas-snippet-dirs))
       ;; (add-hook 'term-mode-hook (lambda()
       ;;     (setq yas-dont-activate t)))
       )
