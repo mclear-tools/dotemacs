@@ -378,7 +378,7 @@ I also make emacs just outright save all buffers.
         desktop-save                'ask-if-new
         desktop-files-not-to-save   (concat "^$" ".*magit$")
         desktop-restore-eager 10
-        desktop-load-locked-desktop nil)
+        desktop-load-locked-desktop 'ask)
   (setq desktop-buffers-not-to-save
           (concat "\\("
                   "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
