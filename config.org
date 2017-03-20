@@ -1946,7 +1946,7 @@ This [[https://github.com/sabof/stripe-buffer][does what the title says]]
 #+END_SRC
 
 ** Theme
-*** CHECK Solarized
+*** Solarized
 The best low-contrast theme out there.
 #+BEGIN_SRC emacs-lisp
   (use-package solarized-theme
@@ -2015,7 +2015,7 @@ The best low-contrast theme out there.
                    '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
                    '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
                    ;; markdown faces
-                   '(markdown-comment-face ((t (:weight bold :strike-through nil))))
+                   '(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
                    '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
                    '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
                    '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
@@ -2044,7 +2044,7 @@ The best low-contrast theme out there.
                    '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
                    '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
                    ;; markdown faces
-                   '(markdown-comment-face ((t (:weight bold :strike-through nil))))
+                   '(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
                    '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
                    '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
                    '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
