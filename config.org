@@ -1119,7 +1119,7 @@ Keybindings for managing packages
     "s" '(:ignore t :which-key "Search")
     "sd" 'helm-do-ag ;; search with directory prompt
     "sb" 'helm-ag-buffers
-    "sf" 'helm-ag-this-file
+    "sf" 'helm-do-ag-this-file
     "sj" 'forward-or-backward-sexp
     "sk" 'helm-show-kill-ring
     "sl" 'last-search-buffer
@@ -1493,10 +1493,11 @@ Hide minibuffer while helm is active
 *** Helm packages
 **** Helm ag
 #+begin_src emacs-lisp
-(use-package helm-ag  
-  :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
-  :config
-  (setq helm-ag-fuzzy-match t))
+  (use-package helm-ag  
+    :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
+    :config
+    (setq helm-ag-base-command "rg --no-heading")
+    (setq helm-ag-fuzzy-match t))
 #+end_src
 **** Helm descbinds
 #+begin_src emacs-lisp 
@@ -5091,6 +5092,11 @@ A PDF management system. See the [[https://github.com/atgreen/paperless][Github 
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
   :commands restart-emacs)
+#+END_SRC
+** Ripgrep (rg)
+#+BEGIN_SRC emacs-lisp 
+(use-package rg 
+  :commands rg)
 #+END_SRC
 ** DISABLED Simpleclip
 Better management between clipboard and kill ring, courtesy of [[https://github.com/rolandwalker/simpleclip][simpleclip]]. 
