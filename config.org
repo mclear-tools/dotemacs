@@ -2983,8 +2983,7 @@ keybindings to access magit and related packages.
 ** Evil Magit
 evil bindings for magit
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-magit
-    :after magit)
+  (use-package evil-magit) 
 #+END_SRC
 
 ** Git timemachine
