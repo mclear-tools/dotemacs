@@ -3612,7 +3612,7 @@ same day of the month, but will be the same day of the week."
 
         (defun org-pandoc-publish-to-org (p f pd)
             (org-pandoc-publish-to 'org p f pd))
-            
+
         (defun org-pandoc-publish-to-markdown (p f pd)
             (org-pandoc-publish-to 'markdown p f pd))
 
@@ -3622,10 +3622,10 @@ same day of the month, but will be the same day of the week."
         (defun org-pandoc-pub-to-pan (o)
           (intern (substring (symbol-name o) 12)))
 
-        (defconst org-pandoc-publish-options
-          (mapcar 'org-pandoc-pan-to-pub
-	          (append org-pandoc-valid-options org-pandoc-colon-separated-options
-		          org-pandoc-file-options)))
+        ;; (defconst org-pandoc-publish-options
+        ;;   (mapcar 'org-pandoc-pan-to-pub
+	    ;;       (append org-pandoc-valid-options org-pandoc-colon-separated-options
+	    ;;           org-pandoc-file-options)))
 
         (defun org-pandoc-plist-to-alist (plist)
           (let ((alist '()))
