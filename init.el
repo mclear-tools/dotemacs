@@ -52,10 +52,9 @@
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
-
+  ;; use-package default installs all packages
+  (setq use-package-always-ensure t)
   (require 'use-package)
-  (require 'bind-key) ;; if you use any :bind variant
-  (require 'diminish) ;; if you use diminish
 
   ;; This is GPLv2. If you still don't know the details, read
   ;; http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
