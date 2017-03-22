@@ -4891,8 +4891,8 @@ Start server
 * Goals 
 Below are various things I want to perfect or try out in the config.
 
-- [X] Fix bookmark/desktop save
+- [] Fix visual surround delete/change of various characters (org markup, dollar signs)
 - [] Fix load time of =config.org= file
+- [X] Fix bookmark/desktop save
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
-- [X] Fix visual surround delete of various characters (org markup, dollar signs)
 - [X] Fix load time of Projectile (make cache persist across sessions)
