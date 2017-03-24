@@ -489,13 +489,535 @@ Show matching brackets, parenthesis, etc.
 #+BEGIN_SRC emacs-lisp
   (use-package async :commands (async-start))
 
-  (use-package cl-lib)
+  (use-package cl-lib :defer t)
 
-  (use-package dash :defer 3)
+  (use-package dash :defer t)
 
-  (use-package s)
+  (use-package s :defer t)
 #+END_SRC
  
+*** Useful Functions & Macros
+  Various useful functions and macros I've written or pilfered from others. 
+**** Crux
+A collection of ridiculously useful extensions. Indeed.
+#+BEGIN_SRC emacs-lisp
+  (use-package crux :defer 2)
+#+END_SRC
+**** Config functions
+#+BEGIN_SRC emacs-lisp
+  (defun goto-init.el ()
+      "Open init.el file"
+      (interactive)
+      (find-file "~/.emacs.d/init.el"))
+  (defun goto-custom.el ()
+      "Open custom.el file"
+      (interactive)
+      (find-file "~/.emacs.d/custom.el"))
+  (defun goto-config.org ()
+      "Open config.org file"
+      (interactive)
+      (find-file "~/.emacs.d/config.org"))
+  (defun load-config ()
+      "Load config "
+      (interactive)
+      (load-file "~/.emacs.d/init.el"))
+
+#+END_SRC
+**** Duplicate file
+Duplicate a file in dired or deer
+#+BEGIN_SRC emacs-lisp
+(defun cpm/duplicate-file ()
+  (interactive)
+  (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 (copy).\\2"))
+#+END_SRC
+**** Switch to previous buffer
+#+BEGIN_SRC emacs-lisp
+  (defun switch-to-previous-buffer ()
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+#+END_SRC
+**** Make parent directory
+ Create a directory – or a hierarchy of them – while finding a file in a
+ nonexistent directory. From [[http://mbork.pl/2016-07-25_Making_directories_on_the_fly][mbork]]. 
+#+BEGIN_SRC emacs-lisp
+  (defun make-parent-directory ()
+    "Make sure the directory of `buffer-file-name' exists."
+    (make-directory (file-name-directory buffer-file-name) t))
+
+  (add-hook 'find-file-not-found-functions #'make-parent-directory)
+#+END_SRC
+**** Org wrap in block template
+A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
+#+begin_src emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; function to wrap blocks of text in org templates                       ;;
+;; e.g. latex or src etc                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun org-block-wrap ()
+  "Make a template at point."
+  (interactive)
+  (if (org-at-table-p)
+      (call-interactively 'org-table-rotate-recalc-marks)
+    (let* ((choices '(
+                      ("a" . "ASCII")
+                      ("c" . "COMMENT")
+                      ("C" . "CENTER")
+                      ("e" . "EXAMPLE")
+                      ("E" . "SRC emacs-lisp")
+                      ("h" . "HTML")
+                      ("l" . "LaTeX")
+                      ("n" . "NOTES")
+                      ("q" . "QUOTE")
+                      ("s" . "SRC")
+                      ("v" . "VERSE")
+                      ))
+           (key
+            (key-description
+             (vector
+              (read-key
+               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+                       (mapconcat (lambda (choice)
+                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
+                                            ": "
+                                            (cdr choice)))
+                                  choices
+                                  ", ")))))))
+      (let ((result (assoc key choices)))
+        (when result
+          (let ((choice (cdr result)))
+            (cond
+             ((region-active-p)
+              (let ((start (region-beginning))
+                    (end (region-end)))
+                (goto-char end)
+                (insert "#+END_" choice "\n")
+                (goto-char start)
+                (insert "#+BEGIN_" choice "\n")))
+             (t
+              (insert "#+BEGIN_" choice "\n")
+              (save-excursion (insert "#+END_" choice))))))))))
+
+#+end_src
+**** Copy formatted org-mode text to rtf
+Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/Copy-formatted-org-mode-text-from-Emacs-to-other-applications/][John Kitchin]].
+#+BEGIN_SRC emacs-lisp
+  (defun formatted-copy ()
+  "Export region to HTML, and copy it to the clipboard."
+  (interactive)
+  (save-window-excursion
+    (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           (html (with-current-buffer buf (buffer-string))))
+      (with-current-buffer buf
+        (shell-command-on-region
+         (point-min)
+         (point-max)
+         "textutil -stdin -format html -convert rtf -stdout | pbcopy")) 
+      (kill-buffer buf))))
+
+(global-set-key (kbd "H-w") 'formatted-copy)
+
+#+END_SRC
+**** Don't export Org-mode headlines
+#+BEGIN_SRC emacs-lisp
+  (defun org-remove-headlines (backend)
+  "Remove headlines with :no_title: tag."
+  (org-map-entries (lambda () (let ((beg (point)))
+                                (outline-next-visible-heading 1)
+                                (backward-char)
+                                (delete-region beg (point))))
+                   "no_export" tree)
+  (org-map-entries (lambda () (delete-region (point-at-bol) (point-at-eol)))
+                   "no_title"))
+
+  ;; the following isn't currently working with org-mode 9
+  ;; (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
+#+END_SRC
+**** Move File
+#+BEGIN_SRC emacs-lisp
+(defun move-file ()
+  "Write this file to a new location, and delete the old one."
+  (interactive)
+  (let ((old-location (buffer-file-name)))
+    (call-interactively #'write-file)
+    (when old-location
+      (delete-file old-location))))
+#+END_SRC
+**** Pandoc conversion from clipboard
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/org-to-markdown ()
+    "convert clipboard contents from org to markdown and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown"))
+    (yank))
+
+  (defun cpm/markdown-to-org ()
+    "convert clipboard contents from markdown to org and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t org"))
+    (yank))
+
+  (defun cpm/tex-to-org ()
+    "convert clipboard contents from markdown to org and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t org"))
+    (yank))
+
+  (defun cpm/tex-to-markdown ()
+    "convert clipboard contents from markdown to org and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown"))
+    (yank))
+#+END_SRC
+**** Resume last search
+#+BEGIN_SRC emacs-lisp
+  (defun last-search-buffer ()
+        "open last helm-ag or hgrep buffer."
+        (interactive)
+        (cond ((get-buffer "*helm ag results*")
+               (switch-to-buffer-other-window "*helm ag results*"))
+              ((get-buffer "*helm-ag*")
+               (helm-resume "*helm-ag*"))
+              ((get-buffer "*hgrep*")
+               (switch-to-buffer-other-window "*hgrep*"))
+              (t
+               (message "No previous search buffer found"))))
+#+END_SRC
+**** Rotate windows
+#+BEGIN_SRC emacs-lisp
+;; from magnars modified by ffevotte for dedicated windows support
+(defun rotate-windows (count)
+  "Rotate your windows.
+Dedicated windows are left untouched. Giving a negative prefix
+argument takes the kindows rotate backwards."
+  (interactive "p")
+  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
+         (num-windows (length non-dedicated-windows))
+         (i 0)
+         (step (+ num-windows count)))
+    (cond ((not (> num-windows 1))
+           (message "You can't rotate a single window!"))
+          (t
+           (dotimes (counter (- num-windows 1))
+             (let* ((next-i (% (+ step i) num-windows))
+
+                    (w1 (elt non-dedicated-windows i))
+                    (w2 (elt non-dedicated-windows next-i))
+
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
+
+                    (s1 (window-start w1))
+                    (s2 (window-start w2)))
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i next-i)))))))
+
+(defun rotate-windows-backward (count)
+  "Rotate your windows backward."
+  (interactive "p")
+  (spacemacs/rotate-windows (* -1 count)))
+#+END_SRC
+**** Open projects directory
+#+BEGIN_SRC emacs-lisp
+  (defun goto-projects ()
+      "Open projects dir"
+      (interactive)
+      (require 'ranger)
+      (find-file "~/projects"))
+
+#+END_SRC
+**** Reveal in Finder
+#+BEGIN_SRC emacs-lisp
+(defun browse-file-directory ()
+  "Open the current file's directory however the OS would."
+  (interactive)
+  (if default-directory
+      (browse-url-of-file (expand-file-name default-directory))
+    (error "No `default-directory' to open")))
+#+END_SRC
+ 
+**** Search directories with ag
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/helm-files-do-ag (&optional dir)
+        "Search in files with `ag' using a default input."
+        (interactive)
+        (helm-do-ag dir))
+#+END_SRC
+**** Jump in buffer
+I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for navigating in tagged buffers. 
+#+BEGIN_SRC emacs-lisp
+(defun jump-in-buffer ()
+  (interactive)
+  (cond
+   ((eq major-mode 'org-mode)
+    (call-interactively 'helm-org-in-buffer-headings))
+   (t
+    (call-interactively 'helm-semantic-or-imenu))))
+#+END_SRC
+**** Jump to sexp
+#+BEGIN_SRC emacs-lisp
+(defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+#+END_SRC
+**** Goto journal 
+#+BEGIN_SRC emacs-lisp
+  (defun goto-journal ()
+    (interactive)
+    (find-file "/Users/Roambot/Dropbox/journal.org"))
+#+END_SRC
+**** Kill all other buffers
+Kill all the buffers except =*scratch*= buffer
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+  ;; (defun nuke-all-buffers ()
+  ;; "Kill all buffers, leaving *scratch* only."
+  ;; (interactive)
+  ;; (mapcar (lambda (x) (kill-buffer x)) (buffer-list))
+  ;; (delete-other-windows))
+#+END_SRC
+**** Eval emacs buffer until error
+#+BEGIN_SRC emacs-lisp
+  (defun eval-buffer-until-error ()
+  "Evaluate emacs buffer until error occured."
+  (interactive)
+  (goto-char (point-min))
+  (while t (eval (read (current-buffer)))))
+#+END_SRC
+**** Timestamps
+The code below sets the correct value for system-time-locale, and binds
+keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
+#+BEGIN_SRC emacs-lisp
+  (defun format-date (format)
+  (let ((system-time-locale "en_US.UTF-8"))
+    (insert (format-time-string format))))
+
+(defun insert-date ()
+  (interactive)
+  (format-date "%A, %B %d %Y"))
+
+(defun insert-date-and-time ()
+  (interactive)
+  (format-date "%Y-%m-%d %H:%M:%S"))
+#+END_SRC
+**** Reveal to PDF
+#+BEGIN_SRC emacs-lisp
+  (defun reveal-to-pdf ()
+  "print reveal.js slides to pdf"
+  (interactive)
+  (async-shell-command "phantomjs /Users/Roambot/bin/print-pdf.js 'file:///Users/Roambot/projects/phil101/content/slides/lecture_outline.html?print-pdf'")) 
+#+END_SRC
+**** Other functions
+Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
+#+BEGIN_SRC emacs-lisp
+  ;; Regexp for useful and useless buffers for smarter buffer switching, from spacemacs
+
+  (defvar spacemacs-useless-buffers-regexp '("*\.\+")
+    "Regexp used to determine if a buffer is not useful.")
+  (defvar spacemacs-useful-buffers-regexp '("\\*\\(scratch\\|terminal\.\+\\|ansi-term\\|eshell\\)\\*")
+    "Regexp used to define buffers that are useful despite matching
+  `spacemacs-useless-buffers-regexp'.")
+
+  (defun spacemacs/useless-buffer-p (buffer)
+    "Determines if a buffer is useful."
+    (let ((buf-paren-major-mode (get (with-current-buffer buffer
+                                       major-mode)
+                                     'derived-mode-parent))
+          (buf-name (buffer-name buffer)))
+      ;; first find if useful buffer exists, if so returns nil and don't check for
+      ;; useless buffers. If no useful buffer is found, check for useless buffers.
+      (unless (cl-loop for regexp in spacemacs-useful-buffers-regexp do
+                       (when (or (eq buf-paren-major-mode 'comint-mode)
+                                 (string-match regexp buf-name))
+                         (return t)))
+        (cl-loop for regexp in spacemacs-useless-buffers-regexp do
+                 (when (string-match regexp buf-name)
+                   (return t))))))
+
+  (defun spacemacs/next-useful-buffer ()
+    "Switch to the next buffer and avoid special buffers."
+    (interactive)
+    (let ((start-buffer (current-buffer)))
+      (next-buffer)
+      (while (and (spacemacs/useless-buffer-p (current-buffer))
+                  (not (eq (current-buffer) start-buffer)))
+        (next-buffer))))
+
+  (defun spacemacs/previous-useful-buffer ()
+    "Switch to the previous buffer and avoid special buffers."
+    (interactive)
+    (let ((start-buffer (current-buffer)))
+      (previous-buffer)
+      (while (and (spacemacs/useless-buffer-p (current-buffer))
+                  (not (eq (current-buffer) start-buffer)))
+        (previous-buffer))))
+
+  ;; from magnars
+  (defun spacemacs/rename-current-buffer-file ()
+    "Renames current buffer and file it is visiting."
+    (interactive)
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (error "Buffer '%s' is not visiting a file!" name)
+        (let ((new-name (read-file-name "New name: " filename)))
+          (cond ((get-buffer new-name)
+                 (error "A buffer named '%s' already exists!" new-name))
+                (t
+                 (let ((dir (file-name-directory new-name)))
+                   (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
+                     (make-directory dir t)))
+                 (rename-file filename new-name 1)
+                 (rename-buffer new-name)
+                 (set-visited-file-name new-name)
+                 (set-buffer-modified-p nil)
+                 (when (fboundp 'recentf-add-file)
+                     (recentf-add-file new-name)
+                     (recentf-remove-if-non-kept filename))
+                 (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+
+  ;; from magnars
+  (defun spacemacs/delete-current-buffer-file ()
+    "Removes file connected to current buffer and kills buffer."
+    (interactive)
+    (let ((filename (buffer-file-name))
+          (buffer (current-buffer))
+          (name (buffer-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (ido-kill-buffer)
+        (when (yes-or-no-p "Are you sure you want to delete this file? ")
+          (delete-file filename t)
+          (kill-buffer buffer)
+          (message "File '%s' successfully removed" filename)))))
+        
+  ;; found at http://emacswiki.org/emacs/KillingBuffers
+  (defun spacemacs/kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (when (yes-or-no-p (format "Killing all buffers except \"%s\"? " (buffer-name)))
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
+      (message "Buffers deleted!")))
+
+  ;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
+  (defun spacemacs/show-and-copy-buffer-filename ()
+    "Show the full path to the current file in the minibuffer."
+    (interactive)
+    (let ((file-name (buffer-file-name)))
+      (if file-name
+          (progn
+            (message file-name)
+            (kill-new file-name))
+        (error "Buffer not visiting a file"))))
+
+  (defun spacemacs/new-empty-buffer ()
+    "Create a new buffer called untitled(<n>)"
+    (interactive)
+    (let ((newbuf (generate-new-buffer-name "untitled")))
+      (switch-to-buffer newbuf)))
+
+  ;; from https://github.com/gempesaw/dotemacs/blob/emacs/dg-defun.el
+  (defun spacemacs/kill-matching-buffers-rudely (regexp &optional internal-too)
+    "Kill buffers whose name matches the specified REGEXP. This
+  function, unlike the built-in `kill-matching-buffers` does so
+  WITHOUT ASKING. The optional second argument indicates whether to
+  kill internal buffers too."
+    (interactive "sKill buffers matching this regular expression: \nP")
+    (dolist (buffer (buffer-list))
+      (let ((name (buffer-name buffer)))
+        (when (and name (not (string-equal name ""))
+                   (or internal-too (/= (aref name 0) ?\s))
+                   (string-match regexp name))
+          (kill-buffer buffer)))))
+
+  ;; http://stackoverflow.com/a/10216338/4869
+  (defun spacemacs/copy-whole-buffer-to-clipboard ()
+    "Copy entire buffer to clipboard"
+    (interactive)
+    (clipboard-kill-ring-save (point-min) (point-max)))
+
+  (defun spacemacs/copy-clipboard-to-whole-buffer ()
+    "Copy clipboard and replace buffer"
+    (interactive)
+    (delete-region (point-min) (point-max))
+    (clipboard-yank)
+    (deactivate-mark))
+
+  (defun spacemacs/copy-file ()
+    "Write the file under new name."
+    (interactive)
+    (call-interactively 'write-file))
+#+END_SRC
+
+#+RESULTS:
+: spacemacs/copy-file
+
+**** Macros
+These are a few useful macros I got from hlissner's [[https://github.com/hlissner/.emacs.d]["doom" .emacs.d]]
+
+#+BEGIN_SRC emacs-lisp
+(defmacro after! (feature &rest forms)
+  "A smart wrapper around `with-eval-after-load', that supresses warnings
+during compilation."
+  (declare (indent defun) (debug t))
+  `(,(if (or (not (boundp 'byte-compile-current-file))
+             (not byte-compile-current-file)
+             (if (symbolp feature)
+                 (require feature nil :no-error)
+               (load feature :no-message :no-error)))
+         'progn
+       (message "after: cannot find %s" feature)
+       'with-no-warnings)
+    (with-eval-after-load ',feature ,@forms)))
+
+(defmacro add-hook! (hook &rest func-or-forms)
+  "A convenience macro for `add-hook'.
+HOOK can be one hook or a list of hooks. If the hook(s) are not quoted, -hook is
+appended to them automatically. If they are quoted, they are used verbatim.
+FUNC-OR-FORMS can be a quoted symbol, a list of quoted symbols, or forms. Forms will be
+wrapped in a lambda. A list of symbols will expand into a series of add-hook calls.
+Examples:
+    (add-hook! 'some-mode-hook 'enable-something)
+    (add-hook! some-mode '(enable-something and-another))
+    (add-hook! '(one-mode-hook second-mode-hook) 'enable-something)
+    (add-hook! (one-mode second-mode) 'enable-something)
+    (add-hook! (one-mode second-mode) (setq v 5) (setq a 2))"
+  (declare (indent defun) (debug t))
+  (unless func-or-forms
+    (error "add-hook!: FUNC-OR-FORMS is empty"))
+  (let* ((val (car func-or-forms))
+         (quoted (eq (car-safe hook) 'quote))
+         (hook (if quoted (cadr hook) hook))
+         (funcs (if (eq (car-safe val) 'quote)
+                    (if (cdr-safe (cadr val))
+                        (cadr val)
+                      (list (cadr val)))
+                  (list func-or-forms)))
+         (forms '()))
+    (mapc
+     (lambda (f)
+       (let ((func (cond ((symbolp f) `(quote ,f))
+                         (t `(lambda (&rest _) ,@func-or-forms)))))
+         (mapc
+          (lambda (h)
+            (push `(add-hook ',(if quoted h (intern (format "%s-hook" h))) ,func) forms))
+          (-list hook)))) funcs)
+    `(progn ,@forms)))
+    
+;;;###autoload
+(defmacro def-popup! (&rest params)
+  `(push ',params shackle-rules))
+#+END_SRC
+
 ** Packages
 *** Evil Mode
 I'm coming from vim, and want modal keybidings in emacs. There are other, less
@@ -608,37 +1130,37 @@ There are some other useful setup packages for evil
      )))
 #+end_src
 
-***** Surround Commands Like Vim-Surround
+***** Evil Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
-(use-package evil-surround
-  :ensure t
-  :defer 2
-  ;; :commands (evil-surround-region evil-surround-change)
-  :init 
-  (general-define-key
-  :states '(visual)
-  "s" 'evil-surround-region
-  "S" 'evil-substitute)
-  :config (global-evil-surround-mode 1)
-  (defun evil-surround-org-pairs ()
-    (push '(?= . ("=" . "=")) evil-surround-pairs-alist)
-    (push '(?~ . ("~" . "~")) evil-surround-pairs-alist))
- )
- ;; Enhancements to evil-surround
-(use-package embrace
- :ensure t)
-(use-package evil-embrace
- :ensure t
- :config
- (evil-embrace-enable-evil-surround-integration)
- (setq evil-embrace-show-help-p nil)
- (add-hook 'org-mode-hook 'embrace-org-mode-hook)
- (add-hook 'LaTeX-mode-hook
-    (lambda ()
-        (embrace-add-pair ?a "`" "'")
-        (embrace-add-pair ?e "\\emph{" "}"))))
+  (use-package evil-surround
+    :ensure t
+    ;; :defer 2
+    :commands (evil-surround-region evil-surround-change)
+    :init 
+    (general-define-key
+    :states '(visual)
+    "s" 'evil-surround-region
+    "S" 'evil-substitute)
+    :config (global-evil-surround-mode 1))
+
+  (use-package embrace
+   :ensure t)
+  (use-package evil-embrace
+   :ensure t
+   :config
+   (evil-embrace-enable-evil-surround-integration)
+   (setq evil-embrace-show-help-p nil)
+   (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+   (add-hook 'text-mode-hook
+      (lambda () 
+          (embrace-add-pair ?$ "$" "$")))
+   (add-hook 'LaTeX-mode-hook
+      (lambda ()
+          (embrace-add-pair ?a "`" "'")
+          (embrace-add-pair ?e "\\emph{" "}"))))
 
 #+end_src 
+
 
 ***** Commenting 
 #+begin_src emacs-lisp
@@ -2006,528 +2528,6 @@ Make sure that other themes I like are downloaded and available
    (eval-after-load "helm" '(diminish 'helm-mode ""))
    #+END_SRC
 
-* Useful Functions & Macros
-  Various useful functions and macros I've written or pilfered from others. 
-** Crux
-A collection of ridiculously useful extensions. Indeed.
-#+BEGIN_SRC emacs-lisp
-  (use-package crux :defer 2)
-#+END_SRC
-** Config functions
-#+BEGIN_SRC emacs-lisp
-  (defun goto-init.el ()
-      "Open init.el file"
-      (interactive)
-      (find-file "~/.emacs.d/init.el"))
-  (defun goto-custom.el ()
-      "Open custom.el file"
-      (interactive)
-      (find-file "~/.emacs.d/custom.el"))
-  (defun goto-config.org ()
-      "Open config.org file"
-      (interactive)
-      (find-file "~/.emacs.d/config.org"))
-  (defun load-config ()
-      "Load config "
-      (interactive)
-      (load-file "~/.emacs.d/init.el"))
-
-#+END_SRC
-** Duplicate file
-Duplicate a file in dired or deer
-#+BEGIN_SRC emacs-lisp
-(defun cpm/duplicate-file ()
-  (interactive)
-  (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 (copy).\\2"))
-#+END_SRC
-** Switch to previous buffer
-#+BEGIN_SRC emacs-lisp
-  (defun switch-to-previous-buffer ()
-    (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1)))
-#+END_SRC
-** Make parent directory
- Create a directory – or a hierarchy of them – while finding a file in a
- nonexistent directory. From [[http://mbork.pl/2016-07-25_Making_directories_on_the_fly][mbork]]. 
-#+BEGIN_SRC emacs-lisp
-  (defun make-parent-directory ()
-    "Make sure the directory of `buffer-file-name' exists."
-    (make-directory (file-name-directory buffer-file-name) t))
-
-  (add-hook 'find-file-not-found-functions #'make-parent-directory)
-#+END_SRC
-** Org wrap in block template
-A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
-#+begin_src emacs-lisp
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; function to wrap blocks of text in org templates                       ;;
-;; e.g. latex or src etc                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun org-block-wrap ()
-  "Make a template at point."
-  (interactive)
-  (if (org-at-table-p)
-      (call-interactively 'org-table-rotate-recalc-marks)
-    (let* ((choices '(
-                      ("a" . "ASCII")
-                      ("c" . "COMMENT")
-                      ("C" . "CENTER")
-                      ("e" . "EXAMPLE")
-                      ("E" . "SRC emacs-lisp")
-                      ("h" . "HTML")
-                      ("l" . "LaTeX")
-                      ("n" . "NOTES")
-                      ("q" . "QUOTE")
-                      ("s" . "SRC")
-                      ("v" . "VERSE")
-                      ))
-           (key
-            (key-description
-             (vector
-              (read-key
-               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
-                       (mapconcat (lambda (choice)
-                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
-                                            ": "
-                                            (cdr choice)))
-                                  choices
-                                  ", ")))))))
-      (let ((result (assoc key choices)))
-        (when result
-          (let ((choice (cdr result)))
-            (cond
-             ((region-active-p)
-              (let ((start (region-beginning))
-                    (end (region-end)))
-                (goto-char end)
-                (insert "#+END_" choice "\n")
-                (goto-char start)
-                (insert "#+BEGIN_" choice "\n")))
-             (t
-              (insert "#+BEGIN_" choice "\n")
-              (save-excursion (insert "#+END_" choice))))))))))
-
-#+end_src
-** Copy formatted org-mode text to rtf
-Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/Copy-formatted-org-mode-text-from-Emacs-to-other-applications/][John Kitchin]].
-#+BEGIN_SRC emacs-lisp
-  (defun formatted-copy ()
-  "Export region to HTML, and copy it to the clipboard."
-  (interactive)
-  (save-window-excursion
-    (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
-           (html (with-current-buffer buf (buffer-string))))
-      (with-current-buffer buf
-        (shell-command-on-region
-         (point-min)
-         (point-max)
-         "textutil -stdin -format html -convert rtf -stdout | pbcopy")) 
-      (kill-buffer buf))))
-
-(global-set-key (kbd "H-w") 'formatted-copy)
-
-#+END_SRC
-** Don't export Org-mode headlines
-#+BEGIN_SRC emacs-lisp
-  (defun org-remove-headlines (backend)
-  "Remove headlines with :no_title: tag."
-  (org-map-entries (lambda () (let ((beg (point)))
-                                (outline-next-visible-heading 1)
-                                (backward-char)
-                                (delete-region beg (point))))
-                   "no_export" tree)
-  (org-map-entries (lambda () (delete-region (point-at-bol) (point-at-eol)))
-                   "no_title"))
-
-  ;; the following isn't currently working with org-mode 9
-  ;; (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
-#+END_SRC
-** Move File
-#+BEGIN_SRC emacs-lisp
-(defun move-file ()
-  "Write this file to a new location, and delete the old one."
-  (interactive)
-  (let ((old-location (buffer-file-name)))
-    (call-interactively #'write-file)
-    (when old-location
-      (delete-file old-location))))
-#+END_SRC
-** Pandoc conversion from clipboard
-#+BEGIN_SRC emacs-lisp
-  (defun cpm/org-to-markdown ()
-    "convert clipboard contents from org to markdown and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown"))
-    (yank))
-
-  (defun cpm/markdown-to-org ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t org"))
-    (yank))
-
-  (defun cpm/tex-to-org ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t org"))
-    (yank))
-
-  (defun cpm/tex-to-markdown ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown"))
-    (yank))
-#+END_SRC
-** Resume last search
-#+BEGIN_SRC emacs-lisp
-  (defun last-search-buffer ()
-        "open last helm-ag or hgrep buffer."
-        (interactive)
-        (cond ((get-buffer "*helm ag results*")
-               (switch-to-buffer-other-window "*helm ag results*"))
-              ((get-buffer "*helm-ag*")
-               (helm-resume "*helm-ag*"))
-              ((get-buffer "*hgrep*")
-               (switch-to-buffer-other-window "*hgrep*"))
-              (t
-               (message "No previous search buffer found"))))
-#+END_SRC
-** Rotate windows
-#+BEGIN_SRC emacs-lisp
-;; from magnars modified by ffevotte for dedicated windows support
-(defun rotate-windows (count)
-  "Rotate your windows.
-Dedicated windows are left untouched. Giving a negative prefix
-argument takes the kindows rotate backwards."
-  (interactive "p")
-  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
-         (num-windows (length non-dedicated-windows))
-         (i 0)
-         (step (+ num-windows count)))
-    (cond ((not (> num-windows 1))
-           (message "You can't rotate a single window!"))
-          (t
-           (dotimes (counter (- num-windows 1))
-             (let* ((next-i (% (+ step i) num-windows))
-
-                    (w1 (elt non-dedicated-windows i))
-                    (w2 (elt non-dedicated-windows next-i))
-
-                    (b1 (window-buffer w1))
-                    (b2 (window-buffer w2))
-
-                    (s1 (window-start w1))
-                    (s2 (window-start w2)))
-               (set-window-buffer w1 b2)
-               (set-window-buffer w2 b1)
-               (set-window-start w1 s2)
-               (set-window-start w2 s1)
-               (setq i next-i)))))))
-
-(defun rotate-windows-backward (count)
-  "Rotate your windows backward."
-  (interactive "p")
-  (spacemacs/rotate-windows (* -1 count)))
-#+END_SRC
-** Open projects directory
-#+BEGIN_SRC emacs-lisp
-  (defun goto-projects ()
-      "Open projects dir"
-      (interactive)
-      (require 'ranger)
-      (find-file "~/projects"))
-
-#+END_SRC
-** Reveal in Finder
-#+BEGIN_SRC emacs-lisp
-(defun browse-file-directory ()
-  "Open the current file's directory however the OS would."
-  (interactive)
-  (if default-directory
-      (browse-url-of-file (expand-file-name default-directory))
-    (error "No `default-directory' to open")))
-#+END_SRC
- 
-** Search directories with ag
-#+BEGIN_SRC emacs-lisp
-  (defun cpm/helm-files-do-ag (&optional dir)
-        "Search in files with `ag' using a default input."
-        (interactive)
-        (helm-do-ag dir))
-#+END_SRC
-** Jump in buffer
-I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for navigating in tagged buffers. 
-#+BEGIN_SRC emacs-lisp
-(defun jump-in-buffer ()
-  (interactive)
-  (cond
-   ((eq major-mode 'org-mode)
-    (call-interactively 'helm-org-in-buffer-headings))
-   (t
-    (call-interactively 'helm-semantic-or-imenu))))
-#+END_SRC
-** Jump to sexp
-#+BEGIN_SRC emacs-lisp
-(defun forward-or-backward-sexp (&optional arg)
-  "Go to the matching parenthesis character if one is adjacent to point."
-  (interactive "^p")
-  (cond ((looking-at "\\s(") (forward-sexp arg))
-        ((looking-back "\\s)" 1) (backward-sexp arg))
-        ;; Now, try to succeed from inside of a bracket
-        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
-        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
-#+END_SRC
-** Goto journal 
-#+BEGIN_SRC emacs-lisp
-  (defun goto-journal ()
-    (interactive)
-    (find-file "/Users/Roambot/Dropbox/journal.org"))
-#+END_SRC
-** Kill all other buffers
-Kill all the buffers except =*scratch*= buffer
-#+BEGIN_SRC emacs-lisp :tangle no
-  (defun kill-other-buffers ()
-      "Kill all other buffers."
-      (interactive)
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-  ;; (defun nuke-all-buffers ()
-  ;; "Kill all buffers, leaving *scratch* only."
-  ;; (interactive)
-  ;; (mapcar (lambda (x) (kill-buffer x)) (buffer-list))
-  ;; (delete-other-windows))
-#+END_SRC
-** Eval emacs buffer until error
-#+BEGIN_SRC emacs-lisp
-  (defun eval-buffer-until-error ()
-  "Evaluate emacs buffer until error occured."
-  (interactive)
-  (goto-char (point-min))
-  (while t (eval (read (current-buffer)))))
-#+END_SRC
-** Timestamps
-The code below sets the correct value for system-time-locale, and binds
-keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
-#+BEGIN_SRC emacs-lisp
-  (defun format-date (format)
-  (let ((system-time-locale "en_US.UTF-8"))
-    (insert (format-time-string format))))
-
-(defun insert-date ()
-  (interactive)
-  (format-date "%A, %B %d %Y"))
-
-(defun insert-date-and-time ()
-  (interactive)
-  (format-date "%Y-%m-%d %H:%M:%S"))
-#+END_SRC
-** Reveal to PDF
-#+BEGIN_SRC emacs-lisp
-  (defun reveal-to-pdf ()
-  "print reveal.js slides to pdf"
-  (interactive)
-  (async-shell-command "phantomjs /Users/Roambot/bin/print-pdf.js 'file:///Users/Roambot/projects/phil101/content/slides/lecture_outline.html?print-pdf'")) 
-#+END_SRC
-** Other functions
-Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
-#+BEGIN_SRC emacs-lisp
-  ;; Regexp for useful and useless buffers for smarter buffer switching, from spacemacs
-
-  (defvar spacemacs-useless-buffers-regexp '("*\.\+")
-    "Regexp used to determine if a buffer is not useful.")
-  (defvar spacemacs-useful-buffers-regexp '("\\*\\(scratch\\|terminal\.\+\\|ansi-term\\|eshell\\)\\*")
-    "Regexp used to define buffers that are useful despite matching
-  `spacemacs-useless-buffers-regexp'.")
-
-  (defun spacemacs/useless-buffer-p (buffer)
-    "Determines if a buffer is useful."
-    (let ((buf-paren-major-mode (get (with-current-buffer buffer
-                                       major-mode)
-                                     'derived-mode-parent))
-          (buf-name (buffer-name buffer)))
-      ;; first find if useful buffer exists, if so returns nil and don't check for
-      ;; useless buffers. If no useful buffer is found, check for useless buffers.
-      (unless (cl-loop for regexp in spacemacs-useful-buffers-regexp do
-                       (when (or (eq buf-paren-major-mode 'comint-mode)
-                                 (string-match regexp buf-name))
-                         (return t)))
-        (cl-loop for regexp in spacemacs-useless-buffers-regexp do
-                 (when (string-match regexp buf-name)
-                   (return t))))))
-
-  (defun spacemacs/next-useful-buffer ()
-    "Switch to the next buffer and avoid special buffers."
-    (interactive)
-    (let ((start-buffer (current-buffer)))
-      (next-buffer)
-      (while (and (spacemacs/useless-buffer-p (current-buffer))
-                  (not (eq (current-buffer) start-buffer)))
-        (next-buffer))))
-
-  (defun spacemacs/previous-useful-buffer ()
-    "Switch to the previous buffer and avoid special buffers."
-    (interactive)
-    (let ((start-buffer (current-buffer)))
-      (previous-buffer)
-      (while (and (spacemacs/useless-buffer-p (current-buffer))
-                  (not (eq (current-buffer) start-buffer)))
-        (previous-buffer))))
-
-  ;; from magnars
-  (defun spacemacs/rename-current-buffer-file ()
-    "Renames current buffer and file it is visiting."
-    (interactive)
-    (let ((name (buffer-name))
-          (filename (buffer-file-name)))
-      (if (not (and filename (file-exists-p filename)))
-          (error "Buffer '%s' is not visiting a file!" name)
-        (let ((new-name (read-file-name "New name: " filename)))
-          (cond ((get-buffer new-name)
-                 (error "A buffer named '%s' already exists!" new-name))
-                (t
-                 (let ((dir (file-name-directory new-name)))
-                   (when (and (not (file-exists-p dir)) (yes-or-no-p (format "Create directory '%s'?" dir)))
-                     (make-directory dir t)))
-                 (rename-file filename new-name 1)
-                 (rename-buffer new-name)
-                 (set-visited-file-name new-name)
-                 (set-buffer-modified-p nil)
-                 (when (fboundp 'recentf-add-file)
-                     (recentf-add-file new-name)
-                     (recentf-remove-if-non-kept filename))
-                 (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
-
-  ;; from magnars
-  (defun spacemacs/delete-current-buffer-file ()
-    "Removes file connected to current buffer and kills buffer."
-    (interactive)
-    (let ((filename (buffer-file-name))
-          (buffer (current-buffer))
-          (name (buffer-name)))
-      (if (not (and filename (file-exists-p filename)))
-          (ido-kill-buffer)
-        (when (yes-or-no-p "Are you sure you want to delete this file? ")
-          (delete-file filename t)
-          (kill-buffer buffer)
-          (message "File '%s' successfully removed" filename)))))
-        
-  ;; found at http://emacswiki.org/emacs/KillingBuffers
-  (defun spacemacs/kill-other-buffers ()
-    "Kill all other buffers."
-    (interactive)
-    (when (yes-or-no-p (format "Killing all buffers except \"%s\"? " (buffer-name)))
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
-      (message "Buffers deleted!")))
-
-  ;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
-  (defun spacemacs/show-and-copy-buffer-filename ()
-    "Show the full path to the current file in the minibuffer."
-    (interactive)
-    (let ((file-name (buffer-file-name)))
-      (if file-name
-          (progn
-            (message file-name)
-            (kill-new file-name))
-        (error "Buffer not visiting a file"))))
-
-  (defun spacemacs/new-empty-buffer ()
-    "Create a new buffer called untitled(<n>)"
-    (interactive)
-    (let ((newbuf (generate-new-buffer-name "untitled")))
-      (switch-to-buffer newbuf)))
-
-  ;; from https://github.com/gempesaw/dotemacs/blob/emacs/dg-defun.el
-  (defun spacemacs/kill-matching-buffers-rudely (regexp &optional internal-too)
-    "Kill buffers whose name matches the specified REGEXP. This
-  function, unlike the built-in `kill-matching-buffers` does so
-  WITHOUT ASKING. The optional second argument indicates whether to
-  kill internal buffers too."
-    (interactive "sKill buffers matching this regular expression: \nP")
-    (dolist (buffer (buffer-list))
-      (let ((name (buffer-name buffer)))
-        (when (and name (not (string-equal name ""))
-                   (or internal-too (/= (aref name 0) ?\s))
-                   (string-match regexp name))
-          (kill-buffer buffer)))))
-
-  ;; http://stackoverflow.com/a/10216338/4869
-  (defun spacemacs/copy-whole-buffer-to-clipboard ()
-    "Copy entire buffer to clipboard"
-    (interactive)
-    (clipboard-kill-ring-save (point-min) (point-max)))
-
-  (defun spacemacs/copy-clipboard-to-whole-buffer ()
-    "Copy clipboard and replace buffer"
-    (interactive)
-    (delete-region (point-min) (point-max))
-    (clipboard-yank)
-    (deactivate-mark))
-
-  (defun spacemacs/copy-file ()
-    "Write the file under new name."
-    (interactive)
-    (call-interactively 'write-file))
-#+END_SRC
-
-#+RESULTS:
-: spacemacs/copy-file
-
-** Macros
-These are a few useful macros I got from hlissner's [[https://github.com/hlissner/.emacs.d]["doom" .emacs.d]]
-
-#+BEGIN_SRC emacs-lisp
-(defmacro after! (feature &rest forms)
-  "A smart wrapper around `with-eval-after-load', that supresses warnings
-during compilation."
-  (declare (indent defun) (debug t))
-  `(,(if (or (not (boundp 'byte-compile-current-file))
-             (not byte-compile-current-file)
-             (if (symbolp feature)
-                 (require feature nil :no-error)
-               (load feature :no-message :no-error)))
-         'progn
-       (message "after: cannot find %s" feature)
-       'with-no-warnings)
-    (with-eval-after-load ',feature ,@forms)))
-
-(defmacro add-hook! (hook &rest func-or-forms)
-  "A convenience macro for `add-hook'.
-HOOK can be one hook or a list of hooks. If the hook(s) are not quoted, -hook is
-appended to them automatically. If they are quoted, they are used verbatim.
-FUNC-OR-FORMS can be a quoted symbol, a list of quoted symbols, or forms. Forms will be
-wrapped in a lambda. A list of symbols will expand into a series of add-hook calls.
-Examples:
-    (add-hook! 'some-mode-hook 'enable-something)
-    (add-hook! some-mode '(enable-something and-another))
-    (add-hook! '(one-mode-hook second-mode-hook) 'enable-something)
-    (add-hook! (one-mode second-mode) 'enable-something)
-    (add-hook! (one-mode second-mode) (setq v 5) (setq a 2))"
-  (declare (indent defun) (debug t))
-  (unless func-or-forms
-    (error "add-hook!: FUNC-OR-FORMS is empty"))
-  (let* ((val (car func-or-forms))
-         (quoted (eq (car-safe hook) 'quote))
-         (hook (if quoted (cadr hook) hook))
-         (funcs (if (eq (car-safe val) 'quote)
-                    (if (cdr-safe (cadr val))
-                        (cadr val)
-                      (list (cadr val)))
-                  (list func-or-forms)))
-         (forms '()))
-    (mapc
-     (lambda (f)
-       (let ((func (cond ((symbolp f) `(quote ,f))
-                         (t `(lambda (&rest _) ,@func-or-forms)))))
-         (mapc
-          (lambda (h)
-            (push `(add-hook ',(if quoted h (intern (format "%s-hook" h))) ,func) forms))
-          (-list hook)))) funcs)
-    `(progn ,@forms)))
-    
-;;;###autoload
-(defmacro def-popup! (&rest params)
-  `(push ',params shackle-rules))
-#+END_SRC
-
 * Packages and Mode-Specific Settings
 ** Media
 *** Cmus
@@ -2951,7 +2951,7 @@ A file tree and outliner
  #+BEGIN_SRC emacs-lisp
    ;; Remove completion buffer when done
    (add-hook 'minibuffer-exit-hook 
-         '(lambda ()
+   '(lambda ()
             (let ((buffer "*Completions*"))
               (and (get-buffer buffer)
                (kill-buffer buffer)))))
@@ -3144,6 +3144,14 @@ A file tree and outliner
 #+END_SRC
 
 ** Programming
+*** Alignment
+[[https://github.com/edkolev/evil-lion][This package]] provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
+#+BEGIN_SRC emacs-lisp
+(use-package evil-lion
+  :defer 4
+  :config
+  (evil-lion-mode))
+#+END_SRC
 *** Rainbow delimiters
    #+BEGIN_SRC emacs-lisp
    (use-package rainbow-delimiters 
@@ -3867,15 +3875,15 @@ Make source blocks look better.
             found)
         (save-excursion
           (goto-char (point-min))
-          ;; (while (re-search-forward re nil t)
-          ;;   (goto-char (match-end 0))
-          ;;   (let ((args (org-trim
-          ;;                (buffer-substring-no-properties (point)
-          ;;                                                (line-end-position)))))
-          ;;     (when (org-string-nw-p args)
-          ;;       (let ((new-cell (cons args rasmus/ob-header-symbol)))
-          ;;         (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
-          ;;         (cl-pushnew new-cell found :test #'equal)))))
+          (while (re-search-forward re nil t)
+            (goto-char (match-end 0))
+            (let ((args (org-trim
+                         (buffer-substring-no-properties (point)
+                                                         (line-end-position)))))
+              (when (org-string-nw-p args)
+                (let ((new-cell (cons args rasmus/ob-header-symbol)))
+                  (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
+                  (cl-pushnew new-cell found :test #'equal)))))
           (setq prettify-symbols-alist
                 (cl-set-difference prettify-symbols-alist
                                    (cl-set-difference
@@ -4093,6 +4101,25 @@ Some useful org-specific functions
 
 (add-hook 'org-load-hook 'my-org-mode-hook)
 (add-hook 'org-mode-hook 'my-org-mode-hook)
+#+END_SRC
+***** Narrow & Advance/Retreat
+Functions to advance forwards or backwards through narrowed tree
+#+BEGIN_SRC emacs-lisp
+(defun org-advance ()
+  (interactive)
+  (when (buffer-narrowed-p)
+    (beginning-of-buffer)
+    (widen)
+    (org-forward-heading-same-level 1))
+  (org-narrow-to-subtree))
+
+(defun org-retreat ()
+  (interactive)
+  (when (buffer-narrowed-p)
+    (beginning-of-buffer)
+    (widen)
+    (org-backward-heading-same-level 1))
+  (org-narrow-to-subtree))
 #+END_SRC
 *** Helm-Bibtex
 Great for managing citations and notes
@@ -4531,15 +4558,11 @@ don't cause as much overhead."
 ))
 #+end_src
 *** PDF-Tools
-:PROPERTIES:
-:header-args: :tangle no
-:END:
 Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp 
   (use-package pdf-tools
     :defer t
-    :ensure nil
-    ;; :mode (("\\.pdf$" . pdf-view-mode))
+    :mode (("\\.pdf$" . pdf-view-mode))
     :config
     (progn
       (pdf-tools-install)
@@ -4549,10 +4572,10 @@ Better than doc-view, but doesn't render well on retina screens :(
           ;; Navigation
           "j"  'pdf-view-next-line-or-next-page
           "k"  'pdf-view-previous-line-or-previous-page
-          "l"  'image-forward-hscroll
-          "h"  'image-backward-hscroll
-          "J"  'pdf-view-next-page
-          "K"  'pdf-view-previous-page
+          "l"  'pdf-view-next-page 
+          "h"  'pdf-view-previous-page
+          "J"  'image-forward-hscroll
+          "K"  'image-backward-hscroll
           "gg"  'pdf-view-first-page
           "G"  'pdf-view-last-page
           "gt"  'pdf-view-goto-page
@@ -4584,12 +4607,10 @@ Better than doc-view, but doesn't render well on retina screens :(
 **** Extract annotations
 #+BEGIN_SRC emacs-lisp
   (use-package org-pdfview
-    :defer t
     :commands (org-pdfview-open)
     :ensure t)
 
   (use-package pdf-tools-org 
-    :defer t
     :ensure nil
     :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
     :init
@@ -4891,8 +4912,8 @@ Start server
 * Goals 
 Below are various things I want to perfect or try out in the config.
 
-- [] Fix visual surround delete/change of various characters (org markup, dollar signs)
 - [] Fix load time of =config.org= file
+- [X] Fix visual surround delete/change of various characters (org markup, dollar signs)
 - [X] Fix bookmark/desktop save
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
 - [X] Fix load time of Projectile (make cache persist across sessions)
