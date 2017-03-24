@@ -1019,6 +1019,18 @@ Examples:
 #+END_SRC
 
 ** Packages
+*** General
+A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
+discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
+#+BEGIN_SRC emacs-lisp
+(use-package general
+  :config
+  (general-create-definer cpm-leader1 
+    :states '(normal insert visual motion emacs) 
+    :keymaps 'global 
+    :prefix "SPC" 
+    :non-normal-prefix "C-SPC"))
+#+END_SRC
 *** Evil Mode
 I'm coming from vim, and want modal keybidings in emacs. There are other, less
 radical ways of getting modal editing in emacs. For example, [[https://github.com/mrkkrp/modalka][modalka]] is a nice
@@ -1195,18 +1207,6 @@ There are some other useful setup packages for evil
   ;;     (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
   ;;   )
 #+end_src
-*** General
-A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
-discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
-#+BEGIN_SRC emacs-lisp
-(use-package general
-  :config
-  (general-create-definer cpm-leader1 
-    :states '(normal insert visual motion emacs) 
-    :keymaps 'global 
-    :prefix "SPC" 
-    :non-normal-prefix "C-SPC"))
-#+END_SRC
 *** Namespaced Keybindings
 I use a lot of keybindings, with <SPC> as my "leader" key.
 **** Applications
@@ -1310,81 +1310,81 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+END_SRC
 **** Markdown
 #+BEGIN_SRC emacs-lisp
-(defun my-markdown-config ()
-  "Modify keymaps in markdown mode"
-  (cpm-leader1
-    "m"   '(:ignore t :which-key "Markdown")
-    "mc"  '(:ignore t :which-key "command")
-    "mh"  '(:ignore t :which-key "insert")
-    "mi"  '(:ignore t :which-key "lists")
-    "mx"  '(:ignore t :which-key "text")
-    ;; Movement
-    "m{"   'markdown-backward-paragraph
-    "m}"   'markdown-forward-paragraph
-    ;; Completion, and Cycling
-    "m]"   'markdown-complete
-    ;; Indentation
-    "m>"   'markdown-indent-region
-    "m<"   'markdown-exdent-region
-    ;; Buffer-wide commands
-    "mc]"  'markdown-complete-buffer
-    "mcc"  'markdown-check-refs
-    "mce"  'markdown-export
-    "mcm"  'markdown-other-window
-    "mcn"  'markdown-cleanup-list-numbers
-    "mco"  'markdown-open
-    "mcp"  'markdown-preview
-    "mcv"  'markdown-export-and-preview
-    "mcw"  'markdown-kill-ring-save
-    ;; headings
-    "mhi"  'markdown-insert-header-dwim
-    "mhI"  'markdown-insert-header-setext-dwim
-    "mh1"  'markdown-insert-header-atx-1
-    "mh2"  'markdown-insert-header-atx-2
-    "mh3"  'markdown-insert-header-atx-3
-    "mh4"  'markdown-insert-header-atx-4
-    "mh5"  'markdown-insert-header-atx-5
-    "mh6"  'markdown-insert-header-atx-6
-    "mh!"  'markdown-insert-header-setext-1
-    "mh@"  'markdown-insert-header-setext-2
-    ;; Insertion of common elements
-    "m-"   'markdown-insert-hr
-    "mif"  'markdown-insert-footnote
-    "mii"  'markdown-insert-image
-    "mik"  'spacemacs/insert-keybinding-markdown
-    "miI"  'markdown-insert-reference-image
-    "mil"  'markdown-insert-link
-    "miL"  'markdown-insert-reference-link-dwim
-    "miw"  'markdown-insert-wiki-link
-    "miu"  'markdown-insert-uri
-    ;; Element removal
-    "mk"   'markdown-kill-thing-at-point
-    ;; List editing
-    "mli"  'markdown-insert-list-item
-    ;; region manipulation
-    "mxb"  'markdown-insert-bold
-    "mxi"  'markdown-insert-italic
-    "mxc"  'markdown-insert-code
-    "mxC"  'markdown-insert-gfm-code-block
-    "mxq"  'markdown-insert-blockquote
-    "mxQ"  'markdown-blockquote-region
-    "mxp"  'markdown-insert-pre
-    "mxP"  'markdown-pre-region
-    ;; Following and Jumping
-    "mN"   'markdown-next-link
-    "mf"   'markdown-follow-thing-at-point
-    "mP"   'markdown-previous-link
-    "<RET>" 'markdown-jump
-   ))
+  (defun my-markdown-config ()
+    "Modify keymaps in markdown mode"
+    (cpm-leader1
+      "m"   '(:ignore t :which-key "Markdown")
+      "mc"  '(:ignore t :which-key "command")
+      "mh"  '(:ignore t :which-key "insert")
+      "mi"  '(:ignore t :which-key "lists")
+      "mx"  '(:ignore t :which-key "text")
+      ;; Movement
+      "m{"   'markdown-backward-paragraph
+      "m}"   'markdown-forward-paragraph
+      ;; Completion, and Cycling
+      "m]"   'markdown-complete
+      ;; Indentation
+      "m>"   'markdown-indent-region
+      "m<"   'markdown-exdent-region
+      ;; Buffer-wide commands
+      "mc]"  'markdown-complete-buffer
+      "mcc"  'markdown-check-refs
+      "mce"  'markdown-export
+      "mcm"  'markdown-other-window
+      "mcn"  'markdown-cleanup-list-numbers
+      "mco"  'markdown-open
+      "mcp"  'markdown-preview
+      "mcv"  'markdown-export-and-preview
+      "mcw"  'markdown-kill-ring-save
+      ;; headings
+      "mhi"  'markdown-insert-header-dwim
+      "mhI"  'markdown-insert-header-setext-dwim
+      "mh1"  'markdown-insert-header-atx-1
+      "mh2"  'markdown-insert-header-atx-2
+      "mh3"  'markdown-insert-header-atx-3
+      "mh4"  'markdown-insert-header-atx-4
+      "mh5"  'markdown-insert-header-atx-5
+      "mh6"  'markdown-insert-header-atx-6
+      "mh!"  'markdown-insert-header-setext-1
+      "mh@"  'markdown-insert-header-setext-2
+      ;; Insertion of common elements
+      "m-"   'markdown-insert-hr
+      "mif"  'markdown-insert-footnote
+      "mii"  'markdown-insert-image
+      "mik"  'spacemacs/insert-keybinding-markdown
+      "miI"  'markdown-insert-reference-image
+      "mil"  'markdown-insert-link
+      "miL"  'markdown-insert-reference-link-dwim
+      "miw"  'markdown-insert-wiki-link
+      "miu"  'markdown-insert-uri
+      ;; Element removal
+      "mk"   'markdown-kill-thing-at-point
+      ;; List editing
+      "mli"  'markdown-insert-list-item
+      ;; region manipulation
+      "mxb"  'markdown-insert-bold
+      "mxi"  'markdown-insert-italic
+      "mxc"  'markdown-insert-code
+      "mxC"  'markdown-insert-gfm-code-block
+      "mxq"  'markdown-insert-blockquote
+      "mxQ"  'markdown-blockquote-region
+      "mxp"  'markdown-insert-pre
+      "mxP"  'markdown-pre-region
+      ;; Following and Jumping
+      "mN"   'markdown-next-link
+      "mf"   'markdown-follow-thing-at-point
+      "mP"   'markdown-previous-link
+      "<RET>" 'markdown-jump
+     ))
    
-(which-key-add-major-mode-key-based-replacements 'markdown-mode
-    "C-c C-a" "insert"
-    "C-c C-c" "export"
-    "C-c TAB" "images"
-    "C-c C-s" "text"
-    "C-c C-t" "header"
-    "C-c C-x" "move"
-    )
+  ;; (which-key-add-major-mode-key-based-replacements 'markdown-mode
+  ;;     "C-c C-a" "insert"
+  ;;     "C-c C-c" "export"
+  ;;     "C-c TAB" "images"
+  ;;     "C-c C-s" "text"
+  ;;     "C-c C-t" "header"
+  ;;     "C-c C-x" "move"
+  ;;     )
   #+END_SRC
 
 **** Miscellaneous
