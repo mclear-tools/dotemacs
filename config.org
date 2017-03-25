@@ -3582,7 +3582,7 @@ mode of writing.
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
-    :after org
+    :defer 1
     :config
     ;; default options for all output formats
     ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
