@@ -1207,6 +1207,854 @@ There are some other useful setup packages for evil
   ;;     (setq undo-tree-history-directory-alist `((".*" . ,undo-dir)))))
   ;;   )
 #+end_src
+*** Persistent Scratch
+   Make the content of the scratch buffer persist between settings
+#+BEGIN_SRC emacs-lisp
+  (use-package persistent-scratch
+    :config
+   (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch"))
+    (persistent-scratch-setup-default)
+    (persistent-scratch-autosave-mode)
+  )
+#+END_SRC
+ 
+*** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    ;; :commands (projectile-ack
+    ;;            projectile-ag
+    ;;            projectile-compile-project
+    ;;            projectile-dired
+    ;;            projectile-find-dir
+    ;;            projectile-find-file
+    ;;            projectile-find-tag
+    ;;            projectile-find-test-file
+    ;;            projectile-grep
+    ;;            projectile-invalidate-cache
+    ;;            projectile-kill-buffers
+    ;;            projectile-multi-occur
+    ;;            projectile-project-p
+    ;;            projectile-project-root
+    ;;            projectile-recentf
+    ;;            projectile-regenerate-tags
+    ;;            projectile-replace
+    ;;            projectile-run-async-shell-command-in-root
+    ;;            projectile-run-shell-command-in-root
+    ;;            projectile-switch-project
+    ;;            projectile-switch-to-buffer
+    ;;            projectile-vc)
+    :init
+    ;; save projectile-known-projects-file in cache folder
+    (setq projectile-known-projects-file
+       (concat user-cache-directory "projectile-bookmarks.eld"))
+    (setq projectile-cache-file
+       (concat user-cache-directory "projectile.cache"))
+    (setq projectile-enable-caching t)
+    :config
+    (projectile-global-mode t))
+
+#+END_SRC
+*** Restart emacs
+#+BEGIN_SRC emacs-lisp
+(use-package restart-emacs
+  :commands restart-emacs)
+#+END_SRC
+*** Ranger & Deer
+Better dired navigation using ranger-like settings
+#+BEGIN_SRC emacs-lisp
+  (use-package ranger
+    :commands (ranger deer deer-jump-other-window)
+    :init
+    (setq ranger-override-dired t
+          ranger-cleanup-eagerly t)
+    ;; set up image-dired to allow picture resize
+    (setq image-dired-dir (concat user-cache-directory "image-dir"))
+    (unless (file-directory-p image-dired-dir)
+      (make-directory image-dired-dir))
+    :config
+    (setq  ranger-dont-show-binary t
+           ranger-excluded-extensions '("mkv" "iso" "mp4")
+           ranger-max-preview-size 25
+           ranger-preview-file t
+           ranger-show-dotfiles t
+           ranger-width-parents 0.25
+           ranger-width-preview 0.55 
+           ))
+
+  ;; (defun deer-jump-other-window (&optional path)
+  ;;   "Launch dired in a minimal ranger window in other window."
+  ;;   (interactive)
+  ;;   (switch-to-buffer-other-window (current-buffer))
+  ;;   (deer path))
+
+#+END_SRC
+*** Recent files
+#+BEGIN_SRC emacs-lisp
+(use-package recentf
+  :defer 2
+  :init
+  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
+#+END_SRC
+
+*** Helm
+[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
+**** Helm Settings
+#+BEGIN_SRC emacs-lisp 
+  (use-package helm
+    :diminish (helm-mode . "")
+    :defer 1
+    :init
+    (setq helm-locate-fuzzy-match nil
+          helm-locate-command "mdfind -interpret -name %s %s")
+    :config
+    (progn
+      ;; Use helm to provide :ls, unless ibuffer is used
+      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
+      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
+            helm-apropos-fuzzy-match t
+            helm-buffers-fuzzy-matching t
+            helm-imenu-fuzzy-match t
+            helm-recentf-fuzzy-match t
+            helm-prevent-escaping-from-minibuffer t
+            helm-bookmark-show-location t
+            helm-ff-file-name-history-use-recentf t
+            helm-find-files-sort-directories t
+            helm-display-header-line nil
+            helm-move-to-line-cycle-in-source nil
+            helm-always-two-windows t                       
+            helm-split-window-in-side-p nil
+            ;; helm-split-window-default-side 'other
+            helm-echo-input-in-header-line t)
+      ;;keybindings
+      (general-define-key "M-x" 'helm-M-x)
+      ;;; helm vim-bindings in buffer ;;
+      (define-key helm-map (kbd "C-a") (kbd "RET"))
+      (general-define-key :keymaps 'helm-map 
+        "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
+        "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
+        "C-z"   'helm-select-action ; list actions using C-z
+        "C-j"   'helm-next-line
+        "C-k"   'helm-previous-line
+        "C-h"   'helm-next-source
+        "C-l"   'helm-previous-source
+        "C-S-h" 'describe-key)
+      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
+      (helm-autoresize-mode 1)
+      (setq helm-autoresize-max-height 40)
+      (setq helm-autoresize-min-height 35)
+      ;; helm selection faces
+      ;; (set-face-attribute 'helm-selection nil
+      ;;     :foreground "#f7f438"
+      ;;     :background "#64b5ea"
+      ;;     :underline nil
+      ;;     :weight 'bold))
+      (helm-mode 1)
+      ))
+#+END_SRC
+**** Hide Mode Lines
+Hide modelines of other windows while helm is open, again from
+https://github.com/hatschipuh/better-helm.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar my-helm-bottom-buffers nil
+	"List of bottom buffers before helm session.
+	Its element is a pair of `buffer-name' and `mode-line-format'.")
+
+  (defun my-helm-bottom-buffers-init ()
+	(setq-local mode-line-format (default-value 'mode-line-format))
+	(setq my-helm-bottom-buffers
+	  (cl-loop for w in (window-list)
+		   when (window-at-side-p w 'bottom)
+		   collect (with-current-buffer (window-buffer w)
+				 (cons (buffer-name) mode-line-format)))))
+
+  (defun my-helm-bottom-buffers-hide-mode-line ()
+	(setq-default cursor-in-non-selected-windows nil)
+	(mapc (lambda (elt)
+		(with-current-buffer (car elt)
+		  (setq-local mode-line-format nil)))
+	  my-helm-bottom-buffers))
+
+  (defun my-helm-bottom-buffers-show-mode-line ()
+	(setq-default cursor-in-non-selected-windows t)
+	(when my-helm-bottom-buffers
+	  (mapc (lambda (elt)
+		  (with-current-buffer (car elt)
+		(setq-local mode-line-format (cdr elt))))
+		my-helm-bottom-buffers)
+	  (setq my-helm-bottom-buffers nil)))
+
+  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
+	(my-helm-bottom-buffers-show-mode-line)
+	(apply orig-func args))
+
+  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
+  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
+  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
+  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
+  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
+#+END_SRC
+
+**** Hide Minibuffer
+Hide minibuffer while helm is active
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-helm-hide-minibuffer-maybe ()
+	(when (with-helm-buffer helm-echo-input-in-header-line)
+	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	(overlay-put ov 'window (selected-window))
+	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+				`(:background ,bg-color :foreground ,bg-color)))
+	(setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
+#+END_SRC
+
+**** Helm packages
+***** Helm ag
+#+begin_src emacs-lisp
+  (use-package helm-ag  
+    :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
+    :config
+    (setq helm-ag-base-command "rg --no-heading")
+    (setq helm-ag-fuzzy-match t))
+#+end_src
+***** Helm descbinds
+#+begin_src emacs-lisp 
+(use-package helm-descbinds 
+  :defer t
+  :config
+  (setq helm-descbinds-window-style 'same-window)
+  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
+#+end_src
+***** Helm git list
+#+begin_src emacs-lisp
+(use-package helm-ls-git :defer t)
+#+end_src
+***** Helm hunks
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-hunks
+    :commands helm-hunks)
+
+#+END_SRC
+
+***** Helm swoop
+[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
+#+begin_src emacs-lisp
+  (use-package helm-swoop
+    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
+    :config
+    (setq helm-swoop-use-fuzzy-match t)
+    (setq helm-swoop-split-with-multiple-windows t))
+#+end_src
+***** Helm flyspell
+
+Use helm with flyspell
+#+begin_src emacs-lisp
+(use-package helm-flyspell
+  :if (not noninteractive)
+  :ensure t
+  :commands helm-flyspell-correct
+  :config
+  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
+)
+#+end_src
+
+***** Helm Flx
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flx
+  :after helm
+  :config
+  (setq helm-flx-for-helm-find-files t ;; t by default
+        helm-flx-for-helm-locate t) ;; nil by default
+ )
+#+END_SRC
+
+***** Helm recent directories
+Recent directories
+#+begin_src emacs-lisp
+  (use-package helm-dired-recent-dirs
+    :defer t)
+#+end_src
+***** Helm files
+#+begin_src emacs-lisp 
+  (use-package helm-files
+    :ensure nil
+    :config
+    (setq helm-ff-skip-boring-files t)
+    (setq helm-idle-delay 0.05)
+    (setq helm-input-idle-delay 0.05)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (setq helm-boring-file-regexp-list
+    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
+      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+#+end_src
+
+***** Helm-projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :commands (helm-projectile-switch-to-buffer
+               helm-projectile-find-dir
+               helm-projectile-dired-find-dir
+               helm-projectile-recentf
+               helm-projectile-find-file
+               helm-projectile-grep
+               helm-projectile
+               helm-projectile-switch-project)
+    :init
+    (setq projectile-switch-project-action 'helm-projectile))
+#+END_SRC
+***** Helm interface for themes (helm-themes)
+#+begin_src emacs-lisp
+  (use-package helm-themes
+    :commands helm-themes)
+  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (powerline-reset)) 
+  ;; (ad-unadvise 'helm-themes--load-theme)
+#+end_src
+*** Windows
+**** Window Numbering
+Numbered window shortcuts for Emacs
+#+BEGIN_SRC emacs-lisp
+   (use-package window-numbering
+     :ensure t
+     :config
+     (defun window-numbering-install-mode-line (&optional position)
+     "Do nothing, the display is handled by the powerline.")
+     (setq window-numbering-auto-assign-0-to-minibuffer nil)
+     (cpm-leader1
+       "0" 'select-window-0
+       "1" 'select-window-1
+       "2" 'select-window-2
+       "3" 'select-window-3
+       "4" 'select-window-4
+       "5" 'select-window-5)
+       ;; "6" 'select-window-6
+       ;; "7" 'select-window-7
+       ;; "8" 'select-window-8
+       ;; "9" 'select-window-9)
+     (window-numbering-mode 1)
+
+  ;; make sure neotree is always 0
+   (defun spacemacs//window-numbering-assign ()
+     "Custom number assignment for neotree."
+     (when (and (boundp 'neo-buffer-name)
+                (string= (buffer-name) neo-buffer-name)
+                ;; in case there are two neotree windows. Example: when
+                ;; invoking a transient state from neotree window, the new
+                ;; window will show neotree briefly before displaying the TS,
+                ;; causing an error message. the error is eliminated by
+                ;; assigning 0 only to the top-left window
+                (eq (selected-window) (window-at 0 0)))
+       0))
+
+   ;; using lambda to work-around a bug in window-numbering, see
+   ;; https://github.com/nschum/window-numbering.el/issues/10
+   (setq window-numbering-assign-func
+         (lambda () (spacemacs//window-numbering-assign))))
+
+    ;; (defun spacemacs//window-numbering-assign (windows)
+    ;;   "Custom number assignment for special buffers."
+    ;;   (mapc (lambda (w)
+    ;;           (when (and (boundp 'neo-global--window)
+    ;;                      (eq w neo-global--window))
+    ;;             (window-numbering-assign w 0)))
+    ;;         windows))
+    ;; (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)
+    ;; (add-hook 'neo-after-create-hook '(lambda (w) (window-numbering-update)))
+#+END_SRC
+**** Windmove
+#+BEGIN_SRC emacs-lisp
+(use-package windmove
+  :commands (windmove-up windmove-down windmove-left windmove-right)
+  :config
+  (defun split-window-right-and-focus ()
+  "Split the window horizontally and focus the new window."
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+  (defun split-window-below-and-focus ()
+  "Split the window vertically and focus the new window."
+  (interactive)
+  (split-window-below)
+  (windmove-down))
+  ;; add edit mode keybindings
+  (global-set-key (kbd "<H-up>")     'windmove-up)
+  (global-set-key (kbd "<H-down>")   'windmove-down)
+  (global-set-key (kbd "<H-left>")   'windmove-left)
+  (global-set-key (kbd "<H-right>")  'windmove-right)
+  )
+#+END_SRC
+
+*** Autorevert
+Auto-revert buffers of changed files
+#+BEGIN_SRC emacs-lisp
+  (use-package autorevert                 
+    :defer 2
+    :ensure nil
+    :init
+    (global-auto-revert-mode)
+    :config
+    (progn 
+      (setq auto-revert-verbose nil ; Shut up, please!
+            revert-without-query '(".*") ;; disable revert query
+            ;; Revert Dired buffers, too
+            global-auto-revert-non-file-buffers t)))
+#+END_SRC
+ 
+* Appearance & UI
+  Various settings to make Emacs (mostly the GUI version) look better or
+  make interaction smoother. 
+** Appearance
+*** Frame startup size and position
+I like the frame centered and approximately 2/3 of a 13inch laptop screen.
+#+BEGIN_SRC emacs-lisp
+  ;; Set Frame width/height
+  (setq default-frame-alist
+        '((top . 25) (left . 275) (width . 105) (height . 60)))
+#+END_SRC
+
+*** Name frame
+Show the filepath in the frame title.
+#+BEGIN_SRC emacs-lisp
+(setq frame-title-format
+      '(" "
+      (buffer-file-name "%f"
+      (dired-directory dired-directory "%b"))))
+#+END_SRC
+*** Get rid of UI cruft
+Turn off all of the GUI cruft.
+#+BEGIN_SRC emacs-lisp
+  ;; Turn off mouse interface early in startup to avoid momentary display
+  (when (display-graphic-p)
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tooltip-mode -1))
+#+END_SRC
+
+*** No menu bar in terminal
+Ditto for the terminal.
+#+BEGIN_SRC emacs-lisp
+  (when (not (display-graphic-p))
+    (menu-bar-mode -1))
+#+END_SRC
+*** Font
+  
+[[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font.
+
+To install it on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew Cask]].
+
+#+begin_src sh :tangle no
+# You may need to run these two lines if you haven't set up Homebrew
+# Cask and its fonts formula.
+brew install caskroom/cask/brew-cask
+brew tap caskroom/fonts
+brew cask install font-inconsolata
+#+end_src
+
+And here's how we tell Emacs to use the font we want to use.
+
+#+begin_src emacs-lisp
+  ;; deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
+  (use-package dynamic-fonts
+    :config (dynamic-fonts-setup) 
+     :init
+     (progn (setq dynamic-fonts-preferred-proportional-fonts
+                  '("Avenir Next" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
+            (setq dynamic-fonts-preferred-monospace-fonts
+               '("Inconsolata LGC" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+                 "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
+  )
+    (global-set-key (kbd "C-+") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
+    ;; C-x C-0 restores the default font size
+#+end_src
+*** Modeline
+**** Spaceline
+This is a really nice powerline-ish modeline.
+#+BEGIN_SRC emacs-lisp 
+  (use-package spaceline
+    :ensure t
+    :init 
+    (progn 
+      ;; size of modeline
+      (setq powerline-height 18)
+      (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+      ;; (setq-default powerline-default-separator nil) 
+      ;; (setq-default powerline-default-separator 'utf-8) 
+      ;; (setq powerline-utf-8-separator-left #xe0b0)
+      ;; (setq powerline-utf-8-separator-right #xe0b2)
+      ;; (set-face-attribute 'mode-line nil :font "Source Code Pro-14")
+
+      ;; small triangles
+      ;; (setq powerline-utf-8-separator-left #x25ba)
+      ;; (setq powerline-utf-8-separator-right #x25c4)
+      ;; (setq powerline-text-scale-factor .3)
+      ;; half circles
+      ;; (setq powerline-utf-8-separator-left 9687 
+      ;;       powerline-utf-8-separator-right 9686)
+
+      ;; slant (requires srbg support)
+      (setq-default powerline-default-separator 'slant) 
+      (setq spaceline-separator-dir-left '(right . right))
+      (setq spaceline-separator-dir-right '(right . right))
+
+      ;; fancy git icon for the modeline
+      (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
+              (setq vc-mode gitlogo)))))
+    :config
+    (require 'spaceline-config)
+    (spaceline-toggle-buffer-size-off)
+    (spaceline-spacemacs-theme)
+    (setq spaceline-buffer-encoding-abbrev-p nil
+          spaceline-window-numbers-unicode t
+          spaceline-line-column-p nil
+          spaceline-buffer-id-p nil
+          spaceline-minor-modes-separator nil))
+          (powerline-reset)
+  ;; nil - don't use srgb & get proper powerline faces
+  (setq ns-use-srgb-colorspace t)
+
+#+END_SRC
+
+**** Fancy Battery
+#+BEGIN_SRC emacs-lisp
+  (use-package fancy-battery
+    :init 
+    (fancy-battery-mode)
+    :config
+    (setq-default battery-update-interval 10))
+    ;; :config
+    ;; (set-face-attribute 'fancy-battery-charging nil 
+    ;; :foreground "dark blue" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-discharging nil 
+    ;; :foreground "dark magenta" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-critical nil 
+    ;; :foreground "dark red" :weight 'bold))
+#+END_SRC
+ 
+**** Display Time
+#+begin_src emacs-lisp :tangle yes
+  (setq display-time-format "%a %b %d | %H:%M |")
+  (display-time-mode)
+#+end_src
+
+**** Hide mode line
+Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
+
+#+BEGIN_SRC emacs-lisp
+(defvar-local hidden-mode-line-mode nil)
+(defvar-local hide-mode-line nil)
+(define-minor-mode hidden-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global t
+  :variable hidden-mode-line-mode
+  :group 'editing-basics
+  (if hidden-mode-line-mode
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
+    (setq mode-line-format hide-mode-line
+          hide-mode-line nil))
+  (force-mode-line-update)
+  ;; Apparently force-mode-line-update is not always enough to
+  ;; redisplay the mode-line
+  (redraw-display)
+  (when (and (called-interactively-p 'interactive)
+             hidden-mode-line-mode)
+    (run-with-idle-timer
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+
+#+END_SRC
+*** Theme
+**** Solarized
+The best low-contrast theme out there.
+#+BEGIN_SRC emacs-lisp
+  (use-package solarized-theme
+    :ensure t
+    :if (display-graphic-p)
+    :init
+      (progn
+          ;; don't make the fringe stand out from the background
+          (setq solarized-distinct-fringe-background nil)
+
+          ;; change the font for some headings and titles
+          (setq solarized-use-variable-pitch t)
+
+          ;; make the modeline high contrast
+          (setq solarized-high-contrast-mode-line t)
+
+          ;; Use bolding
+          (setq solarized-use-less-bold nil)
+
+          ;; Use more italics
+          (setq solarized-use-more-italic t)
+
+          ;; Use colors for indicators such as git:gutter, flycheck and similar
+          (setq solarized-emphasize-indicators t)
+
+          ;; Don't change size of org-mode headlines (but keep other size-changes)
+          (setq solarized-scale-org-headlines t)
+
+          ;; don't italicize line numbers
+          ;; (add-hook 'after-make-frame-functions
+          ;; (lambda (frame)
+          ;; (select-frame frame)
+          ;; (if (display-graphic-p)
+          ;; (set-face-attribute 'linum frame
+          ;; :background (face-attribute 'default :background)
+          ;; :foreground (face-attribute 'linum :foreground) :slant 'normal))))
+
+          ;; Theme toggle
+          (setq active-theme 'solarized-dark)
+          (defun toggle-dark-light-theme ()
+          (interactive)
+          (if (eq active-theme 'solarized-light)
+              (setq active-theme 'solarized-dark)
+            (setq active-theme 'solarized-light))
+          (load-theme active-theme)
+          (powerline-reset))
+          )
+          :config
+           (progn
+             (defvar after-load-theme-hook nil
+               "Hook run after a color theme is loaded using `load-theme'.")
+             (defadvice load-theme (after run-after-load-theme-hook activate)
+               "Run `after-load-theme-hook'."
+               (run-hooks 'after-load-theme-hook))
+             (defun customize-solarized-dark ()
+               "Customize solarized theme"
+               (if (member 'solarized-dark custom-enabled-themes)
+                   (custom-theme-set-faces
+                   'solarized-dark
+                   ;; org faces
+                   '(org-block ((t (:foreground "#2E8B57"))))
+                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
+                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
+                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
+                   '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
+                   '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
+                   ;; markdown faces
+                   '(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
+                   '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
+                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
+                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+                   ;; helm faces
+                   '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+                   ;; line highlighting 
+                    '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                   ;; battery faces
+                   '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
+                   '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
+                   '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
+
+            (add-hook 'after-load-theme-hook 'customize-solarized-dark)
+
+            (defun customize-solarized-light ()
+               "Customize solarized theme"
+               (if (member 'solarized-light custom-enabled-themes)
+                   (custom-theme-set-faces
+                   'solarized-light
+                   ;; org faces
+                   '(org-block ((t (:foreground "#2E8B57"))))
+                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
+                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
+                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
+                   '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
+                   '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
+                   ;; markdown faces
+                   '(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
+                   '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
+                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
+                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+
+                   ;; helm faces
+                   '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+                   ;; line highlighting 
+                    '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
+                   ;; battery faces
+                   '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
+                   '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
+                   '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
+
+            (add-hook 'after-load-theme-hook 'customize-solarized-light)
+            )
+            (load-theme 'solarized-dark t))
+
+          ;; Avoid all font-size changes
+          ;; (setq solarized-height-minus-1 1)
+          ;; (setq solarized-height-plus-1 1)
+          ;; (setq solarized-height-plus-2 1)
+          ;; (setq solarized-height-plus-3 1)
+          ;; (setq solarized-height-plus-4 1))
+
+
+    ;; An alternative solarized theme
+      (use-package color-theme-sanityinc-solarized
+        :ensure t
+        :disabled t
+        :init
+           (progn
+              (load-theme 'sanityinc-solarized-dark t)))
+#+END_SRC
+
+**** Gruvbox
+This is a great general-purpose theme. Use it in terminal.
+
+#+BEGIN_SRC emacs-lisp
+(use-package gruvbox-theme
+  :ensure t 
+  :if (not (display-graphic-p))
+  :config
+  (load-theme 'gruvbox t))
+#+END_SRC 
+**** Other Themes
+Make sure that other themes I like are downloaded and available
+#+BEGIN_SRC emacs-lisp
+(defvar packages-appearance
+  '(monokai-theme solarized-theme zenburn-theme molokai-theme darktooth-theme
+                  tango-2-theme gotham-theme sublime-themes 
+                  waher-theme ample-theme material-theme zerodark-theme
+                  color-theme-modern leuven-theme spacemacs-theme gruvbox-theme
+                  forest-blue-theme flatland-theme afternoon-theme
+                  cyberpunk-theme madhat2r-theme kaolin-theme)
+"A list of themes to ensure are installed at launch.")
+
+(defun appearance-packages-installed-p ()
+  (loop for p in packages-appearance
+        when (not (package-installed-p p)) do (return nil)
+        finally (return t)))
+
+(unless (appearance-packages-installed-p)
+  ;; check for new packages (package versions)
+  (message "%s" "Emacs is now refreshing its package themes...")
+  (package-refresh-contents)
+  (message "%s" " done.")
+  ;; install the missing packages
+  (dolist (p packages-appearance)
+    (when (not (package-installed-p p))
+      (package-install p))))
+
+(provide 'packages-appearance)
+#+END_SRC
+
+*** Highlight line numbers
+#+BEGIN_SRC emacs-lisp 
+  ;; line number spacing
+  (setq-default linum-format "%4d ")
+  ;; Highlight current line number
+  (use-package hlinum
+    :commands hlinum-mode
+    :config
+    (custom-set-faces
+     '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1")))))
+    :init
+    (add-hook 'linum-mode-hook 'hlinum-activate))
+#+END_SRC
+*** Highlight numbers
+Highlight numbers in [[https://github.com/Fanael/highlight-numbers][source code]]
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-numbers
+  :ensure t
+  :defer t 
+  :init
+  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+#+END_SRC
+ 
+*** Highlight TODOs
+highlight TODO statements in comments 
+#+BEGIN_SRC emacs-lisp
+(use-package hl-todo
+  :ensure t
+  :defer t
+  :config
+  (setq global-hl-todo-mode t))
+#+END_SRC
+
+*** Diminish Modes
+ Tidy Up modeline modes.
+ #+BEGIN_SRC emacs-lisp
+ (use-package diminish :defer 2)
+ #+END_SRC
+**** Diminish minor modes
+ #+BEGIN_SRC emacs-lisp
+   (diminish 'visual-line-mode)
+   (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
+   (eval-after-load "abbrev" '(diminish 'abbrev-mode "Ⓐ"))
+   (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
+   (eval-after-load "lispyville" '(diminish 'lispyville-mode "Ⓛ")) 
+   (eval-after-load "centered-window-mode" '(diminish 'centered-window-mode "⦿"))
+   (eval-after-load "org-indent" '(diminish 'org-indent-mode))
+   (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
+   (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
+   (eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
+   (eval-after-load "company" '(diminish 'company-mode "Ⓒ"))
+   (eval-after-load "cm-mode" '(diminish 'cm-mode "ⓒ"))
+   (eval-after-load "reftex" '(diminish 'reftex-mode "ⓡ"))
+   (eval-after-load "autorevert" '(diminish 'auto-revert-mode "Ⓡ"))
+   (eval-after-load "simple" '(diminish 'auto-revert-mode "Ⓡ"))
+   (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
+   (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
+   (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
+   (eval-after-load "org-zotxt" '(diminish 'org-zotxt-mode ""))
+   (eval-after-load "back-button" '(diminish 'back-button-mode ""))
+   ;; (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
+   (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
+   (eval-after-load "projectile" '(diminish 'projectile-mode ""))
+   (eval-after-load "helm" '(diminish 'helm-mode ""))
+   #+END_SRC
+*** All the icons
+Like the title says...
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons :defer t :diminish "")
+;; icons for dired
+(use-package all-the-icons-dired
+  :diminish ""
+  :commands (deer deer-jump-other-window all-the-icons-dired-mode dired-mode ranger)
+  :init
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+#+END_SRC
+**** Beacon
+Useful for letting you know where the cursor is
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :ensure t
+  :diminish beacon-mode
+  :init (beacon-mode 1)
+  :config
+  (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
+#+END_SRC
+
+** UI
+*** Apropos
+Use helm
+#+BEGIN_SRC emacs-lisp
+(bind-key "C-h a" 'helm-apropos)
+#+END_SRC 
+
+*** Centered Cursor Mode
+Keep the cursor centered in the screen
+#+BEGIN_SRC emacs-lisp
+  (use-package centered-cursor-mode
+    :defer t
+    :diminish centered-cursor-mode
+    ;; :commands (centered-cursor-mode
+    ;;            global-centered-cursor-mode)
+    :config
+    (progn
+      (setq ccm-recenter-at-end-of-file t
+            ccm-ignored-commands '(mouse-drag-region
+                                   mouse-set-point
+                                   widget-button-click
+                                   scroll-bar-toolkit-scroll
+                                   evil-mouse-drag-region))))
+#+END_SRC
+
 *** Namespaced Keybindings
 I use a lot of keybindings, with <SPC> as my "leader" key.
 **** Applications
@@ -1655,824 +2503,7 @@ Keybindings for managing packages
   "Ws" 'org-wiki-search
 )
 #+END_SRC
-*** Persistent Scratch
-   Make the content of the scratch buffer persist between settings
-#+BEGIN_SRC emacs-lisp
-  (use-package persistent-scratch
-    :config
-   (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch"))
-    (persistent-scratch-setup-default)
-    (persistent-scratch-autosave-mode)
-  )
-#+END_SRC
- 
-*** Projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    ;; :commands (projectile-ack
-    ;;            projectile-ag
-    ;;            projectile-compile-project
-    ;;            projectile-dired
-    ;;            projectile-find-dir
-    ;;            projectile-find-file
-    ;;            projectile-find-tag
-    ;;            projectile-find-test-file
-    ;;            projectile-grep
-    ;;            projectile-invalidate-cache
-    ;;            projectile-kill-buffers
-    ;;            projectile-multi-occur
-    ;;            projectile-project-p
-    ;;            projectile-project-root
-    ;;            projectile-recentf
-    ;;            projectile-regenerate-tags
-    ;;            projectile-replace
-    ;;            projectile-run-async-shell-command-in-root
-    ;;            projectile-run-shell-command-in-root
-    ;;            projectile-switch-project
-    ;;            projectile-switch-to-buffer
-    ;;            projectile-vc)
-    :init
-    ;; save projectile-known-projects-file in cache folder
-    (setq projectile-known-projects-file
-       (concat user-cache-directory "projectile-bookmarks.eld"))
-    (setq projectile-cache-file
-       (concat user-cache-directory "projectile.cache"))
-    (setq projectile-enable-caching t)
-    :config
-    (projectile-global-mode t))
-
-#+END_SRC
-*** Restart emacs
-#+BEGIN_SRC emacs-lisp
-(use-package restart-emacs
-  :commands restart-emacs)
-#+END_SRC
-*** Ranger & Deer
-Better dired navigation using ranger-like settings
-#+BEGIN_SRC emacs-lisp
-(use-package ranger
-  :commands (ranger deer deer-jump-other-window)
-  :init
-  (setq ranger-override-dired t
-        ranger-cleanup-eagerly t)
-  ;; set up image-dired to allow picture resize
-  (setq image-dired-dir (concat user-cache-directory "image-dir"))
-  (unless (file-directory-p image-dired-dir)
-    (make-directory image-dired-dir))
-  :config
-  (setq  ranger-dont-show-binary t
-         ranger-excluded-extensions '("mkv" "iso" "mp4")
-         ranger-max-preview-size 25
-         ranger-preview-file t
-         ranger-show-dotfiles t
-         ranger-width-parents 0.25
-         ranger-width-preview 0.55 
-         ))
-         
-(defun deer-jump-other-window (&optional path)
-  "Launch dired in a minimal ranger window in other window."
-  (interactive)
-  (switch-to-buffer-other-window (current-buffer))
-  (deer path))
-
-#+END_SRC
-*** Recent files
-#+BEGIN_SRC emacs-lisp
-(use-package recentf
-  :defer 2
-  :init
-  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
-#+END_SRC
-
-*** Helm
-[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
-**** Helm Settings
-#+BEGIN_SRC emacs-lisp 
-  (use-package helm
-    :diminish (helm-mode . "")
-    :defer 1
-    :init
-    (setq helm-locate-fuzzy-match nil
-          helm-locate-command "mdfind -interpret -name %s %s")
-    :config
-    (progn
-      ;; Use helm to provide :ls, unless ibuffer is used
-      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
-      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
-            helm-apropos-fuzzy-match t
-            helm-buffers-fuzzy-matching t
-            helm-imenu-fuzzy-match t
-            helm-recentf-fuzzy-match t
-            helm-prevent-escaping-from-minibuffer t
-            helm-bookmark-show-location t
-            helm-ff-file-name-history-use-recentf t
-            helm-find-files-sort-directories t
-            helm-display-header-line nil
-            helm-move-to-line-cycle-in-source nil
-            helm-always-two-windows t                       
-            helm-split-window-in-side-p nil
-            ;; helm-split-window-default-side 'other
-            helm-echo-input-in-header-line t)
-      ;;keybindings
-      (general-define-key "M-x" 'helm-M-x)
-      ;;; helm vim-bindings in buffer ;;
-      (define-key helm-map (kbd "C-a") (kbd "RET"))
-      (general-define-key :keymaps 'helm-map 
-        "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
-        "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
-        "C-z"   'helm-select-action ; list actions using C-z
-        "C-j"   'helm-next-line
-        "C-k"   'helm-previous-line
-        "C-h"   'helm-next-source
-        "C-l"   'helm-previous-source
-        "C-S-h" 'describe-key)
-      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf"))
-      (helm-autoresize-mode 1)
-      (setq helm-autoresize-max-height 40)
-      (setq helm-autoresize-min-height 35)
-      ;; helm selection faces
-      ;; (set-face-attribute 'helm-selection nil
-      ;;     :foreground "#f7f438"
-      ;;     :background "#64b5ea"
-      ;;     :underline nil
-      ;;     :weight 'bold))
-      (helm-mode 1)
-      ))
-#+END_SRC
-**** Hide Mode Lines
-Hide modelines of other windows while helm is open, again from
-https://github.com/hatschipuh/better-helm.
-
-#+BEGIN_SRC emacs-lisp
-  (defvar my-helm-bottom-buffers nil
-	"List of bottom buffers before helm session.
-	Its element is a pair of `buffer-name' and `mode-line-format'.")
-
-  (defun my-helm-bottom-buffers-init ()
-	(setq-local mode-line-format (default-value 'mode-line-format))
-	(setq my-helm-bottom-buffers
-	  (cl-loop for w in (window-list)
-		   when (window-at-side-p w 'bottom)
-		   collect (with-current-buffer (window-buffer w)
-				 (cons (buffer-name) mode-line-format)))))
-
-  (defun my-helm-bottom-buffers-hide-mode-line ()
-	(setq-default cursor-in-non-selected-windows nil)
-	(mapc (lambda (elt)
-		(with-current-buffer (car elt)
-		  (setq-local mode-line-format nil)))
-	  my-helm-bottom-buffers))
-
-  (defun my-helm-bottom-buffers-show-mode-line ()
-	(setq-default cursor-in-non-selected-windows t)
-	(when my-helm-bottom-buffers
-	  (mapc (lambda (elt)
-		  (with-current-buffer (car elt)
-		(setq-local mode-line-format (cdr elt))))
-		my-helm-bottom-buffers)
-	  (setq my-helm-bottom-buffers nil)))
-
-  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
-	(my-helm-bottom-buffers-show-mode-line)
-	(apply orig-func args))
-
-  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
-  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
-  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
-  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
-  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
-#+END_SRC
-
-**** Hide Minibuffer
-Hide minibuffer while helm is active
-
-#+BEGIN_SRC emacs-lisp
-  (defun my-helm-hide-minibuffer-maybe ()
-	(when (with-helm-buffer helm-echo-input-in-header-line)
-	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	(overlay-put ov 'window (selected-window))
-	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-				`(:background ,bg-color :foreground ,bg-color)))
-	(setq-local cursor-type nil))))
-  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
-#+END_SRC
-
-**** Helm packages
-***** Helm ag
-#+begin_src emacs-lisp
-  (use-package helm-ag  
-    :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root)
-    :config
-    (setq helm-ag-base-command "rg --no-heading")
-    (setq helm-ag-fuzzy-match t))
-#+end_src
-***** Helm descbinds
-#+begin_src emacs-lisp 
-(use-package helm-descbinds 
-  :defer t
-  :config
-  (setq helm-descbinds-window-style 'same-window)
-  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
-#+end_src
-***** Helm git list
-#+begin_src emacs-lisp
-(use-package helm-ls-git :defer t)
-#+end_src
-***** Helm hunks
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-hunks
-    :commands helm-hunks)
-
-#+END_SRC
-
-***** Helm swoop
-[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
-#+begin_src emacs-lisp
-  (use-package helm-swoop
-    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
-    :config
-    (setq helm-swoop-use-fuzzy-match t)
-    (setq helm-swoop-split-with-multiple-windows t))
-#+end_src
-***** Helm flyspell
-
-Use helm with flyspell
-#+begin_src emacs-lisp
-(use-package helm-flyspell
-  :if (not noninteractive)
-  :ensure t
-  :commands helm-flyspell-correct
-  :config
-  (bind-key "C-;" 'helm-flyspell-correct flyspell-mode-map)
-)
-#+end_src
-
-***** Helm Flx
-#+BEGIN_SRC emacs-lisp
-(use-package helm-flx
-  :after helm
-  :config
-  (setq helm-flx-for-helm-find-files t ;; t by default
-        helm-flx-for-helm-locate t) ;; nil by default
- )
-#+END_SRC
-
-***** Helm recent directories
-Recent directories
-#+begin_src emacs-lisp
-  (use-package helm-dired-recent-dirs
-    :defer t)
-#+end_src
-***** Helm files
-#+begin_src emacs-lisp 
-  (use-package helm-files
-    :ensure nil
-    :config
-    (setq helm-ff-skip-boring-files t)
-    (setq helm-idle-delay 0.05)
-    (setq helm-input-idle-delay 0.05)
-    (setq helm-ff-file-name-history-use-recentf t)
-    (setq helm-boring-file-regexp-list
-    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
-      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
-#+end_src
-
-***** Helm-projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-projectile
-    ;; :commands (helm-projectile-switch-to-buffer
-    ;;            helm-projectile-find-dir
-    ;;            helm-projectile-dired-find-dir
-    ;;            helm-projectile-recentf
-    ;;            helm-projectile-find-file
-    ;;            helm-projectile-grep
-    ;;            helm-projectile
-    ;;            helm-projectile-switch-project)
-    :after projectile
-    :init
-    (setq projectile-switch-project-action 'helm-projectile))
-#+END_SRC
-***** Helm interface for themes (helm-themes)
-#+begin_src emacs-lisp
-  (use-package helm-themes
-    :commands helm-themes)
-  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (powerline-reset)) 
-  ;; (ad-unadvise 'helm-themes--load-theme)
-#+end_src
-*** Windows
-**** Window Numbering
-Numbered window shortcuts for Emacs
-#+BEGIN_SRC emacs-lisp
-   (use-package window-numbering
-     :ensure t
-     :config
-     (defun window-numbering-install-mode-line (&optional position)
-     "Do nothing, the display is handled by the powerline.")
-     (setq window-numbering-auto-assign-0-to-minibuffer nil)
-     (cpm-leader1
-       "0" 'select-window-0
-       "1" 'select-window-1
-       "2" 'select-window-2
-       "3" 'select-window-3
-       "4" 'select-window-4
-       "5" 'select-window-5)
-       ;; "6" 'select-window-6
-       ;; "7" 'select-window-7
-       ;; "8" 'select-window-8
-       ;; "9" 'select-window-9)
-     (window-numbering-mode 1)
-
-  ;; make sure neotree is always 0
-   (defun spacemacs//window-numbering-assign ()
-     "Custom number assignment for neotree."
-     (when (and (boundp 'neo-buffer-name)
-                (string= (buffer-name) neo-buffer-name)
-                ;; in case there are two neotree windows. Example: when
-                ;; invoking a transient state from neotree window, the new
-                ;; window will show neotree briefly before displaying the TS,
-                ;; causing an error message. the error is eliminated by
-                ;; assigning 0 only to the top-left window
-                (eq (selected-window) (window-at 0 0)))
-       0))
-
-   ;; using lambda to work-around a bug in window-numbering, see
-   ;; https://github.com/nschum/window-numbering.el/issues/10
-   (setq window-numbering-assign-func
-         (lambda () (spacemacs//window-numbering-assign))))
-
-    ;; (defun spacemacs//window-numbering-assign (windows)
-    ;;   "Custom number assignment for special buffers."
-    ;;   (mapc (lambda (w)
-    ;;           (when (and (boundp 'neo-global--window)
-    ;;                      (eq w neo-global--window))
-    ;;             (window-numbering-assign w 0)))
-    ;;         windows))
-    ;; (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)
-    ;; (add-hook 'neo-after-create-hook '(lambda (w) (window-numbering-update)))
-#+END_SRC
-**** Windmove
-#+BEGIN_SRC emacs-lisp
-(use-package windmove
-  :commands (windmove-up windmove-down windmove-left windmove-right)
-  :config
-  (defun split-window-right-and-focus ()
-  "Split the window horizontally and focus the new window."
-  (interactive)
-  (split-window-right)
-  (windmove-right))
-  (defun split-window-below-and-focus ()
-  "Split the window vertically and focus the new window."
-  (interactive)
-  (split-window-below)
-  (windmove-down))
-  ;; add edit mode keybindings
-  (global-set-key (kbd "<H-up>")     'windmove-up)
-  (global-set-key (kbd "<H-down>")   'windmove-down)
-  (global-set-key (kbd "<H-left>")   'windmove-left)
-  (global-set-key (kbd "<H-right>")  'windmove-right)
-  )
-#+END_SRC
-
-*** Autorevert
-Auto-revert buffers of changed files
-#+BEGIN_SRC emacs-lisp
-  (use-package autorevert                 
-    :defer 2
-    :ensure nil
-    :init
-    (global-auto-revert-mode)
-    :config
-    (progn 
-      (setq auto-revert-verbose nil ; Shut up, please!
-            revert-without-query '(".*") ;; disable revert query
-            ;; Revert Dired buffers, too
-            global-auto-revert-non-file-buffers t)))
-#+END_SRC
- 
-* Appearance & UI
-  Various settings to make Emacs (mostly the GUI version) look better. 
-
-** Frame startup size and position
-I like the frame centered and approximately 2/3 of a 13inch laptop screen.
-#+BEGIN_SRC emacs-lisp
-  ;; Set Frame width/height
-  (setq default-frame-alist
-        '((top . 25) (left . 275) (width . 105) (height . 60)))
-#+END_SRC
-
-** Name frame
-Show the filepath in the frame title.
-#+BEGIN_SRC emacs-lisp
-(setq frame-title-format
-      '(" "
-      (buffer-file-name "%f"
-      (dired-directory dired-directory "%b"))))
-#+END_SRC
-
-** Get rid of UI cruft
-Turn off all of the GUI cruft.
-#+BEGIN_SRC emacs-lisp
-  ;; Turn off mouse interface early in startup to avoid momentary display
-  (when (display-graphic-p)
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)
-    (scroll-bar-mode -1)
-    (tooltip-mode -1))
-#+END_SRC
-
-** No menu bar in terminal
-Ditto for the terminal.
-#+BEGIN_SRC emacs-lisp
-  (when (not (display-graphic-p))
-    (menu-bar-mode -1))
-#+END_SRC
-
-** Beacon
-Useful for letting you know where the cursor is
-#+BEGIN_SRC emacs-lisp
-(use-package beacon
-  :ensure t
-  :diminish beacon-mode
-  :init (beacon-mode 1)
-  :config
-  (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
-#+END_SRC
-** All the icons
-Like the title says...
-#+BEGIN_SRC emacs-lisp
-(use-package all-the-icons :defer t :diminish "")
-;; icons for dired
-(use-package all-the-icons-dired
-  :diminish ""
-  :commands (deer deer-jump-other-window all-the-icons-dired-mode dired-mode ranger)
-  :init
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-#+END_SRC
-
-** Apropos
-Use helm
-#+BEGIN_SRC emacs-lisp
-(bind-key "C-h a" 'helm-apropos)
-#+END_SRC 
-
-** Centered Cursor Mode
-Keep the cursor centered in the screen
-#+BEGIN_SRC emacs-lisp
-  (use-package centered-cursor-mode
-    :defer t
-    :diminish centered-cursor-mode
-    ;; :commands (centered-cursor-mode
-    ;;            global-centered-cursor-mode)
-    :config
-    (progn
-      (setq ccm-recenter-at-end-of-file t
-            ccm-ignored-commands '(mouse-drag-region
-                                   mouse-set-point
-                                   widget-button-click
-                                   scroll-bar-toolkit-scroll
-                                   evil-mouse-drag-region))))
-#+END_SRC
-** Font
-  
-[[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font.
-
-To install it on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew Cask]].
-
-#+begin_src sh :tangle no
-# You may need to run these two lines if you haven't set up Homebrew
-# Cask and its fonts formula.
-brew install caskroom/cask/brew-cask
-brew tap caskroom/fonts
-brew cask install font-inconsolata
-#+end_src
-
-And here's how we tell Emacs to use the font we want to use.
-
-#+begin_src emacs-lisp
-  ;; deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
-  (use-package dynamic-fonts
-    :config (dynamic-fonts-setup) 
-     :init
-     (progn (setq dynamic-fonts-preferred-proportional-fonts
-                  '("Avenir Next" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
-            (setq dynamic-fonts-preferred-monospace-fonts
-               '("Inconsolata LGC" "Source Code Pro" "Monaco" "Consolas" "Menlo"
-                 "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
-  )
-    (global-set-key (kbd "C-+") 'text-scale-increase)
-    (global-set-key (kbd "C--") 'text-scale-decrease)
-    ;; C-x C-0 restores the default font size
-#+end_src
-
-** Highlight line numbers
-#+BEGIN_SRC emacs-lisp 
-  ;; line number spacing
-  (setq-default linum-format "%4d ")
-  ;; Highlight current line number
-  (use-package hlinum
-    :commands hlinum-mode
-    :config
-    (custom-set-faces
-     '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1")))))
-    :init
-    (add-hook 'linum-mode-hook 'hlinum-activate))
-#+END_SRC
-** Highlight numbers
-Highlight numbers in [[https://github.com/Fanael/highlight-numbers][source code]]
-#+BEGIN_SRC emacs-lisp
-(use-package highlight-numbers
-  :ensure t
-  :defer t 
-  :init
-  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
-#+END_SRC
- 
-** Highlight TODOs
-highlight TODO statements in comments 
-#+BEGIN_SRC emacs-lisp
-(use-package hl-todo
-  :ensure t
-  :defer t
-  :config
-  (setq global-hl-todo-mode t))
-#+END_SRC
-
-** Modeline
-*** Spaceline
-This is a really nice powerline-ish modeline.
-#+BEGIN_SRC emacs-lisp 
-  (use-package spaceline
-    :ensure t
-    :init 
-    (progn 
-      ;; size of modeline
-      (setq powerline-height 18)
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-      ;; (setq-default powerline-default-separator nil) 
-      ;; (setq-default powerline-default-separator 'utf-8) 
-      ;; (setq powerline-utf-8-separator-left #xe0b0)
-      ;; (setq powerline-utf-8-separator-right #xe0b2)
-      ;; (set-face-attribute 'mode-line nil :font "Source Code Pro-14")
-
-      ;; small triangles
-      ;; (setq powerline-utf-8-separator-left #x25ba)
-      ;; (setq powerline-utf-8-separator-right #x25c4)
-      ;; (setq powerline-text-scale-factor .3)
-      ;; half circles
-      ;; (setq powerline-utf-8-separator-left 9687 
-      ;;       powerline-utf-8-separator-right 9686)
-
-      ;; slant (requires srbg support)
-      (setq-default powerline-default-separator 'slant) 
-      (setq spaceline-separator-dir-left '(right . right))
-      (setq spaceline-separator-dir-right '(right . right))
-
-      ;; fancy git icon for the modeline
-      (defadvice vc-mode-line (after strip-backend () activate)
-      (when (stringp vc-mode)
-        (let ((gitlogo (replace-regexp-in-string "^ Git." ":" vc-mode)))
-              (setq vc-mode gitlogo)))))
-    :config
-    (require 'spaceline-config)
-    (spaceline-toggle-buffer-size-off)
-    (spaceline-spacemacs-theme)
-    (setq spaceline-buffer-encoding-abbrev-p nil
-          spaceline-window-numbers-unicode t
-          spaceline-line-column-p nil
-          spaceline-buffer-id-p nil
-          spaceline-minor-modes-separator nil))
-          (powerline-reset)
-  ;; nil - don't use srgb & get proper powerline faces
-  (setq ns-use-srgb-colorspace t)
-
-#+END_SRC
-
-*** Fancy Battery
-#+BEGIN_SRC emacs-lisp
-  (use-package fancy-battery
-    :init 
-    (fancy-battery-mode)
-    :config
-    (setq-default battery-update-interval 10))
-    ;; :config
-    ;; (set-face-attribute 'fancy-battery-charging nil 
-    ;; :foreground "dark blue" :weight 'bold)
-    ;; (set-face-attribute 'fancy-battery-discharging nil 
-    ;; :foreground "dark magenta" :weight 'bold)
-    ;; (set-face-attribute 'fancy-battery-critical nil 
-    ;; :foreground "dark red" :weight 'bold))
-#+END_SRC
- 
-*** Display Time
-#+begin_src emacs-lisp :tangle yes
-  (setq display-time-format "%a %b %d | %H:%M |")
-  (display-time-mode)
-#+end_src
-
-*** Hide mode line
-Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
-
-#+BEGIN_SRC emacs-lisp
-(defvar-local hidden-mode-line-mode nil)
-(defvar-local hide-mode-line nil)
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
-
-#+END_SRC
-
-** Theme
-*** Solarized
-The best low-contrast theme out there.
-#+BEGIN_SRC emacs-lisp
-  (use-package solarized-theme
-    :ensure t
-    :if (display-graphic-p)
-    :init
-      (progn
-          ;; don't make the fringe stand out from the background
-          (setq solarized-distinct-fringe-background nil)
-
-          ;; change the font for some headings and titles
-          (setq solarized-use-variable-pitch t)
-
-          ;; make the modeline high contrast
-          (setq solarized-high-contrast-mode-line t)
-
-          ;; Use bolding
-          (setq solarized-use-less-bold nil)
-
-          ;; Use more italics
-          (setq solarized-use-more-italic t)
-
-          ;; Use colors for indicators such as git:gutter, flycheck and similar
-          (setq solarized-emphasize-indicators t)
-
-          ;; Don't change size of org-mode headlines (but keep other size-changes)
-          (setq solarized-scale-org-headlines t)
-
-          ;; don't italicize line numbers
-          ;; (add-hook 'after-make-frame-functions
-          ;; (lambda (frame)
-          ;; (select-frame frame)
-          ;; (if (display-graphic-p)
-          ;; (set-face-attribute 'linum frame
-          ;; :background (face-attribute 'default :background)
-          ;; :foreground (face-attribute 'linum :foreground) :slant 'normal))))
-
-          ;; Theme toggle
-          (setq active-theme 'solarized-dark)
-          (defun toggle-dark-light-theme ()
-          (interactive)
-          (if (eq active-theme 'solarized-light)
-              (setq active-theme 'solarized-dark)
-            (setq active-theme 'solarized-light))
-          (load-theme active-theme)
-          (powerline-reset))
-          )
-          :config
-           (progn
-             (defvar after-load-theme-hook nil
-               "Hook run after a color theme is loaded using `load-theme'.")
-             (defadvice load-theme (after run-after-load-theme-hook activate)
-               "Run `after-load-theme-hook'."
-               (run-hooks 'after-load-theme-hook))
-             (defun customize-solarized-dark ()
-               "Customize solarized theme"
-               (if (member 'solarized-dark custom-enabled-themes)
-                   (custom-theme-set-faces
-                   'solarized-dark
-                   ;; org faces
-                   '(org-block ((t (:foreground "#2E8B57"))))
-                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
-                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
-                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
-                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
-                   '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
-                   '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
-                   ;; markdown faces
-                   '(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
-                   '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
-                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
-                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
-                   ;; helm faces
-                   '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
-                   ;; line highlighting 
-                    '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
-                   ;; battery faces
-                   '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
-                   '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
-                   '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
-
-            (add-hook 'after-load-theme-hook 'customize-solarized-dark)
-
-            (defun customize-solarized-light ()
-               "Customize solarized theme"
-               (if (member 'solarized-light custom-enabled-themes)
-                   (custom-theme-set-faces
-                   'solarized-light
-                   ;; org faces
-                   '(org-block ((t (:foreground "#2E8B57"))))
-                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
-                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
-                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
-                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
-                   '(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
-                   '(org-quote ((t (:inherit org-block :slant normal :weight normal))))
-                   ;; markdown faces
-                   '(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
-                   '(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
-                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
-                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
-
-                   ;; helm faces
-                   '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
-                   ;; line highlighting 
-                    '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
-                   ;; battery faces
-                   '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
-                   '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
-                   '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
-
-            (add-hook 'after-load-theme-hook 'customize-solarized-light)
-            )
-            (load-theme 'solarized-dark t))
-
-          ;; Avoid all font-size changes
-          ;; (setq solarized-height-minus-1 1)
-          ;; (setq solarized-height-plus-1 1)
-          ;; (setq solarized-height-plus-2 1)
-          ;; (setq solarized-height-plus-3 1)
-          ;; (setq solarized-height-plus-4 1))
-
-
-    ;; An alternative solarized theme
-      (use-package color-theme-sanityinc-solarized
-        :ensure t
-        :disabled t
-        :init
-           (progn
-              (load-theme 'sanityinc-solarized-dark t)))
-#+END_SRC
-
-*** Gruvbox
-This is a great general-purpose theme. Use it in terminal.
-
-#+BEGIN_SRC emacs-lisp
-(use-package gruvbox-theme
-  :ensure t 
-  :if (not (display-graphic-p))
-  :config
-  (load-theme 'gruvbox t))
-#+END_SRC 
-*** Other Themes
-Make sure that other themes I like are downloaded and available
-#+BEGIN_SRC emacs-lisp
-(defvar packages-appearance
-  '(monokai-theme solarized-theme zenburn-theme molokai-theme darktooth-theme
-                  tango-2-theme gotham-theme sublime-themes 
-                  waher-theme ample-theme material-theme zerodark-theme
-                  color-theme-modern leuven-theme spacemacs-theme gruvbox-theme
-                  forest-blue-theme flatland-theme afternoon-theme
-                  cyberpunk-theme madhat2r-theme kaolin-theme)
-"A list of themes to ensure are installed at launch.")
-
-(defun appearance-packages-installed-p ()
-  (loop for p in packages-appearance
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
-
-(unless (appearance-packages-installed-p)
-  ;; check for new packages (package versions)
-  (message "%s" "Emacs is now refreshing its package themes...")
-  (package-refresh-contents)
-  (message "%s" " done.")
-  ;; install the missing packages
-  (dolist (p packages-appearance)
-    (when (not (package-installed-p p))
-      (package-install p))))
-
-(provide 'packages-appearance)
-#+END_SRC
-** Which-key
+*** Which-key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :defer 2
@@ -2483,7 +2514,7 @@ Make sure that other themes I like are downloaded and available
   (setq which-key-idle-delay .2)
   (which-key-mode))
 #+END_SRC
-** Popup Windows
+*** Popup Windows
 [[https://github.com/wasamasa/shackle][Package]] that puts an end to popped up buffers not behaving they way you'd like them to.
 
 #+BEGIN_SRC emacs-lisp
@@ -2494,39 +2525,6 @@ Make sure that other themes I like are downloaded and available
   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
   (shackle-mode 1))
 #+END_SRC
-
-** Diminish Modes
- Tidy Up modeline modes.
- #+BEGIN_SRC emacs-lisp
- (use-package diminish :defer 2)
- #+END_SRC
-*** Diminish minor modes
- #+BEGIN_SRC emacs-lisp
-   (diminish 'visual-line-mode)
-   (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
-   (eval-after-load "abbrev" '(diminish 'abbrev-mode "Ⓐ"))
-   (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
-   (eval-after-load "lispyville" '(diminish 'lispyville-mode "Ⓛ")) 
-   (eval-after-load "centered-window-mode" '(diminish 'centered-window-mode "⦿"))
-   (eval-after-load "org-indent" '(diminish 'org-indent-mode))
-   (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
-   (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
-   (eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
-   (eval-after-load "company" '(diminish 'company-mode "Ⓒ"))
-   (eval-after-load "cm-mode" '(diminish 'cm-mode "ⓒ"))
-   (eval-after-load "reftex" '(diminish 'reftex-mode "ⓡ"))
-   (eval-after-load "autorevert" '(diminish 'auto-revert-mode "Ⓡ"))
-   (eval-after-load "simple" '(diminish 'auto-revert-mode "Ⓡ"))
-   (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
-   (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
-   (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
-   (eval-after-load "org-zotxt" '(diminish 'org-zotxt-mode ""))
-   (eval-after-load "backward-button" '(diminish 'back-button-mode ""))
-   ;; (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
-   (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
-   (eval-after-load "projectile" '(diminish 'projectile-mode ""))
-   (eval-after-load "helm" '(diminish 'helm-mode ""))
-   #+END_SRC
 
 * Packages and Mode-Specific Settings
 ** Media
@@ -4156,52 +4154,47 @@ Great for managing citations and notes
 *** Markdown mode
 **** Markdown settings
 #+begin_src emacs-lisp
-    (use-package markdown-mode
-      :defer t
-      :mode (("\\.markdown\\'" . markdown-mode)
-             ("\\.md\\'"       . markdown-mode))
-      :init
-      ;; markdown hooks
-      (add-hook 'markdown-mode-hook
-            '(lambda ()
-               (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
-      (setq markdown-command "pandoc"
-              markdown-enable-math t
-              markdown-nested-imenu-heading-index t
-              markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
-              )
-         ;; (global-git-gutter+-mode t)
-         ;; (add-hook 'markdown-mode-hook #'centered-cursor-mode) 
-         ;; (add-hook 'markdown-mode-hook #'pandoc-mode) 
-         ;; (add-hook 'markdown-mode-hook #'hl-todo-mode) 
-         ;; (add-hook 'markdown-mode-hook #'flyspell-mode)
-         ;; add keybindings to hook
-       :config
-       ;; remove strikout comment face
-       (set-face-attribute 'markdown-comment-face nil 
-       :weight 'bold :strike-through nil)
-       ;; Header navigation in normal state movements
-       (general-define-key :states '(normal) :keymaps 'markdown-mode-map
-            "TAB" 'markdown-cycle
-            "gj"  'outline-forward-same-level
-            "gk"  'outline-backward-same-level
-            "gh"  'outline-up-heading
-            ;; next visible heading is not exactly what we want but close enough
-            "gl"  'outline-next-visible-heading)
-            ;; "<return>" 'markdown-jump
+  (use-package markdown-mode
+    :defer t
+    :mode (("\\.markdown\\'" . markdown-mode)
+           ("\\.md\\'"       . markdown-mode))
+    :init
+    ;; markdown hooks
+    (add-hook 'markdown-mode-hook
+          '(lambda ()
+             (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
+    (setq markdown-command "pandoc"
+            markdown-enable-math t
+            markdown-nested-imenu-heading-index t
+            markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
+            )
+       ;; add keybindings to hook
+     :config
+     ;; remove strikout comment face
+     (set-face-attribute 'markdown-comment-face nil 
+     :weight 'bold :strike-through nil)
+     ;; Header navigation in normal state movements
+     (general-define-key :states '(normal) :keymaps 'markdown-mode-map
+          "TAB" 'markdown-cycle
+          "gj"  'outline-forward-same-level
+          "gk"  'outline-backward-same-level
+          "gh"  'outline-up-heading
+          ;; next visible heading is not exactly what we want but close enough
+          "gl"  'outline-next-visible-heading)
+          ;; "<return>" 'markdown-jump
 
-         ;; Promotion, Demotion
-       (general-define-key :states '(normal insert emacs) :keymaps 'markdown-mode-map
-         "M-h" 'markdown-promote
-         "M-j" 'markdown-move-down
-         "M-k" 'markdown-move-up
-         "M-l" 'markdown-demote
-         ;; fix wrong emacs keybindings
-         "C-c C-j" 'markdown-jump
-         "C-c C-l" 'markdown-insert-list-item
-         )
-         (add-hook 'markdown-mode-hook #'my-markdown-config)
-    )
+       ;; Promotion, Demotion
+     (general-define-key :states '(normal insert emacs) :keymaps 'markdown-mode-map
+       "M-h" 'markdown-promote
+       "M-j" 'markdown-move-down
+       "M-k" 'markdown-move-up
+       "M-l" 'markdown-demote
+       ;; fix wrong emacs keybindings
+       "C-c C-j" 'markdown-jump
+       "C-c C-l" 'markdown-insert-list-item
+       )
+       (add-hook 'markdown-mode-hook #'my-markdown-config)
+  )
 
 #+end_src
 
