@@ -1747,7 +1747,7 @@ This is a really nice powerline-ish modeline.
  
 **** Display Time
 #+begin_src emacs-lisp :tangle yes
-  (setq display-time-format "%a %b %d | %H:%M |")
+  (setq display-time-format " %a %b %d | %H:%M |")
   (display-time-mode)
 #+end_src
 
