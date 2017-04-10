@@ -1173,7 +1173,13 @@ There are some other useful setup packages for evil
 
 #+end_src 
 
-
+***** Evil-Avy
+Use [[https://github.com/louy2/evil-avy][evil motions]] with avy
+#+BEGIN_SRC emacs-lisp
+(use-package evil-avy
+  :after avy 
+)
+#+END_SRC
 ***** Commenting 
 #+begin_src emacs-lisp
   (use-package evil-commentary
@@ -2693,6 +2699,23 @@ Keybindings for managing packages
     (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
 )
 #+END_SRC 
+*** Hydra
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :defer 4
+  :config
+  ;; hydra for TODOs
+  (defhydra hydra-todo (:pre
+                  (hl-todo-mode 1)
+              :post
+             (hl-todo-mode -1))
+  "Todo"
+  ("n" hl-todo-next "Next")
+  ("p" hl-todo-previous "Previous")
+  ("o" hl-todo-occur "Occur")
+  ("q" nil "Quit" :color blue :exit t))
+)
+#+END_SRC
 *** Neotree
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
@@ -2958,6 +2981,25 @@ A file tree and outliner
                (kill-buffer buffer)))))
  #+END_SRC
 
+*** Colors
+Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
+#+BEGIN_SRC emacs-lisp
+(use-package xterm-color
+  :init
+  ;; comint install
+  (progn (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
+         (setq comint-output-filter-functions (remove 'ansi-color-process-output comint-output-filter-functions)))
+
+  ;; comint uninstall
+  (progn (remove-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
+         (add-to-list 'comint-output-filter-functions 'ansi-color-process-output))
+
+;; For M-x shell, also set TERM accordingly (xterm-256color)
+
+
+
+)
+#+END_SRC
 *** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
