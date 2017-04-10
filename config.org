@@ -1212,7 +1212,12 @@ There are some other useful setup packages for evil
 #+BEGIN_SRC emacs-lisp
   (use-package persistent-scratch
     :config
-   (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch"))
+   (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch-backups"))
+   (setq persistent-scratch-save-file (concat user-cache-directory "persistent-scratch"))
+   ;; keep backups not older than a month
+   (setq persistent-scratch-backup-filter
+      (persistent-scratch-keep-backups-not-older-than
+       (days-to-time 90)))
     (persistent-scratch-setup-default)
     (persistent-scratch-autosave-mode)
   )
