@@ -245,7 +245,7 @@ customize settings in [[file:init.el][init.el]].
         desktop-save                'ask-if-new
         desktop-files-not-to-save   (concat "^$" ".*magit$")
         desktop-restore-eager 10
-        desktop-load-locked-desktop 'ask)
+        desktop-load-locked-desktop t)
   (setq desktop-buffers-not-to-save
           (concat "\\("
                   "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
@@ -1596,7 +1596,7 @@ Auto-revert buffers of changed files
     :defer 2
     :ensure nil
     :init
-    (global-auto-revert-mode)
+    (global-auto-revert-mode 1)
     :config
     (progn 
       (setq auto-revert-verbose nil ; Shut up, please!
@@ -1907,7 +1907,6 @@ The best low-contrast theme out there.
            (progn
               (load-theme 'sanityinc-solarized-dark t)))
 #+END_SRC
-
 **** Gruvbox
 This is a great general-purpose theme. Use it in terminal.
 
@@ -2046,10 +2045,9 @@ Use helm
 Keep the cursor centered in the screen
 #+BEGIN_SRC emacs-lisp
   (use-package centered-cursor-mode
-    :defer t
     :diminish centered-cursor-mode
-    ;; :commands (centered-cursor-mode
-    ;;            global-centered-cursor-mode)
+    :commands (centered-cursor-mode
+               global-centered-cursor-mode)
     :config
     (progn
       (setq ccm-recenter-at-end-of-file t
@@ -3269,7 +3267,7 @@ A file tree and outliner
 (use-package electric-pair
   :ensure nil
   :commands electric-pair-mode
-  :config
+  :init
   (add-hook 'prog-mode-hook 'electric-pair-mode)
   (add-hook 'org-mode-hook 'electric-pair-mode)
   (add-hook 'markdown-mode-hook 'electric-pair-mode)
@@ -3278,20 +3276,22 @@ A file tree and outliner
 *** DISABLED Smartparens (Autopair)
 Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 #+BEGIN_SRC emacs-lisp
-(use-package smartparens 
-  :defer 10
-  :config
-  (require 'smartparens-config)
-  :init 
-  (add-hook 'prog-mode-hook 'smartparens-mode)
-  (add-hook 'org-mode-hook 'smartparens-mode)
-  (add-hook 'markdown-mode-hook 'smartparens-mode))
-  
-(use-package evil-smartparens
-  :diminish ""
-  :init
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
-)
+  (use-package smartparens 
+    :defer t
+    :config
+    (require 'smartparens-config)
+    ;; :init 
+    ;; (add-hook 'prog-mode-hook 'smartparens-mode)
+    ;; (add-hook 'org-mode-hook 'smartparens-mode)
+    ;; (add-hook 'markdown-mode-hook 'smartparens-mode)
+    )
+
+  (use-package evil-smartparens
+    :diminish ""
+    :defer t
+    ;; :init
+    ;; (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+  )
 #+END_SRC
 *** Languages
 **** Elisp
@@ -3366,11 +3366,11 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
                          "zshrc\\'"))
         (add-to-list 'auto-mode-alist (cons pattern 'sh-mode)))))
 
-    ;; (defun spacemacs//setup-shell ()
-    ;;     (when (and buffer-file-name
-    ;;                (string-match-p "\\.zsh\\'" buffer-file-name))
-    ;;       (sh-set-shell "zsh")))
-    ;;   (add-hook 'sh-mode-hook 'spacemacs//setup-shell)))
+    (defun spacemacs//setup-shell ()
+        (when (and buffer-file-name
+                   (string-match-p "\\.zsh\\'" buffer-file-name))
+          (sh-set-shell "zsh")))
+      (add-hook 'sh-mode-hook 'spacemacs//setup-shell)
 #+END_SRC
  
 **** Yaml
@@ -3419,8 +3419,8 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
  #+BEGIN_SRC emacs-lisp
    (use-package evil-magit
      :defer t
-     :init
-     (with-eval-after-load 'magit (require 'evil-magit))
+     :after magit
+     ;; (with-eval-after-load 'magit (require 'evil-magit))
      )
 
  #+END_SRC
@@ -3495,6 +3495,7 @@ mode of writing.
       (interactive)
       (git-gutter-mode 0) 
       (linum-mode 0) 
+      (centered-cursor-mode)
       (writeroom-mode)
       )
 
@@ -3620,7 +3621,7 @@ Other useful org packages
 #+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
   :ensure t
-  :after org
+  :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
   :config
   (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
         org-reveal-theme "moon"
@@ -4558,55 +4559,63 @@ don't cause as much overhead."
 *** PDF-Tools
 Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp 
-  (use-package pdf-tools
-    :defer t
-    :mode (("\\.pdf$" . pdf-view-mode))
-    :config
-    (progn
-      (pdf-tools-install)
-      (evil-set-initial-state 'pdf-view-mode 'normal)
-      (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
-      (evil-define-key 'normal pdf-view-mode-map
-          ;; Navigation
-          "j"  'pdf-view-next-line-or-next-page
-          "k"  'pdf-view-previous-line-or-previous-page
-          "l"  'pdf-view-next-page 
-          "h"  'pdf-view-previous-page
-          "J"  'image-forward-hscroll
-          "K"  'image-backward-hscroll
-          "gg"  'pdf-view-first-page
-          "G"  'pdf-view-last-page
-          "gt"  'pdf-view-goto-page
-          "gl"  'pdf-view-goto-label
-          "u" 'pdf-view-scroll-down-or-previous-page
-          "d" 'pdf-view-scroll-up-or-next-page
-          "-"  'pdf-view-shrink
-          "+"  'pdf-view-enlarge
-          "="  'pdf-view-fit-page-to-window
-          (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
-          (kbd "C-d") 'pdf-view-scroll-up-or-next-page
-          (kbd "``")  'pdf-history-backward
-          ;; Search
-          "/" 'isearch-forward
-          "?" 'isearch-backward
-          ;; Actions
-          "r"   'pdf-view-revert-buffer
-          "o"   'pdf-links-action-perform
-          "O"   'pdf-outline
-          )
-      (evil-define-key 'insert pdf-view-mode-map
-          "y" 'pdf-view-kill-ring-save )
+      (use-package pdf-tools
+        :ensure t
+        :defer t
+        :mode (("\\.pdf$" . pdf-view-mode))
+        :config
+        (progn
+          (pdf-tools-install)
+          (evil-set-initial-state 'pdf-view-mode 'normal)
+          (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
+          (evil-define-key 'normal pdf-view-mode-map
+              ;; Navigation
+              "j"  'pdf-view-next-line-or-next-page
+              "k"  'pdf-view-previous-line-or-previous-page
+              "l"  'pdf-view-next-page 
+              "h"  'pdf-view-previous-page
+              "J"  'image-forward-hscroll
+              "K"  'image-backward-hscroll
+              "gg"  'pdf-view-first-page
+              "G"  'pdf-view-last-page
+              "gt"  'pdf-view-goto-page
+              "gl"  'pdf-view-goto-label
+              "u" 'pdf-view-scroll-down-or-previous-page
+              "d" 'pdf-view-scroll-up-or-next-page
+              "-"  'pdf-view-shrink
+              "+"  'pdf-view-enlarge
+              "="  'pdf-view-fit-page-to-window
+              (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
+              (kbd "C-d") 'pdf-view-scroll-up-or-next-page
+              (kbd "``")  'pdf-history-backward
+              ;; Search
+              "/" 'isearch-forward
+              "?" 'isearch-backward
+              ;; Actions
+              "r"   'pdf-view-revert-buffer
+              "o"   'pdf-links-action-perform
+              "O"   'pdf-outline
+              )
+          (evil-define-key 'insert pdf-view-mode-map
+              "y" 'pdf-view-kill-ring-save )
 
-      ;; for annotation and jumping to file
-      (eval-after-load 'org '(require 'org-pdfview))
-      (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
-      (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))))      
+    ))      
+
+    ;; for annotation and jumping to file
+    ;; (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+    ;; (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open)))
+    ;; (eval-after-load 'org '(require 'org-pdfview))
 #+END_SRC
 **** Extract annotations
 #+BEGIN_SRC emacs-lisp
-  (use-package org-pdfview
-    :commands (org-pdfview-open)
-    :ensure t)
+  ;; (use-package org-pdfview
+  ;;   ;; :commands (org-pdfview-open)
+  ;;   :after org
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-to-list 'org-file-apps 
+  ;;        '("\\.pdf\\'" . (lambda (file link)
+  ;;                           (org-pdfview-open link)))))
 
   (use-package pdf-tools-org 
     :ensure nil
@@ -4873,7 +4882,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
     (setq dashboard-items '((recents  . 10)
                             (bookmarks . 10)
 			                (projects . 10)))
-    (setq dashboard-startup-banner "/Users/roambot/Pictures/emacs icons/64x64@2x.png")
+    (setq dashboard-startup-banner "/Users/roambot/.emacs.d/icons/128x128.png")
     ;; Set the title
     ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
     (setq dashboard-banner-logo-title (message "Emacs initialized in %.2fs" (float-time (time-subtract (current-time) my-start-time))))
@@ -4885,9 +4894,9 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
       "RET" 'widget-button-press
       "down-mouse-1" 'widget-button-click
       "g" #'dashboard-insert-startupify-lists
-      "r" (dashboard-insert--shortcut "r" "Recent Files:")
-      "m" (dashboard-insert--shortcut "m" "Bookmarks:")
-      "p" (dashboard-insert--shortcut "p" "Projects:")
+      "r" (dashboard-insert-shortcut "r" "Recent Files:")
+      "m" (dashboard-insert-shortcut "m" "Bookmarks:")
+      "p" (dashboard-insert-shortcut "p" "Projects:")
       ))
 #+END_SRC
 ** Server
