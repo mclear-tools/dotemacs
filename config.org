@@ -116,10 +116,10 @@ No bells and no visible "bell" either!
 
 **** Dired settings
 #+BEGIN_SRC emacs-lisp
-(setq insert-directory-program "gls" dired-use-ls-dired t)
-;; stop asking about recurisve actions
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
+  ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
+  ;; stop asking about recurisve actions
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
 
 #+END_SRC
 **** Help Buffers
@@ -1670,9 +1670,9 @@ And here's how we tell Emacs to use the font we want to use.
     :config (dynamic-fonts-setup) 
      :init
      (progn (setq dynamic-fonts-preferred-proportional-fonts
-                  '("Avenir Next" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
+                  '("Arial Regular" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
             (setq dynamic-fonts-preferred-monospace-fonts
-               '("Inconsolata LGC" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+               '("Inconsolata" "Source Code Pro" "Monaco" "Consolas" "Menlo"
                  "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
   )
     (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -1688,7 +1688,7 @@ This is a really nice powerline-ish modeline.
     :init 
     (progn 
       ;; size of modeline
-      (setq powerline-height 18)
+      (setq powerline-height 19)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       ;; (setq-default powerline-default-separator nil) 
       ;; (setq-default powerline-default-separator 'utf-8) 
@@ -1722,7 +1722,7 @@ This is a really nice powerline-ish modeline.
           spaceline-window-numbers-unicode t
           spaceline-line-column-p nil
           spaceline-buffer-id-p nil
-          spaceline-minor-modes-separator nil))
+          spaceline-minor-modes-separator " "))
           (powerline-reset)
   ;; nil - don't use srgb & get proper powerline faces
   (setq ns-use-srgb-colorspace t)
@@ -2897,7 +2897,7 @@ A file tree and outliner
      :commands sane-term
      :init
      ;; shell to use for sane-term
-     (setq sane-term-shell-command "/usr/local/bin/zsh")
+     (setq sane-term-shell-command "/usr/bin/zsh")
      ;; sane-term will create first term if none exist
      (setq sane-term-initial-create t)
      ;; `C-d' or `exit' will kill the term buffer.
@@ -2911,7 +2911,7 @@ A file tree and outliner
    (use-package shell-pop
      :commands shell-pop
      :init
-     (setq shell-pop-term-shell "/usr/local/bin/zsh")
+     (setq shell-pop-term-shell "/usr/bin/zsh")
      (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
      :config
        (defun ansi-term-handle-close ()
@@ -2930,7 +2930,7 @@ A file tree and outliner
  Other useful shell settings  
  #+begin_src emacs-lisp
  ;; basic settings
- (setq explicit-shell-file-name "/usr/local/bin/zsh")
+ (setq explicit-shell-file-name "/usr/bin/zsh")
  ;; don't add newline in long lines
  (setq-default term-suppress-hard-newline t)
  ;; kill process buffers without query
@@ -3027,8 +3027,8 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      :config
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
-     (setq venv-location "/Users/Roambot/bin/virtualenvs")
-     (setq venv-project-home "/Users/Roambot/projects/")
+     (setq venv-location "$HOME/bin/virtualenvs")
+     (setq venv-project-home "$HOME/projects/")
      (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
    (defcustom venv-project-home
@@ -4944,7 +4944,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
     (setq dashboard-items '((recents  . 10)
                             (bookmarks . 10)
 			                (projects . 10)))
-    (setq dashboard-startup-banner "/Users/roambot/.emacs.d/icons/128x128.png")
+    (setq dashboard-startup-banner "/home/mclear/.emacs.d/icons/128x128.png")
     ;; Set the title
     ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
     (setq dashboard-banner-logo-title (message "Emacs initialized in %.2fs" (float-time (time-subtract (current-time) my-start-time))))
@@ -4981,7 +4981,7 @@ Start server
 * Goals 
 Below are various things I want to perfect or try out in the config.
 
-- [] Fix load time of =config.org= file
+- [X] Fix load time of =config.org= file
 - [X] Fix visual surround delete/change of various characters (org markup, dollar signs)
 - [X] Fix bookmark/desktop save
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
