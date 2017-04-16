@@ -40,3 +40,4 @@ backup/
 /config_backup/custom.el.bak2
 /elisp/core-modeline.el
 /config.trash.org
+session.*
