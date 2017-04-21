@@ -1316,7 +1316,7 @@ Better dired navigation using ranger-like settings
     :defer 1
     :init
     (setq helm-locate-fuzzy-match nil
-          helm-locate-command "mdfind -interpret -name %s %s")
+          helm-locate-command "locate %s -e -A --regex %s")
     :config
     (progn
       ;; Use helm to provide :ls, unless ibuffer is used
@@ -1670,9 +1670,9 @@ And here's how we tell Emacs to use the font we want to use.
     :config (dynamic-fonts-setup) 
      :init
      (progn (setq dynamic-fonts-preferred-proportional-fonts
-                  '("Arial Regular" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
+                  '("Cantarell" "Source Sans Pro" "Helvetica"))
             (setq dynamic-fonts-preferred-monospace-fonts
-               '("Inconsolata" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+               '("Inconsolata LGC for Powerline" "Source Code Pro" "Monaco" "Consolas" "Menlo"
                  "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
   )
     (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -1688,7 +1688,7 @@ This is a really nice powerline-ish modeline.
     :init 
     (progn 
       ;; size of modeline
-      (setq powerline-height 19)
+      (setq powerline-height 21)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       ;; (setq-default powerline-default-separator nil) 
       ;; (setq-default powerline-default-separator 'utf-8) 
@@ -3027,8 +3027,8 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      :config
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
-     (setq venv-location "$HOME/bin/virtualenvs")
-     (setq venv-project-home "$HOME/projects/")
+     (setq venv-location "~/bin/virtualenvs")
+     (setq venv-project-home "~/Dropbox/Work/projects/")
      (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
    (defcustom venv-project-home
