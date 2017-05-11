@@ -57,6 +57,44 @@ Internet whose names I've forgotten. Thanks to all of you for making
 your configurations public! This config is [[https://github.com/mclear-tools/dotemacs/blob/7e86c823ae3d5a9d1b0ff12c4bc1e7248dcf4f01/init.el#L56-L71][fed into]] the [[https://github.com/mclear-tools/dotemacs/blob/master/init.el][init file]].
 [[http://orgmode.org][Org mode]] is installed if not already present, as is [[https://github.com/jwiegley/use-package][use-package]]. There
 is no need for any other package management. 
+* Security
+Be careful downloading anything via emacs. [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][Your editor is malware]].
+#+BEGIN_SRC emacs-lisp
+(require 'cl)
+(setq tls-checktrust t)
+
+(setq python (or (executable-find "py.exe")
+                 (executable-find "python")
+                 ))
+
+(let ((trustfile
+       (replace-regexp-in-string
+        "\\\\" "/"
+        (replace-regexp-in-string
+         "\n" ""
+         (shell-command-to-string (concat python " -m certifi"))))))
+  (setq tls-program
+        (list
+         (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+                 (if (eq window-system 'w32) ".exe" "") trustfile)))
+  (setq gnutls-verify-error t)
+  (setq gnutls-trustfiles (list trustfile)))
+
+;; Test the settings by using the following code snippet:
+;;  (let ((bad-hosts
+;;         (loop for bad
+;;               in `("https://wrong.host.badssl.com/"
+;;                    "https://self-signed.badssl.com/")
+;;               if (condition-case e
+;;                      (url-retrieve
+;;                       bad (lambda (retrieved) t))
+;;                    (error nil))
+;;               collect bad)))
+;;    (if bad-hosts
+;;        (error (format "tls misconfigured; retrieved %s ok" bad-hosts))
+;;      (url-retrieve "https://badssl.com"
+;;                    (lambda (retrieved) t))))
+#+END_SRC
 * Core Configuration
 These settings constitute those settings I regard as essential to normal emacs
 operation.
