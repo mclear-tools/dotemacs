@@ -4284,12 +4284,6 @@ Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-
                   ;; File was just opened.
                   (eq rasmus/org-at-src-begin -1))
           (rasmus/org-prettify-src--update))
-        ;; Remove composition if at line; doesn't work properly.
-        ;; (when at-src-block
-        ;;   (with-silent-modifications
-        ;;     (remove-text-properties (match-end 0)
-        ;;                             (1+ (line-end-position))
-        ;;                             '(composition))))
         (setq rasmus/org-at-src-begin at-src-block)))
 
     (defun rasmus/org-prettify-symbols ()
@@ -4305,8 +4299,9 @@ Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-
                                  ("#+end_notes" . ?➤)
                                  ("#+begin_quote" . ?»)
                                  ("#+end_quote" . ?«)))))
-      (turn-on-prettify-symbols-mode)
-      (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
+      (turn-on-prettify-symbols-mode))
+    ;; turn off hiding of source comments
+    ;; (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
     (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
 #+END_SRC
 **** Org Seek
