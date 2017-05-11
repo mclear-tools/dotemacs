@@ -454,7 +454,11 @@ Use flyspell and aspell
   ;; Save a new word to personal dictionary without asking
   (setq ispell-silently-savep t)
   (setq-default ispell-program-name "aspell")
-  (setq-default ispell-list-command "list"))
+  (setq-default ispell-list-command "list")
+  (setq ispell-extra-args
+      (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
+            "--lang=en_US"
+            "--ignore=3")))
 
 (use-package flyspell
   :diminish flyspell-mode
