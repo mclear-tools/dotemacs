@@ -3854,88 +3854,90 @@ mode of writing.
 [[http://orgmode.org][Org-mode]] is really why most people use emacs. Here are some basic settings and packages.
 **** Org Base Settings
 #+BEGIN_SRC emacs-lisp
-(use-package org 
-  :defer t
-  :config
-  ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
-  ;; (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
-  ;; (modify-syntax-entry ?= "(=" org-mode-syntax-table)
-  ;; don't underline indents
-  (defface org-dont-underline-indents '((t :underline nil))
-    "Avoid underlining of indentation.")
-  (defun org-dont-underline-indents ()
-    "Remove underlining at indents."
-    (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
-  (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
-  (setq org-src-fontify-natively t ;; better looking source code
-        org-return-follows-link t ;; make RET follow links
-        org-list-allow-alphabetical t ;; allow alphabetical list
-        org-hide-emphasis-markers t  ;; hide markers
-        org-pretty-entities t ;; make latex look good
-        org-fontify-quote-and-verse-blocks t ;; make quotes stand out
-        org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-        ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼" 
-        org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
-        org-startup-indented t ;; start in indent mode
-        ; org-src-preserve-indentation nil 
-        ; org-edit-src-content-indentation t
-        org-imenu-depth 8
-        imenu-auto-rescan t)
-    :init
-    (add-hook 'org-mode-hook
-        (lambda () 
-          (turn-on-auto-fill)
-          (flyspell-mode 1)
-          (global-git-gutter-mode 0)
-          (imenu-add-to-menubar "Imenu")))
-    ;; normal state shortcuts
-    (general-define-key :states '(normal) :keymaps 'org-mode-map
-      "RET" 'org-open-at-point     ;; Open with return in evil
-      "gh" 'outline-up-heading
-      "gp" 'outline-previous-heading
-      "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
-     	       'org-forward-same-level
-	             'org-forward-heading-same-level)
-      "gk" (if (fboundp 'org-backward-same-level) 
-                 'org-backward-same-level 'org-backward-heading-same-level)
-      "gl" 'outline-next-visible-heading
-      "L" 'org-shiftright
-      "H" 'org-shiftleft
-      "$" 'org-end-of-line
-      "^" 'org-beginning-of-line
-      "<" 'org-metaleft
-      ">" 'org-metaright
-      "-" 'org-cycle-list-bullet)
-    ;; normal & insert state shortcuts.
-    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-      "TAB" 'org-cycle
-      "s-l" 'org-metaright
-      "s-h" 'org-metaleft
-      "s-k" 'org-metaup
-      "s-j" 'org-metadown
-      "s-L" 'org-shiftmetaright
-      "s-H" 'org-shiftmetaleft
-      "s-K" 'org-shiftmetaup
-      "s-J" 'org-shiftmetadown
-      "s-o" '(lambda () (interactive)
-                         (evil-org-eol-call
-                          '(lambda()
-                              (org-insert-heading)
-                              (org-metaright))))
-      "s-t" '(lambda () (interactive)
-                        (evil-org-eol-call
-                          '(lambda()
-                              (org-insert-todo-heading nil)
-                              (org-metaright)))))
-    ;; Use tab in insert mode
-    (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
+  (use-package org 
+    :defer t
+    :config
+    ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
+    ;; (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
+    ;; (modify-syntax-entry ?= "(=" org-mode-syntax-table)
+    ;; don't underline indents
+    (defface org-dont-underline-indents '((t :underline nil))
+      "Avoid underlining of indentation.")
+    (defun org-dont-underline-indents ()
+      "Remove underlining at indents."
+      (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
+    (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
+    (setq org-src-fontify-natively t ;; better looking source code
+          org-return-follows-link t ;; make RET follow links
+          org-list-allow-alphabetical t ;; allow alphabetical list
+          org-hide-emphasis-markers t  ;; hide markers
+          org-pretty-entities t ;; make latex look good
+          org-fontify-quote-and-verse-blocks t ;; make quotes stand out
+          org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
+          ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼" 
+          org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
+          org-startup-indented t ;; start in indent mode
+          ; org-src-preserve-indentation nil 
+          ; org-edit-src-content-indentation t
+          org-imenu-depth 8
+          imenu-auto-rescan t)
+
+      :init
+      (add-hook 'org-mode-hook
+          (lambda () 
+            (turn-on-auto-fill)
+            (flyspell-mode 1)
+            (global-git-gutter-mode 0)
+            (imenu-add-to-menubar "Imenu")))
+      ;; normal state shortcuts
+      (general-define-key :states '(normal) :keymaps 'org-mode-map
+        "RET" 'org-open-at-point     ;; Open with return in evil
+        "gh" 'outline-up-heading
+        "gp" 'outline-previous-heading
+        "gj" (if (fboundp 'org-forward-same-level) ;to be backward compatible with older org version
+                 'org-forward-same-level
+                   'org-forward-heading-same-level)
+        "gk" (if (fboundp 'org-backward-same-level) 
+                   'org-backward-same-level 'org-backward-heading-same-level)
+        "gl" 'outline-next-visible-heading
+        "L" 'org-shiftright
+        "H" 'org-shiftleft
+        "$" 'org-end-of-line
+        "^" 'org-beginning-of-line
+        "<" 'org-metaleft
+        ">" 'org-metaright
+        "-" 'org-cycle-list-bullet)
+      ;; normal & insert state shortcuts.
+      (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+        "TAB" 'org-cycle
+        "s-l" 'org-metaright
+        "s-h" 'org-metaleft
+        "s-k" 'org-metaup
+        "s-j" 'org-metadown
+        "s-L" 'org-shiftmetaright
+        "s-H" 'org-shiftmetaleft
+        "s-K" 'org-shiftmetaup
+        "s-J" 'org-shiftmetadown
+        "s-o" '(lambda () (interactive)
+                           (evil-org-eol-call
+                            '(lambda()
+                                (org-insert-heading)
+                                (org-metaright))))
+        "s-t" '(lambda () (interactive)
+                          (evil-org-eol-call
+                            '(lambda()
+                                (org-insert-todo-heading nil)
+                                (org-metaright)))))
+      ;; Use tab in insert mode
+      (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil))
 #+END_SRC
 
 **** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
-    :defer 1
+    :after org
+    :commands (org-pandoc-publish-to-html5)
     :config
     ;; default options for all output formats
     ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
@@ -3944,7 +3946,61 @@ mode of writing.
     (setq org-pandoc-options-for-docx '((standalone . nil)))
     ;; special settings for beamer-pdf and latex-pdf exporters
     (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
-    (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex"))))
+    (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex")))
+    
+        
+    ;; Pandoc publishing functions 
+    (defun org-pandoc-publish-to (format plist filename pub-dir)
+    (setq org-pandoc-format format)
+    (let ((tempfile
+          (org-publish-org-to
+              'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
+            (outfile (format "%s.%s"
+                     (concat
+                      pub-dir
+                      (file-name-sans-extension (file-name-nondirectory filename)))
+                     (assoc-default format org-pandoc-extensions))))
+              (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
+              (let ((process
+               (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
+                       org-pandoc-option-table))
+              (local-hook-symbol
+               (intern (format "org-pandoc-after-processing-%s-hook" format))))
+                (process-put process 'files (list tempfile))
+                (process-put process 'output-file filename)
+                (process-put process 'local-hook-symbol local-hook-symbol))))
+
+    ;; helper functions
+    (defun org-pandoc-publish-to-html5 (p f pd)
+    (org-pandoc-publish-to 'html5 p f pd))
+    
+    (defun org-pandoc-publish-to-org (p f pd)
+    (org-pandoc-publish-to 'org p f pd))
+
+    (defun org-pandoc-publish-to-markdown (p f pd)
+    (org-pandoc-publish-to 'markdown p f pd))
+              
+    (defun org-pandoc-pan-to-pub (o)
+    (intern (format ":org-pandoc-%s" o)))
+    
+          (defun org-pandoc-pub-to-pan (o)
+          (intern (substring (symbol-name o) 12)))
+          
+          (defconst org-pandoc-publish-options
+            (mapcar 'org-pandoc-pan-to-pub
+                (append org-pandoc-valid-options org-pandoc-colon-separated-options
+                    org-pandoc-file-options)))
+  
+          (defun org-pandoc-plist-to-alist (plist)
+            (let ((alist '()))
+              (while plist
+                (let ((p (car plist)) (v (cadr plist)))
+              (when (member p org-pandoc-publish-options)
+                (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
+                (setq plist (cddr plist)))
+              alist))
+              
+)
 #+END_SRC 
 
 **** Org Miscellaneous Packages  
@@ -4058,6 +4114,15 @@ same day of the month, but will be the same day of the week."
   ;;; Org-publish settings
       (setq org-publish-project-alist
         '(
+        ("wiki"
+        :base-directory       "~/Desktop/wiki"
+        :base-extension        "org"
+        :publishing-directory  "~/Desktop/wiki/html"
+        ;; :publishing-function    org-html-publish-to-html
+        :publishing-function (org-pandoc-publish-to-html5)
+        :org-pandoc-table-of-contents t
+        :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
+        )
 
         ("testing"
         :base-directory "~/test/source"
@@ -4128,56 +4193,6 @@ same day of the month, but will be the same day of the week."
       ;;   "Publish an org file to html using ox-pandoc. Return output file name."
       ;;   (org-publish-org-to 'org-pandoc-export-to-html filename ".html" plist pub-dir))
 
-        ;; Pandoc publishing functions 
-        (defun org-pandoc-publish-to (format plist filename pub-dir)
-          (setq org-pandoc-format format)
-          (let ((tempfile
-           (org-publish-org-to
-            'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
-          (outfile (format "%s.%s"
-		           (concat
-		            pub-dir
-		            (file-name-sans-extension (file-name-nondirectory filename)))
-		           (assoc-default format org-pandoc-extensions))))
-            (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
-            (let ((process
-             (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
-		             org-pandoc-option-table))
-            (local-hook-symbol
-             (intern (format "org-pandoc-after-processing-%s-hook" format))))
-              (process-put process 'files (list tempfile))
-              (process-put process 'output-file filename)
-              (process-put process 'local-hook-symbol local-hook-symbol))))
-
-        ;; helper functions
-        (defun org-pandoc-publish-to-html5 (p f pd)
-            (org-pandoc-publish-to 'html5 p f pd))
-
-        (defun org-pandoc-publish-to-org (p f pd)
-            (org-pandoc-publish-to 'org p f pd))
-
-        (defun org-pandoc-publish-to-markdown (p f pd)
-            (org-pandoc-publish-to 'markdown p f pd))
-
-        (defun org-pandoc-pan-to-pub (o)
-          (intern (format ":org-pandoc-%s" o)))
-
-        (defun org-pandoc-pub-to-pan (o)
-          (intern (substring (symbol-name o) 12)))
-
-        ;; (defconst org-pandoc-publish-options
-        ;;   (mapcar 'org-pandoc-pan-to-pub
-	    ;;       (append org-pandoc-valid-options org-pandoc-colon-separated-options
-	    ;;           org-pandoc-file-options)))
-
-        (defun org-pandoc-plist-to-alist (plist)
-          (let ((alist '()))
-            (while plist
-              (let ((p (car plist)) (v (cadr plist)))
-	        (when (member p org-pandoc-publish-options)
-	          (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
-              (setq plist (cddr plist)))
-            alist))
 #+END_SRC
 
 **** Org Pomodoro
