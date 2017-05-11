@@ -5246,7 +5246,7 @@ Interface with Zotero.
   (interactive)
   (when (display-graphic-p)  ;; this is only for graphical emacs
     ;; the serif font familiy and height, save the default attributes
-    (let ((serif-fam "Minion Pro")
+    (let ((serif-fam "Adobe Caslon Pro")
           (serif-height 150)
           (default-fam (face-attribute 'default :family))
           (default-height (face-attribute 'default :height)))
