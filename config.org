@@ -2048,12 +2048,11 @@ Nice [[https://github.com/NicolasPetton/zerodark-theme][dark theme]] with custom
 Make sure that other themes I like are downloaded and available
 #+BEGIN_SRC emacs-lisp
 (defvar packages-appearance
-  '(monokai-theme solarized-theme zenburn-theme molokai-theme darktooth-theme
-                  tango-2-theme gotham-theme sublime-themes 
-                  waher-theme ample-theme material-theme zerodark-theme
-                  color-theme-modern leuven-theme spacemacs-theme gruvbox-theme
+  '(solarized-theme zenburn-theme molokai-theme darktooth-theme
+                  gotham-theme ample-theme material-theme zerodark-theme
+                  leuven-theme spacemacs-theme gruvbox-theme
                   forest-blue-theme flatland-theme afternoon-theme
-                  cyberpunk-theme madhat2r-theme kaolin-theme darkmine-theme tao-theme darkokai-theme jazz-theme suscolors-theme omtose-phellack-theme)
+                  cyberpunk-theme kaolin-theme darkmine-theme tao-theme darkokai-theme jazz-theme suscolors-theme omtose-phellack-theme)
 "A list of themes to ensure are installed at launch.")
 
 (defun appearance-packages-installed-p ()
