@@ -3186,9 +3186,10 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      :commands eshell
      ;; :bind ("C-x e" . eshell)
      :init
-     ;; (use-package em-cmpl :ensure nil)
-     ;; (use-package em-prompt :ensure nil)
-     ;; (use-package em-term :ensure nil)
+     (use-package em-cmpl :ensure nil)
+     (use-package em-prompt :ensure nil)
+     (use-package em-term :ensure nil)
+     (use-package em-alias :ensure nil)
      (setq
            eshell-highlight-prompt nil
            eshell-buffer-shorthand t
@@ -3248,10 +3249,117 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
                  (my/setup-eshell)
                  (eshell-cmpl-initialize)))
  #+END_SRC
+ 
+**** Eshell Path Shortening
+Courtesy of [[https://www.emacswiki.org/emacs/EshellPrompt][emacs wiki]]
+#+BEGIN_SRC emacs-lisp
+(defun shortened-path (path max-len)
+"Return a potentially trimmed-down version of the directory PATH, replacing
+parent directories with their initial characters to try to get the character
+length of PATH (sans directory slashes) down to MAX-LEN."
+  (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (len (+ (1- (length components))
+                 (reduce '+ components :key 'length)))
+         (str ""))
+    (while (and (> len max-len)
+                (cdr components))
+      (setq str (concat str
+                        (cond ((= 0 (length (car components))) "/")
+                              ((= 1 (length (car components)))
+                               (concat (car components) "/"))
+                              (t
+                               (if (string= "."
+                                            (string (elt (car components) 0)))
+                                   (concat (substring (car components) 0 2)
+                                           "/")
+                                 (string (elt (car components) 0) ?/)))))
+            len (- len (1- (length (car components))))
+            components (cdr components)))
+    (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+#+END_SRC
 
-**** Eshell Prompt 
+**** Eshell Prompt Extras
+Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt plus a custom theme. 
+#+BEGIN_SRC emacs-lisp
+    (use-package eshell-prompt-extras
+      :after eshell
+      :init
+      (setq eshell-highlight-prompt nil
+            eshell-prompt-function 'cpm-eshell-theme)
+      :config
+      (defun cpm-eshell-theme ()
+      "A eshell-prompt lambda theme with directory shrinking."
+      (setq eshell-prompt-regexp "^[^#\nλ]* λ[#]* ")
+      (let* ((pwd-repl-home (lambda (pwd)
+                              (let* ((home (expand-file-name (getenv "HOME")))
+                                     (home-len (length home)))
+                                (if (and
+                                     (>= (length pwd) home-len)
+                                     (equal home (substring pwd 0 home-len)))
+                                    (concat "~" (substring pwd home-len))
+                                  pwd))))
+             (shrink-paths (lambda (p-lst)
+                             (if (> (length p-lst) 3) ;; shrink paths deeper than 3 dirs
+                                 (concat
+                                  (mapconcat (lambda (elm)
+                                               (if (zerop (length elm)) ""
+                                                 (substring elm 0 1)))
+                                             (butlast p-lst 3)
+                                             "/")
+                                  "/"
+                                  (mapconcat (lambda (elm) elm)
+                                             (last p-lst 3)
+                                             "/"))
+                               (mapconcat (lambda (elm) elm)
+                                          p-lst
+                                          "/")))))
+        (concat
+         (epe-colorize-with-face (format-time-string "%H:%M:%S ") 'epe-venv-face)
+         (when (epe-remote-p)
+           (epe-colorize-with-face
+            (concat (epe-remote-user) "@" (epe-remote-host) " ")
+            'epe-remote-face))
+         (when epe-show-python-info
+           (when (fboundp 'epe-venv-p)
+             (when (and (epe-venv-p) venv-current-name)
+               (concat 
+                 (epe-colorize-with-face "(" 'epe-venv-face) 
+                 ;; (propertize venv-current-name 'face `(:foreground "base01" :slant italic))
+                 (epe-colorize-with-face venv-current-name 'epe-dir-face)
+                 (epe-colorize-with-face ") " 'epe-venv-face))))) 
+         (epe-colorize-with-face (funcall
+                                  shrink-paths
+                                  (split-string
+                                   (funcall pwd-repl-home (eshell/pwd)) "/"))
+                                 'epe-dir-face)
+         (when (epe-git-p)
+           (concat
+             (concat (propertize " :" 'face 'font-lock-string-face)
+                     (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
+                     (propertize "(" 'face 'font-lock-comment-face)
+                     (let* ((status (shell-command-to-string "git status --porcelain"))
+                                 (parts (split-string status "\n" t " "))
+                                 (states (mapcar #'string-to-char parts))
+                                 (added (count-if (lambda (char) (= char ?A)) states))
+                                 (modified (count-if (lambda (char) (= char ?M)) states))
+                                 (deleted (count-if (lambda (char) (= char ?D)) states)))
+                            (when (> (+ added modified deleted) 0)
+                              (propertize (format "+%d/~%d/-%d" added modified deleted) 'face `(:foreground "#d33682"))))
+                     (propertize ")" 'face 'font-lock-comment-face)
+                     (epe-colorize-with-face (epe-git-dirty) 'font-lock-warning-face)
+                     (epe-colorize-with-face (epe-git-untracked) 'font-lock-comment-face)
+                     (unless (= (epe-git-unpushed-number) 0)
+                     (concat ":" (number-to-string (epe-git-unpushed-number)))))))
+         (epe-colorize-with-face " λ" 'epe-dir-face)
+         (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
+         " ")))
+  )
+#+END_SRC
+**** DISABLED Eshell Prompt 
+
  Make the prompt display more useful info. I got a lot of help from looking
  at [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]].
+
  #+BEGIN_SRC emacs-lisp 
      (defcustom dotemacs-eshell/prompt-git-info
      t
@@ -3270,14 +3378,14 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
 
      (setq eshell-prompt-function
          (lambda ()
-           (concat (propertize (abbreviate-file-name (eshell/pwd)) 'face 'eshell-prompt)
+           (concat (propertize (shortened-path (eshell/pwd) 40) 'face 'eshell-prompt)
                    (when (and dotemacs-eshell/prompt-git-info
                               (fboundp #'vc-git-branches))
-                     (let ((branch (car (vc-git-branches))))
+                     (let ((branch (car (vc-git-branches)))
                        (when branch
                          (concat
-                          (propertize " [" 'face 'font-lock-keyword-face)
                           (propertize branch 'face 'font-lock-function-name-face)
+                          (propertize " " 'face 'font-lock-keyword-face)
                           (let* ((status (shell-command-to-string "git status --porcelain"))
                                  (parts (split-string status "\n" t " "))
                                  (states (mapcar #'string-to-char parts))
@@ -3285,13 +3393,13 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
                                  (modified (count-if (lambda (char) (= char ?M)) states))
                                  (deleted (count-if (lambda (char) (= char ?D)) states)))
                             (when (> (+ added modified deleted) 0)
-                              (propertize (format " +%d ~%d -%d" added modified deleted) 'face 'font-lock-comment-face)))
-                          (propertize "]" 'face 'font-lock-keyword-face)))))
+                              (propertize (format " +%d|~%d|-%d" added modified deleted) 'face 'font-lock-comment-face)))
+                          (propertize " " 'face 'font-lock-keyword-face)))))
                    (when (and (boundp #'venv-current-name) venv-current-name)
                      (concat 
-                       (epe-colorize-with-face " [" 'epe-venv-face) 
+                       (epe-colorize-with-face " (" 'epe-venv-face) 
                        (propertize venv-current-name 'face `(:foreground "#2E8B57" :slant italic))
-                       (epe-colorize-with-face "]" 'epe-venv-face))) 
+                       (epe-colorize-with-face ")" 'epe-venv-face))) 
                    (propertize " $ " 'face 'font-lock-constant-face))))
  #+END_SRC
 
@@ -3327,6 +3435,29 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
    (magit-status default-directory)
    nil)
  #+END_SRC
+**** Eshell Help
+#+BEGIN_SRC emacs-lisp
+(use-package esh-help
+  :after eshell
+  :config
+  (setup-esh-help-eldoc)  ;; To use eldoc in Eshell
+) 
+#+END_SRC
+**** Eshell Fringe Status
+Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-fringe-status
+  :defer
+  :init
+  (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
+#+END_SRC
+*** Tramp
+An easy way to ssh
+#+BEGIN_SRC emacs-lisp
+(use-package tramp-term
+  :commands tramp-term
+)
+#+END_SRC
 ** Package Management
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
