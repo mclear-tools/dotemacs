@@ -215,6 +215,13 @@ Make all files [[http://stackoverflow.com/questions/729692/why-should-text-files
 (setq require-final-newline t)
 #+END_SRC
 
+**** Paragraphs
+From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill paragraph.
+#+BEGIN_SRC emacs-lisp
+;; The original value is "\f\\|[      ]*$", so we add the bullets (-), (+), and (*).
+    ;; There is no need for "^" as the regexp is matched at the beginning of line.
+    (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
+#+END_SRC
 **** Start from scratch
 Start up with a clean scratch buffer.
 #+BEGIN_SRC emacs-lisp
