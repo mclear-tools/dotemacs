@@ -813,7 +813,7 @@ argument takes the kindows rotate backwards."
       "Open projects dir"
       (interactive)
       (require 'ranger)
-      (find-file "~/projects"))
+      (find-file "~/Dropbox/Work/projects"))
 
 #+END_SRC
 **** Reveal in Finder
@@ -1715,10 +1715,8 @@ I like the frame centered and approximately 2/3 of a 13inch laptop screen.
 *** Name frame
 Show the filepath in the frame title.
 #+BEGIN_SRC emacs-lisp
-(setq frame-title-format
-      '(" "
-      (buffer-file-name "%f"
-      (dired-directory dired-directory "%b"))))
+  (setq-default frame-title-format
+            '((buffer-file-name "%f" "%b")))
 #+END_SRC
 *** Get rid of UI cruft
 Turn off all of the GUI cruft.
@@ -1759,14 +1757,16 @@ And here's how we tell Emacs to use the font we want to use.
     :config (dynamic-fonts-setup) 
      :init
      (progn (setq dynamic-fonts-preferred-proportional-fonts
-                  '("Avenir Next" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
+                  '("Avenir Next" "Verdana" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
             (setq dynamic-fonts-preferred-monospace-fonts
-               '("Inconsolata LGC" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+               '("Inconsolata LGC" "Hack" "Source Code Pro" "Monaco" "Consolas" "Menlo"
                  "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
   )
     (global-set-key (kbd "C-+") 'text-scale-increase)
     (global-set-key (kbd "C--") 'text-scale-decrease)
     ;; C-x C-0 restores the default font size
+    ;; increase line spacing in other mono fonts
+    ;; (setq-default line-spacing .30)
 #+end_src
 *** Modeline
 **** Spaceline
@@ -2159,18 +2159,20 @@ Use helm
 *** Centered Cursor Mode
 Keep the cursor centered in the screen
 #+BEGIN_SRC emacs-lisp
-  (use-package centered-cursor-mode
-    :diminish centered-cursor-mode
-    :commands (centered-cursor-mode
-               global-centered-cursor-mode)
-    :config
-    (progn
-      (setq ccm-recenter-at-end-of-file t
-            ccm-ignored-commands '(mouse-drag-region
-                                   mouse-set-point
-                                   widget-button-click
-                                   scroll-bar-toolkit-scroll
-                                   evil-mouse-drag-region))))
+    (use-package centered-cursor-mode
+      :diminish centered-cursor-mode
+      :commands (centered-cursor-mode
+                 global-centered-cursor-mode)
+      :config
+      (progn
+        (setq ccm-recenter-at-end-of-file t
+              ccm-ignored-commands '(mouse-drag-region
+                                     mouse-set-point
+                                     widget-button-click
+                                     scroll-bar-toolkit-scroll
+                                     evil-mouse-drag-region))))
+
+  (add-hook 'text-mode-hook 'centered-cursor-mode)
 #+END_SRC
 
 *** Namespaced Keybindings
@@ -2193,7 +2195,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     (cpm-leader1
       "b"  '(:ignore t :which-key "Buffers")
       "bb" 'helm-mini
-      "bc" 'spacemacs/new-empty-buffer
+      "bc" 'spacemacs/copy-whole-buffer-to-clipboard
       "bD" 'kill-buffer-and-window
       "bd" 'kill-this-buffer
       "bf" 'browse-file-directory
@@ -2560,6 +2562,7 @@ Keybindings for managing packages
     "u"  '(:ignore t :which-key "User")
     "um" 'cpm/org-to-markdown   
     "uc" 'pandoc-convert-to-pdf
+    "uk" 'kill-compilation
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
     "uP" 'pandoc-pdf-open
@@ -3042,6 +3045,7 @@ A file tree and outliner
  Other useful shell settings  
  #+begin_src emacs-lisp
  ;; basic settings
+ ;; (evil-set-initial-state 'term-mode 'emacs)
  (setq explicit-shell-file-name "/usr/local/bin/zsh")
  ;; don't add newline in long lines
  (setq-default term-suppress-hard-newline t)
@@ -3139,12 +3143,12 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      :config
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
-     (setq venv-location "/Users/Roambot/bin/virtualenvs")
-     (setq venv-project-home "/Users/Roambot/projects/")
+     (setq venv-location "/Users/roambot/bin/virtualenvs")
+     (setq venv-project-home "/Users/roambot/Dropbox/Work/projects/")
      (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
    (defcustom venv-project-home
-     (expand-file-name (or (getenv "PROJECT_HOME") "~/projects/"))
+     (expand-file-name (or (getenv "PROJECT_HOME") "/Users/roambot/Dropbox/Work/projects/"))
        "The location(s) of your virtualenv projects."
        :group 'virtualenvwrapper)
 
@@ -4038,7 +4042,7 @@ Appearance settings for Org-mode
   )
 #+END_SRC
 ***** Org Prettify blocks
-Make source blocks look better.
+Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'org
     (defvar-local rasmus/org-at-src-begin -1
@@ -4062,6 +4066,7 @@ Make source blocks look better.
                 (let ((new-cell (cons args rasmus/ob-header-symbol)))
                   (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
                   (cl-pushnew new-cell found :test #'equal)))))
+
           (setq prettify-symbols-alist
                 (cl-set-difference prettify-symbols-alist
                                    (cl-set-difference
@@ -4070,6 +4075,7 @@ Make source blocks look better.
                                        (eq (cdr elm) rasmus/ob-header-symbol))
                                      prettify-symbols-alist)
                                     found :test #'equal)))
+
           ;; Clean up old font-lock-keywords.
           (font-lock-remove-keywords nil prettify-symbols--keywords)
           (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
