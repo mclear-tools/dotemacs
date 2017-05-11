@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 
-;; This is the bootstrap code for getting the literate configuration file in =config.org= up and running. The original source for much of this code is from sriramkswamy/dotemacs at =https://github.com/sriramkswamy/dotemacs=.
+;; This is the bootstrap code for getting the literate configuration file in config.org up and running. The original source for much of this code is from sriramkswamy/dotemacs at https://github.com/sriramkswamy/dotemacs.
 
 ;;; Code:
  ;;Normally file-name-handler-alist is set to
