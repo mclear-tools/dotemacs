@@ -3120,7 +3120,8 @@ A file tree and outliner
                (run-at-time "0.4 sec" nil
                             (lambda ()
                               (select-window (get-buffer-window (get-buffer-create "*compilation*")))
-                              (switch-to-buffer nil)))
+                              (switch-to-buffer nil)
+                              (delete-window)))
                (message "No Compilation Errors!")))))
  #+END_SRC
 
