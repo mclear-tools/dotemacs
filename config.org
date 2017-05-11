@@ -1364,6 +1364,7 @@ Better dired navigation using ranger-like settings
     (unless (file-directory-p image-dired-dir)
       (make-directory image-dired-dir))
     :config
+    (define-key dired-mode-map "Y" 'ora-dired-rsync)
     (setq  ranger-dont-show-binary t
            ranger-excluded-extensions '("mkv" "iso" "mp4")
            ranger-max-preview-size 25
