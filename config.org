@@ -833,6 +833,24 @@ argument takes the kindows rotate backwards."
         (interactive)
         (helm-do-ag dir))
 #+END_SRC
+
+**** Sticky Buffer/Window
+Stick/Lock buffer to window, courtesy of [[https://gist.github.com/ShingoFukuyama/8797743][ShingoFukuyama]].
+#+BEGIN_SRC emacs-lisp
+;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00975.html
+
+(defvar sticky-buffer-previous-header-line-format)
+(define-minor-mode sticky-buffer-mode
+  "Make the current window always display this buffer."
+  nil " sticky" nil
+  (if sticky-buffer-mode
+      (progn
+        (set (make-local-variable 'sticky-buffer-previous-header-line-format)
+             header-line-format)
+        (set-window-dedicated-p (selected-window) sticky-buffer-mode))
+    (set-window-dedicated-p (selected-window) sticky-buffer-mode)
+    (setq header-line-format sticky-buffer-previous-header-line-format)))
+#+END_SRC
 **** Jump in buffer
 I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for navigating in tagged buffers. 
 #+BEGIN_SRC emacs-lisp
@@ -2103,6 +2121,7 @@ highlight TODO statements in comments
 **** Diminish minor modes
  #+BEGIN_SRC emacs-lisp
    (diminish 'visual-line-mode)
+   (diminish 'sticky-buffer-mode "𝓢")
    (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
    (eval-after-load "abbrev" '(diminish 'abbrev-mode "Ⓐ"))
    (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
