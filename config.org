@@ -3286,7 +3286,7 @@ Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt 
       :init
       (setq eshell-highlight-prompt nil
             epe-git-dirty-char "✘"
-            epe-git-untracked-char "⇆";"⟀" "" "⟿" "⤭" 
+            epe-git-untracked-char "⇆"; "…" "⟀" "⟿" "⤭" 
             eshell-prompt-function 'cpm-eshell-theme)
       :config
       (defun cpm-eshell-theme ()
