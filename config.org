@@ -3285,6 +3285,8 @@ Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt 
       :after eshell
       :init
       (setq eshell-highlight-prompt nil
+            epe-git-dirty-char "✘"
+            epe-git-untracked-char "⇆";"⟀" "" "⟿" "⤭" 
             eshell-prompt-function 'cpm-eshell-theme)
       :config
       (defun cpm-eshell-theme ()
@@ -3336,7 +3338,6 @@ Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt 
            (concat
              (concat (propertize " :" 'face 'font-lock-string-face)
                      (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
-                     (propertize "(" 'face 'font-lock-comment-face)
                      (let* ((status (shell-command-to-string "git status --porcelain"))
                                  (parts (split-string status "\n" t " "))
                                  (states (mapcar #'string-to-char parts))
@@ -3344,8 +3345,9 @@ Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt 
                                  (modified (count-if (lambda (char) (= char ?M)) states))
                                  (deleted (count-if (lambda (char) (= char ?D)) states)))
                             (when (> (+ added modified deleted) 0)
-                              (propertize (format "+%d/~%d/-%d" added modified deleted) 'face `(:foreground "#d33682"))))
-                     (propertize ")" 'face 'font-lock-comment-face)
+                              (concat (propertize "(" 'face 'font-lock-comment-face)
+                              (propertize (format "+%d/~%d/-%d" added modified deleted) 'face `(:foreground "#d33682"))
+                              (propertize ")" 'face 'font-lock-comment-face))))
                      (epe-colorize-with-face (epe-git-dirty) 'font-lock-warning-face)
                      (epe-colorize-with-face (epe-git-untracked) 'font-lock-comment-face)
                      (unless (= (epe-git-unpushed-number) 0)
