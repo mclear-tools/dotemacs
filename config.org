@@ -3279,7 +3279,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 #+END_SRC
 
 **** Eshell Prompt Extras
-Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt plus a custom theme. 
+Some bling for the prompt plus a custom theme. In general it makes the
+ prompt display more useful info. I got a lot of help from looking at
+ [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]] and
+ the dakrone theme.
+
 #+BEGIN_SRC emacs-lisp
     (use-package eshell-prompt-extras
       :after eshell
@@ -3357,54 +3361,6 @@ Some [[https://github.com/kaihaosw/eshell-prompt-extras][bling]] for the prompt 
          " ")))
   )
 #+END_SRC
-**** DISABLED Eshell Prompt 
-
- Make the prompt display more useful info. I got a lot of help from looking
- at [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]].
-
- #+BEGIN_SRC emacs-lisp 
-     (defcustom dotemacs-eshell/prompt-git-info
-     t
-     "Turns on additional git information in the prompt."
-     :group 'dotemacs-eshell
-     :type 'boolean)
-  
-   ;; (epe-colorize-with-face "abc" 'font-lock-comment-face)
-   (defmacro epe-colorize-with-face (str face)
-     `(propertize ,str 'face ,face))
-  
-   (defface epe-venv-face
-     '((t (:inherit font-lock-comment-face)))
-     "Face of python virtual environment info in prompt."
-     :group 'epe)
-
-     (setq eshell-prompt-function
-         (lambda ()
-           (concat (propertize (shortened-path (eshell/pwd) 40) 'face 'eshell-prompt)
-                   (when (and dotemacs-eshell/prompt-git-info
-                              (fboundp #'vc-git-branches))
-                     (let ((branch (car (vc-git-branches)))
-                       (when branch
-                         (concat
-                          (propertize branch 'face 'font-lock-function-name-face)
-                          (propertize " " 'face 'font-lock-keyword-face)
-                          (let* ((status (shell-command-to-string "git status --porcelain"))
-                                 (parts (split-string status "\n" t " "))
-                                 (states (mapcar #'string-to-char parts))
-                                 (added (count-if (lambda (char) (= char ?A)) states))
-                                 (modified (count-if (lambda (char) (= char ?M)) states))
-                                 (deleted (count-if (lambda (char) (= char ?D)) states)))
-                            (when (> (+ added modified deleted) 0)
-                              (propertize (format " +%d|~%d|-%d" added modified deleted) 'face 'font-lock-comment-face)))
-                          (propertize " " 'face 'font-lock-keyword-face)))))
-                   (when (and (boundp #'venv-current-name) venv-current-name)
-                     (concat 
-                       (epe-colorize-with-face " (" 'epe-venv-face) 
-                       (propertize venv-current-name 'face `(:foreground "#2E8B57" :slant italic))
-                       (epe-colorize-with-face ")" 'epe-venv-face))) 
-                   (propertize " $ " 'face 'font-lock-constant-face))))
- #+END_SRC
-
 **** Shell Switcher
  Useful for switching between [[https://github.com/DamienCassou/shell-switcher][multiple instances]] of eshell. But you can
  configure for any shell that you use.
