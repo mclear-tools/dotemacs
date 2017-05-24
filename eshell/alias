@@ -1,4 +1,3 @@
-alias ehh esh-help-run-help $1
 alias x exit
 alias vim find-file $1
 alias v find-file $1
@@ -7,9 +6,12 @@ alias s eshell/magit
 alias rf (helm-recentf)
 alias qq (evil-quit-all)
 alias qr restart-emacs
+alias pp 'helm-projectile-switch-project' 
+alias pg 'goto-projects'
 alias pd (eshell/cd "~/projects")
 alias ll ls -lah
 alias la ls -lah
+alias fl 'helm-locate $1'
 alias gl2 git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n'' %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
 alias gl git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
 alias grh git reset --hard
@@ -23,10 +25,11 @@ alias gsc git svn dcommit
 alias gsr git svn rebase
 alias gd git diff --color $*
 alias g git $*
-alias fl (helm-locate) 
 alias FF find-file-other-window $1
+alias fr (helm-recentf)
 alias ff find-file $1
 alias ex exit
+alias ehh esh-help-run-help $1
 alias emacs find-file $1
 alias ed (eshell/cd "~/.emacs.d")
 alias ec find-file $1
@@ -34,4 +37,9 @@ alias e find-file $1
 alias d deer $1
 alias cc (find-file "~/.emacs.d/config.org")
 alias bs brew search
+alias bb helm-mini
 alias bi brew info
+alias 101 workon phil101
+alias 105 workon phil105
+alias 232 workon phil232 
+alias ox workon ox-kant
