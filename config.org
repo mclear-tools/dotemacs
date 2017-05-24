@@ -2555,6 +2555,7 @@ Keybindings for managing packages
     "tm" 'hidden-mode-line-mode
     "tM" 'spaceline-toggle-minor-modes
     "tn" 'linum-mode
+    "tN" 'org-numbers-overlay-mode
     "to" 'org-toggle-link-display
     "tp" 'smartparens-mode
     "tP" 'show-paren-mode 
