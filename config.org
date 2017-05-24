@@ -2835,13 +2835,18 @@ Keybindings for managing packages
            (file-name-as-directory
             (concat user-cache-directory "url"))))
  #+END_SRC
+*** DISABLED IRC
+#+BEGIN_SRC emacs-lisp
+(use-package circe
+  :defer t)
+#+END_SRC
+
 ** Navigation
 *** Avy
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :commands (avy-goto-char))
 #+END_SRC
-
 *** Bookmark
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark+
