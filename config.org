@@ -3186,10 +3186,15 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      :commands eshell
      ;; :bind ("C-x e" . eshell)
      :init
-     (use-package em-cmpl :ensure nil)
-     (use-package em-prompt :ensure nil)
-     (use-package em-term :ensure nil)
-     (use-package em-alias :ensure nil)
+     ;; (use-package em-cmpl :ensure nil)
+     (use-package em-prompt  :ensure nil)
+     (use-package em-term    :ensure nil)
+     (use-package em-alias   :ensure nil)
+     (use-package em-smart   :ensure nil)
+     ;; plan 9
+     (setq eshell-where-to-jump 'begin)
+     (setq eshell-review-quick-commands nil)
+     (setq eshell-smart-space-goes-to-end t)
      (setq
            eshell-highlight-prompt nil
            eshell-buffer-shorthand t
@@ -3287,6 +3292,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
 #+BEGIN_SRC emacs-lisp
     (use-package eshell-prompt-extras
       :after eshell
+      :requires eshell
       :init
       (setq eshell-highlight-prompt nil
             epe-git-dirty-char "✘"
@@ -3339,8 +3345,8 @@ Some bling for the prompt plus a custom theme. In general it makes the
                                    (funcall pwd-repl-home (eshell/pwd)) "/"))
                                  'epe-dir-face)
          (when (epe-git-p)
-           (concat
              (concat (propertize " :" 'face 'font-lock-string-face)
+                (concat
                      (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
                      (let* ((status (shell-command-to-string "git status --porcelain"))
                                  (parts (split-string status "\n" t " "))
@@ -3351,11 +3357,15 @@ Some bling for the prompt plus a custom theme. In general it makes the
                             (when (> (+ added modified deleted) 0)
                               (concat (propertize "(" 'face 'font-lock-comment-face)
                               (propertize (format "+%d/~%d/-%d" added modified deleted) 'face `(:foreground "#d33682"))
-                              (propertize ")" 'face 'font-lock-comment-face))))
-                     (epe-colorize-with-face (epe-git-dirty) 'font-lock-warning-face)
-                     (epe-colorize-with-face (epe-git-untracked) 'font-lock-comment-face)
-                     (unless (= (epe-git-unpushed-number) 0)
-                     (concat ":" (number-to-string (epe-git-unpushed-number)))))))
+                              (propertize ")" 'face 'font-lock-comment-face))
+                              ))
+                     (epe-colorize-with-face (epe-git-dirty) 'font-lock-warning-face))
+                     (epe-colorize-with-face 
+                       (concat
+                       (epe-git-untracked) 
+                       (unless (= (epe-git-unpushed-number) 0)
+                         (concat ":" (number-to-string (epe-git-unpushed-number)))))
+                     'font-lock-comment-face)))
          (epe-colorize-with-face " λ" 'epe-dir-face)
          (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
          " ")))
@@ -3393,7 +3403,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
    (magit-status default-directory)
    nil)
  #+END_SRC
-**** Eshell Help
+**** DISABLED Eshell Help
 #+BEGIN_SRC emacs-lisp
 (use-package esh-help
   :after eshell
