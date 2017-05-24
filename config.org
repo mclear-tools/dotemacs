@@ -3913,72 +3913,83 @@ mode of writing.
 **** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ox-pandoc
-    :after org
-    :commands (org-pandoc-publish-to-html5)
-    :config
-    ;; default options for all output formats
-    ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
-    (setq org-pandoc-options '((standalone . t)))
-    ;; cancel above settings only for 'docx' format
-    (setq org-pandoc-options-for-docx '((standalone . nil)))
-    ;; special settings for beamer-pdf and latex-pdf exporters
-    (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
-    (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex")))
-    
-        
-    ;; Pandoc publishing functions 
-    (defun org-pandoc-publish-to (format plist filename pub-dir)
-    (setq org-pandoc-format format)
-    (let ((tempfile
-          (org-publish-org-to
-              'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
-            (outfile (format "%s.%s"
-                     (concat
-                      pub-dir
-                      (file-name-sans-extension (file-name-nondirectory filename)))
-                     (assoc-default format org-pandoc-extensions))))
-              (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
-              (let ((process
-               (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
-                       org-pandoc-option-table))
-              (local-hook-symbol
-               (intern (format "org-pandoc-after-processing-%s-hook" format))))
-                (process-put process 'files (list tempfile))
-                (process-put process 'output-file filename)
-                (process-put process 'local-hook-symbol local-hook-symbol))))
+    (use-package ox-pandoc
+      :after org
+      :commands (org-pandoc-publish-to-html5)
+      :config
+      ;; default options for all output formats
+      ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
+      ;; (setq org-pandoc-options '((standalone . t)))
+      ;; cancel above settings only for 'docx' format
+      (setq org-pandoc-options-for-docx '((standalone . nil)))
+      ;; special settings for beamer-pdf and latex-pdf exporters
+      (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
+      (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex")))
 
-    ;; helper functions
-    (defun org-pandoc-publish-to-html5 (p f pd)
-    (org-pandoc-publish-to 'html5 p f pd))
-    
-    (defun org-pandoc-publish-to-org (p f pd)
-    (org-pandoc-publish-to 'org p f pd))
 
-    (defun org-pandoc-publish-to-markdown (p f pd)
-    (org-pandoc-publish-to 'markdown p f pd))
-              
-    (defun org-pandoc-pan-to-pub (o)
-    (intern (format ":org-pandoc-%s" o)))
-    
-          (defun org-pandoc-pub-to-pan (o)
-          (intern (substring (symbol-name o) 12)))
-          
-          (defconst org-pandoc-publish-options
-            (mapcar 'org-pandoc-pan-to-pub
-                (append org-pandoc-valid-options org-pandoc-colon-separated-options
-                    org-pandoc-file-options)))
-  
-          (defun org-pandoc-plist-to-alist (plist)
-            (let ((alist '()))
-              (while plist
-                (let ((p (car plist)) (v (cadr plist)))
-              (when (member p org-pandoc-publish-options)
-                (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
-                (setq plist (cddr plist)))
-              alist))
-              
-)
+      ;; Pandoc publishing functions 
+      (defun org-pandoc-publish-to (format plist filename pub-dir)
+      (setq org-pandoc-format format)
+      (let ((tempfile
+            (org-publish-org-to
+                'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
+              (outfile (format "%s.%s"
+                       (concat
+                        pub-dir
+                        (file-name-sans-extension (file-name-nondirectory filename)))
+                       (assoc-default format org-pandoc-extensions))))
+                (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
+                (let ((process
+                 (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
+                         org-pandoc-option-table))
+                (local-hook-symbol
+                 (intern (format "org-pandoc-after-processing-%s-hook" format))))
+                  (process-put process 'files (list tempfile))
+                  (process-put process 'output-file filename)
+                  (process-put process 'local-hook-symbol local-hook-symbol))))
+
+      ;; helper functions
+      (defun org-pandoc-publish-to-html5 (p f pd)
+      (org-pandoc-publish-to 'html5 p f pd))
+
+      (defun org-pandoc-publish-to-org (p f pd)
+      (org-pandoc-publish-to 'org p f pd))
+
+      (defun org-pandoc-publish-to-markdown (p f pd)
+      (org-pandoc-publish-to 'markdown p f pd))
+
+      (defun org-pandoc-pan-to-pub (o)
+      (intern (format ":org-pandoc-%s" o)))
+
+            (defun org-pandoc-pub-to-pan (o)
+            (intern (substring (symbol-name o) 12)))
+
+            (defconst org-pandoc-publish-options
+              (mapcar 'org-pandoc-pan-to-pub
+                  (append org-pandoc-valid-options org-pandoc-colon-separated-options
+                      org-pandoc-file-options)))
+
+            (defun org-pandoc-plist-to-alist (plist)
+              (let ((alist '()))
+                (while plist
+                  (let ((p (car plist)) (v (cadr plist)))
+                (when (member p org-pandoc-publish-options)
+                  (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
+                  (setq plist (cddr plist)))
+                alist))
+
+
+  ;; (org-link-set-parameters
+  ;;  "wiki"
+  ;;  :export (lambda (path desc backend)
+  ;;        (message-box "%s" backend)
+  ;;        (cond
+  ;;         ((eq backend 'html)
+  ;;          (format "<a href='%s.html'>%s</a>" path (or desc path)))
+  ;;         ((eq backend 'pandoc)
+  ;;          (format "\<a href='%s.html'\>%s\</a\>" path (or desc path))))))
+
+  )
 #+END_SRC 
 
 **** Org Miscellaneous Packages  
@@ -4293,132 +4304,109 @@ Searching Org-mode with search tools.
 #+END_SRC
 **** Org-Wiki
 #+BEGIN_SRC emacs-lisp
-  (use-package org-wiki
-    :ensure nil
-    :load-path "~/.emacs.d/elisp/org-wiki/"
-    :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
-    :init 
-    (setq org-wiki-location "~/Desktop/wiki")
-    :config
-    ;; (with-eval-after-load 'ox-pandoc
-    ;; (org-link-set-parameters
-    ;;   "wiki"
-    ;;   :export (lambda (path desc backend)
-    ;;     (cond
-    ;;     ((eq backend 'html)
-    ;;     (format "<a href='%s.html'>%s</a>" path (or desc path)))))))
+    (use-package org-wiki
+      :ensure nil
+      :load-path "~/.emacs.d/elisp/org-wiki/"
+      :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
+      :init 
+      (setq org-wiki-location "~/Desktop/wiki")
+      :config
+      (defun org-wiki-export-html-sync ()
+      "Export all pages to html in synchronous mode."
+      (interactive)
+      (let ((org-html-htmlize-output-type 'css)
+            (org-html-htmlize-font-prefix "org-")
+            )
+      (org-publish
+       `("html"
+         :base-directory       ,org-wiki-location
+         :base-extension        "org"
+         :publishing-directory  "~/Desktop/wiki/html/"
+         ;; :publishing-function    org-html-publish-to-html
+         :publishing-function (org-pandoc-publish-to-html5)
+         :org-pandoc-table-of-contents t
+         :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
+         )
+       t
+       )))
 
-    (defun org-wiki-export-html-sync ()
-    "Export all pages to html in synchronous mode."
-    (interactive)
-    (let ((org-html-htmlize-output-type 'css)
-          (org-html-htmlize-font-prefix "org-")
-          )
-    (org-publish
-     `("html"
-       :base-directory       ,org-wiki-location
-       :base-extension        "org"
-       :publishing-directory  "~/Desktop/wiki/html/"
-       ;; :publishing-function    org-html-publish-to-html
-       :publishing-function (org-pandoc-publish-to-html5)
-       :org-pandoc-table-of-contents t
-       :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-       )
-     t
-     )))
+      (defun org-wiki-export-html ()
+       "Export all pages to html.
+       Note: This function doesn't freeze Emacs since it starts another Emacs process."
+       (interactive)
+       (compile (mapconcat 'identity
+                           `(,org-wiki-emacs-path
+                             "--batch"
+                             "-l" ,org-wiki-user-init-file
+                             "-f" "org-wiki-export-html-sync"
+                             "--kill"
+                             )
+                           " "
+                           )))
 
-    (defun org-wiki-export-html ()
-     "Export all pages to html.
-     Note: This function doesn't freeze Emacs since it starts another Emacs process."
-     (interactive)
-     (compile (mapconcat 'identity
-                         `(,org-wiki-emacs-path
-                           "--batch"
-                           "-l" ,org-wiki-user-init-file
-                           "-f" "org-wiki-export-html-sync"
-                           "--kill"
-                           )
-                         " "
-                         )))
-
-
-
-       (defun org-wiki--org-link (path desc backend)
-       "Creates an html org-wiki pages when  exporting to html.
-     Example: The hyperlink [[wiki:Linux][Dealing with Linux]]
-     will be exported to <a href='Linux.html'>Dealing with Linux</a>"
+      (defun org-wiki--org-link (path desc backend)
+        "Creates an html org-wiki pages when  exporting to html.
+      Example: The hyperlink [[wiki:Linux][Dealing with Linux]]
+      will be exported to <a href='Linux.html'>Dealing with Linux</a>"
         (cl-case backend
           (html (format
-                 "<a href='%s.html'>%s</a>"
-                 path
-                 (or desc path)))))
+             "<a href='%s.html'>%s</a>"
+             path
+             (or desc path)))
+          (pandoc (format
+             "<a href='%s.html'>%s</a>"
+               path
+               (or desc path)))))
+               
+        (defun org-wiki-header ()
+                  "Insert a header at the top of the file."
+                  (interactive)
+                  (save-excursion
+                     (goto-char (point-min))
+                     (insert (format
+                              (string-trim "
+        ,#+TITLE: %s
+        ,#+DESCRIPTION:
+        ,#+KEYWORDS:
+        ,#+SETUPFILE: ~/.emacs.d/elisp/org-html-themes/setup/theme-bigblow.setup
+        ,#+STARTUP:  overview
 
+        Related:
 
+        [[wiki:index][Index]]")
+                (file-name-base (buffer-file-name))))))
+            )              
+                   ;; (defun org-wiki-export-html-sync ()
+                   ;;   "Export all pages to html in synchronous mode."
+                   ;;   (interactive)
+                   ;;   (let ((org-html-htmlize-font-prefix "org-")
+                   ;;         )
 
+                   ;; (defun org-wiki-export-html-sync ()
+                   ;;   "Export all pages to html in synchronous mode."
+                   ;;   (interactive)
+                   ;;   (let ((org-html-htmlize-output-type 'css)
+                   ;;         (org-html-htmlize-font-prefix "org-")
+                   ;;         )
 
-       ;; (org-add-link-type
-       ;;    "wiki"
-       ;;    (lambda (path) (org-open-file path))
-       ;;    ;; ; export
-       ;;    (lambda (path desc backend)
-       ;;      (cond
-       ;;       ((eq backend 'org)
-       ;;        (format "[[file:{filename}/%s][%s]]" path (or desc "")))
-       ;;       ((eq backend 'html)
-       ;;        (format "<a href=\"%s\">%s</a>" path (or desc "")))
-       ;;       ((eq backend 'md)
-       ;;        (format "[{filename}/%s](%s)" path (or desc ""))))))
-
-
-(defun org-wiki-header ()
-          "Insert a header at the top of the file."
-          (interactive)
-          (save-excursion
-             (goto-char (point-min))
-             (insert (format
-                      (string-trim "
-#+TITLE: %s
-#+DESCRIPTION:
-#+KEYWORDS:
-#+SETUPFILE: ~/.emacs.d/elisp/org-html-themes/setup/theme-bigblow.setup
-#+STARTUP:  overview
-
-Related:
-
-[[wiki:index][Index]]")
-        (file-name-base (buffer-file-name))))))
-    )              
-           ;; (defun org-wiki-export-html-sync ()
-           ;;   "Export all pages to html in synchronous mode."
-           ;;   (interactive)
-           ;;   (let ((org-html-htmlize-font-prefix "org-")
-           ;;         )
-
-           ;; (defun org-wiki-export-html-sync ()
-           ;;   "Export all pages to html in synchronous mode."
-           ;;   (interactive)
-           ;;   (let ((org-html-htmlize-output-type 'css)
-           ;;         (org-html-htmlize-font-prefix "org-")
-           ;;         )
-
-               ;; (org-publish
-               ;;  `("html"
-               ;;    :base-directory       ,org-wiki-location
-               ;;    :base-extension        "org"
-               ;;    :publishing-directory  "~/Dropbox/work/wiki/html"
-               ;;    :publishing-function   org-twbs-publish-to-html
-               ;;    ;; settings
-               ;;    :author "Colin McLear"
-               ;;    :email "mclear@unl.edu"
-               ;;    :toc nil
-               ;;    :with-timestamps nil
-               ;;    :time-stamp-file nil
-               ;;    :timestamp nil
-               ;;    ;; :org-pandoc-bibliography "~/Dropbox/Work/Master.bib"
-               ;;    ;; :org-pandoc-csl "~/.pandoc/styles/chicago-author-date.csl"
-               ;;    )
-               ;;  t
-               ;;  )))
+                       ;; (org-publish
+                       ;;  `("html"
+                       ;;    :base-directory       ,org-wiki-location
+                       ;;    :base-extension        "org"
+                       ;;    :publishing-directory  "~/Dropbox/work/wiki/html"
+                       ;;    :publishing-function   org-twbs-publish-to-html
+                       ;;    ;; settings
+                       ;;    :author "Colin McLear"
+                       ;;    :email "mclear@unl.edu"
+                       ;;    :toc nil
+                       ;;    :with-timestamps nil
+                       ;;    :time-stamp-file nil
+                       ;;    :timestamp nil
+                       ;;    ;; :org-pandoc-bibliography "~/Dropbox/Work/Master.bib"
+                       ;;    ;; :org-pandoc-csl "~/.pandoc/styles/chicago-author-date.csl"
+                       ;;    )
+                       ;;  t
+                       ;;  )))
 
 #+END_SRC
 **** Org-Brain
