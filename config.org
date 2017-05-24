@@ -3848,8 +3848,18 @@ mode of writing.
           ; org-src-preserve-indentation nil 
           ; org-edit-src-content-indentation t
           org-imenu-depth 8
-          imenu-auto-rescan t)
-
+          imenu-auto-rescan t)          
+   (org-link-set-parameters
+    "pelican"
+    :follow (lambda (path) (org-open-file path))
+    :export (lambda (path desc backend)
+        (cond
+          ((eq backend 'html)
+          (format "<a href=\"%s\">%s</a>" path (or desc "")))
+           ((eq backend 'md)
+            (format "[{filename}/%s](%s)" path (or desc "")))
+           ((eq backend 'org)
+            (format "[[file:{filename}/%s][%s]]" path (or desc ""))))))
       :init
       (add-hook 'org-mode-hook
           (lambda () 
