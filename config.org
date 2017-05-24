@@ -3209,7 +3209,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            eshell-scroll-to-bottom-on-input 'all
            eshell-list-files-after-cd t
            eshell-aliases-file (concat user-emacs-directory "eshell/alias")
-           eshell-banner-message ""
+           eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
            ;; eshell-banner-message "What would you like to do?\n\n"
          )
          ;; Visual commands
@@ -5243,7 +5243,7 @@ Dashboard depends on this.
 (use-package page-break-lines
   :diminish "")
 #+END_SRC
-** Dashboard
+** DISABLED Dashboard
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
@@ -5282,13 +5282,13 @@ Start server
 #+END_SRC
 ** Things to run at startup
 #+BEGIN_SRC emacs-lisp
-  ;; (eshell)
+(eshell)
 #+END_SRC
-
+* Archive
 * Goals 
 Below are various things I want to perfect or try out in the config.
 
-- [] Fix load time of =config.org= file
+- [X] Fix load time of =config.org= file
 - [X] Fix visual surround delete/change of various characters (org markup, dollar signs)
 - [X] Fix bookmark/desktop save
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
