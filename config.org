@@ -3435,6 +3435,7 @@ An easy way to ssh
   (setq paradox-execute-asynchronously nil
          ;; Show all possible counts
         paradox-display-download-count t
+        paradox-hide-wiki-packages t
         paradox-display-star-count t
         ;; Don't star automatically
         paradox-automatically-star nil))
@@ -3491,7 +3492,7 @@ An easy way to ssh
 
 #+END_SRC
 
-**** TESTING Yankpad
+**** DISABLED Yankpad
 #+BEGIN_SRC emacs-lisp
   (use-package yankpad
     :defer 10
