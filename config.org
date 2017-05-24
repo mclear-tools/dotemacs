@@ -1774,7 +1774,7 @@ And here's how we tell Emacs to use the font we want to use.
      (progn (setq dynamic-fonts-preferred-proportional-fonts
                   '("Avenir Next" "Verdana" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
             (setq dynamic-fonts-preferred-monospace-fonts
-               '("Inconsolata LGC" "Hack" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+               '("Inconsolata LGC" "Fira Code" "Hack" "Source Code Pro" "Monaco" "Consolas" "Menlo"
                  "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
   )
     (global-set-key (kbd "C-+") 'text-scale-increase)
