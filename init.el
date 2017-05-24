@@ -54,6 +54,7 @@
     (package-install 'use-package))
   ;; use-package default installs all packages
   (setq use-package-always-ensure t)
+  (setq use-package-verbose t)
   (require 'use-package)
 
   ;; This is GPLv2. If you still don't know the details, read
