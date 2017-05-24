@@ -589,7 +589,7 @@ Show matching brackets, parenthesis, etc.
 **** Crux
 A collection of ridiculously useful extensions. Indeed.
 #+BEGIN_SRC emacs-lisp
-  (use-package crux :defer 2)
+(use-package crux :defer 10)
 #+END_SRC
 **** Config functions
 #+BEGIN_SRC emacs-lisp
@@ -1252,7 +1252,6 @@ There are some other useful setup packages for evil
 #+begin_src emacs-lisp
   (use-package evil-surround
     :ensure t
-    ;; :defer 2
     :commands (evil-surround-region evil-surround-change)
     :init 
     (general-define-key
@@ -1409,7 +1408,7 @@ Better dired navigation using ranger-like settings
 *** Recent files
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :defer 2
+  :defer 5
   :init
   (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
 #+END_SRC
@@ -1420,7 +1419,7 @@ Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp 
   (use-package helm
     :diminish (helm-mode . "")
-    :defer 1
+    :commands (helm-mini helm-M-x helm-find-files helm-find)
     :init
     (setq helm-locate-fuzzy-match nil
           helm-locate-command "mdfind -interpret -name %s %s")
@@ -1539,7 +1538,7 @@ Hide minibuffer while helm is active
 ***** Helm descbinds
 #+begin_src emacs-lisp 
 (use-package helm-descbinds 
-  :defer t
+  :commands helm-descbinds
   :config
   (setq helm-descbinds-window-style 'same-window)
   (add-hook 'helm-mode-hook 'helm-descbinds-mode))
@@ -1596,6 +1595,7 @@ Recent directories
 ***** Helm files
 #+begin_src emacs-lisp 
   (use-package helm-files
+    :defer t
     :ensure nil
     :config
     (setq helm-ff-skip-boring-files t)
@@ -1706,7 +1706,7 @@ Numbered window shortcuts for Emacs
 Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert                 
-    :defer 2
+    :defer 10
     :ensure nil
     :init
     (global-auto-revert-mode 1)
@@ -2115,7 +2115,7 @@ highlight TODO statements in comments
 *** Diminish Modes
  Tidy Up modeline modes.
  #+BEGIN_SRC emacs-lisp
- (use-package diminish :defer 2)
+ (use-package diminish :defer 4)
  #+END_SRC
 **** Diminish minor modes
  #+BEGIN_SRC emacs-lisp
@@ -2668,7 +2668,7 @@ Keybindings for managing packages
 *** Which-key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
-  :defer 2
+  :defer 8
   :diminish ""
   :config
   (setq which-key-special-keys nil)
@@ -2855,7 +2855,7 @@ Keybindings for managing packages
 *** Hydra
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
-  :defer 4
+  :defer t
   :config
   ;; hydra for TODOs
   (defhydra hydra-todo (:pre
@@ -2901,7 +2901,7 @@ Keybindings for managing packages
 *** Recent files
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
-  :defer 2
+  :defer 3
   :init
   (setq recentf-save-file (expand-file-name "recentf" user-cache-directory)))
   ;; :config
@@ -2967,7 +2967,7 @@ A file tree and outliner
 *** Ag
  #+BEGIN_SRC emacs-lisp
    (use-package ag
-   :defer t
+   :commands (helm-do-ag helm-do-ag-this-file helm-ag-buffers)
    :config
    (progn
      (defun ag/jump-to-result-if-only-one-match ()
@@ -3158,8 +3158,8 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
 *** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
-     :defer 2
-     :config
+     :defer t
+     :init
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
      (setq venv-location "/Users/roambot/bin/virtualenvs")
@@ -3366,7 +3366,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
  configure for any shell that you use.
  #+BEGIN_SRC emacs-lisp
    (use-package shell-switcher
-     :defer 2
+     :after eshell
      :init
      (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
      :config
@@ -3435,7 +3435,7 @@ An easy way to ssh
 [[https://github.com/edkolev/evil-lion][This package]] provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
 #+BEGIN_SRC emacs-lisp
 (use-package evil-lion
-  :defer 4
+  :defer 10
   :config
   (evil-lion-mode))
 #+END_SRC
@@ -3704,7 +3704,6 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
  Evil bindings for magit
  #+BEGIN_SRC emacs-lisp
    (use-package evil-magit
-     :defer t
      :after magit
      ;; (with-eval-after-load 'magit (require 'evil-magit))
      )
@@ -5268,7 +5267,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
 Start server
 #+BEGIN_SRC emacs-lisp
   (use-package server
-    :defer 2
+    :defer 5
     :config
     (if (display-graphic-p)
         (unless (or (daemonp) (server-running-p))
