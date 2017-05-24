@@ -4927,64 +4927,64 @@ don't cause as much overhead."
 *** PDF-Tools
 Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp 
-      (use-package pdf-tools
-        :ensure t
-        :defer t
-        :mode (("\\.pdf$" . pdf-view-mode))
-        :config
-        (progn
-          (pdf-tools-install)
-          (evil-set-initial-state 'pdf-view-mode 'normal)
-          (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
-          (evil-define-key 'normal pdf-view-mode-map
-              ;; Navigation
-              "j"  'pdf-view-next-line-or-next-page
-              "k"  'pdf-view-previous-line-or-previous-page
-              "l"  'pdf-view-next-page 
-              "h"  'pdf-view-previous-page
-              "J"  'image-forward-hscroll
-              "K"  'image-backward-hscroll
-              "gg"  'pdf-view-first-page
-              "G"  'pdf-view-last-page
-              "gt"  'pdf-view-goto-page
-              "gl"  'pdf-view-goto-label
-              "u" 'pdf-view-scroll-down-or-previous-page
-              "d" 'pdf-view-scroll-up-or-next-page
-              "-"  'pdf-view-shrink
-              "+"  'pdf-view-enlarge
-              "="  'pdf-view-fit-page-to-window
-              (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
-              (kbd "C-d") 'pdf-view-scroll-up-or-next-page
-              (kbd "``")  'pdf-history-backward
-              ;; Search
-              "/" 'isearch-forward
-              "?" 'isearch-backward
-              ;; Actions
-              "r"   'pdf-view-revert-buffer
-              "o"   'pdf-links-action-perform
-              "O"   'pdf-outline
-              )
-          (evil-define-key 'insert pdf-view-mode-map
-              "y" 'pdf-view-kill-ring-save )
+    (use-package pdf-tools
+      :ensure t
+      :defer t
+      :mode (("\\.pdf$" . pdf-view-mode))
+      :config
+      (progn
+        (pdf-tools-install)
+        (evil-set-initial-state 'pdf-view-mode 'normal)
+        (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
+        (evil-define-key 'normal pdf-view-mode-map
+            ;; Navigation
+            "j"  'pdf-view-next-line-or-next-page
+            "k"  'pdf-view-previous-line-or-previous-page
+            "l"  'pdf-view-next-page 
+            "h"  'pdf-view-previous-page
+            "J"  'image-forward-hscroll
+            "K"  'image-backward-hscroll
+            "gg"  'pdf-view-first-page
+            "G"  'pdf-view-last-page
+            "gt"  'pdf-view-goto-page
+            "gl"  'pdf-view-goto-label
+            "u" 'pdf-view-scroll-down-or-previous-page
+            "d" 'pdf-view-scroll-up-or-next-page
+            "-"  'pdf-view-shrink
+            "+"  'pdf-view-enlarge
+            "="  'pdf-view-fit-page-to-window
+            (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
+            (kbd "C-d") 'pdf-view-scroll-up-or-next-page
+            (kbd "``")  'pdf-history-backward
+            ;; Search
+            "/" 'isearch-forward
+            "?" 'isearch-backward
+            ;; Actions
+            "r"   'pdf-view-revert-buffer
+            "o"   'pdf-links-action-perform
+            "O"   'pdf-outline
+            )
+        (evil-define-key 'insert pdf-view-mode-map
+            "y" 'pdf-view-kill-ring-save )
 
-    ))      
+  ))      
 
-    ;; for annotation and jumping to file
-    ;; (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
-    ;; (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open)))
-    ;; (eval-after-load 'org '(require 'org-pdfview))
+#+END_SRC
+**** Org PDF View
+ For annotation and jumping to file
+#+BEGIN_SRC emacs-lisp
+  (use-package org-pdfview
+    :after org
+    :init
+    (add-to-list 'org-file-apps 
+               '("\\.pdf\\'" . (lambda (file link)
+                                       (org-pdfview-open link))))
+  ;;   (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+  ;;   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+   )
 #+END_SRC
 **** Extract annotations
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package org-pdfview
-  ;;   ;; :commands (org-pdfview-open)
-  ;;   :after org
-  ;;   :ensure t
-  ;;   :config
-  ;;   (add-to-list 'org-file-apps 
-  ;;        '("\\.pdf\\'" . (lambda (file link)
-  ;;                           (org-pdfview-open link)))))
-
   (use-package pdf-tools-org 
     :ensure nil
     :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
