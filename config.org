@@ -1064,9 +1064,6 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     (call-interactively 'write-file))
 #+END_SRC
 
-#+RESULTS:
-: spacemacs/copy-file
-
 **** Macros
 These are a few useful macros I got from hlissner's [[https://github.com/hlissner/.emacs.d]["doom" .emacs.d]]
 
@@ -1830,10 +1827,6 @@ This is a really nice powerline-ish modeline.
           spaceline-line-column-p nil
           spaceline-buffer-id-p nil
           spaceline-minor-modes-separator nil))
-          (powerline-reset)
-  ;; nil - don't use srgb & get proper powerline faces
-  (setq ns-use-srgb-colorspace t)
-
 #+END_SRC
 
 **** Fancy Battery
@@ -2077,6 +2070,7 @@ Make sure that other themes I like are downloaded and available
   :load-path "~/.emacs.d/elisp/rees-themes"
   :defer t
 )
+
 #+END_SRC
 
 *** Highlight line numbers
@@ -2478,7 +2472,7 @@ Keybindings for org mode
     "oif" 'org-footnote-new
     )
 #+END_SRC
-**** Packages
+**** Packages (Paradox)
 Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
 (cpm-leader1 
@@ -3972,6 +3966,7 @@ Other useful org packages
  (use-package htmlize :after org :ensure t)
  (use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
  (use-package toc-org
+   :after org
    :init
    (progn
      (setq toc-org-max-depth 10)
@@ -4409,15 +4404,18 @@ A [[https://github.com/Kungsgeten/org-brain][knowledge base]] using org-mode
 #+BEGIN_SRC emacs-lisp
   (use-package org-brain
     :ensure nil
+    :commands org-brain-open
     :load-path "~/.emacs.d/elisp/org-brain"
-    :init
-    ;; (org-link-set-parameters
-    ;;   "brain"
-    ;;   :export (lambda (path desc backend)
-    ;;     (cond
-    ;;     ((eq 'html backend)
-    ;;     (format "<a href='%s.html'>%s</a>" path (or desc path))))))
     :config
+    (org-link-set-parameters
+      "brain"
+      :export (lambda (path desc backend)
+        (message-box "%s" backend)
+        (cond
+        ((eq backend 'html)
+         (format "<a href='%s.html'>%s</a>" path (or desc path)))
+        ((eq backend 'pandoc)
+         (format "<a href='%s.html'>%s</a>" path (or desc path))))))
     (setq org-brain-path "~/Desktop/wiki")
 
     ;; (setq org-brain-path "~/projects/notebook/content/org_notes")
@@ -4431,6 +4429,7 @@ Publish using twitter bootstrap css
 #+END_SRC
 **** Org Template Expansions
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
 (add-to-list 'org-structure-template-alist
   '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
 (add-to-list 'org-structure-template-alist
@@ -4440,7 +4439,7 @@ Publish using twitter bootstrap css
 (add-to-list 'org-structure-template-alist
   '("b" "#+REVEAL: split?"))
 (add-to-list 'org-structure-template-alist
-  '("f" "#+ATTR_REVEAL: :frag (appear)?"))
+  '("f" "#+ATTR_REVEAL: :frag (appear)?")))
 #+END_SRC
 **** Org Indirect Buffer
 Some advice to automatically switch to a new indirect buffer upon creation
