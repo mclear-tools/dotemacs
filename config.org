@@ -755,6 +755,13 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
     (interactive)
     (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown"))
     (yank))
+    
+  (defun cpm/cite-to-org ()
+    "convert clipboard contents from markdown to org with citations and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-citations | pandoc -f markdown -t org"))
+    (yank))
+
 #+END_SRC
 **** Resume last search
 #+BEGIN_SRC emacs-lisp
