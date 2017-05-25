@@ -4416,7 +4416,15 @@ A [[https://github.com/Kungsgeten/org-brain][knowledge base]] using org-mode
     :ensure nil
     :commands org-brain-open
     :load-path "~/.emacs.d/elisp/org-brain"
+    :init
+    ;; (setq org-brain-path "~/projects/notebook/content/org_notes")
+    (setq org-brain-path "~/Desktop/brain")
+    ;; For Evil users
+    (with-eval-after-load 'evil
+      (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
     :config
+    ;; Save/load org-brain caches to/from disk
+    (org-brain-activate-cache-saving)
     (org-link-set-parameters
       "brain"
       :export (lambda (path desc backend)
@@ -4426,9 +4434,6 @@ A [[https://github.com/Kungsgeten/org-brain][knowledge base]] using org-mode
          (format "<a href='%s.html'>%s</a>" path (or desc path)))
         ((eq backend 'pandoc)
          (format "<a href='%s.html'>%s</a>" path (or desc path))))))
-    (setq org-brain-path "~/Desktop/wiki")
-
-    ;; (setq org-brain-path "~/projects/notebook/content/org_notes")
   )
 #+END_SRC
 **** Org-Twitter-Bootstrap
