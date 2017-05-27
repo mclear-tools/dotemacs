@@ -2665,6 +2665,16 @@ Keybindings for managing packages
   "Ws" 'org-wiki-search
 )
 #+END_SRC
+**** Zotero Keybindings 
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "z" '(:ignore t :which-key "Zotero")
+  "za" 'org-zotxt-open-attachment
+  "zi" 'org-zotxt-insert-reference-link
+  "zu" 'org-zotxt-update-reference-link-at-point
+)
+#+END_SRC
+
 *** Smooth Scrolling
 #+BEGIN_SRC emacs-lisp
  ;; Keyboard smooth scrolling: Prevent the awkward "snap to re-center" when
@@ -5271,10 +5281,11 @@ Better than doc-view, but doesn't render well on retina screens :(
 
 #+END_SRC
 
-*** DISABLED Zotero
+*** Zotero
 Interface with Zotero.
 #+BEGIN_SRC emacs-lisp
   (use-package zotxt
+    :commands (org-zotxt-mode zotxt-easy-key-mode)
     :diminish (org-zoxt zotxt org-zotxt-mode)
     :config
     ;; (setq zotxt-default-bibliography-style "mkbehr-short")
