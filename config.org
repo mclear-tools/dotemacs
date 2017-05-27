@@ -2001,6 +2001,7 @@ The best low-contrast theme out there.
                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                    ;; line highlighting 
                     '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
+                    '(nlinum-current-line ((t (:inherit default :foreground "#002b36"))))
                    ;; battery faces
                    '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
                    '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
@@ -2086,17 +2087,31 @@ Make sure that other themes I like are downloaded and available
 
 #+END_SRC
 
-*** Highlight line numbers
+*** Line Numbers
+Use [[https://elpa.gnu.org/packages/nlinum.html][nlinum]] instead of linum because the former uses jit-lock to be (hopefully)
+more efficient.
+#+BEGIN_SRC emacs-lisp
+(use-package nlinum
+  :commands nlinum-mode
+  :config
+  (setq-default nlinum-format "%2d ")
+  (setq nlinum-highlight-current-line t)
+    (custom-set-faces
+     '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1")))))
+)
+#+END_SRC
+*** DISABLED Highlight line numbers
 #+BEGIN_SRC emacs-lisp 
   ;; line number spacing
   (setq-default linum-format "%4d ")
   ;; Highlight current line number
   (use-package hlinum
+    :disabled
     :commands hlinum-mode
     :config
     (custom-set-faces
      '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1")))))
-    :init
+    :int
     (add-hook 'linum-mode-hook 'hlinum-activate))
 #+END_SRC
 *** Highlight numbers
@@ -2567,7 +2582,7 @@ Keybindings for managing packages
     "tE" 'eldoc-mode
     "tm" 'hidden-mode-line-mode
     "tM" 'spaceline-toggle-minor-modes
-    "tn" 'linum-mode
+    "tn" 'nlinum-mode
     "tN" 'org-numbers-overlay-mode
     "to" 'org-toggle-link-display
     "tp" 'smartparens-mode
@@ -3069,7 +3084,7 @@ A file tree and outliner
                                     (kill-buffer (when (buffer-live-p (process-buffer proc)))
                                     (delete-window))))))
       (add-hook 'shell-pop-out-hook 'kill-this-buffer)
-      (add-hook 'term-mode-hook (lambda () (linum-mode -1) (ansi-term-handle-close)))))
+      (add-hook 'term-mode-hook (lambda () (nlinum-mode -1) (linum-mode -1) (ansi-term-handle-close)))))
  #+end_src
 
 *** Shell settings
@@ -3828,6 +3843,7 @@ mode of writing.
       (interactive)
       (git-gutter-mode 0) 
       (linum-mode 0) 
+      (nlinum-mode 0) 
       (centered-cursor-mode)
       (writeroom-mode)
       )
@@ -4647,7 +4663,7 @@ Great for managing citations and notes
     ;; markdown hooks
     (add-hook 'markdown-mode-hook
           '(lambda ()
-             (turn-on-auto-fill) (linum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
+             (turn-on-auto-fill) (nlinum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
     (setq markdown-command "pandoc -s -N --smart --bibliography=/Users/Roambot/Dropbox/Work/Master.bib"
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
