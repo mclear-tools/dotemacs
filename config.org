@@ -835,10 +835,15 @@ argument takes the kindows rotate backwards."
  
 **** Search directories with ag
 #+BEGIN_SRC emacs-lisp
-  (defun cpm/helm-files-do-ag (&optional dir)
-        "Search in files with `ag' using a default input."
-        (interactive)
-        (helm-do-ag dir))
+(defun cpm/helm-files-do-ag (&optional dir)
+  "Search in files with `ag' using a default input."
+    (interactive)
+    (helm-do-ag dir))
+        
+(defun cpm/helm-files-search-current-directory ()
+  "search in files with `ag' in current buffer's directory"
+    (interactive)
+    (helm-do-ag (file-name-directory buffer-file-name)))
 #+END_SRC
 
 **** Sticky Buffer/Window
