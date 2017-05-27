@@ -1764,7 +1764,8 @@ Ditto for the terminal.
 #+END_SRC
 *** Font
   
-[[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font.
+[[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font. I use a version, Inconsolata-LGC,
+that also has bold and italic fonts.
 
 To install it on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew Cask]].
 
@@ -1773,7 +1774,7 @@ To install it on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew
 # Cask and its fonts formula.
 brew install caskroom/cask/brew-cask
 brew tap caskroom/fonts
-brew cask install font-inconsolata
+brew cask install font-inconsolata-lgc 
 #+end_src
 
 And here's how we tell Emacs to use the font we want to use.
@@ -3463,6 +3464,7 @@ An easy way to ssh
   (evil-lion-mode))
 #+END_SRC
 *** Rainbow delimiters
+[[https://github.com/Fanael/rainbow-delimiters][Useful package]] that will highlight delimiters such as parentheses, brackets or braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
    #+BEGIN_SRC emacs-lisp
    (use-package rainbow-delimiters 
      :commands rainbow-delimiters-mode
@@ -3470,6 +3472,7 @@ An easy way to ssh
      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
    #+END_SRC
 *** Rainbow identifiers
+[[https://github.com/Fanael/rainbow-identifiers][Rainbow identifiers mode]] is an Emacs minor mode providing highlighting of identifiers based on their names. Each identifier gets a color based on a hash of its name.
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-identifiers
   :commands rainbow-identifiers-mode
@@ -3477,6 +3480,7 @@ An easy way to ssh
   (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
 #+END_SRC
 *** Rainbow mode
+[[https://github.com/emacsmirror/rainbow-mode][Colorize color names]] in buffers 
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-mode
   :commands rainbow-mode)
