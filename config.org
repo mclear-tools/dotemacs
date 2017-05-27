@@ -2882,13 +2882,14 @@ Keybindings for managing packages
 #+END_SRC
 *** Bookmark
 #+BEGIN_SRC emacs-lisp
-  (use-package bookmark+
-    ;; :commands bmkp-set-desktop-bookmark
-    :init
-    (setq bookmark-default-file
-             (concat user-cache-directory "bookmarks"))
-    (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
-)
+    (use-package bookmark+
+      ;; :commands bmkp-set-desktop-bookmark
+      :defer 10
+      :init
+      (setq bookmark-default-file
+               (concat user-cache-directory "bookmarks"))
+      (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
+  )
 #+END_SRC 
 *** Hydra
 #+BEGIN_SRC emacs-lisp
