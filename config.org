@@ -203,6 +203,8 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
 #+END_SRC
 **** Clipboard
 #+BEGIN_SRC emacs-lisp
+; Merge system's and Emacs' clipboard
+(setq select-enable-clipboard t)
 ;; Save whatever’s in the current (system) clipboard before
 ;; replacing it with the Emacs’ text.
 ;; https://github.com/dakrone/eos/blob/master/eos.org
