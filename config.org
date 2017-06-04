@@ -2119,7 +2119,7 @@ Make sure that other themes I like are downloaded and available
                   gotham-theme ample-theme material-theme zerodark-theme
                   leuven-theme spacemacs-theme gruvbox-theme
                   forest-blue-theme flatland-theme afternoon-theme
-                  cyberpunk-theme kaolin-theme darkmine-theme tao-theme darkokai-theme jazz-theme suscolors-theme omtose-phellack-theme atom-one-dark-theme)
+                  cyberpunk-theme kaolin-theme darkmine-theme tao-theme darkokai-theme jazz-theme suscolors-theme omtose-phellack-theme atom-one-dark-theme nubox)
 "A list of themes to ensure are installed at launch.")
 
 (defun appearance-packages-installed-p ()
