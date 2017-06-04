@@ -217,6 +217,11 @@ Make all files [[http://stackoverflow.com/questions/729692/why-should-text-files
 (setq require-final-newline t)
 #+END_SRC
 
+**** Garbage Collect
+Garbage-collect on focus-out, Emacs /should/ feel snappier.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'focus-out-hook #'garbage-collect)
+#+END_SRC
 **** Paragraphs
 From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill paragraph.
 #+BEGIN_SRC emacs-lisp
@@ -227,11 +232,13 @@ From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill p
 **** Start from scratch
 Start up with a clean scratch buffer.
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-splash-screen t)
-  (setq inhibit-startup-message t)
-  (setq initial-scratch-message "")
-  ;; And bury the scratch buffer, don't kill it
-  (defadvice kill-buffer (around kill-buffer-around-advice activate)
+; Disable start-up screen
+(setq-default inhibit-startup-screen t)                         
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message "")
+;; And bury the scratch buffer, don't kill it
+(defadvice kill-buffer (around kill-buffer-around-advice activate)
   (let ((buffer-to-kill (ad-get-arg 0)))
     (if (equal buffer-to-kill "*scratch*")
         (bury-buffer)
@@ -247,7 +254,12 @@ elisp modes or other minor modes
 
 **** Turn off the blinking cursor
 #+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode 0)
+(blink-cursor-mode 0)
+#+END_SRC
+**** Subwords and CamelCase
+#+BEGIN_SRC emacs-lisp
+; Iterate through CamelCase words
+(global-subword-mode 1)                           
 #+END_SRC
 *** Cache Directory
 #+BEGIN_SRC emacs-lisp 
@@ -571,6 +583,7 @@ This is the [[https://github.com/benma/visual-regexp.el][good old search and rep
 Show matching brackets, parenthesis, etc.
 #+BEGIN_SRC emacs-lisp
 (show-paren-mode t)
+(setq show-paren-delay 0) 
 #+END_SRC
 *** Useful Libraries
 
@@ -1781,7 +1794,7 @@ brew cask install font-inconsolata-lgc
 
 And here's how we tell Emacs to use the font we want to use.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp 
   ;; deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
   (use-package dynamic-fonts
     :config (dynamic-fonts-setup) 
@@ -2145,6 +2158,7 @@ highlight TODO statements in comments
  #+BEGIN_SRC emacs-lisp
    (diminish 'visual-line-mode)
    (diminish 'sticky-buffer-mode "𝓢")
+   (diminish 'subword-mode)
    (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
    (eval-after-load "abbrev" '(diminish 'abbrev-mode "Ⓐ"))
    (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
@@ -2509,7 +2523,11 @@ Keybindings for managing packages
   "P" '(:ignore t :which-key "Packages")
   "Pl" 'paradox-list-packages
   "Pu" 'paradox-upgrade-packages
+  "Pc" 'finder-commentary
   )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-h C-c") 'finder-commentary)
 #+END_SRC
 **** Projects
 #+BEGIN_SRC emacs-lisp
@@ -2520,11 +2538,13 @@ Keybindings for managing packages
     "pa"  'projectile-toggle-between-implementation-and-test
     "pb"  'helm-projectile-switch-to-buffer
     "pc"  'projectile-compile-project
+    "pC"  'desktop+-create
     "pd"  'helm-projectile-find-dir
     "pD"  'projectile-dired
     "pf"  'helm-projectile-find-file
     "pg"  'goto-projects
     "ph"  'helm-projectile
+    "pJ"  'bmkp-desktop-jump
     "pG"  'projectile-regenerate-tags
     "pI"  'projectile-invalidate-cache
     "pk"  'projectile-kill-buffers
@@ -2534,8 +2554,7 @@ Keybindings for managing packages
     "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
     ;; "ps"  'bmkp-set-desktop-bookmark
-    "ps"  'desktop+-create
-    "pS"  'bmkp-desktop-jump
+    "ps"  'desktop-save-in-desktop-dir
     "pT"  'projectile-find-test-file
     "pv"  'projectile-vc
     "py"  'projectile-find-tag
@@ -3561,7 +3580,7 @@ An easy way to ssh
           (add-hook 'org-mode-hook 'company-mode)
           (add-hook 'markdown-mode-hook 'company-mode)  
           (setq company-idle-delay 0.3
-                company-minimum-prefix-length 4
+                company-minimum-prefix-length 3
                 company-require-match nil
                 company-dabbrev-ignore-case nil
                 company-dabbrev-downcase nil))
@@ -3890,6 +3909,7 @@ mode of writing.
           ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼" 
           org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation           
           org-startup-indented t ;; start in indent mode
+          ;; org-src-tab-acts-natively t ;; indent for src code natively
           ; org-src-preserve-indentation nil 
           ; org-edit-src-content-indentation t
           org-imenu-depth 8
