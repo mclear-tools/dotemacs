@@ -3668,6 +3668,60 @@ An easy way to ssh
              ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   ))
 #+END_SRC
+***** Helm Company
+#+BEGIN_SRC emacs-lisp
+(use-package helm-company
+  :commands (helm-company)
+  :config (company-mode))
+#+END_SRC
+***** Company Bibtex
+#+BEGIN_SRC emacs-lisp
+(use-package company-bibtex
+  :after company
+  :config
+  (add-to-list 'company-backends #'company-bibtex)
+  (setq company-bibtex-bibliography "/Users/roambot/Dropbox/Work/master.bib"))
+#+END_SRC
+***** Company Shell
+#+BEGIN_SRC emacs-lisp
+(use-package company-shell
+  :after company
+  :config
+  (add-to-list 'company-backends #'company-shell))
+#+END_SRC
+***** Company Emoji
+#+BEGIN_SRC emacs-lisp
+(use-package company-emoji
+  :after company
+  :config
+  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend)
+  (setq company-emoji-insert-unicode nil)
+  (add-hook! (org-mode markdown-mode git-commit-mode)
+    (setq-local company-backends (append '(company-emoji) company-backends))))
+
+(use-package emoji-cheat-sheet-plus
+  :bind ("C-c e" . emoji-cheat-sheet-plus-insert)
+  :config
+  (add-hook! (org-mode markdown-mode git-commit-mode) '(emoji-cheat-sheet-plus-display-mode)))
+#+END_SRC
+***** Company Web
+#+BEGIN_SRC emacs-lisp
+(use-package company-web
+  :after company
+  :config
+  (with-eval-after-load 'web-mode
+    (add-λ 'web-mode-hook
+      (setq-local company-backends (append '(company-web-html) company-backends))))
+  (with-eval-after-load 'html-mode
+    (add-λ 'html-mode-hook
+      (setq-local company-backends (append '(company-web-html) company-backends))))
+  (with-eval-after-load 'slim-mode
+    (add-λ 'slim-mode-hook
+      (setq-local company-backends (append '(company-web-slim) company-backends))))
+  (with-eval-after-load 'jade-mode
+    (add-λ 'jade-mode-hook
+      (setq-local company-backends (append '(company-web-jade) company-backends)))))
+#+END_SRC
 ***** Auc-tex
 #+BEGIN_SRC emacs-lisp
 (use-package company-auctex
@@ -3677,13 +3731,11 @@ An easy way to ssh
 ***** Company math
 #+BEGIN_SRC emacs-lisp
 (use-package company-math
-  :defer t
-  :init 
-  (with-eval-after-load 'company
-    ;; Add backends for math characters
-    (add-to-list 'company-backends 'company-math-symbols-unicode)
-    (add-to-list 'company-backends 'company-math-symbols-latex))
-)
+  :after company
+  :config
+  ;; Add backends for math characters
+  (add-to-list 'company-backends #'company-math-symbols-unicode)
+  (add-to-list 'company-backends #'company-math-symbols-latex))
 #+END_SRC
 *** Electric Pair (Autopair)
 #+BEGIN_SRC emacs-lisp
