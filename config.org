@@ -1422,11 +1422,11 @@ Better dired navigation using ranger-like settings
            ranger-width-preview 0.55 
            ))
 
-  ;; (defun deer-jump-other-window (&optional path)
-  ;;   "Launch dired in a minimal ranger window in other window."
-  ;;   (interactive)
-  ;;   (switch-to-buffer-other-window (current-buffer))
-  ;;   (deer path))
+  (defun deer-jump-other-window (&optional path)
+    "Launch dired in a minimal ranger window in other window."
+    (interactive)
+    (switch-to-buffer-other-window (current-buffer))
+    (deer path))
 
 #+END_SRC
 *** Recent files
