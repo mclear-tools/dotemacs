@@ -3772,8 +3772,8 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 **** Elisp
 #+BEGIN_SRC emacs-lisp 
 (use-package elisp-slime-nav
-  :ensure t
-  :defer t)
+  :config
+  (add-hook! (emacs-lisp-mode ielm-mode) '(elisp-slime-nav-mode)))
 
 (use-package eldoc
   :diminish eldoc-mode
