@@ -1812,15 +1812,15 @@ And here's how we tell Emacs to use the font we want to use.
     ;; (setq-default line-spacing .30)
 #+end_src
 *** Modeline
-**** Spaceline
+**** DISABLED Spaceline
 This is a really nice powerline-ish modeline.
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package spaceline
     :ensure t
     :init 
     (progn 
       ;; size of modeline
-      (setq powerline-height 18)
+      ;; (setq powerline-height 18)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
       ;; (setq-default powerline-default-separator nil) 
       ;; (setq-default powerline-default-separator 'utf-8) 
@@ -1857,23 +1857,66 @@ This is a really nice powerline-ish modeline.
           spaceline-minor-modes-separator nil))
 #+END_SRC
 
+
+**** Spaceline All The Icons
+[[https://github.com/domtronn/spaceline-all-the-icons.el][Pretty icons]] for spaceline using [[https://github.com/domtronn/all-the-icons.el][all-the-icons.el]]. This is a nice
+package but still a bit buggy. Also adds a couple seconds to the load time.
+#+BEGIN_SRC emacs-lisp
+  ;; Mode line
+  (use-package spaceline
+    :config
+    (require 'spaceline-config))
+
+  (use-package spaceline-all-the-icons 
+    :after spaceline
+    :if (display-graphic-p)
+    :config (spaceline-all-the-icons-theme)
+    ;; Configuration
+    ;; (spaceline-all-the-icons--setup-package-updates) ;; Enable package update indicator
+    (spaceline-all-the-icons--setup-git-ahead)       ;; Enable # of commits ahead of upstream in git
+    (spaceline-all-the-icons--setup-paradox)         ;; Enable Paradox mode line
+    (spaceline-all-the-icons--setup-neotree)         ;; Enable Neotree mode line
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
+          spaceline-all-the-icons-separator-type 'arrow
+          spaceline-all-the-icons-icon-set-modified 'circle
+          spaceline-all-the-icons-icon-set-git-stats 'diff-icons
+          spaceline-all-the-icons-icon-set-window-numbering 'solid
+          spaceline-all-the-icons-primary-separator "")
+     ;; Toggles
+     (spaceline-toggle-all-the-icons-battery-status-on)
+     (spaceline-toggle-all-the-icons-buffer-size-off)
+     (spaceline-toggle-all-the-icons-buffer-position-on)
+     (spaceline-toggle-all-the-icons-buffer-path-off)
+     (spaceline-toggle-all-the-icons-hud-off)
+     (spaceline-toggle-all-the-icons-narrowed-on)
+     (spaceline-toggle-all-the-icons-flycheck-status-off)
+     (spaceline-toggle-all-the-icons-vc-icon-off)
+     (spaceline-toggle-all-the-icons-vc-status-on)
+     (spaceline-toggle-all-the-icons-git-status-on)
+     (spaceline-toggle-all-the-icons-git-ahead-on)
+     (spaceline-toggle-all-the-icons-position-on)
+
+     ;; (spaceline-toggle-all-the-icons-weather-on)
+     ;; (spaceline-toggle-all-the-icons-time-off)
+  )
+#+END_SRC
+
 **** Fancy Battery
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery
     :init 
     (fancy-battery-mode)
     :config
-    (setq-default battery-update-interval 10))
-    ;; :config
-    ;; (set-face-attribute 'fancy-battery-charging nil 
-    ;; :foreground "dark blue" :weight 'bold)
-    ;; (set-face-attribute 'fancy-battery-discharging nil 
-    ;; :foreground "dark magenta" :weight 'bold)
-    ;; (set-face-attribute 'fancy-battery-critical nil 
-    ;; :foreground "dark red" :weight 'bold))
+    (setq-default battery-update-interval 10)
+    (set-face-attribute 'fancy-battery-charging nil 
+    :foreground "dark blue" :weight 'bold)
+    (set-face-attribute 'fancy-battery-discharging nil 
+    :foreground "dark magenta" :weight 'bold)
+    (set-face-attribute 'fancy-battery-critical nil 
+    :foreground "dark red" :weight 'bold))
 #+END_SRC
  
-**** Display Time
+**** DISABLED Display Time
 #+begin_src emacs-lisp :tangle yes
   (setq display-time-format " %a %b %d | %H:%M |")
   (display-time-mode)
@@ -2189,6 +2232,7 @@ Like the title says...
 (use-package all-the-icons :defer t :diminish "")
 ;; icons for dired
 (use-package all-the-icons-dired
+  :after all-the-icons
   :diminish ""
   :commands (deer deer-jump-other-window all-the-icons-dired-mode dired-mode ranger)
   :init
