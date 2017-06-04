@@ -3437,6 +3437,8 @@ Some bling for the prompt plus a custom theme. In general it makes the
                                             "/")))))
           (concat
            (epe-colorize-with-face "┌─[" 'epe-dir-face)
+           (all-the-icons-material "timer") 
+           (epe-colorize-with-face " " 'epe-dir-face)
            (epe-colorize-with-face (format-time-string "%H:%M:%S") '(foreground-color . "#839496"))
            (epe-colorize-with-face "]" 'epe-dir-face)
            (when (epe-remote-p)
@@ -3452,25 +3454,31 @@ Some bling for the prompt plus a custom theme. In general it makes the
                    (epe-colorize-with-face "──" 'epe-dir-face)
                    (epe-colorize-with-face "(" 'epe-dir-face) 
                    ;; (propertize venv-current-name 'face `(:foreground "base01" :slant italic))
+                   (all-the-icons-alltheicon "python")
+                   (epe-colorize-with-face " " 'epe-venv-face)
                    (epe-colorize-with-face venv-current-name 'epe-venv-face)
                    (epe-colorize-with-face ")" 'epe-dir-face))))) 
                    (epe-colorize-with-face "──" 'epe-dir-face)
            (epe-colorize-with-face "[" 'epe-dir-face)
+           (all-the-icons-faicon "folder-open-o")
+           (epe-colorize-with-face " " 'epe-dir-face)
            (epe-colorize-with-face (funcall
                                     shrink-paths
                                     (split-string
-                                     (funcall pwd-repl-home (eshell/pwd)) "/"))
+                                     (funcall pwd-repl-home (eshell/pwd)) "/ "))
                                    'font-lock-type-face)
            ;; (epe-colorize-with-face "]" 'epe-dir-face)
 
            (when (epe-git-p)
                (concat 
                (epe-colorize-with-face "]──[" 'epe-dir-face)
-                 (propertize ":" 'face 'font-lock-string-face)
+                 ;; (propertize "" 'face 'font-lock-string-face)
+                 (all-the-icons-alltheicon "git")
+                 (epe-colorize-with-face " " 'font-lock-string-face)
                   (concat
                       (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
                        (let* ((status (shell-command-to-string "git status --porcelain"))
-                                   (parts (split-string status "\n" t " "))
+                                   (parts (split-string status " \n" t " "))
                                    (states (mapcar #'string-to-char parts))
                                    (added (count-if (lambda (char) (= char ?A)) states))
                                    (modified (count-if (lambda (char) (= char ?M)) states))
