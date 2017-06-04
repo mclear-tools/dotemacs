@@ -3396,86 +3396,103 @@ Some bling for the prompt plus a custom theme. In general it makes the
  the dakrone theme.
 
 #+BEGIN_SRC emacs-lisp
-    (use-package eshell-prompt-extras
-      :after eshell
-      :requires eshell
-      :init
-      (setq eshell-highlight-prompt nil
-            epe-git-dirty-char "✘"
-            epe-git-untracked-char "…"; "⇆" "⟀" "⟿" "⤭" 
-            eshell-prompt-function 'cpm-eshell-theme)
-      :config
-      (defun cpm-eshell-theme ()
-      "A eshell-prompt lambda theme with directory shrinking."
-      (setq eshell-prompt-regexp "^[^#\nλ]* λ[#]* ")
-      (let* ((pwd-repl-home (lambda (pwd)
-                              (let* ((home (expand-file-name (getenv "HOME")))
-                                     (home-len (length home)))
-                                (if (and
-                                     (>= (length pwd) home-len)
-                                     (equal home (substring pwd 0 home-len)))
-                                    (concat "~" (substring pwd home-len))
-                                  pwd))))
-             (shrink-paths (lambda (p-lst)
-                             (if (> (length p-lst) 3) ;; shrink paths deeper than 3 dirs
-                                 (concat
-                                  (mapconcat (lambda (elm)
-                                               (if (zerop (length elm)) ""
-                                                 (substring elm 0 1)))
-                                             (butlast p-lst 3)
-                                             "/")
-                                  "/"
-                                  (mapconcat (lambda (elm) elm)
-                                             (last p-lst 3)
-                                             "/"))
-                               (mapconcat (lambda (elm) elm)
-                                          p-lst
-                                          "/")))))
-        (concat
-         (epe-colorize-with-face (format-time-string "%H:%M:%S ") 'epe-venv-face)
-         (when (epe-remote-p)
-           (epe-colorize-with-face
-            (concat (epe-remote-user) "@" (epe-remote-host) " ")
-            'epe-remote-face))
-         (when epe-show-python-info
-           (when (fboundp 'epe-venv-p)
-             (when (and (epe-venv-p) venv-current-name)
+      (use-package eshell-prompt-extras
+        :after eshell
+        :requires eshell
+        :init
+        (setq eshell-prompt-number 0)
+        (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
+        (advice-add 'eshell-send-input :before
+            (lambda (&rest args) (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
+        (setq eshell-highlight-prompt nil
+              epe-git-dirty-char "✘"
+              epe-git-untracked-char "…"; "⇆" "⟀" "⟿" "⤭" 
+              eshell-prompt-function 'cpm-eshell-theme)
+        :config
+        (defun cpm-eshell-theme ()
+        "A eshell-prompt lambda theme with directory shrinking."
+        (setq eshell-prompt-regexp "^[^#\nλ]* λ[#]* ")
+        (let* ((pwd-repl-home (lambda (pwd)
+                                (let* ((home (expand-file-name (getenv "HOME")))
+                                       (home-len (length home)))
+                                  (if (and
+                                       (>= (length pwd) home-len)
+                                       (equal home (substring pwd 0 home-len)))
+                                      (concat "~" (substring pwd home-len))
+                                    pwd))))
+               (shrink-paths (lambda (p-lst)
+                               (if (> (length p-lst) 3) ;; shrink paths deeper than 3 dirs
+                                   (concat
+                                    (mapconcat (lambda (elm)
+                                                 (if (zerop (length elm)) ""
+                                                   (substring elm 0 1)))
+                                               (butlast p-lst 3)
+                                               "/")
+                                    "/"
+                                    (mapconcat (lambda (elm) elm)
+                                               (last p-lst 3)
+                                               "/"))
+                                 (mapconcat (lambda (elm) elm)
+                                            p-lst
+                                            "/")))))
+          (concat
+           (epe-colorize-with-face "┌─[" 'epe-dir-face)
+           (epe-colorize-with-face (format-time-string "%H:%M:%S") '(foreground-color . "#839496"))
+           (epe-colorize-with-face "]" 'epe-dir-face)
+           (when (epe-remote-p)
+           (epe-colorize-with-face "──[" 'epe-dir-face)
+             (epe-colorize-with-face
+              (concat (epe-remote-user) "@" (epe-remote-host) " ")
+              'epe-remote-face)
+              (epe-colorize-with-face "]──" 'epe-dir-face))
+           (when epe-show-python-info
+             (when (fboundp 'epe-venv-p)
+               (when (and (epe-venv-p) venv-current-name)
+                 (concat 
+                   (epe-colorize-with-face "──" 'epe-dir-face)
+                   (epe-colorize-with-face "(" 'epe-dir-face) 
+                   ;; (propertize venv-current-name 'face `(:foreground "base01" :slant italic))
+                   (epe-colorize-with-face venv-current-name 'epe-venv-face)
+                   (epe-colorize-with-face ")" 'epe-dir-face))))) 
+                   (epe-colorize-with-face "──" 'epe-dir-face)
+           (epe-colorize-with-face "[" 'epe-dir-face)
+           (epe-colorize-with-face (funcall
+                                    shrink-paths
+                                    (split-string
+                                     (funcall pwd-repl-home (eshell/pwd)) "/"))
+                                   'font-lock-type-face)
+           ;; (epe-colorize-with-face "]" 'epe-dir-face)
+
+           (when (epe-git-p)
                (concat 
-                 (epe-colorize-with-face "(" 'epe-venv-face) 
-                 ;; (propertize venv-current-name 'face `(:foreground "base01" :slant italic))
-                 (epe-colorize-with-face venv-current-name 'epe-dir-face)
-                 (epe-colorize-with-face ") " 'epe-venv-face))))) 
-         (epe-colorize-with-face (funcall
-                                  shrink-paths
-                                  (split-string
-                                   (funcall pwd-repl-home (eshell/pwd)) "/"))
-                                 'epe-dir-face)
-         (when (epe-git-p)
-             (concat (propertize " :" 'face 'font-lock-string-face)
-                (concat
-                     (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
-                     (let* ((status (shell-command-to-string "git status --porcelain"))
-                                 (parts (split-string status "\n" t " "))
-                                 (states (mapcar #'string-to-char parts))
-                                 (added (count-if (lambda (char) (= char ?A)) states))
-                                 (modified (count-if (lambda (char) (= char ?M)) states))
-                                 (deleted (count-if (lambda (char) (= char ?D)) states)))
-                            (when (> (+ added modified deleted) 0)
-                              (concat (propertize "(" 'face 'font-lock-comment-face)
-                              (propertize (format "+%d/~%d/-%d" added modified deleted) 'face `(:foreground "#d33682"))
-                              (propertize ")" 'face 'font-lock-comment-face))
-                              ))
-                     (epe-colorize-with-face (epe-git-dirty) 'font-lock-warning-face))
-                     (epe-colorize-with-face 
-                       (concat
-                       (epe-git-untracked) 
-                       (unless (= (epe-git-unpushed-number) 0)
-                         (concat ":" (number-to-string (epe-git-unpushed-number)))))
-                     'font-lock-comment-face)))
-         (epe-colorize-with-face " λ" 'epe-dir-face)
-         (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
-         " ")))
+               (epe-colorize-with-face "]──[" 'epe-dir-face)
+                 (propertize ":" 'face 'font-lock-string-face)
+                  (concat
+                      (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
+                       (let* ((status (shell-command-to-string "git status --porcelain"))
+                                   (parts (split-string status "\n" t " "))
+                                   (states (mapcar #'string-to-char parts))
+                                   (added (count-if (lambda (char) (= char ?A)) states))
+                                   (modified (count-if (lambda (char) (= char ?M)) states))
+                                   (deleted (count-if (lambda (char) (= char ?D)) states)))
+                              (when (> (+ added modified deleted) 0)
+                                (concat (propertize "(" 'face 'font-lock-comment-face)
+                                (propertize (format "+%d/~%d/-%d" added modified deleted) 'face `(:foreground "#d33682"))
+                                (propertize ")" 'face 'font-lock-comment-face))
+                                ))
+                       (epe-colorize-with-face (epe-git-dirty) 'font-lock-warning-face))
+                       (epe-colorize-with-face 
+                         (concat
+                         (epe-git-untracked) 
+                         (unless (= (epe-git-unpushed-number) 0)
+                           (concat ":" (number-to-string (epe-git-unpushed-number)))))
+                       'font-lock-comment-face))
   )
+           (epe-colorize-with-face "]\n" 'epe-dir-face)
+           (epe-colorize-with-face "└─> λ" 'epe-dir-face)
+           (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
+           " ")))
+    )
 #+END_SRC
 **** Shell Switcher
  Useful for switching between [[https://github.com/DamienCassou/shell-switcher][multiple instances]] of eshell. But you can
