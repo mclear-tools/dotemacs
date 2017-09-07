@@ -1221,7 +1221,11 @@ The essential stuff
       (setq evil-replace-state-cursor '("red" hbar))
       (setq evil-operator-state-cursor '("red" hollow))
       (setq evil-visual-state-tag "VISUAL")
-      
+      ;use insert in commits automatically 
+      (add-hook 'git-commit-mode-hook 'evil-insert-state)
+      (evil-set-initial-state 'magit-log-edit-mode 'insert)
+      ; start in motion state in customize buffers
+      ;; (evil-set-initial-state 'Custom-mode 'motion)
       ;; evil-normal-state is preferred, so revert when idle
       (run-with-idle-timer 20 t 'evil-normal-state)
       ;; don't echo evil state
