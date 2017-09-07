@@ -1836,9 +1836,9 @@ This is a really nice powerline-ish modeline.
       ;;       powerline-utf-8-separator-right 9686)
 
       ;; slant (requires srbg support)
-      (setq-default powerline-default-separator 'slant) 
-      (setq spaceline-separator-dir-left '(right . right))
-      (setq spaceline-separator-dir-right '(right . right))
+      ;; (setq-default powerline-default-separator 'slant) 
+      ;; (setq spaceline-separator-dir-left '(right . right))
+      ;; (setq spaceline-separator-dir-right '(right . right))
 
       ;; fancy git icon for the modeline
       (defadvice vc-mode-line (after strip-backend () activate)
@@ -1863,28 +1863,41 @@ package but still a bit buggy. Also adds a couple seconds to the load time.
 #+BEGIN_SRC emacs-lisp
   ;; Mode line
   (use-package spaceline
-    :config
-    (require 'spaceline-config))
+    :init 
+    (setq spaceline-responsive nil)
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+    :config 
+    (require 'spaceline-config)
+    (setq powerline-image-apple-rgb t)
+    ;; use simple config in terminal
+    (if (not (display-graphic-p))
+      (spaceline-spacemacs-theme)
+      ;; (spaceline-toggle-buffer-size-off)
+      (spaceline-toggle-line-column-off)
+      ;; (spaceline-toggle-buffer-encoding-off)
+      ;; (setq spaceline-window-numbers-unicode nil
+      ;;       spaceline-buffer-id-p nil
+      ;;       spaceline-minor-modes-separator nil)
+      ))
 
   (use-package spaceline-all-the-icons 
     :after spaceline
-    :if (display-graphic-p)
+    :if (display-graphic-p)  ;; no icons in terminal
     :config (spaceline-all-the-icons-theme)
     ;; Configuration
-    ;; (spaceline-all-the-icons--setup-package-updates) ;; Enable package update indicator
+    ;; (spaceline-all-the-icons--setup-package-updates) ;; Enable package update indicator (takes too long and looks weird unless buffer location is also active)
+    ;; (spaceline-all-the-icons--setup-paradox)         ;; Enable Paradox mode line
     (spaceline-all-the-icons--setup-git-ahead)       ;; Enable # of commits ahead of upstream in git
-    (spaceline-all-the-icons--setup-paradox)         ;; Enable Paradox mode line
     (spaceline-all-the-icons--setup-neotree)         ;; Enable Neotree mode line
-    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
-          spaceline-all-the-icons-separator-type 'arrow
+    (setq spaceline-all-the-icons-separator-type 'arrow
           spaceline-all-the-icons-icon-set-modified 'circle
-          spaceline-all-the-icons-icon-set-git-stats 'diff-icons
+          ;; spaceline-all-the-icons-icon-set-git-stats 'arrows
           spaceline-all-the-icons-icon-set-window-numbering 'solid
           spaceline-all-the-icons-primary-separator "")
      ;; Toggles
      (spaceline-toggle-all-the-icons-battery-status-on)
      (spaceline-toggle-all-the-icons-buffer-size-off)
-     (spaceline-toggle-all-the-icons-buffer-position-on)
+     (spaceline-toggle-all-the-icons-buffer-position-off)
      (spaceline-toggle-all-the-icons-buffer-path-off)
      (spaceline-toggle-all-the-icons-hud-off)
      (spaceline-toggle-all-the-icons-narrowed-on)
@@ -1893,7 +1906,7 @@ package but still a bit buggy. Also adds a couple seconds to the load time.
      (spaceline-toggle-all-the-icons-vc-status-on)
      (spaceline-toggle-all-the-icons-git-status-on)
      (spaceline-toggle-all-the-icons-git-ahead-on)
-     (spaceline-toggle-all-the-icons-position-on)
+     (spaceline-toggle-all-the-icons-position-off)
 
      ;; (spaceline-toggle-all-the-icons-weather-on)
      ;; (spaceline-toggle-all-the-icons-time-off)
@@ -1906,16 +1919,16 @@ package but still a bit buggy. Also adds a couple seconds to the load time.
     :init 
     (fancy-battery-mode)
     :config
-    (setq-default battery-update-interval 10)
-    (set-face-attribute 'fancy-battery-charging nil 
-    :foreground "dark blue" :weight 'bold)
-    (set-face-attribute 'fancy-battery-discharging nil 
-    :foreground "dark magenta" :weight 'bold)
-    (set-face-attribute 'fancy-battery-critical nil 
-    :foreground "dark red" :weight 'bold))
+    (setq-default battery-update-interval 10))
+    ;; (set-face-attribute 'fancy-battery-charging nil 
+    ;; :foreground "dark blue" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-discharging nil 
+    ;; :foreground "dark magenta" :weight 'bold)
+    ;; (set-face-attribute 'fancy-battery-critical nil 
+    ;; :foreground "dark red" :weight 'bold))
 #+END_SRC
  
-**** DISABLED Display Time
+**** Display Time
 #+begin_src emacs-lisp :tangle yes
   (setq display-time-format " %a %b %d | %H:%M |")
   (display-time-mode)
