@@ -3450,8 +3450,8 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            eshell-highlight-prompt nil
            eshell-buffer-shorthand t
            eshell-cmpl-ignore-case t
-           eshell-cmpl-cycle-completions nil
-           eshell-history-size 500
+           eshell-cmpl-cycle-completions t
+           eshell-history-size 10000
            ;; auto truncate after 12k lines
            eshell-buffer-maximum-lines 12000
            eshell-hist-ignoredups t
@@ -3460,7 +3460,8 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            eshell-scroll-to-bottom-on-input 'all
            eshell-list-files-after-cd t
            eshell-aliases-file (concat user-emacs-directory "eshell/alias")
-           eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
+           eshell-banner-message ""
+           ;; eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
            ;; eshell-banner-message "What would you like to do?\n\n"
          )
          ;; Visual commands
@@ -3482,8 +3483,8 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
          ;; After being idle for 5 seconds, truncate all the eshell-buffers if
          ;; needed. If this needs to be canceled, you can run `(cancel-timer
          ;; my/eshell-truncate-timer)'
-         (setq my/eshell-truncate-timer
-               (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
+         ;; (setq my/eshell-truncate-timer
+         ;;       (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
 
          (when (not (functionp 'eshell/rgrep))
            (defun eshell/rgrep (&rest args)
@@ -3506,16 +3507,17 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
                  (eshell-cmpl-initialize)))
  #+END_SRC
  
-**** Eshell Path Shortening
-Courtesy of [[https://www.emacswiki.org/emacs/EshellPrompt][emacs wiki]]
+**** CHECK Eshell Path Shortening
+Courtesy of [[https://www.emacswiki.org/emacs/EshellPrompt][emacs wiki]] and [[https://github.com/kaihaosw/eshell-prompt-extras/blob/master/eshell-prompt-extras.el#L193][eshell-prompt-extras]]
 #+BEGIN_SRC emacs-lisp
-(defun shortened-path (path max-len)
-"Return a potentially trimmed-down version of the directory PATH, replacing
+(defun epe-fish-path (path)
+  "Return a potentially trimmed-down version of the directory PATH, replacing
 parent directories with their initial characters to try to get the character
 length of PATH (sans directory slashes) down to MAX-LEN."
   (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (max-len 30)
          (len (+ (1- (length components))
-                 (reduce '+ components :key 'length)))
+                 (cl-reduce '+ components :key 'length)))
          (str ""))
     (while (and (> len max-len)
                 (cdr components))
@@ -3531,24 +3533,22 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                  (string (elt (car components) 0) ?/)))))
             len (- len (1- (length (car components))))
             components (cdr components)))
-    (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+    (concat str (cl-reduce (lambda (a b) (concat a "/" b)) components))))
 #+END_SRC
 
-**** Eshell Prompt Extras
+**** CHECK Eshell Prompt Extras
 Some bling for the prompt plus a custom theme. In general it makes the
  prompt display more useful info. I got a lot of help from looking at
  [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]] and
  the dakrone theme.
 
+ Note that path shortening isn't working right now. 
 #+BEGIN_SRC emacs-lisp
       (use-package eshell-prompt-extras
         :after eshell
+        :if (display-graphic-p)
         :requires eshell
         :init
-        (setq eshell-prompt-number 0)
-        (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
-        (advice-add 'eshell-send-input :before
-            (lambda (&rest args) (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
         (setq eshell-highlight-prompt nil
               epe-git-dirty-char "✘"
               epe-git-untracked-char "…"; "⇆" "⟀" "⟿" "⤭" 
@@ -3582,7 +3582,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
                                             "/")))))
           (concat
            (epe-colorize-with-face "┌─[" 'epe-dir-face)
-           (all-the-icons-material "timer") 
+           (epe-colorize-with-face (all-the-icons-faicon "clock-o" :v-adjust .025 :height .75) '(foreground-color . "#839496"))
            (epe-colorize-with-face " " 'epe-dir-face)
            (epe-colorize-with-face (format-time-string "%H:%M:%S") '(foreground-color . "#839496"))
            (epe-colorize-with-face "]" 'epe-dir-face)
@@ -3599,13 +3599,13 @@ Some bling for the prompt plus a custom theme. In general it makes the
                    (epe-colorize-with-face "──" 'epe-dir-face)
                    (epe-colorize-with-face "(" 'epe-dir-face) 
                    ;; (propertize venv-current-name 'face `(:foreground "base01" :slant italic))
-                   (all-the-icons-alltheicon "python")
+                   (epe-colorize-with-face (all-the-icons-alltheicon "python" :v-adjust .025 :height .75) 'epe-venv-face)
                    (epe-colorize-with-face " " 'epe-venv-face)
                    (epe-colorize-with-face venv-current-name 'epe-venv-face)
                    (epe-colorize-with-face ")" 'epe-dir-face))))) 
                    (epe-colorize-with-face "──" 'epe-dir-face)
            (epe-colorize-with-face "[" 'epe-dir-face)
-           (all-the-icons-faicon "folder-open-o")
+           (epe-colorize-with-face (all-the-icons-faicon "folder-open-o" :v-adjust .025 :height .75) 'font-lock-type-face)
            (epe-colorize-with-face " " 'epe-dir-face)
            (epe-colorize-with-face (funcall
                                     shrink-paths
@@ -3618,7 +3618,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
                (concat 
                (epe-colorize-with-face "]──[" 'epe-dir-face)
                  ;; (propertize "" 'face 'font-lock-string-face)
-                 (all-the-icons-alltheicon "git")
+                (epe-colorize-with-face (all-the-icons-alltheicon "git" :v-adjust .025 :height .75) 'font-lock-string-face)
                  (epe-colorize-with-face " " 'font-lock-string-face)
                   (concat
                       (epe-colorize-with-face (epe-git-branch) 'font-lock-string-face)
@@ -3642,7 +3642,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
                        'font-lock-comment-face))
   )
            (epe-colorize-with-face "]\n" 'epe-dir-face)
-           (epe-colorize-with-face "└─> λ" 'epe-dir-face)
+           (epe-colorize-with-face "└─ λ" 'epe-dir-face) ;; └─>  └─
            (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
            " ")))
     )
