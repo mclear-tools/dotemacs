@@ -4563,137 +4563,36 @@ Searching Org-mode with search tools.
 #+END_SRC
 **** Org-Wiki
 #+BEGIN_SRC emacs-lisp
-    (use-package org-wiki
-      :ensure nil
-      :load-path "~/.emacs.d/elisp/org-wiki/"
-      :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
-      :init 
-      (setq org-wiki-location "~/Desktop/wiki")
-      :config
-      (defun org-wiki-export-html-sync ()
-      "Export all pages to html in synchronous mode."
-      (interactive)
-      (let ((org-html-htmlize-output-type 'css)
-            (org-html-htmlize-font-prefix "org-")
-            )
-      (org-publish
-       `("html"
-         :base-directory       ,org-wiki-location
-         :base-extension        "org"
-         :publishing-directory  "~/Desktop/wiki/html/"
-         ;; :publishing-function    org-html-publish-to-html
-         :publishing-function (org-pandoc-publish-to-html5)
-         :org-pandoc-table-of-contents t
-         :org-pandoc-bibliography "/Users/Roambot/Dropbox/Work/Master.bib"
-         )
-       t
-       )))
-
-      (defun org-wiki-export-html ()
-       "Export all pages to html.
-       Note: This function doesn't freeze Emacs since it starts another Emacs process."
-       (interactive)
-       (compile (mapconcat 'identity
-                           `(,org-wiki-emacs-path
-                             "--batch"
-                             "-l" ,org-wiki-user-init-file
-                             "-f" "org-wiki-export-html-sync"
-                             "--kill"
-                             )
-                           " "
-                           )))
-
-      (defun org-wiki--org-link (path desc backend)
-        "Creates an html org-wiki pages when  exporting to html.
-      Example: The hyperlink [[wiki:Linux][Dealing with Linux]]
-      will be exported to <a href='Linux.html'>Dealing with Linux</a>"
-        (cl-case backend
-          (html (format
-             "<a href='%s.html'>%s</a>"
-             path
-             (or desc path)))
-          (pandoc (format
-             "<a href='%s.html'>%s</a>"
-               path
-               (or desc path)))))
-               
-        (defun org-wiki-header ()
-                  "Insert a header at the top of the file."
-                  (interactive)
-                  (save-excursion
-                     (goto-char (point-min))
-                     (insert (format
-                              (string-trim "
-        ,#+TITLE: %s
-        ,#+DESCRIPTION:
-        ,#+KEYWORDS:
-        ,#+SETUPFILE: ~/.emacs.d/elisp/org-html-themes/setup/theme-bigblow.setup
-        ,#+STARTUP:  overview
-
-        Related:
-
-        [[wiki:index][Index]]")
-                (file-name-base (buffer-file-name))))))
-            )              
-                   ;; (defun org-wiki-export-html-sync ()
-                   ;;   "Export all pages to html in synchronous mode."
-                   ;;   (interactive)
-                   ;;   (let ((org-html-htmlize-font-prefix "org-")
-                   ;;         )
-
-                   ;; (defun org-wiki-export-html-sync ()
-                   ;;   "Export all pages to html in synchronous mode."
-                   ;;   (interactive)
-                   ;;   (let ((org-html-htmlize-output-type 'css)
-                   ;;         (org-html-htmlize-font-prefix "org-")
-                   ;;         )
-
-                       ;; (org-publish
-                       ;;  `("html"
-                       ;;    :base-directory       ,org-wiki-location
-                       ;;    :base-extension        "org"
-                       ;;    :publishing-directory  "~/Dropbox/work/wiki/html"
-                       ;;    :publishing-function   org-twbs-publish-to-html
-                       ;;    ;; settings
-                       ;;    :author "Colin McLear"
-                       ;;    :email "mclear@unl.edu"
-                       ;;    :toc nil
-                       ;;    :with-timestamps nil
-                       ;;    :time-stamp-file nil
-                       ;;    :timestamp nil
-                       ;;    ;; :org-pandoc-bibliography "~/Dropbox/Work/Master.bib"
-                       ;;    ;; :org-pandoc-csl "~/.pandoc/styles/chicago-author-date.csl"
-                       ;;    )
-                       ;;  t
-                       ;;  )))
-
+  (use-package org-wiki
+    :ensure nil
+    :load-path "~/.emacs.d/elisp/org-wiki/"
+    :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
+    :init 
+    (setq org-wiki-location "~/Dropbox/org-files/Wiki"))
 #+END_SRC
 **** Org-Brain
 A [[https://github.com/Kungsgeten/org-brain][knowledge base]] using org-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package org-brain
-    :ensure nil
-    :commands org-brain-open
-    :load-path "~/.emacs.d/elisp/org-brain"
+  (use-package org-brain 
+    :commands (org-brain-visualize org-brain-open)
     :init
-    ;; (setq org-brain-path "~/projects/notebook/content/org_notes")
-    (setq org-brain-path "~/Desktop/brain")
-    ;; For Evil users
-    (with-eval-after-load 'evil
-      (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    (setq org-brain-path "~/Dropbox/org-files/Wiki")
     :config
-    ;; Save/load org-brain caches to/from disk
-    (org-brain-activate-cache-saving)
+    ;; For Evil users
+    (evil-set-initial-state 'org-brain-visualize-mode 'motion)
+    (setq org-id-track-globally t)
+    (setq org-id-locations-file (expand-file-name "org-id-locations" user-cache-directory))
+    (setq org-brain-visualize-default-choices 'all)
     (org-link-set-parameters
       "brain"
       :export (lambda (path desc backend)
         (message-box "%s" backend)
-        (cond
-        ((eq backend 'html)
-         (format "<a href='%s.html'>%s</a>" path (or desc path)))
-        ((eq backend 'pandoc)
-         (format "<a href='%s.html'>%s</a>" path (or desc path))))))
-  )
+          (cond
+          ((eq backend 'html)
+           (format "<a href='%s.html'>%s</a>" path (or desc path)))
+          ((eq backend 'pandoc)
+           (format "<a href='%s.html'>%s</a>" path (or desc path)))))))
+
 #+END_SRC
 **** Org-Twitter-Bootstrap
 Publish using twitter bootstrap css
