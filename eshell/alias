@@ -36,6 +36,7 @@ alias ec find-file $1
 alias e find-file $1
 alias d deer $1
 alias cc (find-file "~/.emacs.d/config.org")
+alias bu brew update && brew outdated && brew upgrade && brew cleanup && brew doctor
 alias bs brew search
 alias bb helm-mini
 alias bi brew info
