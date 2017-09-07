@@ -852,8 +852,19 @@ argument takes the kindows rotate backwards."
 (defun rotate-windows-backward (count)
   "Rotate your windows backward."
   (interactive "p")
-  (spacemacs/rotate-windows (* -1 count)))
+  (rotate-windows (* -1 count)))
 #+END_SRC
+**** Swap windows
+Swap buffers in windows and leave the cursor in the original window.
+Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touch-of-elisp/#.WX5Wg0czpcx][video]].
+#+BEGIN_SRC emacs-lisp
+(defun cpm/window-exchange ()
+"Swap buffer windows and leave focus in original window"
+(interactive)
+(ace-swap-window)
+(aw-flip-window)
+)
+#+END_SRC 
 **** Open projects directory
 #+BEGIN_SRC emacs-lisp
   (defun goto-projects ()
@@ -3042,6 +3053,12 @@ Keybindings for managing packages
 #+END_SRC
 
 ** Navigation
+*** Ace Window
+Ace [[https://github.com/abo-abo/ace-window][window management]]. 
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+  :commands (ace-window ace-swap-window aw-flip-window cpm/swap-windows))
+#+END_SRC
 *** Avy
 #+BEGIN_SRC emacs-lisp
 (use-package avy
