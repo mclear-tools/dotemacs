@@ -5518,6 +5518,117 @@ Interface with Zotero.
   (if (file-exists-p private)
 	  (load-file private)))
 #+END_SRC
+* Test 
+Packages I'm testing. 
+
+** SDCV (Dictionary)
+#+BEGIN_SRC emacs-lisp
+(use-package sdcv-mode
+  :ensure nil
+  :load-path "~/.emacs.d/elisp/emacs-sdcv"
+  :commands sdcv-search
+)
+#+END_SRC
+** Evil New line Undo
+#+BEGIN_SRC emacs-lisp
+(use-package evil-nl-break-undo
+  :ensure nil
+  :load-path "~/.emacs.d/elisp/evil-nl-break-undo"
+  :config
+  (add-hook 'text-mode-hook #'evil-nl-break-undo-mode)
+  (add-hook 'prog-mode-hook #'evil-nl-break-undo-mode)
+)
+#+END_SRC
+** Prodigy
+#+BEGIN_SRC emacs-lisp
+;; manage services
+(use-package prodigy
+:commands prodigy
+:config
+(prodigy-define-service
+  :name "pelican"
+  :command "pelican"
+  :args '("make devserver")
+  :cwd "~/projects/notebook"
+  :tags '(blog pelican notebook)
+  :stop-signal 'sigint
+  :kill-process-buffer-on-stop t 
+  ))
+#+END_SRC
+
+** Frame bufs
+Manage [[https://github.com/alpaker/Frame-Bufs][buffers by frame]]
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package frame-bufs
+  :ensure nil
+  :load-path "~/.emacs.d/elisp/frame-bufs/"
+  :commands frame-bufs-mode
+)
+#+END_SRC
+
+** Manage perspectives (perspeen)
+Another attempt to manage buffers/workspaces
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package perspeen
+  :init
+  (setq perspeen-use-tab nil)
+  :config
+  (perspeen-mode))
+#+END_SRC
+
+** Persp mode
+Yet another attempt to manage buffers/workspaces
+#+BEGIN_SRC emacs-lisp
+  (use-package persp-mode
+    :commands persp-mode
+  )
+#+END_SRC
+
+** Elfeed
+Elfeed business
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed 
+  :disabled t
+)
+#+END_SRC
+
+** Outline toc
+Make an [[https://github.com/abingham/outline-toc.el][outline]]
+#+BEGIN_SRC emacs-lisp
+(use-package outline-toc
+  :ensure nil
+  :load-path "~/.emacs.d/elisp/outline-toc/"
+  :commands outline-toc-mode
+)
+#+END_SRC
+
+** Eyebrowse
+Easy workspaces creation and switching
+#+BEGIN_SRC emacs-lisp
+(use-package eyebrowse                  
+  :commands eybrowse-mode
+  :config
+  (setq eyebrowse-mode-line-separator " "
+        eyebrowse-new-workspace t))
+#+END_SRC
+
+** Libvterm
+an [[https://github.com/akermu/emacs-libvterm][alternative]] to ansi-term
+#+BEGIN_SRC emacs-lisp
+  (use-package emacs-libvterm
+    :ensure nil
+    :load-path "/Users/roambot/.emacs.d/elisp/emacs-libvterm"
+    :commands vterm-create
+  )
+#+END_SRC
+
+** Helpful
+[[http://www.wilfred.me.uk/blog/2017/08/30/helpful-adding-contextual-help-to-emacs/][Contextual help]] for emacs
+#+BEGIN_SRC emacs-lisp
+(use-package helpful
+  :commands (helpful-function)
+)
+#+END_SRC
 * Startup
 ** Page Breaks
 Dashboard depends on this. 
