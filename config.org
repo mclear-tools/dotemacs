@@ -4210,21 +4210,93 @@ Other useful org packages
         org-reveal-default-frag-style "roll-in"
         org-reveal-hlevel 2
         ))
+       
+(defun cpm/narrowed-subtree-to-html ()
+  "export narrowed tree to html"
+  (interactive)
+  (org-reveal-export-current-subtree)
+  (org-narrow-to-subtree))
+#+END_SRC
+**** Org-Agenda
+Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]]. 
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'org-agenda
+  (general-define-key :keymaps 'org-agenda-mode-map 
+                      "j" 'org-agenda-next-item
+                      "k" 'org-agenda-previous-item))
+  (setq org-agenda-files '("~/Dropbox/org-files/"))
+  
+;; automatically refresh the agenda after adding a task
+(add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+
+(defun cpm/org-agenda-refresh ()
+(interactive)
+(when (get-buffer "*Org Agenda*")
+    (with-current-buffer "*Org Agenda*"
+        (org-agenda-redo t)
+        (message "[org agenda] refreshed!"))))
 #+END_SRC
 **** Org Capture
 #+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
   (setq org-capture-templates
-      '(
-        ("j" "Journal entry" plain
-         (file+datetree "~/Dropbox/journal.org")
-         "**** %<%H:%M>\n%?")
+        '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/projects.org" "Unfiled")
+               "** STARTED %? \n  %i\n  Captured on: %u\n")
+          ("c" "Capture" entry (file "~/Dropbox/org-files/inbox.org")
+               "* TODO %? \n  %i\n Captured on: %u\n")
+          ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
+               "**** %<%H:%M>\n%?")
+          ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
+          "* %? \n Captured on: %U\n")))
 
-        ;; other entries
-        ))
-  (defun cpm/org-journal ()
-  (interactive) (org-capture nil "j"))
+
+    ;; (setq org-capture-templates
+    ;;     '(
+    ;;       ("j" "Journal entry" plain
+    ;;        (file+datetree "~/Dropbox/org-files/journal.org")
+    ;;        "**** %<%H:%M>\n%?")
+
+    ;;       ;; other entries
+    ;;       ("p" "Projects entry" (file+headline "~/Dropbox/org-files/projects.org")
+    ;;          "* STARTED %?\n %i\n %a")
+    ;;       ))
+    (defun cpm/org-journal ()
+    (interactive) (org-capture nil "j"))
 
 
+#+END_SRC
+**** Org Refile
+Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
+
+With this set, you can trigger Refile with C-c C-w in any Org file and
+get a completing read of all headings up to three levels deep in all
+files in =org-agenda-files=. You can also refile to the top header in a
+document and create new parents.
+#+BEGIN_SRC emacs-lisp
+(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+(setq org-refile-use-outline-path 'file)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+
+#+END_SRC
+**** Org Rifle
+Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
+#+BEGIN_SRC emacs-lisp
+(use-package helm-org-rifle
+  :ensure nil
+  :load-path "~/.emacs.d/elisp/helm-org-rifle"
+  :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
+#+END_SRC
+**** Org-Download
+Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]]. 
+#+BEGIN_SRC emacs-lisp
+ (use-package org-download
+    :after org
+    :config
+    (setq org-download-method 'directory)
+          org-download-image-dir "/Users/roambot/Dropbox/org-files/org-pictures"
+          org-download-image-latex-width 500
+  )
 #+END_SRC
 **** Journal
 ***** DISABLED Org-journal
@@ -4234,7 +4306,7 @@ Other useful org packages
   :disabled t
   :defer t
   :init
-   (setq org-journal-dir "~/Dropbox/journal/")
+   (setq org-journal-dir "~/Dropbox/org-files/journal/")
    (setq org-journal-date-format "%Y-%b-%d (%A)"))
 #+END_SRC
 ***** Journal functions
@@ -4695,6 +4767,38 @@ Functions to advance forwards or backwards through narrowed tree
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
 #+END_SRC
+***** Org files
+#+BEGIN_SRC emacs-lisp
+(defun cpm/goto-org-files ()
+  "goto org-files directory"
+  (interactive)
+  (require 'ranger)
+  (find-file "~/Dropbox/org-files"))
+(defun cpm/goto-inbox.org ()
+  "goto org-inbox"
+  (interactive)
+  (find-file "~/Dropbox/org-files/inbox.org"))
+(defun cpm/goto-projects.org ()
+  "goto org-projects"
+  (interactive)
+  (find-file "~/Dropbox/org-files/projects.org"))
+(defun cpm/goto-articles.org ()
+  "goto org-articles"
+  (interactive)
+  (find-file "~/Dropbox/org-files/articles.org"))
+(defun cpm/goto-teaching.org ()
+  "goto org-teaching"
+  (interactive)
+  (find-file "~/Dropbox/org-files/teaching.org"))
+(defun cpm/goto-notes.org ()
+  "goto org-notes"
+  (interactive)
+  (find-file "~/Dropbox/org-files/notes.org"))
+(defun cpm/goto-someday.org ()
+  "goto org-someday"
+  (interactive)
+  (find-file "~/Dropbox/org-files/someday.org"))
+#+END_SRC
 **** Org Numbers Overlay
 [[https://github.com/larkery/emacs/blob/master/site-lisp/org-numbers-overlay.el][This]] is a useful minor-mode to number org-mode headings. It came up in
 the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to_display_numbers_at_the/][this reddit]] discussion. 
@@ -4818,7 +4922,7 @@ Great for managing citations and notes
     ;; markdown hooks
     (add-hook 'markdown-mode-hook
           '(lambda ()
-             (turn-on-auto-fill) (nlinum-mode) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
+             (turn-on-auto-fill) (centered-cursor-mode) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode) (git-gutter-mode t)))
     (setq markdown-command "pandoc -s -N --smart --bibliography=/Users/Roambot/Dropbox/Work/Master.bib"
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
@@ -4846,8 +4950,8 @@ Great for managing citations and notes
        "M-k" 'markdown-move-up
        "M-l" 'markdown-demote
        ;; fix wrong emacs keybindings
-       "C-c C-j" 'markdown-jump
-       "C-c C-l" 'markdown-insert-list-item
+       ;; "C-c C-j" 'markdown-jump
+       ;; "C-c C-l" 'markdown-insert-list-item
        )
        (add-hook 'markdown-mode-hook #'my-markdown-config)
   )
@@ -4871,7 +4975,7 @@ Pandoc mode for markdown conversion
       (defun pandoc-pdf-open ()
         "Open created PDF file"  
         (interactive)
-        (find-file (concat (file-name-sans-extension buffer-file-name) ".pdf")))
+        (find-file-other-window (concat (file-name-sans-extension buffer-file-name) ".pdf")))
         )
     :init
     (progn
