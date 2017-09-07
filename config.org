@@ -2326,6 +2326,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 (cpm-leader1
   "C"  '(:ignore t :which-key "Config")
   "Cc" 'goto-config.org
+  "Cd" 'goto-dotfiles.org
+  "CD" 'goto-emacs-dir
   "Cl" 'load-config
   "Ci" 'goto-init.el
   "Cs" 'goto-custom.el
@@ -2361,6 +2363,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     ;; "<SPC>" 'counsel-M-x
     "d" 'deer
     "D" 'deer-jump-other-window
+    "E" 'evil-motion-state
     "e" 'server-edit
     "G" 'general-describe-keybindings
     "h" 'helm-resume
@@ -2369,13 +2372,31 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "k" 'helm-show-kill-ring
     "N" 'research-notes
     "n" 'big-notes
-    "M" 'woman
+    ;; "W" 'woman
     "'" 'shell-pop
     "." 'quick-commit
     ";" 'evil-commentary-line
     "[" 'spacemacs/previous-useful-buffer
     "]" 'spacemacs/next-useful-buffer
     "TAB" 'switch-to-previous-buffer)
+#+END_SRC
+**** Make/Compile
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "M"   '(:ignore t :which-key "Make/Compile")
+  "Mm"  'compile
+  "Me"  'compile-goto-error
+  "Mk"  'kill-compilation
+  "Mr"  'recompile
+  "Mv"  'cpm/make-move
+)
+
+(defun cpm/make-move ()
+  "move files to project web directory"
+   (interactive)
+   (evil-ex "!make move"))
+
+
 #+END_SRC
 **** Markdown
 #+BEGIN_SRC emacs-lisp
@@ -2469,17 +2490,18 @@ Keybindings for org mode
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1 
     "o"  '(:ignore t :which-key "Org")
+    "O"  '(:ignore t :which-key "Org-Files")
     "oh" '(:ignore t :which-key "headers")
     "oi" '(:ignore t :which-key "insert")
     "oS" '(:ignore t :which-key "subtree")
     "ot" '(:ignore t :which-key "tables")
     "or" '(:ignore t :which-key "org-reveal")
-    "oj" 'cpm/org-journal
     "oc" 'org-capture
     "oe" '(:ignore t :which-key "export")
     "oep" 'org-pandoc-export-to-latex-pdf
     "oeP" 'org-pandoc-export-to-latex-pdf-and-open
     "of" 'org-footnote-action
+    "oj" 'cpm/org-journal
     "oP" 'org-set-property
     ;; "P" 'org-publish-current-project
     "op" 'org-publish-current-file
@@ -2489,9 +2511,11 @@ Keybindings for org mode
     "oA" 'org-archive-subtree
     "ol" 'org-open-at-point
     "oT" 'org-show-todo-tree
+    "ov" 'org-toggle-inline-images
   
     "orr" 'org-reveal-export-to-html-and-browse
-    "ors" 'org-reveal-export-current-subtree
+    "ors" 'cpm/narrowed-subtree-to-html
+    "orS" 'org-reveal-export-current-subtree
     "orp" 'reveal-to-pdf
   
     "o." 'org-time-stamp
@@ -2559,6 +2583,15 @@ Keybindings for org mode
     ;; insertion of common elements
     "oil" 'org-insert-link
     "oif" 'org-footnote-new
+    
+    ;; Org files in agenda
+    "Oa" 'cpm/goto-articles.org
+    "Of" 'cpm/goto-org-files
+    "Oi" 'cpm/goto-inbox.org
+    "On" 'cpm/goto-notes.org
+    "Op" 'cpm/goto-projects.org
+    "Os" 'cpm/goto-someday.org
+    "Ot" 'cpm/goto-teaching.org
     )
 #+END_SRC
 **** Packages (Paradox)
@@ -2617,7 +2650,8 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1
     "s" '(:ignore t :which-key "Search")
-    "sd" 'helm-do-ag ;; search with directory prompt
+    "sd" 'cpm/helm-files-search-current-directory ; search current buffer's directory
+    "sD" 'cpm/helm-files-do-ag ; search with directory input
     "sb" 'helm-ag-buffers
     "sf" 'helm-do-ag-this-file
     "sj" 'forward-or-backward-sexp
@@ -2625,6 +2659,7 @@ Keybindings for managing packages
     "sl" 'last-search-buffer
     "so" 'helm-occur
     "sp" 'helm-ag-project-root
+    "sr" 'helm-org-rifle
     "ss" 'helm-swoop-without-pre-input ;; search in file
     "/"  'helm-ag  ;; search in directory with word prompt
      )
@@ -2648,9 +2683,11 @@ Keybindings for managing packages
     "tE" 'eldoc-mode
     "tm" 'hidden-mode-line-mode
     "tM" 'spaceline-toggle-minor-modes
-    "tn" 'nlinum-mode
+    ;; "tn" 'nlinum-mode
+    "tn" 'display-line-numbers-mode
     "tN" 'org-numbers-overlay-mode
     "to" 'org-toggle-link-display
+    "tO" 'outline-toc-mode
     "tp" 'smartparens-mode
     "tP" 'show-paren-mode 
     "tr" 'rainbow-identifiers-mode
@@ -2704,32 +2741,37 @@ Keybindings for managing packages
 
 (cpm-leader1 
   "w"  '(:ignore t :which-key "Windows")
+  "wa" 'ace-window
   "wc" 'delete-window
-  "w-" 'evil-window-split
-  "w_" 'split-window-below-and-focus
+  "wm" 'delete-other-windows
   "wr" 'rotate-windows
   "wR" 'rotate-windows-backward
   "wv" 'split-window-right-and-focus
   "wV" 'evil-window-vsplit
-  "wm" 'delete-other-windows
+  "wx" 'cpm/window-exchange
+  "w-" 'evil-window-split
+  "w_" 'split-window-below-and-focus
   )
 #+END_SRC
 **** Wiki
 #+BEGIN_SRC emacs-lisp
-(cpm-leader1
-  "W" '(:ignore t :which-key "Wiki")
-  "Wd" 'org-wiki-dired-all
-  "Wk" 'org-wiki-close
-  "Wh" 'org-wiki-helm
-  "WH" 'org-wiki-help
-  "WI" 'org-wiki-index
-  "Wi" 'org-wiki-insert
-  "Wl" 'org-wiki-link
-  "Wv" 'org-wiki-server-toggle
-  "We" 'org-wiki-export-html
-  "Wp" 'org-wiki-panel
-  "Ws" 'org-wiki-search
-)
+  (cpm-leader1
+    "W" '(:ignore t :which-key "Wiki")
+    "Wc" 'org-wiki-close
+    "Wd" 'org-wiki-dired-all
+    "Wk" 'org-wiki-close
+    "Wh" 'org-wiki-helm
+    "WH" 'org-wiki-help
+    "WI" 'org-wiki-index
+    "Wi" 'org-wiki-insert
+    "Wl" 'org-wiki-link
+    "Wm" 'org-wiki-make-page
+    "Wv" 'org-wiki-server-toggle
+    "We" 'org-wiki-export-html
+    "Wp" 'org-wiki-panel
+    "Ws" 'org-wiki-search
+    "Wt" 'org-wiki-header
+  )
 #+END_SRC
 **** Zotero Keybindings 
 #+BEGIN_SRC emacs-lisp
