@@ -1797,31 +1797,30 @@ And here's how we tell Emacs to use the font we want to use.
   ;; deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
   (use-package dynamic-fonts
     :config (dynamic-fonts-setup) 
-     :init
+    :init
      (progn (setq dynamic-fonts-preferred-proportional-fonts
-                  '("Avenir Next" "Verdana" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
+             '("Avenir Next" "Verdana" "DejaVu Sans" "Source Sans Pro" "Helvetica"))
             (setq dynamic-fonts-preferred-monospace-fonts
-               '("Inconsolata LGC" "Fira Code" "Hack" "Source Code Pro" "Monaco" "Consolas" "Menlo"
-                 "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
+             '("Inconsolata LGC" "Anonymous Pro" "Office Code Pro" "Monoid" "Fira Code" "Hack" "Source Code Pro" "Monaco" "Consolas" "Menlo"
+             "DejaVu Sans Mono" "Droid Sans Mono Pro" "Droid Sans Mono")))
   )
     (global-set-key (kbd "C-+") 'text-scale-increase)
     (global-set-key (kbd "C--") 'text-scale-decrease)
     ;; C-x C-0 restores the default font size
     ;; increase line spacing in other mono fonts
-    ;; (setq-default line-spacing .30)
+    ;; (setq-default line-spacing .10)
 #+end_src
 *** Modeline
 **** DISABLED Spaceline
 This is a really nice powerline-ish modeline.
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp 
   (use-package spaceline
-    :ensure t
     :init 
     (progn 
       ;; size of modeline
       ;; (setq powerline-height 18)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-      ;; (setq-default powerline-default-separator nil) 
+      (setq-default powerline-default-separator nil) 
       ;; (setq-default powerline-default-separator 'utf-8) 
       ;; (setq powerline-utf-8-separator-left #xe0b0)
       ;; (setq powerline-utf-8-separator-right #xe0b2)
@@ -2040,7 +2039,10 @@ The best low-contrast theme out there.
                    ;; helm faces
                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                    ;; line highlighting 
-                    '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                   '(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
+                   '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
+                    ;; '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                    ;; '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
                    ;; battery faces
                    '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
                    '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
@@ -2073,6 +2075,8 @@ The best low-contrast theme out there.
                    '(set-face-attribute 'linum nil :inherit 'fixed-pitch)
                    ;; line highlighting 
                    '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
+                   ;; '(nlinum-hl-face ((t (:inherit default :foreground "#002b36"))))
+                   '(line-number-current-line ((t (:inherit default :foreground "#002b36"))))
                    '(nlinum-current-line ((t (:inherit default :foreground "#002b36"))))
                    ;; battery faces
                    '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
@@ -2108,7 +2112,8 @@ This is a great general-purpose theme. Use it in terminal.
   :ensure t 
   :if (not (display-graphic-p))
   :config
-  (load-theme 'gruvbox t))
+  (load-theme 'gruvbox t)
+  )
 #+END_SRC 
 **** DISABLED Zerodark
 Nice [[https://github.com/NicolasPetton/zerodark-theme][dark theme]] with custom modeline
@@ -2159,32 +2164,43 @@ Make sure that other themes I like are downloaded and available
 
 #+END_SRC
 
-*** Line Numbers
+*** Native Line Numbers
+Emacs now has native line number support in the C source code, rather
+than the other packages, which utilize elisp hacks, making it /much/
+faster.
+#+BEGIN_SRC emacs-lisp
+(use-package line-numbers
+  :ensure nil
+  :commands display-line-numbers-mode
+  :init
+  (setq-default display-line-numbers-type 'visual)
+) 
+#+END_SRC
+
+*** DISABLED Nlinum 
 Use [[https://elpa.gnu.org/packages/nlinum.html][nlinum]] instead of linum because the former uses jit-lock to be (hopefully)
 more efficient.
 #+BEGIN_SRC emacs-lisp
 (use-package nlinum
-  :commands nlinum-mode
-  :config
-  (setq-default nlinum-format "%2d  ")
-  (setq nlinum-highlight-current-line t)
-    (custom-set-faces
-     '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1" :height 1)))))
-)
-#+END_SRC
-*** DISABLED Highlight line numbers
-#+BEGIN_SRC emacs-lisp 
-  ;; line number spacing
-  (setq-default linum-format "%4d ")
-  ;; Highlight current line number
-  (use-package hlinum
-    :disabled
-    :commands hlinum-mode
+    :commands nlinum-mode
     :config
-    (custom-set-faces
-     '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1")))))
-    :int
-    (add-hook 'linum-mode-hook 'hlinum-activate))
+    (setq-default nlinum-format "%2d  ")
+    (setq nlinum-highlight-current-line t)
+    ;;   (custom-set-faces
+    ;;    '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1" :height 1)))))
+  )
+#+END_SRC
+
+*** DISABLED Highlight line numbers
+This looks promising but is throwing errors right now
+#+BEGIN_SRC emacs-lisp 
+    (use-package nlinum-hl
+      :after nlinum
+      :config
+      (add-hook 'nlinum-mode-hook #'nlinum-hl-mode)
+      (custom-set-faces
+       '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1" :height 1)))))
+  )
 #+END_SRC
 *** Highlight numbers
 Highlight numbers in [[https://github.com/Fanael/highlight-numbers][source code]]
