@@ -96,9 +96,8 @@ Be careful downloading anything via emacs. [[https://glyph.twistedmatrix.com/201
 ;;                    (lambda (retrieved) t))))
 #+END_SRC
 * Core Configuration
-These settings constitute those settings I regard as essential to normal emacs
-operation.
-** Settings
+These settings constitute those I regard as essential to normal emacs operation.
+** Core Settings
 *** System Defaults
 Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
 **** Environment settings
@@ -5526,14 +5525,28 @@ Dashboard depends on this.
 (use-package page-break-lines
   :diminish "")
 #+END_SRC
-** DISABLED Dashboard
+** Dashboard
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
     :config
-    (setq dashboard-items '((recents  . 10)
-                            (bookmarks . 10)
-			                (projects . 10)))
+    (setq dashboard-items '((agenda . 10)
+                            (recents  . 5)
+                            (bookmarks . 5)
+                            (projects . 5)
+                            (totd . 1)))
+    (defun totd()
+    (let* ((commands (loop for s being the symbols
+    when (commandp s) collect s))
+    (command (nth (random (length commands)) commands)))
+    (insert
+    (format "** Tip of the day: ** \nCommand: %s\n\n%s\n\nInvoke with:\n\n"
+    (symbol-value 'command)
+    (documentation command)))
+    (where-is command t)))
+    (defun dashboard-insert-totd (list-size) (totd)) (add-to-list
+    'dashboard-item-generators '(totd . dashboard-insert-totd))
+
     (setq dashboard-startup-banner "/Users/roambot/.emacs.d/icons/128x128.png")
     ;; Set the title
     ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
@@ -5546,6 +5559,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
       "RET" 'widget-button-press
       "down-mouse-1" 'widget-button-click
       "g" #'dashboard-insert-startupify-lists
+      "a" (dashboard-insert-shortcut "a" "Agenda for today:")
       "r" (dashboard-insert-shortcut "r" "Recent Files:")
       "m" (dashboard-insert-shortcut "m" "Bookmarks:")
       "p" (dashboard-insert-shortcut "p" "Projects:")
@@ -5565,14 +5579,15 @@ Start server
 #+END_SRC
 ** Things to run at startup
 #+BEGIN_SRC emacs-lisp
-(eshell)
+  ;; (eshell)
 #+END_SRC
 * Archive
 * Goals 
 Below are various things I want to perfect or try out in the config.
 
-- [X] Fix load time of =config.org= file
+- [ ] Fix load time of =config.org= file
 - [X] Fix visual surround delete/change of various characters (org markup, dollar signs)
 - [X] Fix bookmark/desktop save
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
 - [X] Fix load time of Projectile (make cache persist across sessions)
+  
