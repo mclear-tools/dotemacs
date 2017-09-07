@@ -4879,21 +4879,25 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
                              s)))))))))
 (provide 'org-numbers-overlay)
 #+END_SRC
+**** Org Ref
+#+BEGIN_SRC emacs-lisp
+(use-package org-ref 
+ :after org
+ :config
+ (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
+ (setq org-ref-notes-directory "$HOME/Dropbox/org-files"
+      org-ref-bibliography-notes "$HOME/Dropbox/org-files/articles.org"
+      org-ref-default-bibliography '("$HOME/Dropbox/master.bib")
+      org-ref-pdf-directory "$HOME/Dropbox/Work/MasterLib/") 
+)
+#+END_SRC
 *** Helm-Bibtex
 Great for managing citations and notes
 #+begin_src emacs-lisp
   (use-package helm-bibtex
-    :ensure t
     :commands helm-bibtex
     :config
-    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
-          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
-          bibtex-completion-pdf-field nil
-          bibtex-completion-notes-path "/Users/Roambot/projects/notebook/content/org_notes"
-          bibtex-completion-additional-search-fields '(keywords)
-          bibtex-completion-notes-extension ".org"
-          helm-bibtex-full-frame nil) 
-          ;; Set insert citekey with markdown citekeys for org-mode
+    ;; Set insert citekey with markdown citekeys for org-mode
     (setq bibtex-completion-format-citation-functions
           '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
           (latex-mode    . bibtex-completion-format-citation-cite)
@@ -4906,10 +4910,24 @@ Great for managing citations and notes
     (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
     (setq bibtex-completion-pdf-symbol "⌘")
     (setq bibtex-completion-notes-symbol "✎")
-    )
+    (setq bibtex-completion-notes-template-one-file
+   "* ${author} (${date}): ${title} 
+  :PROPERTIES:
+  :INTERLEAVE_PDF: ${file}
+  :Custom_ID: ${=key=}
+  :END: 
+  [[pdfview:~/Dropbox/Work/MasterLib/${file}][file link]]
+       ")
+    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
+          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
+          bibtex-completion-pdf-field nil
+          bibtex-completion-notes-path "/Users/Roambot/Dropbox/org-files/articles.org"
+          bibtex-completion-additional-search-fields '(keywords)
+          bibtex-completion-notes-extension ".org"
+          helm-bibtex-full-frame nil) 
 
   ;; Set global shortcut for calling helm-bibtex
-   (general-define-key "H-b" 'helm-bibtex)
+   (general-define-key "H-b" 'helm-bibtex))
 #+end_src
 *** Markdown mode
 **** Markdown settings
