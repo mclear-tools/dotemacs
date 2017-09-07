@@ -3713,8 +3713,7 @@ An easy way to ssh
         paradox-display-download-count t
         paradox-hide-wiki-packages t
         paradox-display-star-count t
-        ;; Don't star automatically
-        paradox-automatically-star nil))
+        paradox-automatically-star t))
 #+END_SRC
 
 ** Programming
