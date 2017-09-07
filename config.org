@@ -2013,6 +2013,13 @@ The best low-contrast theme out there.
     :if (display-graphic-p)
     :init
       (progn
+      (setq org-todo-keyword-faces
+           '(("TODO" . org-warning) ("STARTED" . "yellow")
+             ("WAITING" . (:foreground "blue" :weight bold))
+             ("SUBMITTED-C" . "green") ("SUBMITTED-J" . "green")
+             ("ACCEPTED-C" . "silver") ("ACCEPTED-J" . "silver")
+             ("REVISE" . (:foreground "violet" :weight bold))))
+
           ;; don't make the fringe stand out from the background
           (setq solarized-distinct-fringe-background nil)
 
@@ -4302,6 +4309,9 @@ mode of writing.
                   (process-put process 'local-hook-symbol local-hook-symbol))))
 
       ;; helper functions
+      (defun org-pandoc-publish-to-html (p f pd)
+      (org-pandoc-publish-to 'html p f pd))
+
       (defun org-pandoc-publish-to-html5 (p f pd)
       (org-pandoc-publish-to 'html5 p f pd))
 
