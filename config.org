@@ -4105,11 +4105,45 @@ mode of writing.
       "Remove underlining at indents."
       (add-to-list 'org-font-lock-extra-keywords '("^[[:space:]]+" 0 'org-dont-underline-indents t) 'append))
     (add-hook 'org-font-lock-set-keywords-hook #'org-dont-underline-indents 'append)
+    (setq org-image-actual-width nil)
+    ;; settings for capture
+    (setq org-directory "~/Dropbox/org-files")
+    ;; org-mobile
+    ;; Set to the name of the file where new notes will be stored
+    (setq org-mobile-inbox-for-pull "~/Dropbox/org-files/inbox.org")
+    ;; Set to <your Dropbox root directory>/MobileOrg.
+    (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+    ;; mobile sync
+    (defvar org-mobile-sync-timer nil)
+    (defvar org-mobile-sync-idle-secs (* 60 10))
+    (defun org-mobile-sync ()
+      (interactive)
+      (org-mobile-pull)
+      (org-mobile-push))
+    (defun org-mobile-sync-enable ()
+      "enable mobile org idle sync"
+      (interactive)
+      (setq org-mobile-sync-timer
+            (run-with-idle-timer org-mobile-sync-idle-secs t
+                                 'org-mobile-sync)));
+    (defun org-mobile-sync-disable ()
+      "disable mobile org idle sync"
+      (interactive)
+      (cancel-timer org-mobile-sync-timer))
+      (org-mobile-sync-enable)
+    (setq org-default-notes-file (concat org-directory "/inbox.org"))
+    (setq org-archive-location (concat org-directory "/archived.org::"))
+    ;; State settings
+    (setq org-todo-keywords
+      '((sequence "TODO" "STARTED" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
+    ; log timestamp when task is marked "DONE" or other finished keyword
+    (setq org-log-done 'time)
     (setq org-src-fontify-natively t ;; better looking source code
           org-return-follows-link t ;; make RET follow links
           org-list-allow-alphabetical t ;; allow alphabetical list
           org-hide-emphasis-markers t  ;; hide markers
           org-pretty-entities t ;; make latex look good
+          org-M-RET-may-split-line '((default . nil))  ;; don't split line when creating a new headline, list item, or table field 
           org-fontify-quote-and-verse-blocks t ;; make quotes stand out
           org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
           ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼" 
