@@ -2226,31 +2226,6 @@ faster.
 ) 
 #+END_SRC
 
-*** DISABLED Nlinum 
-Use [[https://elpa.gnu.org/packages/nlinum.html][nlinum]] instead of linum because the former uses jit-lock to be (hopefully)
-more efficient.
-#+BEGIN_SRC emacs-lisp
-(use-package nlinum
-    :commands nlinum-mode
-    :config
-    (setq-default nlinum-format "%2d  ")
-    (setq nlinum-highlight-current-line t)
-    ;;   (custom-set-faces
-    ;;    '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1" :height 1)))))
-  )
-#+END_SRC
-
-*** DISABLED Highlight line numbers
-This looks promising but is throwing errors right now
-#+BEGIN_SRC emacs-lisp 
-    (use-package nlinum-hl
-      :after nlinum
-      :config
-      (add-hook 'nlinum-mode-hook #'nlinum-hl-mode)
-      (custom-set-faces
-       '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1" :height 1)))))
-  )
-#+END_SRC
 *** Highlight numbers
 Highlight numbers in [[https://github.com/Fanael/highlight-numbers][source code]]
 #+BEGIN_SRC emacs-lisp
