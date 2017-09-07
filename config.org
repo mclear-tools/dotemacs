@@ -4899,7 +4899,7 @@ Pandoc mode for markdown conversion
     ;; start in insert mode
     (add-to-list 'evil-insert-state-modes 'deft-mode)
     (setq deft-extensions '("org" "md" "txt")
-          deft-directory "~/projects/notebook/content/org_notes"
+          deft-directory "~/Dropbox/org-files"
           deft-text-mode 'org-mode
           deft-use-filter-string-for-filename t ;; use filter string as filename
           deft-org-mode-title-prefix t ;; add #+TITLE prefix
@@ -4942,10 +4942,10 @@ Pandoc mode for markdown conversion
 (defun research-notes ()
   "Goto research notes"
   (interactive)
-  (any-deft "~/projects/notebook/content/org_notes"))
+  (any-deft "~/Dropbox/org-files/Wiki"))
 #+END_SRC
 *** Interleave
-Useful when taking notes
+[[https://github.com/rudolfochrist/interleave][Interleave]] your reading notes with the PDF.
 #+BEGIN_SRC emacs-lisp
 (use-package interleave
   :commands interleave)
