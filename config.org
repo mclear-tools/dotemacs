@@ -208,6 +208,16 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
 ;; replacing it with the Emacs’ text.
 ;; https://github.com/dakrone/eos/blob/master/eos.org
 (setq save-interprogram-paste-before-kill t)
+(defun clipboard-on ()
+    (interactive)
+    (setq interprogram-cut-function 'paste-to-osx)
+    (setq interprogram-paste-function 'copy-from-osx))
+  (defun clipboard-off ()
+    (interactive)
+    (setq interprogram-cut-function 'gui-select-text)
+    (setq interprogram-paste-function 'gui-selection-value))
+  (global-set-key (kbd "S-p") 'clipboard-on)
+  (global-set-key (kbd "S-y") 'clipboard-off)
 #+END_SRC
 **** File Endings
 Make all files [[http://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline][POSIX compliant for newlines]]
