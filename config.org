@@ -3850,6 +3850,7 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 **** Elisp
 #+BEGIN_SRC emacs-lisp 
 (use-package elisp-slime-nav
+  :commands elisp-slime-nav-mode
   :config
   (add-hook! (emacs-lisp-mode ielm-mode) '(elisp-slime-nav-mode)))
 
@@ -3874,18 +3875,13 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :commands (web-mode)
-  :ensure t
-  :init
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  :mode ("\\.html$" . web-mode)
   :config
-  (setq web-mode-engines-alist
-      '(("django"    . "\\.html\\'")))
-  (setq web-mode-ac-sources-alist
-      '(("css" . (ac-source-css-property))
-  	   ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-
-  (setq web-mode-enable-auto-closing t)
-  (setq web-mode-enable-auto-quoting t)) ; this fixes the quote problem I mentioned
+  (setq web-mode-enable-auto-pairing t
+        web-mode-enable-auto-expanding t
+        web-mode-enable-css-colorization t
+        web-mode-enable-auto-closing t
+        web-mode-enable-auto-quoting t)) 
 #+END_SRC
 **** Lua
 #+BEGIN_SRC emacs-lisp
@@ -3972,6 +3968,7 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
  #+BEGIN_SRC emacs-lisp
    (use-package evil-magit
      :after magit
+     :config
      ;; (with-eval-after-load 'magit (require 'evil-magit))
      )
 
@@ -3984,6 +3981,12 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
  )
  #+END_SRC
  
+*** Gited
+Give git projects branches the dired treatment
+#+BEGIN_SRC emacs-lisp
+(use-package gited
+  :commands (gited-list gited-list-branches))
+#+END_SRC
 *** Fringe
  #+BEGIN_SRC emacs-lisp
  (use-package git-gutter-fringe)
@@ -4021,7 +4024,17 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
        nil nil 'center)
        (define-fringe-bitmap 'git-gutter-fr:deleted
        [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-       nil nil 'center)))
+       nil nil 'center))
+       
+    (after! evil
+      (defun +version-control|update-git-gutter ()
+      "Refresh git-gutter on ESC. Return nil to prevent shadowing other
+      `+evil-esc-hook' hooks."
+      (when git-gutter-mode
+        (git-gutter)
+        nil))
+         (add-hook '+evil-esc-hook #'+version-control|update-git-gutter t)))
+
      ;; (require 'git-gutter-fringe)
      ;; NOTE If you want the git gutter to be on the outside of the margins (rather
      ;; than inside), `fringes-outside-margins' should be non-nil.
