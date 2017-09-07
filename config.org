@@ -1383,19 +1383,20 @@ Use [[https://github.com/louy2/evil-avy][evil motions]] with avy
   ;;   )
 #+end_src
 *** Persistent Scratch
-   Make the content of the scratch buffer persist between settings
+Make the content of the scratch buffer persist between settings
 #+BEGIN_SRC emacs-lisp
   (use-package persistent-scratch
-    :config
-   (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch-backups"))
-   (setq persistent-scratch-save-file (concat user-cache-directory "persistent-scratch"))
-   ;; keep backups not older than a month
-   (setq persistent-scratch-backup-filter
+    :defer 10
+    :init
+    (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch-backups"))
+    (setq persistent-scratch-save-file (concat user-cache-directory "persistent-scratch"))
+    ;; keep backups not older than a month
+    (setq persistent-scratch-autosave-interval 60)
+    (setq persistent-scratch-backup-filter
       (persistent-scratch-keep-backups-not-older-than
        (days-to-time 90)))
-    (persistent-scratch-setup-default)
-    (persistent-scratch-autosave-mode)
-  )
+    :config
+    (ignore-errors (persistent-scratch-setup-default)))
 #+END_SRC
  
 *** Projectile
