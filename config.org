@@ -3674,18 +3674,18 @@ An easy way to ssh
   :commands rainbow-mode)
 #+END_SRC 
 *** Completion
-**** Yasnippet
+**** DISABLED Yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
     :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
     :init
+    (setq yas-snippet-dirs '("/Users/roambot/.emacs.d/snippets"))
     (progn
       (add-hook 'prog-mode-hook #'yas-minor-mode)
       (add-hook 'org-mode-hook #'yas-minor-mode)
       (add-hook 'markdown-mode-hook #'yas-minor-mode)
       ;; snippet directory
-      (setq yas-snippet-dirs (concat user-cache-directory "snippets"))
       (unless (file-directory-p yas-snippet-dirs)
         (make-directory yas-snippet-dirs))
       ;; (add-hook 'term-mode-hook (lambda()
