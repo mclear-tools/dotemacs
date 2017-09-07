@@ -229,7 +229,7 @@ Make all files [[http://stackoverflow.com/questions/729692/why-should-text-files
 **** Garbage Collect
 Garbage-collect on focus-out, Emacs /should/ feel snappier.
 #+BEGIN_SRC emacs-lisp
-(add-hook 'focus-out-hook #'garbage-collect)
+  (add-hook 'focus-out-hook #'garbage-collect)
 #+END_SRC
 **** Paragraphs
 From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill paragraph.
@@ -302,7 +302,8 @@ elisp modes or other minor modes
 **** Backup Walker
 Traverse backups with [[https://github.com/lewang/backup-walker][backup-walker]]
 #+BEGIN_SRC emacs-lisp
-(use-package backup-walker)
+(use-package backup-walker
+  :commands backup-walker-start)
 #+END_SRC
 **** Auto Save
 I make sure Emacs auto-saves often but the result is that it messes up my file tree. So, let's ask Emacs to store its backups in the cache directory.
@@ -332,7 +333,7 @@ I also make emacs just outright save all buffers.
   (add-hook 'auto-save-hook 'full-auto-save)
 #+END_SRC
 *** Custom file settings
-Set up the customize file to its own separate file, instead of saving
+Set up the customize file to its own [[file:$HOME/.emacs.d/custom.el][separate file]], instead of saving
 customize settings in [[file:init.el][init.el]].
 
 #+begin_src emacs-lisp
@@ -398,10 +399,10 @@ There is some configuration to do when running Emacs on OS X (hence the
 
       ;; Don't make new frames when opening a new file with Emacs
       (setq ns-pop-up-frames nil)
-      
+
       ;; non-lion fullscreen
-      (setq ns-use-native-fullscreen nil)
-      
+      (setq ns-use-native-fullscreen t)
+
       ;; disable emacs-mac smooth scrolling because it is seriously janky
       (setq mac-mouse-wheel-smooth-scroll nil)
 
@@ -413,7 +414,7 @@ There is some configuration to do when running Emacs on OS X (hence the
 
       ;; Make forward delete work 
       (global-set-key (kbd "<H-backspace>") 'delete-forward-char)
-    
+
       ;; Keybindings
       (global-set-key (kbd "s-=") 'scale-up-font)
       (global-set-key (kbd "s--") 'scale-down-font)
@@ -436,7 +437,7 @@ There is some configuration to do when running Emacs on OS X (hence the
       ;; Emacs sometimes registers C-s-f as this weird keycode
       (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
   ))
-   
+
       (defun open-dir-in-iterm ()
         "Open the current directory of the buffer in iTerm."
         (interactive)
@@ -451,6 +452,11 @@ There is some configuration to do when running Emacs on OS X (hence the
       ;; Not going to use these commands
       (put 'ns-print-buffer 'disabled t)
       (put 'suspend-frame 'disabled t)
+
+      ;; -- This is for TextExpander
+      ;; (setq ns-alternate-modifier 'alt)
+      ;; (define-key global-map [(alt ?v)] 'scroll-down)
+      ;; (define-key global-map [(meta ?v)] 'yank)
 #+end_src
 
 *** Time stamps
@@ -633,6 +639,16 @@ A collection of ridiculously useful extensions. Indeed.
       "Load config "
       (interactive)
       (load-file "~/.emacs.d/init.el"))
+  (defun goto-dotfiles.org ()
+      "Open dotfiles.org file"
+      (interactive)
+      (find-file "~/dotfiles/dotfiles.org"))
+  (defun goto-emacs-dir ()
+      "Open dotfiles.org file"
+      (interactive)
+      (require 'ranger)
+      (find-file "~/.emacs.d"))
+
 
 #+END_SRC
 **** Duplicate file
@@ -913,7 +929,7 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
 #+BEGIN_SRC emacs-lisp
   (defun goto-journal ()
     (interactive)
-    (find-file "/Users/Roambot/Dropbox/journal.org"))
+    (find-file "/Users/Roambot/Dropbox/org-files/journal.org"))
 #+END_SRC
 **** Kill all other buffers
 Kill all the buffers except =*scratch*= buffer
@@ -1157,7 +1173,7 @@ Examples:
   `(push ',params shackle-rules))
 #+END_SRC
 
-** Packages
+** Core Packages
 *** General
 A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
 discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
