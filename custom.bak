@@ -1,0 +1,111 @@
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(bibtex-completion-notes-template-one-file
+   "
+* ${author} (${date}): ${title} 
+  :PROPERTIES:
+  :Custom_ID: ${=key=}
+  :END:
+  [[pdfview:~/Dropbox/Work/MasterLib/${file}][file link]]
+
+")
+ '(bmkp-last-as-first-bookmark-file "/Users/roambot/.emacs.d/.cache/bookmarks")
+ '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#839496")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
+ '(custom-safe-themes
+   (quote
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+ '(fci-rule-color "#073642")
+ '(global-visual-line-mode t)
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (--map
+    (solarized-color-blend it "#002b36" 0.25)
+    (quote
+     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+ '(highlight-symbol-foreground-color "#93a1a1")
+ '(highlight-tail-colors
+   (quote
+    (("#073642" . 0)
+     ("#546E00" . 20)
+     ("#00736F" . 30)
+     ("#00629D" . 50)
+     ("#7B6000" . 60)
+     ("#8B2C02" . 70)
+     ("#93115C" . 85)
+     ("#073642" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00")))
+ '(hl-fg-colors
+   (quote
+    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
+ '(indicate-empty-lines nil)
+ '(magit-diff-use-overlays nil)
+ '(markdown-command "pandoc" t)
+ '(markdown-enable-math t t)
+ '(markdown-nested-imenu-heading-index t t)
+ '(markdown-open-command "/Users/Roambot/bin/scripts/mark.sh" t)
+ '(markdown-use-pandoc-style-yaml-metadata t)
+ '(nrepl-message-colors
+   (quote
+    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+ '(org-download-image-dir "/Users/roambot/Dropbox/org-files/org-pictures")
+ '(org-download-image-latex-width 500)
+ '(org-zotxt-default-search-method :everything)
+ '(outline-toc-mode t)
+ '(package-selected-packages
+   (quote
+    (page-break-lines persp-mode company xterm-color ag hydra ace-window evil-nl-break-undo helpful emacs-libvterm powerline-evil perspeen helm-org-rifle eyebrowse mixed-pitch face-explorer frame-bufs org-brain prodigy org-ref org-download gited evil-anzu anzu nlinum-hl pyenv-mode spaceline-colors spaceline-all-the-icons nubox-theme helm-company company-bibtex company-web emoji-cheat-sheet-plus company-emoji company-shell atom-one-dark-theme atom-one-dark nlinum nubox eshell-fringe-status eshell-did-you-mean shex eshell-prompt-extras flatcolor tramp-term color-theme-sanityinc-solarized color-theme-solarized omtose-phellack-theme rees-themes suscolors-theme jazz-theme darkokai-theme tao-theme darkmine-theme evil-avy evil-lion pdf-tools zweilight-theme zotxt zerodark-theme zenburn-theme yankpad yaml-mode wttrin writeroom-mode window-numbering which-key web-mode waher-theme visual-regexp-steroids virtualenvwrapper vimrc-mode use-package unicode-fonts typo toc-org tango-2-theme sublime-themes stripe-buffer sr-speedbar spacemacs-theme spaceline solarized-theme smooth-scrolling shell-switcher shell-pop shackle sane-term rg restart-emacs remember-last-theme ranger rainbow-mode rainbow-identifiers rainbow-delimiters php-mode persistent-scratch paradox pandoc-mode palimpsest ox-twbs ox-reveal ox-pandoc org-wiki org-seek org-pomodoro org-plus-contrib org-pdfview org-bullets neotree multi-term monokai-theme molokai-theme material-theme markdown-mode madhat2r-theme lua-mode lorem-ipsum lispyville leuven-theme kaolin-theme interleave info+ htmlize hlinum hl-todo highlight-numbers helm-themes helm-swoop helm-spotify-plus helm-projectile helm-ls-git helm-hunks helm-flyspell helm-flx helm-dired-recent-dirs helm-descbinds helm-bibtex helm-ag haskell-mode guess-language gruvbox-theme gotham-theme git-timemachine git-gutter-fringe git-gutter+ general fzf forest-blue-theme flatland-theme fancy-battery evil-smartparens evil-numbers evil-magit evil-indent-textobject evil-escape evil-embrace evil-commentary elisp-slime-nav elfeed eldoc-eval dynamic-fonts doom-themes desktop+ deft dashboard dash-at-point darktooth-theme cyberpunk-theme crux creamsody-theme counsel company-math company-auctex color-theme-modern centered-cursor-mode bookmark+ bind-map beacon backup-walker back-button ample-theme all-the-icons-dired afternoon-theme)))
+ '(paradox-automatically-star nil)
+ '(safe-local-variable-values
+   (quote
+    ((org-download-heading-lvl)
+     (org-list-allow-alphabetical . t))))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#839496" 0.2))
+ '(term-default-bg-color "#002b36")
+ '(term-default-fg-color "#839496")
+ '(tramp-syntax (quote default) nil (tramp))
+ '(vc-annotate-background nil)
+ '(vc-annotate-background-mode nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dc322f")
+     (40 . "#c9485ddd1797")
+     (60 . "#bf7e73b30bcb")
+     (80 . "#b58900")
+     (100 . "#a5a58ee30000")
+     (120 . "#9d9d91910000")
+     (140 . "#9595943e0000")
+     (160 . "#8d8d96eb0000")
+     (180 . "#859900")
+     (200 . "#67119c4632dd")
+     (220 . "#57d79d9d4c4c")
+     (240 . "#489d9ef365ba")
+     (260 . "#3963a04a7f29")
+     (280 . "#2aa198")
+     (300 . "#288e98cbafe2")
+     (320 . "#27c19460bb87")
+     (340 . "#26f38ff5c72c")
+     (360 . "#268bd2"))))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list
+   (quote
+    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
+ '(xterm-color-names
+   ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"])
+ '(xterm-color-names-bright
+   ["#002b36" "#cb4b16" "#586e75" "#657b83" "#839496" "#6c71c4" "#93a1a1" "#fdf6e3"]))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
