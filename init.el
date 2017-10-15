@@ -88,7 +88,7 @@
 
 - not marked as :tangle no
 - have a source-code of =emacs-lisp=
-- doesn't have the todo-marker CANC"
+- doesn't have the todo-marker DISABLED"
   (let* ((body-list ())
 		 (gc-cons-threshold most-positive-fixnum)
          (org-babel-src-block-regexp   (concat
