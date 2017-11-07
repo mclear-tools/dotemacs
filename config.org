@@ -160,6 +160,8 @@ No bells and no visible "bell" either!
 **** Dired settings
 #+BEGIN_SRC emacs-lisp
 (setq insert-directory-program "gls" dired-use-ls-dired t)
+;; list directories first
+(setq dired-listing-switches "-al --group-directories-first")
 ;; stop asking about recurisve actions
 (setq dired-recursive-copies 'always)
 (setq dired-recursive-deletes 'always)
@@ -278,7 +280,7 @@ apropos commands perform more extensive searches than default
 #+END_SRC
 *** Cache Directory
 #+BEGIN_SRC emacs-lisp 
-  (defconst user-cache-directory
+(defconst user-cache-directory
     (expand-file-name (concat user-emacs-directory ".cache/"))
     "My emacs storage area for persistent files.")
   ;; create the 'user-cache-directory' if it doesn't exist
@@ -453,8 +455,9 @@ Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-loca
 #+BEGIN_SRC emacs-lisp
 (use-package osx-location
   :if (eq system-type 'darwin)
-  :config
+  :init
   (osx-location-watch)
+  :config
   (add-hook 'osx-location-changed-hook
                (lambda ()
                  (setq calendar-latitude osx-location-latitude
@@ -799,7 +802,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (defun cpm/tex-to-org ()
     "convert clipboard contents from markdown to org and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t org"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t org --atx-headers"))
     (yank))
 
   (defun cpm/tex-to-markdown ()
@@ -834,6 +837,35 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
                (switch-to-buffer-other-window "*hgrep*"))
               (t
                (message "No previous search buffer found"))))
+#+END_SRC
+**** Toggle Window Split
+Move from a horizontal to a vertical split and vice versa
+#+BEGIN_SRC emacs-lisp
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+         (next-win-buffer (window-buffer (next-window)))
+         (this-win-edges (window-edges (selected-window)))
+         (next-win-edges (window-edges (next-window)))
+         (this-win-2nd (not (and (<= (car this-win-edges)
+                     (car next-win-edges))
+                     (<= (cadr this-win-edges)
+                     (cadr next-win-edges)))))
+         (splitter
+          (if (= (car this-win-edges)
+             (car (window-edges (next-window))))
+          'split-window-horizontally
+        'split-window-vertically)))
+    (delete-other-windows)
+    (let ((first-win (selected-window)))
+      (funcall splitter)
+      (if this-win-2nd (other-window 1))
+      (set-window-buffer (selected-window) this-win-buffer)
+      (set-window-buffer (next-window) next-win-buffer)
+      (select-window first-win)
+      (if this-win-2nd (other-window 1))))))
+
 #+END_SRC
 **** Rotate windows
 #+BEGIN_SRC emacs-lisp
@@ -1166,6 +1198,12 @@ Examples:
 #+END_SRC
 
 ** Core Packages
+*** Bug Hunting
+[[https://github.com/Malabarba/elisp-bug-hunter][Hunt down errors]] in elisp files
+#+BEGIN_SRC emacs-lisp
+(use-package bug-hunter
+  :commands bug-hunter-file)
+#+END_SRC
 *** General
 A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
 discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
@@ -1340,9 +1378,9 @@ Use [[https://github.com/louy2/evil-avy][evil motions]] with avy
     ;; (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
-        (let ((undo-dir (concat user-cache-directory "undo")))
+    (let ((undo-dir (concat user-cache-directory "undo")))
       (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
-      (unless (file-exists-p undo-dir)
+      (unless (file-directory-p undo-dir)
         (make-directory undo-dir t)))
     (setq undo-tree-auto-save-history t))
 #+end_src
@@ -1962,10 +2000,10 @@ The best low-contrast theme out there.
                    ;; helm faces
                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                    ;; line highlighting 
-                   ;; '(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
-                   '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
-                    ;; '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
-                    '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
+                   '(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
+                   ;; '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
+                   '(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+                    ;; '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
                    ;; battery faces
                    '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
                    '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
@@ -1997,10 +2035,10 @@ The best low-contrast theme out there.
                    ;; line size 
                    '(set-face-attribute 'linum nil :inherit 'fixed-pitch)
                    ;; line highlighting 
-                   ;; '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
-                   '(nlinum-hl-face ((t (:inherit default :foreground "#002b36"))))
+                   '(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
+                   ;; '(nlinum-hl-face ((t (:inherit default :foreground "#002b36"))))
                    '(line-number-current-line ((t (:inherit default :foreground "#002b36"))))
-                   '(nlinum-current-line ((t (:inherit default :foreground "#002b36"))))
+                   ;; '(nlinum-current-line ((t (:inherit default :foreground "#002b36"))))
                    ;; battery faces
                    '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
                    '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
@@ -2038,59 +2076,68 @@ This is a great general-purpose theme. Use it in terminal.
   (load-theme 'gruvbox t)
   )
 #+END_SRC 
-**** DISABLED Zerodark
+**** Zerodark
 Nice [[https://github.com/NicolasPetton/zerodark-theme][dark theme]] with custom modeline
 #+BEGIN_SRC emacs-lisp
   (use-package zerodark-theme
+    :disabled t
     :if (display-graphic-p)
     :config
     (custom-set-faces
       '(org-block-begin-line ((t (:background "#282c34" :foreground "#98be65" :height 0.9))))
       '(org-block-end-line ((t (:background "#282c34" :foreground "#98be65" :height 0.9)))))
+    (load-theme 'zerodark t)
     (zerodark-setup-modeline-format)
-    ;; (load-theme 'zerodark t)
     )
 #+END_SRC
 **** Other Themes
 Make sure that other themes I like are downloaded and available (not
 that I use anything other than solarized :)
 #+BEGIN_SRC emacs-lisp
-(defvar packages-appearance
-  '(nord-theme solarized-theme zenburn-theme molokai-theme darktooth-theme
-                  gotham-theme ample-theme material-theme zerodark-theme
-                  leuven-theme spacemacs-theme gruvbox-theme
-                  forest-blue-theme flatland-theme afternoon-theme
-                  cyberpunk-theme kaolin-theme darkmine-theme tao-theme darkokai-theme jazz-theme suscolors-theme omtose-phellack-theme atom-one-dark-theme nubox)
-"A list of themes to ensure are installed at launch.")
+  (defvar packages-appearance '(nord-theme solarized-theme
+    zenburn-theme molokai-theme darktooth-theme gotham-theme
+    ample-theme material-theme zerodark-theme leuven-theme
+    spacemacs-theme gruvbox-theme forest-blue-theme flatland-theme
+    afternoon-theme cyberpunk-theme darkmine-theme
+    tao-theme darkokai-theme jazz-theme suscolors-theme
+    omtose-phellack-theme atom-one-dark-theme nubox
+    color-theme-sanityinc-tomorrow alect-themes kaolin-themes)
+  "A list of themes to ensure are installed at launch.")
 
-(defun appearance-packages-installed-p ()
-  (loop for p in packages-appearance
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
+  (defun appearance-packages-installed-p ()
+    (loop for p in packages-appearance
+          when (not (package-installed-p p)) do (return nil)
+          finally (return t)))
 
-(unless (appearance-packages-installed-p)
-  ;; check for new packages (package versions)
-  (message "%s" "Emacs is now refreshing its package themes...")
-  (package-refresh-contents)
-  (message "%s" " done.")
-  ;; install the missing packages
-  (dolist (p packages-appearance)
-    (when (not (package-installed-p p))
-      (package-install p))))
+  (unless (appearance-packages-installed-p)
+    ;; check for new packages (package versions)
+    (message "%s" "Emacs is now refreshing its package themes...")
+    (package-refresh-contents)
+    (message "%s" " done.")
+    ;; install the missing packages
+    (dolist (p packages-appearance)
+      (when (not (package-installed-p p))
+        (package-install p))))
 
-(provide 'packages-appearance)
+  (provide 'packages-appearance)
 
 #+END_SRC
-**** Theme-changer (based on time of day)
-[[https://github.com/hadronzoo/theme-changer][Change your theme]] depending on location and time of day
-#+BEGIN_SRC emacs-lisp
-(use-package theme-changer
+**** Circadian Theme-changer (based on time of day)
+[[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
+#+BEGIN_SRC emacs-lisp 
+(use-package circadian
   :defer 1
   :config
-  (ignore-errors (change-theme 'solarized-light 'solarized-dark)))
+  (setq circadian-themes '((:sunrise . gruvbox-light-soft)
+                           ("11:00"  . solarized-light)
+                           ("14:30"  . adwaita)
+                           (:sunset  . solarized-dark)
+                           ("01:00"  . gotham)))
+  (circadian-setup))
 #+END_SRC
 
-*** Line Numbers (Nlinum mode for emacs 25)
+
+*** DISABLED Line Numbers (Nlinum mode for emacs 25)
 #+BEGIN_SRC emacs-lisp
  (use-package nlinum
  :commands nlinum-mode
@@ -2101,7 +2148,7 @@ that I use anything other than solarized :)
      '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1")))))
      '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1" :height 1)))))
 #+END_SRC
-*** DISABLED Native Line Numbers
+*** Native Line Numbers
 Emacs now has native line number support in the C source code, rather
 than the other packages, which utilize elisp hacks, making it /much/
 faster.
@@ -2584,7 +2631,9 @@ Keybindings for managing packages
     "pl"  'persp-switch
     "po"  'projectile-multi-occur
     "pP"  'helm-projectile-switch-project
+    ;; "pp"  'helm-projectile-switch-project
     "pp"  'projectile-persp-switch-project
+    ;; "pp"  'helm-persp-projectile-switch-project
     "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
     ;; "ps"  'bmkp-set-desktop-bookmark
@@ -2644,8 +2693,8 @@ Keybindings for managing packages
     "tE" 'eldoc-mode
     "tm" 'hidden-mode-line-mode
     "tM" 'spaceline-toggle-minor-modes
-    "tn" 'nlinum-mode
-    ;; "tn" 'display-line-numbers-mode
+    ;; "tn" 'nlinum-mode
+    "tn" 'display-line-numbers-mode
     "tN" 'org-numbers-overlay-mode
     "to" 'org-toggle-link-display
     "tO" 'outline-toc-mode
@@ -2703,6 +2752,7 @@ Keybindings for managing packages
 (cpm-leader1 
   "w"  '(:ignore t :which-key "Windows")
   "wa" 'ace-window
+  "wf" 'toggle-window-split
   "wc" 'delete-window
   "wm" 'delete-other-windows
   "wr" 'rotate-windows
@@ -3159,7 +3209,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
 *** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
-     :defer t
+     :defer 5
      :init
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
@@ -3187,11 +3237,11 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      :commands eshell
      ;; :bind ("C-x e" . eshell)
      :init
-     (use-package em-cmpl :after eshell :ensure nil)
-     (use-package em-promptt :after eshell :ensure nil)
-     (use-package em-term :after eshell :ensure nil)
-     (use-package em-alias :after eshell :ensure nil)
-     (use-package em-smart :after eshell :ensure nil)
+     (use-package em-cmpl  :ensure nil)
+     (use-package em-prompt  :ensure nil)
+     (use-package em-term  :ensure nil)
+     (use-package em-alias :ensure nil)
+     (use-package em-smart :ensure nil)
      ;; plan 9
      (setq eshell-where-to-jump 'begin)
      (setq eshell-review-quick-commands nil)
@@ -3201,6 +3251,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            eshell-buffer-shorthand t
            eshell-cmpl-ignore-case t
            eshell-cmpl-cycle-completions t
+           eshell-destroy-buffer-when-process-dies t
            eshell-history-size 10000
            ;; auto truncate after 12k lines
            eshell-buffer-maximum-lines 12000
@@ -3215,25 +3266,37 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            ;; eshell-banner-message "What would you like to do?\n\n"
          )
          ;; Visual commands
-     (setq eshell-visual-commands '("vi" "screen" "top" "less" "more" "lynx"
+     (setq eshell-visual-commands '("ranger" "vi" "screen" "top" "less" "more" "lynx"
                                         "ncftp" "pine" "tin" "trn" "elm" "vim"
                                         "nmtui" "alsamixer" "htop" "el" "elinks"
                                         ))
      (setq eshell-visual-subcommands '(("git" "log" "diff" "show"))))
 
+
+
+   (defun my/setup-eshell ()
+     (interactive)
+     ;; turn off semantic-mode in eshell buffers
+     (semantic-mode -1)
+     ;; turn off hl-line-mode
+     (hl-line-mode -1))
+
      ;; helm support
      (add-hook 'eshell-mode-hook
           (lambda ()
             (eshell-cmpl-initialize)
-            (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
-         (defun my/truncate-eshell-buffers ()
-           "Truncates all eshell buffers"
-           (interactive)
-           (save-current-buffer
-             (dolist (buffer (buffer-list t))
-               (set-buffer buffer)
-               (when (eq major-mode 'eshell-mode)
-                 (eshell-truncate-buffer)))))
+            (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+            (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
+            (my/setup-eshell)))
+
+         ;; (defun my/truncate-eshell-buffers ()
+         ;;   "Truncates all eshell buffers"
+         ;;   (interactive)
+         ;;   (save-current-buffer
+         ;;     (dolist (buffer (buffer-list t))
+         ;;       (set-buffer buffer)
+         ;;       (when (eq major-mode 'eshell-mode)
+         ;;         (eshell-truncate-buffer)))))
 
          ;; After being idle for 5 seconds, truncate all the eshell-buffers if
          ;; needed. If this needs to be canceled, you can run `(cancel-timer
@@ -3245,21 +3308,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            (defun eshell/rgrep (&rest args)
              "Use Emacs grep facility instead of calling external grep."
              (eshell-grep "rgrep" args t)))
-   
 
-   (defun my/setup-eshell ()
-     (interactive)
-     ;; turn off semantic-mode in eshell buffers
-     (semantic-mode -1)
-     ;; turn off hl-line-mode
-     (hl-line-mode -1)
-     (define-key eshell-mode-map (kbd "M-l")
-       'helm-eshell-history))
-
-   (add-hook 'eshell-mode-hook
-             (lambda ()
-                 (my/setup-eshell)
-                 (eshell-cmpl-initialize)))
  #+END_SRC
  
 **** CHECK Eshell Path Shortening
@@ -3596,6 +3645,48 @@ An easy way to ssh
   :config
   (add-to-list 'company-backends #'company-shell))
 #+END_SRC
+***** Company Eshell
+Now you can have [[http://whyarethingsthewaytheyare.com/fishlike-autosuggestions-in-eshell/][Fish-like autosuggestions]] in eshell
+#+BEGIN_SRC emacs-lisp
+(defun company-eshell-autosuggest-candidates (prefix)
+  (let* ((history
+          (delete-dups
+           (mapcar (lambda (str)
+                     (string-trim (substring-no-properties str)))
+                   (ring-elements eshell-history-ring))))
+         (most-similar (cl-find-if
+                        (lambda (str)
+                          (string-prefix-p prefix str))
+                        history)))
+    (when most-similar
+      `(,most-similar))))
+
+(defun company-eshell-autosuggest--prefix ()
+  (let ((prefix
+         (string-trim-left
+          (buffer-substring-no-properties
+           (save-excursion
+             (eshell-bol))
+           (save-excursion (end-of-line) (point))))))
+    (if (not (string-empty-p prefix))
+        prefix
+      'stop)))
+
+(defun company-eshell-autosuggest (command &optional arg &rest ignored)
+  (interactive (list 'interactive))
+  (cl-case command
+    (interactive (company-begin-backend 'company-eshell))
+    (prefix (and (eq major-mode 'eshell-mode)
+                 (company-eshell-autosuggest--prefix)))
+    (candidates (company-eshell-autosuggest-candidates arg))))
+    
+(add-hook 'eshell-mode-hook #'company-mode) ; Not needed if using global-company-mode
+
+(defun setup-eshell-autosuggest ()
+  (with-eval-after-load 'company
+    (setq-local company-backends '(company-eshell-autosuggest))
+    (setq-local company-frontends '(company-preview-frontend))))
+#+END_SRC
 ***** Company Emoji
 #+BEGIN_SRC emacs-lisp
 (use-package company-emoji
@@ -3803,35 +3894,50 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
     (projectile-global-mode t))
 
 #+END_SRC
-*** Persp mode
+*** Perspectives
 Yet another attempt to manage buffers/workspaces
-#+BEGIN_SRC emacs-lisp
-(use-package perspective
-  :init
-  (persp-mode))
-  
-  (use-package persp-projectile
-    :general
-    (cpm-leader1 "pv" 'hydra-persp/body)
-    :config
-    (require 'persp-projectile)
-    (defhydra hydra-persp (:columns 4
-                           :color blue)
-      "Perspective"
-      ("a" persp-add-buffer "Add Buffer")
-      ("i" persp-import "Import")
-      ("c" persp-kill "Close")
-      ("n" persp-next "Next")
-      ("p" persp-prev "Prev")
-      ("k" persp-remove-buffer "Kill Buffer")
-      ("r" persp-rename "Rename")
-      ("A" persp-set-buffer "Set Buffer")
-      ("s" persp-switch "Switch")
-      ("C-x" persp-switch-last "Switch Last")
-      ("b" persp-switch-to-buffer "Switch to Buffer")
-      ("P" projectile-persp-switch-project "Switch Project")
-      ("q" nil "Quit")))
+#+BEGIN_SRC emacs-lisp 
+  (use-package perspective
+    :init
+    (when (not (fboundp 'make-variable-frame-local))
+    (defun make-variable-frame-local (variable) variable))
+    (persp-mode))
 
+    (use-package persp-projectile
+      :general
+      (cpm-leader1 "pv" 'hydra-persp/body)
+      :config
+      (require 'persp-projectile)
+      (defhydra hydra-persp (:columns 4
+                             :color blue)
+        "Perspective"
+        ("a" persp-add-buffer "Add Buffer")
+        ("i" persp-import "Import")
+        ("c" persp-kill "Close")
+        ("n" persp-next "Next")
+        ("p" persp-prev "Prev")
+        ("k" persp-remove-buffer "Kill Buffer")
+        ("r" persp-rename "Rename")
+        ("A" persp-set-buffer "Set Buffer")
+        ("s" persp-switch "Switch")
+        ("C-x" persp-switch-last "Switch Last")
+        ("b" persp-switch-to-buffer "Switch to Buffer")
+        ("P" projectile-persp-switch-project "Switch Project")
+        ("q" nil "Quit")))
+
+    ;; (defun helm-persp-projectile-switch-project ()
+    ;; (interactive)
+    ;; (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
+    ;;                     (random-string ""))
+    ;;                 (dotimes (i 6 random-string)
+    ;;                   (setq random-string
+    ;;                         (concat
+    ;;                          random-string
+    ;;                          (char-to-string (elt temp-charset (random (length temp-charset)))))
+    ;;                         ))
+    ;;                 ))
+    ;; (helm-projectile-switch-project)
+    ;; (persp-rename (projectile-project-name)))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package persp-mode
@@ -3851,8 +3957,25 @@ Yet another attempt to manage buffers/workspaces
 
 #+END_SRC
 
+*** DISABLED Persp Mode
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package persp-mode
+  :init
+  (setq persp-autokill-buffer-on-remove 'kill-weak)
+  :config
+  (persp-mode 1)
+  )
 
-
+(use-package persp-mode-projectile-bridge
+  :config
+  (add-hook 'persp-mode-projectile-bridge-mode-hook
+            #'(lambda ()
+                (if persp-mode-projectile-bridge-mode
+                    (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
+                  (persp-mode-projectile-bridge-kill-perspectives))))
+  (persp-mode-projectile-bridge-mode 1)
+  )
+#+END_SRC
 *** Eyebrowse Workspace & Window Management
 Easy workspace creation and switching
 #+BEGIN_SRC emacs-lisp
@@ -4236,13 +4359,19 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
           '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/projects.org" "Unfiled")
                  "** STARTED %? \n  %i\n  Captured on: %u\n")
             ("c" "Capture" entry (file "~/Dropbox/org-files/inbox.org")
-                 "* TODO %? \n  %i\n Captured on: %u\n")
+                 "* TODO %?\n %i")
             ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
                  "**** %<%H:%M>\n%?")
             ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
             "* %? \n Captured on: %U\n")))
 
+;; Add date to captured items
+(defun add-property-with-date-captured ()
+  "Add DATE_CAPTURED property to the current item."
+  (interactive)
+  (org-set-property "DATE_CAPTURED" (format-time-string "%c")))
 
+(add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
       ;; (setq org-capture-templates
       ;;     '(
       ;;       ("j" "Journal entry" plain
@@ -5461,6 +5590,7 @@ Interface with Zotero.
     :commands (org-zotxt-mode zotxt-easy-key-mode)
     :diminish (org-zoxt zotxt org-zotxt-mode)
     :config
+    ;; (setq org-zotxt-default-search-method 'everything)
     ;; (setq zotxt-default-bibliography-style "mkbehr-short")
     ;; Activate org-zotxt-mode in org-mode buffers
     (add-hook 'org-mode-hook (lambda () (org-zotxt-mode 1)))
@@ -5548,6 +5678,18 @@ Interface with Zotero.
 #+END_SRC
 * Test 
 Packages I'm testing. 
+** DISABLED Open to Agenda
+#+BEGIN_SRC emacs-lisp
+  (setq  initial-buffer-choice (lambda ()
+      (org-agenda-list)
+      (get-buffer "*Org Agenda*")
+      (delete-other-windows)))
+#+END_SRC
+** Titlebar
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . 'nil)) ; or 'dark, to switch to white title text
+#+END_SRC
 ** DISABLED Treemacs (File viewer)
 Another [[https://github.com/Alexander-Miller/treemacs][file viewer]] for emacs
 #+BEGIN_SRC emacs-lisp
@@ -5618,15 +5760,6 @@ Useful for syncing to org mobile. But I'm using [[http://beorgapp.com/][Beorg]] 
       (org-mobile-sync-enable)
 
 #+END_SRC
-** DISABLED Circadian (Theme Switching)
-[[https://github.com/GuidoSchmidt/circadian.el][Theme switching]] based on time of day
-#+BEGIN_SRC emacs-lisp
-(use-package circadian
-  :config
-  (setq circadian-themes '(("9:30" . solarized-light)
-                           ("18:30" . solarized-dark)))
-  (circadian-setup))
-#+END_SRC
 ** SDCV (Dictionary)
 #+BEGIN_SRC emacs-lisp
 (use-package sdcv-mode
@@ -5640,6 +5773,7 @@ Useful for syncing to org mobile. But I'm using [[http://beorgapp.com/][Beorg]] 
 (use-package evil-nl-break-undo
   :ensure nil
   :load-path "~/.emacs.d/elisp/evil-nl-break-undo"
+  :defer t
   :config
   (add-hook 'text-mode-hook #'evil-nl-break-undo-mode)
   (add-hook 'prog-mode-hook #'evil-nl-break-undo-mode)
@@ -5698,16 +5832,6 @@ Make an [[https://github.com/abingham/outline-toc.el][outline]]
   :load-path "~/.emacs.d/elisp/outline-toc/"
   :commands outline-toc-mode
 )
-#+END_SRC
-
-** Libvterm
-an [[https://github.com/akermu/emacs-libvterm][alternative]] to ansi-term
-#+BEGIN_SRC emacs-lisp
-  (use-package emacs-libvterm
-    :ensure nil
-    :load-path "/Users/roambot/.emacs.d/elisp/emacs-libvterm"
-    :commands vterm-create
-  )
 #+END_SRC
 
 ** Helpful
@@ -5779,6 +5903,7 @@ Start server
 ** Things to run at startup
 #+BEGIN_SRC emacs-lisp
   ;; (eshell)
+
 #+END_SRC
 * Archive
 * Goals 
@@ -5790,4 +5915,5 @@ Below are various things I want to perfect or try out in the config.
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
 - [X] Fix load time of Projectile (make cache persist across sessions)
   
+
 
