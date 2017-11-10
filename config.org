@@ -2128,12 +2128,13 @@ that I use anything other than solarized :)
 (use-package circadian
   :defer 1
   :config
+  (ignore-errors
   (setq circadian-themes '((:sunrise . gruvbox-light-soft)
                            ("11:00"  . solarized-light)
                            ("14:30"  . adwaita)
                            (:sunset  . solarized-dark)
                            ("01:00"  . gotham)))
-  (circadian-setup))
+  (circadian-setup)))
 #+END_SRC
 
 
