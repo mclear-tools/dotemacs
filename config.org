@@ -1141,7 +1141,7 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
 #+END_SRC
 
 **** Macros
-These are a few useful macros I got from hlissner's [[https://github.com/hlissner/.emacs.d]["doom" .emacs.d]]
+These are a few useful macros I got from hlissner's [[https://github.com/hlissner/.emacs.d]["doom" emacs config]]
 
 #+BEGIN_SRC emacs-lisp
 (defmacro after! (feature &rest forms)
