@@ -1999,6 +1999,7 @@ And here's how we tell Emacs to use the font we want to use.
 Deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
 #+begin_src emacs-lisp 
   (use-package dynamic-fonts
+    :disabled t
     :config (dynamic-fonts-setup) 
     :init
      (progn (setq dynamic-fonts-preferred-proportional-fonts
