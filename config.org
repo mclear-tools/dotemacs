@@ -136,7 +136,7 @@ different types of files.
     "Where package.el and quelpa plugins (and their caches) are stored.")
 
 
-  (dolist (dir (list cmacs-local-dir cmacs-etc-dir cmacs-cache-dir (expand-file-name "elpa" cmacs-packages-dir)))
+  (dolist (dir (list cmacs-local-dir cmacs-etc-dir cmacs-cache-dir (expand-file-name "elpa" cmacs-packages-dir) (expand-file-name "elisp" cmacs-packages-dir)))
     (unless (file-directory-p dir)
       (make-directory dir t))))
 #+END_SRC
@@ -3428,14 +3428,13 @@ http://doom.wikia.com/wiki/Quit_messages and elsewhere.")
 (add-hook 'kill-emacs-query-functions #'+doom|quit)
 #+END_SRC
 
-
 * Other Packages and Mode-Specific Settings
 ** Media
-*** Cmus
+*** CHECK Cmus
 #+BEGIN_SRC emacs-lisp
 (use-package cpm-cmus
+  :disabled t
   :ensure nil
-  :load-path "~/.emacs.d/elisp/"
   :general
   (cpm-leader1
   "acx" 'cmus-play-pause
@@ -3850,7 +3849,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            eshell-glob-case-insensitive t
            eshell-scroll-to-bottom-on-input 'all
            eshell-list-files-after-cd t
-           eshell-aliases-file (concat cmacs-local-dir "eshell/alias")
+           eshell-aliases-file (concat cmacs-etc-dir "eshell/alias")
            eshell-banner-message ""
            ;; eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
            ;; eshell-banner-message "What would you like to do?\n\n"
@@ -4948,10 +4947,8 @@ document and create new parents.
 **** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 #+BEGIN_SRC emacs-lisp
-(use-package helm-org-rifle
-  :ensure nil
-  :load-path "~/.emacs.d/elisp/helm-org-rifle"
-  :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
+  (use-package helm-org-rifle
+    :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
 #+END_SRC
 **** Org-Download
 Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]]. 
@@ -5231,7 +5228,7 @@ Searching Org-mode with search tools.
 #+BEGIN_SRC emacs-lisp
   (use-package org-wiki
     :ensure nil
-    :load-path "~/.emacs.d/elisp/org-wiki/"
+    :load-path ".emacs.d/.local/packages/elisp/org-wiki/"
     :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
     :init 
     (setq org-wiki-location "~/Dropbox/org-files/Wiki"))
@@ -5563,7 +5560,7 @@ Pandoc mode for markdown conversion
         )
     :init
     (progn
-      (setq pandoc-data-dir "~/.emacs.d/pandoc-mode/")
+      (setq pandoc-data-dir (concat cmacs-etc-dir "pandoc-mode/"))
       ;; help pandoc find xelatex
       (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))))
 #+END_SRC
@@ -5961,8 +5958,8 @@ Better than doc-view, but doesn't render well on retina screens :(
     :ensure nil
     :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
     :init
-    (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/"))
-
+    ;; (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/")
+)
       ;; Extracting annotations using pdf-tools
       ;; modified from https://github.com/politza/pdf-tools/pull/133 
       ;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
@@ -6248,7 +6245,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
     (defun dashboard-insert-totd (list-size) (totd)) (add-to-list
     'dashboard-item-generators '(totd . dashboard-insert-totd))
 
-    (setq dashboard-startup-banner "/Users/roambot/.emacs.d/icons/128x128.png")
+    (setq dashboard-startup-banner (concat cmacs-etc-dir "icons/128x128.png"))
     ;; Set the title
     ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
     (setq dashboard-banner-logo-title (message "Emacs initialized in %.2fs" (float-time (time-subtract (current-time) my-start-time))))
