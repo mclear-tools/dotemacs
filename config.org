@@ -84,6 +84,7 @@ management.
 
 #+BEGIN_SRC emacs-lisp
 (defvar cmacs-font (font-spec :family "Inconsolata LGC" :size 13))
+(defvar cmacs-vari-font (font-spec :family "Avenir"))
 #+END_SRC
 
 ** Leader Keys
@@ -2326,6 +2327,7 @@ Ditto for the terminal.
 Here we tell emacs to use the font set in the variable above. 
 #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'default nil :font cmacs-font)
+(set-face-attribute 'variable-pitch nil :font cmacs-vari-font)
 #+END_SRC
 *** DISABLED Font
 
