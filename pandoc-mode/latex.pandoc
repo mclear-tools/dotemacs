@@ -8,10 +8,10 @@
  (csl . "/Users/Roambot/.pandoc/styles/chicago-author-date.csl")
  ;; (reference-links . t)
  (number-sections . t)
- (reference-docx . "/Users/Roambot/.pandoc/pandoc-templates/reference.docx")
+ (reference-doc . "/Users/Roambot/.pandoc/pandoc-templates/reference.docx")
  (standalone . t)
  (template . "/Users/Roambot/.pandoc/pandoc-templates/default.latex")
- (latex-engine . "xelatex")
+ (pdf-engine . "xelatex")
  (variable
   (#("mainfont" 0 8
      (ws-butler-chg chg))
