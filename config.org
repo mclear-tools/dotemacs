@@ -2242,6 +2242,7 @@ time.
 #+BEGIN_SRC emacs-lisp
   ;; Mode line
   (use-package spaceline
+    :demand t
     :init 
     (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
     :config 
@@ -5903,11 +5904,12 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
   (use-package dashboard
     :demand t
     :config
-    (setq dashboard-items '((agenda . 10)
+    (setq dashboard-items '((agenda . 5)
                             (recents  . 5)
                             (bookmarks . 5)
                             (projects . 5)
                             (totd . 1)))
+    (add-to-list 'dashboard-items '(agenda) t)
     (defun totd()
     (let* ((commands (loop for s being the symbols
     when (commandp s) collect s))
