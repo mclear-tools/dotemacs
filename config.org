@@ -2313,6 +2313,12 @@ that I use anything other than solarized :)
   (circadian-setup)))
 #+END_SRC
 
+*** TODO Titlebar
+# Add qualifier for emacs version
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . 'dark)) ; or 'dark, to switch to white title text
+#+END_SRC
 
 *** DISABLED Line Numbers (Nlinum mode for emacs 25)
 #+BEGIN_SRC emacs-lisp
