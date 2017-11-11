@@ -64,6 +64,7 @@ forgotten. Thanks to all of you for making your configurations public! This
 config is [[https://github.com/mclear-tools/dotemacs/blob/7e86c823ae3d5a9d1b0ff12c4bc1e7248dcf4f01/init.el#L56-L71][fed into]] the [[https://github.com/mclear-tools/dotemacs/blob/master/init.el][init file]]. [[http://orgmode.org][Org mode]] is automatically installed if not
 already present, as is [[https://github.com/jwiegley/use-package][use-package]]. There is no need for any other package
 management.
+
 * Personal Information
 
 #+BEGIN_SRC emacs-lisp
@@ -73,6 +74,12 @@ management.
 #+END_SRC
 
 * Variables
+** Start time
+#+BEGIN_SRC emacs-lisp
+  (defvar my-start-time (current-time)
+    "Time when Emacs was started")
+
+#+END_SRC
 ** Font
 
 #+BEGIN_SRC emacs-lisp
@@ -1967,7 +1974,12 @@ Ditto for the terminal.
   (when (not (display-graphic-p))
     (menu-bar-mode -1))
 #+END_SRC
-*** Font
+*** Font Value
+Here we tell emacs to use the font set in the variable above. 
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil :font cmacs-font)
+#+END_SRC
+*** DISABLED Font
 
 [[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font. I use a version, Inconsolata-LGC,
 that also has bold and italic fonts.
@@ -1987,6 +1999,7 @@ And here's how we tell Emacs to use the font we want to use.
 Deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]]. 
 #+begin_src emacs-lisp 
   (use-package dynamic-fonts
+    :disabled t
     :config (dynamic-fonts-setup) 
     :init
      (progn (setq dynamic-fonts-preferred-proportional-fonts
