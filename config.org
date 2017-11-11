@@ -462,15 +462,6 @@ apropos commands perform more extensive searches than default
 #+BEGIN_SRC emacs-lisp
 (setq apropos-do-all t)
 #+END_SRC
-*** Cache Directory
-#+BEGIN_SRC emacs-lisp 
-(defconst cmacs-cache-dir
-    (expand-file-name (concat user-emacs-directory ".cache/"))
-    "My emacs storage area for persistent files.")
-  ;; create the 'cmacs-cache-dir' if it doesn't exist
-(unless (file-exists-p cmacs-cache-dir) 
- (make-directory cmacs-cache-dir t))
-#+END_SRC
 *** Backups
 #+BEGIN_SRC emacs-lisp
   (let ((backup-dir (concat cmacs-cache-dir "backup")))
@@ -792,13 +783,12 @@ Show matching brackets, parenthesis, etc.
 [[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package async :commands (async-start))
-
-  (use-package cl-lib :defer t)
-
-  (use-package dash :defer t)
-
-  (use-package s :defer t)
+(use-package async :demand t)
+(use-package dash :demand t)
+(use-package s :demand t)
+(use-package f :demand t)
+(use-package subr-x :demand t :ensure nil)
+(require 'cl-lib)
 #+END_SRC
  
 *** Useful Functions 
@@ -1788,7 +1778,7 @@ The essential stuff
       (add-hook 'git-commit-mode-hook 'evil-insert-state)
       (evil-set-initial-state 'magit-log-edit-mode 'insert)
       ;; evil-normal-state is preferred, so revert when idle
-      (run-with-idle-timer 20 t 'evil-normal-state)
+      (run-with-idle-timer 60 t 'evil-normal-state)
       ;; don't echo evil state
       (setq evil-echo-state nil)
       ;; evil everywhere
@@ -2368,7 +2358,7 @@ Deal with fonts [[https://github.com/rolandwalker/dynamic-fonts][dynamically]].
 The best low-contrast theme out there.
 #+BEGIN_SRC emacs-lisp
   (use-package solarized-theme
-    :ensure t
+    :demand t
     :if (display-graphic-p)
     :init
       (progn
@@ -3812,7 +3802,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
            eshell-glob-case-insensitive t
            eshell-scroll-to-bottom-on-input 'all
            eshell-list-files-after-cd t
-           eshell-aliases-file (concat user-emacs-directory "eshell/alias")
+           eshell-aliases-file (concat cmacs-local-dir "eshell/alias")
            eshell-banner-message ""
            ;; eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
            ;; eshell-banner-message "What would you like to do?\n\n"
@@ -4417,28 +4407,6 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 *** Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    ;; :commands (projectile-ack
-    ;;            projectile-ag
-    ;;            projectile-compile-project
-    ;;            projectile-dired
-    ;;            projectile-find-dir
-    ;;            projectile-find-file
-    ;;            projectile-find-tag
-    ;;            projectile-find-test-file
-    ;;            projectile-grep
-    ;;            projectile-invalidate-cache
-    ;;            projectile-kill-buffers
-    ;;            projectile-multi-occur
-    ;;            projectile-project-p
-    ;;            projectile-project-root
-    ;;            projectile-recentf
-    ;;            projectile-regenerate-tags
-    ;;            projectile-replace
-    ;;            projectile-run-async-shell-command-in-root
-    ;;            projectile-run-shell-command-in-root
-    ;;            projectile-switch-project
-    ;;            projectile-switch-to-buffer
-    ;;            projectile-vc)
     :init
     ;; save projectile-known-projects-file in cache folder
     (setq projectile-known-projects-file
@@ -4494,44 +4462,6 @@ Yet another attempt to manage buffers/workspaces
     ;;                 ))
     ;; (helm-projectile-switch-project)
     ;; (persp-rename (projectile-project-name)))
-#+END_SRC
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package persp-mode
-    :init
-    (setq persp-save-dir (concat cmacs-cache-dir "persp-save/"))
-    :config
-    (persp-mode 1))
-    
-  (use-package persp-mode-projectile-bridge
-  :config
-  (add-hook 'persp-mode-projectile-bridge-mode-hook
-            #'(lambda ()
-                (if persp-mode-projectile-bridge-mode
-                    (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
-                  (persp-mode-projectile-bridge-kill-perspectives))))
-  (persp-mode-projectile-bridge-mode 1))
-
-#+END_SRC
-
-*** DISABLED Persp Mode
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package persp-mode
-  :disabled t
-  :init
-  (setq persp-autokill-buffer-on-remove 'kill-weak)
-  :config
-  (persp-mode 1)
-  )
-
-(use-package persp-mode-projectile-bridge
-  :config
-  (add-hook 'persp-mode-projectile-bridge-mode-hook
-            #'(lambda ()
-                (if persp-mode-projectile-bridge-mode
-                    (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
-                  (persp-mode-projectile-bridge-kill-perspectives))))
-  (persp-mode-projectile-bridge-mode 1)
-  )
 #+END_SRC
 *** Eyebrowse Workspace & Window Management
 Easy workspace creation and switching
@@ -4625,7 +4555,6 @@ well with org-mode using org-indent. So I don't use it globally.
      nil nil 'center))
        
  #+END_SRC
-
 
 *** Quick commits
  #+BEGIN_SRC emacs-lisp
@@ -6259,7 +6188,6 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
                             (bookmarks . 5)
                             (projects . 5)
                             (totd . 1)))
-    (add-to-list 'dashboard-items '(agenda) t)
     (defun totd()
     (let* ((commands (loop for s being the symbols
     when (commandp s) collect s))
