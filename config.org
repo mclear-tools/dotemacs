@@ -463,16 +463,16 @@ apropos commands perform more extensive searches than default
 #+END_SRC
 *** Cache Directory
 #+BEGIN_SRC emacs-lisp 
-(defconst user-cache-directory
+(defconst cmacs-cache-dir
     (expand-file-name (concat user-emacs-directory ".cache/"))
     "My emacs storage area for persistent files.")
-  ;; create the 'user-cache-directory' if it doesn't exist
-(unless (file-exists-p user-cache-directory) 
- (make-directory user-cache-directory t))
+  ;; create the 'cmacs-cache-dir' if it doesn't exist
+(unless (file-exists-p cmacs-cache-dir) 
+ (make-directory cmacs-cache-dir t))
 #+END_SRC
 *** Backups
 #+BEGIN_SRC emacs-lisp
-  (let ((backup-dir (concat user-cache-directory "backup")))
+  (let ((backup-dir (concat cmacs-cache-dir "backup")))
     ;; Move backup file to `~/.emacs.d/.cache/backup'
     (setq backup-directory-alist `(("." . ,backup-dir)))
     ;; Makesure backup directory exist
@@ -502,7 +502,7 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
 
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-list-file-prefix
-      (concat user-cache-directory "auto-save-list/.saves-"))
+      (concat cmacs-cache-dir "auto-save-list/.saves-"))
 
 (setq auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
@@ -1912,7 +1912,7 @@ Use [[https://github.com/louy2/evil-avy][evil motions]] with avy
     ;; (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
-    (let ((undo-dir (concat user-cache-directory "undo")))
+    (let ((undo-dir (concat cmacs-cache-dir "undo")))
       (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
       (unless (file-directory-p undo-dir)
         (make-directory undo-dir t)))
@@ -1923,8 +1923,8 @@ Make the content of the scratch buffer persist between settings
 #+BEGIN_SRC emacs-lisp
   (use-package persistent-scratch
     :init
-    (setq persistent-scratch-backup-directory (concat user-cache-directory "scratch-backups"))
-    (setq persistent-scratch-save-file (concat user-cache-directory "persistent-scratch"))
+    (setq persistent-scratch-backup-directory (concat cmacs-cache-dir "scratch-backups"))
+    (setq persistent-scratch-save-file (concat cmacs-cache-dir "persistent-scratch"))
     ;; keep backups not older than a month
     (setq persistent-scratch-autosave-mode 1)
     (setq persistent-scratch-autosave-interval 60)
@@ -1949,7 +1949,7 @@ Better dired navigation using ranger-like settings
     (setq ranger-override-dired t
           ranger-cleanup-eagerly t)
     ;; set up image-dired to allow picture resize
-    (setq image-dired-dir (concat user-cache-directory "image-dir"))
+    (setq image-dired-dir (concat cmacs-cache-dir "image-dir"))
     (unless (file-directory-p image-dired-dir)
       (make-directory image-dired-dir t))
     :config
@@ -1974,7 +1974,7 @@ Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
   :init
-  (setq recentf-save-file (expand-file-name "recentf" user-cache-directory))
+  (setq recentf-save-file (expand-file-name "recentf" cmacs-cache-dir))
   :config 
   ;; remove agenda files from list.
   (setq recentf-exclude '("projects.org"
@@ -3418,7 +3418,7 @@ Keybindings for managing packages
      :config
      (setq url-configuration-directory
            (file-name-as-directory
-            (concat user-cache-directory "url"))))
+            (concat cmacs-cache-dir "url"))))
  #+END_SRC
 ** Navigation
 *** Ace Window
@@ -3439,7 +3439,7 @@ Ace [[https://github.com/abo-abo/ace-window][window management]].
       :defer 10
       :init
       (setq bookmark-default-file
-               (concat user-cache-directory "bookmarks"))
+               (concat cmacs-cache-dir "bookmarks"))
       (setq bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
   )
 #+END_SRC 
@@ -3495,9 +3495,9 @@ Ace [[https://github.com/abo-abo/ace-window][window management]].
     :init
     (save-place-mode 1)
     :config
-    (setq save-place-file "~/.emacs.d/.cache/saved-places")
+    (setq save-place-file (concat cmacs-cache-dir "saved-places")
     ;; (setq save-place-forget-unreadable-files nil)
-  )
+  ))
 #+END_SRC
 
 *** Speedbar
@@ -4132,7 +4132,7 @@ An easy way to ssh
     :disabled t
     :defer 10
     :init
-    (setq yankpad-file (concat user-cache-directory "yankpad.org"))
+    (setq yankpad-file (concat cmacs-cache-dir "yankpad.org"))
     ;; create file if it does not exist
     (when (not (file-exists-p yankpad-file))
       (shell-command (concat "touch " yankpad-file)))
@@ -4440,9 +4440,9 @@ Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
     :init
     ;; save projectile-known-projects-file in cache folder
     (setq projectile-known-projects-file
-       (concat user-cache-directory "projectile-bookmarks.eld"))
+       (concat cmacs-cache-dir "projectile-bookmarks.eld"))
     (setq projectile-cache-file
-       (concat user-cache-directory "projectile.cache"))
+       (concat cmacs-cache-dir "projectile.cache"))
     (setq projectile-enable-caching t)
     :config
     (projectile-global-mode t))
@@ -4496,7 +4496,7 @@ Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package persp-mode
     :init
-    (setq persp-save-dir (concat user-cache-directory "persp-save/"))
+    (setq persp-save-dir (concat cmacs-cache-dir "persp-save/"))
     :config
     (persp-mode 1))
     
@@ -5268,7 +5268,7 @@ A [[https://github.com/Kungsgeten/org-brain][knowledge base]] using org-mode
     ;; For Evil users
     (evil-set-initial-state 'org-brain-visualize-mode 'motion)
     (setq org-id-track-globally t)
-    (setq org-id-locations-file (expand-file-name "org-id-locations" user-cache-directory))
+    (setq org-id-locations-file (expand-file-name "org-id-locations" cmacs-cache-dir))
     (setq org-brain-visualize-default-choices 'all)
     (org-link-set-parameters
       "brain"
@@ -6226,7 +6226,7 @@ Interface with Zotero.
 
 * Private
 #+BEGIN_SRC emacs-lisp
-  (let ((private (expand-file-name "private.el" user-cache-directory))) 
+  (let ((private (expand-file-name "private.el" cmacs-cache-dir))) 
   (if (file-exists-p private)
 	  (load-file private)))
 #+END_SRC
