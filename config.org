@@ -5901,6 +5901,7 @@ Dashboard depends on this.
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
+    :demand t
     :config
     (setq dashboard-items '((agenda . 10)
                             (recents  . 5)
