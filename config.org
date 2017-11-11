@@ -2194,7 +2194,7 @@ Recent directories
 Numbered window shortcuts for Emacs
 #+BEGIN_SRC emacs-lisp
    (use-package window-numbering
-     :ensure t
+     :demand t
      :config
      (defun window-numbering-install-mode-line (&optional position)
      "Do nothing, the display is handled by the powerline.")
