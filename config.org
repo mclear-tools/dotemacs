@@ -161,6 +161,122 @@ you properly verify outgoing ssl connections.
                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
       nsm-settings-file (expand-file-name "network-security.data" cmacs-cache-dir))
 #+END_SRC
+* Emacs Initialization
+** Initialization Settings
+
+We're going to increase the gc-cons-threshold to a very high number to
+decrease the load time. We're going to add a hook to reset this value after
+initialization
+
+#+BEGIN_SRC emacs-lisp
+(eval-and-compile
+  (setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6))
+
+(add-hook 'cmacs-post-init-hook #'(lambda () (setq gc-cons-threshold 16777216
+                                                   gc-cons-percentage 0.1)))
+#+END_SRC
+
+Let's increase the =max-lisp-eval-depth= and =max-specpdl-size= to prevent exceeding recursion limits.
+
+#+BEGIN_SRC emacs-lisp
+(setq max-lisp-eval-depth 50000)
+(setq max-specpdl-size 10000)
+#+END_SRC
+
+Now, we're going to disable double-buffering to prevent stuttering.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+#+END_SRC
+
+Disable certain byte compiler warnings to cut down on the noise.
+
+#+BEGIN_SRC emacs-lisp
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
+#+END_SRC
+
+** Initialize and Add Package Sources
+
+Tell =use-package= to always defer loading packages unless explicitly told
+otherwise. This speeds up initialization significantly as many packages are
+only loaded later when they are explicitly used.
+
+#+BEGIN_SRC emacs-lisp
+  (setq use-package-always-defer t
+        use-package-verbose t)
+#+END_SRC
+
+We're using a custom directory to store our packages so we need to set
+=package-user-dir= to the location we want them stored. We're the =load-path=
+ourselves and avoid calling =(package-initialize)= (for performance reasons) so
+we need to set =package--init-file-ensured= to tell =package.el= to not
+automatically call it on our behalf. Additionally we're setting
+=package-enable-at-startup= so that packages will not automatically be loaded
+for us since =use-package= will be handling that.
+
+
+#+BEGIN_SRC emacs-lisp
+  (eval-and-compile
+    (setq package-user-dir (expand-file-name "elpa" cmacs-packages-dir)))
+
+  (setq load-prefer-newer t
+        package--init-file-ensured t
+        package-enable-at-startup nil)
+#+END_SRC
+
+We're going to set the load path ourselves so that we don't have to call =package-initialize= at
+runtime and incur a large performance hit.
+
+#+BEGIN_SRC emacs-lisp
+   (eval-and-compile
+     (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t))))
+#+END_SRC
+
+Next we are going to require =package.el= and add our additional package
+archives, 'melpa' and 'org'. Afterwards we need to initialize our packages and
+then ensure that =use-package= is installed, which we promptly install if it's
+missing. Finally we load =use-package= and tell it to always install any missing
+packages.
+
+Note that this entire block is wrapped in =eval-when-compile=. The effect of
+this is to perform all of the package initialization during compilation so
+that when byte compiled, all of this time consuming code is skipped. This can
+be done because the result of byte compiling =use-package= statements results in
+the macro being fully expanded at which point =use-package= isn't actually
+required any longer.
+
+Since the code is automatically compiled during runtime, if the configuration
+hasn't already been previously compiled manually then all of the package
+initialization will still take place at startup.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-when-compile
+    (require 'package)
+
+    (unless (assoc-default "melpa" package-archives)
+      (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t))
+    (unless (assoc-default "org" package-archives)
+      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t))
+
+    (package-initialize)
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
+    (require 'use-package)
+    (setq use-package-always-ensure t))
+#+END_SRC
+
+** Setup auto compilation
+
+Auto compile any non-compiled lisp file before it is loaded.
+
+#+BEGIN_SRC emacs-lisp
+(use-package auto-compile
+  :demand t
+  :config (auto-compile-on-load-mode))
+#+END_SRC
+
 * Core Configuration
 These settings constitute those I regard as essential to normal emacs operation.
 ** Core Settings
