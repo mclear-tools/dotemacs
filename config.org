@@ -1442,6 +1442,7 @@ Use a key sequence for [[https://github.com/syl20bnr/evil-escape#install][escapi
 that caps lock is mapped to escape. 
 #+BEGIN_SRC emacs-lisp
   (use-package evil-escape
+    :disabled t
     :diminish ""
     :init
     (evil-escape-mode)
@@ -1790,6 +1791,7 @@ Use helm with flyspell
 ***** DISABLED Helm Flx
 #+BEGIN_SRC emacs-lisp
 (use-package helm-flx
+  :disabled t
   :after helm
   :config
   (setq helm-flx-for-helm-find-files t ;; t by default
@@ -2321,11 +2323,11 @@ Hide mode line. From http://bzg.fr/emacs-hide-mode-line.html
 (add-to-list 'default-frame-alist '(ns-appearance . 'dark)) ; or 'dark, to switch to white title text
 #+END_SRC
 
-*** DISABLED Line Numbers (Nlinum mode for emacs 25)
+*** CHECK Line Numbers (Nlinum mode for emacs 25)
 #+BEGIN_SRC emacs-lisp
  (use-package nlinum
  :commands nlinum-mode
-   :config
+ :config
   (setq-default nlinum-format "%2d ")
   (setq nlinum-highlight-current-line t)
     (custom-set-faces
@@ -3366,7 +3368,7 @@ A file tree and outliner
 Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
 #+BEGIN_SRC emacs-lisp
   (use-package xterm-color
-    :defer 5
+    :disabled t
     :config
     ;; comint install
     (progn (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
@@ -3670,6 +3672,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
 **** DISABLED Eshell Help
 #+BEGIN_SRC emacs-lisp
 (use-package esh-help
+  :disabled t
   :after eshell
   :config
   (setup-esh-help-eldoc)  ;; To use eldoc in Eshell
@@ -3739,6 +3742,7 @@ An easy way to ssh
 **** DISABLED Yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
+    :disabled t
     :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
     :init
@@ -3761,6 +3765,7 @@ An easy way to ssh
 **** DISABLED Yankpad
 #+BEGIN_SRC emacs-lisp
   (use-package yankpad
+    :disabled t
     :defer 10
     :init
     (setq yankpad-file (concat user-cache-directory "yankpad.org"))
@@ -3934,6 +3939,7 @@ Now you can have [[http://whyarethingsthewaytheyare.com/fishlike-autosuggestions
 Smarter [[https://github.com/Fuco1/smartparens/wiki][autopairing]]
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens 
+    :disabled t
     :defer t
     :config
     (require 'smartparens-config)
@@ -4144,6 +4150,7 @@ Yet another attempt to manage buffers/workspaces
 *** DISABLED Persp Mode
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package persp-mode
+  :disabled t
   :init
   (setq persp-autokill-buffer-on-remove 'kill-weak)
   :config
@@ -5097,7 +5104,7 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
 **** DISABLED Org Ref
 #+BEGIN_SRC emacs-lisp
   (use-package org-ref 
-   ;; :after org
+   :disabled t
    :defer t
    :config
    (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
@@ -5221,7 +5228,6 @@ Pandoc mode for markdown conversion
 **** DISABLED Critic markup
 #+BEGIN_SRC emacs-lisp
   (use-package cm-mode
-    :defer t
     :ensure t
     :disabled t ;; causes font-lock error in markdown mode
     :init
