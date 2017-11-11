@@ -1385,6 +1385,7 @@ A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compat
 discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
 #+BEGIN_SRC emacs-lisp
 (use-package general
+  :demand t
   :config
   (general-create-definer cpm-leader1 
     :states '(normal insert visual motion emacs) 
@@ -1401,6 +1402,7 @@ keybindings. And that is what [[https://bitbucket.org/lyro/evil/wiki/Home][evil]
 The essential stuff
 #+begin_src emacs-lisp 
   (use-package evil
+    :demand t
     :config
     (progn
     ;; Cursor shape and color
