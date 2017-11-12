@@ -3838,7 +3838,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
      (setq eshell-where-to-jump 'begin)
      (setq eshell-review-quick-commands nil)
      (setq eshell-smart-space-goes-to-end t)
-     (setq
+     (setq eshell-directory-name (concat cmacs-etc-dir "/eshell")
            eshell-history-file-name (concat cmacs-etc-dir "eshell/history")
            eshell-last-dir-ring-file-name (concat cmacs-etc-dir "eshell/lastdir")
            eshell-highlight-prompt nil
