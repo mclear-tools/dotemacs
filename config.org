@@ -3257,7 +3257,8 @@ Keybindings for managing packages
   (cpm-leader1 
     "u"  '(:ignore t :which-key "User")
     "um" 'cpm/org-to-markdown   
-    "uc" 'pandoc-convert-to-pdf
+    ;; "uc" 'pandoc-convert-to-pdf
+    "uc" 'pandoc-convert-to-pdf 
     "uk" 'kill-compilation
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
@@ -5543,7 +5544,7 @@ Great for managing citations and notes
 Pandoc mode for markdown conversion
 #+BEGIN_SRC emacs-lisp
   (use-package pandoc-mode
-    :defer t  
+    :commands (run-pandoc pandoc-convert-to-pdf)
     :config
     (progn
       (defun run-pandoc ()
@@ -5552,6 +5553,11 @@ Pandoc mode for markdown conversion
         (pandoc-mode)
         (pandoc-main-hydra/body))
       (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+
+      (defun pandoc-convert-to-pdf ()
+        "convert to pdf"
+        (interactive)
+        (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/Master.bib --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
 
       (defun pandoc-pdf-open ()
         "Open created PDF file"  
