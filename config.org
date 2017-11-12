@@ -1965,15 +1965,15 @@ Better dired navigation using ranger-like settings
 *** Recent files
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :init
-  (setq recentf-save-file (expand-file-name "recentf" cmacs-cache-dir))
+  :demand t
   :config 
+  (setq recentf-save-file (concat cmacs-etc-dir "recentf"))
   ;; remove agenda files from list.
   (setq recentf-exclude '("projects.org"
                           "inbox.org"
                           "someday.org")
-        recentf-max-saved-items 500
-        recentf-max-menu-items 15))
+        recentf-max-saved-items 300
+        recentf-max-menu-items 10))
 #+END_SRC
 
 *** Helm
