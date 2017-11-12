@@ -181,7 +181,7 @@ initialization
   (setq gc-cons-threshold 402653184
         gc-cons-percentage 0.6))
 
-(add-hook 'cmacs-post-init-hook #'(lambda () (setq gc-cons-threshold 16777216
+(add-hook 'cmacs-post-init-hook #'(lambda () (setq gc-cons-threshold 1000000
                                                    gc-cons-percentage 0.1)))
 #+END_SRC
 
