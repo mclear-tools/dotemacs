@@ -1935,6 +1935,7 @@ Make the content of the scratch buffer persist between settings
 Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
   (use-package ranger
+    :demand t
     :commands (ranger deer deer-jump-other-window)
     :init
     (setq ranger-override-dired t
@@ -3824,19 +3825,22 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
  Basic settings
  #+BEGIN_SRC emacs-lisp 
    (use-package eshell
+     :demand t
      :commands eshell
      ;; :bind ("C-x e" . eshell)
      :init
-     (use-package em-cmpl  :ensure nil)
-     (use-package em-prompt  :ensure nil)
-     (use-package em-term  :ensure nil)
-     (use-package em-alias :ensure nil)
-     (use-package em-smart :ensure nil)
+     (use-package em-cmpl   :demand t :ensure nil)
+     (use-package em-prompt :demand t :ensure nil)
+     (use-package em-term   :demand t :ensure nil)
+     (use-package em-alias  :demand t :ensure nil)
+     (use-package em-smart  :demand t :ensure nil)
      ;; plan 9
      (setq eshell-where-to-jump 'begin)
      (setq eshell-review-quick-commands nil)
      (setq eshell-smart-space-goes-to-end t)
      (setq
+           eshell-history-file-name (concat cmacs-etc-dir "eshell/history")
+           eshell-last-dir-ring-file-name (concat cmacs-etc-dir "eshell/lastdir")
            eshell-highlight-prompt nil
            eshell-buffer-shorthand t
            eshell-cmpl-ignore-case t
@@ -3865,7 +3869,7 @@ Get [[https://github.com/atomontage/xterm-color][256 colors]] instead of 8
 
 
    (defun my/setup-eshell ()
-     (interactive)
+    (interactive)
      ;; turn off semantic-mode in eshell buffers
      (semantic-mode -1)
      ;; turn off hl-line-mode
@@ -4150,7 +4154,7 @@ An easy way to ssh
     :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
     :init
-    (setq yas-snippet-dirs '("/Users/roambot/.emacs.d/snippets"))
+    ;; (setq yas-snippet-dirs (concat cmacs-etc-dir "snippets"))
     (progn
       (add-hook 'prog-mode-hook #'yas-minor-mode)
       (add-hook 'org-mode-hook #'yas-minor-mode)
@@ -6296,8 +6300,9 @@ Start server
 * Archive
 * Goals 
 Below are various things I want to perfect or try out in the config.
-
+- [ ] Make local leader/mode specific key bindings
 - [ ] Fix load time of =config.org= file
+    - Depends mostly on spaceline
 - [ ] Fix surround delete/change of various characters (org markup, dollar signs)
 - [X] Fix bookmark/desktop save
 - [X] Fix Helm locate so it loads faster (problem with bash alias setting)
