@@ -27,10 +27,7 @@ well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate star
 ** Table of Contents :TOC_3_gh:
 - [[#configuration][Configuration]]
   - [[#about-this-file][About This File]]
-  - [[#org-file-tweaks][Org File Tweaks]]
-    - [[#automatically-tangle][Automatically Tangle]]
-    - [[#visibility-settings][Visibility Settings]]
-    - [[#table-of-contents][Table of Contents]]
+    - [[#org-file-tweaks][Org File Tweaks]]
   - [[#personal-information][Personal Information]]
   - [[#variables][Variables]]
     - [[#start-time][Start time]]
@@ -56,28 +53,62 @@ well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate star
     - [[#cmacs-functions][CMACS Functions]]
     - [[#doom-macros][DOOM! Macros]]
     - [[#other-macros][Other Macros]]
-  - [[#packages][Packages]]
+  - [[#useful-libraries][Useful Libraries]]
+  - [[#modal-editing][Modal Editing]]
     - [[#general--evil][General  (Evil)]]
-    - [[#useful-libraries][Useful Libraries]]
     - [[#vim-emulation][Vim Emulation]]
+  - [[#navigation][Navigation]]
+    - [[#helm][Helm]]
     - [[#ivy][Ivy]]
     - [[#counsel][Counsel]]
     - [[#swiper][Swiper]]
-    - [[#magit][Magit]]
-    - [[#projectile][Projectile]]
-    - [[#toc-org][Toc-org]]
-    - [[#persistent-scratch][Persistent Scratch]]
-    - [[#restart-emacs][Restart emacs]]
+    - [[#bookmark][Bookmark]]
+    - [[#hydra][Hydra]]
+    - [[#saveplace][Saveplace]]
+    - [[#ace-window][Ace Window]]
+    - [[#avy][Avy]]
+    - [[#windows][Windows]]
     - [[#ranger--deer][Ranger & Deer]]
     - [[#recent-files][Recent files]]
-    - [[#windows][Windows]]
+    - [[#restart-emacs][Restart emacs]]
     - [[#autorevert][Autorevert]]
-    - [[#org][Org]]
-    - [[#version-control][Version Control]]
-    - [[#search][Search]]
-    - [[#shell][Shell]]
-    - [[#navigation][Navigation]]
-    - [[#helm][Helm]]
+  - [[#org][Org]]
+    - [[#org-custom-functions][Org Custom Functions]]
+    - [[#org-minor-mode][Org Minor mode]]
+    - [[#settings][Settings]]
+    - [[#org-reveal][Org-Reveal]]
+    - [[#org-agenda][Org-Agenda]]
+    - [[#org-capture][Org Capture]]
+    - [[#org-refile][Org Refile]]
+    - [[#org--pandoc-ox-pandoc][Org & Pandoc (Ox-pandoc)]]
+    - [[#org-miscellaneous-packages][Org Miscellaneous Packages]]
+    - [[#org-rifle][Org Rifle]]
+    - [[#org-download][Org-Download]]
+    - [[#org-pomodoro][Org Pomodoro]]
+    - [[#open-docx-files-in-default-application-ie-msword][Open Docx Files In Default Application (Ie Msword)]]
+    - [[#org-indirect-buffer][Org Indirect Buffer]]
+    - [[#org-numbers-overlay][Org Numbers Overlay]]
+    - [[#evil-org][Evil Org]]
+    - [[#toc-org][Toc-org]]
+  - [[#version-control][Version Control]]
+    - [[#magit][Magit]]
+    - [[#evil-magit][Evil Magit]]
+    - [[#git-timemachine][Git timemachine]]
+    - [[#gited][Gited]]
+    - [[#git-gutter][Git gutter]]
+    - [[#quick-commits][Quick commits]]
+  - [[#search][Search]]
+    - [[#ripgrep-rg][Ripgrep (rg)]]
+    - [[#anzu][Anzu]]
+  - [[#shell][Shell]]
+    - [[#sane-term][Sane term]]
+    - [[#shell-pop][Shell Pop]]
+    - [[#shell-settings][Shell settings]]
+    - [[#compilation-buffer][Compilation buffer]]
+    - [[#completion-buffer][Completion buffer]]
+    - [[#virtualenvwrapper][Virtualenvwrapper]]
+    - [[#tramp][Tramp]]
+    - [[#eshell][Eshell]]
   - [[#appearance--ui][Appearance & UI]]
     - [[#appearance][Appearance]]
     - [[#ui][UI]]
@@ -89,7 +120,7 @@ well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate star
     - [[#electric-pair-autopair][Electric Pair (Autopair)]]
     - [[#languages][Languages]]
   - [[#session--project-management][Session & Project Management]]
-    - [[#projectile-1][Projectile]]
+    - [[#projectile][Projectile]]
     - [[#perspectives][Perspectives]]
     - [[#eyebrowse-workspace--window-management][Eyebrowse Workspace & Window Management]]
   - [[#research--writing][Research & Writing]]
@@ -105,9 +136,11 @@ well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate star
     - [[#pdf-tools][PDF-Tools]]
     - [[#zotero][Zotero]]
   - [[#private][Private]]
-  - [[#helpful][Helpful]]
+  - [[#miscellaneous-packages][Miscellaneous Packages]]
+    - [[#helpful-documentation][Helpful (Documentation)]]
   - [[#post-initialization][Post Initialization]]
     - [[#run-post-init-hook][Run Post Init Hook]]
+    - [[#persistent-scratch][Persistent Scratch]]
     - [[#server][Server]]
     - [[#page-breaks][Page Breaks]]
     - [[#dashboard][Dashboard]]
@@ -115,10 +148,10 @@ well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate star
 ** About This File
 This is an Emacs literate configuration template. It contains the basic structure
 of a literate config along with some optimizations to ensure a fast load time.
-** Org File Tweaks
+*** Org File Tweaks
 There are a few tweaks included in this org file that make it a little easier to
 work with.
-*** Automatically Tangle
+**** Automatically Tangle
 First there is a property defined on the file:
 
 =header-args :tangle yes= 
@@ -126,11 +159,11 @@ First there is a property defined on the file:
 This tells emacs to automatically tangle (include) all code blocks in this file when
 generating the code for the config, unless the code block explicitly includes
 =:tangle no= as the above code block does.
-*** Visibility Settings
+**** Visibility Settings
 Next we have a property defined on the [[Configuration][Configuration]] heading that defines the visibility
 that tells org to show it's direct children on startup. This way a clean outline of all
 sub headings under Configuration is shown each time this file is opened in org-mode.
-*** Table of Contents
+**** Table of Contents
 Finally, there is a [[Table of Contents][Table of Contents]] heading that includes the tag: =:TOC_3_gh:=. This
 tells an org-mode package =toc-org= to generate a table of contents under this heading
 that has a max depth of 3 and is created using Github-style hrefs. This table of contents
@@ -2043,7 +2076,19 @@ compilation."
               (command-remapping 'projectile-find-file)
             (command-remapping 'find-file))))))
 #+END_SRC
-** Packages
+** Useful Libraries
+
+[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
+
+#+BEGIN_SRC emacs-lisp
+(use-package async :demand t)
+(use-package dash :demand t)
+(use-package s :demand t)
+(use-package f :demand t)
+(use-package subr-x :demand t :ensure nil)
+(require 'cl-lib)
+#+END_SRC
+** Modal Editing
 *** General  (Evil)
 A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
 discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
@@ -2056,18 +2101,6 @@ discussion of setting up evil with general see [[https://sam217pa.github.io/2016
     :keymaps 'global 
     :prefix "SPC" 
     :non-normal-prefix "C-SPC"))
-#+END_SRC
-*** Useful Libraries
-
-[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
-
-#+BEGIN_SRC emacs-lisp
-(use-package async :demand t)
-(use-package dash :demand t)
-(use-package s :demand t)
-(use-package f :demand t)
-(use-package subr-x :demand t :ensure nil)
-(require 'cl-lib)
 #+END_SRC
 *** Vim Emulation
 I'm coming from vim, and want modal keybidings in emacs. There are other, less
@@ -2197,6 +2230,194 @@ There are some other useful setup packages for evil
         (make-directory undo-dir t)))
     (setq undo-tree-auto-save-history t))
 #+end_src
+** Navigation
+*** Helm
+[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
+**** Helm Settings
+#+BEGIN_SRC emacs-lisp 
+  (use-package helm
+    :diminish (helm-mode . "")
+    :commands (helm-mini helm-M-x helm-find-files helm-find)
+    :init
+    (setq helm-locate-fuzzy-match nil
+          helm-locate-command "mdfind -interpret -name %s %s")
+    :config
+    (progn
+      ;; Use helm to provide :ls, unless ibuffer is used
+      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
+      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
+            helm-apropos-fuzzy-match t
+            helm-buffers-fuzzy-matching t
+            helm-imenu-fuzzy-match t
+            helm-recentf-fuzzy-match t
+            helm-prevent-escaping-from-minibuffer t
+            helm-bookmark-show-location t
+            helm-ff-file-name-history-use-recentf t
+            helm-find-files-sort-directories t
+            helm-display-header-line nil
+            helm-move-to-line-cycle-in-source nil
+            helm-always-two-windows t                       
+            helm-split-window-in-side-p nil
+            ;; helm-split-window-default-side 'other
+            helm-echo-input-in-header-line t)
+      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*osx-location"))
+      (helm-autoresize-mode 1)
+      (setq helm-autoresize-max-height 40)
+      (setq helm-autoresize-min-height 35)
+      ;;; helm vim-bindings in buffer ;;
+      (define-key helm-map (kbd "C-a") (kbd "RET"))
+      (map! (:map helm-map
+        "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
+        "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
+        "C-z"   'helm-select-action ; list actions using C-z
+        "C-j"   'helm-next-line
+        "C-k"   'helm-previous-line
+        "C-h"   'helm-next-source
+        "C-l"   'helm-previous-source
+        "C-S-h" 'describe-key))))
+#+END_SRC
+**** Hide Mode Lines
+Hide modelines of other windows while helm is open, again from
+https://github.com/hatschipuh/better-helm.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar my-helm-bottom-buffers nil
+	"List of bottom buffers before helm session.
+	Its element is a pair of `buffer-name' and `mode-line-format'.")
+
+  (defun my-helm-bottom-buffers-init ()
+	(setq-local mode-line-format (default-value 'mode-line-format))
+	(setq my-helm-bottom-buffers
+	  (cl-loop for w in (window-list)
+		   when (window-at-side-p w 'bottom)
+		   collect (with-current-buffer (window-buffer w)
+				 (cons (buffer-name) mode-line-format)))))
+
+  (defun my-helm-bottom-buffers-hide-mode-line ()
+	(setq-default cursor-in-non-selected-windows nil)
+	(mapc (lambda (elt)
+		(with-current-buffer (car elt)
+		  (setq-local mode-line-format nil)))
+	  my-helm-bottom-buffers))
+
+  (defun my-helm-bottom-buffers-show-mode-line ()
+	(setq-default cursor-in-non-selected-windows t)
+	(when my-helm-bottom-buffers
+	  (mapc (lambda (elt)
+		  (with-current-buffer (car elt)
+		(setq-local mode-line-format (cdr elt))))
+		my-helm-bottom-buffers)
+	  (setq my-helm-bottom-buffers nil)))
+
+  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
+	(my-helm-bottom-buffers-show-mode-line)
+	(apply orig-func args))
+
+  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
+  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
+  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
+  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
+  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
+#+END_SRC
+**** Hide Minibuffer
+Hide minibuffer while helm is active
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-helm-hide-minibuffer-maybe ()
+	(when (with-helm-buffer helm-echo-input-in-header-line)
+	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	(overlay-put ov 'window (selected-window))
+	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+				`(:background ,bg-color :foreground ,bg-color)))
+	(setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
+#+END_SRC
+**** Helm packages
+***** Helm ag
+#+begin_src emacs-lisp
+  (use-package helm-ag  
+    :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root cpm/helm-files-do-ag cpm/helm-files-search-current-directory)
+    :config
+    (setq helm-ag-base-command "rg --no-heading")
+    (setq helm-ag-fuzzy-match t))
+#+end_src
+***** Helm descbinds
+#+begin_src emacs-lisp 
+(use-package helm-descbinds 
+  :commands helm-descbinds
+  :config
+  (setq helm-descbinds-window-style 'same-window)
+  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
+#+end_src
+***** Helm git list
+#+begin_src emacs-lisp
+(use-package helm-ls-git :commands helm-ls-git-ls)
+#+end_src
+***** Helm hunks
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-hunks :commands helm-hunks)
+
+#+END_SRC
+***** Helm swoop
+[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
+#+begin_src emacs-lisp
+  (use-package helm-swoop
+    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
+    :config
+    (setq helm-swoop-use-fuzzy-match t)
+    (setq helm-swoop-split-with-multiple-windows t))
+#+end_src
+***** Helm flyspell
+
+Use helm with flyspell
+#+begin_src emacs-lisp
+(use-package helm-flyspell
+  :if (not noninteractive)
+  :commands helm-flyspell-correct
+  :config
+  (general-define-key :keymaps 'flyspell-mode-map 
+     "C-;" 'helm-flyspell-correct))
+#+end_src
+***** Helm recent directories
+Recent directories
+#+begin_src emacs-lisp
+(use-package helm-dired-recent-dirs
+    :commands helm-dired-recent-dirs-view)
+#+end_src
+***** Helm files
+#+begin_src emacs-lisp 
+  (use-package helm-files
+    :ensure nil
+    :config
+    (setq helm-ff-skip-boring-files t)
+    (setq helm-idle-delay 0.05)
+    (setq helm-input-idle-delay 0.05)
+    (setq helm-ff-file-name-history-use-recentf t)
+    (setq helm-boring-file-regexp-list
+    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
+      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+#+end_src
+***** Helm-projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :commands (helm-projectile-switch-to-buffer
+               helm-projectile-find-dir
+               helm-projectile-dired-find-dir
+               helm-projectile-recentf
+               helm-projectile-find-file
+               helm-projectile-grep
+               helm-projectile
+               helm-projectile-switch-project)
+    :init
+    (setq projectile-switch-project-action 'helm-projectile))
+#+END_SRC
+***** Helm interface for themes (helm-themes)
+#+begin_src emacs-lisp
+  (use-package helm-themes
+    :commands helm-themes)
+  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (require 'powerline) (powerline-reset)) 
+  ;; (ad-unadvise 'helm-themes--load-theme)
+#+end_src
 *** Ivy
 Generic completion frontend that's just awesome! Let's install and enable it.
 
@@ -2235,90 +2456,54 @@ load it when =swiper= or =swiper-all= is called.
 (use-package swiper
   :commands (swiper swiper-all))
 #+END_SRC
-*** Magit
-The magical git client. Let's load magit only when one of the several entry pont
-functions we invoke regularly outside of magit is called.
-
+*** Bookmark
 #+BEGIN_SRC emacs-lisp
-(use-package magit
-  :commands (magit-status magit-blame magit-log-buffer-file magit-log-all))
+    (use-package bookmark+
+      ;; :commands bmkp-set-desktop-bookmark
+      :defer 10
+      :init
+      (setq bookmark-default-file
+               (concat cmacs-cache-dir "bookmarks"))
+      (setq bmkp-last-as-first-bookmark-file (concat cmacs-cache-dir "bookmarks"))
+  )
+#+END_SRC 
+*** Hydra
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :defer 5
+  :config
+  ;; hydra for TODOs
+  (defhydra hydra-todo (:pre
+                  (hl-todo-mode 1)
+              :post
+             (hl-todo-mode -1))
+  "Todo"
+  ("n" hl-todo-next "Next")
+  ("p" hl-todo-previous "Previous")
+  ("o" hl-todo-occur "Occur")
+  ("q" nil "Quit" :color blue :exit t))
+)
 #+END_SRC
-*** Projectile
-Projectile is a quick and easy project management package that "just works". We're
-going to install it and make sure it's loaded immediately.
-
+*** Saveplace
 #+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :demand t)
-#+END_SRC
-*** Toc-org
-Let's install and load the =toc-org= package after org mode is loaded. This is the
-package that automatically generates an up to date table of contents for us.
-
-#+BEGIN_SRC emacs-lisp
-(use-package toc-org
-  :after org
-  :init (add-hook 'org-mode-hook #'toc-org-enable))
-#+END_SRC
-*** Persistent Scratch
-Make the content of the scratch buffer persist between settings
-#+BEGIN_SRC emacs-lisp
-  (use-package persistent-scratch
+  (use-package saveplace
     :init
-    (setq persistent-scratch-backup-directory (concat cmacs-cache-dir "scratch-backups"))
-    (setq persistent-scratch-save-file (concat cmacs-cache-dir "persistent-scratch"))
-    (setq persistent-scratch-autosave-mode 1)
-    (setq persistent-scratch-autosave-interval 60)
+    (save-place-mode 1)
     :config
-    (ignore-errors (persistent-scratch-setup-default)))
+    (setq save-place-file (concat cmacs-cache-dir "saved-places")
+    ;; (setq save-place-forget-unreadable-files nil)
+  ))
 #+END_SRC
-*** Restart emacs
+*** Ace Window
+Ace [[https://github.com/abo-abo/ace-window][window management]]. 
 #+BEGIN_SRC emacs-lisp
-(use-package restart-emacs
-  :commands restart-emacs)
+(use-package ace-window
+  :commands (ace-window ace-swap-window aw-flip-window cpm/swap-windows))
 #+END_SRC
-*** Ranger & Deer
-Better dired navigation using ranger-like settings
+*** Avy
 #+BEGIN_SRC emacs-lisp
-  (use-package ranger
-    :commands (ranger deer deer-jump-other-window)
-    :init
-    (setq ranger-override-dired t
-          ranger-cleanup-eagerly t)
-    ;; set up image-dired to allow picture resize
-    (setq image-dired-dir (concat cmacs-cache-dir "image-dir"))
-    (unless (file-directory-p image-dired-dir)
-      (make-directory image-dired-dir t))
-    :config
-    (define-key dired-mode-map "Y" 'ora-dired-rsync)
-    (setq  ranger-dont-show-binary t
-           ranger-excluded-extensions '("mkv" "iso" "mp4")
-           ranger-max-preview-size 25
-           ranger-preview-file t
-           ranger-show-dotfiles t
-           ranger-width-parents 0.25
-           ranger-width-preview 0.55 
-           ))
-
-  (defun deer-jump-other-window (&optional path)
-    "Launch dired in a minimal ranger window in other window."
-    (interactive)
-    (switch-to-buffer-other-window (current-buffer))
-    (deer path))
-
-#+END_SRC
-*** Recent files
-#+BEGIN_SRC emacs-lisp
-(use-package recentf
-  :demand t
-  :config 
-  (setq recentf-save-file (concat cmacs-etc-dir "recentf"))
-  ;; remove agenda files from list.
-  (setq recentf-exclude '("projects.org"
-                          "inbox.org"
-                          "someday.org")
-        recentf-max-saved-items 300
-        recentf-max-menu-items 10))
+(use-package avy
+  :commands (avy-goto-char))
 #+END_SRC
 *** Windows
 **** Window Numbering
@@ -2388,6 +2573,55 @@ A nice tip from [[http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal
   (global-set-key (kbd "<H-right>")  'windmove-right)
   )
 #+END_SRC
+*** Ranger & Deer
+Better dired navigation using ranger-like settings
+#+BEGIN_SRC emacs-lisp
+  (use-package ranger
+    :commands (ranger deer deer-jump-other-window)
+    :init
+    (setq ranger-override-dired t
+          ranger-cleanup-eagerly t)
+    ;; set up image-dired to allow picture resize
+    (setq image-dired-dir (concat cmacs-cache-dir "image-dir"))
+    (unless (file-directory-p image-dired-dir)
+      (make-directory image-dired-dir t))
+    :config
+    (define-key dired-mode-map "Y" 'ora-dired-rsync)
+    (setq  ranger-dont-show-binary t
+           ranger-excluded-extensions '("mkv" "iso" "mp4")
+           ranger-max-preview-size 25
+           ranger-preview-file t
+           ranger-show-dotfiles t
+           ranger-width-parents 0.25
+           ranger-width-preview 0.55 
+           ))
+
+  (defun deer-jump-other-window (&optional path)
+    "Launch dired in a minimal ranger window in other window."
+    (interactive)
+    (switch-to-buffer-other-window (current-buffer))
+    (deer path))
+
+#+END_SRC
+*** Recent files
+#+BEGIN_SRC emacs-lisp
+(use-package recentf
+  :demand t
+  :config 
+  (setq recentf-save-file (concat cmacs-etc-dir "recentf"))
+  ;; remove agenda files from list.
+  (setq recentf-exclude '("projects.org"
+                          "inbox.org"
+                          "someday.org")
+        recentf-max-saved-items 300
+        recentf-max-menu-items 10))
+#+END_SRC
+
+*** Restart emacs
+#+BEGIN_SRC emacs-lisp
+(use-package restart-emacs
+  :commands restart-emacs)
+#+END_SRC
 *** Autorevert
 Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
@@ -2403,8 +2637,8 @@ Auto-revert buffers of changed files
             ;; Revert Dired buffers, too
             global-auto-revert-non-file-buffers t)))
 #+END_SRC
-*** Org
-**** Org Custom Functions
+** Org
+*** Org Custom Functions
 
 #+BEGIN_SRC emacs-lisp
   (defun +corg/open-organizer ()
@@ -2643,7 +2877,7 @@ Auto-revert buffers of changed files
       (add-hook 'cmacs-post-init-hook func append)
      (add-hook 'org-load-hook func append)))
 #+END_SRC
-**** Org Minor mode
+*** Org Minor mode
 #+BEGIN_SRC emacs-lisp
   (defvar +corg-large-file-size 500
     "The size threshold past which an org file is considered large in kb. If an org
@@ -2808,8 +3042,8 @@ Auto-revert buffers of changed files
   (+corg/org-load-hook #'+corg|init)
   (add-hook 'org-mode-hook #'+corg|hook)
 #+END_SRC
-**** Settings
-***** FIXME Org Base Settings
+*** Settings
+**** FIXME Org Base Settings
 # Break these up and organize
 # FIGURE OUT INDENTATION!
 # FIGURE OUT TAB EXPANSION!
@@ -2881,7 +3115,7 @@ Auto-revert buffers of changed files
       org-hide-leading-stars t  ;; hide all but the final star
       imenu-auto-rescan t)          
 #+END_SRC
-***** Hook
+**** Hook
 
 #+BEGIN_SRC emacs-lisp
       (add-hook 'org-mode-hook
@@ -2891,7 +3125,7 @@ Auto-revert buffers of changed files
             (org-bullets-mode 1)
             (global-git-gutter-mode 0)))
 #+END_SRC
-***** Org Template Expansions
+**** Org Template Expansions
 #+BEGIN_SRC emacs-lisp
    (add-to-list 'org-structure-template-alist
     '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
@@ -2904,14 +3138,14 @@ Auto-revert buffers of changed files
    (add-to-list 'org-structure-template-alist
     '("f" "#+ATTR_REVEAL: :frag (appear)?"))
 #+END_SRC
-***** Org bullets
+**** Org bullets
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :init (add-hook 'org-mode-hook 'org-bullets-mode)
   :config 
   (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "⁘" "⁙" "✶" "✪" "✵")))
 #+END_SRC
-***** Counsel
+**** Counsel
 Make counsel display org headings nicely. 
 #+BEGIN_SRC emacs-lisp
 (setq counsel-org-goto-display-style 'path)
@@ -2920,7 +3154,7 @@ Make counsel display org headings nicely.
 (define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
 (define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all)
 #+END_SRC
-**** Org-Reveal
+*** Org-Reveal
 #+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
   :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
@@ -2937,7 +3171,7 @@ Make counsel display org headings nicely.
   (org-reveal-export-current-subtree)
   (org-narrow-to-subtree))
 #+END_SRC
-**** Org-Agenda
+*** Org-Agenda
 Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]]. 
 #+BEGIN_SRC emacs-lisp
 ;; automatically refresh the agenda after adding a task
@@ -2950,7 +3184,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         (org-agenda-redo t)
         (message "[org agenda] refreshed!"))))
 #+END_SRC
-**** Org Capture
+*** Org Capture
 #+BEGIN_SRC emacs-lisp
     (add-hook 'org-capture-mode-hook 'evil-insert-state)
     (setq org-capture-templates
@@ -2995,7 +3229,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         (delete-frame)))
 
 #+END_SRC
-**** Org Refile
+*** Org Refile
 Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
 
 With this set, you can trigger Refile with C-c C-w in any Org file and
@@ -3008,7 +3242,7 @@ document and create new parents.
 (setq org-outline-path-complete-in-steps nil)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
-**** Org & Pandoc (Ox-pandoc)
+*** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
     (use-package ox-pandoc
@@ -3093,7 +3327,7 @@ document and create new parents.
 
   )
 #+END_SRC 
-**** Org Miscellaneous Packages  
+*** Org Miscellaneous Packages  
 Other useful org packages
 
 #+BEGIN_SRC emacs-lisp
@@ -3113,13 +3347,13 @@ Other useful org packages
     :config
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
-**** Org Rifle
+*** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm-org-rifle
     :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
 #+END_SRC
-**** Org-Download
+*** Org-Download
 Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]]. 
 #+BEGIN_SRC emacs-lisp
   (use-package org-download
@@ -3131,7 +3365,7 @@ Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo
            org-download-image-latex-width 500
    )
 #+END_SRC
-**** Org Pomodoro
+*** Org Pomodoro
 Helps with time tracking
 #+BEGIN_SRC emacs-lisp
   (use-package org-pomodoro
@@ -3141,7 +3375,7 @@ Helps with time tracking
     (progn
       (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 #+END_SRC emacs-lisp
-**** Open Docx Files In Default Application (Ie Msword)
+*** Open Docx Files In Default Application (Ie Msword)
 Open exported docx files in Word/Open Office rather than emacs
 #+BEGIN_SRC emacs-lisp
   (setq org-file-apps
@@ -3151,7 +3385,7 @@ Open exported docx files in Word/Open Office rather than emacs
           ("\\.pdf\\'" . default)
           (auto-mode . emacs)))
 #+END_SRC
-**** Org Indirect Buffer
+*** Org Indirect Buffer
 Some advice to automatically switch to a new indirect buffer upon creation
 #+BEGIN_SRC emacs-lisp
 (defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
@@ -3159,7 +3393,7 @@ Some advice to automatically switch to a new indirect buffer upon creation
 
     **** Org Functions
 Some useful org-specific functions
-***** Org-Fill Functions
+**** Org-Fill Functions
  Functions to calculate apt offsets and call regular org fill stuff. There's a
  useful [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack overflow thread]] on this. 
 #+BEGIN_SRC emacs-lisp
@@ -3184,7 +3418,7 @@ Some useful org-specific functions
 (add-hook 'org-load-hook 'my-org-mode-hook)
 (add-hook 'org-mode-hook 'my-org-mode-hook)
 #+END_SRC
-***** Narrow & Advance/Retreat
+**** Narrow & Advance/Retreat
 Functions to advance forwards or backwards through narrowed tree
 #+BEGIN_SRC emacs-lisp
 (defun org-advance ()
@@ -3203,7 +3437,7 @@ Functions to advance forwards or backwards through narrowed tree
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
 #+END_SRC
-***** Org files
+**** Org files
 #+BEGIN_SRC emacs-lisp
 (defun cpm/goto-org-files ()
   "goto org-files directory"
@@ -3235,7 +3469,7 @@ Functions to advance forwards or backwards through narrowed tree
   (interactive)
   (find-file "~/Dropbox/org-files/someday.org"))
 #+END_SRC
-**** Org Numbers Overlay
+*** Org Numbers Overlay
 [[https://github.com/larkery/emacs/blob/master/site-lisp/org-numbers-overlay.el][This]] is a useful minor-mode to number org-mode headings. It came up in
 the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to_display_numbers_at_the/][this reddit]] discussion. 
 #+BEGIN_SRC emacs-lisp
@@ -3315,7 +3549,7 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
                              s)))))))))
 (provide 'org-numbers-overlay)
 #+END_SRC
-**** DISABLED Evil Org
+*** DISABLED Evil Org
  #+BEGIN_SRC emacs-lisp
  (use-package evil-org
   :disabled t
@@ -3325,12 +3559,20 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
             (lambda ()
               (evil-org-set-key-theme)))) 
  #+END_SRC 
- 
-*** Version Control
+*** Toc-org
+Let's install and load the =toc-org= package after org mode is loaded. This is the
+package that automatically generates an up to date table of contents for us.
+
+#+BEGIN_SRC emacs-lisp
+(use-package toc-org
+  :after org
+  :init (add-hook 'org-mode-hook #'toc-org-enable))
+#+END_SRC
+** Version Control
  Magit is a great interface for git projects. It's much more pleasant to use than
  the standard git interface on the command line. I've set up some easy
  keybindings to access magit and related packages.
-**** Magit
+*** Magit
  #+BEGIN_SRC emacs-lisp
    (use-package magit
      :commands 
@@ -3349,26 +3591,26 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
      (global-git-commit-mode t) ; use emacs as editor for git commits
      (setq magit-push-always-verify nil))
  #+END_SRC
-**** Evil Magit
+*** Evil Magit
  Evil bindings for magit
  #+BEGIN_SRC emacs-lisp
    (use-package evil-magit
      :after magit)
 
  #+END_SRC
-**** Git timemachine
+*** Git timemachine
  #+BEGIN_SRC emacs-lisp
  (use-package git-timemachine            ; Go back in Git time
    :commands git-timemachine
  )
  #+END_SRC
-**** Gited
+*** Gited
 Give git projects branches the dired treatment
 #+BEGIN_SRC emacs-lisp
 (use-package gited
   :commands (gited-list gited-list-branches))
 #+END_SRC
-**** Git gutter
+*** Git gutter
 Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
  #+BEGIN_SRC emacs-lisp
@@ -3396,21 +3638,20 @@ well with org-mode using org-indent. So I don't use it globally.
      nil nil 'center))
        
  #+END_SRC
-**** Quick commits
+*** Quick commits
  #+BEGIN_SRC emacs-lisp
    (defun quick-commit ()
    "make a quick commit from the mini-buffer"
    (interactive)
    (evil-ex '"!Git add % && Git commit -m '" ))
  #+END_SRC
- 
-*** Search
-**** Ripgrep (rg)
+** Search
+*** Ripgrep (rg)
  #+BEGIN_SRC emacs-lisp 
  (use-package rg 
    :commands rg)
  #+END_SRC
-**** Anzu
+*** Anzu
 [[https://github.com/syohex/emacs-anzu][anzu.el]] is an Emacs port of anzu.vim. anzu.el provides a minor mode which displays current match and total matches information in the mode-line in various search modes.
 #+BEGIN_SRC emacs-lisp
 (use-package anzu
@@ -3419,9 +3660,8 @@ well with org-mode using org-indent. So I don't use it globally.
 (use-package evil-anzu
   :commands (evil-search-forward evil-search-backward))
 #+END_SRC
-
-*** Shell
-**** Sane term
+** Shell
+*** Sane term
  Sane settings for ansi-term
  #+BEGIN_SRC emacs-lisp
    (use-package sane-term
@@ -3436,7 +3676,7 @@ well with org-mode using org-indent. So I don't use it globally.
      ;; After killing a term buffer, not cycle to another.
      (setq sane-term-next-on-kill nil))
  #+END_SRC
-**** Shell Pop
+*** Shell Pop
  A popup shell
  #+begin_src emacs-lisp 
    (use-package shell-pop
@@ -3456,7 +3696,7 @@ well with org-mode using org-indent. So I don't use it globally.
       (add-hook 'shell-pop-out-hook 'kill-this-buffer)
       (add-hook 'term-mode-hook (lambda () (nlinum-mode -1) (linum-mode -1) (ansi-term-handle-close)))))
  #+end_src
-**** Shell settings
+*** Shell settings
  Other useful shell settings  
  #+begin_src emacs-lisp
  ;; basic settings
@@ -3491,7 +3731,7 @@ well with org-mode using org-indent. So I don't use it globally.
 (setenv "PAGER" "cat")
 
  #+end_src
-**** Compilation buffer
+*** Compilation buffer
 
  Whenever I run ~compile~, the buffer stays even after a successful compilation. Let's make it close automatically if the compilation is successful.
 
@@ -3508,7 +3748,7 @@ well with org-mode using org-indent. So I don't use it globally.
                               (delete-window)))
                (message "No Compilation Errors!")))))
  #+END_SRC
-**** Completion buffer
+*** Completion buffer
  Kill the completion buffer
  #+BEGIN_SRC emacs-lisp
    ;; Remove completion buffer when done
@@ -3518,7 +3758,7 @@ well with org-mode using org-indent. So I don't use it globally.
               (and (get-buffer buffer)
                (kill-buffer buffer)))))
  #+END_SRC
-**** Virtualenvwrapper
+*** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
      :defer 5
@@ -3538,17 +3778,17 @@ well with org-mode using org-indent. So I don't use it globally.
     "change directory to project in eshell"
      (eshell/cd (concat venv-project-home venv-current-name)))
  #+END_SRC
-**** Tramp
+*** Tramp
 An easy way to ssh
 #+BEGIN_SRC emacs-lisp
 (use-package tramp-term
   :commands tramp-term
 )
 #+END_SRC
-**** Eshell
+*** Eshell
  Eshell is an [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][elisp shell]]. It has its own configuration parameters, distinct
  from those of shell or ansi-terminal.
-***** Eshell Settings
+**** Eshell Settings
  Basic settings
  #+BEGIN_SRC emacs-lisp 
    (use-package eshell
@@ -3632,7 +3872,7 @@ An easy way to ssh
              (eshell-grep "rgrep" args t)))
 
  #+END_SRC
-***** CHECK Eshell Path Shortening
+**** CHECK Eshell Path Shortening
 Courtesy of [[https://www.emacswiki.org/emacs/EshellPrompt][emacs wiki]] and [[https://github.com/kaihaosw/eshell-prompt-extras/blob/master/eshell-prompt-extras.el#L193][eshell-prompt-extras]]
 #+BEGIN_SRC emacs-lisp
 (defun epe-fish-path (path)
@@ -3660,7 +3900,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             components (cdr components)))
     (concat str (cl-reduce (lambda (a b) (concat a "/" b)) components))))
 #+END_SRC
-***** CHECK Eshell Prompt Extras
+**** CHECK Eshell Prompt Extras
 Some bling for the prompt plus a custom theme. In general it makes the
  prompt display more useful info. I got a lot of help from looking at
  [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]] and
@@ -3772,7 +4012,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
            " ")))
     )
 #+END_SRC
-***** Shell Switcher
+**** Shell Switcher
  Useful for switching between [[https://github.com/DamienCassou/shell-switcher][multiple instances]] of eshell. But you can
  configure for any shell that you use.
  #+BEGIN_SRC emacs-lisp
@@ -3783,7 +4023,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
      :config
      (setq shell-switcher-mode t))
  #+END_SRC
-***** Clear Eshell 
+**** Clear Eshell 
  Make eshell act like a standard unix terminal.
  #+BEGIN_SRC emacs-lisp
    (defun eshell-clear-buffer ()
@@ -3796,7 +4036,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
        '(lambda()
            (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
  #+END_SRC
-***** Eshell Magit
+**** Eshell Magit
  #+BEGIN_SRC emacs-lisp
  (defun eshell/magit ()
  "Function to open magit-status for the current directory"
@@ -3804,7 +4044,7 @@ Some bling for the prompt plus a custom theme. In general it makes the
    (magit-status default-directory)
    nil)
  #+END_SRC
-***** Eshell Fringe Status
+**** Eshell Fringe Status
 Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-fringe-status
@@ -3813,244 +4053,6 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
   (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
 #+END_SRC
 
-*** Navigation
-**** Bookmark
-#+BEGIN_SRC emacs-lisp
-    (use-package bookmark+
-      ;; :commands bmkp-set-desktop-bookmark
-      :defer 10
-      :init
-      (setq bookmark-default-file
-               (concat cmacs-cache-dir "bookmarks"))
-      (setq bmkp-last-as-first-bookmark-file (concat cmacs-cache-dir "bookmarks"))
-  )
-#+END_SRC 
-**** Hydra
-#+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :defer 5
-  :config
-  ;; hydra for TODOs
-  (defhydra hydra-todo (:pre
-                  (hl-todo-mode 1)
-              :post
-             (hl-todo-mode -1))
-  "Todo"
-  ("n" hl-todo-next "Next")
-  ("p" hl-todo-previous "Previous")
-  ("o" hl-todo-occur "Occur")
-  ("q" nil "Quit" :color blue :exit t))
-)
-#+END_SRC
-**** Saveplace
-#+BEGIN_SRC emacs-lisp
-  (use-package saveplace
-    :init
-    (save-place-mode 1)
-    :config
-    (setq save-place-file (concat cmacs-cache-dir "saved-places")
-    ;; (setq save-place-forget-unreadable-files nil)
-  ))
-#+END_SRC
-**** Ace Window
-Ace [[https://github.com/abo-abo/ace-window][window management]]. 
-#+BEGIN_SRC emacs-lisp
-(use-package ace-window
-  :commands (ace-window ace-swap-window aw-flip-window cpm/swap-windows))
-#+END_SRC
-**** Avy
-#+BEGIN_SRC emacs-lisp
-(use-package avy
-  :commands (avy-goto-char))
-#+END_SRC
-
-*** Helm
-[[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
-**** Helm Settings
-#+BEGIN_SRC emacs-lisp 
-  (use-package helm
-    :diminish (helm-mode . "")
-    :commands (helm-mini helm-M-x helm-find-files helm-find)
-    :init
-    (setq helm-locate-fuzzy-match nil
-          helm-locate-command "mdfind -interpret -name %s %s")
-    :config
-    (progn
-      ;; Use helm to provide :ls, unless ibuffer is used
-      (evil-ex-define-cmd "buffers" 'helm-buffers-list)
-      (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
-            helm-apropos-fuzzy-match t
-            helm-buffers-fuzzy-matching t
-            helm-imenu-fuzzy-match t
-            helm-recentf-fuzzy-match t
-            helm-prevent-escaping-from-minibuffer t
-            helm-bookmark-show-location t
-            helm-ff-file-name-history-use-recentf t
-            helm-find-files-sort-directories t
-            helm-display-header-line nil
-            helm-move-to-line-cycle-in-source nil
-            helm-always-two-windows t                       
-            helm-split-window-in-side-p nil
-            ;; helm-split-window-default-side 'other
-            helm-echo-input-in-header-line t)
-      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*osx-location"))
-      (helm-autoresize-mode 1)
-      (setq helm-autoresize-max-height 40)
-      (setq helm-autoresize-min-height 35)
-      ;;; helm vim-bindings in buffer ;;
-      (define-key helm-map (kbd "C-a") (kbd "RET"))
-      (map! (:map helm-map
-        "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
-        "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
-        "C-z"   'helm-select-action ; list actions using C-z
-        "C-j"   'helm-next-line
-        "C-k"   'helm-previous-line
-        "C-h"   'helm-next-source
-        "C-l"   'helm-previous-source
-        "C-S-h" 'describe-key))))
-#+END_SRC
-**** Hide Mode Lines
-Hide modelines of other windows while helm is open, again from
-https://github.com/hatschipuh/better-helm.
-
-#+BEGIN_SRC emacs-lisp
-  (defvar my-helm-bottom-buffers nil
-	"List of bottom buffers before helm session.
-	Its element is a pair of `buffer-name' and `mode-line-format'.")
-
-  (defun my-helm-bottom-buffers-init ()
-	(setq-local mode-line-format (default-value 'mode-line-format))
-	(setq my-helm-bottom-buffers
-	  (cl-loop for w in (window-list)
-		   when (window-at-side-p w 'bottom)
-		   collect (with-current-buffer (window-buffer w)
-				 (cons (buffer-name) mode-line-format)))))
-
-  (defun my-helm-bottom-buffers-hide-mode-line ()
-	(setq-default cursor-in-non-selected-windows nil)
-	(mapc (lambda (elt)
-		(with-current-buffer (car elt)
-		  (setq-local mode-line-format nil)))
-	  my-helm-bottom-buffers))
-
-  (defun my-helm-bottom-buffers-show-mode-line ()
-	(setq-default cursor-in-non-selected-windows t)
-	(when my-helm-bottom-buffers
-	  (mapc (lambda (elt)
-		  (with-current-buffer (car elt)
-		(setq-local mode-line-format (cdr elt))))
-		my-helm-bottom-buffers)
-	  (setq my-helm-bottom-buffers nil)))
-
-  (defun my-helm-keyboard-quit-advice (orig-func &rest args)
-	(my-helm-bottom-buffers-show-mode-line)
-	(apply orig-func args))
-
-  (add-hook 'helm-before-initialize-hook #'my-helm-bottom-buffers-init)
-  (add-hook 'helm-after-initialize-hook #'my-helm-bottom-buffers-hide-mode-line)
-  (add-hook 'helm-exit-minibuffer-hook #'my-helm-bottom-buffers-show-mode-line)
-  (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
-  (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
-#+END_SRC
-**** Hide Minibuffer
-Hide minibuffer while helm is active
-
-#+BEGIN_SRC emacs-lisp
-  (defun my-helm-hide-minibuffer-maybe ()
-	(when (with-helm-buffer helm-echo-input-in-header-line)
-	  (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	(overlay-put ov 'window (selected-window))
-	(overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-				`(:background ,bg-color :foreground ,bg-color)))
-	(setq-local cursor-type nil))))
-  (add-hook 'helm-minibuffer-set-up-hook #'helm-hide-minibuffer-maybe)
-#+END_SRC
-**** Helm packages
-***** Helm ag
-#+begin_src emacs-lisp
-  (use-package helm-ag  
-    :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root cpm/helm-files-do-ag cpm/helm-files-search-current-directory)
-    :config
-    (setq helm-ag-base-command "rg --no-heading")
-    (setq helm-ag-fuzzy-match t))
-#+end_src
-***** Helm descbinds
-#+begin_src emacs-lisp 
-(use-package helm-descbinds 
-  :commands helm-descbinds
-  :config
-  (setq helm-descbinds-window-style 'same-window)
-  (add-hook 'helm-mode-hook 'helm-descbinds-mode))
-#+end_src
-***** Helm git list
-#+begin_src emacs-lisp
-(use-package helm-ls-git :commands helm-ls-git-ls)
-#+end_src
-***** Helm hunks
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-hunks :commands helm-hunks)
-
-#+END_SRC
-***** Helm swoop
-[[https://github.com/ShingoFukuyama/helm-swoop][Search]] on steroids
-#+begin_src emacs-lisp
-  (use-package helm-swoop
-    :commands (helm-swoop helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
-    :config
-    (setq helm-swoop-use-fuzzy-match t)
-    (setq helm-swoop-split-with-multiple-windows t))
-#+end_src
-***** Helm flyspell
-
-Use helm with flyspell
-#+begin_src emacs-lisp
-(use-package helm-flyspell
-  :if (not noninteractive)
-  :commands helm-flyspell-correct
-  :config
-  (general-define-key :keymaps 'flyspell-mode-map 
-     "C-;" 'helm-flyspell-correct))
-#+end_src
-***** Helm recent directories
-Recent directories
-#+begin_src emacs-lisp
-(use-package helm-dired-recent-dirs
-    :commands helm-dired-recent-dirs-view)
-#+end_src
-***** Helm files
-#+begin_src emacs-lisp 
-  (use-package helm-files
-    :ensure nil
-    :config
-    (setq helm-ff-skip-boring-files t)
-    (setq helm-idle-delay 0.05)
-    (setq helm-input-idle-delay 0.05)
-    (setq helm-ff-file-name-history-use-recentf t)
-    (setq helm-boring-file-regexp-list
-    '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
-      "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
-#+end_src
-***** Helm-projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-projectile
-    :commands (helm-projectile-switch-to-buffer
-               helm-projectile-find-dir
-               helm-projectile-dired-find-dir
-               helm-projectile-recentf
-               helm-projectile-find-file
-               helm-projectile-grep
-               helm-projectile
-               helm-projectile-switch-project)
-    :init
-    (setq projectile-switch-project-action 'helm-projectile))
-#+END_SRC
-***** Helm interface for themes (helm-themes)
-#+begin_src emacs-lisp
-  (use-package helm-themes
-    :commands helm-themes)
-  (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (require 'powerline) (powerline-reset)) 
-  ;; (ad-unadvise 'helm-themes--load-theme)
-#+end_src
 ** Appearance & UI
    Various settings to make Emacs (mostly the GUI version) look better or
    make interaction smoother. 
@@ -5890,7 +5892,8 @@ Interface with Zotero.
   (if (file-exists-p private)
 	  (load-file private)))
 #+END_SRC
-** Helpful
+** Miscellaneous Packages
+*** Helpful (Documentation)
 [[http://www.wilfred.me.uk/blog/2017/08/30/helpful-adding-contextual-help-to-emacs/][Contextual help]] for emacs
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
@@ -5902,6 +5905,18 @@ Interface with Zotero.
 
 #+BEGIN_SRC emacs-lisp
 (run-hooks 'cmacs-post-init-hook)
+#+END_SRC
+*** Persistent Scratch
+Make the content of the scratch buffer persist between settings
+#+BEGIN_SRC emacs-lisp
+  (use-package persistent-scratch
+    :init
+    (setq persistent-scratch-backup-directory (concat cmacs-cache-dir "scratch-backups"))
+    (setq persistent-scratch-save-file (concat cmacs-cache-dir "persistent-scratch"))
+    (setq persistent-scratch-autosave-mode 1)
+    (setq persistent-scratch-autosave-interval 60)
+    :config
+    (ignore-errors (persistent-scratch-setup-default)))
 #+END_SRC
 *** Server
 Start server
