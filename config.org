@@ -55,6 +55,7 @@ minimally sane setup you might also look at some [[https://github.com/hrs/sensib
     - [[#doom-macros][DOOM! Macros]]
     - [[#other-macros][Other Macros]]
   - [[#packages][Packages]]
+    - [[#general--evil][General  (Evil)]]
     - [[#useful-libraries][Useful Libraries]]
     - [[#vim-emulation][Vim Emulation]]
     - [[#ivy][Ivy]]
@@ -2041,6 +2042,19 @@ compilation."
             (command-remapping 'find-file))))))
 #+END_SRC
 ** Packages
+*** General  (Evil)
+A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
+discussion of setting up evil with general see [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][this post]].
+#+BEGIN_SRC emacs-lisp
+(use-package general
+  :demand t
+  :config
+  (general-create-definer cpm-leader1 
+    :states '(normal insert visual motion emacs) 
+    :keymaps 'global 
+    :prefix "SPC" 
+    :non-normal-prefix "C-SPC"))
+#+END_SRC
 *** Useful Libraries
 
 [[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
@@ -4433,299 +4447,514 @@ Recent directories
  (add-hook 'kill-emacs-query-functions #'+doom|quit)
  #+END_SRC
 **** Namespaced Keybindings
-***** General Keybindings
-#+BEGIN_SRC emacs-lisp
-(map!
- ;; Essential
- "M-x"    #'helm-M-x
- "M-;"    #'eval-expression
- "M-u"    #'universal-argument
- ;; Tools
- "C-`"    #'cmacs/show-hide-popup-buffer
- "C-~"    (λ! (cmacs/show-hide-popup-buffer t))
- ;; Text-scaling
- "M-0"    (λ! (text-scale-set 0))
- "M-="    #'text-scale-increase
- "M--"    #'text-scale-decrease
- ;; Temporary escape into emacs mode
- :e [C-escape] #'evil-normal-state
- :n [C-escape] #'evil-emacs-state
- ;; Indent on tab
- :nvi "TAB"     #'indent-for-tab-command
- ;; Fold toggle
- :nv [C-backspace] #'cmacs/toggle-fold
- :nv [S-backspace] #'hs-hide-level
- :nv [C-S-backspace] #'hs-show-all
-
- :m ";" #'evil-ex
-
- (:leader 
-   :desc "Apropos"         :nv  "A"     #'helm-apropos
-   :desc "Keybindings"     :nv  "?"     #'helm-descbinds
-   :desc "M-x"             :nv  "<SPC>" #'helm-M-x
-   :desc "Deer"            :nv  "d"     #'deer
-   :desc "Deer Jump"       :nv  "D"     #'deer-jump-other-window
-   :desc "Evil Motion"     :nv  "E"     #'evil-motion-state
-   :desc "Edit Server"     :nv  "e"     #'server-edit
-   :desc "Resume"          :nv  "r"     #'ivy-resume
-   :desc "Jump"            :nv  "j"     #'avy-goto-char
-   :desc "Kill Ring"       :nv  "k"     #'helm-show-kill-ring
-   :desc "Blink"           :nv  "`"     #'beacon-blink
-   :desc "Shell"           :nv  "'"     #'shell-pop
-   :desc "Commit"          :nv  "."     #'quick-commit
-   :desc "Comment line"    :nv  ";"     #'evil-commentary-line
-   :desc "Previous Buffer" :nv  "["     #'spacemacs/previous-useful-buffer
-   :desc "Next Buffer"     :nv  "]"     #'spacemacs/next-useful-buffer
-   :desc "Last Buffer"     :nv  "TAB"   #'switch-to-previous-buffer))
-#+END_SRC
+I use a lot of keybindings, with <SPC> as my "leader" key.
 ***** Application Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
- (:desc "Applications..." :prefix "a"
-  :desc "Deer"  :nv "d" #'deer
-  :desc "Eshell" :nv "e" #'eshell
-  :desc "Ranger" :nv "r" #'ranger
-  :desc "Terminal" :nv "s" #'sane-term
-))
+(cpm-leader1 
+"a"  '(:ignore t :which-key "Applications") 
+"ac" '(:ignore t :which-key "Cmus")
+"ad" 'deer
+"ae" 'eshell
+"am" 'multi-term
+"ar" 'ranger
+"as" 'sane-term
+"aw" 'wttrin
+)
 #+END_SRC
 ***** Buffer Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
- (:desc "Buffers..."  :prefix "b"
-  :desc "Switch buffers"  :nv   "b" 'helm-mini
-  :desc  "Copy buffer contents" :nv  "c" 'spacemacs/copy-whole-buffer-to-clipboard
-  :desc  "Kill buffer/window"  :nv   "D" 'kill-buffer-and-window
-  :desc  "Kill buffer"  :nv   "d" 'kill-this-buffer
-  :desc  "Show directory" :nv   "f" 'browse-file-directory
-  :desc  "Buffer Jump" :nv   "j" 'jump-in-buffer
-  :desc  "Delete Buffer"  :nv   "k" 'evil-delete-buffer
-  :desc  "Kill other buffers"  :nv   "K" 'crux-kill-other-buffers
-  :desc  "New buffer"  :nv   "n" 'spacemacs/new-empty-buffer
-  :desc  "Revert buffer"  :nv   "r" 'revert-buffer
-  :desc  "Rename buffer"  :nv   "R" 'spacemacs/rename-current-buffer-file
-  :desc  "Open in iterm" :nv   "t" 'open-dir-in-iterm
-  ))
+    (cpm-leader1
+      "b"  '(:ignore t :which-key "Buffers")
+      "bb" 'helm-mini
+      "bc" 'spacemacs/copy-whole-buffer-to-clipboard
+      "bD" 'kill-buffer-and-window
+      "bd" 'kill-this-buffer
+      "bf" 'browse-file-directory
+      "bj" 'jump-in-buffer 
+      "bk" 'evil-delete-buffer
+      "bK" 'crux-kill-other-buffers
+      "bn" 'spacemacs/new-empty-buffer
+      ;; "bN" 'crux-kill-other-buffers
+      "br" 'revert-buffer
+      "bR" 'spacemacs/rename-current-buffer-file
+      "bt" 'open-dir-in-iterm
+  )
 #+END_SRC
 ***** Comment Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
- (:desc "Commenting" :prefix "c"
-  :desc "Block wrap" :nv "b" 'org-block-wrap
-  :desc "Evil-commentary"  :nv "c" 'evil-commentary
-  :desc "Comment line"  :nv "l" 'evil-commentary-line
-  :desc "Comment yank"  :nv "y" 'evil-commentary-yank-line
- ))
+(cpm-leader1
+  "c"  '(:ignore t :which-key "Commenting")
+  "cb" 'org-block-wrap
+  "cc" 'evil-commentary
+  "cl" 'evil-commentary-line
+  "cy" 'evil-commentary-yank-line
+ )
 #+END_SRC
+***** Config Keybindings
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "C"  '(:ignore t :which-key "Config")
+  "Cc" 'goto-config.org
+  "Cd" 'goto-dotfiles.org
+  "CD" 'goto-emacs-dir
+  "Cl" 'load-config
+  "Ci" 'goto-init.el
+  "Cs" 'goto-custom.el
+  )
 
+#+END_SRC
 ***** File Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
-  (:desc "File..." :prefix "f"
-      :desc "Open file from here"            :nv "f" #'counsel-find-file
-      :desc "Sudo open file from here"       :nv "F" #'cmacs/sudo-find-file
-      :desc "Copy file"                      :nv "c" #'copy-file
-      :desc "Copy current file"              :nv "C" #'cmacs/copy-file
-      :desc "Rename current file"            :nv "R" #'cmacs/rename-current-buffer-file
-      :desc "Delete file"                    :nv "d" #'cmacs/delete-file-confirm
-      :desc "Delete current file"            :nv "D" #'cmacs/delete-current-buffer-file
-      :desc "Sudo edit file"                 :nv "E" #'cmacs/sudo-edit
-      :desc "Locate file"                    :nv "l" #'helm-locate
-      :desc "Recent files"                   :nv "r" #'helm-recentf
-      :desc "Neotree toggle"                 :nv "t" #'neotree-toggle
-      :desc "Save buffer"                    :nv "s" #'save-buffer
-      :desc "Save all buffers"               :nv "S" #'evil-write-all
-      :desc "Counsel bookmark"               :nv "b" #'helm-bookmarks
-      :desc "Remote"                         :nv "i" (λ! (counsel-find-file "/"))
-      :desc "Cleanup this tramp conn"        :nv "x" #'tramp-cleanup-this-connection
-      :desc "Cleanup all tramp conns"        :nv "X" (λ! (tramp-cleanup-all-buffers) (tramp-cleanup-all-connections))
-      :desc "Show and copy filename"         :nv "y" #'cmacs/show-and-copy-buffer-filename
-      ))
+  (cpm-leader1
+    "f"  '(:ignore t :which-key "Files")
+    "fd" 'fzf-directory
+    "ff" 'helm-find-files
+    ;; "ff" 'counsel-find-files
+    ;; "fl" 'counsel-locate
+    "fl" 'helm-locate
+    "fo" 'crux-open-with
+    "fs" 'save-buffer
+    "fr" 'helm-recentf
+    ;; "fr" 'counsel-recentf
+    "fy" 'spacemacs/show-and-copy-buffer-filename
+    "fz" 'fzf
+    )
 #+END_SRC
-***** Project Keybindings
+***** General Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
-  (:desc "Projects..." :prefix "p"
-      :desc "Find file in project"          :nv "f" #'counsel-projectile-find-file
-      :desc "Run cmd in project root"       :nv "!" #'projectile-run-shell-command-in-root
-      :desc "Toggle project neotree"        :nv "t" #'+neotree/toggle
-      :desc "Switch project"                :nv "p" #'helm-projectile-switch-project
-      :desc "Switch project workspace"      :nv "l" #'+workspace-switch-project
-      :desc "Kill project buffers"          :nv "k" #'projectile-kill-buffers
-      :desc "Recent project files"          :nv "r" #'projectile-recentf
-      :desc "Invalidate cache"              :nv "I" #'projectile-invalidate-cache
-      :desc "List project tasks"            :nv "a" #'+ivy/tasks
-      :desc "Pop term in project root"      :nv "'" #'+term/open-popup-in-project
-      :desc "Pop eshell in project root"    :nv "`" #'+eshell/project-popup
-      :desc "Project specific bookmarks"    :nv "b" #'counsel-projectile-bookmark))
+  (cpm-leader1
+    "A" 'helm-apropos
+    "?" 'helm-descbinds
+    ;; "?" 'counsel-descbinds
+    "<SPC>" 'helm-M-x
+    ;; "<SPC>" 'counsel-M-x
+    "d" 'deer
+    "D" 'deer-jump-other-window
+    "E" 'evil-motion-state
+    "e" 'server-edit
+    "G" 'general-describe-keybindings
+    "h" 'helm-resume
+    ;; "r" 'ivy-resume
+    "j" 'avy-goto-char
+    "k" 'helm-show-kill-ring
+    "N" 'research-notes
+    "n" 'big-notes
+    ;; "W" 'woman
+    "`" 'beacon-blink
+    "'" 'shell-pop
+    "." 'quick-commit
+    ";" 'evil-commentary-line
+    "[" 'spacemacs/previous-useful-buffer
+    "]" 'spacemacs/next-useful-buffer
+    "TAB" 'switch-to-previous-buffer)
 #+END_SRC
+***** Make/Compile Keybindings
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "M"   '(:ignore t :which-key "Make/Compile")
+  "Mm"  'compile
+  "Me"  'compile-goto-error
+  "Mk"  'kill-compilation
+  "Mr"  'recompile
+  "Mv"  'cpm/make-move
+)
+
+(defun cpm/make-move ()
+  "move files to project web directory"
+   (interactive)
+   (evil-ex "!make move"))
+
+
+#+END_SRC
+# ***** Markdown Keybindings
+# #+BEGIN_SRC emacs-lisp
+#   (defun my-markdown-config ()
+#     "Modify keymaps in markdown mode"
+#     (cpm-leader1
+#       "m"   '(:ignore t :which-key "Markdown")
+#       "mc"  '(:ignore t :which-key "command")
+#       "mh"  '(:ignore t :which-key "insert")
+#       "mi"  '(:ignore t :which-key "lists")
+#       "mx"  '(:ignore t :which-key "text")
+#       ;; Movement
+#       "m{"   'markdown-backward-paragraph
+#       "m}"   'markdown-forward-paragraph
+#       ;; Completion, and Cycling
+#       "m]"   'markdown-complete
+#       ;; Indentation
+#       "m>"   'markdown-indent-region
+#       "m<"   'markdown-exdent-region
+#       ;; Buffer-wide commands
+#       "mc]"  'markdown-complete-buffer
+#       "mcc"  'markdown-check-refs
+#       "mce"  'markdown-export
+#       "mcm"  'markdown-other-window
+#       "mcn"  'markdown-cleanup-list-numbers
+#       "mco"  'markdown-open
+#       "mcp"  'markdown-preview
+#       "mcv"  'markdown-export-and-preview
+#       "mcw"  'markdown-kill-ring-save
+#       ;; headings
+#       "mhi"  'markdown-insert-header-dwim
+#       "mhI"  'markdown-insert-header-setext-dwim
+#       "mh1"  'markdown-insert-header-atx-1
+#       "mh2"  'markdown-insert-header-atx-2
+#       "mh3"  'markdown-insert-header-atx-3
+#       "mh4"  'markdown-insert-header-atx-4
+#       "mh5"  'markdown-insert-header-atx-5
+#       "mh6"  'markdown-insert-header-atx-6
+#       "mh!"  'markdown-insert-header-setext-1
+#       "mh@"  'markdown-insert-header-setext-2
+#       ;; Insertion of common elements
+#       "m-"   'markdown-insert-hr
+#       "mif"  'markdown-insert-footnote
+#       "mii"  'markdown-insert-image
+#       "mik"  'spacemacs/insert-keybinding-markdown
+#       "miI"  'markdown-insert-reference-image
+#       "mil"  'markdown-insert-link
+#       "miL"  'markdown-insert-reference-link-dwim
+#       "miw"  'markdown-insert-wiki-link
+#       "miu"  'markdown-insert-uri
+#       ;; Element removal
+#       "mk"   'markdown-kill-thing-at-point
+#       ;; List editing
+#       "mli"  'markdown-insert-list-item
+#       ;; region manipulation
+#       "mxb"  'markdown-insert-bold
+#       "mxi"  'markdown-insert-italic
+#       "mxc"  'markdown-insert-code
+#       "mxC"  'markdown-insert-gfm-code-block
+#       "mxq"  'markdown-insert-blockquote
+#       "mxQ"  'markdown-blockquote-region
+#       "mxp"  'markdown-insert-pre
+#       "mxP"  'markdown-pre-region
+#       ;; Following and Jumping
+#       "mN"   'markdown-next-link
+#       "mf"   'markdown-follow-thing-at-point
+#       "mP"   'markdown-previous-link
+#       "<RET>" 'markdown-jump
+#      ))
+   
+#   ;; (which-key-add-major-mode-key-based-replacements 'markdown-mode
+#   ;;     "C-c C-a" "insert"
+#   ;;     "C-c C-c" "export"
+#   ;;     "C-c TAB" "images"
+#   ;;     "C-c C-s" "text"
+#   ;;     "C-c C-t" "header"
+#   ;;     "C-c C-x" "move"
+#   ;;     )
+#   #+END_SRC
 ***** Miscellaneous Keybindings
 #+BEGIN_SRC emacs-lisp
 ;; Show which-key top-level bindings
-(global-set-key (kbd "H-k") #'which-key-show-top-level)
+(global-set-key (kbd "H-k") 'which-key-show-top-level)
 ;; override evil insert for kill line
-(map! :desc "Kill line" :nvi "C-k" #'kill-line)
+(general-define-key :states '(insert) "C-k" 'kill-line)
+#+END_SRC
+# ***** Org Keybindings
+# Keybindings for org mode 
+# #+BEGIN_SRC emacs-lisp
+#   (cpm-leader1 
+#     "o"  '(:ignore t :which-key "Org")
+#     "O"  '(:ignore t :which-key "Org-Files")
+#     "oh" '(:ignore t :which-key "headers")
+#     "oi" '(:ignore t :which-key "insert")
+#     "oS" '(:ignore t :which-key "subtree")
+#     "ot" '(:ignore t :which-key "tables")
+#     "or" '(:ignore t :which-key "org-reveal")
+#     "oc" 'org-capture
+#     "oe" '(:ignore t :which-key "export")
+#     "oep" 'org-pandoc-export-to-latex-pdf
+#     "oeP" 'org-pandoc-export-to-latex-pdf-and-open
+#     "of" 'org-footnote-action
+#     "oj" 'cpm/org-journal
+#     "oP" 'org-set-property
+#     ;; "P" 'org-publish-current-project
+#     "op" 'org-publish-current-file
+#     "o:" 'org-set-tags
+#     "oa" 'org-agenda
+#     "ob" 'org-tree-to-indirect-buffer
+#     "oA" 'org-archive-subtree
+#     "ol" 'org-open-at-point
+#     "oT" 'org-show-todo-tree
+#     "ov" 'org-toggle-inline-images
+  
+#     "orr" 'org-reveal-export-to-html-and-browse
+#     "ors" 'cpm/narrowed-subtree-to-html
+#     "orS" 'org-reveal-export-current-subtree
+#     "orp" 'reveal-to-pdf
+  
+#     "o." 'org-time-stamp
+#     "o!" 'org-time-stamp-inactive
+  
+#     ;; headings
+#     "ohi" 'org-insert-heading-after-current
+#     "ohI" 'org-insert-heading
+  
+#     ;; More cycling options (timestamps, headlines, items, properties)
+#     "oL" 'org-shiftright
+#     "oH" 'org-shiftleft
+#     "oJ" 'org-shiftdown
+#     "oK" 'org-shiftup
+  
+#     ;; Subtree editing
+#     "oSl" 'org-demote-subtree
+#     "oSh" 'org-promote-subtree
+#     "oSj" 'org-move-subtree-down
+#     "oSk" 'org-move-subtree-up
+  
+#     ;; tables
+#     "ota" 'org-table-align
+#     "otb" 'org-table-blank-field
+#     "otc" 'org-table-convert
+#     "otdc" 'org-table-delete-column
+#     "otdr" 'org-table-kill-row
+#     "ote" 'org-table-eval-formula
+#     "otE" 'org-table-export
+#     "oth" 'org-table-previous-field
+#     "otH" 'org-table-move-column-left
+#     "otic" 'org-table-insert-column
+#     "otih" 'org-table-insert-hline
+#     "otiH" 'org-table-hline-and-move
+#     "otir" 'org-table-insert-row
+#     "otI" 'org-table-import
+#     "otj" 'org-table-next-row
+#     "otJ" 'org-table-move-row-down
+#     "otK" 'org-table-move-row-up
+#     "otl" 'org-table-next-field
+#     "otL" 'org-table-move-column-right
+#     "otn" 'org-table-create
+#     "otN" 'org-table-create-with-table.el
+#     "otr" 'org-table-recalculate
+#     "ots" 'org-table-sort-lines
+#     "ottf" 'org-table-toggle-formula-debugger
+#     "otto" 'org-table-toggle-coordinate-overlays
+#     "otw" 'org-table-wrap-region
+  
+#     ;; Multi-purpose keys
+#     ;; "o*" 'org-ctrl-c-star
+#     ;; "oRET" 'org-ctrl-c-ret
+#     "o-" 'org-ctrl-c-minus
+#     "o^" 'org-sort
+#     "o/" 'org-sparse-tree
+  
+#     "oI" 'org-clock-in
+#     "on" 'org-narrow-to-subtree
+#     "oN" 'widen
+#     "oO" 'org-clock-out
+#     "oq" 'org-clock-cancel
+#     "oR" 'org-refile
+#     "os" 'org-schedule
+  
+#     ;; insertion of common elements
+#     "oil" 'org-insert-link
+#     "oif" 'org-footnote-new
+    
+#     ;; Org files in agenda
+#     "Oa" 'cpm/goto-articles.org
+#     "Of" 'cpm/goto-org-files
+#     "Oi" 'cpm/goto-inbox.org
+#     "On" 'cpm/goto-notes.org
+#     "Op" 'cpm/goto-projects.org
+#     "Os" 'cpm/goto-someday.org
+#     "Ot" 'cpm/goto-teaching.org
+#     )
+# #+END_SRC
+***** Packages (Paradox) Keybindings
+Keybindings for managing packages
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1 
+  "P" '(:ignore t :which-key "Packages")
+  "Pl" 'paradox-list-packages
+  "Pu" 'paradox-upgrade-packages
+  "Pc" 'finder-commentary
+  )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-h C-c") 'finder-commentary)
+#+END_SRC
+***** Project Keybindings
+#+BEGIN_SRC emacs-lisp
+  (cpm-leader1 
+    "p" '(:ignore t :which-key "Projects")
+    "p!"  'projectile-run-shell-command-in-root
+    "p&"  'projectile-run-async-shell-command-in-root
+    "pa"  'projectile-toggle-between-implementation-and-test
+    "pb"  'helm-projectile-switch-to-buffer
+    "pc"  'projectile-compile-project
+    "pC"  'desktop+-create
+    "pd"  'helm-projectile-find-dir
+    "pD"  'projectile-dired
+    "pf"  'helm-projectile-find-file
+    "pg"  'goto-projects
+    "ph"  'helm-projectile
+    "pJ"  'bmkp-desktop-jump
+    "pG"  'projectile-regenerate-tags
+    "pI"  'projectile-invalidate-cache
+    "pk"  'projectile-kill-buffers
+    ;; "pl"  'desktop+-load
+    "pl"  'persp-switch
+    "po"  'projectile-multi-occur
+    "pP"  'helm-projectile-switch-project
+    ;; "pp"  'helm-projectile-switch-project
+    "pp"  'projectile-persp-switch-project
+    ;; "pp"  'helm-persp-projectile-switch-project
+    "pr"  'helm-projectile-recentf
+    "pR"  'projectile-replace
+    ;; "ps"  'bmkp-set-desktop-bookmark
+    ;; "ps"  'desktop-save-in-desktop-dir
+    "pT"  'projectile-find-test-file
+    "pv"  'hydra-persp/body
+    "pV"  'projectile-vc
+    "py"  'projectile-find-tag
+  )
 #+END_SRC
 ***** Quit Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
- (:desc "Quit..." :prefix "q"
-  :desc "Save & quit" :nv "q" #'save-buffers-kill-emacs
-  :desc "Quit!" :nv "Q" #'evil-quit-all
-  :desc "Restart" :nv "r" #'restart-emacs))
+(cpm-leader1 
+  "q"  '(:ignore t :which-key "Quit")
+  ;; "qq" 'save-desktop-save-buffers-kill-emacs
+  "qq" 'save-buffers-kill-emacs
+  "qQ" 'evil-quit-all
+  "qr" 'restart-emacs)
 #+END_SRC
-***** Search
+***** Search Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
-  (:desc "search" :prefix "s"
-   :desc "IEdit mode"                    :nv "e" #'evil-iedit-state/iedit-mode
-   :desc "Swiper search"                 :nv "s" #'swiper
-   :desc "Search online"                 :nv "o" #'+search/online
-   :desc "Search online same source"     :nv "O" #'+search/online-use-last
-   :desc "Org rifle"                     :nv "a" #'helm-org-rifle-agenda-files
-   :desc "Search current directory"      :nv "d" 'cpm/helm-files-search-current-directory ; search current buffer's directory
-   :desc "Search arbitrary directory"    :nv "D" #'cpm/helm-files-do-ag ; search with directory input
-   :desc "Search buffers"                :nv "b" #'helm-ag-buffers
-   :desc "Search file"                   :nv "f" #'helm-do-ag-this-file
-))
+  (cpm-leader1
+    "s" '(:ignore t :which-key "Search")
+    "sa" 'helm-org-rifle-agenda-files
+    "sd" 'cpm/helm-files-search-current-directory ; search current buffer's directory
+    "sD" 'cpm/helm-files-do-ag ; search with directory input
+    "sb" 'helm-ag-buffers
+    "sf" 'helm-do-ag-this-file
+    "sj" 'forward-or-backward-sexp
+    "sk" 'helm-show-kill-ring
+    "sl" 'last-search-buffer
+    "so" 'helm-occur
+    "sp" 'helm-ag-project-root
+    "sr" 'helm-org-rifle
+    "ss" 'helm-swoop-without-pre-input ;; search in file
+    "/"  'helm-ag  ;; search in directory with word prompt
+     )
 #+END_SRC
+
+#+RESULTS:
 ***** Toggle Keybindings
 #+BEGIN_SRC emacs-lisp
-  (map!
-   :leader
-    (:desc "Toggles..." :prefix "t"
-     :desc "Company"     :nv    "a" #'company-mode
-     :desc "Beacon"     :nv    "B" #'beacon-mode
-     :desc "Centered cursor"     :nv    "c" #'centered-cursor-mode
-     :desc "Centered window"     :nv    "C" #'centered-window-mode
-     :desc "No distraction"     :nv    "d" #'distraction-free
-     :desc "Fullscreen"     :nv    "F" #'toggle-frame-fullscreen
-     :desc "Git gutter"     :nv    "g" #'git-gutter-mode
-     :desc "Highlight line"     :nv    "h" #'hl-line-mode
-     :desc "Indicate empty lines"     :nv    "e" #'toggle-indicate-empty-lines
-     :desc "Eldoc"     :nv    "E" #'eldoc-mode
-     :desc "Hide modeline"     :nv    "m" #'hidden-mode-line-mode
-     :desc "Minor modes"     :nv    "M" #'spaceline-toggle-minor-modes
-     :desc "Line numbers"     :nv    "n" #'nlinum-mode
-     ;; :desc ""     :nv     "tn" 'display-line-numbers-mode
-     :desc "Org numbers"     :nv    "N" #'org-numbers-overlay-mode
-     :desc "Org links"     :nv    "o" #'org-toggle-link-display
-     :desc "TOC"     :nv    "O" #'outline-toc-mode
-     :desc "Show parens"     :nv    "P" #'show-paren-mode 
-     :desc "Rainbows"     :nv    "r" #'rainbow-identifiers-mode
-     :desc "Invert theme"     :nv    "s" #'toggle-dark-light-theme
-     :desc ""     :nv    ;; "t" 'helm-themes
-     :desc "Writeroom"     :nv    "w" #'writeroom-mode
-     :desc "Change theme"     :nv    "t" #'counsel-load-theme
-    ))
+  (cpm-leader1 
+    "t"  '(:ignore t :which-key "Toggles")
+    "ta" 'company-mode
+    "tb" 'fancy-battery-mode
+    "tB" 'beacon-mode
+    "tc" 'centered-cursor-mode
+    "tC" 'centered-window-mode
+    "td" 'distraction-free
+    "tf" 'toggle-serif
+    "tF" 'toggle-frame-fullscreen
+    "tg" 'git-gutter-mode
+    "th" 'hl-line-mode
+    "te" 'toggle-indicate-empty-lines
+    "tE" 'eldoc-mode
+    "tm" 'hidden-mode-line-mode
+    "tM" 'spaceline-toggle-minor-modes
+    ;; "tn" 'nlinum-mode
+    "tn" 'display-line-numbers-mode
+    "tN" 'org-numbers-overlay-mode
+    "to" 'org-toggle-link-display
+    "tO" 'outline-toc-mode
+    "tp" 'smartparens-mode
+    "tP" 'show-paren-mode 
+    "tr" 'rainbow-identifiers-mode
+    "ts" 'toggle-dark-light-theme
+    "tt" 'helm-themes
+    "tT" 'neotree-toggle
+    "tw" 'writeroom-mode
+    "tz" 'zone
+    ;; "tt" 'counsel-load-theme
+  )
 #+END_SRC
 ***** User Keybindings
 #+BEGIN_SRC emacs-lisp
-  (map!
-   :leader
-    (:desc "User"             :prefix "u"
-     :desc "Org-M↓"           :nv "um" #'cpm/org-to-markdown   
-     :desc "Convert to PDF"   :nv "uc" #'pandoc-convert-to-pdf
-     ;; :desc ""                 :nv "uC" #'cpm/pandoc-convert-to-pdf 
-     :desc "Kill compilation" :nv "uk" #'kill-compilation
-     :desc "M↓-Org"           :nv "uo" #'cpm/markdown-to-org
-     :desc "Pandoc"           :nv "up" #'run-pandoc
-     :desc "Open Pandoc PDF"  :nv "uP" #'pandoc-pdf-open
-     :desc "One space"        :nv "uS" #'just-one-space
-     :desc "Desktop"          :nv "uD" #'my-desktop
-     :desc "Journal"          :nv "uj" #'goto-journal
-     :desc "Word #"           :nv "uw" #'count-words
-     :desc "Bibtex"           :nv "ux" #'helm-bibtex))
+  (cpm-leader1 
+    "u"  '(:ignore t :which-key "User")
+    "um" 'cpm/org-to-markdown   
+    "uc" 'pandoc-convert-to-pdf
+    "uC" 'cpm/pandoc-convert-to-pdf 
+    "uk" 'kill-compilation
+    "uo" 'cpm/markdown-to-org
+    "up" 'run-pandoc
+    "uP" 'pandoc-pdf-open
+    "us" 'sb-expand-current-file
+    "uS" 'just-one-space
+    "ud" 'distraction-free
+    "uD" 'my-desktop
+    "uj" 'goto-journal
+    ;; "op" 'pandoc-convert-to-pdf
+    "uw" 'count-words
+    "uW" 'osx-dictionary-search-input
+    "ux" 'helm-bibtex
+    )
+#+END_SRC
+***** Version Control Keybindings
+#+BEGIN_SRC emacs-lisp
+(cpm-leader1
+  "g"  '(:ignore t :which-key "Git")
+  "gb" 'magit-blame
+  "gc" 'magit-commit
+  "gd" 'magit-diff
+  "gl" 'magit-log
+  "gn" 'git-gutter:next-hunk
+  "gp" 'git-gutter:previous-hunk
+  "gr" 'magit-reflog
+  "gs" 'magit-status
+  )
 #+END_SRC
 ***** Window Keybindings
 #+BEGIN_SRC emacs-lisp
-(map!
- :leader
-     (:desc "window"
-      :prefix "w"
-      :desc "Split window vertical"        :nv "v" #'split-window-right-and-focus
-      :desc "Split window horizontal"      :nv "-" #'evil-window-split
-      :desc "Balance windows"              :nv "=" #'balance-windows
-      :desc "Delete current window"        :nv "d" #'delete-window
-      :desc "Ace delete window"            :nv "D" #'cmacs/ace-delete-window-dispatch
-      :desc "Window left"                  :nv "h" #'evil-window-left
-      :desc "Window down"                  :nv "j" #'evil-window-down
-      :desc "Window right"                 :nv "l" #'evil-window-right
-      :desc "Window up"                    :nv "k" #'evil-window-up
-      :desc "Move window left"             :nv "H" #'evil-window-move-far-left
-      :desc "Move window down"             :nv "J" #'evil-window-move-very-bottom
-      :desc "Move window right"            :nv "L" #'evil-window-move-far-right
-      :desc "Move window up"               :nv "K" #'evil-window-move-very-top
-      :desc "Roate clockwise"              :nv "r" #'rotate-windows
-      :desc "Rotate counter-clockwise"     :nv "R" #'rotate-windows-backward
-      :desc "Ace swap window"              :nv "s" #'ace-swap-window
-      :desc "Winner undo"                  :nv "u" #'winner-undo
-      :desc "Winner redo"                  :nv "U" #'winner-redo
-      :desc "Ace window"                   :nv "W" #'ace-window
-      :desc "Manage Windows"               :nv "w" #'cmacs-hydra-window/body
-      :desc "Toggle maximize window"       :nv "m" #'cmacs/window-zoom))
-#+END_SRC
-***** Git Keybindings
-#+BEGIN_SRC emacs-lisp
-(map!
- :leader
-     (:desc "git"
-      :prefix "g"
-      :desc "Git status"                   :nv "s" #'magit-status
-      :desc "Git blame"                    :nv "b" #'magit-blame
-      :desc "Git time machine"             :nv "t" #'git-timemachine
-      :desc "Git log current file"         :nv "f" #'magit-log-buffer-file
-      :desc "Git log all"                  :nv "l" #'magit-log-all
-      :desc "Smerge Hydra"                 :nv "m" #'cmacs-hydra-smerge/body
-      :desc "Show and copy git link"       :nv "y" #'git-link
-      :desc "Open git link"                :nv "o" #'cmacs/git-browse
-      :desc "Delete git index lock"        :nv "X" #'cmacs/delete-git-index-lock
-      (:desc "gist"
-        :prefix "g"
-        :desc "Gist from buffer"           :nv "b" #'gist-buffer
-        :desc "Private gist from buffer"   :nv "B" #'gist-buffer-private
-        :desc "Gist from region"           :nv "r" #'gist-region
-        :desc "Private gist from region"   :nv "R" #'gist-region-private
-        :desc "List gists"                 :nv "l" #'gist-list)))
-#+END_SRC
-***** Open Keybindings
-#+BEGIN_SRC emacs-lisp
-(map!
- :leader
- (:desc "open" :prefix "o"
-  :desc "Organizer"                    :nv "o" #'+corg/open-organizer
-  :desc "Agenda"                       :nv "a" #'org-agenda
-  :desc "Org capture"                  :nv "c" #'org-capture
-  :desc "Email"                        :nv "e" #'mu4e))
-#+END_SRC
 
-***** Config File Keybindings
-#+BEGIN_SRC emacs-lisp
-(map!
- :leader
- (:desc "Config..." :prefix "C"
-  :desc "Config" :nv      "c" 'goto-config.org
-  :desc "Dotfiles" :nv      "d" 'goto-dotfiles.org
-  :desc "Emacs dir" :nv      "D" 'goto-emacs-dir
-  :desc "Load config" :nv      "l" 'load-config
-  :desc "Init" :nv      "i" 'goto-init.el
-  :desc "Custom" :nv      "s" 'goto-custom.el
-))
+(cpm-leader1 
+  "w"  '(:ignore t :which-key "Windows")
+  "wa" 'ace-window
+  "wf" 'toggle-window-split
+  "wc" 'delete-window
+  "wm" 'delete-other-windows
+  "wr" 'rotate-windows
+  "wR" 'rotate-windows-backward
+  "wv" 'split-window-right-and-focus
+  "wV" 'evil-window-vsplit
+  "wx" 'cpm/window-exchange
+  "w-" 'evil-window-split
+  "w_" 'split-window-below-and-focus
+  )
 #+END_SRC
+***** Wiki Keybindings
 #+BEGIN_SRC emacs-lisp
-
+  (cpm-leader1
+    "W" '(:ignore t :which-key "Wiki")
+    "Wc" 'org-wiki-close
+    "Wd" 'org-wiki-dired-all
+    "Wk" 'org-wiki-close
+    "Wh" 'org-wiki-helm
+    "WH" 'org-wiki-help
+    "WI" 'org-wiki-index
+    "Wi" 'org-wiki-insert
+    "Wl" 'org-wiki-link
+    "Wm" 'org-wiki-make-page
+    "Wv" 'org-wiki-server-toggle
+    "We" 'org-wiki-export-html
+    "Wp" 'org-wiki-panel
+    "Ws" 'org-wiki-search
+    "Wt" 'org-wiki-header
+  )
 #+END_SRC
+***** Zotero Keybindings 
 #+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-
+(cpm-leader1
+  "z" '(:ignore t :which-key "Zotero")
+  "za" 'org-zotxt-open-attachment
+  "zi" 'org-zotxt-insert-reference-link
+  "zu" 'org-zotxt-update-reference-link-at-point
+)
 #+END_SRC
 
 **** Diminish Modes
