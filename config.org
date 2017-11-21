@@ -2797,6 +2797,7 @@ Auto-revert buffers of changed files
      org-startup-folded t
      org-startup-indented t
      org-startup-with-inline-images nil
+     org-src-tab-acts-natively t
      org-tags-column 0
      org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)"))
      org-use-sub-superscripts '{}
