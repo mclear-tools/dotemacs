@@ -24,135 +24,30 @@ well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate star
 :VISIBILITY: children
 :END:
 
-** Table of Contents :TOC_3_gh:
+** Table of Contents :TOC_2_gh:
 - [[#configuration][Configuration]]
   - [[#about-this-file][About This File]]
-    - [[#org-file-tweaks][Org File Tweaks]]
   - [[#personal-information][Personal Information]]
   - [[#variables][Variables]]
-    - [[#start-time][Start time]]
-    - [[#font][Font]]
-    - [[#leader-keys][Leader Keys]]
-    - [[#directories][Directories]]
-    - [[#hooks][Hooks]]
-    - [[#misc][Misc]]
   - [[#security-settings][Security Settings]]
   - [[#emacs-initialization][Emacs Initialization]]
-    - [[#initialization-settings][Initialization Settings]]
-    - [[#use-package-settings][Use-Package Settings]]
   - [[#general-settings][General Settings]]
-    - [[#system-defaults][System Defaults]]
-    - [[#backups][Backups]]
-    - [[#custom-file][Custom file]]
-    - [[#mac-os][Mac OS]]
-    - [[#time-and-date-stamps][Time and Date Stamps]]
-    - [[#location][Location]]
-    - [[#text-settings][Text Settings]]
   - [[#functions--macros][Functions & Macros]]
-    - [[#useful-functions][Useful Functions]]
-    - [[#cmacs-functions][CMACS Functions]]
-    - [[#doom-macros][DOOM! Macros]]
-    - [[#other-macros][Other Macros]]
   - [[#useful-libraries][Useful Libraries]]
   - [[#modal-editing][Modal Editing]]
-    - [[#general--evil][General  (Evil)]]
-    - [[#vim-emulation][Vim Emulation]]
   - [[#appearance--ui][Appearance & UI]]
-    - [[#appearance][Appearance]]
-    - [[#ui][UI]]
   - [[#navigation][Navigation]]
-    - [[#helm][Helm]]
-    - [[#ivy][Ivy]]
-    - [[#counsel][Counsel]]
-    - [[#swiper][Swiper]]
-    - [[#bookmark][Bookmark]]
-    - [[#hydra][Hydra]]
-    - [[#saveplace][Saveplace]]
-    - [[#ace-window][Ace Window]]
-    - [[#avy][Avy]]
-    - [[#windows][Windows]]
-    - [[#ranger--deer][Ranger & Deer]]
-    - [[#recent-files][Recent files]]
-    - [[#restart-emacs][Restart emacs]]
-    - [[#autorevert][Autorevert]]
   - [[#org][Org]]
-    - [[#settings][Settings]]
-    - [[#org-keybindings][Org Keybindings]]
-    - [[#hook][Hook]]
-    - [[#org-template-expansions][Org Template Expansions]]
-    - [[#org-bullets][Org bullets]]
-    - [[#org-goto][Org-Goto]]
-    - [[#org-reveal][Org-Reveal]]
-    - [[#org-agenda][Org-Agenda]]
-    - [[#org-capture][Org Capture]]
-    - [[#org-refile][Org Refile]]
-    - [[#org--pandoc-ox-pandoc][Org & Pandoc (Ox-pandoc)]]
-    - [[#org-rifle][Org Rifle]]
-    - [[#org-download][Org-Download]]
-    - [[#org-pomodoro][Org Pomodoro]]
-    - [[#open-docx-files-in-default-application-ie-msword][Open Docx Files In Default Application (Ie Msword)]]
-    - [[#org-indirect-buffer][Org Indirect Buffer]]
-    - [[#org-functions][Org Functions]]
-    - [[#org-fill-functions][Org-Fill Functions]]
-    - [[#narrow--advanceretreat][Narrow & Advance/Retreat]]
-    - [[#org-files][Org files]]
-    - [[#org-numbers-overlay][Org Numbers Overlay]]
-    - [[#toc-org][Toc-org]]
-    - [[#org-miscellaneous-packages][Org Miscellaneous Packages]]
   - [[#search][Search]]
-    - [[#ripgrep-rg][Ripgrep (rg)]]
-    - [[#anzu][Anzu]]
   - [[#shell][Shell]]
-    - [[#sane-term][Sane term]]
-    - [[#shell-pop][Shell Pop]]
-    - [[#shell-settings][Shell settings]]
-    - [[#compilation-buffer][Compilation buffer]]
-    - [[#completion-buffer][Completion buffer]]
-    - [[#virtualenvwrapper][Virtualenvwrapper]]
-    - [[#tramp][Tramp]]
-    - [[#eshell][Eshell]]
   - [[#completion][Completion]]
-    - [[#yasnippet][Yasnippet]]
-    - [[#company][Company]]
   - [[#session--project-management][Session & Project Management]]
-    - [[#projectile][Projectile]]
-    - [[#perspectives][Perspectives]]
-    - [[#eyebrowse-workspace--window-management][Eyebrowse Workspace & Window Management]]
   - [[#version-control][Version Control]]
-    - [[#magit][Magit]]
-    - [[#evil-magit][Evil Magit]]
-    - [[#git-timemachine][Git timemachine]]
-    - [[#gited][Gited]]
-    - [[#git-gutter][Git gutter]]
-    - [[#quick-commits][Quick commits]]
   - [[#programming][Programming]]
-    - [[#alignment][Alignment]]
-    - [[#rainbow-delimiters][Rainbow delimiters]]
-    - [[#rainbow-identifiers][Rainbow identifiers]]
-    - [[#rainbow-mode][Rainbow mode]]
-    - [[#electric-pair-autopair][Electric Pair (Autopair)]]
-    - [[#languages][Languages]]
   - [[#research--writing][Research & Writing]]
-    - [[#helm-bibtex][Helm-Bibtex]]
-    - [[#markdown-mode][Markdown mode]]
-    - [[#distraction-free-mode][Distraction free mode]]
-    - [[#deft-notes][Deft Notes]]
-    - [[#interleave][Interleave]]
-    - [[#lorem-ipsum][Lorem ipsum]]
-    - [[#palimpsest-mode][Palimpsest mode]]
-    - [[#latex][LaTeX]]
-    - [[#doc-view-mode][Doc View Mode]]
-    - [[#pdf-tools][PDF-Tools]]
-    - [[#zotero][Zotero]]
   - [[#private][Private]]
   - [[#miscellaneous-packages][Miscellaneous Packages]]
-    - [[#helpful-documentation][Helpful (Documentation)]]
   - [[#post-initialization][Post Initialization]]
-    - [[#run-post-init-hook][Run Post Init Hook]]
-    - [[#persistent-scratch][Persistent Scratch]]
-    - [[#server][Server]]
-    - [[#page-breaks][Page Breaks]]
-    - [[#dashboard][Dashboard]]
 
 ** About This File
 This is an Emacs literate configuration template. It contains the basic structure
@@ -186,12 +81,6 @@ Let's set some variables with basic user information.
       user-mail-address "mclear@fastmail.com")
 #+END_SRC
 ** Variables
-*** Start time
- #+BEGIN_SRC emacs-lisp
-   (defvar my-start-time (current-time)
-     "Time when Emacs was started")
-
- #+END_SRC
 *** Font
  [[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font. I use a version, Inconsolata-LGC,
  that also has bold and italic fonts.
@@ -3615,26 +3504,6 @@ Better dired navigation using ranger-like settings
           recentf-max-menu-items 10))
 #+END_SRC
 
-*** Restart emacs
-#+BEGIN_SRC emacs-lisp
-(use-package restart-emacs
-  :commands restart-emacs)
-#+END_SRC
-*** Autorevert
-Auto-revert buffers of changed files
-#+BEGIN_SRC emacs-lisp
-  (use-package autorevert                 
-    :defer 10
-    :ensure nil
-    :init
-    (global-auto-revert-mode 1)
-    :config
-    (progn 
-      (setq auto-revert-verbose nil ; Shut up, please!
-            revert-without-query '(".*") ;; disable revert query
-            ;; Revert Dired buffers, too
-            global-auto-revert-non-file-buffers t)))
-#+END_SRC
 ** Org
 *** Settings
 **** Org Directories 
@@ -3785,9 +3654,6 @@ Auto-revert buffers of changed files
 #+END_SRC
 *** Hook
 #+BEGIN_SRC emacs-lisp
-  ;; (c-org/org-load-hook #'c-org|init)
-  ;; (add-hook 'org-mode-hook #'+c-org|hook)
-
     (add-hook 'org-mode-hook
         (lambda () 
           (turn-on-auto-fill)
@@ -3798,16 +3664,17 @@ Auto-revert buffers of changed files
 #+END_SRC
 *** Org Template Expansions
 #+BEGIN_SRC emacs-lisp
-   (add-to-list 'org-structure-template-alist
-    '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
-   (add-to-list 'org-structure-template-alist
-    '("n" "#+BEGIN_NOTES\n?\n#+END_NOTES"))
-   (add-to-list 'org-structure-template-alist
-    '("t" "#+BEGIN_COMMENT TODO: ?  #+END_COMMENT"))
-   (add-to-list 'org-structure-template-alist
-    '("b" "#+REVEAL: split?"))
-   (add-to-list 'org-structure-template-alist
-    '("f" "#+ATTR_REVEAL: :frag (appear)?"))
+(with-eval-after-load 'org
+  (add-to-list 'org-structure-template-alist
+   '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist
+   '("n" "#+BEGIN_NOTES\n?\n#+END_NOTES"))
+  (add-to-list 'org-structure-template-alist
+   '("t" "#+BEGIN_COMMENT TODO: ?  #+END_COMMENT"))
+  (add-to-list 'org-structure-template-alist
+   '("b" "#+REVEAL: split?"))
+  (add-to-list 'org-structure-template-alist
+   '("f" "#+ATTR_REVEAL: :frag (appear)?")))
 #+END_SRC
 *** Org bullets
 #+BEGIN_SRC emacs-lisp
@@ -3819,11 +3686,12 @@ Auto-revert buffers of changed files
 *** Org-Goto
 Make counsel display org headings nicely. 
 #+BEGIN_SRC emacs-lisp
-(setq counsel-org-goto-display-style 'path)
-(setq counsel-org-goto-separator " ➜ ")
-(setq counsel-org-goto-face-style 'org)
-(define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
-(define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all)
+(with-eval-after-load 'org
+  (setq counsel-org-goto-display-style 'path)
+  (setq counsel-org-goto-separator " ➜ ")
+  (setq counsel-org-goto-face-style 'org)
+  (define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
+  (define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all))
 #+END_SRC
 *** Org-Reveal
 #+BEGIN_SRC emacs-lisp
@@ -5777,6 +5645,26 @@ Interface with Zotero.
 	  (load-file private)))
 #+END_SRC
 ** Miscellaneous Packages
+*** Restart emacs
+#+BEGIN_SRC emacs-lisp
+(use-package restart-emacs
+  :commands restart-emacs)
+#+END_SRC
+*** Autorevert
+Auto-revert buffers of changed files
+#+BEGIN_SRC emacs-lisp
+  (use-package autorevert                 
+    :defer 10
+    :ensure nil
+    :init
+    (global-auto-revert-mode 1)
+    :config
+    (progn 
+      (setq auto-revert-verbose nil ; Shut up, please!
+            revert-without-query '(".*") ;; disable revert query
+            ;; Revert Dired buffers, too
+            global-auto-revert-non-file-buffers t)))
+#+END_SRC
 *** Helpful (Documentation)
 [[http://www.wilfred.me.uk/blog/2017/08/30/helpful-adding-contextual-help-to-emacs/][Contextual help]] for emacs
 #+BEGIN_SRC emacs-lisp
@@ -5847,7 +5735,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
       (setq dashboard-startup-banner (concat cmacs-etc-dir "icons/128x128.png"))
       ;; Set the title
       ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
-      (setq dashboard-banner-logo-title (message "Emacs initialized in %.2fs" (float-time (time-subtract (current-time) my-start-time))))
+      (setq dashboard-banner-logo-title (message "★ Emacs initialized in %.2fs ★" (float-time (time-subtract (current-time) my-init-el-start-time))))
       (dashboard-setup-startup-hook)
       (map! (:map dashboard-mode-map
         :ni     "TAB" 'widget-forward
@@ -5862,3 +5750,4 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
         :ni     "p" (dashboard-insert-shortcut "p" "Projects:"))))
 
 #+END_SRC
+
