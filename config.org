@@ -3744,8 +3744,8 @@ Auto-revert buffers of changed files
       :n  "d"   #'org-time-stamp
       :n  "D"   #'org-deadline
       :n  "e"   #'org-edit-special
-      :n  "n"   #'org-narrow-to-subtree
-      :n  "N"   #'widen
+      :n  "n"   #'org-advance
+      :n  "N"   #'org-retreat
       :n  "r"   #'org-refile
       :n  "s"   #'org-schedule
       :n  "t"   #'counsel-org-tag
