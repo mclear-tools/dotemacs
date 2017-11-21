@@ -15,7 +15,9 @@ vim bindings but don't tend to want to think about configuring emacs, I
 strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way of managing your
 configuration. For a more traditional emacs feel there are also the
 configurations of [[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]] and [[https://github.com/caisah/emacs.dz][many others]]. For a
-minimally sane setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]].
+minimally sane setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. This file
+is also heavily influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of Bryan Gilbert, as
+well as his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]. 
 
 * Configuration
 :PROPERTIES:
