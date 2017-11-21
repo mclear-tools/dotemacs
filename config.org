@@ -2319,6 +2319,51 @@ Better dired navigation using ranger-like settings
         recentf-max-menu-items 10))
 #+END_SRC
 *** Windows
+**** Window Numbering
+Numbered window shortcuts for Emacs
+#+BEGIN_SRC emacs-lisp
+   (use-package window-numbering
+     :demand t
+     :config
+     (defun window-numbering-install-mode-line (&optional position)
+     "Do nothing, the display is handled by the powerline.")
+     (setq window-numbering-auto-assign-0-to-minibuffer nil)
+     (cpm-leader1
+       "0" 'select-window-0
+       "1" 'select-window-1
+       "2" 'select-window-2
+       "3" 'select-window-3
+       "4" 'select-window-4
+       "5" 'select-window-5)
+     (window-numbering-mode 1)
+
+  ;; make sure neotree is always 0
+   (defun spacemacs//window-numbering-assign ()
+     "Custom number assignment for neotree."
+     (when (and (boundp 'neo-buffer-name)
+                (string= (buffer-name) neo-buffer-name)
+                ;; in case there are two neotree windows. Example: when
+                ;; invoking a transient state from neotree window, the new
+                ;; window will show neotree briefly before displaying the TS,
+                ;; causing an error message. the error is eliminated by
+                ;; assigning 0 only to the top-left window
+                (eq (selected-window) (window-at 0 0)))
+       0))
+
+   ;; using lambda to work-around a bug in window-numbering, see
+   ;; https://github.com/nschum/window-numbering.el/issues/10
+   (setq window-numbering-assign-func
+         (lambda () (spacemacs//window-numbering-assign))))
+#+END_SRC
+**** Unset window keys
+A nice tip from [[http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal-key-map-for-super-shortcuts/][Pragmatic emacs]]
+#+BEGIN_SRC emacs-lisp
+;; unset C- and M- digit keys
+(dotimes (n 10)
+  (global-unset-key (kbd (format "C-%d" n)))
+  (global-unset-key (kbd (format "M-%d" n)))
+  )
+#+END_SRC
 **** Windmove
 #+BEGIN_SRC emacs-lisp
 (use-package windmove
