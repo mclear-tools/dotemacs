@@ -2635,7 +2635,7 @@ time.
    :config
    (setq which-key-special-keys nil)
    ;; Set the time delay (in seconds) for the which-key popup to appear.
-   (setq which-key-idle-delay .2)
+   (setq which-key-idle-delay .3)
    (which-key-mode))
  #+END_SRC
 **** Doom-Quit
