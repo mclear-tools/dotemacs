@@ -3232,6 +3232,19 @@ Keybindings for managing packages
    (eval-after-load "projectile" '(diminish 'projectile-mode ""))
    (eval-after-load "helm" '(diminish 'helm-mode ""))
    #+END_SRC
+**** Popup Windows
+[[https://github.com/wasamasa/shackle][Package]] that puts an end to popped up buffers not behaving they way you'd like them to.
+
+#+BEGIN_SRC emacs-lisp
+(use-package shackle
+  :demand t
+  :config
+  ;; make helm pop-ups behave
+  (setq helm-display-function #'pop-to-buffer)
+  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
+  (shackle-mode 1))
+#+END_SRC
+
 ** Navigation
 *** Helm
 [[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
