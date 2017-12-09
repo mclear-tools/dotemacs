@@ -1,4 +1,6 @@
 (let ((file-name-handler-alist nil))
+(unwind-protect
+    (let ((straight-treat-as-init t))
 (defvar my-init-el-start-time (current-time) "Time when init.el was started")
 ;; Let's start emacs up quietly.
 (advice-add #'display-startup-echo-area-message :override #'ignore)
@@ -27,7 +29,8 @@
 (setq load-prefer-newer t)
 
 ;; install org for bootstrapping config
-(use-package org :defer t)
+(use-package org
+  :bind "C-c c" 'org-capture)
 
 ;; load the config file ;; The following tangles a new .el and tangles on save as well.
 ;; From novoid's config; see https://github.com/novoid/dot-emacs/blob/master/init.el
@@ -91,7 +94,6 @@ Note the weekly scope of the command's precision.")
         (insert (apply 'concat (reverse body-list))))
       (message "—————• Wrote %s" output-file))))
 
-
 ;; following lines are executed only when my-tangle-config-org-hook-func()
 ;; was not invoked when saving config.org which is the normal case:
 (let ((orgfile (concat user-emacs-directory "config.org"))
@@ -102,6 +104,15 @@ Note the weekly scope of the command's precision.")
     (my-tangle-config-org)
     ;;(save-buffers-kill-emacs);; TEST: kill Emacs when config has been re-generated due to many issues when loading newly generated config.el
     )
-  (load-file elfile)))
+  (load-file elfile))
+
+;; when config.org is saved, re-generate config.el:
+(defun my-tangle-config-org-hook-func ()
+  (when (string= "config.org" (buffer-name))
+	(let ((orgfile (concat user-emacs-directory "config.org"))
+		  (elfile (concat user-emacs-directory "config.el")))
+	  (my-tangle-config-org))))
+(add-hook 'after-save-hook 'my-tangle-config-org-hook-func)))
 
 ;; (message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time))))
+  (straight-finalize-transaction))
