@@ -5477,10 +5477,10 @@ Great for managing citations and notes
      ;; keybindings
      (map! (:map markdown-mode-map
           [remap find-file-at-point] #'markdown-follow-thing-at-point
-          "M-*"      #'markdown-insert-list-item
-          "M-b"      #'markdown-insert-bold
-          "M-i"      #'markdown-insert-italic
-          "M-`"      #'+markdown/insert-del
+          "s-*"      #'markdown-insert-list-item
+          "s-b"      #'markdown-insert-bold
+          "s-i"      #'markdown-insert-italic
+          ;; "s-`"      #'+markdown/insert-del
           :m "gj"    #'markdown-next-visible-heading
           :m "gk"    #'markdown-previous-visible-heading
           ;; Assumes you have a markdown renderer plugin in chrome
