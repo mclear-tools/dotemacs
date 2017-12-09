@@ -4003,16 +4003,17 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 #+END_SRC
 *** Org Capture
 #+BEGIN_SRC emacs-lisp
-      (add-hook 'org-capture-mode-hook 'evil-insert-state)
-      (setq org-capture-templates
-            '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/projects.org" "Unfiled")
-                   "** STARTED %? \n  %i\n  Captured on: %u\n")
-              ("c" "Capture" entry (file "~/Dropbox/org-files/inbox.org")
-                   "* TODO %?\n %i")
-              ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
-                   "**** %<%H:%M>\n%?")
-              ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
-              "* %? \n Captured on: %U\n")))
+(general-define-key "C-c c" 'org-capture)
+(add-hook 'org-capture-mode-hook 'evil-insert-state)
+(setq org-capture-templates
+      '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/projects.org" "Unfiled")
+         "** STARTED %? \n  %i\n  Captured on: %u\n")
+        ("c" "Capture" entry (file "~/Dropbox/org-files/inbox.org")
+         "* TODO %?\n %i")
+        ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
+         "**** %<%H:%M>\n%?")
+        ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
+         "* %? \n Captured on: %U\n")))
 
   ;; Add date to captured items
   (defun add-property-with-date-captured ()

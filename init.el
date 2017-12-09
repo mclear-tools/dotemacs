@@ -29,8 +29,7 @@
 (setq load-prefer-newer t)
 
 ;; install org for bootstrapping config
-(use-package org
-  :bind "C-c c" 'org-capture)
+(use-package org)
 
 ;; load the config file ;; The following tangles a new .el and tangles on save as well.
 ;; From novoid's config; see https://github.com/novoid/dot-emacs/blob/master/init.el
