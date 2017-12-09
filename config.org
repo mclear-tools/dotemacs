@@ -882,7 +882,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (defun cpm/org-to-markdown ()
     "convert clipboard contents from org to markdown and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown --atx-headers"))
     (yank))
 
   (defun cpm/markdown-to-org ()
@@ -900,7 +900,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (defun cpm/tex-to-markdown ()
     "convert clipboard contents from markdown to org and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown --atx-headers"))
     (yank))
     
   (defun cpm/markdown-to-tex ()
@@ -912,8 +912,15 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (defun cpm/cite-to-org ()
     "convert clipboard contents from markdown to org with citations and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-citations | pandoc -f markdown -t org"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
     (yank))
+
+  (defun cpm/cite-to-markdown ()
+    "convert clipboard contents to markdown with citations and paste"
+    (interactive)
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
+    (yank))
+
 
 #+END_SRC
 **** Resume last search
