@@ -3074,7 +3074,7 @@ Keybindings for managing packages
     "sp" 'helm-ag-project-root
     "sr" 'helm-org-rifle
     "ss" 'helm-swoop-without-pre-input ;; search in file
-    "/"  'helm-ag  ;; search in directory with word prompt
+    "/"  'cpm/helm-files-search-current-directory   ;; search in directory with word prompt
      )
 #+END_SRC
 
