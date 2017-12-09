@@ -1104,6 +1104,34 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
   (interactive)
   (async-shell-command "phantomjs /Users/Roambot/bin/print-pdf.js 'file:///Users/Roambot/projects/phil101/content/slides/lecture_outline.html?print-pdf'")) 
 #+END_SRC
+**** Org Tree to File
+Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659823][this]] superuser answer.
+#+begin_src emacs-lisp
+(defun subtree-to-new-file ()
+  (interactive)
+  "Move an org subtree to a new file"
+  (org-copy-subtree nil t)
+  (find-file-other-window  
+    (read-file-name "Move subtree to file:" "$HOME"))
+(org-paste-subtree))
+#+end_src
+**** Fill/Unfill Paragraphs
+Artur Malabarba has a [[http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html][useful discussion]] of how to fill/unfill
+paragraphs with the same command.
+#+BEGIN_SRC emacs-lisp
+(defun endless/fill-or-unfill ()
+  "Like `fill-paragraph', but unfill if used twice."
+  (interactive)
+  (let ((fill-column
+         (if (eq last-command 'endless/fill-or-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (call-interactively #'fill-paragraph)))
+
+(global-set-key [remap fill-paragraph]
+                #'endless/fill-or-unfill)
+#+END_SRC
 **** Other functions
 Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
 #+BEGIN_SRC emacs-lisp
