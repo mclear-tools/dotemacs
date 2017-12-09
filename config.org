@@ -2544,9 +2544,9 @@ time.
       (setq display-line-numbers nil)
     (nlinum-mode -1)))
 
-(add-hook 'prog-mode-hook #'cmacs|enable-line-numbers)
-(add-hook 'text-mode-hook #'cmacs|enable-line-numbers)
-(add-hook 'conf-mode-hook #'cmacs|enable-line-numbers)
+;; (add-hook 'prog-mode-hook #'cmacs|enable-line-numbers)
+;; (add-hook 'text-mode-hook #'cmacs|enable-line-numbers)
+;; (add-hook 'conf-mode-hook #'cmacs|enable-line-numbers)
 
  #+END_SRC
 **** Highlight numbers
@@ -3000,13 +3000,13 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #     "Ot" 'cpm/goto-teaching.org
 #     )
 # #+END_SRC
-***** Packages (Paradox) Keybindings
+***** Packages (Epkg) Keybindings
 Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
 (cpm-leader1 
   "P" '(:ignore t :which-key "Packages")
-  "Pl" 'paradox-list-packages
-  "Pu" 'paradox-upgrade-packages
+  "Pl" 'epkg-list-packages
+  "Pu" 'epkg-update
   "Pc" 'finder-commentary
   )
 #+END_SRC
@@ -3097,8 +3097,8 @@ Keybindings for managing packages
     "tE" 'eldoc-mode
     "tm" 'hidden-mode-line-mode
     "tM" 'spaceline-toggle-minor-modes
-    ;; "tn" 'nlinum-mode
-    "tn" 'display-line-numbers-mode
+    "tn" 'nlinum-mode
+    ;; "tn" 'display-line-numbers-mode
     "tN" 'org-numbers-overlay-mode
     "to" 'org-toggle-link-display
     "tO" 'outline-toc-mode
@@ -3239,7 +3239,7 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp 
   (use-package helm
     :diminish (helm-mode . "")
-    :commands (helm-mini helm-M-x helm-find-files helm-find)
+    ;; :commands (helm-mini helm-M-x helm-find-files helm-find)
     :init
     (setq helm-locate-fuzzy-match nil
           helm-locate-command "mdfind -interpret -name %s %s")
@@ -3277,7 +3277,8 @@ Keybindings for managing packages
         "C-k"   'helm-previous-line
         "C-h"   'helm-next-source
         "C-l"   'helm-previous-source
-        "C-S-h" 'describe-key))))
+        "C-S-h" 'describe-key)))
+       (helm-mode 1))
 #+END_SRC
 **** Hide Mode Lines
 Hide modelines of other windows while helm is open, again from
@@ -3427,10 +3428,11 @@ Generic completion frontend that's just awesome! Let's install and enable it.
 #+BEGIN_SRC emacs-lisp 
 (use-package ivy 
   :diminish ivy-mode
+  :general
+  (:keymaps 'ivy-minibuffer-map
+    "C-j" 'ivy-next-line
+    "C-k" 'ivy-previous-line)
   :config
-  (map! (:map ivy-minibuffer-map
-         :ni "C-j" #'ivy-next-line
-         :ni "C-k" #'ivy-previous-line))
   (setq ivy-use-virtual-buffers t
         ;; number of result lines to display
         ivy-height 10
@@ -3448,7 +3450,11 @@ with richer versions. Let's install it!
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package counsel-projectile :commands counsel-projectile-bookmark)
 (use-package counsel
-  :commands (council-org-goto jump-in-buffer))
+  :commands (council-org-goto jump-in-buffer)
+  :config
+  (map! (:map counsel-mode-map
+         :ni "C-j" #'ivy-next-line
+         :ni "C-k" #'ivy-previous-line)))
 
 #+END_SRC
 *** Swiper
@@ -3671,6 +3677,7 @@ Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
 *** Org Keybindings
+
 #+BEGIN_SRC emacs-lisp
      (with-eval-after-load 'org
        (general-define-key :states '(normal) :keymaps 'org-mode-map
@@ -4351,15 +4358,13 @@ An easy way to ssh
  Basic settings
  #+BEGIN_SRC emacs-lisp 
    (use-package eshell
-     :demand t
      :commands eshell
-     ;; :bind ("C-x e" . eshell)
      :init
-     (use-package em-cmpl   :demand t :ensure nil)
-     (use-package em-prompt :demand t :ensure nil)
-     (use-package em-term   :demand t :ensure nil)
-     (use-package em-alias  :demand t :ensure nil)
-     (use-package em-smart  :demand t :ensure nil)
+     (use-package em-cmpl    :demand t :ensure nil)
+     (use-package em-prompt  :demand t :ensure nil)
+     (use-package em-term    :demand t :ensure nil)
+     (use-package em-alias   :demand t :ensure nil)
+     (use-package em-smart   :demand t :ensure nil)
      ;; plan 9
      (setq eshell-where-to-jump 'begin)
      (setq eshell-review-quick-commands nil)
@@ -4576,9 +4581,10 @@ Some bling for the prompt plus a custom theme. In general it makes the
  configure for any shell that you use.
  #+BEGIN_SRC emacs-lisp
    (use-package shell-switcher
-     :after eshell
-     :init
-     (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
+     :general
+     ("C-'" 'shell-switcher-switch-buffer)
+     ;; :init
+     ;; (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
      :config
      (setq shell-switcher-mode t))
  #+END_SRC
@@ -4911,6 +4917,7 @@ Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
  #+BEGIN_SRC emacs-lisp
    (use-package git-gutter-fringe
+     :diminish git-gutter-mode
      :after git-gutter
      :init
      (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
@@ -5100,13 +5107,13 @@ Great for managing citations and notes
   :INTERLEAVE_PDF: ${file}
   :Custom_ID: ${=key=}
   :END: 
-  [[pdfview:~/Dropbox/Work/MasterLib/${file}][file link]]
+  [[pdfview:${file}][file link]]
        ")
     (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
           bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
           bibtex-completion-pdf-field nil
           bibtex-completion-notes-path "/Users/Roambot/Dropbox/org-files/articles.org"
-          bibtex-completion-additional-search-fields '(keywords)
+          ;; bibtex-completion-additional-search-fields '(keywords)
           bibtex-completion-notes-extension ".org"
           helm-bibtex-full-frame nil) 
 
@@ -5786,8 +5793,22 @@ Auto-revert buffers of changed files
 [[http://www.wilfred.me.uk/blog/2017/08/30/helpful-adding-contextual-help-to-emacs/][Contextual help]] for emacs
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
-  :commands (helpful-function)
-)
+  :demand t
+  :config (evil-set-initial-state 'helpful-mode 'motion)
+  :general (("C-h f" 'helpful-callable)
+            ("C-h k" 'helpful-key)
+            ("C-h v" 'helpful-variable))
+  :commands (helpful-function))
+#+END_SRC
+*** EmacsMirror Epkg
+A [[https://github.com/emacscollective/epkg][helpful package]] to search [[https://emacsmirror.net][emacsmirror]] for packages
+#+BEGIN_SRC emacs-lisp
+(use-package epkg
+  :commands (epkg-list-packages epkg-list-matching-packages
+  epkg-list-keyworded-packages)
+  :config
+  (evil-set-initial-state 'epkg-list-mode 'motion)
+  (setq epkg-repository (concat cmacs-cache-dir "epkg-repository")))
 #+END_SRC
 ** Post Initialization
 *** Run Post Init Hook
