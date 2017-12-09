@@ -5406,6 +5406,13 @@ well with org-mode using org-indent. So I don't use it globally.
 (use-package vimrc-mode
   :commands vimrc-mode)
 #+END_SRC
+*** Macrostep
+Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
+#+BEGIN_SRC emacs-lisp
+(use-package macrostep
+  :commands macrostep-expand
+) 
+#+END_SRC
 ** Research & Writing
 *** Helm-Bibtex
 Great for managing citations and notes
