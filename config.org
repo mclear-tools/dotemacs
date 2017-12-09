@@ -5538,7 +5538,7 @@ Pandoc mode for markdown conversion
       ;; help pandoc find xelatex
       (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))))
 #+END_SRC
-*** Distraction free mode
+*** Writeroom (Distraction free mode)
 This simulates programs like writeroom that provide a distraction-free
 mode of writing. 
 #+BEGIN_SRC emacs-lisp
