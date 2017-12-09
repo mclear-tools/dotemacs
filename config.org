@@ -2377,7 +2377,8 @@ There are some other useful setup packages for evil
  Nice [[https://github.com/NicolasPetton/zerodark-theme][dark theme]] with custom modeline
  #+BEGIN_SRC emacs-lisp
    (use-package zerodark-theme
-     :if (display-graphic-p)
+     :disabled t
+     ;; :if (display-graphic-p)
      :config
      (custom-set-faces
        '(org-block-begin-line ((t (:background "#282c34" :foreground "#98be65" :height 0.9))))
