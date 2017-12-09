@@ -214,8 +214,6 @@ Tell =use-package= to always defer loading packages unless explicitly told other
 initialization significantly as many packages are only loaded later when they are explicitly used.
 
 #+BEGIN_SRC emacs-lisp
-  (setq use-package-always-defer t
-        use-package-verbose t)
 #+END_SRC
 ** General Settings
 *** System Defaults
@@ -730,7 +728,7 @@ A collection of ridiculously useful extensions. Indeed.
   (defun load-config ()
       "Load config "
       (interactive)
-      (load-file "~/.emacs.d/init.el"))
+      (load-file "~/.emacs.d/config.el"))
   (defun goto-dotfiles.org ()
       "Open dotfiles.org file"
       (interactive)
@@ -740,6 +738,11 @@ A collection of ridiculously useful extensions. Indeed.
       (interactive)
       (require 'ranger)
       (find-file "~/.emacs.d"))
+  (defun goto-org-files ()
+      "Open directory with org files"
+      (interactive)
+      (require 'ranger)
+      (find-file org-directory))
 
 
 #+END_SRC
@@ -2624,6 +2627,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "CD" 'goto-emacs-dir
   "Cl" 'load-config
   "Ci" 'goto-init.el
+  "Co" 'goto-org-files
   "Cs" 'goto-custom.el
   )
 
@@ -2649,6 +2653,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1
     "A" 'helm-apropos
+    "B" #'goto-dashboard
     "?" 'helm-descbinds
     ;; "?" 'counsel-descbinds
     "<SPC>" 'helm-M-x
@@ -3002,6 +3007,7 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1 
     "u"  '(:ignore t :which-key "User")
+    "ua" 'org-agenda
     "um" 'cpm/org-to-markdown   
     "uc" 'pandoc-convert-to-pdf
     "uC" 'cpm/pandoc-convert-to-pdf 
@@ -3042,6 +3048,7 @@ Keybindings for managing packages
   "wa" 'ace-window
   "wf" 'toggle-window-split
   "wc" 'delete-window
+  "wd" 'delete-window
   "wm" 'delete-other-windows
   "wr" 'rotate-windows
   "wR" 'rotate-windows-backward
