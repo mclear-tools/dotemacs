@@ -6199,13 +6199,13 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
       (symbol-value 'command)
       (documentation command)))
       (where-is command t)))
-      (defun dashboard-insert-totd (list-size) (totd)) (add-to-list
-      'dashboard-item-generators '(totd . dashboard-insert-totd))
+      (defun dashboard-insert-totd (list-size) (totd)) (add-to-list 'dashboard-item-generators '(totd . dashboard-insert-totd))
 
       (setq dashboard-startup-banner (concat cmacs-etc-dir "icons/128x128.png"))
       ;; Set the title
-      ;; (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
-      (setq dashboard-banner-logo-title (message "★ Emacs initialized in %.2fs ★" (float-time (time-subtract (current-time) my-init-el-start-time))))
+      (setq dashboard-banner-logo-title "The past is a foreign country. They do things differently there. -- L.P. Hartly, The Go-Between")
+      ;; (setq dashboard-banner-logo-title (message "★ Emacs initialized in %.2fs ★" (float-time (time-subtract (current-time) my-init-el-start-time))))
+      ;; (setq dashboard-banner-logo-title (message "★ Emacs initialized in %s ★" (emacs-init-time)))
       (dashboard-setup-startup-hook)
       (map! (:map dashboard-mode-map
         :ni     "TAB" 'widget-forward
@@ -6219,5 +6219,9 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
         :ni     "m" (dashboard-insert-shortcut "m" "Bookmarks:")
         :ni     "p" (dashboard-insert-shortcut "p" "Projects:"))))
 
+(defun goto-dashboard ()
+  "goto the dashboard"
+  (interactive)
+  (switch-to-buffer "*dashboard*"))
 #+END_SRC
 
