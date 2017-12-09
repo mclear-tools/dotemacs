@@ -3658,9 +3658,44 @@ Better dired navigation using ranger-like settings
     ; log timestamp when task is marked "DONE" or other finished keyword
     (setq org-log-done 'time)
      #+END_SRC
+**** Org Babel Languages
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (C . t)
+   (calc . t)
+   (latex . t)
+   (java . t)
+   (ruby . t)
+   (lisp . t)
+   (scheme . t)
+   (shell . t)
+   (sqlite . t)
+   (js . t)))
+
+(defun my-org-confirm-babel-evaluate (lang body)
+  "Do not confirm evaluation for these languages."
+  (not (or (string= lang "C")
+           (string= lang "java")
+           (string= lang "python")
+           (string= lang "emacs-lisp")
+           (string= lang "sqlite"))))
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate))
+#+END_SRC
+**** Org Babel Source Blocks
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t
+      org-src-window-setup 'current-window
+      org-src-strip-leading-and-trailing-blank-lines t
+      org-src-preserve-indentation t
+      org-src-tab-acts-natively t)
+#+END_SRC
+
 **** Org Config Settings
 #+BEGIN_SRC emacs-lisp
-  (setq-default org-src-fontify-natively t ;; better looking source code
+  (setq-default 
         org-return-follows-link t ;; make RET follow links
         org-list-allow-alphabetical t ;; allow alphabetical list
         org-hide-emphasis-markers t  ;; hide markers
@@ -3673,11 +3708,7 @@ Better dired navigation using ranger-like settings
         org-fontify-quote-and-verse-blocks t ;; make quotes stand out
         org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
         ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼"
-        org-confirm-babel-evaluate nil  ;; evaluate src block without confirmation
         org-startup-indented t ;; start in indent mode
-        org-src-tab-acts-natively t ;; indent for src code natively
-        ; org-src-preserve-indentation nil
-        ; org-edit-src-content-indentation t
         org-imenu-depth 8
         imenu-auto-rescan t)
 #+END_SRC
@@ -3750,8 +3781,8 @@ Better dired navigation using ranger-like settings
       :n  "d"   #'org-time-stamp
       :n  "D"   #'org-deadline
       :n  "e"   #'org-edit-special
-      :n  "n"   #'org-advance
-      :n  "N"   #'org-retreat
+      :n  "n"   #'org-narrow-to-subtree
+      :n  "N"   #'widen
       :n  "r"   #'org-refile
       :n  "s"   #'org-schedule
       :n  "t"   #'counsel-org-tag
@@ -3799,27 +3830,107 @@ Better dired navigation using ranger-like settings
           (org-bullets-mode 1)
           (global-git-gutter-mode 0)))
 #+END_SRC
-*** Org Template Expansions
+*** FIXME Org Template Expansions
+
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'org
-  (add-to-list 'org-structure-template-alist
-   '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist
-   '("n" "#+BEGIN_NOTES\n?\n#+END_NOTES"))
-  (add-to-list 'org-structure-template-alist
-   '("t" "#+BEGIN_COMMENT TODO: ?  #+END_COMMENT"))
-  (add-to-list 'org-structure-template-alist
-   '("b" "#+REVEAL: split?"))
-  (add-to-list 'org-structure-template-alist
-   '("f" "#+ATTR_REVEAL: :frag (appear)?")))
+(add-to-list 'org-structure-template-alist
+  '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+(add-to-list 'org-structure-template-alist
+  '("n" "#+BEGIN_NOTES\n?\n#+END_NOTES"))
+(add-to-list 'org-structure-template-alist
+  '("t" "#+BEGIN_COMMENT TODO: ?  #+END_COMMENT"))
+(add-to-list 'org-structure-template-alist
+  '("b" "#+REVEAL: split?"))
+(add-to-list 'org-structure-template-alist
+  '("f" "#+ATTR_REVEAL: :frag (appear)?")))
 #+END_SRC
-*** Org bullets
+
+*** Org Bullets
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :init (add-hook 'org-mode-hook 'org-bullets-mode)
   :config 
   (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "⁘" "⁙" "✶" "✪" "✵")))
 #+END_SRC
+*** Org Prettify Source Blocks
+Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'org
+    (defvar-local rasmus/org-at-src-begin -1
+      "Variable that holds whether last position was a ")
+
+    (defvar rasmus/ob-header-symbol ?☰
+      "Symbol used for babel headers")
+
+    (defun rasmus/org-prettify-src--update ()
+      (let ((case-fold-search t)
+            (re "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*")
+            found)
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward re nil t)
+            (goto-char (match-end 0))
+            (let ((args (org-trim
+                         (buffer-substring-no-properties (point)
+                                                         (line-end-position)))))
+              (when (org-string-nw-p args)
+                (let ((new-cell (cons args rasmus/ob-header-symbol)))
+                  (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
+                  (cl-pushnew new-cell found :test #'equal)))))
+
+          (setq prettify-symbols-alist
+                (cl-set-difference prettify-symbols-alist
+                                   (cl-set-difference
+                                    (cl-remove-if-not
+                                     (lambda (elm)
+                                       (eq (cdr elm) rasmus/ob-header-symbol))
+                                     prettify-symbols-alist)
+                                    found :test #'equal)))
+
+          ;; Clean up old font-lock-keywords.
+          (font-lock-remove-keywords nil prettify-symbols--keywords)
+          (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
+          (font-lock-add-keywords nil prettify-symbols--keywords)
+          (while (re-search-forward re nil t)
+            (font-lock-flush (line-beginning-position) (line-end-position))))))
+
+    (defun rasmus/org-prettify-src ()
+      "Hide src options via `prettify-symbols-mode'.
+
+    `prettify-symbols-mode' is used because it has uncollpasing. It's
+    may not be efficient."
+      (let* ((case-fold-search t)
+             (at-src-block (save-excursion
+                             (beginning-of-line)
+                             (looking-at "^[ \t]*#\\+begin_src[ \t]+[^ \f\t\n\r\v]+[ \t]*"))))
+        ;; Test if we moved out of a block.
+        (when (or (and rasmus/org-at-src-begin
+                       (not at-src-block))
+                  ;; File was just opened.
+                  (eq rasmus/org-at-src-begin -1))
+          (rasmus/org-prettify-src--update))
+        (setq rasmus/org-at-src-begin at-src-block)))
+
+    (defun rasmus/org-prettify-symbols ()
+      (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
+            (cl-reduce 'append
+                       (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                               `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
+                                 ("#+end_src"   . ?╩) ;; □
+                                 ("#+header:" . ,rasmus/ob-header-symbol)
+                                 ("#+begin_comment" . ?✎)
+                                 ("#+end_comment" . ?✎)
+                                 ("#+begin_notes" . ?➤)
+                                 ("#+end_notes" . ?➤)
+                                 ("#+begin_quote" . ?»)
+                                 ("#+end_quote" . ?«)))))
+      (turn-on-prettify-symbols-mode))
+    ;; turn off hiding of source comments
+    ;; (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
+    (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
+#+END_SRC
+
 *** Org-Goto
 Make counsel display org headings nicely. 
 #+BEGIN_SRC emacs-lisp
@@ -3866,6 +3977,29 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         (org-agenda-redo t)
         (message "[org agenda] refreshed!"))))
 #+END_SRC
+
+**** TESTING Org-Super-Agenda
+[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda
+#+BEGIN_SRC emacs-lisp
+(use-package org-super-agenda
+  :preface
+  (defun super-jump-to-org-agenda ()
+    (interactive)
+    (let ((org-super-agenda-groups
+           '((:name "Today"
+                    :time-grid t
+                    :todo "TODAY")
+             (:name "Important"
+                    :tag "bills"
+                    :priority "A")
+             (:todo "WAITING" :order 8)
+             (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+                    :order 9)
+             (:priority<= "B" :order 1))))
+      (org-agenda nil "a")))
+  :config
+  (org-super-agenda-mode))
+#+END_SRC
 *** Org Capture
 #+BEGIN_SRC emacs-lisp
       (add-hook 'org-capture-mode-hook 'evil-insert-state)
@@ -3901,6 +4035,40 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
           (delete-frame)))
 
 #+END_SRC
+
+**** FIXME Org Global Capture
+Good tips from [[https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/][reddit]]. But unfortunately doesn't seem to work on High
+Sierra for me :(
+#+BEGIN_SRC emacs-lisp
+; https://cestlaz.github.io/posts/using-emacs-24-capture-2/
+; Bind Key to: emacsclient -ne "(make-capture-frame)"
+
+(defadvice org-capture-finalize 
+    (after delete-capture-frame activate)
+  "Advise capture-finalize to close the frame"
+  (if (equal "capture" (frame-parameter nil 'name))
+      (delete-frame)))
+
+(defadvice org-capture-destroy
+    (after delete-capture-frame activate)
+  "Advise capture-destroy to close the frame"
+  (if (equal "capture" (frame-parameter nil 'name))
+      (delete-frame)))
+
+(use-package noflet
+   :defer 2
+   :ensure t )
+(defun make-capture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "capture")))
+  (select-frame-by-name "capture")
+  (delete-other-windows)
+  (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+          (org-capture)))
+
+#+END_SRC
+
 *** Org Refile
 Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
 
@@ -4224,7 +4392,144 @@ Other useful org packages
     :config
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
+*** Org Wiki
+#+begin_src emacs-lisp
+(use-package org-wiki
+  :recipe (org-wiki :type git :host github :repo "caiorss/org-wiki")
+  :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
+  :init
+  (setq  org-wiki-location "~/Dropbox/org-files/Wiki")
+)
+#+end_src
+
+*** Org Version
+A [[https://github.com/raxod502/radian/blob/ee92ea6cb0473bf7d20c6d381753011312ef4a52/radian-emacs/radian-org.el#L46-L112][useful hack]] to get =org-version= working. 
+#+begin_src emacs-lisp 
+  ;; This section is devoted to fixing the asinine version-check
+  ;; handling in Org (it's not designed to handle the case where you
+  ;; run straight from the Git repo, apparently). This is one of the
+  ;; worse hacks I've ever had the misfortune to create in Emacs.
+
+
+  ;; First we define a function to return a proper version string
+  ;; based on the Git repo. (This is somewhat similar to what happens
+  ;; in org-fixup.el.) We should really define a function that will
+  ;; return the latest tag, as well, but this remains a FIXME for now.
+  (defun radian--org-git-version ()
+    "Return the abbreviated SHA for the Org Git repo."
+    (let ((default-directory (concat user-emacs-directory
+                                     "straight/repos/org/")))
+      (if (executable-find "git")
+          (with-temp-buffer
+            ;; Returns the shortest prefix of the SHA for HEAD that is
+            ;; unique, down to a minimum of 4 characters (see
+            ;; git-rev-parse(1)).
+            (call-process "git" nil '(t nil) nil
+                          "rev-parse" "--short" "HEAD")
+            (if (> (buffer-size) 0)
+                (string-trim (buffer-string))
+              ;; This shouldn't happen, unless somehow Org is not
+              ;; actually a Git repo.
+              "revision unknown"))
+        ;; This also shouldn't happen, because how would you have
+        ;; gotten Org in the first place, then? But the real world
+        ;; sucks and we have to account for stuff like this.
+        "git not available")))
+
+
+  ;; Here we're defining `org-git-version' and `org-release' eagerly.
+  ;; Pay close attention here, since we actually do this multiple
+  ;; times. The control flow is really weird. The reason we define the
+  ;; functions here is that Emacs includes its own copy of Org, and
+  ;; these functions are autoloaded by Emacs. Now, normally the
+  ;; built-in autoloads are overridden by the version of Org
+  ;; downloaded from EmacsMirror, but since we're running straight
+  ;; from the Git repo, `org-git-version' and `org-release' are not
+  ;; generated and autoloaded. So in order to avoid the original
+  ;; autoloads from being triggered under any circumstances, we have
+  ;; to overwrite them here.
+  (defalias #'org-git-version #'radian--org-git-version)
+  (defun org-release () "9.1.3") ; FIXME: replace with a real function
+
+
+  ;; Now, the culprit function is `org-check-version', which is
+  ;; defined in org-compat.el and called from org.el. The problem with
+  ;; this function is that if the version of Org in use is not a
+  ;; release version (i.e. it's running straight from the repo, as we
+  ;; are doing), then it prints a warning. We don't want this. The
+  ;; natural thought is to override `org-check-version'.
+  ;; Unfortunately, this is completely impossible since
+  ;; `org-check-version' is a macro, and org.el (which is where the
+  ;; macro is used) is byte-compiled, so the code of
+  ;; `org-check-version' is hardcoded into org.elc. The easiest way
+  ;; around the problem, other than doing something even more
+  ;; horrifying like suppressing warnings while loading Org, seems to
+  ;; be to *pretend* that org-version.el is available, even though it
+  ;; doesn't exist. Then `org-check-version' happily defines
+  ;; `org-git-version' and `org-release' as autoloads pointing to
+  ;; org-version.el. Of course, then after Org is loaded, we have to
+  ;; override those autoloads to make the functions point back to what
+  ;; we want. Right now, the definition of `org-release' generated by
+  ;; `org-check-version' is the same as the one used above, so we
+  ;; don't bother to change it. That should change, FIXME.
+  (provide 'org-version)
+  (with-eval-after-load 'org
+    (defalias #'org-git-version #'radian--org-git-version))
+#+end_src
+
 ** Search
+*** Ag
+ #+BEGIN_SRC emacs-lisp
+   (use-package ag
+   :commands (helm-do-ag cpm/helm-files-do-ag cpm/helm-files-search-current-directory helm-do-ag-this-file helm-ag-buffers)
+   :config
+   (progn
+     (defun ag/jump-to-result-if-only-one-match ()
+       "Jump to the first ag result if that ag search came up with just one match."
+       (let (only-one-match)
+         (when (member "--stats" ag-arguments)
+           (save-excursion
+             (goto-char (point-min))
+             (setq only-one-match (re-search-forward "^1 matches\\s-*$" nil :noerror)))
+           (when only-one-match
+             (next-error)
+             (kill-buffer (current-buffer))
+             (message (concat "ag: Jumping to the only found match and "
+                              "killing the *ag* buffer."))))))
+     (add-hook 'ag-search-finished-hook #'ag/jump-to-result-if-only-one-match)  
+    
+     ;; Set default ag arguments
+     ;; It looks like the ~/.agignore is used when launching ag from emacs too.
+     ;; So the ignores from ~/.agignore don't have to be set here again.
+
+     (setq ag-highlight-search t)
+     ;; By default, ag.el will open results in a different window in the frame, so
+     ;; the results buffer is still visible. You can override this so the results
+     ;; buffer is hidden and the selected result is shown in its place:
+     (setq ag-reuse-window nil)
+     ;; reuse the same *ag* buffer for all your searches
+     (setq ag-reuse-buffers t)
+     ;; ;; To save buffer automatically when `wgrep-finish-edit'
+     ;; (setq wgrep-auto-save-buffer t)
+
+     (with-eval-after-load 'projectile
+       ;; Override the default function to use the projectile function instead
+       (defun ag/project-root (file-path)
+         (let ((proj-name (projectile-project-root)))
+           (if proj-name
+               proj-name ; return `projectile-project-root' if non-nil
+             ;; Else condition is same as the `ag/project-root' definition
+             ;; from ag.el
+             (if ag-project-root-function
+                 (funcall ag-project-root-function file-path)
+               (or (ag/longest-string
+                    (vc-git-root file-path)
+                    (vc-svn-root file-path)
+                    (vc-hg-root file-path))
+                   file-path))))))))
+
+ #+END_SRC
+ 
 *** Ripgrep (rg)
  #+BEGIN_SRC emacs-lisp 
  (use-package rg 
