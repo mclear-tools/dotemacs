@@ -186,7 +186,7 @@ We're going to increase the gc-cons-threshold to a very high number to decrease 
 We'll lower this value significantly after initialization has completed. We don't want to keep this value
 too high or it will result in long GC pauses during normal usage.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
 (eval-and-compile
   (setq gc-cons-threshold 402653184
         gc-cons-percentage 0.6))
@@ -2080,6 +2080,7 @@ Install, automatically load, and enable evil. It's like vim, but better!
       (setq evil-visual-state-tag "VISUAL")
       ;use insert in commits automatically 
       (add-hook 'git-commit-mode-hook 'evil-insert-state)
+      (evil-set-initial-state 'messages-buffer-mode 'motion)
       (evil-set-initial-state 'magit-log-edit-mode 'insert)
       ;; evil-normal-state is preferred, so revert when idle
       (run-with-idle-timer 60 t 'evil-normal-state)
@@ -2126,13 +2127,20 @@ There are some other useful setup packages for evil
 #+begin_src emacs-lisp
   (use-package evil-surround
     :commands (evil-surround-region evil-surround-change)
+    :init 
+    (general-define-key
+    :states '(visual)
+    "s" 'evil-surround-region
+    "S" 'evil-substitute)
     :config (global-evil-surround-mode 1))
 
   (use-package embrace)
   (use-package evil-embrace
+   :after evil-surround
    :config
    (evil-embrace-enable-evil-surround-integration)
    (setq evil-embrace-show-help-p nil)
+   :init
    (add-hook 'org-mode-hook 'embrace-org-mode-hook)
    (add-hook 'text-mode-hook
       (lambda () 
