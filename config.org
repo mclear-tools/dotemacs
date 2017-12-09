@@ -2386,9 +2386,76 @@ There are some other useful setup packages for evil
      (zerodark-setup-modeline-format)
      )
  #+END_SRC
-**** Modeline
-***** Spaceline 
+***** Circadian Theme-changer (based on time of day)
+[[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
 #+BEGIN_SRC emacs-lisp 
+(use-package circadian
+  :if (display-graphic-p)
+  :defer 1
+  :config
+  (ignore-errors
+  (setq circadian-themes '((:sunrise . gruvbox-light-soft)
+                           ("11:00"  . solarized-light)
+                           ("14:30"  . adwaita)
+                           (:sunset  . solarized-dark)))
+  (circadian-setup)))
+#+END_SRC
+
+**** Modeline
+***** Spaceline All The Icons
+[[https://github.com/domtronn/spaceline-all-the-icons.el][Pretty icons]] for [[https://github.com/TheBB/spaceline][spaceline]] using [[https://github.com/domtronn/all-the-icons.el][all-the-icons.el]]. This is a nice
+package but still a bit buggy. Also adds a couple seconds to the load
+time. 
+#+BEGIN_SRC emacs-lisp
+  ;; Mode line
+  (use-package spaceline
+    :demand t
+    :init 
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+    :config 
+    (require 'spaceline-config)
+    (setq powerline-image-apple-rgb t)
+    ;; use simple config in terminal
+    (if (not (display-graphic-p))
+      (spaceline-spacemacs-theme)
+      (spaceline-toggle-line-column-off)
+      ))
+
+  (use-package spaceline-all-the-icons 
+    :after spaceline
+    :if (display-graphic-p)  ;; no icons in terminal
+    :config (spaceline-all-the-icons-theme)
+    ;; Configuration
+    (setq spaceline-responsive nil)
+    (spaceline-all-the-icons--setup-anzu) ;; Enable anzu search
+    (spaceline-all-the-icons--setup-neotree) ;; Enable Neotree mode line
+    (setq powerline-text-scale-factor 1)
+    (setq spaceline-all-the-icons-separator-scale 1.75)
+    (setq spaceline-all-the-icons-separator-type 'arrow
+          spaceline-all-the-icons-icon-set-modified 'circle
+          spaceline-all-the-icons-icon-set-window-numbering 'solid
+          spaceline-all-the-icons-icon-set-eyebrowse-slot 'square
+          spaceline-all-the-icons-primary-separator "|"
+          spaceline-all-the-icons-secondary-separator " ")
+     ;; Toggles
+     (spaceline-toggle-all-the-icons-time-on)
+     (spaceline-toggle-all-the-icons-battery-status-off)
+     (spaceline-toggle-all-the-icons-buffer-size-off)
+     (spaceline-toggle-all-the-icons-buffer-position-on)
+     (spaceline-toggle-all-the-icons-hud-on)
+     (spaceline-toggle-all-the-icons-buffer-path-on)
+     (spaceline-toggle-all-the-icons-narrowed-on)
+     (spaceline-toggle-all-the-icons-flycheck-status-off)
+     (spaceline-toggle-all-the-icons-vc-icon-off)
+     (spaceline-toggle-all-the-icons-vc-status-on)
+     (spaceline-toggle-all-the-icons-git-status-off)
+     (spaceline-toggle-all-the-icons-position-on)
+  )
+#+END_SRC
+
+
+***** DISABLED Spaceline 
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package spaceline
     :demand t
     :init 
