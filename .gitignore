@@ -9,3 +9,4 @@ cache/
 /.local/@roambot/etc/snippets/.DS_Store
 /snippets
 snippets/
+/#config.org#
