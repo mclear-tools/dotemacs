@@ -1070,7 +1070,7 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
    ((eq major-mode 'org-mode)
     (call-interactively 'counsel-org-goto))
    (t
-    (call-interactively 'counsel-imenu))))
+    (call-interactively 'helm-semantic-or-imenu))))
 #+END_SRC
 **** Jump to sexp
 #+BEGIN_SRC emacs-lisp
