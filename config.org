@@ -4037,7 +4037,26 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
           (delete-frame)))
 
 #+END_SRC
+**** Alfred capture workflow
+Help alfred and org [[https://github.com/jjasghar/alfred-org-capture][play nice]]
+#+BEGIN_SRC emacs-lisp
+(defun make-orgcapture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "remember") (width . 90) (height . 20)
+                (top . 400) (left . 300)
+                ;; (font . "-apple-Monaco-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1")
+                ))
+  (select-frame-by-name "remember")
+  (org-capture))
+    (defadvice org-capture-finalize
+        (after delete-capture-frame activate)
+      "Advise capture-finalize to close the frame"
+      (if (equal "remember" (frame-parameter nil 'name))
+          (delete-frame)))
 
+
+#+END_SRC
 **** FIXME Org Global Capture
 Good tips from [[https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/][reddit]]. But unfortunately doesn't seem to work on High
 Sierra for me :(
