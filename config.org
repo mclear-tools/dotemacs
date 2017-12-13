@@ -5944,10 +5944,8 @@ Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools-org 
     :ensure nil
-    :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org)
-    :init
-    ;; (add-to-list 'load-path "/Users/Roambot/.emacs.d/pdf-tools-org/")
-)
+    :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org))
+
       ;; Extracting annotations using pdf-tools
       ;; modified from https://github.com/politza/pdf-tools/pull/133 
       ;; taken from http://matt.hackinghistory.ca/2015/11/11/note-taking-with-pdf-tools/
