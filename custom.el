@@ -46,7 +46,8 @@
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((nameless-current-name . "pandoc")
+    ((org-list-allow-alphabetical . t)
+     (nameless-current-name . "pandoc")
      (org-download-heading-lvl))))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#657b83" 0.2))
  '(term-default-bg-color "#fdf6e3")
