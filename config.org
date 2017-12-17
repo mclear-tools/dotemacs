@@ -3692,9 +3692,9 @@ Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t
       org-src-window-setup 'current-window
-      org-src-strip-leading-and-trailing-blank-lines t
-      org-src-preserve-indentation t
-      org-src-tab-acts-natively t)
+      org-src-strip-leading-and-trailing-blank-lines t)
+      ;; org-src-preserve-indentation t
+      ;; org-src-tab-acts-natively t)
 #+END_SRC
 
 **** Org Config Settings
@@ -3707,7 +3707,6 @@ Better dired navigation using ranger-like settings
         org-pretty-entities-include-sub-superscripts t
         org-hide-leading-stars t
         org-startup-folded t
-        org-startup-indented t
         org-M-RET-may-split-line '((default . nil))  ;; don't split line when creating a new headline, list item, or table field
         org-fontify-quote-and-verse-blocks t ;; make quotes stand out
         org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
@@ -3716,19 +3715,11 @@ Better dired navigation using ranger-like settings
         org-imenu-depth 8
         imenu-auto-rescan t)
 #+END_SRC
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
 *** Org Keybindings
 
 #+BEGIN_SRC emacs-lisp
-     (with-eval-after-load 'org
-       (general-define-key :states '(normal) :keymaps 'org-mode-map
+(with-eval-after-load 'org
+     (general-define-key :states '(normal) :keymaps 'org-mode-map
           "RET" 'org-open-at-point     ;; Open with return in evil
           "L" 'org-shiftright
           "H" 'org-shiftleft
