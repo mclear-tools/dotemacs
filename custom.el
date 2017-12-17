@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
- '(bmkp-last-as-first-bookmark-file "/Users/roambot/.emacs.d/.local/@roambot/cache/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.local/@roambot/cache/bookmarks")
  '(compilation-message-face (quote default))
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#657b83")
@@ -46,7 +46,11 @@
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((org-list-allow-alphabetical . t)
+    ((eval when
+           (fboundp
+            (quote rainbow-mode))
+           (rainbow-mode 1))
+     (org-list-allow-alphabetical . t)
      (nameless-current-name . "pandoc")
      (org-download-heading-lvl))))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#657b83" 0.2))
