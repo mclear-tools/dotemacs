@@ -2228,8 +2228,8 @@ There are some other useful setup packages for evil
  The best low-contrast theme out there.
  #+BEGIN_SRC emacs-lisp
    (use-package solarized-theme
-     :demand t
      :if (display-graphic-p)
+     :defer t
      :init
        (progn
        (setq org-todo-keyword-faces
@@ -2246,7 +2246,9 @@ There are some other useful setup packages for evil
            (setq solarized-use-variable-pitch t)
 
            ;; make the modeline high contrast
-           (setq solarized-high-contrast-mode-line t)
+           (setq solarized-high-contrast-mode-line nil)
+           ;; use this setting without hi contrast modeline
+           (setq x-underline-at-descent-line t)
 
            ;; Use bolding
            (setq solarized-use-less-bold nil)
@@ -2277,18 +2279,17 @@ There are some other useful setup packages for evil
                (setq active-theme 'solarized-dark)
              (setq active-theme 'solarized-light))
            (load-theme active-theme)
-           (powerline-reset))
-           )
-           :config
+           (powerline-reset)))
+
             (progn
-              (defvar after-load-theme-hook nil
-		"Hook run after a color theme is loaded using `load-theme'.")
-              (defadvice load-theme (after run-after-load-theme-hook activate)
-		"Run `after-load-theme-hook'."
-		(run-hooks 'after-load-theme-hook))
-              (defun customize-solarized-dark ()
-		"Customize solarized theme"
-		(if (member 'solarized-dark custom-enabled-themes)
+            (defvar after-load-theme-hook nil
+            "Hook run after a color theme is loaded using `load-theme'.")
+            (defadvice load-theme (after run-after-load-theme-hook activate)
+            "Run `after-load-theme-hook'."
+            (run-hooks 'after-load-theme-hook))
+            (defun customize-solarized-dark ()
+            "Customize solarized theme"
+            (if (member 'solarized-dark custom-enabled-themes)
                     (custom-theme-set-faces
                     'solarized-dark
                     ;; org faces
@@ -2318,9 +2319,9 @@ There are some other useful setup packages for evil
 
              (add-hook 'after-load-theme-hook 'customize-solarized-dark)
 
-             (defun customize-solarized-light ()
-		"Customize solarized theme"
-		(if (member 'solarized-light custom-enabled-themes)
+        (defun customize-solarized-light ()
+        "Customize solarized theme"
+        (if (member 'solarized-light custom-enabled-themes)
                     (custom-theme-set-faces
                     'solarized-light
                     ;; org faces
@@ -2353,7 +2354,7 @@ There are some other useful setup packages for evil
 
              (add-hook 'after-load-theme-hook 'customize-solarized-light)
              )
-             (load-theme 'solarized-dark t)
+             ;; (load-theme 'solarized-dark t)
              )
 
            ;; Avoid all font-size changes
@@ -2362,14 +2363,13 @@ There are some other useful setup packages for evil
            ;; (setq solarized-height-plus-2 1)
            ;; (setq solarized-height-plus-3 1)
            ;; (setq solarized-height-plus-4 1))
-
  #+END_SRC
+
 ***** Gruvbox
  This is a great general-purpose theme. Use it in terminal.
 
  #+BEGIN_SRC emacs-lisp
  (use-package gruvbox-theme
-   :ensure t 
    :if (not (display-graphic-p))
    :config
    (load-theme 'gruvbox t)
@@ -2379,7 +2379,7 @@ There are some other useful setup packages for evil
  Nice [[https://github.com/NicolasPetton/zerodark-theme][dark theme]] with custom modeline
  #+BEGIN_SRC emacs-lisp
    (use-package zerodark-theme
-     :disabled t
+     :defer t
      ;; :if (display-graphic-p)
      :config
      (custom-set-faces
@@ -2392,20 +2392,20 @@ There are some other useful setup packages for evil
 ***** Circadian Theme-changer (based on time of day)
 [[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
 #+BEGIN_SRC emacs-lisp 
-(use-package circadian
-  :if (display-graphic-p)
-  :defer 1
-  :config
-  (ignore-errors
-  (setq circadian-themes '((:sunrise . gruvbox-light-soft)
-                           ("11:00"  . solarized-light)
-                           ("14:30"  . adwaita)
-                           (:sunset  . solarized-dark)))
-  (circadian-setup)))
+  (use-package circadian
+    :if (display-graphic-p)
+    :defer .25
+    :config
+    (ignore-errors
+    (setq circadian-themes '((:sunrise . gruvbox-light-soft)
+                             ("11:00"  . solarized-light)
+                             ("14:30"  . adwaita)
+                             (:sunset  . solarized-dark)))
+    (circadian-setup)))
 #+END_SRC
 
 **** Modeline
-***** Spaceline All The Icons
+***** DISABLED Spaceline All The Icons
 [[https://github.com/domtronn/spaceline-all-the-icons.el][Pretty icons]] for [[https://github.com/TheBB/spaceline][spaceline]] using [[https://github.com/domtronn/all-the-icons.el][all-the-icons.el]]. This is a nice
 package but still a bit buggy. Also adds a couple seconds to the load
 time. 
