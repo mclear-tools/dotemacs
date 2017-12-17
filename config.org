@@ -4949,7 +4949,7 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
   (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
 #+END_SRC
 ** Completion
-*** Yasnippet
+*** DISABLED Yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
     :commands (yas-expand yas-minor-mode)
