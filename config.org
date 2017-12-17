@@ -6138,12 +6138,13 @@ Auto-revert buffers of changed files
 [[http://www.wilfred.me.uk/blog/2017/08/30/helpful-adding-contextual-help-to-emacs/][Contextual help]] for emacs
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
-  :demand t
   :config (evil-set-initial-state 'helpful-mode 'motion)
-  :general (("C-h f" 'helpful-callable)
-            ("C-h k" 'helpful-key)
-            ("C-h v" 'helpful-variable))
-  :commands (helpful-function))
+  :general
+  ("C-h f" #'helpful-callable)
+  ("C-h k" #'helpful-key)
+  ("C-h v" #'helpful-variable)
+  ("C-c C-." #'helpful-at-point)
+  :commands (helpful-function helpful-callable helpful-key helpful-variable helpful-at-point))
 #+END_SRC
 *** EmacsMirror Epkg
 A [[https://github.com/emacscollective/epkg][helpful package]] to search [[https://emacsmirror.net][emacsmirror]] for packages
@@ -6155,6 +6156,7 @@ A [[https://github.com/emacscollective/epkg][helpful package]] to search [[https
   (evil-set-initial-state 'epkg-list-mode 'motion)
   (setq epkg-repository (concat cmacs-cache-dir "epkg-repository")))
 #+END_SRC
+
 ** Post Initialization
 *** Run Post Init Hook
 
