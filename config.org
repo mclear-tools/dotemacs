@@ -2145,6 +2145,8 @@ There are some other useful setup packages for evil
    (add-hook 'text-mode-hook
       (lambda () 
           (embrace-add-pair ?* "*" "*")
+          (embrace-add-pair ?\ "\\" "\\")
+          (embrace-add-pair ?/ "/" "/")
           (embrace-add-pair ?$ "$" "$")))
    (add-hook 'LaTeX-mode-hook
       (lambda ()
