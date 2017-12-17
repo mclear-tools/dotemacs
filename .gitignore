@@ -10,3 +10,6 @@ cache/
 /snippets
 snippets/
 /#config.org#
+.cache/
+elpa/
+var/
