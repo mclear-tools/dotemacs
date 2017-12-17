@@ -32,7 +32,6 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#security-settings][Security Settings]]
   - [[#emacs-initialization][Emacs Initialization]]
   - [[#general-settings][General Settings]]
-  - [[#functions--macros][Functions & Macros]]
   - [[#useful-libraries][Useful Libraries]]
   - [[#modal-editing][Modal Editing]]
   - [[#appearance--ui][Appearance & UI]]
@@ -441,268 +440,15 @@ customize settings in [[file:init.el][init.el]].
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
-*** Mac OS 
-There is some configuration to do when running Emacs on OS X (hence the
-"darwin" system-type check).
-
-First we can define some general system checks
-#+BEGIN_SRC emacs-lisp
-(setq IS-LINUX (eq system-type 'gnu/linux)
-      IS-MAC (eq system-type 'darwin))
-#+END_SRC
-
-
-#+begin_src emacs-lisp
-    (when IS-MAC
-      ;; make fonts look better with anti-aliasing
-      (setq mac-allow-anti-aliasing t)
-      ;; delete files by moving them to the trash
-      (setq delete-by-moving-to-trash t)
-      (setq trash-directory "~/.Trash")
-
-      ;; Don't make new frames when opening a new file with Emacs
-      (setq ns-pop-up-frames nil)
-
-      ;; fullscreen (disable for non-space full screen)
-      (setq ns-use-native-fullscreen t)
-
-      ;; disable emacs-mac smooth scrolling because it is seriously janky
-      (setq mac-mouse-wheel-smooth-scroll nil)
-
-      ;; Set modifier keys
-      (setq mac-option-modifier 'meta) ;; Bind meta to ALT
-      (setq mac-command-modifier 'super) ;; Bind apple/command to super if you want
-      (setq mac-function-modifier 'hyper) ;; Bind function key to hyper if you want 
-      (setq mac-right-option-modifier 'none) ;; unbind right key for accented input
-
-      ;; Make forward delete work 
-      (global-set-key (kbd "<H-backspace>") 'delete-forward-char)
-
-      ;; Keybindings
-      (global-set-key (kbd "s-=") 'scale-up-font)
-      (global-set-key (kbd "s--") 'scale-down-font)
-      (global-set-key (kbd "s-0") 'reset-font-size)
-      (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-      (global-set-key (kbd "s-v") 'yank)
-      (global-set-key (kbd "s-c") 'evil-yank)
-      (global-set-key (kbd "s-a") 'mark-whole-buffer)
-      (global-set-key (kbd "s-x") 'kill-region)
-      (global-set-key (kbd "s-w") 'delete-window)
-      (global-set-key (kbd "s-W") 'delete-frame)
-      (global-set-key (kbd "s-n") 'make-frame)
-      (global-set-key (kbd "s-z") 'undo-tree-undo)
-      (global-set-key (kbd "s-s")
-                      (lambda ()
-                        (interactive)
-                        (call-interactively (key-binding "\C-x\C-s"))))
-      (global-set-key (kbd "s-Z") 'undo-tree-redo)
-      (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
-      ;; Emacs sometimes registers C-s-f as this weird keycode
-      (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
-  )
-
-      (defun open-dir-in-iterm ()
-        "Open the current directory of the buffer in iTerm."
-        (interactive)
-        (let* ((iterm-app-path "/Applications/iTerm.app")
-               (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
-               (iterm-path (if (file-directory-p iterm-app-path)
-                               iterm-app-path
-                             iterm-brew-path)))
-          (shell-command (concat "open -a " iterm-path " ."))))
-          (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
-
-      ;; Not going to use these commands
-      (put 'ns-print-buffer 'disabled t)
-      (put 'suspend-frame 'disabled t)
-
-      ;; -- This is for TextExpander
-      ;; (setq ns-alternate-modifier 'alt)
-      ;; (define-key global-map [(alt ?v)] 'scroll-down)
-      ;; (define-key global-map [(meta ?v)] 'yank)
-#+end_src
-*** Time and Date Stamps
-**** Emacs buffer timestamp settings
-#+BEGIN_SRC emacs-lisp
-  (setq 
-    time-stamp-active t          ; do enable time-stamps
-    time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp: 
-    time-stamp-format "Last modified on %02m-%02d-%04y %02H:%02M:%02S (%U)") ; date format
-  (add-hook 'write-file-hooks 'time-stamp) ; update when saving
-#+END_SRC
-**** Insert time or date
-The code below sets the correct value for system-time-locale, and binds
-keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
-#+BEGIN_SRC emacs-lisp
-  (defun format-date (format)
-  (let ((system-time-locale "en_US.UTF-8"))
-    (insert (format-time-string format))))
-
-(defun insert-date ()
-  (interactive)
-  (format-date "%A, %B %d %Y"))
-
-(defun insert-date-and-time ()
-  (interactive)
-  (format-date "%m-%d-%Y %H:%M:%S"))
-#+END_SRC
-*** Location
-Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-location][geographical location]] on OS X
-#+BEGIN_SRC emacs-lisp
-(use-package osx-location
-  :if (eq system-type 'darwin)
-  :demand t
-  :config
-  (osx-location-watch)
-  (add-hook 'osx-location-changed-hook
-               (lambda ()
-                 (setq calendar-latitude osx-location-latitude
-                       calendar-longitude osx-location-longitude
-                       calendar-location-name (format "%s, %s" osx-location-latitude osx-location-longitude)))))
-#+END_SRC
-*** Text Settings
-General Text settings and hooks
-**** Sentence endings
-#+BEGIN_SRC emacs-lisp
-;; Single space between sentences is more widespread than double
-(setq-default sentence-end-double-space nil)
-#+END_SRC
-**** Subwords and CamelCase
-#+BEGIN_SRC emacs-lisp
-; Iterate through CamelCase words
-(global-subword-mode 1)                           
-#+END_SRC
-**** Spelling
-Use flyspell and aspell
-#+BEGIN_SRC emacs-lisp
-(use-package ispell
-  :defer 10
-  :config
-  ;; Save a new word to personal dictionary without asking
-  (setq ispell-silently-savep t)
-  (setq-default ispell-program-name "aspell")
-  (setq-default ispell-list-command "list")
-  (setq ispell-extra-args
-      (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
-            "--lang=en_US"
-            "--ignore=3")))
-
-(use-package flyspell
-  :diminish flyspell-mode
-  :defer 11
-  ;; :commands (flyspell-mode flyspell-prog-mode)
-  :init
-  (progn
-  ;; Below variables need to be set before `flyspell' is loaded.
-    (setq flyspell-use-meta-tab nil))
-  :config
-  ;; Save a new word to personal dictionary without asking
-  (setq flyspell-issue-welcome-flag nil))
-#+END_SRC 
-**** Flyspell hooks
-Flyspell is in elisp mode. And this in turn loads flyspell directly
-after launching emacs, which is a bit unfortunate.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun my-flyspell-prog-mode ()
-  (interactive)
-  (unless (string= (buffer-name) "*scratch*")
-	(flyspell-prog-mode)))
-    (add-hook 'prog-mode-hook  #'my-flyspell-prog-mode)
-    (add-hook 'text-mode-hook  #'flyspell-mode)
-    (add-hook 'org-mode-hook   #'flyspell-mode)
-    (add-hook 'latex-mode-hook #'flyspell-mode)
-    (add-hook 'LaTeX-mode-hook #'flyspell-mode)
-#+END_SRC
-**** Spelling Autocorrect
-Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
-#+BEGIN_SRC emacs-lisp
-(define-key ctl-x-map "\C-i"
-  #'endless/ispell-word-then-abbrev)
-
-(defun endless/simple-get-word ()
-  (car-safe (save-excursion (ispell-get-word nil))))
-
-(defun endless/ispell-word-then-abbrev (p)
-  "Call `ispell-word', then create an abbrev for it.
-With prefix P, create local abbrev. Otherwise it will
-be global.
-If there's nothing wrong with the word at point, keep
-looking for a typo until the beginning of buffer. You can
-skip typos you don't want to fix with `SPC', and you can
-abort completely with `C-g'."
-  (interactive "P")
-  (let (bef aft)
-    (save-excursion
-      (while (if (setq bef (endless/simple-get-word))
-                 ;; Word was corrected or used quit.
-                 (if (ispell-word nil 'quiet)
-                     nil ; End the loop.
-                   ;; Also end if we reach `bob'.
-                   (not (bobp)))
-               ;; If there's no word at point, keep looking
-               ;; until `bob'.
-               (not (bobp)))
-        (backward-word)
-        (backward-char))
-      (setq aft (endless/simple-get-word)))
-    (if (and aft bef (not (equal aft bef)))
-        (let ((aft (downcase aft))
-              (bef (downcase bef)))
-          (define-abbrev
-            (if p local-abbrev-table global-abbrev-table)
-            bef aft)
-          (message "\"%s\" now expands to \"%s\" %sally"
-                   bef aft (if p "loc" "glob")))
-      (user-error "No typo at or before point"))))
-
-(setq save-abbrevs 'silently)
-
-(use-package abbrev
-  :ensure nil
-  :commands (abbrev-mode))
-
-#+END_SRC
-**** Only use spaces
-#+BEGIN_SRC emacs-lisp
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-(setq-default indicate-empty-lines nil)
-#+END_SRC
-**** Line wrap
-#+BEGIN_SRC emacs-lisp
-(global-visual-line-mode)
-(setq line-move-visual t) ;; move via visual lines
-#+END_SRC
-**** Fill column
-#+BEGIN_SRC emacs-lisp
-(setq-default fill-column 78)
-#+END_SRC
-**** Visual replace
-This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
-
-#+BEGIN_SRC emacs-lisp
-(use-package visual-regexp
-  :commands (vr/query-replace)
-  :config
-  (use-package visual-regexp-steroids
-    :commands (vr/select-query-replace)))
-#+END_SRC
-**** Show Matching Brackets
-Show matching brackets, parenthesis, etc.
-#+BEGIN_SRC emacs-lisp
-(show-paren-mode t)
-(setq show-paren-delay 0) 
-#+END_SRC
-** Functions & Macros
-*** Useful Functions 
+*** Functions & Macros
+**** Useful Functions 
   Various useful functions and macros I've written or pilfered from others. 
-**** Crux
+***** Crux
 A collection of ridiculously useful extensions. Indeed.
 #+BEGIN_SRC emacs-lisp
 (use-package crux :defer 10)
 #+END_SRC
-**** Toggle Fold
+***** Toggle Fold
 #+BEGIN_SRC emacs-lisp
   (defun cmacs/toggle-fold ()
     (interactive)
@@ -710,7 +456,7 @@ A collection of ridiculously useful extensions. Indeed.
       (end-of-line)
       (hs-toggle-hiding)))
 #+END_SRC
-**** Config functions
+***** Config functions
 #+BEGIN_SRC emacs-lisp
   (defun goto-init.el ()
       "Open init.el file"
@@ -745,20 +491,20 @@ A collection of ridiculously useful extensions. Indeed.
 
 
 #+END_SRC
-**** Duplicate file
+***** Duplicate file
 Duplicate a file in dired or deer
 #+BEGIN_SRC emacs-lisp
 (defun cpm/duplicate-file ()
   (interactive)
   (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 (copy).\\2"))
 #+END_SRC
-**** Switch to previous buffer
+***** Switch to previous buffer
 #+BEGIN_SRC emacs-lisp
   (defun switch-to-previous-buffer ()
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+END_SRC
-**** Make parent directory
+***** Make parent directory
  Create a directory – or a hierarchy of them – while finding a file in a
  nonexistent directory. From [[http://mbork.pl/2016-07-25_Making_directories_on_the_fly][mbork]]. 
 #+BEGIN_SRC emacs-lisp
@@ -768,7 +514,7 @@ Duplicate a file in dired or deer
 
   (add-hook 'find-file-not-found-functions #'make-parent-directory)
 #+END_SRC
-**** New Git Project
+***** New Git Project
 Courtesy of a helpful [[https://www.reddit.com/r/emacs/comments/70ke5w/help_fix_my_workflow_to_create_a_new_gitmanaged/][reddit post]]
 #+BEGIN_SRC emacs-lisp
 (defun cpm/git-new-project ()
@@ -780,7 +526,7 @@ Courtesy of a helpful [[https://www.reddit.com/r/emacs/comments/70ke5w/help_fix_
     (projectile-add-known-project project-dir)
     (setq default-directory project-dir)))
 #+END_SRC
-**** Org wrap in block template
+***** Org wrap in block template
 A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
 #+begin_src emacs-lisp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -832,7 +578,7 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
               (save-excursion (insert "#+END_" choice))))))))))
 
 #+end_src
-**** Copy formatted org-mode text to rtf
+***** Copy formatted org-mode text to rtf
 Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/Copy-formatted-org-mode-text-from-Emacs-to-other-applications/][John Kitchin]].
 #+BEGIN_SRC emacs-lisp
   (defun formatted-copy ()
@@ -851,7 +597,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
 (global-set-key (kbd "H-w") 'formatted-copy)
 
 #+END_SRC
-**** Don't export Org-mode headlines
+***** Don't export Org-mode headlines
 #+BEGIN_SRC emacs-lisp
   (defun org-remove-headlines (backend)
   "Remove headlines with :no_title: tag."
@@ -866,7 +612,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   ;; the following isn't currently working with org-mode 9
   ;; (add-hook 'org-export-before-processing-hook #'org-remove-headlines)
 #+END_SRC
-**** Move File
+***** Move File
 #+BEGIN_SRC emacs-lisp
 (defun move-file ()
   "Write this file to a new location, and delete the old one."
@@ -876,7 +622,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
     (when old-location
       (delete-file old-location))))
 #+END_SRC
-**** Pandoc conversion from clipboard
+***** Pandoc conversion from clipboard
 #+BEGIN_SRC emacs-lisp
   (defun cpm/org-to-markdown ()
     "convert clipboard contents from org to markdown and paste"
@@ -922,7 +668,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
 
 
 #+END_SRC
-**** Resume last search
+***** Resume last search
 #+BEGIN_SRC emacs-lisp
   (defun last-search-buffer ()
         "open last helm-ag or hgrep buffer."
@@ -936,7 +682,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
               (t
                (message "No previous search buffer found"))))
 #+END_SRC
-**** Toggle Window Split
+***** Toggle Window Split
 Move from a horizontal to a vertical split and vice versa
 #+BEGIN_SRC emacs-lisp
 (defun toggle-window-split ()
@@ -965,7 +711,7 @@ Move from a horizontal to a vertical split and vice versa
       (if this-win-2nd (other-window 1))))))
 
 #+END_SRC
-**** Rotate windows
+***** Rotate windows
 #+BEGIN_SRC emacs-lisp
 ;; from magnars modified by ffevotte for dedicated windows support
 (defun rotate-windows (count)
@@ -1002,7 +748,7 @@ argument takes the kindows rotate backwards."
   (interactive "p")
   (rotate-windows (* -1 count)))
 #+END_SRC
-**** Swap windows
+***** Swap windows
 Swap buffers in windows and leave the cursor in the original window.
 Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touch-of-elisp/#.WX5Wg0czpcx][video]].
 #+BEGIN_SRC emacs-lisp
@@ -1013,7 +759,7 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
 (aw-flip-window)
 )
 #+END_SRC 
-**** Open projects directory
+***** Open projects directory
 #+BEGIN_SRC emacs-lisp
   (defun goto-projects ()
       "Open projects dir"
@@ -1022,7 +768,7 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
       (find-file "~/Dropbox/Work/projects"))
 
 #+END_SRC
-**** Reveal in Finder
+***** Reveal in Finder
 #+BEGIN_SRC emacs-lisp
 (defun browse-file-directory ()
   "Open the current file's directory however the OS would."
@@ -1031,7 +777,7 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
       (browse-url-of-file (expand-file-name default-directory))
     (error "No `default-directory' to open")))
 #+END_SRC
-**** Search directories with ag
+***** Search directories with ag
 #+BEGIN_SRC emacs-lisp
 (defun cpm/helm-files-do-ag (&optional dir)
   "Search in files with `ag' using a default input."
@@ -1043,7 +789,7 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
     (interactive)
     (helm-do-ag (file-name-directory buffer-file-name)))
 #+END_SRC
-**** Sticky Buffer/Window
+***** Sticky Buffer/Window
 Stick/Lock buffer to window, courtesy of [[https://gist.github.com/ShingoFukuyama/8797743][ShingoFukuyama]].
 #+BEGIN_SRC emacs-lisp
 ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00975.html
@@ -1060,7 +806,7 @@ Stick/Lock buffer to window, courtesy of [[https://gist.github.com/ShingoFukuyam
     (set-window-dedicated-p (selected-window) sticky-buffer-mode)
     (setq header-line-format sticky-buffer-previous-header-line-format)))
 #+END_SRC
-**** Jump in buffer
+***** Jump in buffer
 I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for navigating in tagged buffers. 
 #+BEGIN_SRC emacs-lisp
 (defun jump-in-buffer ()
@@ -1071,7 +817,7 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
    (t
     (call-interactively 'helm-semantic-or-imenu))))
 #+END_SRC
-**** Jump to sexp
+***** Jump to sexp
 #+BEGIN_SRC emacs-lisp
 (defun forward-or-backward-sexp (&optional arg)
   "Go to the matching parenthesis character if one is adjacent to point."
@@ -1082,13 +828,13 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
         ((looking-at "\\s)") (forward-char) (backward-sexp arg))
         ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 #+END_SRC
-**** Goto journal 
+***** Goto journal 
 #+BEGIN_SRC emacs-lisp
   (defun goto-journal ()
     (interactive)
     (find-file "/Users/Roambot/Dropbox/org-files/journal.org"))
 #+END_SRC
-**** Eval emacs buffer until error
+***** Eval emacs buffer until error
 #+BEGIN_SRC emacs-lisp
   (defun eval-buffer-until-error ()
   "Evaluate emacs buffer until error occured."
@@ -1096,14 +842,14 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
   (goto-char (point-min))
   (while t (eval (read (current-buffer)))))
 #+END_SRC
-**** Reveal to PDF
+***** Reveal to PDF
 #+BEGIN_SRC emacs-lisp
   (defun reveal-to-pdf ()
   "print reveal.js slides to pdf"
   (interactive)
   (async-shell-command "phantomjs /Users/Roambot/bin/print-pdf.js 'file:///Users/Roambot/projects/phil101/content/slides/lecture_outline.html?print-pdf'")) 
 #+END_SRC
-**** Org Tree to File
+***** Org Tree to File
 Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659823][this]] superuser answer.
 #+begin_src emacs-lisp
 (defun subtree-to-new-file ()
@@ -1114,7 +860,7 @@ Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659
     (read-file-name "Move subtree to file:" "$HOME"))
 (org-paste-subtree))
 #+end_src
-**** Fill/Unfill Paragraphs
+***** Fill/Unfill Paragraphs
 Artur Malabarba has a [[http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html][useful discussion]] of how to fill/unfill
 paragraphs with the same command.
 #+BEGIN_SRC emacs-lisp
@@ -1131,7 +877,7 @@ paragraphs with the same command.
 (global-set-key [remap fill-paragraph]
                 #'endless/fill-or-unfill)
 #+END_SRC
-**** Other functions
+***** Other functions
 Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
 #+BEGIN_SRC emacs-lisp
   ;; Regexp for useful and useless buffers for smarter buffer switching, from spacemacs
@@ -1263,8 +1009,8 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     (interactive)
     (call-interactively 'write-file))
 #+END_SRC
-*** CMACS Functions
-**** File Functions
+**** CMACS Functions
+***** File Functions
 
 #+BEGIN_SRC emacs-lisp
   (defun cmacs/copy-file ()
@@ -1445,7 +1191,7 @@ Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] 
     (interactive)
     (cmacs/sudo-find-file (file-truename buffer-file-name)))
 #+END_SRC
-**** Buffer Functions
+***** Buffer Functions
 
 #+BEGIN_SRC emacs-lisp
 (defun cmacs/kill-buffer-and-windows (buffer)
@@ -1541,7 +1287,7 @@ project."
       (whitespace-mode -1)
     (whitespace-mode +1)))
 #+END_SRC
-**** Window Functions
+***** Window Functions
 
 #+BEGIN_SRC emacs-lisp
 (defun cmacs/window-zoom ()
@@ -1554,7 +1300,7 @@ window changes before then, the undo expires."
     (window-configuration-to-register ?_)
     (delete-other-windows)))
 #+END_SRC
-**** Random Functions
+***** Random Functions
 
 #+BEGIN_SRC emacs-lisp
 (defun cmacs/delete-git-index-lock ()
@@ -1602,13 +1348,13 @@ window changes before then, the undo expires."
   (auto-fill-mode -1)
   (visual-fill-column-mode -1))
 #+END_SRC
-*** DOOM! Macros
+**** DOOM! Macros
 
 A set of fantastic macros written by [[https://github.com/hlissner][hlissner]]. There won't be much
 documentation around these because the comments for each macro does a great
 job explaining their function. For more information you can also look at the
 [[https://github.com/hlissner/doom-emacs/wiki][wiki]] and the [[https://github.com/hlissner/doom-emacs/wiki/Modules#macros][entry on macros]] in particular.
-**** after!
+***** after!
 
 #+BEGIN_SRC emacs-lisp
 (defmacro after! (feature &rest forms)
@@ -1623,7 +1369,7 @@ compilation."
        #'with-no-warnings)
     (with-eval-after-load ',feature ,@forms)))
 #+END_SRC
-**** map!
+***** map!
 
  #+BEGIN_SRC emacs-lisp
  (eval-and-compile
@@ -1844,7 +1590,7 @@ compilation."
 	(t (user-error "Invalid key %s" key))))
      `(progn ,@(nreverse forms)))))
  #+END_SRC
-**** add-hook!
+***** add-hook!
  A macro that makes adding hooks easy
 
  #+BEGIN_SRC emacs-lisp
@@ -1937,7 +1683,7 @@ compilation."
  `add-hook!'."
    `(add-hook! :remove ,@args))
  #+END_SRC
-**** quiet!
+***** quiet!
  A simple macro that prevents code from making any noise
 
  #+BEGIN_SRC emacs-lisp
@@ -1958,7 +1704,7 @@ compilation."
 		(save-silently t))
 	,@forms)))
  #+END_SRC
-**** def-memoized!
+***** def-memoized!
  Creates a memoized function
 
  #+BEGIN_SRC emacs-lisp
@@ -1990,7 +1736,7 @@ compilation."
 
 
  #+END_SRC
-**** λ!
+***** λ!
 
  #+BEGIN_SRC emacs-lisp
  (defmacro λ! (&rest body)
@@ -1999,7 +1745,7 @@ compilation."
    `(lambda () (interactive) ,@body))
 
  #+END_SRC
-*** Other Macros
+**** Other Macros
 #+BEGIN_SRC emacs-lisp
 
 (defmacro find-file-in! (path &optional project-p)
@@ -2010,6 +1756,252 @@ compilation."
         ',(if project-p
               (command-remapping 'projectile-find-file)
             (command-remapping 'find-file))))))
+#+END_SRC
+*** Mac OS 
+There is some configuration to do when running Emacs on OS X (hence the
+"darwin" system-type check).
+
+First we can define some general system checks
+#+BEGIN_SRC emacs-lisp
+(setq IS-LINUX (eq system-type 'gnu/linux)
+      IS-MAC (eq system-type 'darwin))
+#+END_SRC
+
+
+#+begin_src emacs-lisp
+    (when IS-MAC
+      ;; make fonts look better with anti-aliasing
+      (setq mac-allow-anti-aliasing t)
+      ;; delete files by moving them to the trash
+      (setq delete-by-moving-to-trash t)
+      (setq trash-directory "~/.Trash")
+
+      ;; Don't make new frames when opening a new file with Emacs
+      (setq ns-pop-up-frames nil)
+
+      ;; fullscreen (disable for non-space full screen)
+      (setq ns-use-native-fullscreen t)
+
+      ;; disable emacs-mac smooth scrolling because it is seriously janky
+      (setq mac-mouse-wheel-smooth-scroll nil)
+
+      ;; Set modifier keys
+      (setq mac-option-modifier 'meta) ;; Bind meta to ALT
+      (setq mac-command-modifier 'super) ;; Bind apple/command to super if you want
+      (setq mac-function-modifier 'hyper) ;; Bind function key to hyper if you want 
+      (setq mac-right-option-modifier 'none) ;; unbind right key for accented input
+
+      ;; Make forward delete work 
+      (global-set-key (kbd "<H-backspace>") 'delete-forward-char)
+
+      ;; Keybindings
+      (global-set-key (kbd "s-=") 'scale-up-font)
+      (global-set-key (kbd "s--") 'scale-down-font)
+      (global-set-key (kbd "s-0") 'reset-font-size)
+      (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+      (global-set-key (kbd "s-v") 'yank)
+      (global-set-key (kbd "s-c") 'evil-yank)
+      (global-set-key (kbd "s-a") 'mark-whole-buffer)
+      (global-set-key (kbd "s-x") 'kill-region)
+      (global-set-key (kbd "s-w") 'delete-window)
+      (global-set-key (kbd "s-W") 'delete-frame)
+      (global-set-key (kbd "s-n") 'make-frame)
+      (global-set-key (kbd "s-z") 'undo-tree-undo)
+      (global-set-key (kbd "s-s")
+                      (lambda ()
+                        (interactive)
+                        (call-interactively (key-binding "\C-x\C-s"))))
+      (global-set-key (kbd "s-Z") 'undo-tree-redo)
+      (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
+      ;; Emacs sometimes registers C-s-f as this weird keycode
+      (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
+  )
+
+      (defun open-dir-in-iterm ()
+        "Open the current directory of the buffer in iTerm."
+        (interactive)
+        (let* ((iterm-app-path "/Applications/iTerm.app")
+               (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
+               (iterm-path (if (file-directory-p iterm-app-path)
+                               iterm-app-path
+                             iterm-brew-path)))
+          (shell-command (concat "open -a " iterm-path " ."))))
+          (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
+
+      ;; Not going to use these commands
+      (put 'ns-print-buffer 'disabled t)
+      (put 'suspend-frame 'disabled t)
+
+      ;; -- This is for TextExpander
+      ;; (setq ns-alternate-modifier 'alt)
+      ;; (define-key global-map [(alt ?v)] 'scroll-down)
+      ;; (define-key global-map [(meta ?v)] 'yank)
+#+end_src
+*** Time and Date Stamps
+**** Emacs buffer timestamp settings
+#+BEGIN_SRC emacs-lisp
+  (setq 
+    time-stamp-active t          ; do enable time-stamps
+    time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp: 
+    time-stamp-format "Last modified on %02m-%02d-%04y %02H:%02M:%02S (%U)") ; date format
+  (add-hook 'write-file-hooks 'time-stamp) ; update when saving
+#+END_SRC
+**** Insert time or date
+The code below sets the correct value for system-time-locale, and binds
+keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
+#+BEGIN_SRC emacs-lisp
+  (defun format-date (format)
+  (let ((system-time-locale "en_US.UTF-8"))
+    (insert (format-time-string format))))
+
+(defun insert-date ()
+  (interactive)
+  (format-date "%A, %B %d %Y"))
+
+(defun insert-date-and-time ()
+  (interactive)
+  (format-date "%m-%d-%Y %H:%M:%S"))
+#+END_SRC
+*** Location
+Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-location][geographical location]] on OS X
+#+BEGIN_SRC emacs-lisp
+(use-package osx-location
+  :if (eq system-type 'darwin)
+  :demand t
+  :config
+  (osx-location-watch)
+  (add-hook 'osx-location-changed-hook
+               (lambda ()
+                 (setq calendar-latitude osx-location-latitude
+                       calendar-longitude osx-location-longitude
+                       calendar-location-name (format "%s, %s" osx-location-latitude osx-location-longitude)))))
+#+END_SRC
+*** Text Settings
+General Text settings and hooks
+**** Sentence endings
+#+BEGIN_SRC emacs-lisp
+;; Single space between sentences is more widespread than double
+(setq-default sentence-end-double-space nil)
+#+END_SRC
+**** Subwords and CamelCase
+#+BEGIN_SRC emacs-lisp
+; Iterate through CamelCase words
+(global-subword-mode 1)                           
+#+END_SRC
+**** Spelling
+Use flyspell and aspell
+#+BEGIN_SRC emacs-lisp
+(use-package ispell
+  :defer 10
+  :config
+  ;; Save a new word to personal dictionary without asking
+  (setq ispell-silently-savep t)
+  (setq-default ispell-program-name "aspell")
+  (setq-default ispell-list-command "list")
+  (setq ispell-extra-args
+      (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
+            "--lang=en_US"
+            "--ignore=3")))
+
+(use-package flyspell
+  :diminish flyspell-mode
+  :defer 10
+  ;; :commands (flyspell-mode flyspell-prog-mode)
+  :init
+  (progn
+  ;; Below variables need to be set before `flyspell' is loaded.
+    (setq flyspell-use-meta-tab nil))
+  :config
+  ;; Save a new word to personal dictionary without asking
+  (setq flyspell-issue-welcome-flag nil))
+#+END_SRC 
+**** Flyspell hooks
+Flyspell is in elisp mode. And this in turn loads flyspell directly
+after launching emacs, which is a bit unfortunate.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook! '(org-mode markdown-mode latex-mode) #'flyspell-mode)
+#+END_SRC
+
+**** Spelling Autocorrect
+Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
+#+BEGIN_SRC emacs-lisp
+(define-key ctl-x-map "\C-i"
+  #'endless/ispell-word-then-abbrev)
+
+(defun endless/simple-get-word ()
+  (car-safe (save-excursion (ispell-get-word nil))))
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+With prefix P, create local abbrev. Otherwise it will
+be global.
+If there's nothing wrong with the word at point, keep
+looking for a typo until the beginning of buffer. You can
+skip typos you don't want to fix with `SPC', and you can
+abort completely with `C-g'."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (if (setq bef (endless/simple-get-word))
+                 ;; Word was corrected or used quit.
+                 (if (ispell-word nil 'quiet)
+                     nil ; End the loop.
+                   ;; Also end if we reach `bob'.
+                   (not (bobp)))
+               ;; If there's no word at point, keep looking
+               ;; until `bob'.
+               (not (bobp)))
+        (backward-word)
+        (backward-char))
+      (setq aft (endless/simple-get-word)))
+    (if (and aft bef (not (equal aft bef)))
+        (let ((aft (downcase aft))
+              (bef (downcase bef)))
+          (define-abbrev
+            (if p local-abbrev-table global-abbrev-table)
+            bef aft)
+          (message "\"%s\" now expands to \"%s\" %sally"
+                   bef aft (if p "loc" "glob")))
+      (user-error "No typo at or before point"))))
+
+(setq save-abbrevs 'silently)
+
+(use-package abbrev
+  :ensure nil
+  :commands (abbrev-mode))
+
+#+END_SRC
+**** Only use spaces
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default indicate-empty-lines nil)
+#+END_SRC
+**** Line wrap
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode)
+(setq line-move-visual t) ;; move via visual lines
+#+END_SRC
+**** Fill column
+#+BEGIN_SRC emacs-lisp
+(setq-default fill-column 78)
+#+END_SRC
+**** Visual replace
+This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives such as [[*Interactive edit][iedit]] and [[*Multiple cursors][multiple cursors]]. You search for a word in the buffer/region, type in the replacement and confirm each one by pressing =y= or =n= or just press =!= to apply this to everything.
+
+#+BEGIN_SRC emacs-lisp
+(use-package visual-regexp
+  :commands (vr/query-replace)
+  :config
+  (use-package visual-regexp-steroids
+    :commands (vr/select-query-replace)))
+#+END_SRC
+**** Show Matching Brackets
+Show matching brackets, parenthesis, etc.
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode t)
+(setq show-paren-delay 0) 
 #+END_SRC
 ** Useful Libraries
 
