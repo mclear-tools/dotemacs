@@ -51,8 +51,8 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#test][Test]]
 
 ** About This File
-This is an Emacs literate configuration template. It contains the basic structure
-of a literate config along with some optimizations to ensure a fast load time.
+This is an Emacs literate configuration. It contains a few optimizations to
+ensure a fast load time.
 *** Org File Tweaks
 There are a few tweaks included in this org file that make it a little easier to
 work with.
@@ -209,13 +209,11 @@ if you would like to see any and all byte compiler warnings.
 #+BEGIN_SRC emacs-lisp
 (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
 #+END_SRC
-*** FIXME Use-Package Settings
-# talk about setting in init.el
-Tell =use-package= to always defer loading packages unless explicitly told otherwise. This speeds up
-initialization significantly as many packages are only loaded later when they are explicitly used.
+*** Package Management
+I use [[https://github.com/raxod502/straight.el][straight.el]] for package management. It leverages [[https://github.com/jwiegley/use-package][use-package]]
+nicely and allows for easy customization of packages using git. The
+settings for straight.el and use-package are all in the [[https://github.com/mclear-tools/dotemacs/blob/straight_refactor/init.el][init file]].  
 
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
 ** General Settings
 *** System Defaults
 Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
