@@ -2,7 +2,7 @@
 #+AUTHOR: Colin McLear
 #+PROPERTY: header-args :tangle yes
 #+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
-#+TODO: BROKEN DISABLED FIXME TESTING | DONE
+#+TODO: FIXME TESTING | DISABLED 
 #+STARTUP: overview
 
 This is my emacs configuration file. I use [[http://orgmode.org][org-mode]] to organize it and
@@ -3648,7 +3648,7 @@ Better dired navigation using ranger-like settings
 **** State Settings
      #+BEGIN_SRC emacs-lisp
      (setq org-todo-keywords
-      '((sequence "TODO" "NEXT" "WAITING" "|" "DONE" "CANCELED")))
+      '((sequence "TODO" "NEXT" "WAITING" "INACTIVE" "|" "DONE" "CANCELED")))
      #+END_SRC
 **** Org Logging
      #+BEGIN_SRC emacs-lisp
@@ -3686,7 +3686,6 @@ Better dired navigation using ranger-like settings
   (setq org-src-fontify-natively t
         org-src-window-setup 'current-window
         org-src-strip-leading-and-trailing-blank-lines t)
-        ;; org-src-preserve-indentation t
 #+END_SRC
 
 **** Org Config Settings
@@ -3812,6 +3811,7 @@ Better dired navigation using ranger-like settings
     (add-hook 'org-mode-hook
         (lambda () 
           (turn-on-auto-fill)
+          (centered-cursor-mode 0)
           (flyspell-mode 1)
           (cmacs|disable-line-numbers)
           (org-bullets-mode 1)
@@ -4276,7 +4276,7 @@ Some advice to automatically switch to a new indirect buffer upon creation
 
 *** Org Functions
 Some useful org-specific functions
-*** Org-Fill Functions
+**** Org-Fill Functions
  Functions to calculate apt offsets and call regular org fill stuff. There's a
  useful [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack overflow thread]] on this. 
 #+BEGIN_SRC emacs-lisp
@@ -4301,7 +4301,7 @@ Some useful org-specific functions
 (add-hook 'org-load-hook 'my-org-mode-hook)
 (add-hook 'org-mode-hook 'my-org-mode-hook)
 #+END_SRC
-*** Narrow & Advance/Retreat
+**** Narrow & Advance/Retreat
 Functions to advance forwards or backwards through narrowed tree
 #+BEGIN_SRC emacs-lisp
 (defun org-advance ()
@@ -4320,21 +4320,21 @@ Functions to advance forwards or backwards through narrowed tree
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
 #+END_SRC
-*** Org files
+**** Org files
 #+BEGIN_SRC emacs-lisp
 (defun cpm/goto-org-files ()
   "goto org-files directory"
   (interactive)
   (require 'ranger)
   (find-file "~/Dropbox/org-files"))
-(defun cpm/goto-inbox.org ()
-  "goto org-inbox"
+(defun cpm/goto-mail-inbox.org ()
+  "goto org-mail-inbox"
   (interactive)
-  (find-file "~/Dropbox/org-files/inbox.org"))
-(defun cpm/goto-projects.org ()
-  "goto org-projects"
+  (find-file "~/Dropbox/org-files/mail.org"))
+(defun cpm/goto-todo.org ()
+  "goto org-todo"
   (interactive)
-  (find-file "~/Dropbox/org-files/projects.org"))
+  (find-file "~/Dropbox/org-files/todo.org"))
 (defun cpm/goto-articles.org ()
   "goto org-articles"
   (interactive)
@@ -4346,7 +4346,7 @@ Functions to advance forwards or backwards through narrowed tree
 (defun cpm/goto-notes.org ()
   "goto org-notes"
   (interactive)
-  (find-file "~/Dropbox/org-files/notes.org"))
+  (find-file "~/Dropbox/org-files/org-notes.org"))
 (defun cpm/goto-someday.org ()
   "goto org-someday"
   (interactive)
@@ -4451,7 +4451,6 @@ Other useful org packages
   ;; ignore export of headlines marked with :ignore: tag
   (use-package ox-extra
     :straight nil
-    :disabled t
     :after org
     :config
     (ox-extras-activate '(ignore-headlines)))
