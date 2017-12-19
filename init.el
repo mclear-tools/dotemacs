@@ -25,12 +25,34 @@
 
 ;; integrate straight.el with use package
 (straight-use-package 'use-package)
-(setq use-package-always-ensure t)
+(require 'use-package)
+(setq straight-use-package-by-default t)
 (setq load-prefer-newer t)
 
 ;; install org for bootstrapping config
-(use-package org)
-
+(use-package org
+  :straight org-plus-contrib
+  :defer t
+  :init
+    (defun radian--org-git-version ()
+    "Return the abbreviated SHA for the Org Git repo."
+    (let ((default-directory (concat user-emacs-directory
+                                     "straight/repos/org/")))
+      (if (executable-find "git")
+          (with-temp-buffer
+            (call-process "git" nil '(t nil) nil
+                          "rev-parse" "--short" "HEAD")
+            (if (> (buffer-size) 0)
+                (string-trim (buffer-string))
+              "revision unknown"))
+        "git not available")))
+  (defalias #'org-git-version #'radian--org-git-version)
+  (defun org-release () "9.1.3") ; FIXME: replace with a real function
+  (provide 'org-version)
+  (with-eval-after-load 'org
+    (defalias #'org-git-version #'radian--org-git-version))
+)
+;; (use-package org)
 ;; load the config file ;; The following tangles a new .el and tangles on save as well.
 ;; From novoid's config; see https://github.com/novoid/dot-emacs/blob/master/init.el
 

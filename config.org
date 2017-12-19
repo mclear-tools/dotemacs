@@ -1966,7 +1966,7 @@ abort completely with `C-g'."
 (setq save-abbrevs 'silently)
 
 (use-package abbrev
-  :ensure nil
+  :straight nil
   :commands (abbrev-mode))
 
 #+END_SRC
@@ -2010,7 +2010,7 @@ Show matching brackets, parenthesis, etc.
 (use-package dash :demand t)
 (use-package s :demand t)
 (use-package f :demand t)
-(use-package subr-x :demand t :ensure nil)
+(use-package subr-x :demand t :straight nil)
 (require 'cl-lib)
 #+END_SRC
 ** Modal Editing
@@ -2165,6 +2165,7 @@ There are some other useful setup packages for evil
         (make-directory undo-dir t)))
     (setq undo-tree-auto-save-history nil))
 #+end_src
+
 ** Appearance & UI
    Various settings to make Emacs (mostly the GUI version) look better or
    make interaction smoother. 
@@ -3236,7 +3237,6 @@ Keybindings for managing packages
   (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
   (shackle-mode 1))
 #+END_SRC
-
 ** Navigation
 *** Helm
 [[https://emacs-helm.github.io/helm/][Helm]] is a robust and well-designed completion framework. It can do [[https://tuhdo.github.io/helm-intro.html][quite a lot]].
@@ -3396,7 +3396,7 @@ Recent directories
 ***** Helm files
 #+begin_src emacs-lisp 
   (use-package helm-files
-    :ensure nil
+    :straight nil
     :config
     (setq helm-ff-skip-boring-files t)
     (setq helm-idle-delay 0.05)
@@ -3428,7 +3428,7 @@ Recent directories
   ;; (ad-unadvise 'helm-themes--load-theme)
 #+end_src
 *** Ivy
-Generic completion frontend that's just awesome! Let's install and enable it.
+Generic completion frontend that's similar to helm but less enormous of a code base. Let's install and enable it.
 
 #+BEGIN_SRC emacs-lisp 
 (use-package ivy 
@@ -3450,9 +3450,9 @@ Generic completion frontend that's just awesome! Let's install and enable it.
 #+END_SRC
 *** Counsel
 Counsel allows us to utilize ivy by replacing many built-in and common functions
-with richer versions. Let's install it!
+with richer versions. 
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp 
 (use-package counsel-projectile :commands counsel-projectile-bookmark)
 (use-package counsel
   :commands (council-org-goto jump-in-buffer)
@@ -4059,8 +4059,7 @@ Sierra for me :(
       (delete-frame)))
 
 (use-package noflet
-   :defer 2
-   :ensure t )
+   :defer 2)
 (defun make-capture-frame ()
   "Create a new frame and run org-capture."
   (interactive)
@@ -4193,7 +4192,6 @@ Helps with time tracking
 #+BEGIN_SRC emacs-lisp
   (use-package org-pomodoro
     :commands org-pomodoro
-    :ensure t
     :init
     (progn
       (setq org-pomodoro-audio-player "/usr/bin/afplay")))
@@ -4382,15 +4380,16 @@ package that automatically generates an up to date table of contents for us.
   :init (add-hook 'org-mode-hook #'toc-org-enable))
 #+END_SRC
 
-*** Org Miscellaneous Packages  
+*** FIXME Org Miscellaneous Packages  
 Other useful org packages
 
 #+BEGIN_SRC emacs-lisp
-  (use-package htmlize :defer t :ensure t)
-  (use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
+  (use-package htmlize :defer t)
+  (use-package org-inlinetask :straight nil :commands org-inlinetask-insert-task)
   ;; ignore export of headlines marked with :ignore: tag
   (use-package ox-extra
-    :ensure nil
+    :straight nil
+    :disabled t
     :after org
     :config
     (ox-extras-activate '(ignore-headlines)))
@@ -4398,7 +4397,7 @@ Other useful org packages
 *** Org Wiki
 #+begin_src emacs-lisp
 (use-package org-wiki
-  :recipe (org-wiki :type git :host github :repo "caiorss/org-wiki")
+  :straight (org-wiki :type git :host github :repo "caiorss/org-wiki")
   :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
   :init
   (setq  org-wiki-location "~/Dropbox/org-files/Wiki")
@@ -4406,8 +4405,10 @@ Other useful org packages
 #+end_src
 
 *** Org Version
-A [[https://github.com/raxod502/radian/blob/ee92ea6cb0473bf7d20c6d381753011312ef4a52/radian-emacs/radian-org.el#L46-L112][useful hack]] to get =org-version= working. 
-#+begin_src emacs-lisp 
+A [[https://github.com/raxod502/radian/blob/ee92ea6cb0473bf7d20c6d381753011312ef4a52/radian-emacs/radian-org.el#L46-L112][useful hack]] to get =org-version= working. I actually have this already
+in the init file. It has to get loaded very early so as not to throw errors.
+
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; This section is devoted to fixing the asinine version-check
   ;; handling in Org (it's not designed to handle the case where you
   ;; run straight from the Git repo, apparently). This is one of the
@@ -4478,7 +4479,7 @@ A [[https://github.com/raxod502/radian/blob/ee92ea6cb0473bf7d20c6d381753011312ef
   (provide 'org-version)
   (with-eval-after-load 'org
     (defalias #'org-git-version #'radian--org-git-version))
-#+end_src
+#+END_SRC
 
 ** Search
 *** Ag
@@ -4681,11 +4682,11 @@ An easy way to ssh
    (use-package eshell
      :commands eshell
      :init
-     (use-package em-cmpl    :demand t :ensure nil)
-     (use-package em-prompt  :demand t :ensure nil)
-     (use-package em-term    :demand t :ensure nil)
-     (use-package em-alias   :demand t :ensure nil)
-     (use-package em-smart   :demand t :ensure nil)
+     (use-package em-cmpl    :demand t :straight nil)
+     (use-package em-prompt  :demand t :straight nil)
+     (use-package em-term    :demand t :straight nil)
+     (use-package em-alias   :demand t :straight nil)
+     (use-package em-smart   :demand t :straight nil)
      ;; plan 9
      (setq eshell-where-to-jump 'begin)
      (setq eshell-review-quick-commands nil)
@@ -4938,6 +4939,7 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
   :init
   (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
 #+END_SRC
+
 ** Completion
 *** DISABLED Yasnippet
 #+BEGIN_SRC emacs-lisp
@@ -5311,7 +5313,7 @@ well with org-mode using org-indent. So I don't use it globally.
 *** Electric Pair (Autopair)
 #+BEGIN_SRC emacs-lisp
 (use-package electric-pair
-  :ensure nil
+  :straight nil
   :commands electric-pair-mode
   :init
   (add-hook 'prog-mode-hook 'electric-pair-mode)
@@ -5649,7 +5651,7 @@ Make arbitrary blocks or sentences of text.
     (setq-default TeX-master nil)))
 
 (use-package preview
-  :ensure nil
+  :straight nil
   :after auctex
   :commands LaTeX-preview-setup
   :init
@@ -5925,7 +5927,7 @@ Better than doc-view, but doesn't render well on retina screens :(
 **** Extract annotations
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools-org 
-    :ensure nil
+    :straight nil
     :commands (pdf-tools-org-export-to-org pdf-tools-org-import-from-org))
 
       ;; Extracting annotations using pdf-tools
@@ -6101,6 +6103,7 @@ Interface with Zotero.
   (if (file-exists-p private)
 	  (load-file private)))
 #+END_SRC
+
 ** Miscellaneous Packages
 *** Restart emacs
 #+BEGIN_SRC emacs-lisp
@@ -6112,7 +6115,7 @@ Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert                 
     :defer 10
-    :ensure nil
+    :straight nil
     :init
     (global-auto-revert-mode 1)
     :config
@@ -6144,7 +6147,6 @@ A [[https://github.com/emacscollective/epkg][helpful package]] to search [[https
   (evil-set-initial-state 'epkg-list-mode 'motion)
   (setq epkg-repository (concat cmacs-cache-dir "epkg-repository")))
 #+END_SRC
-
 ** Post Initialization
 *** Run Post Init Hook
 
@@ -6227,7 +6229,6 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
   (interactive)
   (switch-to-buffer "*dashboard*"))
 #+END_SRC
-
 
 ** Test
 *** Doom Line
