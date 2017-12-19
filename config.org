@@ -807,13 +807,17 @@ Stick/Lock buffer to window, courtesy of [[https://gist.github.com/ShingoFukuyam
 ***** Jump in buffer
 I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for navigating in tagged buffers. 
 #+BEGIN_SRC emacs-lisp
-(defun jump-in-buffer ()
-  (interactive)
-  (cond
-   ((eq major-mode 'org-mode)
-    (call-interactively 'counsel-org-goto))
-   (t
-    (call-interactively 'helm-semantic-or-imenu))))
+  ;; (defun jump-in-buffer ()
+  ;;   (interactive)
+  ;;     (call-interactively 'helm-semantic-or-imenu))
+
+  (defun jump-in-buffer ()
+    (interactive)
+    (cond
+     ((eq major-mode 'org-mode)
+      (call-interactively 'counsel-org-goto))
+     (t
+      (call-interactively 'helm-semantic-or-imenu))))
 #+END_SRC
 ***** Jump to sexp
 #+BEGIN_SRC emacs-lisp
