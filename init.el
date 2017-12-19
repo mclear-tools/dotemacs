@@ -1,6 +1,6 @@
 (let ((file-name-handler-alist nil))
-(unwind-protect
-    (let ((straight-treat-as-init t))
+;; (unwind-protect
+;;     (let ((straight-treat-as-init t))
 (defvar my-init-el-start-time (current-time) "Time when init.el was started")
 ;; Let's start emacs up quietly.
 (advice-add #'display-startup-echo-area-message :override #'ignore)
@@ -34,7 +34,8 @@
   :straight org-plus-contrib
   :defer t
   :init
-    (defun radian--org-git-version ()
+  ;; fix annoying warnings about version
+  (defun radian--org-git-version ()
     "Return the abbreviated SHA for the Org Git repo."
     (let ((default-directory (concat user-emacs-directory
                                      "straight/repos/org/")))
@@ -50,9 +51,8 @@
   (defun org-release () "9.1.3") ; FIXME: replace with a real function
   (provide 'org-version)
   (with-eval-after-load 'org
-    (defalias #'org-git-version #'radian--org-git-version))
-)
-;; (use-package org)
+    (defalias #'org-git-version #'radian--org-git-version)))
+
 ;; load the config file ;; The following tangles a new .el and tangles on save as well.
 ;; From novoid's config; see https://github.com/novoid/dot-emacs/blob/master/init.el
 
@@ -128,12 +128,13 @@ Note the weekly scope of the command's precision.")
   (load-file elfile))
 
 ;; when config.org is saved, re-generate config.el:
-(defun my-tangle-config-org-hook-func ()
-  (when (string= "config.org" (buffer-name))
-	(let ((orgfile (concat user-emacs-directory "config.org"))
-		  (elfile (concat user-emacs-directory "config.el")))
-	  (my-tangle-config-org))))
-(add-hook 'after-save-hook 'my-tangle-config-org-hook-func)))
+;; (defun my-tangle-config-org-hook-func ()
+;;   (when (string= "config.org" (buffer-name))
+;; 	(let ((orgfile (concat user-emacs-directory "config.org"))
+;; 		  (elfile (concat user-emacs-directory "config.el")))
+;; 	  (my-tangle-config-org))))
+;; (add-hook 'after-save-hook 'my-tangle-config-org-hook-func)))
 
 ;; (message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time))))
-  (straight-finalize-transaction))
+  ;; (straight-finalize-transaction))
+)
