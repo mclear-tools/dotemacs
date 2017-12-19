@@ -3,6 +3,7 @@
 #+PROPERTY: header-args :tangle yes
 #+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
 #+TODO: BROKEN DISABLED FIXME TESTING | DONE
+#+STARTUP: overview
 
 This is my emacs configuration file. I use [[http://orgmode.org][org-mode]] to organize it and
 then "tangle" the file using [[http://orgmode.org/worg/org-contrib/babel/][org-babel]]. You can find a helpful
@@ -20,9 +21,6 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
 [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl Voit's]] config.
 
 * Configuration
-:PROPERTIES:
-:VISIBILITY: children
-:END:
 
 ** Table of Contents :TOC_2_gh:
 - [[#configuration][Configuration]]
