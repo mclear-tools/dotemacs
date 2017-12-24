@@ -6394,7 +6394,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
 #+END_SRC
 
 ** Test
-*** Doom Line
+*** Doom ModeLine
 The Doom modeline
 #+BEGIN_SRC emacs-lisp
 (require 'evil)
@@ -6753,4 +6753,3 @@ to be enabled."
 
 (setq-default mode-line-format (doom-mode-line))
 #+END_SRC
-
