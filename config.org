@@ -144,12 +144,11 @@ Let's set some variables with basic user information.
      and temporary files. Anything that may need to be cleared if there are
      problems.")
      
-     (defvar cmacs-elisp-dir (concat cmacs-local-dir "elisp/")
+     (defvar cmacs-elisp-dir (concat cmacs-local-dir "/elisp/")
        "Where personal elisp packages and scripts are stored.")
 
 
-     (dolist (dir (list cmacs-local-dir cmacs-etc-dir
-     cmacs-cache-dir (expand-file-name "elisp" cmacs-elisp-dir)))
+     (dolist (dir (list cmacs-local-dir cmacs-etc-dir cmacs-cache-dir cmacs-elisp-dir))
        (unless (file-directory-p dir)
 	 (make-directory dir t))))
  #+END_SRC
@@ -2073,7 +2072,7 @@ Install, automatically load, and enable evil. It's like vim, but better!
       (setq evil-visual-state-tag "VISUAL")
       ;use insert in commits automatically 
       (add-hook 'git-commit-mode-hook 'evil-insert-state)
-      (evil-set-initial-state 'messages-buffer-mode 'motion)
+      (evil-set-initial-state 'messages-buffer-mode 'normal)
       (evil-set-initial-state 'magit-log-edit-mode 'insert)
       ;; evil-normal-state is preferred, so revert when idle
       (run-with-idle-timer 60 t 'evil-normal-state)
