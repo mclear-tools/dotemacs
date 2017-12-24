@@ -2270,7 +2270,7 @@ Evil [[https://github.com/jojojames/evil-collection][everywhere]]!
      :init
        (progn
        (setq org-todo-keyword-faces
-            '(("TODO" . org-warning) ("STARTED" . "yellow")
+            '(("TODO" . (:foreground "orange" :weight bold)) ("STARTED" . "yellow")
               ("WAITING" . (:foreground "blue" :weight bold))
               ("SUBMITTED-C" . "green") ("SUBMITTED-J" . "green")
               ("ACCEPTED-C" . "silver") ("ACCEPTED-J" . "silver")
@@ -3162,6 +3162,7 @@ Keybindings for managing packages
     "um" 'cpm/org-to-markdown   
     "uc" 'pandoc-convert-to-pdf
     "uC" 'cpm/pandoc-convert-to-pdf 
+    "ug" 'org-mac-grab-link
     "uk" 'kill-compilation
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
@@ -4046,13 +4047,20 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     (add-hook 'org-capture-mode-hook 'evil-insert-state)
     (setq org-capture-templates
           '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/todo.org" "Projects")
-             "** STARTED %? \n  %i\n  Captured on: %u\n")
-            ("c" "Capture" entry (file "~/Dropbox/org-files/todo.org" "Inbox")
+             "** STARTED %? \n  %i")
+            ("c" "Capture" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
              "* TODO %?\n %i")
             ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
              "**** %<%H:%M>\n%?")
+            ("l" "A link, for reading later." entry (file+headline "~/Dropbox/org-files/org-notes.org" "Reading List")
+              "* %:description\n%u\n\n%c\n\n%i"
+              :empty-lines 1)
+            ("m" "Mail-Task" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
+             "* TODO Email: %:description                         :Mail:
+             Email with subject: [[message://%l][%:description]] 
+             %? ")
             ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
-             "* %? \n Captured on: %U\n")
+            "* %?")
             ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org"
               (file "~/Dropbox/org-files/templates/weekly_review_template.org")))))
 
@@ -4063,73 +4071,92 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         (org-set-property "DATE_CAPTURED" (format-time-string "%c")))
 
       (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
-            (defun cpm/org-journal ()
-            (interactive) (org-capture nil "j"))
 
-        (defadvice org-capture
-            (after make-full-window-frame activate)
-          "Advise capture to be the only window when used as a popup"
-          (if (equal "What are you doing?" (frame-parameter nil 'name))
-              (delete-other-windows)))
-        (defadvice org-capture-finalize
-            (after delete-capture-frame activate)
-          "Advise capture-finalize to close the frame"
-          (if (equal "What are you doing?" (frame-parameter nil 'name))
-              (delete-frame)))
+#+END_SRC
+**** Journal Capture
+Tell emacs what you're doing a few times a day. Depends on a [[/Users/roambot/bin/scripts/emacs_journal.sh][shell
+script]] run in the background. I got the idea from [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]].
+Hat tip to [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack overflow]] for help on hooks for the created frame.
+
+#+BEGIN_SRC emacs-lisp
+(defun cpm/org-journal ()
+  (interactive) (org-capture nil "j"))
+
+(defun cpm/what-are-you-doing-capture ()
+  (interactive)
+  (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 110) (height . 12)))
+  (select-frame-by-name "What are you doing?")
+  (cpm/org-journal)
+  )
 
 #+END_SRC
 **** Alfred capture workflow
-Help alfred and org [[https://github.com/jjasghar/alfred-org-capture][play nice]]
+Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.
 #+BEGIN_SRC emacs-lisp
+(defun cpm/org-capture-frame ()
+  (interactive)
+  (org-capture nil "c"))
+  
 (defun make-orgcapture-frame ()
   "Create a new frame and run org-capture."
   (interactive)
-  (make-frame '((name . "remember") (width . 90) (height . 20)
+  (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
                 (top . 400) (left . 300)
-                ;; (font . "-apple-Monaco-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1")
                 ))
-  (select-frame-by-name "remember")
-  (org-capture))
+  (select-frame-by-name "alfred-capture")
+  (cpm/org-capture-frame))
+
+#+END_SRC
+**** Capture advice
+Make capture the only window and close after refiling.
+ #+BEGIN_SRC emacs-lisp
+   (defadvice org-capture
+     (after make-full-window-frame activate)
+     "Advise capture to be the only window when used as a popup"
+     (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
+           ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
+           ))
+
     (defadvice org-capture-finalize
-        (after delete-capture-frame activate)
-      "Advise capture-finalize to close the frame"
-      (if (equal "remember" (frame-parameter nil 'name))
-          (delete-frame)))
+      (after delete-capture-frame activate)
+       "Advise capture-finalize to close the frame"
+       (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
+             ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
+             ))
+
+   ;; (defadvice org-capture
+   ;;   (after make-full-window-frame activate)
+   ;;   "Advise capture to be the only window when used as a popup"
+   ;;   (or
+   ;;     ((equal "alfred-capture" (frame-parameter nil 'name))
+   ;;     (delete-other-windows))
+   ;;     ((equal "What are you doing?" (frame-parameter nil 'name))
+   ;;     (delete-other-windows))
+   ;;     ))
+
+   ;;  (defadvice org-capture-finalize
+   ;;    (after delete-capture-frame activate)
+   ;;     "Advise capture-finalize to close the frame"
+   ;;     (
+   ;;       ((equal "alfred-capture" (frame-parameter nil 'name))
+   ;;         (delete-frame))
+   ;;       ((equal "What are you doing?" (frame-parameter nil 'name))
+   ;;         (delete-frame))))
+
+   ;; (defadvice org-capture
+   ;;   (after make-full-window-frame activate)
+   ;;   "Advise capture to be the only window when used as a popup"
+   ;;   (if (equal "alfred-capture" (frame-parameter nil 'name))
+   ;;     (delete-other-windows)))
+
+   ;;  (defadvice org-capture-finalize
+   ;;    (after delete-capture-frame activate)
+   ;;     "Advise capture-finalize to close the frame"
+   ;;     (if (equal "alfred-capture" (frame-parameter nil 'name))
+   ;;         (delete-frame)))
 
 
 #+END_SRC
-**** FIXME Org Global Capture
-Good tips from [[https://www.reddit.com/r/emacs/comments/6lzyg2/heres_how_to_do_emacsclient_global_orgcapture/][reddit]]. But unfortunately doesn't seem to work on High
-Sierra for me :(
-#+BEGIN_SRC emacs-lisp
-; https://cestlaz.github.io/posts/using-emacs-24-capture-2/
-; Bind Key to: emacsclient -ne "(make-capture-frame)"
-
-(defadvice org-capture-finalize 
-    (after delete-capture-frame activate)
-  "Advise capture-finalize to close the frame"
-  (if (equal "capture" (frame-parameter nil 'name))
-      (delete-frame)))
-
-(defadvice org-capture-destroy
-    (after delete-capture-frame activate)
-  "Advise capture-destroy to close the frame"
-  (if (equal "capture" (frame-parameter nil 'name))
-      (delete-frame)))
-
-(use-package noflet
-   :defer 2)
-(defun make-capture-frame ()
-  "Create a new frame and run org-capture."
-  (interactive)
-  (make-frame '((name . "capture")))
-  (select-frame-by-name "capture")
-  (delete-other-windows)
-  (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
-          (org-capture)))
-
-#+END_SRC
-
 *** Org Refile
 Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
 
@@ -4523,7 +4550,7 @@ Other useful org packages
 A [[https://github.com/raxod502/radian/blob/ee92ea6cb0473bf7d20c6d381753011312ef4a52/radian-emacs/radian-org.el#L46-L112][useful hack]] to get =org-version= working. I actually have this already
 in the init file. It has to get loaded very early so as not to throw errors.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp 
   ;; This section is devoted to fixing the asinine version-check
   ;; handling in Org (it's not designed to handle the case where you
   ;; run straight from the Git repo, apparently). This is one of the
