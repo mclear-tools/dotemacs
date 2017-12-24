@@ -6331,6 +6331,8 @@ Start server
 #+BEGIN_SRC emacs-lisp
   (use-package server
    :defer 5
+   ;; :init
+   ;; (setq server-socket-dir (concat cmacs-cache-dir "server"))
    :config
     (if (display-graphic-p)
         (unless (or (daemonp) (server-running-p))
