@@ -5414,7 +5414,18 @@ well with org-mode using org-indent. So I don't use it globally.
        
  #+END_SRC
 
+*** Git Undo
+#+BEGIN_SRC emacs-lisp
+(use-package git-undo
+  :straight nil
+  :load-path "~/.emacs.d/.local/elisp/git-undo/"
+  :commands git-undo)
+#+END_SRC
+
+
 *** Quick commits
+Make a quick commit without opening magit. This is a version of a
+workflow I used to use in Sublime Text. Perfect for short commit messages.
  #+BEGIN_SRC emacs-lisp
    (defun quick-commit ()
    "make a quick commit from the mini-buffer"
