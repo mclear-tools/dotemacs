@@ -3293,6 +3293,8 @@ Keybindings for managing packages
 **** Helm Settings
 #+BEGIN_SRC emacs-lisp 
   (use-package helm
+    :general 
+    ("C-h i" 'helm-info)
     :diminish (helm-mode . "")
     ;; :commands (helm-mini helm-M-x helm-find-files helm-find)
     :init
