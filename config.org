@@ -878,6 +878,38 @@ paragraphs with the same command.
 (global-set-key [remap fill-paragraph]
                 #'endless/fill-or-unfill)
 #+END_SRC
+***** Narrow or Widen
+Narrow a region, or if narrowed, widen. Courtesy of the ever
+resourceful [[http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html][Artur Malabarba]].
+#+BEGIN_SRC emacs-lisp
+(defun narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or
+defun, whichever applies first. Narrowing to
+org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning)
+                           (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if
+         ;; you don't want it.
+         (cond ((ignore-errors (org-edit-src-code) t)
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
+
+
+#+END_SRC
 ***** Other functions
 Most of these are from the [[https://github.com/syl20bnr/spacemacs][spacemacs]] distribution.
 #+BEGIN_SRC emacs-lisp
@@ -3708,102 +3740,102 @@ Better dired navigation using ranger-like settings
 *** Org Keybindings
 
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org
-     (general-define-key :states '(normal) :keymaps 'org-mode-map
-          "RET" 'org-open-at-point     ;; Open with return in evil
-          "L" 'org-shiftright
-          "H" 'org-shiftleft
-          "$" 'org-end-of-line
-          "^" 'org-beginning-of-line
-          "<" 'org-metaleft
-          ">" 'org-metaright
-          "-" 'org-cycle-list-bullet)
-       ;; normal & insert state shortcuts.
-       (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-          "TAB" 'org-cycle
-          "s-l" 'org-metaright
-          "s-h" 'org-metaleft
-          "s-k" 'org-metaup
-          "s-j" 'org-metadown
-          "s-L" 'org-shiftmetaright
-          "s-H" 'org-shiftmetaleft
-          "s-K" 'org-shiftmetaup
-          "s-J" 'org-shiftmetadown
-          "s-o" '(lambda () (interactive)
-                   (evil-org-eol-call
-                    '(lambda()
-                       (org-insert-heading)
-                       (org-metaright))))
-          "s-t" '(lambda () (interactive)
-                   (evil-org-eol-call
-                    '(lambda()
-                       (org-insert-todo-heading nil)
-                       (org-metaright)))))
-       ;; Use tab in insert mode
-       (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
-          "RET" #'org-return-indent
-          "C-j" nil
-          "C-k" nil
-          "C-j"   #'org-next-visible-heading
-          "C-k"   #'org-previous-visible-heading
-          "C-S-j"     #'org-forward-heading-same-level
-          "C-S-k"     #'org-backward-heading-same-level))
-
-  ;; local leader keybindings
   (with-eval-after-load 'org
-    (map! (:map org-mode-map 
-      (:localleader
-      :n  "RET" #'org-archive-subtree
-      :n  "SPC" #'org-toggle-checkbox
-      :n  "/"   #'org-sparse-tree
-      :n  "="   #'org-align-all-tags
-      :n  "?"   #'org-tags-view
-      :n  ":"   #'org-set-tags
-      :n  "a"   #'org-agenda
-      :n  "A"   #'org-archive-subtree
-      :n  "b"   #'org-tree-to-indirect-buffer
-      :n  "c"   #'org-capture
-      :n  "d"   #'org-time-stamp
-      :n  "D"   #'org-deadline
-      :n  "e"   #'org-edit-special
-      :n  "n"   #'org-narrow-to-subtree
-      :n  "N"   #'widen
-      :n  "r"   #'org-refile
-      :n  "s"   #'org-schedule
-      :n  "t"   #'counsel-org-tag
-      :n  "T"   #'org-todo
-      :n  "v"   #'variable-pitch-mode
-      :nv "l"   #'org-insert-link
-      :nv "L"   #'org-store-link
-      :n  "+"   #'org-timestamp-up-day
-      :n  "-"   #'org-timestamp-down-day
-      :n  "<"   #'org-metaleft
-      :n  ">"   #'org-metaright
-      (:desc "Insert..." :prefix "i"
-        :nv     "l" #'org-insert-link
-        :nv     "f" #'org-footnote-new)
-      (:desc "Org files..." :prefix "O"
-        :nv "a" #'cpm/goto-articles.org
-        :nv "f" #'cpm/goto-org-files
-        :nv "i" #'cpm/goto-inbox.org
-        :nv "n" #'cpm/goto-notes.org
-        :nv "p" #'cpm/goto-projects.org
-        :nv "s" #'cpm/goto-someday.org
-        :nv "t" #'cpm/goto-teaching.org)
-      (:desc "RevealJS..." :prefix "R"
-        :nv       "r" #'org-reveal-export-to-html-and-browse
-        :nv       "s" #'cpm/narrowed-subtree-to-html
-        :nv       "S" #'org-reveal-export-current-subtree
-        :nv       "p" #'reveal-to-pdf))))
+       (general-define-key :states '(normal) :keymaps 'org-mode-map
+            "RET" 'org-open-at-point     ;; Open with return in evil
+            "L" 'org-shiftright
+            "H" 'org-shiftleft
+            "$" 'org-end-of-line
+            "^" 'org-beginning-of-line
+            "<" 'org-metaleft
+            ">" 'org-metaright
+            "-" 'org-cycle-list-bullet)
+         ;; normal & insert state shortcuts.
+         (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+            "TAB" 'org-cycle
+            "s-l" 'org-metaright
+            "s-h" 'org-metaleft
+            "s-k" 'org-metaup
+            "s-j" 'org-metadown
+            "s-L" 'org-shiftmetaright
+            "s-H" 'org-shiftmetaleft
+            "s-K" 'org-shiftmetaup
+            "s-J" 'org-shiftmetadown
+            "s-o" '(lambda () (interactive)
+                     (evil-org-eol-call
+                      '(lambda()
+                         (org-insert-heading)
+                         (org-metaright))))
+            "s-t" '(lambda () (interactive)
+                     (evil-org-eol-call
+                      '(lambda()
+                         (org-insert-todo-heading nil)
+                         (org-metaright)))))
+         ;; Use tab in insert mode
+         (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
+            "RET" #'org-return-indent
+            "C-j" nil
+            "C-k" nil
+            "C-j"   #'org-next-visible-heading
+            "C-k"   #'org-previous-visible-heading
+            "C-S-j"     #'org-forward-heading-same-level
+            "C-S-k"     #'org-backward-heading-same-level))
 
-  (after! org-agenda
-    (map! :map org-agenda-mode-map
-          :e "<escape>" #'org-agenda-Quit
-          :e "m"   #'org-agenda-month-view
-          :e "C-j" #'org-agenda-next-item
-          :e "C-k" #'org-agenda-previous-item
-          :e "C-n" #'org-agenda-next-item
-          :e "C-p" #'org-agenda-previous-item)))
+    ;; local leader keybindings
+    (with-eval-after-load 'org
+      (map! (:map org-mode-map 
+        (:localleader
+        :n  "RET" #'org-archive-subtree
+        :n  "SPC" #'org-toggle-checkbox
+        :n  "/"   #'org-sparse-tree
+        :n  "="   #'org-align-all-tags
+        :n  "?"   #'org-tags-view
+        :n  ":"   #'org-set-tags
+        :n  "a"   #'org-agenda
+        :n  "A"   #'org-archive-subtree
+        :n  "b"   #'org-tree-to-indirect-buffer
+        :n  "c"   #'org-capture
+        :n  "d"   #'org-time-stamp
+        :n  "D"   #'org-deadline
+        :n  "e"   #'org-edit-special
+        :n  "n"   #'narrow-or-widen-dwim
+        ;; :n  "N"   #'widen
+        :n  "r"   #'org-refile
+        :n  "s"   #'org-schedule
+        :n  "t"   #'counsel-org-tag
+        :n  "T"   #'org-todo
+        :n  "v"   #'variable-pitch-mode
+        :nv "l"   #'org-insert-link
+        :nv "L"   #'org-store-link
+        :n  "+"   #'org-timestamp-up-day
+        :n  "-"   #'org-timestamp-down-day
+        :n  "<"   #'org-metaleft
+        :n  ">"   #'org-metaright
+        (:desc "Insert..." :prefix "i"
+          :nv     "l" #'org-insert-link
+          :nv     "f" #'org-footnote-new)
+        (:desc "Org files..." :prefix "O"
+          :nv "a" #'cpm/goto-articles.org
+          :nv "f" #'cpm/goto-org-files
+          :nv "i" #'cpm/goto-inbox.org
+          :nv "n" #'cpm/goto-notes.org
+          :nv "p" #'cpm/goto-projects.org
+          :nv "s" #'cpm/goto-someday.org
+          :nv "t" #'cpm/goto-teaching.org)
+        (:desc "RevealJS..." :prefix "R"
+          :nv       "r" #'org-reveal-export-to-html-and-browse
+          :nv       "s" #'cpm/narrowed-subtree-to-html
+          :nv       "S" #'org-reveal-export-current-subtree
+          :nv       "p" #'reveal-to-pdf))))
+
+    (after! org-agenda
+      (map! :map org-agenda-mode-map
+            :e "<escape>" #'org-agenda-Quit
+            :e "m"   #'org-agenda-month-view
+            :e "C-j" #'org-agenda-next-item
+            :e "C-k" #'org-agenda-previous-item
+            :e "C-n" #'org-agenda-next-item
+            :e "C-p" #'org-agenda-previous-item)))
 #+END_SRC
 *** Hook
 #+BEGIN_SRC emacs-lisp
