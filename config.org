@@ -2159,35 +2159,37 @@ Evil [[https://github.com/jojojames/evil-collection][everywhere]]!
 #+end_src
 ***** Evil Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
-  (use-package evil-surround
-    :commands (evil-surround-region evil-surround-change)
-    :init 
-    (general-define-key
-    :states '(visual)
-    "s" 'evil-surround-region
-    "S" 'evil-substitute)
-    :config (global-evil-surround-mode 1))
+   (use-package evil-surround
+     :commands (evil-surround-region evil-surround-change)
+     :init 
+     (general-define-key
+     :states '(visual)
+     "s" 'evil-surround-region
+     "S" 'evil-substitute)
+     :config (global-evil-surround-mode 1))
 
-  (use-package embrace)
-  (use-package evil-embrace
-   :after evil-surround
-   :config
-   (evil-embrace-enable-evil-surround-integration)
-   (setq evil-embrace-show-help-p nil)
-   :init
-   (add-hook 'org-mode-hook 'embrace-org-mode-hook)
-   (add-hook 'text-mode-hook
-      (lambda () 
-          (embrace-add-pair ?* "*" "*")
-          (embrace-add-pair ?\ "\\" "\\")
-          (embrace-add-pair ?/ "/" "/")
-          (embrace-add-pair ?$ "$" "$")))
-   (add-hook 'LaTeX-mode-hook
-      (lambda ()
-          (embrace-add-pair ?a "`" "'")
-          (embrace-add-pair ?e "\\emph{" "}"))))
+   (use-package embrace 
+     :demand t
+     :init
+     (add-hook 'LaTeX-mode-hook 'embrace-LaTeX-mode-hook)
+     (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+     (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
+   (use-package evil-embrace
+    :demand t
+    :config
+    (setq evil-embrace-show-help-p nil)
+    :init
+    (evil-embrace-enable-evil-surround-integration)
+    )
 
+  (defun embrace-markdown-mode-hook ()
+    (dolist (lst '((?* "*" . "*")  
+                   (?\ "\\" . "\\")
+                   (?$ "$" . "$")
+                   (?/ "/" . "/")))
+     (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
 #+end_src 
+
 ***** Commenting 
 #+begin_src emacs-lisp
   (use-package evil-commentary
@@ -2807,7 +2809,8 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "<SPC>" 'helm-M-x
     ;; "<SPC>" 'counsel-M-x
     "d" 'deer
-    "D" 'deer-jump-other-window
+    "D" #'cpm/deer-split-window
+    ;; "D" 'deer-jump-other-window
     "E" 'evil-motion-state
     "e" 'server-edit
     "G" 'general-describe-keybindings
@@ -3637,7 +3640,8 @@ A nice tip from [[http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal
 Better dired navigation using ranger-like settings
 #+BEGIN_SRC emacs-lisp
   (use-package ranger
-    :commands (ranger deer deer-jump-other-window)
+    :demand t
+    ;; :commands (ranger deer deer-jump-other-window)
     :init
     (setq ranger-override-dired t
           ranger-cleanup-eagerly t)
@@ -3656,11 +3660,20 @@ Better dired navigation using ranger-like settings
            ranger-width-preview 0.55 
            ))
 
-  (defun deer-jump-other-window (&optional path)
-    "Launch dired in a minimal ranger window in other window."
-    (interactive)
-    (switch-to-buffer-other-window (current-buffer))
-    (deer path))
+  (defun cpm/deer-split-window ()
+   "Launch deer in vertical split"
+   (interactive)
+   (if (= (length (window-list)) 1)
+     (progn
+     (split-window-right-and-focus)
+     (deer))
+    (deer-jump-other-window)))
+
+  ;; (defun deer-jump-other-window (&optional path)
+  ;;   "Launch dired in a minimal ranger window in other window."
+  ;;   (interactive)
+  ;;   (switch-to-buffer-other-window (current-buffer))
+  ;;   (deer path))
 
 #+END_SRC
 *** Recent files
@@ -5341,6 +5354,12 @@ Give git projects branches the dired treatment
 Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
  #+BEGIN_SRC emacs-lisp
+   (use-package git-gutter
+     :init
+     (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
+     (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
+           git-gutter:update-interval 2
+           git-gutter:window-width 2))
    (use-package git-gutter-fringe
      :diminish git-gutter-mode
      :after git-gutter
