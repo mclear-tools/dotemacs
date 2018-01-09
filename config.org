@@ -3172,11 +3172,12 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
   (cpm-leader1 
     "u"  '(:ignore t :which-key "User")
-    "ua" 'org-agenda
+    "ua" 'super-jump-to-org-agenda
     "um" 'cpm/org-to-markdown   
     "uc" 'pandoc-convert-to-pdf
     "uC" 'cpm/pandoc-convert-to-pdf 
     "ug" 'org-mac-grab-link
+    "ui" 'cpm/org-goto-inbox
     "uk" 'kill-compilation
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
@@ -3719,7 +3720,8 @@ Better dired navigation using ranger-like settings
 **** State Settings
      #+BEGIN_SRC emacs-lisp
      (setq org-todo-keywords
-      '((sequence "TODO" "NEXT" "WAITING" "INACTIVE" "|" "DONE" "CANCELED")))
+      '((sequence "TODO" "NEXT" "|" "DONE")
+        (sequence "INPROGRESS" "WAITING" "|" "CANCELED" "INACTIVE")))
      #+END_SRC
 **** Org Logging
      #+BEGIN_SRC emacs-lisp
@@ -3778,7 +3780,6 @@ Better dired navigation using ranger-like settings
         imenu-auto-rescan t)
 #+END_SRC
 *** Org Keybindings
-
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'org
        (general-define-key :states '(normal) :keymaps 'org-mode-map
@@ -3793,6 +3794,11 @@ Better dired navigation using ranger-like settings
          ;; normal & insert state shortcuts.
          (general-define-key :states '(normal insert) :keymaps 'org-mode-map
             "TAB" 'org-cycle
+            ;; easily emphasize text
+            ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+            "s-b" (lambda () (interactive) (org-emphasize ?\*))
+            "s-i" (lambda () (interactive) (org-emphasize ?\/))
+            "s-=" (lambda () (interactive) (org-emphasize ?\=))
             "s-l" 'org-metaright
             "s-h" 'org-metaleft
             "s-k" 'org-metaup
@@ -3816,10 +3822,11 @@ Better dired navigation using ranger-like settings
             "RET" #'org-return-indent
             "C-j" nil
             "C-k" nil
-            "C-j"   #'org-next-visible-heading
-            "C-k"   #'org-previous-visible-heading
-            "C-S-j"     #'org-forward-heading-same-level
-            "C-S-k"     #'org-backward-heading-same-level))
+            "H-j"   #'org-next-visible-heading
+            "H-k"   #'org-previous-visible-heading
+            "H-S-j"     #'org-forward-heading-same-level
+            "H-S-k"     #'org-backward-heading-same-level
+            ))
 
     ;; local leader keybindings
     (with-eval-after-load 'org
@@ -3831,7 +3838,7 @@ Better dired navigation using ranger-like settings
         :n  "="   #'org-align-all-tags
         :n  "?"   #'org-tags-view
         :n  ":"   #'org-set-tags
-        :n  "a"   #'org-agenda
+        :n  "a"   #'super-jump-to-org-agenda
         :n  "A"   #'org-archive-subtree
         :n  "b"   #'org-tree-to-indirect-buffer
         :n  "c"   #'org-capture
@@ -4018,21 +4025,28 @@ Make counsel display org headings nicely.
 *** Org-Agenda
 Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]]. 
 #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'org-agenda
+  (setq org-agenda-files '("~/Dropbox/org-files/"))
+
+  ;; Display properties
+  (setq org-cycle-separator-lines 0
+        org-tags-column 80
+        org-agenda-tags-column org-tags-column
+        org-agenda-sticky t
+        org-agenda-span 'day)
+
+(with-eval-after-load 'org-agenda
   (general-define-key :keymaps 'org-agenda-mode-map 
                       "j" 'org-agenda-next-item
                       "k" 'org-agenda-previous-item))
-  (setq org-agenda-files '("~/Dropbox/org-files/"))
-  
-;; automatically refresh the agenda after adding a task
-(add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
 
+;; automatically refresh the agenda after adding a task
 (defun cpm/org-agenda-refresh ()
 (interactive)
 (when (get-buffer "*Org Agenda*")
     (with-current-buffer "*Org Agenda*"
         (org-agenda-redo t)
         (message "[org agenda] refreshed!"))))
+(add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
 #+END_SRC
 
 **** TESTING Org-Super-Agenda
@@ -4043,15 +4057,19 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
   (defun super-jump-to-org-agenda ()
     (interactive)
     (let ((org-super-agenda-groups
-           '((:name "Today"
+           '((:name "ACTION"
                     :time-grid t
-                    :todo "TODAY")
-             (:name "Important"
-                    :tag "bills"
-                    :priority "A")
+                    :todo "NEXT"
+                    :order 1)
+             (:name "To Read"
+                    :todo "TO-READ"
+                    :order 2)
+             (:name "In Progress"
+                    :todo "INPROGRESS"
+                    :order 7)
              (:todo "WAITING" :order 8)
-             (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
-                    :order 9)
+             (:todo ("FIXME" "REVISE")
+                    :order 3)
              (:priority<= "B" :order 1))))
       (org-agenda nil "a")))
   :config
@@ -4077,8 +4095,8 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
              %? ")
             ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
             "* %?")
-            ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org"
-              (file "~/Dropbox/org-files/templates/weekly_review_template.org")))))
+            ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
+              (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
 
       ;; Add date to captured items
       (defun add-property-with-date-captured ()
@@ -4089,7 +4107,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
       (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
 
 #+END_SRC
-**** Journal Capture
+**** Org Journal Capture
 Tell emacs what you're doing a few times a day. Depends on a [[/Users/roambot/bin/scripts/emacs_journal.sh][shell
 script]] run in the background. I got the idea from [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]].
 Hat tip to [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack overflow]] for help on hooks for the created frame.
@@ -4195,6 +4213,13 @@ document and create new parents.
   (widen)
   (beginning-of-buffer)
   (re-search-forward "* Inbox")
+  (beginning-of-line))
+
+(defun cpm/org-goto-inbox ()
+  (interactive)
+  (find-file "~/Dropbox/org-files/inbox.org")
+  (widen)
+  (beginning-of-buffer)
   (beginning-of-line))
 
   (defun cpm/org-goto-projects ()
@@ -4638,6 +4663,11 @@ in the init file. It has to get loaded very early so as not to throw errors.
   (with-eval-after-load 'org
     (defalias #'org-git-version #'radian--org-git-version))
 #+END_SRC
+
+*** DISABLED Org Random Note
+#+begin_src emacs-lisp :tangle no
+(use-package org-randomnote)
+#+end_src
 
 ** Search
 *** Ag
@@ -6261,15 +6291,13 @@ Better than doc-view, but doesn't render well on retina screens :(
 Interface with Zotero.
 #+BEGIN_SRC emacs-lisp
   (use-package zotxt
-    :commands (org-zotxt-mode zotxt-easy-key-mode)
     :diminish (org-zoxt zotxt org-zotxt-mode)
+    :init
+    (add-hook! 'org-mode-hook #'org-zotxt-mode)
+    (add-hook! 'markdown-mode-hook #'zotxt-easykey-mode)
     :config
-    ;; (setq org-zotxt-default-search-method 'everything)
-    ;; (setq zotxt-default-bibliography-style "mkbehr-short")
-    ;; Activate org-zotxt-mode in org-mode buffers
-    (add-hook 'org-mode-hook (lambda () (org-zotxt-mode 1)))
-    ;; Activate in markdown
-    (add-hook 'markdown-mode-hook (lambda () (zotxt-easykey-mode 0))))
+    (setq org-zotxt-default-search-method :title-creator-year)
+    )
 
 #+END_SRC
 ** Private
