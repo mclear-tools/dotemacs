@@ -4806,6 +4806,19 @@ in the init file. It has to get loaded very early so as not to throw errors.
 ;; Emacs doesn’t handle less well, so use cat instead for the shell pager 
 (setenv "PAGER" "cat")
 
+;; hack to fix pasting issue, the paste micro-state won't work in term
+(general-define-key :states '(normal) :keymaps 'term-raw-map 
+       "p" 'term-paste
+       "C-k" 'term-send-up
+       "C-j" 'term-send-down)
+
+(general-define-key :states '(insert) :keymaps 'term-raw-map 
+       "C-c C-d" 'term-send-eof
+       "C-c C-z" 'term-stop-subjob
+       "<tab>"   'term-send-tab
+       "s-v"     'term-paste
+       "C-k"     'term-send-up
+       "C-j"     'term-send-down)
  #+end_src
 *** Compilation buffer
 
@@ -4946,7 +4959,7 @@ An easy way to ssh
              (eshell-grep "rgrep" args t)))
 
  #+END_SRC
-**** CHECK Eshell Path Shortening
+**** FIXME CHECK Eshell Path Shortening
 Courtesy of [[https://www.emacswiki.org/emacs/EshellPrompt][emacs wiki]] and [[https://github.com/kaihaosw/eshell-prompt-extras/blob/master/eshell-prompt-extras.el#L193][eshell-prompt-extras]]
 #+BEGIN_SRC emacs-lisp
 (defun epe-fish-path (path)
@@ -4974,7 +4987,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             components (cdr components)))
     (concat str (cl-reduce (lambda (a b) (concat a "/" b)) components))))
 #+END_SRC
-**** CHECK Eshell Prompt Extras
+**** FIXME CHECK Eshell Prompt Extras
 Some bling for the prompt plus a custom theme. In general it makes the
  prompt display more useful info. I got a lot of help from looking at
  [[https://github.com/bling/dotemacs/blob/master/config/init-eshell.el][bling's eshell config]] as well as the package [[https://github.com/hiddenlotus/eshell-prompt-extras][eshell-prompt-extras]] and
