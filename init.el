@@ -1,6 +1,10 @@
 (let ((file-name-handler-alist nil))
 ;; (unwind-protect
 ;;     (let ((straight-treat-as-init t))
+;; reduce startup
+  (setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6)
+
 (defvar my-init-el-start-time (current-time) "Time when init.el was started")
 ;; Let's start emacs up quietly.
 (advice-add #'display-startup-echo-area-message :override #'ignore)
@@ -115,6 +119,9 @@ Note the weekly scope of the command's precision.")
 	  (my-tangle-config-org))))
 (add-hook 'after-save-hook 'my-tangle-config-org-hook-func)
 
-(message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time))))
+(message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time)))
+(setq gc-cons-threshold 100000
+      gc-cons-percentage 0.1)
+)
   ;; (straight-finalize-transaction))
 
