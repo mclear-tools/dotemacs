@@ -2216,7 +2216,17 @@ Evil [[https://github.com/jojojames/evil-collection][everywhere]]!
         (make-directory undo-dir t)))
     (setq undo-tree-auto-save-history nil))
 #+end_src
-
+***** Evil Numbers
+Increment an decrement numbers 
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-numbers
+    :commands (evil-numbers/inc-at-pt evil-numbers/dec-at-pt)
+    :init
+    (general-define-key
+      :states '(normal visual insert emacs)
+      "H-s" 'evil-numbers/inc-at-pt
+      "H-a" 'evil-numbers/dec-at-pt))
+#+END_SRC
 ** Appearance & UI
    Various settings to make Emacs (mostly the GUI version) look better or
    make interaction smoother. 
