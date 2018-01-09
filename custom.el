@@ -47,7 +47,10 @@
     (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-eshell org-git-link org-mac-iCal org-mac-link)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
- '(safe-local-variable-values (quote ((org-download-heading-lvl))))
+ '(safe-local-variable-values
+   (quote
+    ((org-list-allow-alphabetical . t)
+     (org-download-heading-lvl))))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(straight-check-for-modifications (quote live))
  '(term-default-bg-color "#002b36")
