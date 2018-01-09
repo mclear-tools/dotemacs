@@ -28,9 +28,9 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#personal-information][Personal Information]]
   - [[#variables][Variables]]
   - [[#security-settings][Security Settings]]
-  - [[#emacs-initialization][Emacs Initialization]]
   - [[#general-settings][General Settings]]
   - [[#useful-libraries][Useful Libraries]]
+  - [[#emacs-initialization][Emacs Initialization]]
   - [[#modal-editing][Modal Editing]]
   - [[#appearance--ui][Appearance & UI]]
   - [[#navigation][Navigation]]
@@ -177,39 +177,6 @@ Properly verify outgoing ssl connections.
                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
       nsm-settings-file (expand-file-name "network-security.data" cmacs-cache-dir))
 #+END_SRC
-** Emacs Initialization
-*** Initialization Settings
-We're going to increase the gc-cons-threshold to a very high number to decrease the load and compile time.
-We'll lower this value significantly after initialization has completed. We don't want to keep this value
-too high or it will result in long GC pauses during normal usage.
-
-#+BEGIN_SRC emacs-lisp 
-(eval-and-compile
-  (setq gc-cons-threshold 402653184
-        gc-cons-percentage 0.6))
-
-;; Let's lower our GC thresholds back down to a sane level.
-(add-hook 'cmacs-post-init-hook #'(lambda () (setq gc-cons-threshold 100000
-                                                   gc-cons-percentage 0.1)))
-#+END_SRC
-
-Now, we're going to disable double-buffering to prevent stuttering.
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
-#+END_SRC
-
-Disable certain byte compiler warnings to cut down on the noise. This is a personal choice and can be removed
-if you would like to see any and all byte compiler warnings.
-
-#+BEGIN_SRC emacs-lisp
-(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
-#+END_SRC
-*** Package Management
-I use [[https://github.com/raxod502/straight.el][straight.el]] for package management. It leverages [[https://github.com/jwiegley/use-package][use-package]]
-nicely and allows for easy customization of packages using git. The
-settings for straight.el and use-package are all in the [[https://github.com/mclear-tools/dotemacs/blob/straight_refactor/init.el][init file]].  
-
 ** General Settings
 *** System Defaults
 Let's use sane defaults. Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
@@ -260,12 +227,13 @@ No bells and no visible "bell" either!
 #+END_SRC
 **** Dired settings
 #+BEGIN_SRC emacs-lisp
-(setq insert-directory-program "gls" dired-use-ls-dired t)
-;; list directories first
-(setq dired-listing-switches "-al --group-directories-first")
-;; stop asking about recurisve actions
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
+  (setq insert-directory-program "gls" dired-use-ls-dired t)
+  ;; list directories first
+  ;; (setq dired-listing-switches "-al --group-directories-first")
+  (setq dired-listing-switches "-laGh1v --group-directories-first")
+  ;; stop asking about recurisve actions
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
 #+END_SRC
 **** Dired Copy Large Files & Directories
 Lets you copy huge files and directories without Emacs freezing up and
@@ -437,6 +405,125 @@ customize settings in [[file:init.el][init.el]].
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
+*** Mac OS 
+There is some configuration to do when running Emacs on OS X (hence the
+"darwin" system-type check).
+
+First we can define some general system checks
+#+BEGIN_SRC emacs-lisp
+(setq IS-LINUX (eq system-type 'gnu/linux)
+      IS-MAC (eq system-type 'darwin))
+#+END_SRC
+
+
+#+begin_src emacs-lisp
+    (when IS-MAC
+      ;; make fonts look better with anti-aliasing
+      (setq mac-allow-anti-aliasing t)
+      ;; delete files by moving them to the trash
+      (setq delete-by-moving-to-trash t)
+      (setq trash-directory "~/.Trash")
+
+      ;; Don't make new frames when opening a new file with Emacs
+      (setq ns-pop-up-frames nil)
+
+      ;; fullscreen (disable for non-space full screen)
+      (setq ns-use-native-fullscreen t)
+
+      ;; disable emacs-mac smooth scrolling because it is seriously janky
+      (setq mac-mouse-wheel-smooth-scroll nil)
+
+      ;; Set modifier keys
+      (setq mac-option-modifier 'meta) ;; Bind meta to ALT
+      (setq mac-command-modifier 'super) ;; Bind apple/command to super if you want
+      (setq mac-function-modifier 'hyper) ;; Bind function key to hyper if you want 
+      (setq mac-right-option-modifier 'none) ;; unbind right key for accented input
+
+      ;; Make forward delete work 
+      (global-set-key (kbd "<H-backspace>") 'delete-forward-char)
+
+      ;; Keybindings
+      (global-set-key (kbd "s-=") 'scale-up-font)
+      (global-set-key (kbd "s--") 'scale-down-font)
+      (global-set-key (kbd "s-0") 'reset-font-size)
+      (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+      (global-set-key (kbd "s-v") 'yank)
+      (global-set-key (kbd "s-c") 'evil-yank)
+      (global-set-key (kbd "s-a") 'mark-whole-buffer)
+      (global-set-key (kbd "s-x") 'kill-region)
+      (global-set-key (kbd "s-w") 'delete-window)
+      (global-set-key (kbd "s-W") 'delete-frame)
+      (global-set-key (kbd "s-n") 'make-frame)
+      (global-set-key (kbd "s-z") 'undo-tree-undo)
+      (global-set-key (kbd "s-s")
+                      (lambda ()
+                        (interactive)
+                        (call-interactively (key-binding "\C-x\C-s"))))
+      (global-set-key (kbd "s-Z") 'undo-tree-redo)
+      (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
+      ;; Emacs sometimes registers C-s-f as this weird keycode
+      (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
+  )
+
+      (defun open-dir-in-iterm ()
+        "Open the current directory of the buffer in iTerm."
+        (interactive)
+        (let* ((iterm-app-path "/Applications/iTerm.app")
+               (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
+               (iterm-path (if (file-directory-p iterm-app-path)
+                               iterm-app-path
+                             iterm-brew-path)))
+          (shell-command (concat "open -a " iterm-path " ."))))
+          (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
+
+      ;; Not going to use these commands
+      (put 'ns-print-buffer 'disabled t)
+      (put 'suspend-frame 'disabled t)
+
+      ;; -- This is for TextExpander
+      ;; (setq ns-alternate-modifier 'alt)
+      ;; (define-key global-map [(alt ?v)] 'scroll-down)
+      ;; (define-key global-map [(meta ?v)] 'yank)
+#+end_src
+*** Time and Date Stamps
+**** Emacs buffer timestamp settings
+#+BEGIN_SRC emacs-lisp
+  (setq 
+    time-stamp-active t          ; do enable time-stamps
+    time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp: 
+    time-stamp-format "Last modified on %02m-%02d-%04y %02H:%02M:%02S (%U)") ; date format
+  (add-hook 'write-file-hooks 'time-stamp) ; update when saving
+#+END_SRC
+**** Insert time or date
+The code below sets the correct value for system-time-locale, and binds
+keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
+#+BEGIN_SRC emacs-lisp
+  (defun format-date (format)
+  (let ((system-time-locale "en_US.UTF-8"))
+    (insert (format-time-string format))))
+
+(defun insert-date ()
+  (interactive)
+  (format-date "%A, %B %d %Y"))
+
+(defun insert-date-and-time ()
+  (interactive)
+  (format-date "%m-%d-%Y %H:%M:%S"))
+#+END_SRC
+*** Location
+Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-location][geographical location]] on OS X
+#+BEGIN_SRC emacs-lisp
+(use-package osx-location
+  :if (eq system-type 'darwin)
+  :demand t
+  :config
+  (osx-location-watch)
+  (add-hook 'osx-location-changed-hook
+               (lambda ()
+                 (setq calendar-latitude osx-location-latitude
+                       calendar-longitude osx-location-longitude
+                       calendar-location-name (format "%s, %s" osx-location-latitude osx-location-longitude)))))
+#+END_SRC
 *** Functions & Macros
 **** Useful Functions 
   Various useful functions and macros I've written or pilfered from others. 
@@ -624,7 +711,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
   (defun cpm/org-to-markdown ()
     "convert clipboard contents from org to markdown and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f org -t markdown --atx-headers"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --atx-headers -f org -t markdown"))
     (yank))
 
   (defun cpm/markdown-to-org ()
@@ -1790,125 +1877,6 @@ compilation."
               (command-remapping 'projectile-find-file)
             (command-remapping 'find-file))))))
 #+END_SRC
-*** Mac OS 
-There is some configuration to do when running Emacs on OS X (hence the
-"darwin" system-type check).
-
-First we can define some general system checks
-#+BEGIN_SRC emacs-lisp
-(setq IS-LINUX (eq system-type 'gnu/linux)
-      IS-MAC (eq system-type 'darwin))
-#+END_SRC
-
-
-#+begin_src emacs-lisp
-    (when IS-MAC
-      ;; make fonts look better with anti-aliasing
-      (setq mac-allow-anti-aliasing t)
-      ;; delete files by moving them to the trash
-      (setq delete-by-moving-to-trash t)
-      (setq trash-directory "~/.Trash")
-
-      ;; Don't make new frames when opening a new file with Emacs
-      (setq ns-pop-up-frames nil)
-
-      ;; fullscreen (disable for non-space full screen)
-      (setq ns-use-native-fullscreen t)
-
-      ;; disable emacs-mac smooth scrolling because it is seriously janky
-      (setq mac-mouse-wheel-smooth-scroll nil)
-
-      ;; Set modifier keys
-      (setq mac-option-modifier 'meta) ;; Bind meta to ALT
-      (setq mac-command-modifier 'super) ;; Bind apple/command to super if you want
-      (setq mac-function-modifier 'hyper) ;; Bind function key to hyper if you want 
-      (setq mac-right-option-modifier 'none) ;; unbind right key for accented input
-
-      ;; Make forward delete work 
-      (global-set-key (kbd "<H-backspace>") 'delete-forward-char)
-
-      ;; Keybindings
-      (global-set-key (kbd "s-=") 'scale-up-font)
-      (global-set-key (kbd "s--") 'scale-down-font)
-      (global-set-key (kbd "s-0") 'reset-font-size)
-      (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-      (global-set-key (kbd "s-v") 'yank)
-      (global-set-key (kbd "s-c") 'evil-yank)
-      (global-set-key (kbd "s-a") 'mark-whole-buffer)
-      (global-set-key (kbd "s-x") 'kill-region)
-      (global-set-key (kbd "s-w") 'delete-window)
-      (global-set-key (kbd "s-W") 'delete-frame)
-      (global-set-key (kbd "s-n") 'make-frame)
-      (global-set-key (kbd "s-z") 'undo-tree-undo)
-      (global-set-key (kbd "s-s")
-                      (lambda ()
-                        (interactive)
-                        (call-interactively (key-binding "\C-x\C-s"))))
-      (global-set-key (kbd "s-Z") 'undo-tree-redo)
-      (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
-      ;; Emacs sometimes registers C-s-f as this weird keycode
-      (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
-  )
-
-      (defun open-dir-in-iterm ()
-        "Open the current directory of the buffer in iTerm."
-        (interactive)
-        (let* ((iterm-app-path "/Applications/iTerm.app")
-               (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
-               (iterm-path (if (file-directory-p iterm-app-path)
-                               iterm-app-path
-                             iterm-brew-path)))
-          (shell-command (concat "open -a " iterm-path " ."))))
-          (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
-
-      ;; Not going to use these commands
-      (put 'ns-print-buffer 'disabled t)
-      (put 'suspend-frame 'disabled t)
-
-      ;; -- This is for TextExpander
-      ;; (setq ns-alternate-modifier 'alt)
-      ;; (define-key global-map [(alt ?v)] 'scroll-down)
-      ;; (define-key global-map [(meta ?v)] 'yank)
-#+end_src
-*** Time and Date Stamps
-**** Emacs buffer timestamp settings
-#+BEGIN_SRC emacs-lisp
-  (setq 
-    time-stamp-active t          ; do enable time-stamps
-    time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp: 
-    time-stamp-format "Last modified on %02m-%02d-%04y %02H:%02M:%02S (%U)") ; date format
-  (add-hook 'write-file-hooks 'time-stamp) ; update when saving
-#+END_SRC
-**** Insert time or date
-The code below sets the correct value for system-time-locale, and binds
-keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.github.io/emacs-hacks-2.html#desktop][emacs-hacks]].
-#+BEGIN_SRC emacs-lisp
-  (defun format-date (format)
-  (let ((system-time-locale "en_US.UTF-8"))
-    (insert (format-time-string format))))
-
-(defun insert-date ()
-  (interactive)
-  (format-date "%A, %B %d %Y"))
-
-(defun insert-date-and-time ()
-  (interactive)
-  (format-date "%m-%d-%Y %H:%M:%S"))
-#+END_SRC
-*** Location
-Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-location][geographical location]] on OS X
-#+BEGIN_SRC emacs-lisp
-(use-package osx-location
-  :if (eq system-type 'darwin)
-  :demand t
-  :config
-  (osx-location-watch)
-  (add-hook 'osx-location-changed-hook
-               (lambda ()
-                 (setq calendar-latitude osx-location-latitude
-                       calendar-longitude osx-location-longitude
-                       calendar-location-name (format "%s, %s" osx-location-latitude osx-location-longitude)))))
-#+END_SRC
 *** Text Settings
 General Text settings and hooks
 **** Sentence endings
@@ -2048,6 +2016,40 @@ Show matching brackets, parenthesis, etc.
 (use-package subr-x :demand t :straight nil)
 (require 'cl-lib)
 #+END_SRC
+** Emacs Initialization
+*** Initialization Settings
+We increase the gc-cons-threshold to a very high number to decrease the load
+and compile time. We'll lower this value significantly after initialization
+has completed. We don't want to keep this value too high or it will result in
+long GC pauses during normal usage.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+
+;; startup with high GC
+(setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6)
+;; Let's lower our GC thresholds back down to a sane level.
+(setq gc-cons-threshold 100000
+      gc-cons-percentage 0.1)
+#+END_SRC
+
+Now, we're going to disable double-buffering to prevent stuttering.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+#+END_SRC
+
+Disable certain byte compiler warnings to cut down on the noise. This is a personal choice and can be removed
+if you would like to see any and all byte compiler warnings.
+
+#+BEGIN_SRC emacs-lisp
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
+#+END_SRC
+*** Package Management
+I use [[https://github.com/raxod502/straight.el][straight.el]] for package management. It leverages [[https://github.com/jwiegley/use-package][use-package]]
+nicely and allows for easy customization of packages using git. The
+settings for straight.el and use-package are all in the [[https://github.com/mclear-tools/dotemacs/blob/straight_refactor/init.el][init file]].  
+
 ** Modal Editing
 *** General  (Evil)
 A [[https://github.com/noctuid/general.el][convenient way]] to bind keys. Compatible with evil. For helpful
@@ -2118,12 +2120,14 @@ Install, automatically load, and enable evil. It's like vim, but better!
 There are some other useful setup packages for evil
 ***** Evil Collection
 Evil [[https://github.com/jojojames/evil-collection][everywhere]]!
-#+BEGIN_SRC emacs-lisp
-(use-package evil-collection
-  :straight (evil-collection :type git :host github
-             :repo "jojojames/evil-collection" :branch "master")
-  :custom (evil-collection-setup-minibuffer t)
-  :init (evil-collection-init))
+#+BEGIN_SRC emacs-lisp 
+  (use-package evil-collection
+    :straight (evil-collection :type git :host github
+               :repo "jojojames/evil-collection" :branch "master")
+    ;; :custom (evil-collection-setup-minibuffer t)
+    ;; :init (evil-collection-init)
+    :init
+    (with-eval-after-load 'calendar (require 'evil-collection-calendar) (evil-collection-calendar-setup)))
 #+END_SRC
 ***** Evil indent
 #+BEGIN_SRC emacs-lisp
