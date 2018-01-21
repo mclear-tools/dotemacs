@@ -16,8 +16,8 @@
       mode-line-format nil)
 
 ;; Use straight.el for package management
-(let ((bootstrap-file (concat user-emacs-directory "straight/bootstrap.el"))
-      (bootstrap-version 2))
+(let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
+      (bootstrap-version 3))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
@@ -29,7 +29,6 @@
 
 ;; integrate straight.el with use package
 (straight-use-package 'use-package)
-(require 'use-package)  ;; use to get general working properly
 (setq straight-use-package-by-default t)
 (setq load-prefer-newer t)
 
