@@ -986,7 +986,7 @@ I got this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde8
   (defun reveal-to-pdf ()
   "print reveal.js slides to pdf"
   (interactive)
-  (async-shell-command "phantomjs /Users/Roambot/bin/print-pdf.js 'file:///Users/Roambot/projects/phil101/content/slides/lecture_outline.html?print-pdf'")) 
+  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")) 
 #+END_SRC
 ***** Org Tree to File
 Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659823][this]] superuser answer.
