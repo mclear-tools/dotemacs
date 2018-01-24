@@ -2497,6 +2497,17 @@ Increment an decrement numbers
      (zerodark-setup-modeline-format)
      )
  #+END_SRC
+***** Doom Themes
+#+BEGIN_SRC emacs-lisp
+(use-package emacs-doom-themes
+  :defer t
+  :straight (doom-themes :host github :repo "hlissner/emacs-doom-themes" :branch "master")
+  :config
+  (doom-themes-visual-bell-config)
+  (doom-themes-neotree-config)
+  (doom-themes-org-config)
+) 
+#+END_SRC
 ***** Circadian Theme-changer (based on time of day)
 [[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
 #+BEGIN_SRC emacs-lisp 
