@@ -405,6 +405,57 @@ customize settings in [[file:init.el][init.el]].
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
+*** Desktop save
+Save your frame/window/buffer config
+#+BEGIN_SRC emacs-lisp
+  (setq desktop-dirname             (concat cmacs-cache-dir "desktops")
+        desktop-base-file-name      "emacs.desktop"
+        desktop-base-lock-name      "lock"
+        desktop-path                (list desktop-dirname)
+        desktop-save                'ask-if-new
+        desktop-files-not-to-save   (concat "^$" ".*magit$")
+        desktop-restore-eager 4
+        desktop-load-locked-desktop t)
+
+  (when (not (file-exists-p desktop-dirname))
+  (make-directory desktop-dirname t))
+  
+  (setq desktop-buffers-not-to-save
+          (concat "\\("
+                  "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+                  "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+	          "\\)$"))
+
+  (desktop-save-mode 0)
+
+  (defun my-desktop ()
+    "Load the desktop and enable autosaving"
+    (interactive)
+    (let ((desktop-load-locked-desktop "ask"))
+      (desktop-read)
+      (desktop-save-mode 1)))
+
+  (defun save-desktop-save-buffers-kill-emacs ()
+    "Save buffers and current desktop every time when quitting emacs."
+    (interactive)
+    (desktop-save-in-desktop-dir)
+    (save-buffers-kill-emacs))
+
+  ;; better session management
+  (use-package desktop+
+    :disabled t
+    :general
+    (cpm-leader1 "pD" cpm/hydra-desktop)
+    :commands (desktop+-create desktop+-load)
+    :config
+    (setq desktop+-base-dir (concat cmacs-cache-dir "desktops"))
+    (defun my/desktop-frame-title-function (desktop-name)
+    (list (concat "%f | [" desktop-name "]")))
+
+    (setq desktop+-frame-title-function
+        'my/desktop-frame-title-function)
+  ) 
+#+END_SRC
 *** Mac OS 
 There is some configuration to do when running Emacs on OS X (hence the
 "darwin" system-type check).
@@ -3079,7 +3130,8 @@ Keybindings for managing packages
     "pc"  'projectile-compile-project
     "pC"  'desktop+-create
     "pd"  'helm-projectile-find-dir
-    "pD"  'projectile-dired
+    "pD"  'cpm/hydra-desktop
+    ;; "pD"  'projectile-dired
     "pf"  'helm-projectile-find-file
     "pg"  'goto-projects
     "ph"  'helm-projectile
@@ -3088,7 +3140,6 @@ Keybindings for managing packages
     "pI"  'projectile-invalidate-cache
     "pk"  'projectile-kill-buffers
     ;; "pl"  'desktop+-load
-    "pl"  'persp-switch
     "po"  'projectile-multi-occur
     "pP"  'helm-projectile-switch-project
     ;; "pp"  'helm-projectile-switch-project
@@ -3096,6 +3147,7 @@ Keybindings for managing packages
     ;; "pp"  'helm-persp-projectile-switch-project
     "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
+    "ps"  'persp-switch
     ;; "ps"  'bmkp-set-desktop-bookmark
     ;; "ps"  'desktop-save-in-desktop-dir
     "pT"  'projectile-find-test-file
@@ -3106,12 +3158,13 @@ Keybindings for managing packages
 #+END_SRC
 ***** Quit Keybindings
 #+BEGIN_SRC emacs-lisp
-(cpm-leader1 
-  "q"  '(:ignore t :which-key "Quit")
-  ;; "qq" 'save-desktop-save-buffers-kill-emacs
-  "qq" 'save-buffers-kill-emacs
-  "qQ" 'evil-quit-all
-  "qr" 'restart-emacs)
+  (cpm-leader1 
+    "q"  '(:ignore t :which-key "Quit")
+    ;; "qq" 'save-desktop-save-buffers-kill-emacs
+    "qq" 'save-desktop-save-buffers-kill-emacs
+    ;; "qq" 'save-buffers-kill-emacs
+    "qQ" 'evil-quit-all
+    "qr" 'restart-emacs)
 #+END_SRC
 ***** Search Keybindings
 #+BEGIN_SRC emacs-lisp
@@ -3174,11 +3227,12 @@ Keybindings for managing packages
     "u"  '(:ignore t :which-key "User")
     "ua" 'super-jump-to-org-agenda
     "um" 'cpm/org-to-markdown   
-    "uc" 'pandoc-convert-to-pdf
-    "uC" 'cpm/pandoc-convert-to-pdf 
+    "uc" 'cpm/pandoc-convert-to-pdf
+    "uC" 'cpm/pandoc-command-line-convert-to-pdf 
     "ug" 'org-mac-grab-link
     "ui" 'cpm/org-goto-inbox
     "uk" 'kill-compilation
+    "ul" 'desktop-read
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
     "uP" 'pandoc-pdf-open
@@ -4669,6 +4723,7 @@ in the init file. It has to get loaded very early so as not to throw errors.
 (use-package org-randomnote)
 #+end_src
 
+
 ** Search
 *** Ag
  #+BEGIN_SRC emacs-lisp
@@ -5357,6 +5412,13 @@ Yet another attempt to manage buffers/workspaces
         ("P" projectile-persp-switch-project "Switch Project")
         ("q" nil "Quit")))
 
+
+  (defhydra cpm/hydra-desktop (:columns 4
+                               :color blue)
+    "Desktops"
+    ("c" desktop+-create "Create desktop")
+    ("l" desktop+-load "Load desktop")) 
+
     ;; (defun helm-persp-projectile-switch-project ()
     ;; (interactive)
     ;; (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
@@ -5370,6 +5432,68 @@ Yet another attempt to manage buffers/workspaces
     ;;                 ))
     ;; (helm-projectile-switch-project)
     ;; (persp-rename (projectile-project-name)))
+#+END_SRC
+*** Desktop Perspective Integration
+A [[https://github.com/nex3/perspective-el/issues/19][useful set of functions]] for loading perspectives via desktop-save
+#+BEGIN_SRC emacs-lisp
+(defun perspectives-buffer-name-p (buffer)
+    (if (and buffer
+         (buffer-name buffer)
+         (not (string-prefix-p "*" (buffer-name buffer)))
+         (not (string-suffix-p "*" (buffer-name buffer))))
+    t
+      nil))
+
+  (defun perspectives-hash-filter (current filtered parameters saving)
+    (let ((value (cdr current))
+      (result ())
+      (keys (hash-table-keys (cdr current))))
+      ;; for every perspective...
+      (dolist (key keys)
+    (let ((persp (gethash key value)))
+      ;; that isn't killed...
+      (if (not (persp-killed persp))
+          (add-to-list
+           'result
+           (cons key
+             ;; save the list of buffers
+             (list (cons "buffers"
+             (list
+              (mapcar 'buffer-name (seq-filter 'perspectives-buffer-name-p (persp-buffers persp)))))))))))
+    ;; return a different variable name so perspectives doesn't clobber it
+    (cons 'perspectives-hash-serialized result)))
+
+  ;; serialize perspectives hash
+  (add-to-list 'frameset-filter-alist '(perspectives-hash . perspectives-hash-filter))
+  ;; don't serialize anything else
+  (add-to-list 'frameset-filter-alist '(persp-modestring . :never))
+  (add-to-list 'frameset-filter-alist '(persp-recursive . :never))
+  (add-to-list 'frameset-filter-alist '(persp-last . :never))
+  (add-to-list 'frameset-filter-alist '(persp-curr . :never))
+
+  (defun perspectives-restore-state ()
+    (dolist (frame (frame-list))
+      ;; get the serialized state off of the frame
+      (let ((state (frame-parameter frame 'perspectives-hash-serialized)))
+    (if state (progn
+            (message "Found state, attempting restore")
+            ;; delete it so we don't end up in a loop
+            (set-frame-parameter frame 'perspectives-hash-serialized nil)
+            (with-selected-frame frame
+              (dolist (elem state)
+            ;; recreate the perspective
+            (with-perspective (car elem)
+              (dolist (buffer-name (car (cdr (assoc "buffers" (cdr elem)))))
+                ;; add the buffer back to the perspective
+                (persp-add-buffer buffer-name)
+                )))
+              ))
+      (message "No state found")
+      )
+    )))
+
+  (add-hook 'desktop-after-read-hook 'perspectives-restore-state)
+
 #+END_SRC
 *** Eyebrowse Workspace & Window Management
 Easy workspace creation and switching
