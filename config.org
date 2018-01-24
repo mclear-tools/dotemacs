@@ -2057,13 +2057,16 @@ Show matching brackets, parenthesis, etc.
 #+END_SRC
 ** Useful Libraries
 
-[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing, string manipulation, list manipulation and backward compatibility respectively.
+[[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing,
+string manipulation, list manipulation and backward compatibility
+respectively. The git package is also a library.
 
 #+BEGIN_SRC emacs-lisp
 (use-package async :demand t)
 (use-package dash :demand t)
 (use-package s :demand t)
 (use-package f :demand t)
+(use-package git :demand t)
 (use-package subr-x :demand t :straight nil)
 (require 'cl-lib)
 #+END_SRC
@@ -2261,11 +2264,14 @@ Evil [[https://github.com/jojojames/evil-collection][everywhere]]!
     ;; (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
+    ;; supposedly causes errors in undo read
+    ;; see https://emacs.stackexchange.com/a/34214/11934
+    (setq undo-tree-enable-undo-in-region nil)
     (let ((undo-dir (concat cmacs-cache-dir "undo")))
       (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
       (unless (file-directory-p undo-dir)
         (make-directory undo-dir t)))
-    (setq undo-tree-auto-save-history nil))
+    (setq undo-tree-auto-save-history t))
 #+end_src
 ***** Evil Numbers
 Increment an decrement numbers 
@@ -2336,7 +2342,7 @@ Increment an decrement numbers
        (progn
        (setq org-todo-keyword-faces
             '(("TODO" . (:foreground "orange" :weight bold)) ("STARTED" . "yellow")
-              ("WAITING" . (:foreground "blue" :weight bold))
+              ("WAITING" . (:weight bold))
               ("SUBMITTED-C" . "green") ("SUBMITTED-J" . "green")
               ("ACCEPTED-C" . "silver") ("ACCEPTED-J" . "silver")
               ("REVISE" . (:foreground "violet" :weight bold))))
@@ -4328,7 +4334,7 @@ document and create new parents.
     (use-package ox-pandoc
       ;; :after org
       ;; :commands (org-pandoc-publish-to-html5)
-      :defer 5
+      :defer 2
       :config
       ;; default options for all output formats
       ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
@@ -4336,8 +4342,8 @@ document and create new parents.
       ;; cancel above settings only for 'docx' format
       (setq org-pandoc-options-for-docx '((standalone . nil)))
       ;; special settings for beamer-pdf and latex-pdf exporters
-      (setq org-pandoc-options-for-beamer-pdf '((latex-engine . "xelatex")))
-      (setq org-pandoc-options-for-latex-pdf '((latex-engine . "xelatex")))
+      (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+      (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
 
 
       ;; Pandoc publishing functions 
