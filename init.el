@@ -1,126 +1,84 @@
 (let ((file-name-handler-alist nil))
-;; (unwind-protect
-;;     (let ((straight-treat-as-init t))
-;; reduce startup
-  (setq gc-cons-threshold 402653184
-        gc-cons-percentage 0.6)
 
-(defvar my-init-el-start-time (current-time) "Time when init.el was started")
-;; Let's start emacs up quietly.
-(advice-add #'display-startup-echo-area-message :override #'ignore)
-(setq inhibit-startup-message t
-      inhibit-startup-echo-area-message user-login-name
-      inhibit-default-init t
-      initial-major-mode 'fundamental-mode
-      initial-scratch-message nil
-      mode-line-format nil)
+;;; Startup timing
+(defvar my-start-time (current-time)
+  "Time when Emacs was started")
 
-;; Use straight.el for package management
-(let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
-      (bootstrap-version 3))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+;;; Untangling and loading
+;;; Taken, with slight modifications, from http://www.holgerschurig.de/en/emacs-init-tangle/
 
-;; integrate straight.el with use package
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
-(setq load-prefer-newer t)
+(defun my-tangle-section-canceled ()
+  "Checks if the previous section header was DISABLED"
+  (save-excursion
+    (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
+        (progn
+          ;; (message "FOUND '%s'" (match-string 1))
+          (string-prefix-p "DISABLED" (match-string 1)))
+      nil)))
 
-;; install org for bootstrapping config
-(use-package org
-  :straight org-plus-contrib)
+(defun my-tangle-config-org (orgfile elfile)
+  "This function will write all source blocks from =config.org= into
+=config.el= that are ...
 
-;; load the config file ;; The following tangles a new .el and tangles on save as well.
-;; From novoid's config; see https://github.com/novoid/dot-emacs/blob/master/init.el
+- not marked as :tangle no
+- have a source-code of =emacs-lisp=
+- doesn't have the todo-marker DISABLED"
+  (let* (;; list where we cobble together body parts
+         (body-list ())
+         ;; disable special file handlers when loading .org files
+         (file-name-handler-alist nil)
+         ;; monster-regexp to extract pieces out of an .org file
+         (org-babel-src-block-regexp (concat
+                                      ;; (1) indentation                 (2) lang
+                                      "^\\([ \t]*\\)#\\+begin_src[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*"
+                                      ;; (3) switches
+                                      "\\([^\":\n]*\"[^\"\n*]*\"[^\":\n]*\\|[^\":\n]*\\)"
+                                      ;; (4) header arguments
+                                      "\\([^\n]*\\)\n"
+                                      ;; (5) body
+                                      "\\([^\000]*?\n\\)??[ \t]*#\\+end_src")))
+    (with-temp-buffer
+      (insert-file-contents orgfile)
+      (goto-char (point-min))
+      (while (re-search-forward org-babel-src-block-regexp nil t)
+        (let ((lang (match-string 2))
+              (args (match-string 4))
+              (body (match-string 5))
+              (canc (my-tangle-section-canceled)))
+          (when (and (string= lang "emacs-lisp")
+                     (not (string-match-p ":tangle\\s-+no" args))
+                     (not canc))
+              (add-to-list 'body-list body)))))
+    (with-temp-file elfile
+      (insert ";; *- lexical-binding: t; -*-\n")
+      (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
+      ;; (insert (apply 'concat (reverse body-list)))
+      (apply 'insert (reverse body-list)))
+    ))
 
-;; get time formats
-;; from: http://stackoverflow.com/questions/251908/how-can-i-insert-current-date-and-time-into-a-file-using-emacs
-(defvar current-date-time-format "%a %b %d %Y-%m-%dT%H:%M:%S "
-  "Format of date to insert with `insert-current-date-time' func
-See help of `format-time-string' for possible replacements")
+(defun my-load-file (fname)
+  "This loads an elisp configuration file. If an .org file exists,
+it will be first untangled. If a byte-compiled file does NOT exist,
+it will be created. After this, the normal loading logic happens."
+  (let* (;; disable garbage collection while we do heavy string work
+		 (gc-cons-threshold most-positive-fixnum)
+         ;; fname with various extensions
+         (sansfile (expand-file-name (file-name-sans-extension fname) user-emacs-directory))
+         (orgfile (concat sansfile ".org"))
+         (elfile  (concat sansfile ".el"))
+         (elcfile (concat sansfile ".elc")))
+    (when (file-exists-p orgfile)
+      (when (or (not (file-exists-p elfile))
+                (file-newer-than-file-p orgfile elfile))
+        (my-tangle-config-org orgfile elfile)))
+    ;; (when (or (not (file-exists-p elcfile))
+    ;;           (file-newer-than-file-p elfile elcfile))
+    ;;   (byte-compile-file elfile))
+    (load elfile nil 'nomessage)))
 
-;; from: http://stackoverflow.com/questions/251908/how-can-i-insert-current-date-and-time-into-a-file-using-emacs
-(defvar current-time-format "%a %H:%M:%S"
-  "Format of date to insert with `insert-current-time' func.
-Note the weekly scope of the command's precision.")
+;;; Actually loading my configuration
 
-(defun my-tangle-config-org ()
-  "This function will write all source blocks from =config.org= into =config.el= that are ...
+(my-load-file "config")
 
-- not marked as =tangle: no=
-- doesn't have the TODO state =DISABLED=
-- have a source-code of =emacs-lisp="
-  (require 'org)
-  (let* ((body-list ())
-         (output-file (concat user-emacs-directory "config.el"))
-         (org-babel-default-header-args (org-babel-merge-params org-babel-default-header-args
-                                                                (list (cons :tangle output-file)))))
-    (message "—————• Re-generating %s …" output-file)
-    (save-restriction
-      (save-excursion
-        (org-babel-map-src-blocks (concat user-emacs-directory "config.org")
-	  (let* (
-		 (org_block_info (org-babel-get-src-block-info 'light))
-		 ;;(block_name (nth 4 org_block_info))
-		 (tfile (cdr (assq :tangle (nth 2 org_block_info))))
-		 (match_for_TODO_keyword)
-		 )
-	    (save-excursion
-	      (catch 'exit
-		;;(when (string= "" block_name)
-		;;  (message "Going to write block name: " block_name)
-		;;  (add-to-list 'body-list (concat "message(\"" block_name "\")"));; adding a debug statement for named blocks
-		;;  )
-		(org-back-to-heading t)
-		(when (looking-at org-outline-regexp)
-		  (goto-char (1- (match-end 0))))
-		(when (looking-at (concat " +" org-todo-regexp "\\( +\\|[ \t]*$\\)"))
-		  (setq match_for_TODO_keyword (match-string 1)))))
-	    (unless (or (string= "no" tfile)
-			(string= "DISABLED" match_for_TODO_keyword)
-			(not (string= "emacs-lisp" lang)))
-	      (add-to-list 'body-list (concat "\n\n;; #####################################################################################\n"
-					      "(message \"config • " (org-get-heading) " …\")\n\n")
-			   )
-	      (add-to-list 'body-list body)
-	      ))))
-      (with-temp-file output-file
-        (insert ";; ============================================================\n")
-        (insert ";; Don't edit this file, edit config.org' instead ...\n")
-        (insert ";; Auto-generated at " (format-time-string current-date-time-format (current-time)) " on host " system-name "\n")
-        (insert ";; ============================================================\n\n")
-        (insert (apply 'concat (reverse body-list))))
-      (message "—————• Wrote %s" output-file))))
 
-;; following lines are executed only when my-tangle-config-org-hook-func()
-;; was not invoked when saving config.org which is the normal case:
-(let ((orgfile (concat user-emacs-directory "config.org"))
-      (elfile (concat user-emacs-directory "config.el"))
-      (gc-cons-threshold most-positive-fixnum))
-  (when (or (not (file-exists-p elfile))
-            (file-newer-than-file-p orgfile elfile))
-    (my-tangle-config-org)
-    ;;(save-buffers-kill-emacs);; TEST: kill Emacs when config has been re-generated due to many issues when loading newly generated config.el
-    )
-  (load-file elfile))
-
-;; when config.org is saved, re-generate config.el:
-(defun my-tangle-config-org-hook-func ()
-  (when (string= "config.org" (buffer-name))
-	(let ((orgfile (concat user-emacs-directory "config.org"))
-		  (elfile (concat user-emacs-directory "config.el")))
-	  (my-tangle-config-org))))
-(add-hook 'after-save-hook 'my-tangle-config-org-hook-func)
-
-(message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time)))
-(setq gc-cons-threshold 100000
-      gc-cons-percentage 0.1)
 )
-  ;; (straight-finalize-transaction))
-
