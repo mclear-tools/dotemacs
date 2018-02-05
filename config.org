@@ -3329,7 +3329,7 @@ Keybindings for managing packages
     "ul" 'desktop-read
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
-    "uP" 'pandoc-pdf-open
+    "uP" 'cpm/pandoc-pdf-open
     "us" 'sb-expand-current-file
     "uS" 'just-one-space
     "ut" 'cpm/org-goto-todo
@@ -5568,18 +5568,17 @@ Pandoc mode for markdown conversion
      ((eq major-mode 'org-mode)
       (call-interactively 'org-pandoc-export-to-latex-pdf-and-open))
      (t
-      (call-interactively 'pandoc-convert-to-pdf))))
+      (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open))))
 
-      (defun cpm/pandoc-command-line-convert-to-pdf ()
-        "convert to pdf"
-        (interactive)
-        (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/Master.bib --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
+    (defun cpm/pandoc-command-line-convert-to-pdf ()
+     "convert to pdf"
+     (interactive)
+     (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/Master.bib --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
 
-      (defun pandoc-pdf-open ()
-        "Open created PDF file"  
-        (interactive)
-        (find-file-other-window (concat (file-name-sans-extension buffer-file-name) ".pdf")))
-        )
+    (defun cpm/pandoc-pdf-open ()
+     "Open created PDF file"  
+     (interactive)
+     (find-file-other-window (concat (file-name-sans-extension buffer-file-name) ".pdf"))))
     :init
     (progn
       (setq pandoc-data-dir (concat cpm-etc-dir "pandoc-mode/"))
