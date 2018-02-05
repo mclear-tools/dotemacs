@@ -4781,7 +4781,10 @@ A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
 (setq org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-eshell org-git-link org-mac-iCal org-mac-link)))
 #+END_SRC
-
+*** Org ID
+#+BEGIN_SRC emacs-lisp
+(setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
+#+END_SRC
 ** Org Keybindings
 #+BEGIN_SRC emacs-lisp
        (general-define-key :states '(normal) :keymaps 'org-mode-map
