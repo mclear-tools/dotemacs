@@ -2611,7 +2611,7 @@ project root). Excludes the file basename. See `*buffer-name' for that."
 (defun *vc ()
   "Displays the current branch, colored based on its state."
   (when vc-mode
-    (let ((backend (concat " " (substring vc-mode (+ 2 (length (symbol-name (vc-backend buffer-file-name)))))))
+    (let ((backend (concat "  " (substring vc-mode (+ 2 (length (symbol-name (vc-backend buffer-file-name)))))))
           (face (let ((state (vc-state buffer-file-name)))
                   (cond ((memq state '(edited added))
                          'mode-line-vcs-info)
