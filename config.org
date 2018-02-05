@@ -153,6 +153,8 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#page-breaks][Page Breaks]]
   - [[#dashboard][Dashboard]]
   - [[#startup-time][Startup time]]
+- [[#test][Test]]
+  - [[#tabs][Tabs]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -6257,4 +6259,18 @@ Display Startup time
 
 (message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
 
+#+END_SRC
+* Test
+** FIXME Tabs
+Buffer tabs in modeline or Echo are. [[https://github.com/linktohack/buffer-line][Pictures]] help. Works well, especially
+with a toggle but I need to figure out evil bindings to make it easy to
+key a buffer up quickly. 
+#+BEGIN_SRC emacs-lisp
+(use-package buffer-line
+  :load-path "~/.emacs.d/.local/elisp/buffer-line/"
+  :commands buffer-line-mode
+  :init
+  (setq buffer-line-place 'echo-area)    ; Acceptable value: `nil' or `echo-area', `mode-line'
+  (setq buffer-line-mode-line-limit 60)  ; In case of `mode-line'.
+  )
 #+END_SRC
