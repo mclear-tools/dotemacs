@@ -3270,7 +3270,7 @@ Keybindings for managing packages
 
     "t"  '(:ignore t :which-key "Toggles")
     "ta" 'company-mode
-    "tb" 'fancy-battery-mode
+    "tb" 'buffer-line-mode
     "tB" 'beacon-mode
     "tc" 'centered-cursor-mode
     "tC" 'centered-window-mode
@@ -3532,8 +3532,7 @@ is an emacs wiki package you can't get it from MELPA. So the git mirror is
 [[https://github.com/emacsmirror/bookmark-plus][here]].
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark-plus
-    :load-path "~/.emacs.d/.local/elisp/bookmark-plus"
-    :defer 10
+    :load-path "~/.emacs.d/.local/elisp/bookmark+/"
     :init
     (setq bookmark-default-file (concat cpm-cache-dir "bookmarks"))
     (setq bmkp-last-as-first-bookmark-file (concat cpm-cache-dir "bookmarks"))
@@ -5941,7 +5940,7 @@ Better than doc-view, but doesn't render well on retina screens :(
             "o"   'pdf-links-action-perform
             "O"   'pdf-outline
             )
-        (general-define-key :states '(insert) :kwymaps 'pdf-view-mode-map
+        (general-define-key :states '(insert) :keymaps 'pdf-view-mode-map
             "y" 'pdf-view-kill-ring-save )
 
   ))      
@@ -5951,14 +5950,12 @@ Better than doc-view, but doesn't render well on retina screens :(
  For annotation and jumping to file
 #+BEGIN_SRC emacs-lisp
   (use-package org-pdfview
-    ;; :after org
+    :defer 2
     :commands (org-pdfview-open)
     :init
     (add-to-list 'org-file-apps 
                '("\\.pdf\\'" . (lambda (file link)
-                                       (org-pdfview-open link))))
-  ;;   (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
-  ;;   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+                                  (org-pdfview-open link))))
    )
 #+END_SRC
 *** Extract annotations
