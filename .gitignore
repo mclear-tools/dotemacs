@@ -14,3 +14,4 @@ snippets/
 elpa/
 var/
 /.local/@roambot/etc/.DS_Store
+/.local/.DS_Store
