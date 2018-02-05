@@ -383,7 +383,17 @@ respectively. The git package is also a library.
 * Functions & Macros
 ** Useful Functions 
 Various useful functions and macros I've written or pilfered from others. 
+*** Tangle file on save
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/tangle-emacs-config ()
+    "If the current file is in '~/.emacs.d/', the code blocks are tangled"
+    (when (equal (file-name-directory (directory-file-name buffer-file-name))
+                 (concat (getenv "HOME") "/.emacs.d/"))
+      (org-babel-tangle)
+      (message "%s tangled" buffer-file-name)))
 
+  ;; (add-hook 'after-save-hook #'cpm/tangle-emacs-config)
+#+END_SRC
 *** Blank Buffer New Frame
 Make a blank buffer when opening a new frame. From
 https://stackoverflow.com/a/25792276
@@ -435,7 +445,8 @@ Useful functions for calling config files
   (defun load-config ()
       "Load config "
       (interactive)
-      (load-file "~/.emacs.d/config.el"))
+      (cpm/tangle-emacs-config)
+      (load-file "~/.emacs.d/init.el"))
   (defun goto-dotfiles.org ()
       "Open dotfiles.org file"
       (interactive)
@@ -3544,7 +3555,7 @@ is an emacs wiki package you can't get it from MELPA. So the git mirror is
 *** Helm Settings
 #+BEGIN_SRC emacs-lisp 
   (use-package helm
-    :defer 2
+    :defer 5
     :general 
     ("M-x" 'helm-M-x)
     ("C-h i" 'helm-info)
@@ -4094,7 +4105,7 @@ Better dired navigation using ranger-like settings
 ** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
-     :defer 2
+     :defer 4
      :config
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
@@ -5159,7 +5170,7 @@ document and create new parents.
     (use-package ox-pandoc
       ;; :after org
       ;; :commands (org-pandoc-publish-to-html5)
-      :defer 2
+      :defer 4
       :config
       ;; default options for all output formats
       ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
@@ -5950,7 +5961,7 @@ Better than doc-view, but doesn't render well on retina screens :(
  For annotation and jumping to file
 #+BEGIN_SRC emacs-lisp
   (use-package org-pdfview
-    :defer 2
+    :defer 4
     :commands (org-pdfview-open)
     :init
     (add-to-list 'org-file-apps 
@@ -6193,7 +6204,7 @@ Make the content of the scratch buffer persist between settings
 Start server
 #+BEGIN_SRC emacs-lisp
   (use-package server
-   :defer 2
+   :defer 4
    :config
     (if (display-graphic-p)
         (unless (or (daemonp) (server-running-p))
