@@ -3145,10 +3145,6 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "P"   'markdown-previous-link
   "<RET>" 'markdown-jump
 
-  "s-*"      #'markdown-insert-list-item
-  "s-b"      #'markdown-insert-bold
-  "s-i"      #'markdown-insert-italic
-  
   "gj"    #'markdown-next-visible-heading
   "gk"    #'markdown-previous-visible-heading
   ;; Assumes you have a markdown renderer plugin in chrome
@@ -3165,6 +3161,15 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "M-j" #'markdown-move-down
   "M-k" #'markdown-move-up
   "M-l" #'markdown-demote)
+
+
+(general-define-key
+  :states '(normal motion insert)
+  :keymaps 'markdown-mode-map
+
+  "s-*"      #'markdown-insert-list-item
+  "s-b"      #'markdown-insert-bold
+  "s-i"      #'markdown-insert-italic)
   
 #+END_SRC
 **** Miscellaneous Keybindings
@@ -4783,23 +4788,23 @@ A list of org modules to load on startup
      ">"   #'org-metaright
 
      "i"  '(:ignore t :which-key "Insert...")
-           "l" #'org-insert-link
-           "f" #'org-footnote-new
+           "il" #'org-insert-link
+           "if" #'org-footnote-new
 
      "O"  '(:ignore t :which-key "Org files...")
-           "a" #'cpm/goto-articles.org
-           "f" #'cpm/goto-org-files
-           "i" #'cpm/goto-inbox.org
-           "n" #'cpm/goto-notes.org
-           "p" #'cpm/goto-projects.org
-           "s" #'cpm/goto-someday.org
-           "t" #'cpm/goto-teaching.org
+           "Oa" #'cpm/goto-articles.org
+           "Of" #'cpm/goto-org-files
+           "Oi" #'cpm/goto-inbox.org
+           "On" #'cpm/goto-notes.org
+           "Op" #'cpm/goto-projects.org
+           "Os" #'cpm/goto-someday.org
+           "Ot" #'cpm/goto-teaching.org
 
      "R"  '(:ignore t :which-key "RevealJS..." )
-           "r" #'org-reveal-export-to-html-and-browse
-           "s" #'cpm/narrowed-subtree-to-html
-           "S" #'org-reveal-export-current-subtree
-           "p" #'reveal-to-pdf)
+           "Rr" #'org-reveal-export-to-html-and-browse
+           "Rs" #'cpm/narrowed-subtree-to-html
+           "RS" #'org-reveal-export-current-subtree
+           "Rp" #'reveal-to-pdf)
 
     (general-define-key
       :states '(normal motion emacs)
