@@ -3051,6 +3051,109 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "Mv"  'cpm/make-move
 )
 #+END_SRC
+**** Markdown Keybindings
+#+BEGIN_SRC emacs-lisp
+(general-define-key
+  :states '(normal motion)
+  :keymaps 'markdown-mode-map
+  :prefix "SPC m" 
+  :non-normal-prefix "C-SPC m"
+
+  ""    '(nil :which-key "Local Leader")
+  "c"  '(:ignore t :which-key "command")
+  "h"  '(:ignore t :which-key "insert")
+  "i"  '(:ignore t :which-key "lists")
+  "x"  '(:ignore t :which-key "text")
+
+  ;; Movement
+  "{"   'markdown-backward-paragraph
+  "}"   'markdown-forward-paragraph
+
+  ;; Completion, and Cycling
+  "]"   'markdown-complete
+
+  ;; Indentation
+  ">"   'markdown-indent-region
+  "<"   'markdown-exdent-region
+
+  ;; Buffer-wide commands
+  "c]"  'markdown-complete-buffer
+  "cc"  'markdown-check-refs
+  "ce"  'markdown-export
+  "cm"  'markdown-other-window
+  "cn"  'markdown-cleanup-list-numbers
+  "co"  'markdown-open
+  "cp"  'markdown-preview
+  "cv"  'markdown-export-and-preview
+  "cw"  'markdown-kill-ring-save
+
+  ;; headings
+  "hi"  'markdown-insert-header-dwim
+  "hI"  'markdown-insert-header-setext-dwim
+  "h1"  'markdown-insert-header-atx-1
+  "h2"  'markdown-insert-header-atx-2
+  "h3"  'markdown-insert-header-atx-3
+  "h4"  'markdown-insert-header-atx-4
+  "h5"  'markdown-insert-header-atx-5
+  "h6"  'markdown-insert-header-atx-6
+  "h!"  'markdown-insert-header-setext-1
+  "h@"  'markdown-insert-header-setext-2
+
+  ;; Insertion of common elements
+  "-"   'markdown-insert-hr
+  "if"  'markdown-insert-footnote
+  "ii"  'markdown-insert-image
+  "ik"  'spacemacs/insert-keybinding-markdown
+  "iI"  'markdown-insert-reference-image
+  "il"  'markdown-insert-link
+  "iL"  'markdown-insert-reference-link-dwim
+  "iw"  'markdown-insert-wiki-link
+  "iu"  'markdown-insert-uri
+
+  ;; Element removal
+  "k"   'markdown-kill-thing-at-point
+
+  ;; List editing
+  "li"  'markdown-insert-list-item
+
+  ;; region manipulation
+  "xb"  'markdown-insert-bold
+  "xi"  'markdown-insert-italic
+  "xc"  'markdown-insert-code
+  "xC"  'markdown-insert-gfm-code-block
+  "xq"  'markdown-insert-blockquote
+  "xQ"  'markdown-blockquote-region
+  "xp"  'markdown-insert-pre
+  "xP"  'markdown-pre-region
+  
+  ;; Following and Jumping
+  "N"   'markdown-next-link
+  "f"   'markdown-follow-thing-at-point
+  "P"   'markdown-previous-link
+  "<RET>" 'markdown-jump
+
+  "s-*"      #'markdown-insert-list-item
+  "s-b"      #'markdown-insert-bold
+  "s-i"      #'markdown-insert-italic
+  
+  "gj"    #'markdown-next-visible-heading
+  "gk"    #'markdown-previous-visible-heading
+  ;; Assumes you have a markdown renderer plugin in chrome
+  "M-r"   #'browse-url-of-file
+  "h]"    #'markdown-next-visible-heading
+  "h["    #'markdown-previous-visible-heading
+  "p["    #'markdown-promote
+  "p]"    #'markdown-demote
+  "l["    #'markdown-next-link
+  "l]"    #'markdown-previous-link
+  "M--"   #'markdown-insert-hr
+  "TAB"   #'markdown-cycle
+  "M-h" #'markdown-promote
+  "M-j" #'markdown-move-down
+  "M-k" #'markdown-move-up
+  "M-l" #'markdown-demote)
+  
+#+END_SRC
 **** Miscellaneous Keybindings
 #+BEGIN_SRC emacs-lisp
 ;; Show which-key top-level bindings
@@ -4586,7 +4689,6 @@ A list of org modules to load on startup
 
 ** Org Keybindings
 #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'org
        (general-define-key :states '(normal) :keymaps 'org-mode-map
             "RET" 'org-open-at-point     ;; Open with return in evil
             "L" 'org-shiftright
@@ -4631,64 +4733,73 @@ A list of org modules to load on startup
             "H-k"   #'org-previous-visible-heading
             "H-S-j"     #'org-forward-heading-same-level
             "H-S-k"     #'org-backward-heading-same-level
-            ))
+            )
 
     ;; local leader keybindings
-    (with-eval-after-load 'org
-      (map! (:map org-mode-map 
-        (:localleader
-        :n  "RET" #'org-archive-subtree
-        :n  "SPC" #'org-toggle-checkbox
-        :n  "."   #'org-cycle-agenda-files
-        :n  "/"   #'org-sparse-tree
-        :n  "="   #'org-align-all-tags
-        :n  "?"   #'org-tags-view
-        :n  ":"   #'org-set-tags
-        :n  "a"   #'super-jump-to-org-agenda
-        :n  "A"   #'org-archive-subtree
-        :n  "b"   #'org-tree-to-indirect-buffer
-        :n  "c"   #'org-capture
-        :n  "d"   #'org-time-stamp
-        :n  "D"   #'org-deadline
-        :n  "e"   #'org-edit-special
-        :n  "n"   #'cpm/narrow-or-widen-dwim
-        ;; :n  "N"   #'widen
-        :n  "r"   #'org-refile
-        :n  "s"   #'org-schedule
-        :n  "t"   #'counsel-org-tag
-        :n  "T"   #'org-todo
-        :n  "v"   #'variable-pitch-mode
-        :nv "l"   #'org-insert-link
-        :nv "L"   #'org-store-link
-        :n  "+"   #'org-timestamp-up-day
-        :n  "-"   #'org-timestamp-down-day
-        :n  "<"   #'org-metaleft
-        :n  ">"   #'org-metaright
-        (:desc "Insert..." :prefix "i"
-          :nv     "l" #'org-insert-link
-          :nv     "f" #'org-footnote-new)
-        (:desc "Org files..." :prefix "O"
-          :nv "a" #'cpm/goto-articles.org
-          :nv "f" #'cpm/goto-org-files
-          :nv "i" #'cpm/goto-inbox.org
-          :nv "n" #'cpm/goto-notes.org
-          :nv "p" #'cpm/goto-projects.org
-          :nv "s" #'cpm/goto-someday.org
-          :nv "t" #'cpm/goto-teaching.org)
-        (:desc "RevealJS..." :prefix "R"
-          :nv       "r" #'org-reveal-export-to-html-and-browse
-          :nv       "s" #'cpm/narrowed-subtree-to-html
-          :nv       "S" #'org-reveal-export-current-subtree
-          :nv       "p" #'reveal-to-pdf))))
+    (general-define-key
+    :states '(normal motion)
+    :keymaps 'org-mode-map
+    :prefix "SPC m" 
+    :non-normal-prefix "C-SPC m"
 
-    (after! org-agenda
-      (map! :map org-agenda-mode-map
-            :e "<escape>" #'org-agenda-Quit
-            :e "m"   #'org-agenda-month-view
-            :e "C-j" #'org-agenda-next-item
-            :e "C-k" #'org-agenda-previous-item
-            :e "C-n" #'org-agenda-next-item
-            :e "C-p" #'org-agenda-previous-item)))
+     ""    '(nil :which-key "Local Leader")
+     "RET" #'org-archive-subtree
+     "SPC" #'org-toggle-checkbox
+     "."   #'org-cycle-agenda-files
+     "/"   #'org-sparse-tree
+     "="   #'org-align-all-tags
+     "?"   #'org-tags-view
+     ":"   #'org-set-tags
+     "a"   #'super-jump-to-org-agenda
+     "A"   #'org-archive-subtree
+     "b"   #'org-tree-to-indirect-buffer
+     "c"   #'org-capture
+     "d"   #'org-time-stamp
+     "D"   #'org-deadline
+     "e"   #'org-edit-special
+     "n"   #'cpm/narrow-or-widen-dwim
+     "r"   #'org-refile
+     "s"   #'org-schedule
+     "t"   #'counsel-org-tag
+     "T"   #'org-todo
+     "v"   #'variable-pitch-mode
+     "l"   #'org-insert-link
+     "L"   #'org-store-link
+     "+"   #'org-timestamp-up-day
+     "-"   #'org-timestamp-down-day
+     "<"   #'org-metaleft
+     ">"   #'org-metaright
+
+     "i"  '(:ignore t :which-key "Insert...")
+           "l" #'org-insert-link
+           "f" #'org-footnote-new
+
+     "O"  '(:ignore t :which-key "Org files...")
+           "a" #'cpm/goto-articles.org
+           "f" #'cpm/goto-org-files
+           "i" #'cpm/goto-inbox.org
+           "n" #'cpm/goto-notes.org
+           "p" #'cpm/goto-projects.org
+           "s" #'cpm/goto-someday.org
+           "t" #'cpm/goto-teaching.org
+
+     "R"  '(:ignore t :which-key "RevealJS..." )
+           "r" #'org-reveal-export-to-html-and-browse
+           "s" #'cpm/narrowed-subtree-to-html
+           "S" #'org-reveal-export-current-subtree
+           "p" #'reveal-to-pdf)
+
+    (general-define-key
+      :states '(normal motion emacs)
+      :keymaps 'org-agenda-mode-map
+      :prefix "SPC"
+      :non-normal-prefix "C-SPC"
+        "<escape>" #'org-agenda-Quit
+        "m"   #'org-agenda-month-view
+        "C-j" #'org-agenda-next-item
+        "C-k" #'org-agenda-previous-item
+        "C-n" #'org-agenda-next-item
+        "C-p" #'org-agenda-previous-item)
 #+END_SRC
 
 ** Hook
@@ -5420,38 +5531,9 @@ Great for managing citations and notes
      ;; remove strikout comment face
      (set-face-attribute 'markdown-comment-face nil 
      :weight 'bold :strike-through nil)
-     ;; keybindings
-     (map! (:map markdown-mode-map
-          [remap find-file-at-point] #'markdown-follow-thing-at-point
-          "s-*"      #'markdown-insert-list-item
-          "s-b"      #'markdown-insert-bold
-          "s-i"      #'markdown-insert-italic
-          ;; "s-`"      #'+markdown/insert-del
-          :m "gj"    #'markdown-next-visible-heading
-          :m "gk"    #'markdown-previous-visible-heading
-          ;; Assumes you have a markdown renderer plugin in chrome
-          :n "M-r"   #'browse-url-of-file
-          ;; TODO: Make context sensitive
-          :m "]h"    #'markdown-next-visible-heading
-          :m "[h"    #'markdown-previous-visible-heading
-          :m "[p"    #'markdown-promote
-          :m "]p"    #'markdown-demote
-          :m "[l"    #'markdown-next-link
-          :m "]l"    #'markdown-previous-link
-          :i "M--"   #'markdown-insert-hr
-          :n "TAB"   #'markdown-cycle
-          :nie "M-h" #'markdown-promote
-          :nie "M-j" #'markdown-move-down
-          :nie "M-k" #'markdown-move-up
-          :nie "M-l" #'markdown-demote
 
-          (:localleader
-            :nv "o" #'markdown-open
-            :nv "b" #'markdown-preview
-            (:prefix "i"
-              :nv "t" #'markdown-toc-generate-toc
-              :nv "i" #'markdown-insert-image
-              :nv "l" #'markdown-insert-link)))))
+     )
+
 
 #+end_src
 *** Pandoc
