@@ -861,7 +861,7 @@ argument takes the kindows rotate backwards."
                (set-window-start w2 s1)
                (setq i next-i)))))))
 
-(defun rotate-windows-backward (count)
+(defun cpm/rotate-windows-backward (count)
   "Rotate your windows backward."
   (interactive "p")
   (rotate-windows (* -1 count)))
@@ -3283,7 +3283,7 @@ Keybindings for managing packages
     "so" 'helm-occur
     "sp" 'helm-ag-project-root
     "sr" 'helm-org-rifle
-    "ss" 'helm-swoop-without-pre-input ;; search in file
+    "ss" 'helm-occur
     "/"  'cpm/helm-files-search-current-directory   ;; search in directory with word prompt
      )
 #+END_SRC
@@ -3400,8 +3400,8 @@ Keybindings for managing packages
   "wc" 'delete-window
   "wd" 'delete-window
   "wm" 'delete-other-windows
-  "wr" 'rotate-windows
-  "wR" 'rotate-windows-backward
+  "wr" 'cpm/rotate-windows
+  "wR" 'cpm/rotate-windows-backward
   "wv" 'split-window-right-and-focus
   "wV" 'evil-window-vsplit
   "wx" 'cpm/window-exchange
