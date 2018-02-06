@@ -3618,6 +3618,12 @@ is an emacs wiki package you can't get it from MELPA. So the git mirror is
         "C-l"   'helm-previous-source
         "C-S-h" 'describe-key)))
        (helm-mode 1))
+
+  ;; use helm follow mode for search
+  (with-eval-after-load 'helm-regexp
+  (setq helm-source-occur
+        (helm-make-source "Occur" 'helm-source-multi-occur
+          :follow 1)))
 #+END_SRC
 *** Hide Mode Lines
 Hide modelines of other windows while helm is open, again from
