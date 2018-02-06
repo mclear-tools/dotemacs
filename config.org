@@ -3598,6 +3598,7 @@ is an emacs wiki package you can't get it from MELPA. So the git mirror is
             helm-display-header-line nil
             helm-move-to-line-cycle-in-source nil
             helm-always-two-windows t                       
+            helm-move-to-line-cycle-in-source t
             helm-split-window-in-side-p nil
             ;; helm-split-window-default-side 'other
             helm-echo-input-in-header-line t)
@@ -4208,13 +4209,20 @@ An easy way to ssh
           (lambda ()
             (eshell-cmpl-initialize)
             (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-            (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
+            ;; (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
             (cpm/setup-eshell)))
 
          (when (not (functionp 'eshell/rgrep))
            (defun eshell/rgrep (&rest args)
              "Use Emacs grep facility instead of calling external grep."
              (eshell-grep "rgrep" args t)))
+
+     ;; history browsing
+     (general-define-key
+       :states '(normal insert emacs)
+       :keymaps 'eshell-mode-map
+       "<down>" 'eshell-next-matching-input-from-input
+       "<up>" 'eshell-previous-matching-input-from-input)
 
  #+END_SRC
 *** Eshell Prompt
