@@ -1849,8 +1849,7 @@ keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.gi
   (interactive)
   (format-date "%m-%d-%Y %H:%M:%S"))
 #+END_SRC
-** DISABLED Location
-CLOSED: [2018-02-03 Sat 10:13]
+** Location
 (I only need this if I'm using [[https://github.com/guidoschmidt/circadian.el][circadian]], which I'm not)
 Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-location][geographical location]] on OS X
 #+BEGIN_SRC emacs-lisp
@@ -2405,6 +2404,20 @@ that I use anything other than solarized :)
   (provide 'packages-appearance)
 
 #+END_SRC
+
+**** Circadian Theme-changer (based on time of day)
+[[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
+#+BEGIN_SRC emacs-lisp 
+  (use-package circadian
+    :if (display-graphic-p)
+    :defer .25
+    :config
+    (ignore-errors
+    (setq circadian-themes '((:sunrise  . solarized-light)
+                              (:sunset  . solarized-dark))))
+    (circadian-setup))
+#+END_SRC
+
 
 *** Modeline
 **** Doom Modeline
@@ -4242,7 +4255,7 @@ I've made just a few tiny modifications.
 (esh-section esh-dir
              "\xf07c"  ;  (faicon folder)
              (abbreviate-file-name (eshell/pwd))
-             '(:foreground "gold" :bold ultra-bold :underline t))
+             '(:foreground "gold" :underline t))
 
 (esh-section esh-git
              "\xe907"  ;  (git icon)
@@ -4885,7 +4898,7 @@ A list of org modules to load on startup
            "Rr" #'org-reveal-export-to-html-and-browse
            "Rs" #'cpm/narrowed-subtree-to-html
            "RS" #'org-reveal-export-current-subtree
-           "Rp" #'reveal-to-pdf)
+           "Rp" #'cpm/reveal-to-pdf)
 
     (general-define-key
       :states '(normal motion emacs)
