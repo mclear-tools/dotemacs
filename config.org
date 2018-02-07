@@ -4810,8 +4810,10 @@ A list of org modules to load on startup
 Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-code-with-quotes-in-org-mode][stack exchange]] discussion.
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'org
-(setcar org-emphasis-regexp-components " \t('\"{“”[:alpha:]")  ;; precede markup
-(setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;''“”\")}/\\") ;; follow markup
+;; This one is for the beginning char
+(setcar org-emphasis-regexp-components " \t('\" {")
+;; This one is for the ending char.
+(setcar (nthcdr 1 org-emphasis-regexp-components) "- \t.,: !?;'\")}\\")
 (setcar (nthcdr 4 org-emphasis-regexp-components) 1)  ;; newlines allowed
 (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
 #+END_SRC
