@@ -4788,6 +4788,7 @@ Ensure ELPA org is prioritized above built-in org.
         org-pretty-entities t ;; make latex look good
         org-pretty-entities-include-sub-superscripts t
         org-hide-leading-stars t
+        org-refile-use-cache t  ;; use cache for org refile
         org-startup-folded t
         org-M-RET-may-split-line '((default . nil))  ;; don't split line when creating a new headline, list item, or table field
         org-fontify-quote-and-verse-blocks t ;; make quotes stand out
