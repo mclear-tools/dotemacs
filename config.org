@@ -6388,7 +6388,8 @@ Dashboard depends on this.
 (use-package page-break-lines
   :diminish "")
 #+END_SRC
-** Dashboard
+** DISABLED Dashboard
+CLOSED: [2018-02-15 Thu 21:10]
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
     (use-package dashboard
