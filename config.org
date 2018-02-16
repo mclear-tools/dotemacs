@@ -107,7 +107,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
 - [[#org-mode][Org Mode]]
   - [[#settings][Settings]]
   - [[#org-keybindings][Org Keybindings]]
-  - [[#hook][Hook]]
+  - [[#hooks][Hooks]]
   - [[#org-template-expansions][Org Template Expansions]]
   - [[#org-bullets][Org Bullets]]
   - [[#org-prettify-source-blocks][Org Prettify Source Blocks]]
@@ -827,7 +827,8 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
   (defun cpm/reveal-to-pdf ()
   "print reveal.js slides to pdf"
   (interactive)
-  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")) 
+  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")
+  (delete-windows-on "*Async Shell Command*" t)) 
 #+END_SRC
 *** Rotate windows
 #+BEGIN_SRC emacs-lisp
@@ -1457,8 +1458,9 @@ Make sure emacs correctly sets up your PATH.
 #+BEGIN_SRC emacs-lisp
   (defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
   (defvar usr-local-bin "/usr/local/bin")
-  (setenv "PATH" (concat usr-local-bin ":" (getenv "PATH") ":" cpm-local-bin))
-  (setq exec-path (append exec-path (list cpm-local-bin usr-local-bin)))
+  (defvar usr-local-sbin "/usr/local/sbin")
+  (setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
+  (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
 #+END_SRC 
 *** File Endings
 Make all files [[http://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline][POSIX compliant for newlines]]
@@ -1903,7 +1905,7 @@ Install, automatically load, and enable evil. It's like vim, but better!
       :group 'dotemacs-evil)
 
       ;; move over visual lines like normal lines
-      (general-define-key :keymaps 'text-mode-map :states '(motion normal)
+      (general-define-key :states '(motion normal)
              "j"   #'evil-next-visual-line
              "k"   #'evil-previous-visual-line)
 
@@ -2047,7 +2049,8 @@ Increment an decrement numbers
        (concat cpm-cache-dir "projectile-bookmarks.eld"))
     (setq projectile-cache-file
        (concat cpm-cache-dir "projectile.cache"))
-    (setq projectile-enable-caching t)
+    (setq projectile-enable-caching t
+          projectile-files-cache-expire 60)
     :config
     (projectile-global-mode t))
 
@@ -3596,9 +3599,8 @@ is an emacs wiki package you can't get it from MELPA. So the git mirror is
             helm-ff-file-name-history-use-recentf t
             helm-find-files-sort-directories t
             helm-display-header-line nil
-            helm-move-to-line-cycle-in-source nil
-            helm-always-two-windows t                       
             helm-move-to-line-cycle-in-source t
+            helm-always-two-windows t                       
             helm-split-window-in-side-p nil
             ;; helm-split-window-default-side 'other
             helm-echo-input-in-header-line t)
@@ -4271,12 +4273,13 @@ I've made just a few tiny modifications.
 (esh-section esh-dir
              "\xf07c"  ;  (faicon folder)
              (abbreviate-file-name (eshell/pwd))
-             '(:foreground "gold" :underline t))
+             '(:foreground "#268bd2" :underline t))
 
 (esh-section esh-git
              "\xe907"  ;  (git icon)
-             (magit-get-current-branch)
-             '(:foreground "pink"))
+             (with-eval-after-load 'magit
+             (magit-get-current-branch))
+             '(:foreground "#b58900"))
 
 (esh-section esh-python
              "\xe928"  ;  (python icon)
@@ -4663,7 +4666,10 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
 ** Evil Magit
  Evil bindings for magit
  #+BEGIN_SRC emacs-lisp
- (use-package evil-magit :after magit)
+ (use-package evil-magit
+   :after magit
+   :config
+   (setq evil-magit-use-y-for-yank t))
  #+END_SRC
 
 ** Git timemachine
@@ -5704,7 +5710,7 @@ Pandoc mode for markdown conversion
      ((eq major-mode 'org-mode)
       (call-interactively 'org-pandoc-export-to-latex-pdf-and-open))
      (t
-      (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open))))
+      (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open) (previous-multiframe-window))))
 
     (defun cpm/pandoc-command-line-convert-to-pdf ()
      "convert to pdf"
