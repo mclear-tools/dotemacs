@@ -4829,120 +4829,126 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 
 ** Org Keybindings
 #+BEGIN_SRC emacs-lisp
-       (general-define-key :states '(normal) :keymaps 'org-mode-map
-            "RET" 'org-open-at-point     ;; Open with return in evil
-            "L" 'org-shiftright
-            "H" 'org-shiftleft
-            "$" 'org-end-of-line
-            "^" 'org-beginning-of-line
-            "<" 'org-metaleft
-            ">" 'org-metaright
-            "-" 'org-cycle-list-bullet)
-         ;; normal & insert state shortcuts.
-         (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-            "TAB" 'org-cycle
-            ;; easily emphasize text
-            ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-            "s-b" (lambda () (interactive) (org-emphasize ?\*))
-            "s-i" (lambda () (interactive) (org-emphasize ?\/))
-            "s-=" (lambda () (interactive) (org-emphasize ?\=))
-            "s-l" 'org-metaright
-            "s-h" 'org-metaleft
-            "s-k" 'org-metaup
-            "s-j" 'org-metadown
-            "s-L" 'org-shiftmetaright
-            "s-H" 'org-shiftmetaleft
-            "s-K" 'org-shiftmetaup
-            "s-J" 'org-shiftmetadown
-            "s-o" '(lambda () (interactive)
-                     (evil-org-eol-call
-                      '(lambda()
-                         (org-insert-heading)
-                         (org-metaright))))
-            "s-t" '(lambda () (interactive)
-                     (evil-org-eol-call
-                      '(lambda()
-                         (org-insert-todo-heading nil)
-                         (org-metaright)))))
-         ;; Use tab in insert mode
-         (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
-            "RET" #'org-return-indent
-            "C-j" nil
-            "C-k" nil
-            "H-j"   #'org-next-visible-heading
-            "H-k"   #'org-previous-visible-heading
-            "H-S-j"     #'org-forward-heading-same-level
-            "H-S-k"     #'org-backward-heading-same-level
-            )
+(use-package evil-org
+  :after org
+  :config
+  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+     ;; (general-define-key :states '(normal) :keymaps 'org-mode-map
+     ;;      "RET" 'org-open-at-point     ;; Open with return in evil
+     ;;      "L" 'org-shiftright
+     ;;      "H" 'org-shiftleft
+     ;;      "$" 'org-end-of-line
+     ;;      "^" 'org-beginning-of-line
+     ;;      "<" 'org-metaleft
+     ;;      ">" 'org-metaright
+     ;;      "-" 'org-cycle-list-bullet)
+     ;;   ;; normal & insert state shortcuts.
+     ;;   (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+     ;;      "TAB" 'org-cycle
+     ;;      ;; easily emphasize text
+     ;;      ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+     ;;      "s-b" (lambda () (interactive) (org-emphasize ?\*))
+     ;;      "s-i" (lambda () (interactive) (org-emphasize ?\/))
+     ;;      "s-=" (lambda () (interactive) (org-emphasize ?\=))
+     ;;      "s-l" 'org-metaright
+     ;;      "s-h" 'org-metaleft
+     ;;      "s-k" 'org-metaup
+     ;;      "s-j" 'org-metadown
+     ;;      "s-L" 'org-shiftmetaright
+     ;;      "s-H" 'org-shiftmetaleft
+     ;;      "s-K" 'org-shiftmetaup
+     ;;      "s-J" 'org-shiftmetadown
+     ;;      "s-o" '(lambda () (interactive)
+     ;;               (evil-org-eol-call
+     ;;                '(lambda()
+     ;;                   (org-insert-heading)
+     ;;                   (org-metaright))))
+     ;;      "s-t" '(lambda () (interactive)
+     ;;               (evil-org-eol-call
+     ;;                '(lambda()
+     ;;                   (org-insert-todo-heading nil)
+     ;;                   (org-metaright)))))
+     ;;   ;; Use tab in insert mode
+     ;;   (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
+     ;;      "RET" #'org-return-indent
+     ;;      "C-j" nil
+     ;;      "C-k" nil
+     ;;      "H-j"   #'org-next-visible-heading
+     ;;      "H-k"   #'org-previous-visible-heading
+     ;;      "H-S-j"     #'org-forward-heading-same-level
+     ;;      "H-S-k"     #'org-backward-heading-same-level
+     ;;      )
 
-    ;; local leader keybindings
-    (general-define-key
-    :states '(normal motion)
-    :keymaps 'org-mode-map
-    :prefix "SPC m" 
-    :non-normal-prefix "C-SPC m"
+  ;; local leader keybindings
+  (general-define-key
+  :states '(normal motion)
+  :keymaps 'org-mode-map
+  :prefix "SPC m" 
+  :non-normal-prefix "C-SPC m"
 
-     ""    '(nil :which-key "Local Leader")
-     "RET" #'org-archive-subtree
-     "SPC" #'org-toggle-checkbox
-     "."   #'org-cycle-agenda-files
-     "/"   #'org-sparse-tree
-     "="   #'org-align-all-tags
-     "?"   #'org-tags-view
-     ":"   #'org-set-tags
-     "a"   #'super-jump-to-org-agenda
-     "A"   #'org-archive-subtree
-     "b"   #'org-tree-to-indirect-buffer
-     "c"   #'org-capture
-     "d"   #'org-time-stamp
-     "D"   #'org-deadline
-     "e"   #'org-edit-special
-     "n"   #'cpm/narrow-or-widen-dwim
-     "r"   #'org-refile
-     "s"   #'org-schedule
-     "t"   #'counsel-org-tag
-     "T"   #'org-todo
-     "v"   #'variable-pitch-mode
-     "l"   #'org-insert-link
-     "L"   #'org-store-link
-     "+"   #'org-timestamp-up-day
-     "-"   #'org-timestamp-down-day
-     "<"   #'org-metaleft
-     ">"   #'org-metaright
+   ""    '(nil :which-key "Local Leader")
+   "RET" #'org-archive-subtree
+   "SPC" #'org-toggle-checkbox
+   "."   #'org-cycle-agenda-files
+   "/"   #'org-sparse-tree
+   "="   #'org-align-all-tags
+   "?"   #'org-tags-view
+   ":"   #'org-set-tags
+   "a"   #'super-jump-to-org-agenda
+   "A"   #'org-archive-subtree
+   "b"   #'org-tree-to-indirect-buffer
+   "c"   #'org-capture
+   "d"   #'org-time-stamp
+   "D"   #'org-deadline
+   "e"   #'org-edit-special
+   "n"   #'cpm/narrow-or-widen-dwim
+   "r"   #'org-refile
+   "s"   #'org-schedule
+   "t"   #'counsel-org-tag
+   "T"   #'org-todo
+   "v"   #'variable-pitch-mode
+   "l"   #'org-insert-link
+   "L"   #'org-store-link
+   "+"   #'org-timestamp-up-day
+   "-"   #'org-timestamp-down-day
+   "<"   #'org-metaleft
+   ">"   #'org-metaright
 
-     "i"  '(:ignore t :which-key "Insert...")
-           "il" #'org-insert-link
-           "if" #'org-footnote-new
+   "i"  '(:ignore t :which-key "Insert...")
+         "il" #'org-insert-link
+         "if" #'org-footnote-new
 
-     "O"  '(:ignore t :which-key "Org files...")
-           "Oa" #'cpm/goto-articles.org
-           "Of" #'cpm/goto-org-files
-           "Oi" #'cpm/goto-inbox.org
-           "On" #'cpm/goto-notes.org
-           "Op" #'cpm/goto-projects.org
-           "Os" #'cpm/goto-someday.org
-           "Ot" #'cpm/goto-teaching.org
+   "O"  '(:ignore t :which-key "Org files...")
+         "Oa" #'cpm/goto-articles.org
+         "Of" #'cpm/goto-org-files
+         "Oi" #'cpm/goto-inbox.org
+         "On" #'cpm/goto-notes.org
+         "Op" #'cpm/goto-projects.org
+         "Os" #'cpm/goto-someday.org
+         "Ot" #'cpm/goto-teaching.org
 
-     "R"  '(:ignore t :which-key "RevealJS..." )
-           "Rr" #'org-reveal-export-to-html-and-browse
-           "Rs" #'cpm/narrowed-subtree-to-html
-           "RS" #'org-reveal-export-current-subtree
-           "Rp" #'cpm/reveal-to-pdf)
+   "R"  '(:ignore t :which-key "RevealJS..." )
+         "Rr" #'org-reveal-export-to-html-and-browse
+         "Rs" #'cpm/narrowed-subtree-to-html
+         "RS" #'org-reveal-export-current-subtree
+         "Rp" #'cpm/reveal-to-pdf)
 
-    (general-define-key
-      :states '(normal motion emacs)
-      :keymaps 'org-agenda-mode-map
-      :prefix "SPC"
-      :non-normal-prefix "C-SPC"
-        "<escape>" #'org-agenda-Quit
-        "m"   #'org-agenda-month-view
-        "C-j" #'org-agenda-next-item
-        "C-k" #'org-agenda-previous-item
-        "C-n" #'org-agenda-next-item
-        "C-p" #'org-agenda-previous-item)
+  (general-define-key
+    :states '(normal motion emacs)
+    :keymaps 'org-agenda-mode-map
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
+      "<escape>" #'org-agenda-Quit
+      "m"   #'org-agenda-month-view
+      "C-j" #'org-agenda-next-item
+      "C-k" #'org-agenda-previous-item
+      "C-n" #'org-agenda-next-item
+      "C-p" #'org-agenda-previous-item)
 #+END_SRC
 
-** Hook
+** Hooks
 #+BEGIN_SRC emacs-lisp
     (add-hook 'org-mode-hook
         (lambda () 
@@ -4951,7 +4957,9 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
           (flyspell-mode 1)
           (cpm/disable-line-numbers)
           (org-bullets-mode 1)
-          (global-git-gutter-mode 0)))
+          (global-git-gutter-mode 0)
+          (evil-org-mode)
+          ))
 #+END_SRC
 
 ** Org Template Expansions
