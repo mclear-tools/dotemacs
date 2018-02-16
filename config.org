@@ -3320,7 +3320,7 @@ Keybindings for managing packages
     "tB" 'beacon-mode
     "tc" 'centered-cursor-mode
     "tC" 'centered-window-mode
-    "td" 'distraction-free
+    "td" 'cpm/osx-toggle-menubar-theme
     "tf" 'toggle-serif
     "tF" 'toggle-frame-fullscreen
     "tg" 'git-gutter-mode
@@ -4513,9 +4513,15 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
 [[https://github.com/edkolev/evil-lion][This package]] provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
 #+BEGIN_SRC emacs-lisp
 (use-package evil-lion
-  :defer 10
   :config
-  (evil-lion-mode))
+  (general-define-key :states '(normal) :keymaps 'prog-mode-map
+  "g l" 'evil-lion-left
+  "g L" 'evil-lion-right)
+
+  (general-define-key :states '(visual) :keymaps 'prog-mode-map
+  "g l" 'evil-lion-left
+  "g L" 'evil-lion-right)
+  )
 #+END_SRC
 ** Rainbow delimiters
 [[https://github.com/Fanael/rainbow-delimiters][Useful package]] that will highlight delimiters such as parentheses, brackets or braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
@@ -4848,60 +4854,16 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 #+END_SRC
 
 ** Org Keybindings
+*** Evil Org 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-org
   :after org
   :config
-  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
+  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional)))))
 #+END_SRC
-#+BEGIN_SRC emacs-lisp
-     ;; (general-define-key :states '(normal) :keymaps 'org-mode-map
-     ;;      "RET" 'org-open-at-point     ;; Open with return in evil
-     ;;      "L" 'org-shiftright
-     ;;      "H" 'org-shiftleft
-     ;;      "$" 'org-end-of-line
-     ;;      "^" 'org-beginning-of-line
-     ;;      "<" 'org-metaleft
-     ;;      ">" 'org-metaright
-     ;;      "-" 'org-cycle-list-bullet)
-     ;;   ;; normal & insert state shortcuts.
-     ;;   (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-     ;;      "TAB" 'org-cycle
-     ;;      ;; easily emphasize text
-     ;;      ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-     ;;      "s-b" (lambda () (interactive) (org-emphasize ?\*))
-     ;;      "s-i" (lambda () (interactive) (org-emphasize ?\/))
-     ;;      "s-=" (lambda () (interactive) (org-emphasize ?\=))
-     ;;      "s-l" 'org-metaright
-     ;;      "s-h" 'org-metaleft
-     ;;      "s-k" 'org-metaup
-     ;;      "s-j" 'org-metadown
-     ;;      "s-L" 'org-shiftmetaright
-     ;;      "s-H" 'org-shiftmetaleft
-     ;;      "s-K" 'org-shiftmetaup
-     ;;      "s-J" 'org-shiftmetadown
-     ;;      "s-o" '(lambda () (interactive)
-     ;;               (evil-org-eol-call
-     ;;                '(lambda()
-     ;;                   (org-insert-heading)
-     ;;                   (org-metaright))))
-     ;;      "s-t" '(lambda () (interactive)
-     ;;               (evil-org-eol-call
-     ;;                '(lambda()
-     ;;                   (org-insert-todo-heading nil)
-     ;;                   (org-metaright)))))
-     ;;   ;; Use tab in insert mode
-     ;;   (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
-     ;;      "RET" #'org-return-indent
-     ;;      "C-j" nil
-     ;;      "C-k" nil
-     ;;      "H-j"   #'org-next-visible-heading
-     ;;      "H-k"   #'org-previous-visible-heading
-     ;;      "H-S-j"     #'org-forward-heading-same-level
-     ;;      "H-S-k"     #'org-backward-heading-same-level
-     ;;      )
+*** Org Local Leader Keybindings
 
-  ;; local leader keybindings
+#+BEGIN_SRC emacs-lisp
   (general-define-key
   :states '(normal motion)
   :keymaps 'org-mode-map
@@ -4967,6 +4929,56 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
       "C-n" #'org-agenda-next-item
       "C-p" #'org-agenda-previous-item)
 #+END_SRC
+*** Alternate Bindings
+#+BEGIN_SRC emacs-lisp
+  (general-define-key :states '(normal) :keymaps 'org-mode-map
+        "RET" 'org-open-at-point     ;; Open with return in evil
+        )
+  ;;      "L" 'org-shiftright
+  ;;      "H" 'org-shiftleft
+  ;;      "$" 'org-end-of-line
+  ;;      "^" 'org-beginning-of-line
+  ;;      "<" 'org-metaleft
+  ;;      ">" 'org-metaright
+  ;;      "-" 'org-cycle-list-bullet)
+  
+  ;;   ;; normal & insert state shortcuts.
+    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+       ;; easily emphasize text
+       ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+       "s-b" (lambda () (interactive) (org-emphasize ?\*))
+       "s-i" (lambda () (interactive) (org-emphasize ?\/))
+       "s-=" (lambda () (interactive) (org-emphasize ?\=)))
+  ;;      "TAB" 'org-cycle
+  ;;      "s-l" 'org-metaright
+  ;;      "s-h" 'org-metaleft
+  ;;      "s-k" 'org-metaup
+  ;;      "s-j" 'org-metadown
+  ;;      "s-L" 'org-shiftmetaright
+  ;;      "s-H" 'org-shiftmetaleft
+  ;;      "s-K" 'org-shiftmetaup
+  ;;      "s-J" 'org-shiftmetadown
+  ;;      "s-o" '(lambda () (interactive)
+  ;;               (evil-org-eol-call
+  ;;                '(lambda()
+  ;;                   (org-insert-heading)
+  ;;                   (org-metaright))))
+  ;;      "s-t" '(lambda () (interactive)
+  ;;               (evil-org-eol-call
+  ;;                '(lambda()
+  ;;                   (org-insert-todo-heading nil)
+  ;;                   (org-metaright)))))
+  ;;   ;; Use tab in insert mode
+  ;;   (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
+  ;;      "RET" #'org-return-indent
+  ;;      "C-j" nil
+  ;;      "C-k" nil
+  ;;      "H-j"   #'org-next-visible-heading
+  ;;      "H-k"   #'org-previous-visible-heading
+  ;;      "H-S-j"     #'org-forward-heading-same-level
+  ;;      "H-S-k"     #'org-backward-heading-same-level
+  ;;      )
+#+END_SRC
 
 ** Hooks
 #+BEGIN_SRC emacs-lisp
@@ -4979,6 +4991,7 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
           (org-bullets-mode 1)
           (global-git-gutter-mode 0)
           (evil-org-mode)
+          (ox-pandoc)
           ))
 #+END_SRC
 
