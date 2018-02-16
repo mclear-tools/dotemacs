@@ -2419,6 +2419,12 @@ that I use anything other than solarized :)
     (setq circadian-themes '((:sunrise  . solarized-light)
                               (:sunset  . solarized-dark))))
     (circadian-setup))
+
+  (defun cpm/osx-toggle-menubar-theme ()
+    (interactive)
+    (shell-command "dark-mode"))
+
+  (add-hook 'after-load-theme-hook #'cpm/osx-toggle-menubar-theme)
 #+END_SRC
 
 
