@@ -4210,8 +4210,8 @@ An easy way to ssh
            eshell-cmpl-cycle-completions t
            eshell-destroy-buffer-when-process-dies t
            eshell-history-size 10000
-           ;; auto truncate after 12k lines
-           ;; eshell-buffer-maximum-lines 12000
+           ;; auto truncate after 20k lines
+           eshell-buffer-maximum-lines 20000
            eshell-hist-ignoredups t
            eshell-error-if-no-glob t
            eshell-glob-case-insensitive t
