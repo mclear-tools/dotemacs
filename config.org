@@ -4198,16 +4198,7 @@ An easy way to ssh
    (use-package eshell
      :commands eshell
      :init
-     ;; (use-package em-cmpl    :defer 2 :ensure nil)
-     ;; (use-package em-prompt  :defer 2 :ensure nil)
-     ;; (use-package em-term    :defer 2 :ensure nil)
-     ;; (use-package em-alias   :defer 2 :ensure nil)
-     ;; (use-package em-smart   :defer 2 :ensure nil)
-     ;; plan 9
-     ;; (setq eshell-where-to-jump 'begin)
-     ;; (setq eshell-review-quick-commands nil)
-     ;; (setq eshell-smart-space-goes-to-end t)
-     (setq eshell-directory-name (concat cpm-etc-dir "/eshell")
+     (setq eshell-directory-name (concat cpm-etc-dir "eshell/")
            eshell-history-file-name (concat cpm-etc-dir "eshell/history")
            eshell-aliases-file (concat cpm-etc-dir "eshell/alias")
            eshell-last-dir-ring-file-name (concat cpm-etc-dir "eshell/lastdir")
