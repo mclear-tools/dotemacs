@@ -46,7 +46,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#auto-save][Auto Save]]
   - [[#custom-file][Custom file]]
   - [[#desktop-save][Desktop save]]
-  - [[#mac-os][Mac OS]]
+  - [[#macosx][Mac/OSX]]
   - [[#time-and-date-stamps][Time and Date Stamps]]
   - [[#location][Location]]
 - [[#modal-editing][Modal Editing]]
@@ -1395,6 +1395,8 @@ apropos commands perform more extensive searches than default
   (global-set-key (kbd "S-p") 'clipboard-on)
   (global-set-key (kbd "S-y") 'clipboard-off)
 #+END_SRC
+
+
 *** Dired settings
 #+BEGIN_SRC emacs-lisp
   (setq insert-directory-program "gls" dired-use-ls-dired t)
@@ -1756,7 +1758,7 @@ Save your frame/window/buffer config
     (desktop-save-in-desktop-dir)
     (save-buffers-kill-emacs))
 #+END_SRC
-** Mac OS 
+** Mac/OSX
 There is some configuration to do when running Emacs on OS X (hence the
 "darwin" system-type check).
 
