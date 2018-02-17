@@ -290,11 +290,13 @@ will be handling that.
 #+END_SRC
 
 ** Use-Package Settings
-Tell =use-package= to always defer loading packages unless explicitly told otherwise. This speeds up
-initialization significantly as many packages are only loaded later when they are explicitly used.
+I used to tell =use-package= to always defer loading packages unless explicitly
+told otherwise. This speeds up initialization significantly as many packages
+are only loaded later when they are explicitly used. But it can also [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][cause
+problems]]. So I've decided to defer packages individually instead. 
 
 #+BEGIN_SRC emacs-lisp
-  (setq use-package-always-defer t
+  (setq use-package-always-defer nil
         use-package-verbose t)
 #+END_SRC
 
@@ -354,6 +356,7 @@ initialization will still take place at startup.
 ** Paradox
 #+BEGIN_SRC emacs-lisp
 (use-package paradox
+  :commands (paradox-list-packages paradox-upgrade-packages)
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
   (setq paradox-execute-asynchronously nil
@@ -371,13 +374,13 @@ string manipulation, list manipulation and backward compatibility
 respectively. The git package is also a library.
 
 #+BEGIN_SRC emacs-lisp
-(use-package async   :defer 2)
-(use-package dash    :defer 2)
-(use-package s       :demand t)
-(use-package f       :demand t)
-(use-package git     :defer 2)
-(use-package subr-x  :defer 2 :ensure nil)
-(use-package cl-lib  :demand t :ensure nil)
+(use-package async   :defer 10)
+(use-package dash    :defer 10)
+(use-package s       :defer 10)
+(use-package f       :defer 10)
+(use-package git     :defer 10)
+(use-package subr-x  :defer 10 :ensure nil)
+(use-package cl-lib  :defer 10 :ensure nil)
 #+END_SRC
 
 * Functions & Macros
@@ -486,7 +489,7 @@ Via the always resourceful [[http://kitchingroup.cheme.cmu.edu/blog/2016/06/16/C
 *** Crux
 A collection of ridiculously useful extensions. Indeed.
 #+BEGIN_SRC emacs-lisp
-(use-package crux :defer 2)
+(use-package crux :defer 10)
 #+END_SRC
 *** Cycle Through Useful Buffers
 From a [[http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html][useful post]] by Xah. 
@@ -1964,12 +1967,13 @@ There are some other useful setup packages for evil
      :config (global-evil-surround-mode 1))
 
    (use-package embrace 
+     :after evil
      :init
      (add-hook 'LaTeX-mode-hook 'embrace-LaTeX-mode-hook)
      (add-hook 'org-mode-hook 'embrace-org-mode-hook)
      (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
    (use-package evil-embrace
-    :after embrace
+    :after (embrace evil)
     :config
     (setq evil-embrace-show-help-p nil)
     :init
@@ -2021,12 +2025,12 @@ Increment an decrement numbers
       "H-a" 'evil-numbers/dec-at-pt))
 #+END_SRC
 
-
 * Session & Project Management
 ** Hydra
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
-  :defer 5
+  :defer 10
+  :commands (cpm/hydra-desktop/body)
   :config
   ;; hydra for TODOs
   (defhydra hydra-todo (:pre
@@ -2059,12 +2063,13 @@ Increment an decrement numbers
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
-    :init
     ;; (when (not (fboundp 'make-variable-frame-local))
     ;; (defun make-variable-frame-local (variable) variable))
+    :config
     (persp-mode))
 
-    (use-package persp-projectile
+  (use-package persp-projectile
+      :commands projectile-persp-switch-project
       :config
       (require 'persp-projectile)
       (defhydra hydra-persp (:columns 4
@@ -2171,7 +2176,8 @@ A [[https://github.com/nex3/perspective-el/issues/19][useful set of functions]] 
 Easy workspace creation and switching
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
-  :config 
+  :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
+  :config    
   (general-define-key :states '(insert normal) :keymaps 'eyebrowse-mode-map 
     "M-1" 'eyebrowse-switch-to-window-config-1
     "M-2" 'eyebrowse-switch-to-window-config-2
@@ -2851,6 +2857,7 @@ to be enabled."
  Highlight numbers in [[https://github.com/Fanael/highlight-numbers][source code]]
  #+BEGIN_SRC emacs-lisp
  (use-package highlight-numbers
+   :defer t
    :init
    (add-hook 'prog-mode-hook #'highlight-numbers-mode))
  #+END_SRC
@@ -2858,6 +2865,7 @@ to be enabled."
  highlight TODO statements in comments 
  #+BEGIN_SRC emacs-lisp
  (use-package hl-todo
+   :defer t
    :init
    (add-hook 'org-mode-hook #'hl-todo-mode)
    (add-hook 'prog-mode-hook #'hl-todo-mode)
@@ -2868,9 +2876,11 @@ to be enabled."
  #+BEGIN_SRC emacs-lisp
  ;;dependency
  (use-package font-lock+
+   :after all-the-icons
    :ensure nil
    :load-path "~/.emacs.d/.local/elisp")
  (use-package all-the-icons
+   :after (ranger deer dired)
    :ensure nil
    :load-path "~/.emacs.d/.local/elisp/all-the-icons-3.1.1")
  ;; icons for dired
@@ -3490,7 +3500,7 @@ Keybindings for managing packages
 *** Which-key
  #+BEGIN_SRC emacs-lisp
  (use-package which-key
-   :defer 2
+   :demand t
    :diminish ""
    :config
    (setq which-key-special-keys nil)
@@ -3549,7 +3559,7 @@ Keybindings for managing packages
 
 #+BEGIN_SRC emacs-lisp
 (use-package shackle
-  :defer 2
+  :after helm
   :config
   ;; make helm pop-ups behave
   (setq helm-display-function #'pop-to-buffer)
@@ -3573,12 +3583,12 @@ Keybindings for managing packages
 #+END_SRC
 * Navigation
 ** Bookmarks
-Use [[https://www.emacswiki.org/emacs/BookmarkPlus][Bookmark Plus]]. Since it
-is an emacs wiki package you can't get it from MELPA. So the git mirror is
-[[https://github.com/emacsmirror/bookmark-plus][here]].
+Use [[https://www.emacswiki.org/emacs/BookmarkPlus][Bookmark Plus]]. Since it is an emacs wiki package you can't get it from
+MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark-plus
     :load-path "~/.emacs.d/.local/elisp/bookmark+/"
+    :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
     :init
     (setq bookmark-default-file (concat cpm-cache-dir "bookmarks"))
     (setq bmkp-last-as-first-bookmark-file (concat cpm-cache-dir "bookmarks"))
@@ -3590,7 +3600,6 @@ is an emacs wiki package you can't get it from MELPA. So the git mirror is
 *** Helm Settings
 #+BEGIN_SRC emacs-lisp 
   (use-package helm
-    :defer 5
     :general 
     ("M-x" 'helm-M-x)
     ("C-h i" 'helm-info)
@@ -3953,6 +3962,7 @@ Better dired navigation using ranger-like settings
 ** Recent files
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
+    :defer t
     :config 
     (setq recentf-save-file (concat cpm-etc-dir "recentf"))
     ;; remove agenda files from list.
@@ -4148,7 +4158,7 @@ Better dired navigation using ranger-like settings
 ** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
-     :defer 4
+     :after eshell
      :config
      (venv-initialize-interactive-shells) ;; if you want interactive shell support
      (venv-initialize-eshell) ;; if you want eshell support
@@ -4181,11 +4191,11 @@ An easy way to ssh
    (use-package eshell
      :commands eshell
      :init
-     (use-package em-cmpl    :defer 2 :ensure nil)
-     (use-package em-prompt  :defer 2 :ensure nil)
-     (use-package em-term    :defer 2 :ensure nil)
-     (use-package em-alias   :defer 2 :ensure nil)
-     (use-package em-smart   :defer 2 :ensure nil)
+     ;; (use-package em-cmpl    :defer 2 :ensure nil)
+     ;; (use-package em-prompt  :defer 2 :ensure nil)
+     ;; (use-package em-term    :defer 2 :ensure nil)
+     ;; (use-package em-alias   :defer 2 :ensure nil)
+     ;; (use-package em-smart   :defer 2 :ensure nil)
      ;; plan 9
      ;; (setq eshell-where-to-jump 'begin)
      ;; (setq eshell-review-quick-commands nil)
@@ -4394,8 +4404,8 @@ I've made just a few tiny modifications.
 Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-fringe-status
-  :defer
-  :init
+  :defer t
+  :config
   (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
 #+END_SRC
 
@@ -4535,6 +4545,7 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
 [[https://github.com/edkolev/evil-lion][This package]] provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
 #+BEGIN_SRC emacs-lisp
 (use-package evil-lion
+  :defer t
   :config
   (general-define-key :states '(normal) :keymaps 'prog-mode-map
   "g l" 'evil-lion-left
@@ -4588,14 +4599,15 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
 
 (use-package eldoc
   :diminish eldoc-mode
-  :commands eldoc-mode)
+  :commands eldoc-mode
+  :config 
   (add-hook 'emacs-lisp-mode-hook (lambda ()
               (setq show-trailing-whitespace t)
               (prettify-symbols-mode)
               (eldoc-mode)
               (yas-minor-mode)
               (company-mode)
-              (rainbow-delimiters-mode)))
+              (rainbow-delimiters-mode))))
               
 #+END_SRC
 *** Haskell
@@ -4685,7 +4697,6 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
 ** Magit
  #+BEGIN_SRC emacs-lisp
    (use-package magit
-     :defer 4
      :commands 
      (magit-blame-mode
       magit-commit
@@ -4733,6 +4744,7 @@ Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
  #+BEGIN_SRC emacs-lisp
    (use-package git-gutter
+     :defer t
      :init
      (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
      (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
@@ -4777,6 +4789,7 @@ The incomparable [[https://orgmode.org][org mode]]
 #+BEGIN_SRC emacs-lisp
 ;; install org for bootstrapping config
 (use-package org
+  :defer t
   :ensure org-plus-contrib)
 #+END_SRC
 ** Settings
@@ -5035,6 +5048,7 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
+  :defer t
   :init (add-hook 'org-mode-hook 'org-bullets-mode)
   :config 
   (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
@@ -5175,6 +5189,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda
 #+BEGIN_SRC emacs-lisp
 (use-package org-super-agenda
+  :commands super-jump-to-org-agenda
   :preface
   (defun super-jump-to-org-agenda ()
     (interactive)
@@ -5351,6 +5366,7 @@ document and create new parents.
 *** Random Notes
 #+begin_src emacs-lisp
 (use-package org-randomnote
+  :commands (org-randomnote org-randomnote--go-to-random-header org-randomnote--get-random-file org-randomnote--get-random-subtree)
   :init
   (setq org-randomnote-candidates '("~/Dropbox/org-files/todo.org")))
 #+end_src
@@ -5359,9 +5375,8 @@ document and create new parents.
 
 #+BEGIN_SRC emacs-lisp
     (use-package ox-pandoc
-      ;; :after org
+      :after org
       ;; :commands (org-pandoc-publish-to-html5)
-      :defer 4
       :config
       ;; default options for all output formats
       ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
@@ -5450,8 +5465,8 @@ Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org file
 Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]]. 
 #+BEGIN_SRC emacs-lisp
   (use-package org-download
-     ;; :after org
-     :config
+    :commands (org-download-yank org-download-screenshot org-download-image)
+    :config
      (setq org-download-method 'directory)
            org-download-image-dir "~/Dropbox/org-files/org-pictures"
            org-download-image-latex-width 500
@@ -5654,11 +5669,11 @@ package that automatically generates an up to date table of contents for us.
 Other useful org packages
 
 #+BEGIN_SRC emacs-lisp
-  (use-package htmlize)
+  (use-package htmlize :after org)
   (use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
   ;; ignore export of headlines marked with :ignore: tag
   (use-package ox-extra
-    :defer 1
+    :after org
     :ensure nil
     :config
     (ox-extras-activate '(ignore-headlines)))
@@ -5851,6 +5866,7 @@ mode of writing.
 Make arbitrary blocks or sentences of text.
 #+BEGIN_SRC emacs-lisp
   (use-package lorem-ipsum
+    :commands (Lorem-ipsum-insert-sentences Lorem-ipsum-insert-list Lorem-ipsum-insert-paragraphs)
     :config 
     (lorem-ipsum-use-default-bindings)
     )
@@ -5859,6 +5875,7 @@ Make arbitrary blocks or sentences of text.
 ** Palimpsest mode
 #+BEGIN_SRC emacs-lisp
   (use-package palimpsest
+    :defer t
     :diminish palimpsest-mode
     :init 
     (add-hook 'markdown-mode-hook 'palimpsest-mode)
@@ -5901,6 +5918,7 @@ Make arbitrary blocks or sentences of text.
     (setq reftex-plug-into-AUCTeX t)))
 
 (use-package bibtex
+  :defer t
   :mode ("\\.bib" . bibtex-mode)
   :init
   (progn
@@ -6153,7 +6171,7 @@ Better than doc-view, but doesn't render well on retina screens :(
  For annotation and jumping to file
 #+BEGIN_SRC emacs-lisp
   (use-package org-pdfview
-    :defer 4
+    :after org
     :commands (org-pdfview-open)
     :init
     (add-to-list 'org-file-apps 
@@ -6323,6 +6341,7 @@ Better than doc-view, but doesn't render well on retina screens :(
 Interface with Zotero.
 #+BEGIN_SRC emacs-lisp
   (use-package zotxt
+    :commands (org-zotxt-mode zotxt-easykey-mode org-zotxt-insert-reference-link-to-item org-zotxt-open-attachment org-zotxt-update-reference-link-at-point)
     :diminish (org-zoxt zotxt org-zotxt-mode)
     :init
     (add-hook! 'org-mode-hook #'org-zotxt-mode)
@@ -6350,7 +6369,6 @@ Interface with Zotero.
 Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert                 
-    :defer 10
     :ensure nil
     :init
     (global-auto-revert-mode 1)
@@ -6374,6 +6392,7 @@ A [[https://github.com/emacscollective/epkg][helpful package]] to search [[https
 ** URL & Request
 #+BEGIN_SRC emacs-lisp
 (use-package request
+  :defer 10
   :ensure nil
   :config
   (setq request-storage-directory (concat cpm-cache-dir "request"))
@@ -6396,7 +6415,7 @@ Make the content of the scratch buffer persist between settings
 Start server
 #+BEGIN_SRC emacs-lisp
   (use-package server
-   :defer 4
+   :defer 10
    :config
     (if (display-graphic-p)
         (unless (or (daemonp) (server-running-p))
@@ -6408,14 +6427,14 @@ Start server
 Dashboard depends on this. 
 #+BEGIN_SRC emacs-lisp
 (use-package page-break-lines
+  :defer t
   :diminish "")
 #+END_SRC
-** DISABLED Dashboard
-CLOSED: [2018-02-15 Thu 21:10]
+** Dashboard
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
     (use-package dashboard
-      :demand t
+      :commands (dashboard-insert-startupify-lists cpm/dashboard)
       :config
       (setq dashboard-items '((agenda . 5)
                               (recents  . 5)
