@@ -2899,6 +2899,7 @@ to be enabled."
  Useful for letting you know where the cursor is
  #+BEGIN_SRC emacs-lisp
  (use-package beacon
+   :defer 10
    :init (beacon-mode 1)
    :config
    (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
