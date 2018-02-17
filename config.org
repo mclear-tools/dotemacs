@@ -4904,6 +4904,7 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 (use-package evil-org
   :after org
   :config
+  (add-hook 'org-mode-hook 'evil-org-mode)  
   (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional)))))
 #+END_SRC
 *** Org Local Leader Keybindings
@@ -5027,17 +5028,15 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 
 ** Hooks
 #+BEGIN_SRC emacs-lisp
-    (add-hook 'org-mode-hook
-        (lambda () 
-          (turn-on-auto-fill)
-          (centered-cursor-mode 0)
-          (flyspell-mode 1)
-          (cpm/disable-line-numbers)
-          (org-bullets-mode 1)
-          (global-git-gutter-mode 0)
-          (evil-org-mode)
-          (ox-pandoc)
-          ))
+  (add-hook 'org-mode-hook
+      (lambda () 
+        (turn-on-auto-fill)
+        (centered-cursor-mode 0)
+        (flyspell-mode 1)
+        (cpm/disable-line-numbers)
+        (org-bullets-mode 1)
+        (global-git-gutter-mode 0)
+        ))
 #+END_SRC
 
 ** Org Template Expansions
@@ -5993,8 +5992,6 @@ Make arbitrary blocks or sentences of text.
 
 #+END_SRC
 
-#+RESULTS:
-: synctex/un-urlify
 
 ** DISABLED Doc View Mode
 CLOSED: [2018-02-03 Sat 10:44]
