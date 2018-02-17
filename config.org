@@ -1539,6 +1539,10 @@ Use flyspell and aspell
     (setq flyspell-use-meta-tab nil)
     :config
     ;; Save a new word to personal dictionary without asking
+    (eval-after-load "flyspell"
+    '(progn
+       (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+       (define-key flyspell-mouse-map [mouse-3] #'undefined)))
     (setq flyspell-issue-welcome-flag nil))
 #+END_SRC 
 **** Flyspell hooks
@@ -1869,6 +1873,7 @@ Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-loca
                        calendar-longitude osx-location-longitude
                        calendar-location-name (format "%s, %s" osx-location-latitude osx-location-longitude)))))
 #+END_SRC
+
 
 * Modal Editing
 ** General  (Evil)
@@ -3332,7 +3337,7 @@ Keybindings for managing packages
     "tC" 'centered-window-mode
     "td" 'cpm/osx-toggle-menubar-theme
     "tf" 'toggle-serif
-    "tF" 'toggle-frame-fullscreen
+    "tF" 'toggle-frame-maximized
     "tg" 'git-gutter-mode
     "th" 'hl-line-mode
     "te" 'toggle-indicate-empty-lines
@@ -3423,7 +3428,7 @@ Keybindings for managing packages
 
   "w"  '(:ignore t :which-key "Windows")
   "wa" 'ace-window
-  "wf" 'toggle-window-split
+  "wf" 'cpm/toggle-window-split
   "wc" 'delete-window
   "wd" 'delete-window
   "wm" 'delete-other-windows
@@ -6352,6 +6357,7 @@ Interface with Zotero.
 
 #+END_SRC
 
+
 * Private
 #+BEGIN_SRC emacs-lisp
 (let ((private (expand-file-name "private.el" cpm-cache-dir))) 
@@ -6480,6 +6486,7 @@ Display Startup time
 (message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
 
 #+END_SRC
+
 * Test
 ** FIXME Tabs
 Buffer tabs in modeline or Echo are. [[https://github.com/linktohack/buffer-line][Pictures]] help. Works well, especially
