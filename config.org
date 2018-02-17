@@ -4280,13 +4280,16 @@ Per this [[https://emacs.stackexchange.com/a/10874/11934][stack exchange discuss
       (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
  #+END_SRC
 *** Eshell Evil History Navigation
+History browsing. Note keybindings need to be buffer local as per https://github.com/noctuid/general.el/issues/80
 #+BEGIN_SRC emacs-lisp
-;; history browsing
+(add-hook 'eshell-mode-hook
+(lambda ()
 (general-define-key :states  '(normal insert emacs) :keymaps 'eshell-mode-map
     "<down>" 'eshell-next-input
     "<up>"   'eshell-previous-input
     "C-k"    'eshell-next-input
     "C-j"    'eshell-previous-input)
+    ))
 #+END_SRC
 *** Eshell Prompt
 A nicer [[https://gist.github.com/ekaschalk/f0ac91c406ad99e53bb97752683811a5][eshell prompt]] with some [[http://www.modernemacs.com/post/custom-eshell/][useful discussion]] of how it was put together.
@@ -4381,8 +4384,9 @@ I've made just a few tiny modifications.
  #+BEGIN_SRC emacs-lisp
    (use-package shell-switcher
      :general
-     ("C-'" 'shell-switcher-switch-buffer)
+     ("C-'"  'shell-switcher-switch-buffer-other-window)
      :config
+     (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
      (setq shell-switcher-mode t))
  #+END_SRC
 *** Clear Eshell 
@@ -4876,7 +4880,7 @@ Ensure ELPA org is prioritized above built-in org.
 *** Org Modules
 A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
-(setq org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-eshell org-git-link org-mac-iCal org-mac-link)))
+(setq org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-git-link org-mac-iCal org-mac-link)))
 #+END_SRC
 *** Org ID
 #+BEGIN_SRC emacs-lisp
