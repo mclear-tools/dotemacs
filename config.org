@@ -386,6 +386,13 @@ respectively. The git package is also a library.
 * Functions & Macros
 ** Useful Functions 
 Various useful functions and macros I've written or pilfered from others. 
+*** Call an emacs instance
+Call an emacs instance for testing
+#+BEGIN_SRC emacs-lisp
+(defun cpm/call-emacs ()
+  (interactive)
+  (async-shell-command "emacs"))
+#+END_SRC
 *** Tangle file on save
 #+BEGIN_SRC emacs-lisp
   (defun cpm/tangle-emacs-config ()
