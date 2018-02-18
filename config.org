@@ -1391,18 +1391,25 @@ apropos commands perform more extensive searches than default
 (setq select-enable-clipboard t)
 ;; Save whatever’s in the current (system) clipboard before
 ;; replacing it with the Emacs’ text.
-;; https://github.com/dakrone/eos/blob/master/eos.org
 (setq save-interprogram-paste-before-kill t)
-(defun clipboard-on ()
-    (interactive)
-    (setq interprogram-cut-function 'paste-to-osx)
-    (setq interprogram-paste-function 'copy-from-osx))
-  (defun clipboard-off ()
-    (interactive)
-    (setq interprogram-cut-function 'gui-select-text)
-    (setq interprogram-paste-function 'gui-selection-value))
-  (global-set-key (kbd "S-p") 'clipboard-on)
-  (global-set-key (kbd "S-y") 'clipboard-off)
+;; Copy/Paste functions 
+;; https://github.com/dakrone/eos/blob/master/eos-core.org#mac-osx
+(defun copy-from-osx ()
+    "Handle copy/paste intelligently on osx."
+    (let ((pbpaste (purecopy "/usr/bin/pbpaste")))
+      (if (and (eq system-type 'darwin)
+               (file-exists-p pbpaste))
+          (let ((tramp-mode nil)
+                (default-directory "~"))
+            (shell-command-to-string pbpaste)))))
+
+  (defun paste-to-osx (text &optional push)
+    (let ((process-connection-type nil))
+      (let ((proc (start-process "pbcopy" "*Messages*" "/usr/bin/pbcopy")))
+        (process-send-string proc text)
+        (process-send-eof proc))))
+  (setq interprogram-cut-function 'paste-to-osx
+        interprogram-paste-function 'copy-from-osx)
 #+END_SRC
 
 
