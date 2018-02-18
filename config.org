@@ -416,7 +416,9 @@ https://stackoverflow.com/a/25792276
     (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
 #+END_SRC
 *** Built-in Functions
+These are useful built-in functions, but you have to enable them
 #+BEGIN_SRC emacs-lisp
+  (put 'erase-buffer 'disabled nil)
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
   (put 'narrow-to-region 'disabled nil)
@@ -2192,11 +2194,11 @@ Easy workspace creation and switching
 (use-package eyebrowse
   :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
   :config    
-  (general-define-key :states '(insert normal) :keymaps 'eyebrowse-mode-map 
-    "M-1" 'eyebrowse-switch-to-window-config-1
-    "M-2" 'eyebrowse-switch-to-window-config-2
-    "M-3" 'eyebrowse-switch-to-window-config-3
-    "M-4" 'eyebrowse-switch-to-window-config-4)
+  (general-define-key :states '(insert normal) 
+    "s-1" 'eyebrowse-switch-to-window-config-1
+    "s-2" 'eyebrowse-switch-to-window-config-2
+    "s-3" 'eyebrowse-switch-to-window-config-3
+    "s-4" 'eyebrowse-switch-to-window-config-4)
   (setq eyebrowse-new-workspace t)
   (eyebrowse-mode t))  
 #+END_SRC
@@ -2378,10 +2380,12 @@ Easy workspace creation and switching
                     ;; battery faces
                     '(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
                     '(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
-                    '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
+                    '(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
+                  )
 
              (add-hook 'after-load-theme-hook 'customize-solarized-light))
              (load-theme 'solarized-dark t))
+
 
  #+END_SRC
 
@@ -3075,9 +3079,9 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "B" #'cpm/dashboard
     "?" 'helm-descbinds
     "<SPC>" 'helm-M-x
-    "d" 'deer
+    "d" #'deer-jump-other-window
     "D" #'cpm/deer-split-window
-    "E" 'evil-motion-state
+    "E" 'cpm/call-emacs
     "e" 'server-edit
     "G" 'general-describe-keybindings
     "h" 'helm-resume
@@ -3602,8 +3606,8 @@ Keybindings for managing packages
 Use [[https://www.emacswiki.org/emacs/BookmarkPlus][Bookmark Plus]]. Since it is an emacs wiki package you can't get it from
 MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
 #+BEGIN_SRC emacs-lisp
-  (use-package bookmark-plus
-    :load-path "~/.emacs.d/.local/elisp/bookmark+/"
+  (use-package bookmark+
+    ;; :load-path "~/.emacs.d/.local/elisp/bookmark+/"
     :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
     :init
     (setq bookmark-default-file (concat cpm-cache-dir "bookmarks"))
@@ -4612,13 +4616,18 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
   :diminish eldoc-mode
   :commands eldoc-mode
   :config 
+  ;; Show ElDoc messages in the echo area immediately, instead of after
+  ;; 1/2 a second.
+  (setq eldoc-idle-delay 0))
+
+  ;; Elisp hook
   (add-hook 'emacs-lisp-mode-hook (lambda ()
               (setq show-trailing-whitespace t)
               (prettify-symbols-mode)
               (eldoc-mode)
               (yas-minor-mode)
               (company-mode)
-              (rainbow-delimiters-mode))))
+              (rainbow-delimiters-mode)))
               
 #+END_SRC
 *** Haskell
@@ -4718,6 +4727,9 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
      (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
      (add-hook 'magit-mode-hook 'evil-magit-init)
      (setq vc-follow-symlinks t)
+     ;; Suppress the message we get about "Turning on
+     ;; magit-auto-revert-mode" when loading Magit.
+     (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
      :config
      ;; make magit go fullscreen
      ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
@@ -4928,6 +4940,7 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
    "a"   #'super-jump-to-org-agenda
    "A"   #'org-archive-subtree
    "b"   #'org-tree-to-indirect-buffer
+   "B"   #'org-babel-tangle
    "c"   #'org-capture
    "d"   #'org-time-stamp
    "D"   #'org-deadline
@@ -6380,6 +6393,7 @@ Auto-revert buffers of changed files
   (use-package autorevert                 
     :ensure nil
     :init
+    (setq auto-revert-interval 1)
     (global-auto-revert-mode 1)
     :config
     (progn 
