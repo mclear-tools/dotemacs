@@ -2322,6 +2322,13 @@ Easy workspace creation and switching
    (global-set-key (kbd "s-0") 'reset-font-size))
  #+END_SRC
 *** Theme
+**** Toggle OSX Menubar Dark Mode
+A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menubar. 
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/osx-toggle-menubar-theme ()
+    (interactive)
+    (shell-command "dark-mode"))
+#+END_SRC
 **** Solarized
  The best low-contrast theme out there.
  #+BEGIN_SRC emacs-lisp
@@ -2364,8 +2371,10 @@ Easy workspace creation and switching
            (defun toggle-dark-light-theme ()
            (interactive)
            (if (eq active-theme 'solarized-light) 
-               (setq active-theme 'solarized-dark)
-               (setq active-theme 'solarized-light))
+               (progn (setq active-theme 'solarized-dark) 
+                     (cpm/osx-toggle-menubar-theme))
+               (progn (setq active-theme 'solarized-light) 
+                      (cpm/osx-toggle-menubar-theme)))
            (load-theme active-theme)
            (powerline-reset)))
 
@@ -2377,7 +2386,6 @@ Easy workspace creation and switching
             (run-hooks 'after-load-theme-hook))
             (defun customize-solarized-dark ()
             "Customize solarized theme"
-            (shell-command "dark-mode on")
             (if (member 'solarized-dark custom-enabled-themes)
                     (custom-theme-set-faces
                     'solarized-dark
@@ -2410,7 +2418,6 @@ Easy workspace creation and switching
 
         (defun customize-solarized-light ()
         "Customize solarized theme"
-        (shell-command "dark-mode off")
         (if (member 'solarized-light custom-enabled-themes)
                     (custom-theme-set-faces
                     'solarized-light
@@ -2505,9 +2512,6 @@ CLOSED: [2018-02-16 Fri 23:50]
                               (:sunset  . solarized-dark))))
     (circadian-setup))
 
-  (defun cpm/osx-toggle-menubar-theme ()
-    (interactive)
-    (shell-command "dark-mode"))
 
   ;; (add-hook 'after-load-theme-hook #'cpm/osx-toggle-menubar-theme)
 #+END_SRC
