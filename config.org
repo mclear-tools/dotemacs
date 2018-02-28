@@ -293,10 +293,14 @@ will be handling that.
 I used to tell =use-package= to always defer loading packages unless explicitly
 told otherwise. This speeds up initialization significantly as many packages
 are only loaded later when they are explicitly used. But it can also [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][cause
-problems]]. So I've decided to defer packages individually instead. 
+problems]]. I've since revised all my defer settings. I explicitly
+defer/demand, and put a lot of loading of packages off until after about 10
+secs of idle. The latter means package loading stays out of my way if I'm
+doing, e.g., a quick restart-and-check of something in emacs. But I still
+use always-defer, as it seems to shave another .4 secs off load time. 
 
 #+BEGIN_SRC emacs-lisp
-  (setq use-package-always-defer nil
+  (setq use-package-always-defer t
         use-package-verbose t)
 #+END_SRC
 
@@ -386,23 +390,16 @@ respectively. The git package is also a library.
 * Functions & Macros
 ** Useful Functions 
 Various useful functions and macros I've written or pilfered from others. 
-*** Call an emacs instance
-Call an emacs instance for testing
+*** Archive All Done Tasks
+Useful function for archiving done tasks. From [[https://stackoverflow.com/a/27043756][stack overflow]].
 #+BEGIN_SRC emacs-lisp
-(defun cpm/call-emacs ()
+(defun cpm/org-archive-done-tasks ()
   (interactive)
-  (async-shell-command "emacs"))
-#+END_SRC
-*** Tangle file on save
-#+BEGIN_SRC emacs-lisp
-  (defun cpm/tangle-emacs-config ()
-    "If the current file is in '~/.emacs.d/', the code blocks are tangled"
-    (when (equal (file-name-directory (directory-file-name buffer-file-name))
-                 (concat (getenv "HOME") "/.emacs.d/"))
-      (org-babel-tangle)
-      (message "%s tangled" buffer-file-name)))
-
-  ;; (add-hook 'after-save-hook #'cpm/tangle-emacs-config)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'agenda))
 #+END_SRC
 *** Blank Buffer New Frame
 Make a blank buffer when opening a new frame. From
@@ -423,6 +420,13 @@ These are useful built-in functions, but you have to enable them
   (put 'upcase-region 'disabled nil)
   (put 'narrow-to-region 'disabled nil)
   (put 'dired-find-alternate-file 'disabled nil)
+#+END_SRC
+*** Call an emacs instance
+Call an emacs instance for testing
+#+BEGIN_SRC emacs-lisp
+(defun cpm/call-emacs ()
+  (interactive)
+  (async-shell-command "emacs"))
 #+END_SRC
 *** Clipboard to/from Buffer
 #+BEGIN_SRC emacs-lisp
@@ -904,6 +908,16 @@ argument takes the kindows rotate backwards."
             (kill-new file-name))
         (error "Buffer not visiting a file"))))
 #+END_SRC
+*** Show Next Spelling Error
+Go to the next spelling error using flyspell and ispell. From the [[https://www.emacswiki.org/emacs/FlySpell#toc3][Wiki]]. 
+#+BEGIN_SRC emacs-lisp
+(defun cpm/flyspell-ispell-goto-next-error ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word)
+  )
+#+END_SRC
 *** Sticky Buffer/Window
 Stick/Lock buffer to window, courtesy of [[https://gist.github.com/ShingoFukuyama/8797743][ShingoFukuyama]].
 #+BEGIN_SRC emacs-lisp
@@ -938,6 +952,17 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+END_SRC
+*** Tangle file on save
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/tangle-emacs-config ()
+    "If the current file is in '~/.emacs.d/', the code blocks are tangled"
+    (when (equal (file-name-directory (directory-file-name buffer-file-name))
+                 (concat (getenv "HOME") "/.emacs.d/"))
+      (org-babel-tangle)
+      (message "%s tangled" buffer-file-name)))
+
+  ;; (add-hook 'after-save-hook #'cpm/tangle-emacs-config)
+#+END_SRC
 *** Toggle Window Split
 Move from a horizontal to a vertical split and vice versa
 #+BEGIN_SRC emacs-lisp
@@ -966,6 +991,41 @@ Move from a horizontal to a vertical split and vice versa
       (select-window first-win)
       (if this-win-2nd (other-window 1))))))
 
+#+END_SRC
+*** Search TODO Markers
+Make an equivalent of vim's quickfix buffer using [[git:~/.emacs.d/config.org::master@{2018-02-18}::3795][helm-ag]] and [[git:~/.emacs.d/config.org::master@{2018-02-18}::2947][highlight-todo]]
+#+BEGIN_SRC emacs-lisp
+(defun cpm/search-file-todo-markers ()
+    "Search for any TODO markers as specified in hl-todo-keyword-faces.
+
+Note that this uses the word boundary \\b to avoid matching these
+within other words, but this means that non-word keywords such as
+???, which is in the list by default, will not be matched."
+    (interactive)
+    (require 'projectile)
+
+    (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
+           (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
+                                     grouped))
+           (bounded (concat "\\b" unescaped "\\b"))
+           (helm-follow-mode-persistent t))
+      (helm-do-ag-this-file bounded)))
+
+(defun cpm/search-todo-markers ()
+    "Search for any TODO markers as specified in hl-todo-keyword-faces.
+
+Note that this uses the word boundary \\b to avoid matching these
+within other words, but this means that non-word keywords such as
+???, which is in the list by default, will not be matched."
+    (interactive)
+    (require 'projectile)
+
+    (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
+           (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
+                                     grouped))
+           (bounded (concat "\\b" unescaped "\\b"))
+           (helm-follow-mode-persistent t))
+      (helm-do-ag (projectile-project-root) nil bounded)))
 #+END_SRC
 ** DOOM! Macros
 
@@ -2328,6 +2388,12 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
   (defun cpm/osx-toggle-menubar-theme ()
     (interactive)
     (shell-command "dark-mode"))
+  (defun cpm/osx-menubar-theme-light ()
+    (interactive)
+    (shell-command "dark-mode off"))
+  (defun cpm/osx-menubar-theme-dark ()
+    (interactive)
+    (shell-command "dark-mode on"))
 #+END_SRC
 **** Solarized
  The best low-contrast theme out there.
@@ -2372,9 +2438,9 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
            (interactive)
            (if (eq active-theme 'solarized-light) 
                (progn (setq active-theme 'solarized-dark) 
-                     (cpm/osx-toggle-menubar-theme))
+                     (cpm/osx-menubar-theme-dark))
                (progn (setq active-theme 'solarized-light) 
-                      (cpm/osx-toggle-menubar-theme)))
+                      (cpm/osx-menubar-theme-light)))
            (load-theme active-theme)
            (powerline-reset)))
 
@@ -3068,6 +3134,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "bc" 'cpm/copy-whole-buffer-to-clipboard
   "bD" 'kill-buffer-and-window
   "bd" 'kill-this-buffer
+  "be" 'erase-buffer
   "bf" 'cpm/browse-file-directory
   "bj" 'cpm/jump-in-buffer 
   "bk" 'evil-delete-buffer
@@ -3143,7 +3210,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "B" #'cpm/dashboard
     "?" 'helm-descbinds
     "<SPC>" 'helm-M-x
-    "d" #'deer-jump-other-window
+    "d" #'deer
     "D" #'cpm/deer-split-window
     "E" 'cpm/call-emacs
     "e" 'server-edit
@@ -3348,8 +3415,8 @@ Keybindings for managing packages
     "pk"  'projectile-kill-buffers
     ;; "pl"  'desktop+-load
     "po"  'projectile-multi-occur
-    "pP"  'helm-projectile-switch-project
-    "pp"  'projectile-persp-switch-project
+    "pp"  'helm-projectile-switch-project
+    "pP"  'projectile-persp-switch-project
     ;; "pp"  'helm-persp-projectile-switch-project
     "pr"  'helm-projectile-recentf
     "pR"  'projectile-replace
@@ -3395,6 +3462,9 @@ Keybindings for managing packages
     "sp" 'helm-ag-project-root
     "sr" 'helm-org-rifle
     "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
+    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
+    "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
+    "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
     "/"  'cpm/helm-files-search-current-directory   ;; search in directory with word prompt
      )
 #+END_SRC
@@ -3402,42 +3472,43 @@ Keybindings for managing packages
 
 **** Toggle Keybindings
 #+BEGIN_SRC emacs-lisp
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+    :states '(normal motion visual insert emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
 
-    "t"  '(:ignore t :which-key "Toggles")
-    "ta" 'company-mode
-    "tb" 'buffer-line-mode
-    "tB" 'beacon-mode
-    "tc" 'centered-cursor-mode
-    "tC" 'centered-window-mode
-    "td" 'cpm/osx-toggle-menubar-theme
-    "tf" 'toggle-serif
-    "tF" 'toggle-frame-maximized
-    "tg" 'git-gutter-mode
-    "th" 'hl-line-mode
-    "te" 'toggle-indicate-empty-lines
-    "tE" 'eldoc-mode
-    "tm" 'hidden-mode-line-mode
-    "tM" 'spaceline-toggle-minor-modes
-    "tn" 'nlinum-mode
-    ;; "tn" 'display-line-numbers-mode
-    "tN" 'org-numbers-overlay-mode
-    "to" 'org-toggle-link-display
-    "tO" 'outline-toc-mode
-    "tp" 'smartparens-mode
-    "tP" 'show-paren-mode 
-    "tr" 'rainbow-identifiers-mode
-    "ts" 'toggle-dark-light-theme
-    "tt" 'helm-themes
-    "tT" 'neotree-toggle
-    "tw" 'writeroom-mode
-    "tz" 'zone
-    ;; "tt" 'counsel-load-theme
-  )
+      "t"  '(:ignore t :which-key "Toggles")
+      "ta" 'company-mode
+      "tb" 'buffer-line-mode
+      "tB" 'beacon-mode
+      "tc" 'centered-cursor-mode
+      "tC" 'centered-window-mode
+      "td" 'cpm/osx-toggle-menubar-theme
+      "tf" 'toggle-serif
+      "tF" 'toggle-frame-maximized
+      "tg" 'git-gutter-mode
+      "th" 'hl-line-mode
+      "te" 'toggle-indicate-empty-lines
+      "tE" 'eldoc-mode
+      "tm" 'hidden-mode-line-mode
+      "tM" 'spaceline-toggle-minor-modes
+      ;; "tn" 'nlinum-mode
+      "tn" 'display-line-numbers-mode
+      "tN" 'org-numbers-overlay-mode
+      "to" 'org-toggle-link-display
+      "tO" 'outline-toc-mode
+      "tp" 'smartparens-mode
+      "tP" 'show-paren-mode 
+      "tr" 'rainbow-identifiers-mode
+      "ts" 'ispell-buffer
+      "tS" 'flyspell-mode
+      "tt" 'toggle-dark-light-theme
+      "tT" 'helm-themes
+      "tw" 'writeroom-mode
+      "tz" 'zone
+      ;; "tt" 'counsel-load-theme
+    )
 #+END_SRC
 **** User Keybindings
 #+BEGIN_SRC emacs-lisp
@@ -3464,7 +3535,7 @@ Keybindings for managing packages
     "ut" 'cpm/org-goto-todo
     "ud" 'distraction-free
     "uD" 'my-desktop
-    "uj" 'goto-journal
+    "uj" 'cpm/goto-journal
     ;; "op" 'pandoc-convert-to-pdf
     "uw" 'count-words
     "uW" 'osx-dictionary-search-input
