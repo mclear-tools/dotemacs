@@ -4991,6 +4991,7 @@ Ensure ELPA org is prioritized above built-in org.
 *** Org Config Settings
 #+BEGIN_SRC emacs-lisp
   (setq-default 
+        org-footnote-section nil ;; place footnotes locally rather than in own section
         org-return-follows-link t ;; make RET follow links
         org-list-allow-alphabetical t ;; allow alphabetical list
         org-hide-emphasis-markers t  ;; hide markers
