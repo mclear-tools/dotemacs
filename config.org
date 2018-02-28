@@ -2328,11 +2328,12 @@ Easy workspace creation and switching
    Various settings to make Emacs (mostly the GUI version) look better or
    make interaction smoother. 
 ** Appearance
-*** Name frame
- Show the filepath in the frame title.
+*** Frame Title 
+ Show the filepath in the frame title (disabled due to text color issues).
  #+BEGIN_SRC emacs-lisp
-   (setq-default frame-title-format
-             '((buffer-file-name "%f" "%b")))
+   (setq frame-title-format '('nil))
+   ;; (setq-default frame-title-format
+   ;;           '((buffer-file-name "%f" "%b")))
  #+END_SRC
 *** Frame Defaults
  I like the frame either centered and approximately 2/3 of a 13inch
@@ -2352,6 +2353,21 @@ Easy workspace creation and switching
               (height . 60) ;; lines
               ))))
 #+END_SRC
+*** Transparent titlebar
+#+BEGIN_SRC emacs-lisp
+;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
+;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
+(when (memq window-system '(mac ns))
+  (add-to-list 'default-frame-alist '(ns-appearance . 'dark))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+#+END_SRC
+
+*** Borderless Frame
+#+BEGIN_SRC emacs-lisp
+  ;; (setq default-frame-alist '((undecorated . t)))
+#+END_SRC
+
 *** Get rid of UI cruft
  Turn off all of the GUI cruft.
  #+BEGIN_SRC emacs-lisp
@@ -2566,20 +2582,24 @@ that I use anything other than solarized :)
 #+END_SRC
 
 **** DISABLED Circadian Theme-changer (based on time of day)
-CLOSED: [2018-02-16 Fri 23:50]
+CLOSED: [2018-02-19 Mon 16:31]
 [[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
 #+BEGIN_SRC emacs-lisp 
   (use-package circadian
     :if (display-graphic-p)
+    :disabled t
     :defer .25
+    :init
+    (add-hook 'circadian-after-load-theme-hook
+          #'(lambda (theme)
+               (if (eq active-theme 'solarized-light) 
+                     (cpm/osx-menubar-theme-light)
+                     (cpm/osx-menubar-theme-dark))))
     :config
     (ignore-errors
-    (setq circadian-themes '((:sunrise  . solarized-light)
+    (setq circadian-themes '(("13:00"  . solarized-light)
                               (:sunset  . solarized-dark))))
     (circadian-setup))
-
-
-  ;; (add-hook 'after-load-theme-hook #'cpm/osx-toggle-menubar-theme)
 #+END_SRC
 
 
