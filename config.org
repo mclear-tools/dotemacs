@@ -67,6 +67,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#ivy][Ivy]]
   - [[#counsel][Counsel]]
   - [[#swiper][Swiper]]
+  - [[#historian][Historian]]
   - [[#saveplace][Saveplace]]
   - [[#ace-window][Ace Window]]
   - [[#avy][Avy]]
@@ -89,6 +90,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
 - [[#completion][Completion]]
   - [[#yasnippet][Yasnippet]]
   - [[#company][Company]]
+  - [[#company-bibtex][Company-Bibtex]]
 - [[#programming][Programming]]
   - [[#alignment][Alignment]]
   - [[#rainbow-delimiters][Rainbow delimiters]]
@@ -97,6 +99,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#electric-pair-autopair][Electric Pair (Autopair)]]
   - [[#languages][Languages]]
   - [[#macrostep][Macrostep]]
+  - [[#documentation][Documentation]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#evil-magit][Evil Magit]]
@@ -1598,7 +1601,7 @@ General Text settings and hooks
 Use flyspell and aspell
 #+BEGIN_SRC emacs-lisp
   (use-package ispell
-    :defer 10
+    :commands (ispell-word ispell-region ispell-buffer)
     :config
     ;; Save a new word to personal dictionary without asking
     (setq ispell-silently-savep t)
@@ -1610,26 +1613,18 @@ Use flyspell and aspell
               "--ignore=3")))
 
   (use-package flyspell
-    :defer 10
-    ;; :commands (flyspell-mode flyspell-prog-mode)
+    :hook ((org-mode markdown-mode latex-mode) . #'turn-on-flyspell)
     :init
     ;; Below variables need to be set before `flyspell' is loaded.
     (setq flyspell-use-meta-tab nil)
     :config
     ;; Save a new word to personal dictionary without asking
-    (eval-after-load "flyspell"
-    '(progn
-       (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-       (define-key flyspell-mouse-map [mouse-3] #'undefined)))
+    (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+    (define-key flyspell-mouse-map [mouse-3] #'undefined)
+    ;; reduce messages & slowdown
+    (setq flyspell-issue-message-flag nil)
     (setq flyspell-issue-welcome-flag nil))
 #+END_SRC 
-**** Flyspell hooks
-Flyspell is in elisp mode. And this in turn loads flyspell directly
-after launching emacs, which is a bit unfortunate.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook! '(org-mode markdown-mode latex-mode) #'flyspell-mode)
-#+END_SRC
 
 **** Spelling Autocorrect
 Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
@@ -2040,35 +2035,37 @@ There are some other useful setup packages for evil
 #+end_src
 **** Evil Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
-   (use-package evil-surround
-     :commands (evil-surround-region evil-surround-change)
-     :init 
-     (general-define-key
-     :states '(visual)
-     "s" 'evil-surround-region
-     "S" 'evil-substitute)
-     :config (global-evil-surround-mode 1))
-
-   (use-package embrace 
-     :after evil
-     :init
-     (add-hook 'LaTeX-mode-hook 'embrace-LaTeX-mode-hook)
-     (add-hook 'org-mode-hook 'embrace-org-mode-hook)
-     (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
-   (use-package evil-embrace
-    :after (embrace evil)
-    :config
-    (setq evil-embrace-show-help-p nil)
-    :init
-    (evil-embrace-enable-evil-surround-integration)
+  (use-package evil-surround
+    :commands (evil-surround-region evil-surround-change)
+    :init 
+    (general-define-key
+    :states '(visual)
+    "s" 'evil-surround-region
+    "S" 'evil-substitute)
+    ;; :config (global-evil-surround-mode 1)
     )
 
-  (defun embrace-markdown-mode-hook ()
-    (dolist (lst '((?* "*" . "*")  
-                   (?\ "\\" . "\\")
-                   (?$ "$" . "$")
-                   (?/ "/" . "/")))
-     (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
+  (use-package embrace 
+    :after evil-surround
+    :demand t
+    :init
+    (add-hook 'LaTeX-mode-hook 'embrace-LaTeX-mode-hook)
+    (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+    (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
+  (use-package evil-embrace
+   :after embrace
+   :demand t
+   :config
+   (setq evil-embrace-show-help-p nil)
+   :init
+   (evil-embrace-enable-evil-surround-integration))
+   (defun embrace-markdown-mode-hook ()
+   (dolist (lst '((?* "*" . "*")  
+                  (?\ "\\" . "\\")
+                  (?$ "$" . "$")
+                  (?/ "/" . "/")))
+    (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
+
 #+end_src 
 
 **** Commenting 
@@ -2103,6 +2100,7 @@ A version of multiple cursors for use with evil. Courtesy of [[https://github.co
 (use-package evil-multiedit
  :ensure t
  :after evil-visualstar
+ :demand t
  :config
  ;; Default keybindings
  ;; Highlights all matches of the selection in the buffer.
@@ -2157,7 +2155,7 @@ Increment an decrement numbers
 From bling: https://github.com/bling/evil-visualstar
 #+BEGIN_SRC emacs-lisp
 (use-package evil-visualstar
-  :defer 10
+  :commands (evil-visualstar/begin-search-forward evil-visualstar/begin-search-backward)
   :config
   (global-evil-visualstar-mode t))
 #+END_SRC
@@ -2199,15 +2197,16 @@ From bling: https://github.com/bling/evil-visualstar
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
-    ;; (when (not (fboundp 'make-variable-frame-local))
-    ;; (defun make-variable-frame-local (variable) variable))
+    :demand t
+    :init
+    (when (not (fboundp 'make-variable-frame-local))
+    (defun make-variable-frame-local (variable) variable))
     :config
     (persp-mode))
 
   (use-package persp-projectile
       :commands projectile-persp-switch-project
       :config
-      (require 'persp-projectile)
       (defhydra hydra-persp (:columns 4
                              :color blue)
         "Perspective"
@@ -2313,12 +2312,13 @@ Easy workspace creation and switching
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
   :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
-  :config    
-  (general-define-key :states '(insert normal) 
+  :init
+  (general-define-key :states '(insert normal) :keymaps 'override
     "s-1" 'eyebrowse-switch-to-window-config-1
     "s-2" 'eyebrowse-switch-to-window-config-2
     "s-3" 'eyebrowse-switch-to-window-config-3
     "s-4" 'eyebrowse-switch-to-window-config-4)
+  :config 
   (setq eyebrowse-new-workspace t)
   (eyebrowse-mode t))  
 #+END_SRC
@@ -3023,20 +3023,19 @@ to be enabled."
 *** All the icons
  Like the title says...
  #+BEGIN_SRC emacs-lisp
- ;;dependency
- (use-package font-lock+
-   :after all-the-icons
-   :ensure nil
-   :load-path "~/.emacs.d/.local/elisp")
- (use-package all-the-icons
-   :after (ranger deer dired)
-   :ensure nil
-   :load-path "~/.emacs.d/.local/elisp/all-the-icons-3.1.1")
- ;; icons for dired
- (use-package all-the-icons-dired
-   :commands (deer deer-jump-other-window all-the-icons-dired-mode dired-mode ranger)
-   :init
-   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+   ;;dependency
+   (use-package font-lock+
+     :after all-the-icons
+     :demand t
+     :ensure nil
+     :load-path "~/.emacs.d/.local/elisp")
+   (use-package all-the-icons
+     :after (ranger deer dired)
+     :load-path "~/.emacs.d/.local/elisp/all-the-icons-3.1.1")
+   ;; icons for dired
+   (use-package all-the-icons-dired
+     :init
+     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
  #+END_SRC
 *** Beacon
  Useful for letting you know where the cursor is
@@ -3713,13 +3712,13 @@ Keybindings for managing packages
 [[https://github.com/wasamasa/shackle][A package]] that puts an end to popped-up windows not behaving they way you'd like them to.
 
 #+BEGIN_SRC emacs-lisp
-(use-package shackle
-  :after helm
-  :config
-  ;; make helm pop-ups behave
-  (setq helm-display-function #'pop-to-buffer)
-  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
-  (shackle-mode 1))
+  (use-package shackle
+    :demand t
+    :config
+    ;; make helm pop-ups behave
+    (setq helm-display-function #'pop-to-buffer)
+    (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
+    (shackle-mode 1))
 #+END_SRC
 
 
@@ -3742,7 +3741,7 @@ Use [[https://www.emacswiki.org/emacs/BookmarkPlus][Bookmark Plus]]. Since it is
 MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark+
-    ;; :load-path "~/.emacs.d/.local/elisp/bookmark+/"
+    :load-path "~/.emacs.d/.local/elisp/bookmark+/"
     :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
     :init
     (setq bookmark-default-file (concat cpm-cache-dir "bookmarks"))
@@ -3866,7 +3865,10 @@ Hide minibuffer while helm is active
 **** Helm ag
 #+begin_src emacs-lisp
   (use-package helm-ag  
+    :load-path "~/.emacs.d/.local/elisp/emacs-helm-ag"
     :commands (helm-ag helm-ag-buffers helm-ag-this-file helm-do-ag helm-ag-project-root cpm/helm-files-do-ag cpm/helm-files-search-current-directory)
+    :custom
+    (helm-follow-mode-persistent t)
     :config
     (setq helm-ag-base-command "rg --no-heading")
     (setq helm-ag-fuzzy-match t))
@@ -3993,6 +3995,16 @@ load it when =swiper= or =swiper-all= is called.
 (use-package swiper
   :commands (swiper swiper-all))
 #+END_SRC
+** Historian
+Completion [[https://github.com/PythonNut/historian.el][history]]
+#+BEGIN_SRC emacs-lisp
+(use-package historian
+  :defer 5
+  :load-path "~/.emacs.d/.local/elisp/historian"
+  :config
+  (setq historian-save-file (concat cpm-cache-dir ".historian"))
+  (historian-mode 1))
+#+END_SRC
 ** Saveplace
 #+BEGIN_SRC emacs-lisp
   (use-package saveplace
@@ -4117,7 +4129,7 @@ Better dired navigation using ranger-like settings
 ** Recent files
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
-    :defer t
+    :commands (helm-recentf)
     :config 
     (setq recentf-save-file (concat cpm-etc-dir "recentf"))
     ;; remove agenda files from list.
@@ -4313,13 +4325,14 @@ Better dired navigation using ranger-like settings
 ** Virtualenvwrapper
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
-     :after eshell
-     :config
-     (venv-initialize-interactive-shells) ;; if you want interactive shell support
-     (venv-initialize-eshell) ;; if you want eshell support
-     (setq venv-location "/Users/roambot/bin/virtualenvs")
-     (setq venv-project-home "/Users/roambot/Dropbox/Work/projects/")
-     (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
+    :after (:any eshell sane-term ansi-term)
+    :demand t
+    :config
+    (venv-initialize-interactive-shells) ;; if you want interactive shell support
+    (venv-initialize-eshell) ;; if you want eshell support
+    (setq venv-location "/Users/roambot/bin/virtualenvs")
+    (setq venv-project-home "/Users/roambot/Dropbox/Work/projects/")
+    (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
    (defcustom venv-project-home
      (expand-file-name (or (getenv "PROJECT_HOME") "/Users/roambot/Dropbox/Work/projects/"))
@@ -4558,138 +4571,79 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
   :config
   (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
 #+END_SRC
-
-
+*** Eshell Autosuggest
+Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions]] in eshell
+#+BEGIN_SRC emacs-lisp
+(use-package esh-autosuggest
+  :hook (eshell-mode . esh-autosuggest-mode))
+#+END_SRC
 * Completion
 ** Yasnippet
+This is throwing an error and needs fixing. 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
     :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
     :init
-    (progn
-      (add-hook 'prog-mode-hook #'yas-minor-mode)
-      (add-hook 'org-mode-hook #'yas-minor-mode)
-      (add-hook 'markdown-mode-hook #'yas-minor-mode)
-      ;; snippet directory
-      (setq yas-snippet-dirs (concat cpm-etc-dir "snippets"))
-      (unless (file-directory-p yas-snippet-dirs)
-        (make-directory yas-snippet-dirs))
-      ;; (add-hook 'term-mode-hook (lambda()
-      ;;     (setq yas-dont-activate t)))
-      )
-     :config 
-     (yas-reload-all))
-
+    :config 
+     ;; Adding yasnippet support to company
+     (add-to-list 'company-backends '(company-yasnippet))
+     (yas-reload-all)
+     (add-hook 'prog-mode-hook #'yas-minor-mode)
+     (add-hook 'org-mode-hook #'yas-minor-mode)
+     (add-hook 'markdown-mode-hook #'yas-minor-mode))
+     
+;; This needs to be set separately so as not to throw an error
+(with-eval-after-load 'yasnippet 
+ ;; snippet directory
+ (setq yas-snippet-dirs (concat cpm-etc-dir "snippets"))
+ (unless (file-directory-p yas-snippet-dirs)
+   (make-directory yas-snippet-dirs t)))
 #+END_SRC
 
 ** Company
 #+BEGIN_SRC emacs-lisp
-    (use-package company
-        :commands (company-mode)
-        :init
-        (progn
-          ;; (add-hook 'after-init-hook 'global-company-mode)
-          (add-hook 'prog-mode-hook 'company-mode)
-          (add-hook 'org-mode-hook 'company-mode)
-          (add-hook 'markdown-mode-hook 'company-mode)  
-          (setq company-idle-delay 0.3
-                company-minimum-prefix-length 3
-                company-require-match nil
-                company-dabbrev-ignore-case nil
-                company-dabbrev-downcase nil))
-        :config
-        (progn
-          ;; latex
-          (add-to-list 'company-backends #'company-latex-commands)
+(use-package company
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook 'company-mode)
+  (add-hook 'org-mode-hook 'company-mode)
+  (add-hook 'markdown-mode-hook 'company-mode)  
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 3
+        company-require-match nil
+        company-dabbrev-ignore-case nil
+        company-dabbrev-downcase nil)
+  :config
+  ;; Default backends
+  (add-to-list 'company-backends 'company-files)
+  ;; key bindings
+  (let ((map company-active-map))
+   (define-key map (kbd "C-/") 'company-search-candidates)
+   (define-key map (kbd "C-M-/") 'company-filter-candidates)
+   (define-key map (kbd "C-d") 'company-show-doc-buffer)
+   (define-key map (kbd "C-j") 'company-select-next)
+   (define-key map (kbd "C-k") 'company-select-previous)
+   (define-key map (kbd "C-l") 'company-complete-selection))
+ ;; Nicer looking faces
+ (custom-set-faces
+  '(company-tooltip-common
+    ((t (:inherit company-tooltip :weight bold :underline nil))))
+  '(company-tooltip-common-selection
+    ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+)
+#+END_SRC
 
-          ;; key bindings
-          (let ((map company-active-map))
-            (define-key map (kbd "C-/") 'company-search-candidates)
-            (define-key map (kbd "C-M-/") 'company-filter-candidates)
-            (define-key map (kbd "C-d") 'company-show-doc-buffer)
-            (define-key map (kbd "C-j") 'company-select-next)
-            (define-key map (kbd "C-k") 'company-select-previous)
-            (define-key map (kbd "C-l") 'company-complete-selection))
-          ;; Nicer looking faces
-          (custom-set-faces
-           '(company-tooltip-common
-             ((t (:inherit company-tooltip :weight bold :underline nil))))
-           '(company-tooltip-common-selection
-             ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
-  ))
-#+END_SRC
-**** Helm Company
-#+BEGIN_SRC emacs-lisp
-(use-package helm-company
-  :commands (helm-company)
-  :config (company-mode))
-#+END_SRC
-**** Company Bibtex
+** Company-Bibtex
 #+BEGIN_SRC emacs-lisp
 (use-package company-bibtex
+  :ensure t
   :after company
+  :demand t
   :config
-  (add-to-list 'company-backends #'company-bibtex)
-  (setq company-bibtex-bibliography "/Users/roambot/Dropbox/Work/master.bib"))
+  (setq company-bibtex-bibliography "/Users/roambot/Dropbox/Work/master.bib")
+  (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
-**** Company Shell
-#+BEGIN_SRC emacs-lisp
-(use-package company-shell
-  :after company
-  :config
-  (add-to-list 'company-backends #'company-shell))
-#+END_SRC
-**** Company Emoji
-#+BEGIN_SRC emacs-lisp
-(use-package company-emoji
-  :after company
-  :config
-  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend)
-  (setq company-emoji-insert-unicode nil)
-  (add-hook! (org-mode markdown-mode git-commit-mode)
-    (setq-local company-backends (append '(company-emoji) company-backends))))
-
-(use-package emoji-cheat-sheet-plus
-  :bind ("C-c e" . emoji-cheat-sheet-plus-insert)
-  :config
-  (add-hook! (org-mode markdown-mode git-commit-mode) '(emoji-cheat-sheet-plus-display-mode)))
-#+END_SRC
-**** Company Web
-#+BEGIN_SRC emacs-lisp
-(use-package company-web
-  :after company
-  :config
-  (with-eval-after-load 'web-mode
-    (add-λ 'web-mode-hook
-      (setq-local company-backends (append '(company-web-html) company-backends))))
-  (with-eval-after-load 'html-mode
-    (add-λ 'html-mode-hook
-      (setq-local company-backends (append '(company-web-html) company-backends))))
-  (with-eval-after-load 'slim-mode
-    (add-λ 'slim-mode-hook
-      (setq-local company-backends (append '(company-web-slim) company-backends))))
-  (with-eval-after-load 'jade-mode
-    (add-λ 'jade-mode-hook
-      (setq-local company-backends (append '(company-web-jade) company-backends)))))
-#+END_SRC
-**** Auc-tex
-#+BEGIN_SRC emacs-lisp
-(use-package company-auctex
-  :after latex-mode
- )
-#+END_SRC
-**** Company math
-#+BEGIN_SRC emacs-lisp
-(use-package company-math
-  :after company
-  :config
-  ;; Add backends for math characters
-  (add-to-list 'company-backends #'company-math-symbols-unicode)
-  (add-to-list 'company-backends #'company-math-symbols-latex))
-#+END_SRC
-
-
 * Programming
 ** Alignment
 [[https://github.com/edkolev/evil-lion][This package]] provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
@@ -4742,28 +4696,28 @@ Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
 ** Languages
 *** Elisp
 #+BEGIN_SRC emacs-lisp 
-(use-package elisp-slime-nav
-  :commands elisp-slime-nav-mode
-  :config
-  (add-hook! (emacs-lisp-mode ielm-mode) '(elisp-slime-nav-mode)))
+  (use-package elisp-slime-nav
+    :commands elisp-slime-nav-mode
+    :config
+    (add-hook! (emacs-lisp-mode ielm-mode) '(elisp-slime-nav-mode)))
 
-(use-package eldoc
-  :diminish eldoc-mode
-  :commands eldoc-mode
-  :config 
-  ;; Show ElDoc messages in the echo area immediately, instead of after
-  ;; 1/2 a second.
-  (setq eldoc-idle-delay 0))
+  (use-package eldoc
+    :commands eldoc-mode
+    :diminish eldoc-mode
+    :config 
+    ;; Show ElDoc messages in the echo area immediately, instead of after
+    ;; 1/2 a second.
+    (setq eldoc-idle-delay 0))
 
-  ;; Elisp hook
-  (add-hook 'emacs-lisp-mode-hook (lambda ()
-              (setq show-trailing-whitespace t)
-              (prettify-symbols-mode)
-              (eldoc-mode)
-              (yas-minor-mode)
-              (company-mode)
-              (rainbow-delimiters-mode)))
-              
+    ;; Elisp hook
+    (add-hook 'emacs-lisp-mode-hook (lambda ()
+                (setq show-trailing-whitespace t)
+                (prettify-symbols-mode)
+                (eldoc-mode)
+                (yas-minor-mode)
+                (company-mode)
+                (rainbow-delimiters-mode)))
+
 #+END_SRC
 *** Haskell
 #+BEGIN_SRC emacs-lisp
@@ -4842,8 +4796,15 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
   :commands macrostep-expand
 ) 
 #+END_SRC
-
-
+** Documentation
+#+BEGIN_SRC emacs-lisp
+(use-package tldr 
+  :commands (tldr tldr-update-docs)
+  :init 
+  (evil-set-initial-state 'tldr-mode 'emacs)
+  :config
+  (setq tldr-directory-path (expand-file-name "tldr/" cpm-etc-dir)))
+#+END_SRC
 * Version Control
  Magit is a great interface for git projects. It's much more pleasant to use than
  the standard git interface on the command line. I've set up some easy
@@ -4879,6 +4840,7 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
  #+BEGIN_SRC emacs-lisp
  (use-package evil-magit
    :after magit
+   :demand t
    :config
    (setq evil-magit-use-y-for-yank t))
  #+END_SRC
@@ -5532,86 +5494,18 @@ document and create new parents.
 ** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
-    (use-package ox-pandoc
-      :after org
-      ;; :commands (org-pandoc-publish-to-html5)
-      :config
-      ;; default options for all output formats
-      ;; (setq org-pandoc-command (expand-file-name "~/.local/bin/pandoc"))
-      ;; (setq org-pandoc-options '((standalone . t)))
-      ;; cancel above settings only for 'docx' format
-      (setq org-pandoc-options-for-docx '((standalone . nil)))
-      ;; special settings for beamer-pdf and latex-pdf exporters
-      (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
-      (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
-
-
-      ;; Pandoc publishing functions 
-      (defun org-pandoc-publish-to (format plist filename pub-dir)
-      (setq org-pandoc-format format)
-      (let ((tempfile
-            (org-publish-org-to
-                'pandoc filename (concat (make-temp-name ".tmp") ".org") plist pub-dir))
-              (outfile (format "%s.%s"
-                       (concat
-                        pub-dir
-                        (file-name-sans-extension (file-name-nondirectory filename)))
-                       (assoc-default format org-pandoc-extensions))))
-                (org-pandoc-put-options (org-pandoc-plist-to-alist plist))
-                (let ((process
-                 (org-pandoc-run tempfile outfile format 'org-pandoc-sentinel
-                         org-pandoc-option-table))
-                (local-hook-symbol
-                 (intern (format "org-pandoc-after-processing-%s-hook" format))))
-                  (process-put process 'files (list tempfile))
-                  (process-put process 'output-file filename)
-                  (process-put process 'local-hook-symbol local-hook-symbol))))
-
-      ;; helper functions
-      (defun org-pandoc-publish-to-html (p f pd)
-      (org-pandoc-publish-to 'html p f pd))
-
-      (defun org-pandoc-publish-to-html5 (p f pd)
-      (org-pandoc-publish-to 'html5 p f pd))
-
-      (defun org-pandoc-publish-to-org (p f pd)
-      (org-pandoc-publish-to 'org p f pd))
-
-      (defun org-pandoc-publish-to-markdown (p f pd)
-      (org-pandoc-publish-to 'markdown p f pd))
-
-      (defun org-pandoc-pan-to-pub (o)
-      (intern (format ":org-pandoc-%s" o)))
-
-            (defun org-pandoc-pub-to-pan (o)
-            (intern (substring (symbol-name o) 12)))
-
-            (defconst org-pandoc-publish-options
-              (mapcar 'org-pandoc-pan-to-pub
-                  (append org-pandoc-valid-options org-pandoc-colon-separated-options
-                      org-pandoc-file-options)))
-
-            (defun org-pandoc-plist-to-alist (plist)
-              (let ((alist '()))
-                (while plist
-                  (let ((p (car plist)) (v (cadr plist)))
-                (when (member p org-pandoc-publish-options)
-                  (add-to-list 'alist (cons (org-pandoc-pub-to-pan p) v))))
-                  (setq plist (cddr plist)))
-                alist))
-
-
-  ;; (org-link-set-parameters
-  ;;  "wiki"
-  ;;  :export (lambda (path desc backend)
-  ;;        (message-box "%s" backend)
-  ;;        (cond
-  ;;         ((eq backend 'html)
-  ;;          (format "<a href='%s.html'>%s</a>" path (or desc path)))
-  ;;         ((eq backend 'pandoc)
-  ;;          (format "\<a href='%s.html'\>%s\</a\>" path (or desc path))))))
-
-  )
+  (use-package ox-pandoc
+    :after org
+    :demand t
+    :config
+    ;; default options for all output formats
+    (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
+    (setq org-pandoc-options '((standalone . t)))
+    ;; cancel above settings only for 'docx' format
+    (setq org-pandoc-options-for-docx '((standalone . nil)))
+    ;; special settings for beamer-pdf and latex-pdf exporters
+    (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+    (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex"))))
 #+END_SRC 
 ** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
@@ -5820,6 +5714,7 @@ package that automatically generates an up to date table of contents for us.
 #+BEGIN_SRC emacs-lisp
 (use-package toc-org
   :after org
+  :demand t
   :init (add-hook 'org-mode-hook #'toc-org-enable))
 #+END_SRC
 
@@ -5827,13 +5722,11 @@ package that automatically generates an up to date table of contents for us.
 Other useful org packages
 
 #+BEGIN_SRC emacs-lisp
-  (use-package htmlize :after org)
+  (use-package htmlize :after org :demand t)
   (use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
   ;; ignore export of headlines marked with :ignore: tag
-  (use-package ox-extra
-    :after org
-    :ensure nil
-    :config
+  (with-eval-after-load 'org
+    (require 'ox-extra)
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
 ** Org Wiki
@@ -6327,7 +6220,6 @@ Better than doc-view, but doesn't render well on retina screens :(
  For annotation and jumping to file
 #+BEGIN_SRC emacs-lisp
   (use-package org-pdfview
-    :after org
     :commands (org-pdfview-open)
     :init
     (add-to-list 'org-file-apps 
@@ -6661,3 +6553,4 @@ key a buffer up quickly.
   (setq buffer-line-mode-line-limit 60)  ; In case of `mode-line'.
   )
 #+END_SRC
+
