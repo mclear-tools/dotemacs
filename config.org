@@ -604,7 +604,7 @@ paragraphs with the same command.
 #+BEGIN_SRC emacs-lisp
   (defun cpm/goto-journal ()
     (interactive)
-    (find-file "/Users/Roambot/Dropbox/org-files/journal.org"))
+    (find-file "~/Dropbox/org-files/journal.org"))
 #+END_SRC
 *** Jump in buffer
 I got the inspiration for this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for
@@ -807,13 +807,13 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
   (defun cpm/cite-to-org ()
     "convert clipboard contents from markdown to org with citations and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=~/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
     (yank))
 
   (defun cpm/cite-to-markdown ()
     "convert clipboard contents to markdown with citations and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
+    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=~/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
     (yank))
 
 
@@ -846,7 +846,7 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
   (defun cpm/reveal-to-pdf ()
   "print reveal.js slides to pdf"
   (interactive)
-  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")
+  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/cmclear2/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")
   (delete-windows-on "*Async Shell Command*" t)) 
 #+END_SRC
 *** Rotate windows
@@ -3480,14 +3480,10 @@ Keybindings for managing packages
     "so" 'helm-occur
     "sp" 'helm-ag-project-root
     "sr" 'helm-org-rifle
-<<<<<<< HEAD
-    "ss" 'helm-occur
-=======
     "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
     "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
     "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
     "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
->>>>>>> origin/HEAD
     "/"  'cpm/helm-files-search-current-directory   ;; search in directory with word prompt
      )
 #+END_SRC
@@ -3821,20 +3817,6 @@ MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
         "C-l"   'helm-previous-source
         "C-S-h" 'describe-key)))
        (helm-mode 1))
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> origin/HEAD
-  ;; use helm follow mode for search
-  (with-eval-after-load 'helm-regexp
-  (setq helm-source-occur
-        (helm-make-source "Occur" 'helm-source-multi-occur
-          :follow 1)))
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/HEAD
 #+END_SRC
 *** Hide Mode Lines
 Hide modelines of other windows while helm is open, again from
@@ -4361,12 +4343,12 @@ Better dired navigation using ranger-like settings
     :config
     (venv-initialize-interactive-shells) ;; if you want interactive shell support
     (venv-initialize-eshell) ;; if you want eshell support
-    (setq venv-location "/Users/roambot/bin/virtualenvs")
-    (setq venv-project-home "/Users/roambot/Dropbox/Work/projects/")
+    (setq venv-location "~/bin/virtualenvs")
+    (setq venv-project-home "~/Dropbox/Work/projects/")
     (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
    (defcustom venv-project-home
-     (expand-file-name (or (getenv "PROJECT_HOME") "/Users/roambot/Dropbox/Work/projects/"))
+     (expand-file-name (or (getenv "PROJECT_HOME") "~/Dropbox/Work/projects/"))
        "The location(s) of your virtualenv projects."
        :group 'virtualenvwrapper)
 
@@ -4672,7 +4654,7 @@ This is throwing an error and needs fixing.
   :after company
   :demand t
   :config
-  (setq company-bibtex-bibliography "/Users/roambot/Dropbox/Work/master.bib")
+  (setq company-bibtex-bibliography "~/Dropbox/Work/master.bib")
   (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
 * Programming
@@ -5031,14 +5013,6 @@ A list of org modules to load on startup
 *** Org Regex (Emphasis)
 Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-code-with-quotes-in-org-mode][stack exchange]] discussion.
 #+BEGIN_SRC emacs-lisp
-<<<<<<< HEAD
-  (with-eval-after-load 'org
-  ;; (setcar org-emphasis-regexp-components " \t('\"{“”[:alpha:]")  ;; precede markup
-  ;; (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;''“”\")}/\\") ;; follow markup
-  (setcar (nthcdr 4 org-emphasis-regexp-components) 1)  ;; newlines allowed
-  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
-=======
-
 (with-eval-after-load 'org
 ; chars for prematch
 (setcar org-emphasis-regexp-components            "     ('\"{“”\[\\") 
@@ -5051,8 +5025,6 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 ; max newlines 
 (setcar (nthcdr 4 org-emphasis-regexp-components) 1)
 (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
-
->>>>>>> origin/HEAD
 #+END_SRC
 
 ** Org Keybindings
@@ -5412,7 +5384,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 
 #+END_SRC
 *** Org Journal Capture
-Tell emacs what you're doing a few times a day. Depends on a [[/Users/roambot/bin/scripts/emacs_journal.sh][shell
+Tell emacs what you're doing a few times a day. Depends on a [[~/bin/scripts/emacs_journal.sh][shell
 script]] run in the background. I got the idea from [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]].
 Hat tip to [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack overflow]] for help on hooks for the created frame.
 
@@ -5814,10 +5786,10 @@ Great for managing citations and notes
   :END: 
   [[pdfview:${file}][file link]]
        ")
-    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
-          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
+    (setq bibtex-completion-bibliography "~/Dropbox/Work/Master.bib" 
+          bibtex-completion-library-path "~/Dropbox/Work/MasterLib/"
           bibtex-completion-pdf-field nil
-          bibtex-completion-notes-path "/Users/Roambot/Dropbox/org-files/articles.org"
+          bibtex-completion-notes-path "~/Dropbox/org-files/articles.org"
           ;; bibtex-completion-additional-search-fields '(keywords)
           bibtex-completion-notes-extension ".org"
           helm-bibtex-full-frame nil) 
@@ -5837,10 +5809,10 @@ Great for managing citations and notes
     (add-hook 'markdown-mode-hook
           '(lambda ()
              (turn-on-auto-fill) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode)))
-    (setq markdown-command "pandoc -s -N --smart --bibliography=/Users/Roambot/Dropbox/Work/Master.bib"
+    (setq markdown-command "pandoc -s -N --smart --bibliography=~/Dropbox/Work/Master.bib"
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
-            markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
+            markdown-open-command "~/bin/scripts/mark.sh"
             )
        ;; add keybindings to hook
      :config
@@ -5877,7 +5849,7 @@ Pandoc mode for markdown conversion
     (defun cpm/pandoc-command-line-convert-to-pdf ()
      "convert to pdf"
      (interactive)
-     (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/Master.bib --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
+     (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=~/Dropbox/Work/Master.bib --template=~/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
 
     (defun cpm/pandoc-pdf-open ()
      "Open created PDF file"  
