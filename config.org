@@ -2445,10 +2445,10 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
            ;; Use colors for indicators such as git:gutter, flycheck and similar
            (setq solarized-emphasize-indicators t)
 
-           ;; Don't change size of org-mode headlines (but keep other size-changes)
+           ;; Set to nil of you don't want to change size of org-mode headlines (but keep other size-changes)
            (setq solarized-scale-org-headlines t)
 
-           ;; Theme toggle
+           ;; Theme & menubar toggle
            (setq active-theme 'solarized-dark)
            (defun toggle-dark-light-theme ()
            (interactive)
@@ -2471,6 +2471,12 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
             (if (member 'solarized-dark custom-enabled-themes)
                     (custom-theme-set-faces
                     'solarized-dark
+                    ;; make bg darker for higher contrast
+                    '(default ((t (:inherit nil :stipple nil :background "#002833" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 130 :width normal :foundry "nil" :family "Inconsolata LGC"))))
+                    ;; matching fringe
+                    '(fringe ((t (:background "#002833" :foreground "#586e75"))))
+                    ;; fix modeline underline
+                     '(mode-line ((t (:background "#073642" :foreground "#839496" :box (:line-width 1 :color "#073642" :style unspecified) :overline "#073642" :underline "#073642"))))
                     ;; org faces
                     '(org-block ((t (:foreground "#2E8B57"))))
                     '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
