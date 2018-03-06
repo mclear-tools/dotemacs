@@ -119,6 +119,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#org-agenda][Org-Agenda]]
   - [[#org-super-agenda][Org-Super-Agenda]]
   - [[#org-capture][Org Capture]]
+  - [[#org-archive][Org Archive]]
   - [[#org-refile][Org Refile]]
   - [[#org-organization-gtd][Org Organization (GTD)]]
   - [[#org--pandoc-ox-pandoc][Org & Pandoc (Ox-pandoc)]]
@@ -158,6 +159,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#startup-time][Startup time]]
 - [[#test][Test]]
   - [[#tabs][Tabs]]
+  - [[#org-projectile][Org Projectile]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -6294,7 +6296,50 @@ Better than doc-view, but doesn't render well on retina screens :(
             )
         (general-define-key :states '(insert) :keymaps 'pdf-view-mode-map
             "y" 'pdf-view-kill-ring-save )
+            
+        ;; midnite mode hook
+        (add-hook 'pdf-view-mode-hook (lambda ()
+                                 (pdf-view-midnight-minor-mode))) ; automatically turns on midnight-mode for pdfs
+       ;; midnite mode 
+       (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
 
+       (defun bms/pdf-no-filter ()
+       "View pdf without colour filter."
+       (interactive)
+       (pdf-view-midnight-minor-mode -1)
+       )
+
+      ;; change midnite mode colours functions
+      (defun bms/pdf-midnite-original ()
+        "Set pdf-view-midnight-colors to original colours."
+        (interactive)
+        (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
+        (pdf-view-midnight-minor-mode)
+        )
+      
+      (defun bms/pdf-midnite-amber ()
+        "Set pdf-view-midnight-colors to amber on dark slate blue."
+        (interactive)
+        (setq pdf-view-midnight-colors '("#ff9900" . "#0a0a12" )) ; amber
+        (pdf-view-midnight-minor-mode)
+        )
+      
+      (defun bms/pdf-midnite-green ()
+        "Set pdf-view-midnight-colors to green on black."
+        (interactive)
+        (setq pdf-view-midnight-colors '("#00B800" . "#000000" )) ; green 
+        (pdf-view-midnight-minor-mode)
+        )
+      
+      (defun bms/pdf-midnite-colour-schemes ()
+        "Midnight mode colour schemes bound to keys"
+              (local-set-key (kbd "!") (quote bms/pdf-no-filter))
+              (local-set-key (kbd "@") (quote bms/pdf-midnite-amber)) 
+              (local-set-key (kbd "#") (quote bms/pdf-midnite-green))
+                  (local-set-key (kbd "$") (quote bms/pdf-midnite-original))
+       )  
+
+       (add-hook 'pdf-view-mode-hook 'bms/pdf-midnite-colour-schemes)
   ))      
 
 #+END_SRC
