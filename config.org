@@ -1474,8 +1474,11 @@ apropos commands perform more extensive searches than default
   (setq interprogram-cut-function 'paste-to-osx
         interprogram-paste-function 'copy-from-osx)
 #+END_SRC
-
-
+*** Cursor Movement
+Per [[https://emacs.stackexchange.com/a/28746/11934][this]] post on stack overflow
+#+BEGIN_SRC emacs-lisp
+(setq auto-window-vscroll nil)
+#+END_SRC
 *** Dired settings
 #+BEGIN_SRC emacs-lisp
   (setq insert-directory-program "gls" dired-use-ls-dired t)
@@ -2331,8 +2334,8 @@ Easy workspace creation and switching
  Show the filepath in the frame title (disabled due to text color issues).
  #+BEGIN_SRC emacs-lisp
    (setq frame-title-format '('nil))
-   ;; (setq-default frame-title-format
-   ;;           '((buffer-file-name "%f" "%b")))
+     ;; (setq-default frame-title-format
+     ;;           '((buffer-file-name "%f" "%b")))
  #+END_SRC
 *** Frame Defaults
  I like the frame either centered and approximately 2/3 of a 13inch
@@ -2358,7 +2361,7 @@ Easy workspace creation and switching
 ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
 (when (memq window-system '(mac ns))
-  (add-to-list 'default-frame-alist '(ns-appearance . 'dark))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 #+END_SRC
 
@@ -2490,7 +2493,7 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
                     '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
                     '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
                     ;; helm faces
-                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+                    '(helm-selection ((t (:background "#073642" :underline nil))))
                     ;; line highlighting 
                     '(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
                     ;; '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
@@ -2523,7 +2526,10 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
                     '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
 
                     ;; helm faces
-                    '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+                    '(helm-selection ((t (:background "#eee8d5" :underline nil :weight bold))))
+                    '(helm-match ((t (:foreground "#cb4b16" :weight bold))))
+
+                    ;; '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
                     ;; line size 
                     '(set-face-attribute 'linum nil :inherit 'fixed-pitch)
                     ;; line highlighting 
@@ -2998,8 +3004,24 @@ to be enabled."
               "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
 
  #+END_SRC
-*** FIXME  Line Numbers (Nlinum mode for emacs 25)
- #+BEGIN_SRC emacs-lisp
+ 
+*** Native Line Numbers (Emacs 26)
+Emacs now has native line number support in the C source code, rather
+than the other packages, which utilize elisp hacks, making it /much/
+faster.
+#+BEGIN_SRC emacs-lisp
+(use-package line-numbers
+  :ensure nil
+  :hook ((markdown-mode prog-mode) . #'display-line-numbers-mode)
+  :commands display-line-numbers-mode
+  :init
+  (setq-default display-line-numbers-type 'visual)
+) 
+#+END_SRC
+
+*** DISABLED Line Numbers (Nlinum mode for emacs 25)
+CLOSED: [2018-03-03 Sat 21:24]
+ #+BEGIN_SRC emacs-lisp :tangle no
      (use-package nlinum
      :commands nlinum-mode
      :config
@@ -3022,9 +3044,9 @@ to be enabled."
          (setq display-line-numbers nil)
        (nlinum-mode -1)))
 
-   (add-hook 'prog-mode-hook #'cpm/enable-line-numbers)
+   ;; (add-hook 'prog-mode-hook #'cpm/enable-line-numbers)
    ;; (add-hook 'text-mode-hook #'cpm/enable-line-numbers)
-   (add-hook 'conf-mode-hook #'cpm/enable-line-numbers)
+   ;; (add-hook 'conf-mode-hook #'cpm/enable-line-numbers)
 
  #+END_SRC
 *** Highlight numbers
