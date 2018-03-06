@@ -2036,10 +2036,10 @@ There are some other useful setup packages for evil
 **** Evil Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
   (use-package evil-surround
-    :commands (evil-surround-region evil-surround-change)
-    :init 
-    (general-define-key
-    :states '(visual)
+    :commands (evil-surround-region evil-surround-change evil-surround-delete)
+    :hook ((LaTeX-mode org-mode markdown-mode prog-mode) . evil-surround-mode)
+    :general
+    (:states '(visual)
     "s" 'evil-surround-region
     "S" 'evil-substitute)
     ;; :config (global-evil-surround-mode 1)
@@ -2048,24 +2048,23 @@ There are some other useful setup packages for evil
   (use-package embrace 
     :after evil-surround
     :demand t
-    :init
-    (add-hook 'LaTeX-mode-hook 'embrace-LaTeX-mode-hook)
-    (add-hook 'org-mode-hook 'embrace-org-mode-hook)
-    (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
+    :hook ((LaTeX-mode . embrace-LaTeX-mode-hook)
+           (org-mode-hook . embrace-org-mode-hook)
+           (markdown-mode . embrace-markdown-mode-hook)))
+           
   (use-package evil-embrace
-   :after embrace
+   :after evil-surround
    :demand t
    :config
    (setq evil-embrace-show-help-p nil)
-   :init
-   (evil-embrace-enable-evil-surround-integration))
+   (evil-embrace-enable-evil-surround-integration)
    (defun embrace-markdown-mode-hook ()
    (dolist (lst '((?* "*" . "*")  
                   (?\ "\\" . "\\")
                   (?$ "$" . "$")
                   (?/ "/" . "/")))
     (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
-
+    )
 #+end_src 
 
 **** Commenting 
@@ -3112,6 +3111,8 @@ to be enabled."
  #+BEGIN_SRC emacs-lisp
      (use-package centered-cursor-mode
        :diminish centered-cursor-mode
+       :hook 
+       ((org-mode markdown-mode) . centered-cursor-mode)
        :commands (centered-cursor-mode
                   global-centered-cursor-mode)
        :config
@@ -3353,7 +3354,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "N"   'markdown-next-link
     "f"   'markdown-follow-thing-at-point
     "P"   'markdown-previous-link
-    "<RET>" 'markdown-jump
+    "<RET>" 'markdown-do
 
     "gj"    #'markdown-next-visible-heading
     "gk"    #'markdown-previous-visible-heading
@@ -3416,7 +3417,7 @@ Keybindings for managing packages
 **** Project Keybindings
 #+BEGIN_SRC emacs-lisp
 (general-define-key
-  :states '(normal motion visual insert emacs)
+  :states '(normal visual emacs)
   :keymaps 'override
   :prefix "SPC"
   :non-normal-prefix "C-SPC"
@@ -4631,10 +4632,8 @@ This is throwing an error and needs fixing.
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :ensure t
+  :hook ((prog-mode org-mode markdown-mode) . #'company-mode)
   :init
-  (add-hook 'prog-mode-hook 'company-mode)
-  (add-hook 'org-mode-hook 'company-mode)
-  (add-hook 'markdown-mode-hook 'company-mode)  
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 3
         company-require-match nil
@@ -4935,7 +4934,7 @@ The incomparable [[https://orgmode.org][org mode]]
 #+BEGIN_SRC emacs-lisp
 ;; install org for bootstrapping config
 (use-package org
-  :defer t
+  :commands (org-capture)
   :ensure org-plus-contrib)
 #+END_SRC
 ** Settings
@@ -5201,11 +5200,22 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 #+END_SRC
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
-(use-package org-bullets
-  :defer t
-  :init (add-hook 'org-mode-hook 'org-bullets-mode)
-  :config 
-  (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
+  (use-package org-bullets
+    :after org
+    :demand t
+    :hook (org-mode . (lambda () (org-bullets-mode 1)))
+    :config 
+    (setq org-bullets-bullet-list '("●" "◉" "○"))) 
+
+    ;; Other bullets
+    ;;  "∙" "∶" "∵" "∷" "∺" )))
+    ;; (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
+
+  ;; Asterisks and dashes for bullet lists are fine, but actual circular bullets are better
+  ;; via http://www.howardism.org/Technical/Emacs/orgmode-wordprocessor.html
+  (font-lock-add-keywords 'org-mode
+                        '(("^ +\\([-*]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 ** Org Prettify Source Blocks
 Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
@@ -6423,11 +6433,10 @@ Better than doc-view, but doesn't render well on retina screens :(
 Interface with Zotero.
 #+BEGIN_SRC emacs-lisp
   (use-package zotxt
+    :after (any: org markdown-mode)
+    :demand t
     :commands (org-zotxt-mode zotxt-easykey-mode org-zotxt-insert-reference-link-to-item org-zotxt-open-attachment org-zotxt-update-reference-link-at-point)
     :diminish (org-zoxt zotxt org-zotxt-mode)
-    :init
-    (add-hook! 'org-mode-hook #'org-zotxt-mode)
-    (add-hook! 'markdown-mode-hook #'zotxt-easykey-mode)
     :config
     (setq org-zotxt-default-search-method :title-creator-year)
     )
