@@ -4688,6 +4688,7 @@ This is throwing an error and needs fixing.
   :demand t
   :config
   (setq company-bibtex-bibliography "/Users/roambot/Dropbox/Work/master.bib")
+  (setq company-bibtex-org-citation-regex "-?@")
   (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
 * Programming
@@ -4968,7 +4969,6 @@ Ensure ELPA org is prioritized above built-in org.
      #+BEGIN_SRC emacs-lisp
      (setq org-directory "~/Dropbox/org-files")
      (setq org-default-notes-file (concat org-directory "/inbox.org"))
-     (setq org-archive-location (concat org-directory "/org-archive/archived.org::"))
      #+END_SRC
 *** State Settings
      #+BEGIN_SRC emacs-lisp
@@ -5196,10 +5196,8 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
   (add-hook 'org-mode-hook
       (lambda () 
         (turn-on-auto-fill)
-        (centered-cursor-mode 0)
         (flyspell-mode 1)
-        (cpm/disable-line-numbers)
-        (org-bullets-mode 1)
+        (org-zotxt-mode)
         (global-git-gutter-mode 0)
         ))
 #+END_SRC
@@ -5412,9 +5410,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
               "* %:description\n%u\n\n%c\n\n%i"
               :empty-lines 1)
             ("m" "Mail-Task" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
-             "* TODO Email: %:description                         :Mail:
-             Email with subject: [[message://%l][%:description]] 
-             %? ")
+             "** TODO Email: %:description                         :Mail: \n[[message://%l][Link to email]] \n%? ")
             ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
             "* %?")
             ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
@@ -5430,9 +5426,9 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 
 #+END_SRC
 *** Org Journal Capture
-Tell emacs what you're doing a few times a day. Depends on a [[/Users/roambot/bin/scripts/emacs_journal.sh][shell
-script]] run in the background. I got the idea from [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]].
-Hat tip to [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack overflow]] for help on hooks for the created frame.
+Tell emacs what you're doing a few times a day. Depends on a [[/Users/roambot/bin/scripts/emacs_journal.sh][shell script]] run
+in the background. I got the idea from [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]]. Hat tip to [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack
+overflow]] for help on hooks for the created frame.
 
 #+BEGIN_SRC emacs-lisp
 (defun cpm/org-journal ()
@@ -5440,10 +5436,24 @@ Hat tip to [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-abo
 
 (defun cpm/what-are-you-doing-capture ()
   (interactive)
-  (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 110) (height . 12)))
+  (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 12)))
   (select-frame-by-name "What are you doing?")
   (cpm/org-journal)
   )
+
+#+END_SRC
+*** TESTING Email Capture Workflow
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/org-mailmate ()
+    (interactive) (org-capture nil "m"))
+
+
+  (defun cpm/email-mailmate-capture ()
+    (interactive)
+    (make-frame '((name . "Email Capture") (left . 300) (top . 400) (width . 90) (height . 15)))
+    (select-frame-by-name "Email Capture")
+    (cpm/org-mailmate)
+    )
 
 #+END_SRC
 *** Alfred capture workflow
@@ -5471,6 +5481,8 @@ Make capture the only window and close after refiling.
      "Advise capture to be the only window when used as a popup"
      (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
            ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
+           ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))
+
            ))
 
     (defadvice org-capture-finalize
@@ -5478,7 +5490,12 @@ Make capture the only window and close after refiling.
        "Advise capture-finalize to close the frame"
        (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
              ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
+             ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
              ))
+#+END_SRC
+** Org Archive
+#+BEGIN_SRC emacs-lisp
+(setq org-archive-location (concat org-directory "/org-archive/archived.org::datetree/"))
 #+END_SRC
 ** Org Refile
 Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
