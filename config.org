@@ -4627,13 +4627,12 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
   :hook (eshell-mode . esh-autosuggest-mode))
 #+END_SRC
 * Completion
-** Yasnippet
+** FIXME Yasnippet
 This is throwing an error and needs fixing. 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
     :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
-    :init
     :config 
      ;; Adding yasnippet support to company
      (add-to-list 'company-backends '(company-yasnippet))
