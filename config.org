@@ -6617,4 +6617,28 @@ key a buffer up quickly.
   (setq buffer-line-mode-line-limit 60)  ; In case of `mode-line'.
   )
 #+END_SRC
+** Org Projectile
+:PROPERTIES:
+:DATE_ADDED: March 3, 2018
+:END:
 
+Manage [[https://github.com/IvanMalison/org-projectile][project TODOs]] with org mode and projectile. Seems like it will be
+useful but we'll see.  
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-projectile
+  :general 
+  (:states '(normal visual emacs)
+  :keymaps 'override
+  :prefix "SPC"
+  :non-normal-prefix "C-SPC"
+  "p" '(:ignore t :which-key "Projects")
+  "pt" 'org-projectile-project-todo-completing-read)
+  :config
+  (progn
+    (setq org-projectile-projects-file
+          "~/Dropbox/org-files/projects.org")
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (push (org-projectile-project-todo-entry) org-capture-templates))
+  :ensure t)
+#+END_SRC
