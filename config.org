@@ -846,7 +846,7 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
   (defun cpm/reveal-to-pdf ()
   "print reveal.js slides to pdf"
   (interactive)
-  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/cmclear2/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")
+  (async-shell-command "phantomjs /Users/cmclear2/bin/print-pdf.js 'file:///Users/cmclear2/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")
   (delete-windows-on "*Async Shell Command*" t)) 
 #+END_SRC
 *** Rotate windows
@@ -3914,7 +3914,7 @@ Hide minibuffer while helm is active
 #+begin_src emacs-lisp
   (use-package helm-swoop
     :commands (helm-swoop-without-pre-input helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
-    :load-path "~/.emacs.d/.local/elisp/helm-swoop/"
+    ;; :load-path "~/.emacs.d/.local/elisp/helm-swoop/"
     :config
     (setq helm-swoop-use-fuzzy-match t)
     (setq helm-swoop-split-with-multiple-windows t))
@@ -4939,7 +4939,7 @@ Ensure ELPA org is prioritized above built-in org.
 #+END_SRC
 *** Org Directories 
      #+BEGIN_SRC emacs-lisp
-     (setq org-directory "~/Dropbox/org-files")
+     (setq org-directory "/Users/cmclear2/Dropbox/org-files")
      (setq org-default-notes-file (concat org-directory "/inbox.org"))
      (setq org-archive-location (concat org-directory "/org-archive/archived.org::"))
      #+END_SRC
