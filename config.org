@@ -315,7 +315,9 @@ respectively. The git package is also a library.
 (use-package f       :defer 10)
 (use-package git     :defer 10)
 (use-package subr-x  :defer 10 :ensure nil)
-(use-package cl-lib  :defer 10 :ensure nil)
+;; lots of packages depend on these two libraries
+(use-package cl      :demand t :ensure nil)
+(use-package cl-lib  :demand t :ensure nil)
 #+END_SRC
 
 * Functions & Macros
