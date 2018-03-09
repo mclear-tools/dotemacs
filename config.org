@@ -336,11 +336,13 @@ Useful function for archiving done tasks. From [[https://stackoverflow.com/a/270
 #+END_SRC
 *** Blank Buffer New Frame
 Make a blank buffer when opening a new frame. From
-https://stackoverflow.com/a/25792276
+https://stackoverflow.com/a/25792276. I added a call to persp-mode since
+I only ever want new frames to use new perspectives
 #+BEGIN_SRC emacs-lisp
 (defun cpm/new-buffer-new-frame ()
-  "Create a new frame with a new empty buffer."
+  "Create a new frame with a new empty buffer & turn on persp-mode."
   (interactive)
+  (persp-mode 1)
   (let ((buffer (generate-new-buffer "untitled")))
     (set-buffer-major-mode buffer)
     (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
@@ -2125,18 +2127,17 @@ From bling: https://github.com/bling/evil-visualstar
           projectile-files-cache-expire 60)
     :config
     (projectile-global-mode t))
-
 #+END_SRC
-** Perspectives
+*** Perspectives
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
-    :demand t
+    :commands (persp-switch persp-add-buffer persp-set-buffer)
     :init
     (when (not (fboundp 'make-variable-frame-local))
     (defun make-variable-frame-local (variable) variable))
     :config
-    (persp-mode))
+    (persp-mode 1))
 
   (use-package persp-projectile
       :commands projectile-persp-switch-project
