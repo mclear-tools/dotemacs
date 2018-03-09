@@ -1,0 +1,31 @@
+*** DISABLED Line Numbers (Nlinum mode for emacs 25)
+CLOSED: [2018-03-03 Sat 21:24]
+ #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package nlinum
+     :commands nlinum-mode
+     :config
+      (setq-default nlinum-format "%2d ")
+      (setq nlinum-highlight-current-line t)
+        (custom-set-faces
+         '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1")))))
+         '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1" :height 1)))))
+
+   (defun cpm/enable-line-numbers (&optional arg)
+     "Enables the display of line numbers, using `display-line-numbers' (in Emacs
+   26+) or `nlinum-mode'."
+     (if (boundp 'display-line-numbers)
+         (setq display-line-numbers t)
+       (nlinum-mode +1)))
+
+   (defun cpm/disable-line-numbers ()
+     "Disable the display of line numbers."
+     (if (boundp 'display-line-numbers)
+         (setq display-line-numbers nil)
+       (nlinum-mode -1)))
+
+   ;; (add-hook 'prog-mode-hook #'cpm/enable-line-numbers)
+   ;; (add-hook 'text-mode-hook #'cpm/enable-line-numbers)
+   ;; (add-hook 'conf-mode-hook #'cpm/enable-line-numbers)
+
+ #+END_SRC
+
