@@ -2557,30 +2557,6 @@ that I use anything other than solarized :)
 
 #+END_SRC
 
-***** DISABLED Circadian Theme-changer (based on time of day)
-CLOSED: [2018-02-19 Mon 16:31]
-[[https://github.com/guidoschmidt/circadian.el][Change your theme]] depending on location and time of day
-#+BEGIN_SRC emacs-lisp 
-  (use-package circadian
-    :if (display-graphic-p)
-    :disabled t
-    :defer .25
-    :init
-    (add-hook 'circadian-after-load-theme-hook
-          #'(lambda (theme)
-               (if (eq active-theme 'solarized-light) 
-                     (cpm/osx-menubar-theme-light)
-                     (cpm/osx-menubar-theme-dark))))
-    :config
-    (ignore-errors
-    (setq circadian-themes '(("13:00"  . solarized-light)
-                              (:sunset  . solarized-dark))))
-    (circadian-setup))
-#+END_SRC
-
-
-
-
 **** Modeline
 ***** Doom Modeline
 The Doom modeline
