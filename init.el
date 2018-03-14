@@ -1,4 +1,5 @@
-(let ((file-name-handler-alist nil))
+(defvar cpm--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
 
 ;;; Startup timing
 (defvar my-start-time (current-time)
@@ -80,5 +81,7 @@ it will be created. After this, the normal loading logic happens."
 
 (my-load-file "config")
 
+;; reset file-name-handler-alist
+(add-hook! 'emacs-startup-hook
+  (setq file-name-handler-alist cpm--file-name-handler-alist))
 
-)
