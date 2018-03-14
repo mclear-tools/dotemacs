@@ -753,6 +753,16 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
 
 
 #+END_SRC
+*** Projectile Find File Other Window
+Find a file in a project and open in a vertical split
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/helm-projectile-find-file-other-window ()
+   "Find a file in a project and open in a vertical split"
+   (interactive)
+   (cpm/split-window-right-and-focus)
+   (helm-projectile-find-file))
+
+#+END_SRC
 *** Resume last search
 #+BEGIN_SRC emacs-lisp
   (defun cpm/last-search-buffer ()
@@ -3352,12 +3362,12 @@ A nice tip from [[http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal
 (use-package windmove
   :commands (windmove-up windmove-down windmove-left windmove-right)
   :config
-  (defun split-window-right-and-focus ()
+  (defun cpm/split-window-right-and-focus ()
   "Split the window horizontally and focus the new window."
   (interactive)
   (split-window-right)
   (windmove-right))
-  (defun split-window-below-and-focus ()
+  (defun cpm/split-window-below-and-focus ()
   "Split the window vertically and focus the new window."
   (interactive)
   (split-window-below)
@@ -3396,7 +3406,7 @@ Better dired navigation using ranger-like settings
    (interactive)
    (if (= (length (window-list)) 1)
      (progn
-     (split-window-right-and-focus)
+     (cpm/split-window-right-and-focus)
      (deer))
     (deer-jump-other-window)))
 
@@ -3833,7 +3843,7 @@ Keybindings for managing packages
     "sD" 'cpm/helm-files-do-ag ; search with directory input
     "sb" 'helm-ag-buffers
     "sf" 'helm-do-ag-this-file
-    "sj" 'forward-or-backward-sexp
+    "sj" 'cpm/forward-or-backward-sexp
     "sk" 'helm-show-kill-ring
     "sl" 'last-search-buffer
     "so" 'helm-occur
@@ -3962,11 +3972,11 @@ Keybindings for managing packages
   "wm" 'delete-other-windows
   "wr" 'cpm/rotate-windows
   "wR" 'cpm/rotate-windows-backward
-  "wv" 'split-window-right-and-focus
+  "wv" 'cpm/split-window-right-and-focus
   "wV" 'evil-window-vsplit
   "wx" 'cpm/window-exchange
   "w-" 'evil-window-split
-  "w_" 'split-window-below-and-focus
+  "w_" 'cpm/split-window-below-and-focus
   )
 #+END_SRC
 ***** Wiki Keybindings
@@ -4598,7 +4608,6 @@ Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-
                 (let ((new-cell (cons args rasmus/ob-header-symbol)))
                   (cl-pushnew new-cell prettify-symbols-alist :test #'equal)
                   (cl-pushnew new-cell found :test #'equal)))))
-
           (setq prettify-symbols-alist
                 (cl-set-difference prettify-symbols-alist
                                    (cl-set-difference
@@ -4607,7 +4616,6 @@ Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-
                                        (eq (cdr elm) rasmus/ob-header-symbol))
                                      prettify-symbols-alist)
                                     found :test #'equal)))
-
           ;; Clean up old font-lock-keywords.
           (font-lock-remove-keywords nil prettify-symbols--keywords)
           (setq prettify-symbols--keywords (prettify-symbols--make-keywords))
