@@ -102,11 +102,13 @@ Let's set some variables with basic user information.
  To install it on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew Cask]].
 
  #+begin_src sh :tangle no
+
  # You may need to run these two lines if you haven't set up Homebrew
  # Cask and its fonts formula.
  brew install caskroom/cask/brew-cask
  brew tap caskroom/fonts
- brew cask install font-inconsolata-lgc 
+ brew cask install font-inconsolata-lgc
+
  #+END_SRC
 
  Here I set the variable values, including a variable font face for themes
@@ -115,11 +117,12 @@ Let's set some variables with basic user information.
  #+BEGIN_SRC emacs-lisp
  (defvar cpm-font (font-spec :family "Inconsolata LGC" :size 13))
  (defvar cpm-vari-font (font-spec :family "Avenir"))
+ (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
  #+END_SRC
 ** Leader Keys
 
- Define the leader and local leader keys. These are the basis of most custom
- global and mode specific keybindings.
+ Define the leader and local leader keys. These are the basis for some of the
+ custom keybinds using the DOOM! mappings.
 
  #+BEGIN_SRC emacs-lisp
  (eval-and-compile
@@ -2325,6 +2328,7 @@ Easy workspace creation and switching
  #+BEGIN_SRC emacs-lisp
  (set-face-attribute 'default nil :font cpm-font)
  (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
+ (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
  #+END_SRC
 
  *** Font Size
