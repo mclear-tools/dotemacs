@@ -3415,8 +3415,8 @@ Better dired navigation using ranger-like settings
       (make-directory image-dired-dir t))
     :config
     (setq  ranger-dont-show-binary t
-           ranger-excluded-extensions '("mkv" "iso" "mp4")
-           ranger-max-preview-size 25
+           ranger-excluded-extensions '("mkv" "iso" "mp4" "png")
+           ranger-max-preview-size 10
            ranger-preview-file t
            ranger-show-dotfiles t
            ranger-width-parents 0.25
