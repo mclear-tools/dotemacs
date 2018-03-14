@@ -4174,7 +4174,7 @@ Ensure ELPA org is prioritized above built-in org.
      #+BEGIN_SRC emacs-lisp
      (setq org-todo-keywords
       '((sequence "TODO" "NEXT" "|" "DONE")
-        (sequence "INPROGRESS" "WAITING" "|" "CANCELED" "INACTIVE")))
+        (sequence "INPROGRESS" "WAITING(w@/!)" "|" "CANCELED" "INACTIVE")))
      #+END_SRC
 **** Org Logging
      #+BEGIN_SRC emacs-lisp
@@ -4261,10 +4261,43 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
 
 #+END_SRC
-
+**** Org Tags
+Set tags
+#+BEGIN_SRC emacs-lisp
+(setq org-tag-persistent-alist 
+        '(("@phone" . ?p) 
+          ("@computer" . ?c) 
+          ("@web" . ?w)
+          ("@errands" . ?e)
+          ("@house" . ?h)
+          ("UNL" . ?u)
+          ("CONTACTS" . ?C)
+          ("INBOX" . ?i)
+          ))
+#+END_SRC
 *** Org Archive
+Tell org where to archive completed tasks
 #+BEGIN_SRC emacs-lisp
 (setq org-archive-location (concat org-directory "/org-archive/archived.org::datetree/"))
+#+END_SRC
+
+Also tell org how to archive all the done tasks (DONE or CANCELED) in a file.
+From [[https://changelog.complete.org/archives/9877-emacs-3-more-on-org-mode][here]] based on a stack overflow [[https://stackoverflow.com/a/27043756][answer]]
+#+BEGIN_SRC emacs-lisp
+(defun cpm/org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'file)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/CANCELED" 'file)
+)
+
 #+END_SRC
 *** Org Refile
 Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
@@ -4450,7 +4483,7 @@ Make capture the only window and close after refiling.
   :init
   (add-hook 'org-mode-hook 'evil-org-mode)  
   :config
-  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional)))))
+  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
 #+END_SRC
 **** Org Local Leader Keybindings
 
@@ -4462,7 +4495,7 @@ Make capture the only window and close after refiling.
   :non-normal-prefix "C-SPC m"
 
    ""    '(nil :which-key "Local Leader")
-   "RET" #'org-archive-subtree
+   "RET" #'cpm/org-archive-done-tasks
    "SPC" #'org-toggle-checkbox
    "."   #'org-cycle-agenda-files
    "/"   #'org-sparse-tree
@@ -4609,6 +4642,7 @@ Make capture the only window and close after refiling.
 #+END_SRC
 *** Org Prettify Source Blocks
 Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
+Last updated: 2018-01-11
 #+BEGIN_SRC emacs-lisp 
   (with-eval-after-load 'org
     (defvar-local rasmus/org-at-src-begin -1
@@ -4662,6 +4696,12 @@ Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-
                   ;; File was just opened.
                   (eq rasmus/org-at-src-begin -1))
           (rasmus/org-prettify-src--update))
+        ;; Remove composition if at line; doesn't work properly.
+        ;; (when at-src-block
+        ;;   (with-silent-modifications
+        ;;     (remove-text-properties (match-end 0)
+        ;;                             (1+ (line-end-position))
+        ;;                             '(composition))))
         (setq rasmus/org-at-src-begin at-src-block)))
 
     (defun rasmus/org-prettify-symbols ()
@@ -4677,10 +4717,11 @@ Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-
                                  ("#+end_notes" . ?➤)
                                  ("#+begin_quote" . ?»)
                                  ("#+end_quote" . ?«)))))
-      (turn-on-prettify-symbols-mode))
-    ;; turn off hiding of source comments
-    ;; (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
+      (turn-on-prettify-symbols-mode)
+      (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
     (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
+
+
 #+END_SRC
 
 *** Org-Goto
