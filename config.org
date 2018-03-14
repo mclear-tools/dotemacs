@@ -5585,7 +5585,11 @@ This is throwing an error and needs fixing.
   (add-hook 'prog-mode-hook 'electric-pair-mode)
   (add-hook 'org-mode-hook 'electric-pair-mode)
   (add-hook 'markdown-mode-hook 'electric-pair-mode)
-)
+  :config 
+  ;; via https://www.topbug.net/blog/2016/09/29/emacs-disable-certain-pairs-for-electric-pair-mode/
+  (setq electric-pair-inhibit-predicate
+      (lambda (c)
+        (if (char-equal c ?\") t (electric-pair-default-inhibit c)))))
 #+END_SRC
 *** Languages
 **** Elisp
