@@ -318,9 +318,9 @@ respectively. The git package is also a library.
 (use-package f       :defer 10)
 (use-package git     :defer 10)
 (use-package subr-x  :defer 10 :ensure nil)
-;; lots of packages depend on these two libraries
-(use-package cl      :demand t :ensure nil)
+; lots of packages depend on these libraries
 (use-package cl-lib  :demand t :ensure nil)
+(use-package cl      :demand t :ensure nil)
 #+END_SRC
 
 * Functions & Macros
@@ -1551,12 +1551,12 @@ Use flyspell and aspell
               "--ignore=3")))
 
   (use-package flyspell
-    :hook ((org-mode markdown-mode latex-mode) . #'turn-on-flyspell)
+    :hook ((org-mode markdown-mode latex-mode) . turn-on-flyspell)
     :init
     ;; Below variables need to be set before `flyspell' is loaded.
     (setq flyspell-use-meta-tab nil)
     :config
-    ;; Save a new word to personal dictionary without asking
+    ;; Use mouse
     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
     (define-key flyspell-mouse-map [mouse-3] #'undefined)
     ;; reduce messages & slowdown
@@ -1875,7 +1875,8 @@ Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-loca
 #+BEGIN_SRC emacs-lisp
 (use-package osx-location
   :if (eq system-type 'darwin)
-  :demand t
+  :defer 10
+  :commands osx-location-watch
   :config
   (osx-location-watch)
   (add-hook 'osx-location-changed-hook
@@ -2103,9 +2104,10 @@ From bling: https://github.com/bling/evil-visualstar
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
   :defer 10
-  :commands (cpm/hydra-desktop/body)
-  :config
+  :commands (cpm/hydra-desktop/body))
+  
   ;; hydra for TODOs
+  (with-eval-after-load 'hydra
   (defhydra hydra-todo (:pre
                   (hl-todo-mode 1)
               :post
@@ -2114,8 +2116,7 @@ From bling: https://github.com/bling/evil-visualstar
   ("n" hl-todo-next "Next")
   ("p" hl-todo-previous "Previous")
   ("o" hl-todo-occur "Occur")
-  ("q" nil "Quit" :color blue :exit t))
-)
+  ("q" nil "Quit" :color blue :exit t)))
 #+END_SRC
 *** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -2135,10 +2136,11 @@ From bling: https://github.com/bling/evil-visualstar
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
+    :load-path "~/.emacs.d/.local/elisp/perspective"
     :commands (persp-switch persp-add-buffer persp-set-buffer)
-    :init
-    (when (not (fboundp 'make-variable-frame-local))
-    (defun make-variable-frame-local (variable) variable))
+    ;; :init
+    ;; (when (not (fboundp 'make-variable-frame-local))
+    ;; (defun make-variable-frame-local (variable) variable))
     :config
     (persp-mode 1))
 
@@ -2564,14 +2566,17 @@ The Doom modeline
 
 (use-package powerline) 
 
+;; fix error on byte-compile
+(eval-when-compile
 (defvar mode-line-height 30
-  "How tall the mode-line should be. This is only respected in GUI emacs.")
+  "How tall the mode-line should be. This is only respected in GUI emacs."))
 
 ;; Load powerline only when uncompiled, in order to generate the xpm bitmaps for
 ;; the mode-line. This is the tall blue bar on the left of the mode-line.
 ;; NOTE Compile this file for a faster startup!
 (eval-when-compile (require 'powerline))
 ;; FIXME Don't hardcode colors in
+
 (defvar mode-line-bar          (eval-when-compile (pl/percent-xpm mode-line-height 100 0 100 0 3 "#268bd2" nil)))
 (defvar mode-line-eldoc-bar    (eval-when-compile (pl/percent-xpm mode-line-height 100 0 100 0 3 "#B3EF00" nil)))
 (defvar mode-line-inactive-bar (eval-when-compile (pl/percent-xpm mode-line-height 100 0 100 0 3 nil nil)))
@@ -2953,7 +2958,7 @@ faster.
 #+BEGIN_SRC emacs-lisp
 (use-package line-numbers
   :ensure nil
-  :hook ((markdown-mode prog-mode) . #'display-line-numbers-mode)
+  :hook ((markdown-mode prog-mode) . display-line-numbers-mode)
   :commands display-line-numbers-mode
   :init
   (setq-default display-line-numbers-type 'visual)
@@ -4087,6 +4092,7 @@ Keybindings for managing packages
 
 #+BEGIN_SRC emacs-lisp
   (use-package shackle
+    :after helm
     :demand t
     :config
     ;; make helm pop-ups behave
@@ -5420,33 +5426,27 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
   :hook (eshell-mode . esh-autosuggest-mode))
 #+END_SRC
 ** Completion
-*** FIXME Yasnippet
+*** TESTING Yasnippet
 This is throwing an error and needs fixing. 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet                
+    :hook ((prog-mode org-mode markdown-mode) . yas-minor-mode)
     :commands (yas-expand yas-minor-mode)
     :diminish (yas-minor-mode . " Ⓨ")
     :config 
-     ;; Adding yasnippet support to company
-     (add-to-list 'company-backends '(company-yasnippet))
-     (yas-reload-all)
-     (add-hook 'prog-mode-hook #'yas-minor-mode)
-     (add-hook 'org-mode-hook #'yas-minor-mode)
-     (add-hook 'markdown-mode-hook #'yas-minor-mode))
+    ;; snippet directory
+    (setq yas-snippet-dirs '("~/.emacs.d/.local/snippets"))
+    ;; Adding yasnippet support to company
+    (add-to-list 'company-backends '(company-yasnippet))
+    (yas-reload-all))
      
-;; This needs to be set separately so as not to throw an error
-(with-eval-after-load 'yasnippet 
- ;; snippet directory
- (setq yas-snippet-dirs (concat cpm-etc-dir "snippets"))
- (unless (file-directory-p yas-snippet-dirs)
-   (make-directory yas-snippet-dirs t)))
 #+END_SRC
 
 *** Company
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :ensure t
-  :hook ((prog-mode org-mode markdown-mode) . #'company-mode)
+  :hook ((prog-mode org-mode markdown-mode) . company-mode)
   :init
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 3
@@ -5744,6 +5744,7 @@ workflow I used to use in Sublime Text. Perfect for short commit messages.
  
 
  
+ 
 * Research & Writing
 ** Helm-Bibtex
 Great for managing citations and notes
@@ -5787,14 +5788,13 @@ Great for managing citations and notes
 *** Markdown settings
 #+begin_src emacs-lisp
   (use-package markdown-mode
-    :defer t
     :mode (("\\.markdown\\'" . markdown-mode)
            ("\\.md\\'"       . markdown-mode))
     :init
     ;; markdown hooks
     (add-hook 'markdown-mode-hook
           '(lambda ()
-             (turn-on-auto-fill) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (flyspell-mode 1) (pandoc-mode) (hl-todo-mode)))
+             (turn-on-auto-fill) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (hl-todo-mode)))
     (setq markdown-command "pandoc -s -N --smart --bibliography=/Users/Roambot/Dropbox/Work/Master.bib"
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
@@ -6466,6 +6466,7 @@ Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert                 
     :ensure nil
+    :defer 8
     :init
     (setq auto-revert-interval 1)
     (global-auto-revert-mode 1)
