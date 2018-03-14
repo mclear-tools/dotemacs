@@ -3035,7 +3035,15 @@ faster.
    :config
    (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
  #+END_SRC
+**** Emoji
+Add emoji support. This is useful when working with html.
+#+BEGIN_SRC emacs-lisp
+   (use-package emojify
+    :hook ((prog-mode org-mode markdown-mode) . emojify-mode)
+    :config
+    (setq emojify-emojis-dir (concat cpm-etc-dir "emojis")))
 
+#+END_SRC
 
 *** Navigation
 **** Bookmarks
