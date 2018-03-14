@@ -1822,7 +1822,8 @@ First we can define some general system checks
       (global-set-key (kbd "s-x") 'kill-region)
       (global-set-key (kbd "s-w") 'delete-window)
       (global-set-key (kbd "s-W") 'delete-frame)
-      (global-set-key (kbd "s-n") 'cpm/new-buffer-new-frame)
+      (global-set-key (kbd "s-n") 'make-frame)
+      (global-set-key (kbd "s-N") 'nameframe-create-frame)
       (global-set-key (kbd "s-z") 'undo-tree-undo)
       (global-set-key (kbd "s-s")
                       (lambda ()
@@ -2274,9 +2275,21 @@ Easy workspace creation and switching
 #+END_SRC
 
 
+*** TESTING Nameframe
+[[https://github.com/john2x/nameframe][Nameframe]] provides utility functions to manage frames by their names.
+#+BEGIN_SRC emacs-lisp
+(use-package nameframe
+  :general
+  ("M-p" 'nameframe-switch-frame)
+  :after (:any perspective projectile)
+  :demand t
+  :config
+  (nameframe-projectile-mode t)
+  (nameframe-perspective-mode t))
+#+END_SRC
 ** Appearance & UI
-   Various settings to make Emacs (mostly the GUI version) look better or
-   make interaction smoother. 
+Various settings to make Emacs (mostly the GUI version) look better or
+make interaction smoother. 
    
 *** Appearance
 **** Frame Title 
@@ -3779,42 +3792,44 @@ Keybindings for managing packages
 #+END_SRC
 ***** Project Keybindings
 #+BEGIN_SRC emacs-lisp
-(general-define-key
-  :states '(normal visual emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
- 
-    "p" '(:ignore t :which-key "Projects")
-    "p!"  'projectile-run-shell-command-in-root
-    "p&"  'projectile-run-async-shell-command-in-root
-    "pa"  'projectile-toggle-between-implementation-and-test
-    "pb"  'helm-projectile-switch-to-buffer
-    "pc"  'projectile-compile-project
-    "pC"  'desktop+-create
-    "pd"  'helm-projectile-find-dir
-    "pD"  'cpm/hydra-desktop
-    ;; "pD"  'projectile-dired
-    "pf"  'helm-projectile-find-file
-    "pg"  'cpm/goto-projects
-    "ph"  'helm-projectile
-    "pJ"  'bmkp-desktop-jump
-    "pG"  'projectile-regenerate-tags
-    "pI"  'projectile-invalidate-cache
-    "pk"  'projectile-kill-buffers
-    ;; "pl"  'desktop+-load
-    "po"  'projectile-multi-occur
-    "pp"  'helm-projectile-switch-project
-    "pP"  'projectile-persp-switch-project
-    ;; "pp"  'helm-persp-projectile-switch-project
-    "pr"  'helm-projectile-recentf
-    "pR"  'projectile-replace
-    "ps"  'persp-switch
-    "pT"  'projectile-find-test-file
-    "pv"  'hydra-persp/body
-    "pV"  'projectile-vc
-    "py"  'projectile-find-tag
-  )
+  (general-define-key
+    :states '(normal visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
+
+      "p" '(:ignore t :which-key "Projects")
+      "p!"  'projectile-run-shell-command-in-root
+      "p&"  'projectile-run-async-shell-command-in-root
+      "pa"  'projectile-toggle-between-implementation-and-test
+      "pb"  'helm-projectile-switch-to-buffer
+      "pc"  'projectile-compile-project
+      "pC"  'desktop+-create
+      "pd"  'helm-projectile-find-dir
+      "pD"  'cpm/hydra-desktop
+      ;; "pD"  'projectile-dired
+      "pF"  'helm-projectile-find-file
+      "pf"  #'cpm/helm-projectile-find-file-other-window
+      "pg"  'cpm/goto-projects
+      "ph"  'helm-projectile
+      "pJ"  'bmkp-desktop-jump
+      "pG"  'projectile-regenerate-tags
+      "pI"  'projectile-invalidate-cache
+      "pk"  'projectile-kill-buffers
+      ;; "pl"  'desktop+-load
+      "po"  'projectile-multi-occur
+      "pp"  'helm-projectile-switch-project
+      "pP"  'projectile-persp-switch-project
+      ;; "pp"  'helm-persp-projectile-switch-project
+      "pr"  'helm-projectile-recentf
+      "pR"  'projectile-replace
+      "pS"  'persp-switch
+      "ps"  'nameframe-switch-frame
+      "pT"  'projectile-find-test-file
+      "pv"  'hydra-persp/body
+      "pV"  'projectile-vc
+      "py"  'projectile-find-tag
+    )
 #+END_SRC
 ***** Quit Keybindings
 #+BEGIN_SRC emacs-lisp
