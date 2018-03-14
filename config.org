@@ -385,36 +385,40 @@ Call an emacs instance for testing
 Useful functions for calling config files
 #+BEGIN_SRC emacs-lisp
   (defun goto-init.el ()
-      "Open init.el file"
-      (interactive)
-      (find-file "~/.emacs.d/init.el"))
+    "Open init.el file"
+    (interactive)
+    (find-file "~/.emacs.d/init.el"))
   (defun goto-custom.el ()
-      "Open custom.el file"
-      (interactive)
-      (find-file "~/.emacs.d/custom.el"))
+    "Open custom.el file"
+    (interactive)
+    (find-file "~/.emacs.d/custom.el"))
   (defun goto-config.org ()
-      "Open config.org file"
-      (interactive)
-      (find-file "~/.emacs.d/config.org"))
+    "Open config.org file"
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (defun cpm/compile-dotemacs ()
+    "Byte compile all files in the .emacs.d base directory"
+    (interactive)
+    (byte-recompile-directory cpm-emacs-dir 0 t))
   (defun load-config ()
-      "Load config "
-      (interactive)
-      (cpm/tangle-emacs-config)
-      (load-file "~/.emacs.d/init.el"))
+    "Load config "
+    (interactive)
+    (cpm/tangle-emacs-config)
+    (load-file "~/.emacs.d/init.el"))
   (defun goto-dotfiles.org ()
-      "Open dotfiles.org file"
-      (interactive)
-      (find-file "~/dotfiles/dotfiles.org"))
+    "Open dotfiles.org file"
+    (interactive)
+    (find-file "~/dotfiles/dotfiles.org"))
   (defun goto-emacs-dir ()
-      "Open dotfiles.org file"
-      (interactive)
-      (require 'ranger)
-      (find-file "~/.emacs.d"))
+    "Open dotfiles.org file"
+    (interactive)
+    (require 'ranger)
+     (find-file "~/.emacs.d"))
   (defun goto-org-files ()
-      "Open directory with org files"
-      (interactive)
-      (require 'ranger)
-      (find-file org-directory))
+    "Open directory with org files"
+    (interactive)
+    (require 'ranger)
+    (find-file org-directory))
 
 
 #+END_SRC
@@ -3558,6 +3562,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "Cc" 'goto-config.org
   "Cd" 'goto-dotfiles.org
   "CD" 'goto-emacs-dir
+  "Ck" 'cpm/compile-dotemacs
   "Cl" 'load-config
   "Ci" 'goto-init.el
   "Co" 'goto-org-files
