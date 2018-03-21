@@ -2140,8 +2140,6 @@ From bling: https://github.com/bling/evil-visualstar
 *** Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-   :ensure nil
-   :load-path "~/.emacs.d/.local/elisp/projectile"
    :init
    ;; save projectile-known-projects-file in cache folder
     (setq projectile-known-projects-file
