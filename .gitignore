@@ -15,3 +15,6 @@ var/
 /.local/@roambot/etc/.DS_Store
 /.local/.DS_Store
 *.elc
+.local/elpa/archives/
+.local/@roambot/etc/tldr/
+.local/@roambot/etc/emojis/
