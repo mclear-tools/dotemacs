@@ -1,4 +1,4 @@
-***** DISABLED Doom Modeline
+** DISABLED Doom Modeline
 CLOSED: [2018-03-15 Thu 15:09]
 The Doom modeline
 #+BEGIN_SRC emacs-lisp
@@ -363,7 +363,7 @@ to be enabled."
 
 #+END_SRC
 
-***** DISABLED Doom Modeline
+** DISABLED Doom Modeline
 CLOSED: [2018-03-15 Thu 15:09]
 The Doom modeline
 #+BEGIN_SRC emacs-lisp
