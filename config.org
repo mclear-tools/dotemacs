@@ -281,6 +281,10 @@ initialization will still take place at startup.
       (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t))
     (unless (assoc-default "org" package-archives)
       (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+    ;; https://github.com/emacs-china/emacswiki-elpa
+    (unless (assoc-default "emacswiki" package-archives)
+      (add-to-list 'package-archives '("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/") t))
+
 
     (package-initialize)
     (unless (package-installed-p 'use-package)
@@ -289,8 +293,6 @@ initialization will still take place at startup.
     (require 'use-package)
     (setq use-package-always-ensure t))
 #+END_SRC
-
-
 
 ** Paradox
 #+BEGIN_SRC emacs-lisp
@@ -507,6 +509,12 @@ Version 2016-06-19"
           (delete-file filename t)
           (kill-buffer buffer)
           (message "File '%s' successfully removed" filename)))))
+#+END_SRC
+*** Delete Dotemacs Byte Files
+#+BEGIN_SRC emacs-lisp
+(defun cpm/delete-byte-compiled-files ()
+  (interactive)
+  (shell-command-to-string "trash ~/.emacs.d/*.elc"))
 #+END_SRC
 *** Duplicate file
 Duplicate a file in dired or deer
@@ -3850,6 +3858,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "Cd" 'goto-dotfiles.org
   "CD" 'goto-emacs-dir
   "Ck" 'cpm/compile-dotemacs
+  "CK" 'cpm/delete-byte-compiled-files
   "Cl" 'load-config
   "Ci" 'goto-init.el
   "Co" 'goto-org-files
@@ -4670,7 +4679,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
             "* %?")
             ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
               (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
-
+              
       ;; Add date to captured items
       (defun add-property-with-date-captured ()
         "Add DATE_CAPTURED property to the current item."
