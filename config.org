@@ -78,6 +78,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#url--request][URL & Request]]
 - [[#post-initialization][Post-Initialization]]
   - [[#persistent-scratch][Persistent Scratch]]
+  - [[#remember][Remember]]
   - [[#server][Server]]
   - [[#page-breaks][Page Breaks]]
   - [[#dashboard][Dashboard]]
@@ -4219,6 +4220,7 @@ Keybindings for managing packages
     "uo" 'cpm/markdown-to-org
     "up" 'run-pandoc
     "uP" 'cpm/pandoc-pdf-open
+    "ur" 'remember-notes
     "us" 'sb-expand-current-file
     "uS" 'just-one-space
     "ut" 'cpm/org-goto-todo
@@ -6890,8 +6892,11 @@ Auto-revert buffers of changed files
 )
 #+END_SRC
 * Post-Initialization
-** Persistent Scratch
-Make the content of the scratch buffer persist between settings
+** DISABLED Persistent Scratch
+This has been giving me intermittent trouble. I'm disabling it for now in
+favor of [[info:remember][remember]].
+CLOSED: [2018-04-03 Tue 20:57]
+Make the content of the scratch buffer [[https://github.com/Fanael/persistent-scratch][persist]] between settings
 #+BEGIN_SRC emacs-lisp
   (use-package persistent-scratch
     :demand t
@@ -6902,6 +6907,20 @@ Make the content of the scratch buffer persist between settings
     (setq persistent-scratch-autosave-interval 60)
     :config
     (ignore-errors (persistent-scratch-setup-default)))
+#+END_SRC
+** Remember
+A built-in [[info:remember][remember]] buffer
+#+BEGIN_SRC emacs-lisp
+(use-package remember
+ :ensure nil
+ :commands (remember remember-notes)
+ :general
+ :config
+ (setq remember-data-dir (concat cpm-cache-dir "remember")
+       remember-data-file (concat cpm-cache-dir "remember/notes"))
+ (unless (file-directory-p remember-data-dir)
+         (make-directory remember-data-dir t)))
+ 
 #+END_SRC
 ** Server
 Start server
