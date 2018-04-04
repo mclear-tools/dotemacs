@@ -88,6 +88,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#academic-phrases][Academic Phrases]]
   - [[#org-projectile][Org Projectile]]
   - [[#org-export-top-level-trees][Org Export Top-Level Trees]]
+  - [[#eterm-256-color][Eterm-256 Color]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7081,4 +7082,12 @@ From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-to
                (save-excursion
                  (funcall func))
                (end-of-line)))))))
+#+END_SRC
+** TESTING Eterm-256 Color
+Add [[https://github.com/dieggsy/eterm-256color][customizable 256 color support]] to =term= and =ansiterm=
+#+BEGIN_SRC emacs-lisp
+  (use-package eterm-256color
+    :ensure t
+    :config
+    (add-hook 'term-mode-hook #'eterm-256color-mode))
 #+END_SRC
