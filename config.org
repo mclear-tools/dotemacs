@@ -2108,6 +2108,13 @@ A version of multiple cursors for use with evil. Courtesy of [[https://github.co
 (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
 )
 #+END_SRC
+***** Evil Multiple Cursors
+[[https://github.com/gabesoft/evil-mc][Multiple cursors]] implementation for evil-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-mc
+    :ensure t
+    :commands (evil-mc-make-all-cursors evil-mc-make-and-goto-next-match))
+#+END_SRC
 ***** Evil Numbers
 Increment an decrement numbers 
 #+BEGIN_SRC emacs-lisp
