@@ -30,6 +30,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
 - [[#security][Security]]
 - [[#emacs-initialization][Emacs Initialization]]
   - [[#garbage-collection][Garbage Collection]]
+  - [[#byte-compilation-warnings][Byte Compilation Warnings]]
   - [[#package-settings][Package Settings]]
   - [[#use-package-settings][Use-Package Settings]]
   - [[#manually-set-load-path][Manually Set Load Path]]
@@ -196,8 +197,9 @@ long GC pauses during normal usage.
 
 #+BEGIN_SRC emacs-lisp 
 (defun cpm/config-setup-hook ()
+  (eval-and-compile
   (setq gc-cons-threshold most-positive-fixnum
-        gc-cons-percentage 0.6))
+        gc-cons-percentage 0.6)))
 
 (defun cpm/config-exit-hook ()
   (setq gc-cons-threshold 100000
@@ -205,8 +207,16 @@ long GC pauses during normal usage.
 
 (add-hook 'before-init-hook #'cpm/config-setup-hook)
 (add-hook 'after-init-hook  #'cpm/config-exit-hook)
-#+END_SRC
 
+#+END_SRC
+** Byte Compilation Warnings
+Disable certain byte compiler warnings to cut down on the noise. This is a
+personal choice and can be removed if you would like to see any and all byte
+compiler warnings.
+
+#+BEGIN_SRC emacs-lisp
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
+#+END_SRC
 ** Package Settings
 We're going to set the =load-path= ourselves and avoid calling
 =(package-initilize)= (for performance reasons) so we need to set
@@ -2657,7 +2667,7 @@ that I use anything other than solarized :)
 
 
 **** Modeline
-***** TESTING Another Doom Modeline
+***** Another Doom Modeline
 [[https://github.com/torgeir/.emacs.d/blob/master/site-lisp/t-doom-modeline/t-doom-modeline.el][Torgeir's version]] of the [[https://github.com/hlissner/doom-emacs][doom mode line]]. 
 #+BEGIN_SRC emacs-lisp
   ;;; ui/doom-modeline/config.el -*- lexical-binding: t; -*-
@@ -4770,9 +4780,10 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     (org-agenda nil "a"))
 #+END_SRC
 
-*** Org Date Hack
+*** TESTING Org Date Hack
+[[https://gist.github.com/fuxialexander/16e1ce6be518f6ba48e0acf92468627d][Hack]] to make scheduled/deadline faces look better 
 #+BEGIN_SRC emacs-lisp
-  (setq org-ts-regexp-both-braket "\\([[<]\\)\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} ?[^]
+(setq org-ts-regexp-both-braket "\\([[<]\\)\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} ?[^] 
 \n>]*?\\)\\([]>]\\)")
   (defun *org-set-font-lock-defaults ()
     "Set font lock defaults for the current buffer."
