@@ -5110,6 +5110,7 @@ Make capture the only window and close after refiling.
 #+BEGIN_SRC emacs-lisp
   (general-define-key :states '(normal) :keymaps 'org-mode-map
         "RET" 'org-open-at-point     ;; Open with return in evil
+        "p"   'org-yank ;; better pasting behavior
         )
   ;;      "L" 'org-shiftright
   ;;      "H" 'org-shiftleft
@@ -5125,7 +5126,9 @@ Make capture the only window and close after refiling.
        ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
        "s-b" (lambda () (interactive) (org-emphasize ?\*))
        "s-i" (lambda () (interactive) (org-emphasize ?\/))
-       "s-=" (lambda () (interactive) (org-emphasize ?\=)))
+       "s-=" (lambda () (interactive) (org-emphasize ?\=))
+        ;; better pasting behavior in org-mode
+       "s-v" 'org-yank)
   ;;      "TAB" 'org-cycle
   ;;      "s-l" 'org-metaright
   ;;      "s-h" 'org-metaleft
@@ -7384,3 +7387,4 @@ Add [[https://github.com/dieggsy/eterm-256color][customizable 256 color support]
     :config
     (add-hook 'term-mode-hook #'eterm-256color-mode))
 #+END_SRC
+# "
