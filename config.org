@@ -2139,7 +2139,6 @@ From bling: https://github.com/bling/evil-visualstar
 *** Hydra
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
-  :defer 10
   :commands (cpm/hydra-desktop/body))
   
   ;; hydra for TODOs
@@ -4218,7 +4217,7 @@ Keybindings for managing packages
   :non-normal-prefix "C-SPC"
 
     "u"  '(:ignore t :which-key "User")
-    "ua" 'super-jump-to-org-agenda
+    "ua" 'cpm/jump-to-org-agenda
     "um" 'cpm/org-to-markdown   
     "uc" 'cpm/pandoc-convert-to-pdf
     "uC" 'cpm/pandoc-command-line-convert-to-pdf 
@@ -4624,6 +4623,8 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     (setq org-cycle-separator-lines 0
           org-tags-column 80
           org-agenda-tags-column org-tags-column
+          org-agenda-window-setup 'only-window
+          org-agenda-restore-windows-after-quit t
           ;; org-agenda-sticky t
           org-agenda-span 'day)
 
@@ -4643,31 +4644,289 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 #+END_SRC
 
 *** Org-Super-Agenda
-[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda
+[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/fuxialexander/doom-emacs-private-xfu][fuxialexander]]
 #+BEGIN_SRC emacs-lisp
-(use-package org-super-agenda
-  :commands super-jump-to-org-agenda
-  :preface
-  (defun super-jump-to-org-agenda ()
+    (use-package org-super-agenda
+      :commands (org-super-agenda-mode)
+      :config
+      (setq org-super-agenda-groups
+            '((:name "Log\n"
+                     :log t)  ; Automatically named "Log"
+              (:name "Schedule\n"
+                     :time-grid t)
+              (:name "Today\n"
+                     :scheduled today)
+              ;; (:name "Habits\n"
+              ;;        :habit t)
+              (:name "Due today\n"
+                     :deadline today)
+              (:name "Overdue\n"
+                     :deadline past)
+              (:name "Due soon\n"
+                     :deadline future)
+              (:name "Waiting\n"
+                     :todo "WAITING"
+                     :order 98)
+              (:name "Scheduled earlier\n"
+                     :scheduled past)
+              (:name "ACTION"
+                      :time-grid t
+                      :todo "NEXT"
+                      :order 1)
+              (:name "To Read"
+                     :todo "TO-READ"
+                     :order 2)
+              (:name "In Progress"
+                     :todo "INPROGRESS"
+                     :order 7)
+              (:todo ("FIXME" "REVISE")
+                     :order 3)
+              (:priority<= "B" :order 1))))
+
+  ;; Hydra for org agenda (graciously taken from Spacemacs)
+  (after! org-agenda       
+  (org-super-agenda-mode)
+  (general-define-key :states '(normal emacs) :keymaps 'org-agenda-keymap
+    "."  'cpm/hydra-org-agenda/body)
+  (defhydra cpm/hydra-org-agenda (:color pink :hint none)
+    "
+  Org agenda (_q_uit)
+
+  ^Clock^      ^Visit entry^              ^Date^             ^Other^
+  ^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
+  _ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
+  _co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
+  _cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
+  _cj_ jump    _o_   link                 _+_  do later      ^^
+  ^^           ^^                         _-_  do earlier    ^^
+  ^^           ^^                         ^^                 ^^
+  ^View^          ^Filter^                 ^Headline^         ^Toggle mode^
+  ^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
+  _vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
+  _vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
+  _vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
+  _vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
+  _vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
+  _vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
+  _vp_ prev span  ^^                       ^^                 ^^
+  _vr_ reset      ^^                       ^^                 ^^
+  ^^              ^^                       ^^                 ^^
+  "
+    ;; Entry
+    ("hA" org-agenda-archive-default)
+    ("hk" org-agenda-kill)
+    ("hp" org-agenda-priority)
+    ("hr" org-agenda-refile)
+    ("h:" org-agenda-set-tags)
+    ("ht" org-agenda-todo)
+    ;; Visit entry
+    ("o"   link-hint-open-link :exit t)
+    ("<tab>" org-agenda-goto :exit t)
+    ("TAB" org-agenda-goto :exit t)
+    ("SPC" org-agenda-show-and-scroll-up)
+    ("RET" org-agenda-switch-to :exit t)
+    ;; Date
+    ("dt" org-agenda-date-prompt)
+    ("dd" org-agenda-deadline)
+    ("+" org-agenda-do-date-later)
+    ("-" org-agenda-do-date-earlier)
+    ("ds" org-agenda-schedule)
+    ;; View
+    ("vd" org-agenda-day-view)
+    ("vw" org-agenda-week-view)
+    ("vt" org-agenda-fortnight-view)
+    ("vm" org-agenda-month-view)
+    ("vy" org-agenda-year-view)
+    ("vn" org-agenda-later)
+    ("vp" org-agenda-earlier)
+    ("vr" org-agenda-reset-view)
+    ;; Toggle mode
+    ("ta" org-agenda-archives-mode)
+    ("tA" (org-agenda-archives-mode 'files))
+    ("tr" org-agenda-clockreport-mode)
+    ("tf" org-agenda-follow-mode)
+    ("tl" org-agenda-log-mode)
+    ("td" org-agenda-toggle-diary)
+    ;; Filter
+    ("fc" org-agenda-filter-by-category)
+    ("fx" org-agenda-filter-by-regexp)
+    ("ft" org-agenda-filter-by-tag)
+    ("fr" org-agenda-filter-by-tag-refine)
+    ("fh" org-agenda-filter-by-top-headline)
+    ("fd" org-agenda-filter-remove-all)
+    ;; Clock
+    ("cq" org-agenda-clock-cancel)
+    ("cj" org-agenda-clock-goto :exit t)
+    ("ci" org-agenda-clock-in :exit t)
+    ("co" org-agenda-clock-out)
+    ;; Other
+    ("q" nil :exit t)
+    ("gd" org-agenda-goto-date)
+    ("." org-agenda-goto-today)
+    ("gr" org-agenda-redo)))
+    
+    (defun cpm/jump-to-org-agenda ()
     (interactive)
-    (let ((org-super-agenda-groups
-           '((:name "ACTION"
-                    :time-grid t
-                    :todo "NEXT"
-                    :order 1)
-             (:name "To Read"
-                    :todo "TO-READ"
-                    :order 2)
-             (:name "In Progress"
-                    :todo "INPROGRESS"
-                    :order 7)
-             (:todo "WAITING" :order 8)
-             (:todo ("FIXME" "REVISE")
-                    :order 3)
-             (:priority<= "B" :order 1))))
-      (org-agenda nil "a")))
-  :config
-  (org-super-agenda-mode))
+    (org-agenda nil "a"))
+#+END_SRC
+
+*** Org Date Hack
+#+BEGIN_SRC emacs-lisp
+  (setq org-ts-regexp-both-braket "\\([[<]\\)\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} ?[^]
+\n>]*?\\)\\([]>]\\)")
+  (defun *org-set-font-lock-defaults ()
+    "Set font lock defaults for the current buffer."
+    (let* ((em org-fontify-emphasized-text)
+           (lk org-highlight-links)
+           (org-font-lock-extra-keywords
+            (list
+             ;; Call the hook
+             '(org-font-lock-hook)
+             ;; Headlines
+             `(,(if org-fontify-whole-heading-line
+                    "^\\(\\**\\)\\(\\* \\)\\(.*\n?\\)"
+                  "^\\(\\**\\)\\(\\* \\)\\(.*\\)")
+               (1 (org-get-level-face 1))
+               (2 (org-get-level-face 2))
+               (3 (org-get-level-face 3)))
+             ;; Table lines
+             '("^[ \t]*\\(\\(|\\|\\+-[-+]\\).*\\S-\\)"
+               (1 'org-table t))
+             ;; Table internals
+             '("^[ \t]*|\\(?:.*?|\\)? *\\(:?=[^|\n]*\\)" (1 'org-formula t))
+             '("^[ \t]*| *\\([#*]\\) *|" (1 'org-formula t))
+             '("^[ \t]*|\\( *\\([$!_^/]\\) *|.*\\)|" (1 'org-formula t))
+             '("| *\\(<[lrc]?[0-9]*>\\)" (1 'org-formula t))
+             ;; Drawers
+             '(org-fontify-drawers)
+             ;; Properties
+             (list org-property-re
+                   '(1 'org-special-keyword t)
+                   '(3 'org-property-value t))
+            ;; Special keywords
+             (list (concat "\\<\\(DEADLINE: \\)" org-ts-regexp-both-braket)
+                   '(1 'org-deadline-custom prepend)
+                   '(2 'org-deadline-custom-braket prepend)
+                   '(3 'org-deadline-custom prepend)
+                   '(4 'org-deadline-custom-braket prepend))
+             (list (concat "\\<\\(SCHEDULED: \\)" org-ts-regexp-both-braket)
+                   '(1 'org-scheduled-custom prepend)
+                   '(2 'org-scheduled-custom-braket prepend)
+                   '(3 'org-scheduled-custom prepend)
+                   '(4 'org-scheduled-custom-braket prepend))
+             (list (concat "\\<\\(CLOSED: \\)" org-ts-regexp-both-braket)
+                   '(1 'org-closed-custom prepend)
+                   '(2 'org-closed-custom-braket prepend)
+                   '(3 'org-closed-custom prepend)
+                   '(4 'org-closed-custom-braket prepend))
+             (list (concat "\\<" org-clock-string) '(0 'org-special-keyword prepend))
+             ;; Link related fontification.
+             '(org-activate-links)
+             (when (memq 'tag lk) '(org-activate-tags (1 'org-tag prepend)))
+             (when (memq 'radio lk) '(org-activate-target-links (1 'org-link t)))
+             (when (memq 'date lk) '(org-activate-dates (0 'org-date t)))
+             (when (memq 'footnote lk) '(org-activate-footnote-links))
+             ;; Targets.
+             (list org-any-target-regexp '(0 'org-target t))
+             ;; Diary sexps.
+             '("^&?%%(.*\\|<%%([^>\n]*?>" (0 'org-sexp-date t))
+             ;; Macro
+             '(org-fontify-macros)
+             '(org-hide-wide-columns (0 nil append))
+             ;; TODO keyword
+             (list (format org-heading-keyword-regexp-format
+                           org-todo-regexp)
+                   '(2 (org-get-todo-face 2) t))
+             ;; DONE
+             (if org-fontify-done-headline
+                 (list (format org-heading-keyword-regexp-format
+                               (concat
+                                "\\(?:"
+                                (mapconcat 'regexp-quote org-done-keywords "\\|")
+                                "\\)"))
+                       '(2 'org-headline-done t))
+               nil)
+             ;; Priorities
+             '(org-font-lock-add-priority-faces)
+             ;; Tags
+             '(org-font-lock-add-tag-faces)
+             ;; Tags groups
+             (when (and org-group-tags org-tag-groups-alist)
+               (list (concat org-outline-regexp-bol ".+\\(:"
+                             (regexp-opt (mapcar 'car org-tag-groups-alist))
+                             ":\\).*$")
+                     '(1 'org-tag-group prepend)))
+
+             ;; Emphasis
+             (when em '(org-do-emphasis-faces))
+             ;; Checkboxes
+             '("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\(\\[[- X]\\]\\)"
+               1 'org-checkbox prepend)
+             (when (cdr (assq 'checkbox org-list-automatic-rules))
+               '("\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]"
+                 (0 (org-get-checkbox-statistics-face) t)))
+             ;; Description list items
+             '("^[ \t]*[-+*][ \t]+\\(.*?[ \t]+::\\)\\([ \t]+\\|$\\)"
+               1 'org-list-dt prepend)
+             ;; ARCHIVEd headings
+             (list (concat
+                    org-outline-regexp-bol
+                    "\\(.*:" org-archive-tag ":.*\\)")
+                   '(1 'org-archived prepend))
+             ;; Specials
+             '(org-do-latex-and-related)
+             '(org-fontify-entities)
+             '(org-raise-scripts)
+             ;; Code
+             '(org-activate-code (1 'org-code t))
+             ;; COMMENT
+             (list (format
+                    "^\\*+\\(?: +%s\\)?\\(?: +\\[#[A-Z0-9]\\]\\)? +\\(?9:%s\\)\\(?: \\|$\\)"
+                    org-todo-regexp
+                    org-comment-string)
+                   '(9 'org-special-keyword t))
+             ;; Blocks and meta lines
+             '(org-fontify-meta-lines-and-blocks))))
+      (setq org-font-lock-extra-keywords (delq nil org-font-lock-extra-keywords))
+      (run-hooks 'org-font-lock-set-keywords-hook)
+      ;; Now set the full font-lock-keywords
+      (setq-local org-font-lock-keywords org-font-lock-extra-keywords)
+      (setq-local font-lock-defaults
+                  '(org-font-lock-keywords t nil nil backward-paragraph))
+      (kill-local-variable 'font-lock-keywords)
+      nil))
+  (advice-add 'org-set-font-lock-defaults :override #'*org-set-font-lock-defaults)
+  (defface org-deadline-custom '((t (:inherit 'default))) "org-deadline" :group 'org)
+  (defface org-scheduled-custom '((t (:inherit 'default))) "org-schedule" :group 'org)
+  (defface org-closed-custom '((t (:inherit 'default))) "org-close" :group 'org)
+  (defface org-deadline-custom-braket '((t (:inherit 'default))) "org-deadline" :group 'org)
+  (defface org-scheduled-custom-braket '((t (:inherit 'default))) "org-schedule" :group 'org)
+  (defface org-closed-custom-braket '((t (:inherit 'default))) "org-close" :group 'org)
+
+
+  (defun *org-eldoc-get-timestamp (str)
+    "Return timestamp if on a headline or nil."
+    (if str
+        (concat
+         (let ((deadline (org-entry-get (point) "DEADLINE" t))
+               (scheduled (org-entry-get (point) "SCHEDULED" t))
+               (closed (org-entry-get (point) "CLOSED" t))
+               timestamp)
+           (if deadline (setq timestamp (concat timestamp (propertize (substring deadline 1 -1) 'face 'org-deadline-custom) " ")))
+           (if scheduled (setq timestamp (concat timestamp (propertize (substring scheduled 1 -1) 'face 'org-scheduled-custom) " ")))
+           (if closed (setq timestamp (concat timestamp (propertize (substring closed 1 -1) 'face 'org-closed-custom) " ")))
+           timestamp)
+         str)
+      nil))
+
+  (advice-add 'org-eldoc-get-breadcrumb :filter-return #'*org-eldoc-get-timestamp)
+
+  (defun *org-format-outline-path-normalize (str)
+    (add-face-text-property
+     0 (length str)
+     '(:height 1) nil str)
+    str)
+  (advice-add 'org-format-outline-path :filter-return #'*org-format-outline-path-normalize)
 #+END_SRC
 *** Org Capture
 **** Capture Settings
@@ -6950,7 +7209,6 @@ A built-in [[info:remember][remember]] buffer
 (use-package remember
  :ensure nil
  :commands (remember remember-notes)
- :general
  :config
  (setq remember-data-dir (concat cpm-cache-dir "remember")
        remember-data-file (concat cpm-cache-dir "remember/notes"))

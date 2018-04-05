@@ -1,3 +1,29 @@
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package org-super-agenda
+  :commands super-jump-to-org-agenda
+  :preface
+  (defun super-jump-to-org-agenda ()
+    (interactive)
+    (let ((org-super-agenda-groups
+           '((:name "ACTION"
+                    :time-grid t
+                    :todo "NEXT"
+                    :order 1)
+             (:name "To Read"
+                    :todo "TO-READ"
+                    :order 2)
+             (:name "In Progress"
+                    :todo "INPROGRESS"
+                    :order 7)
+             (:todo "WAITING" :order 8)
+             (:todo ("FIXME" "REVISE")
+                    :order 3)
+             (:priority<= "B" :order 1))))
+      (org-agenda nil "a")))
+  :config
+  (org-super-agenda-mode))
+#+END_SRC
+
 ** DISABLED Doom Modeline
 CLOSED: [2018-03-15 Thu 15:09]
 The Doom modeline
