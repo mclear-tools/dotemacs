@@ -4538,7 +4538,7 @@ Ensure ELPA org is prioritized above built-in org.
 **** Org Modules
 A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
-(setq org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-git-link org-mac-iCal org-mac-link)))
+(setq org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-git-link org-mac-iCal org-mac-link)))
 #+END_SRC
 **** Org ID
 #+BEGIN_SRC emacs-lisp
