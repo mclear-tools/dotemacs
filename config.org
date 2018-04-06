@@ -6162,8 +6162,8 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
   (setq company-bibtex-org-citation-regex "-?@")
   (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
-*** TESTING Yasnippet
-This is throwing an error and needs fixing. 
+*** Yasnippet
+A template system for Emacs http://joaotavora.github.com/yasnippet/
 #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
       :hook ((prog-mode org-mode markdown-mode text-mode) . yas-minor-mode)
