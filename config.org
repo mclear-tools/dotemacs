@@ -2390,7 +2390,7 @@ make interaction smoother.
  (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
  #+END_SRC
 
- *** Font Size
+**** Font Size
  #+BEGIN_SRC emacs-lisp
  (when IS-MAC
    (global-set-key (kbd "s-=") 'scale-up-font)
