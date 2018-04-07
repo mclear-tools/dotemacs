@@ -4299,36 +4299,37 @@ Keybindings for managing packages
 #+END_SRC
 ***** User Keybindings
 #+BEGIN_SRC emacs-lisp
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+    :states '(normal motion visual insert emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
 
-    "u"  '(:ignore t :which-key "User")
-    "ua" 'cpm/jump-to-org-agenda
-    "um" 'cpm/org-to-markdown   
-    "uc" 'cpm/pandoc-convert-to-pdf
-    "uC" 'cpm/pandoc-command-line-convert-to-pdf 
-    "ug" 'org-mac-grab-link
-    "ui" 'cpm/org-goto-inbox
-    "uk" 'kill-compilation
-    "ul" 'desktop-read
-    "uo" 'cpm/markdown-to-org
-    "up" 'run-pandoc
-    "uP" 'cpm/pandoc-pdf-open
-    "ur" 'remember-notes
-    "us" 'sb-expand-current-file
-    "uS" 'just-one-space
-    "ut" 'cpm/org-goto-todo
-    "ud" 'distraction-free
-    "uD" 'my-desktop
-    "uj" 'cpm/goto-journal
-    ;; "op" 'pandoc-convert-to-pdf
-    "uw" 'count-words
-    "uW" 'osx-dictionary-search-input
-    "ux" 'helm-bibtex
-    )
+      "u"  '(:ignore t :which-key "User")
+      "ua" 'cpm/jump-to-org-agenda
+      "um" 'cpm/org-to-markdown
+      "uc" 'cpm/pandoc-convert-to-pdf
+      "uC" 'cpm/pandoc-command-line-convert-to-pdf
+      "ug" 'org-mac-grab-link
+      "ui" 'cpm/org-goto-inbox
+      "uk" 'kill-compilation
+      "ul" 'desktop-read
+      "uo" 'cpm/markdown-to-org
+      "up" 'run-pandoc
+      "uP" 'cpm/pandoc-pdf-open
+      "ur" 'remember-notes
+      "us" 'sb-expand-current-file
+      "uS" 'just-one-space
+      "ut" 'cpm/org-goto-todo
+      "uT" 'cpm/jump-to-org-agenda-all-todos
+      "ud" 'distraction-free
+      "uD" 'my-desktop
+      "uj" 'cpm/goto-journal
+      ;; "op" 'pandoc-convert-to-pdf
+      "uw" 'count-words
+      "uW" 'osx-dictionary-search-input
+      "ux" 'helm-bibtex
+      )
 #+END_SRC
 ***** Version Control Keybindings
 #+BEGIN_SRC emacs-lisp
@@ -4618,7 +4619,7 @@ Ensure ELPA org is prioritized above built-in org.
 **** Org Modules
 A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
-(setq org-modules (quote (org-bbdb org-bibtex org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-git-link org-mac-iCal org-mac-link)))
+(setq org-modules (quote (org-bbdb org-docview org-bibtex org-gnus org-info org-irc org-mhe org-protocol org-rmail org-w3m org-git-link org-mac-iCal org-mac-link)))
 #+END_SRC
 **** Org ID
 #+BEGIN_SRC emacs-lisp
@@ -4714,6 +4715,8 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
           org-agenda-tags-column org-tags-column
           org-agenda-window-setup 'only-window
           org-agenda-restore-windows-after-quit t
+          org-agenda-todo-ignore-scheduled 'all
+          org-agenda-todo-ignore-deadlines 'all 
           ;; org-agenda-sticky t
           org-agenda-span 'day)
 
@@ -4730,6 +4733,12 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
           (org-agenda-redo t)
           (message "[org agenda] refreshed!"))))
   (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+
+  ;; show all todos
+  (defun cpm/jump-to-org-agenda-all-todos ()
+    "open agenda with all unscheduled/non-deadline todos"
+    (interactive)
+    (org-agenda nil "t"))
 #+END_SRC
 
 *** Org-Super-Agenda
@@ -4757,23 +4766,10 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
                      :todo "WAITING"
                      :order 98)
               (:name "Scheduled earlier\n"
-                     :scheduled past)
-              (:name "ACTION"
-                      :time-grid t
-                      :todo "NEXT"
-                      :order 1)
-              (:name "To Read"
-                     :todo "TO-READ"
-                     :order 2)
-              (:name "In Progress"
-                     :todo "INPROGRESS"
-                     :order 7)
-              (:todo ("FIXME" "REVISE")
-                     :order 3)
-              (:priority<= "B" :order 1))))
+                     :scheduled past))))
 
   ;; Hydra for org agenda (graciously taken from Spacemacs)
-  (after! org-agenda       
+  (after! org-agenda
   (org-super-agenda-mode)
   (general-define-key :states '(normal emacs) :keymaps 'org-agenda-keymap
     "."  'cpm/hydra-org-agenda/body)
@@ -4853,7 +4849,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     ("gd" org-agenda-goto-date)
     ("." org-agenda-goto-today)
     ("gr" org-agenda-redo)))
-    
+
     (defun cpm/jump-to-org-agenda ()
     (interactive)
     (org-agenda nil "a"))
@@ -5021,32 +5017,32 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 *** Org Capture
 **** Capture Settings
 #+BEGIN_SRC emacs-lisp
-    (general-define-key "C-c c" 'org-capture)
-    (add-hook 'org-capture-mode-hook 'evil-insert-state)
-    (setq org-capture-templates
-          '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/todo.org" "Projects")
-             "** STARTED %? \n  %i")
-            ("c" "Capture" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
-             "* TODO %?\n %i")
-            ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
-             "**** %<%H:%M>\n%?")
-            ("l" "A link, for reading later." entry (file+headline "~/Dropbox/org-files/org-notes.org" "Reading List")
-              "* %:description\n%u\n\n%c\n\n%i"
-              :empty-lines 1)
-            ("m" "Mail-Task" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
-             "** TODO Email: %:description                         :Mail: \n[[message://%l][Link to email]] \n%? ")
-            ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
-            "* %?")
-            ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
-              (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
-              
-      ;; Add date to captured items
-      (defun add-property-with-date-captured ()
-        "Add DATE_CAPTURED property to the current item."
-        (interactive)
-        (org-set-property "DATE_CAPTURED" (format-time-string "%c")))
+  (general-define-key "C-c c" 'org-capture)
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+  (setq org-capture-templates
+        '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/todo.org" "Projects")
+           "** STARTED %? \n  %i")
+          ("c" "Capture" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
+           "* TODO %?\n %i")
+          ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
+           "**** %<%H:%M>\n%?")
+          ("l" "A link, for reading later." entry (file+headline "~/Dropbox/org-files/org-notes.org" "Reading List")
+            "* %:description\n%u\n\n%c\n\n%i"
+            :empty-lines 1)
+          ("m" "Mail-Task" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
+           "** TODO %:description                         :Email: \n[[message://%l][Email link]] \n%? ")
+          ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
+          "* %?")
+          ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
+            (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
 
-      (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
+    ;; Add date to captured items
+    (defun add-property-with-date-captured ()
+      "Add DATE_CAPTURED property to the current item."
+      (interactive)
+      (org-set-property "DATE_CAPTURED" (format-time-string "%c")))
+
+    (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
 
 #+END_SRC
 **** Org Journal Capture
