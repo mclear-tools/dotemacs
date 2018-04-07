@@ -6242,6 +6242,12 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
         (if (char-equal c ?\") t (electric-pair-default-inhibit c)))))
 #+END_SRC
 *** Languages
+**** Applescript
+#+BEGIN_SRC emacs-lisp
+  (use-package applescript-mode
+    :ensure t
+    :commands (applescript-mode))
+#+END_SRC
 **** Elisp
 #+BEGIN_SRC emacs-lisp 
   (use-package elisp-slime-nav
