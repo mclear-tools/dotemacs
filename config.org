@@ -2207,7 +2207,6 @@ Yet another attempt to manage buffers/workspaces
         ("P" projectile-persp-switch-project "Switch Project")
         ("q" nil "Quit")))
 
-
   (defhydra cpm/hydra-desktop (:columns 4
                                :color blue)
     "Desktops"
@@ -2310,15 +2309,53 @@ Easy workspace creation and switching
 *** TESTING Nameframe
 [[https://github.com/john2x/nameframe][Nameframe]] provides utility functions to manage frames by their names.
 #+BEGIN_SRC emacs-lisp
-(use-package nameframe
-  :general
-  ("M-p" 'nameframe-switch-frame)
-  :after (:any perspective projectile)
-  :demand t
-  :config
-  (nameframe-projectile-mode t)
-  (nameframe-perspective-mode t))
+  (use-package nameframe
+    :commands (nameframe-create-frame)
+    :general
+    ("M-p" 'nameframe-switch-frame)
+    :after (:any perspective projectile)
+    :demand t
+    :config
+    (nameframe-projectile-mode t)
+    (nameframe-perspective-mode t))
+
+
+ ;; functions for named work frames
+  (defun cpm/load-phil101 ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "PHIL 101")
+    (toggle-frame-maximized)
+    (find-file "~/Dropbox/Work/projects/phil101/content/slides/lecture_outline.org")
+    (split-window-right)
+    (find-file "~/Dropbox/Work/projects/phil101/content/pages/schedule.org"))
+  (defun cpm/load-phil105 ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "PHIL 105")
+    (toggle-frame-maximized)
+    (find-file "~/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.org")
+    (split-window-right)
+    (find-file "~/Dropbox/Work/projects/phil105/content/pages/schedule.org"))
+  (defun cpm/load-phil232 ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "PHIL 232")
+    (toggle-frame-maximized)
+    (find-file "~/Dropbox/Work/projects/phil232/phil232_lecture_outline.org")
+    (split-window-right)
+    (find-file "~/Dropbox/Work/projects/phil232/content/pages/schedule.org"))
+  (defun cpm/load-kant-reflection ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "Kant on Reflection")
+    (toggle-frame-maximized)
+    (find-file "~/Dropbox/Work/projects/KantReflection/Kant_reflection_notes.org")
+    (split-window-right)
+    (find-file "~/Dropbox/Work/projects/KantReflection/KantReflection.md"))
+
 #+END_SRC
+
 ** Appearance & UI
 Various settings to make Emacs (mostly the GUI version) look better or
 make interaction smoother. 
@@ -4126,7 +4163,12 @@ Keybindings for managing packages
       "pr"  'helm-projectile-recentf
       "pR"  'projectile-replace
       "pS"  'persp-switch
-      "ps"  'nameframe-switch-frame
+      "ps"  '(:ignore t :which-key "Frames")
+      "pss"  'nameframe-switch-frame
+      "ps1" #'cpm/load-phil101
+      "ps2" #'cpm/load-phil232
+      "ps5" #'cpm/load-phil105
+      "psr" #'cpm/load-kant-reflection
       "pT"  'projectile-find-test-file
       "pv"  'hydra-persp/body
       "pV"  'projectile-vc
