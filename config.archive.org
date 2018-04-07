@@ -1,3 +1,86 @@
+** DISABLED Persistent Scratch
+This has been giving me intermittent trouble. I'm disabling it for now in
+favor of [[info:remember][remember]].
+CLOSED: [2018-04-03 Tue 20:57]
+Make the content of the scratch buffer [[https://github.com/Fanael/persistent-scratch][persist]] between settings
+#+BEGIN_SRC emacs-lisp
+  (use-package persistent-scratch
+    :demand t
+    :init
+    (setq persistent-scratch-backup-directory (concat cpm-cache-dir "scratch-backups"))
+    (setq persistent-scratch-save-file (concat cpm-cache-dir "persistent-scratch"))
+    (setq persistent-scratch-autosave-mode 1)
+    (setq persistent-scratch-autosave-interval 60)
+    :config
+    (ignore-errors (persistent-scratch-setup-default)))
+#+END_SRC
+
+*** Framegroups
+Yet another [[https://github.com/noctuid/framegroups.el][workspace management]] package
+#+BEGIN_SRC emacs-lisp
+  (use-package framegroups
+    :ensure nil
+    :commands (fg-switch-to-frame fg-create-frame fg-switch)
+    :load-path "~/.emacs.d/.local/elisp/framegroups.el/"
+    :config
+    ;; enable `desktop-save-mode' for persistence
+  ;; NOTE: It seems Emacs occasionally hangs when restoring a lot of frames with
+  ;; desktop.el
+    ;; (fg-desktop-setup)
+    ;; (desktop-save-mode)
+
+  ;; binding keys to switch to specific framegroups
+  (general-define-key "C-c e" '(fg-switch "emacs"))
+  (general-define-key "C-c p" '(fg-switch "prog"))
+  ;; ...
+
+  ;; default layouts for framegroups
+  (defun cpm/my-framegroup-setup (name &rest _)
+    "Set up default framegroup layouts."
+    (interactive)
+    (pcase name
+      ;; emacs configuration
+      ("emacs"
+       (find-file "~/.emacs.d/config.org"))
+      ;; programming projects
+      ("prog"
+       (find-file "~/bin"))
+      ;; dotfiles
+      ("dotfiles"
+       (find-file "~/dotfiles/dotfiles.org"))
+      ("PHIL232"
+       (find-file "~/Dropbox/Work/projects/phil232/phil232_lecture_outline.org")
+       (split-window-right)
+       (find-file "~/Dropbox/Work/projects/phil232/content/notes/phil232_in-class_notes.org"))
+      ("PHIL105"
+       (find-file "~/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.org")
+       (split-window-right)
+       (find-file "~/Dropbox/Work/projects/phil105/content/slides/"))))
+
+  (add-hook 'fg-create-hook #'cpm/my-framegroup-setup)
+
+  ;; binding keys for the current framegroup
+  (defmacro cpm/my-ff (file)
+    "Wrapper for creating `find-file' commands."
+    `(lambda () (interactive) (find-file ,file)))
+
+  (defun cpm/my-framegroup-keybindings (name &rest _)
+    (pcase name
+      ("emacs"
+       (global-set-key "C-c , i" (cpm/my-ff "~/.emacs.d/init.el")))
+      ("PHIL 232"
+       (global-set-key "C-c , s" (cpm/my-ff "schedule.org"))
+       (global-set-key "C-c , f" #'projectile-find-file))
+      ))
+
+  (add-hook 'fg-after-switch-hook #'my-framegroup-keybindings))
+
+  (defun cpm/load-phil105 ()
+    (interactive)
+    (new-frame)
+    (fg-create-frame "PHIL105"))
+#+END_SRC
+
 ** DISABLED Doc View Mode
 CLOSED: [2018-02-03 Sat 10:44]
 Disabled for now

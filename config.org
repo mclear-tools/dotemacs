@@ -77,7 +77,6 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#autorevert][Autorevert]]
   - [[#url--request][URL & Request]]
 - [[#post-initialization][Post-Initialization]]
-  - [[#persistent-scratch][Persistent Scratch]]
   - [[#remember][Remember]]
   - [[#server][Server]]
   - [[#page-breaks][Page Breaks]]
@@ -7069,22 +7068,6 @@ Auto-revert buffers of changed files
 )
 #+END_SRC
 * Post-Initialization
-** DISABLED Persistent Scratch
-This has been giving me intermittent trouble. I'm disabling it for now in
-favor of [[info:remember][remember]].
-CLOSED: [2018-04-03 Tue 20:57]
-Make the content of the scratch buffer [[https://github.com/Fanael/persistent-scratch][persist]] between settings
-#+BEGIN_SRC emacs-lisp
-  (use-package persistent-scratch
-    :demand t
-    :init
-    (setq persistent-scratch-backup-directory (concat cpm-cache-dir "scratch-backups"))
-    (setq persistent-scratch-save-file (concat cpm-cache-dir "persistent-scratch"))
-    (setq persistent-scratch-autosave-mode 1)
-    (setq persistent-scratch-autosave-interval 60)
-    :config
-    (ignore-errors (persistent-scratch-setup-default)))
-#+END_SRC
 ** Remember
 A built-in [[info:remember][remember]] buffer
 #+BEGIN_SRC emacs-lisp
