@@ -1,3 +1,5 @@
+alias mg make github
+alias md make regenerate & make serve
 alias x exit
 alias vim find-file $1
 alias v find-file $1
