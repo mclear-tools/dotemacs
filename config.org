@@ -3659,6 +3659,44 @@ Ace [[https://github.com/abo-abo/ace-window][window management]].
   :commands (avy-goto-char))
 #+END_SRC
 **** Windows
+***** Golden Ratio
+Automatic resizing of Emacs windows to the [[https://github.com/roman/golden-ratio.el][golden ratio]]
+#+BEGIN_SRC emacs-lisp
+  (use-package golden-ratio
+    :load-path "~/.emacs.d/.local/elisp/golden-ratio.el/"
+    :ensure nil
+    :after (:any perspective helm nameframe projectile) 
+    :demand t
+    :config
+    ;; inhibit in helm windows
+    (defun pl/helm-alive-p ()
+    (if (boundp 'helm-alive-p)
+        (symbol-value 'helm-alive-p)))
+
+        (add-to-list 'golden-ratio-inhibit-functions 'pl/helm-alive-p)
+    (setq golden-ratio-extra-commands
+          (append golden-ratio-extra-commands
+                  '(evil-window-left
+                    evil-window-right
+                    evil-window-up
+                    evil-window-down
+                    buf-move-left
+                    buf-move-right
+                    buf-move-up
+                    buf-move-down
+                    window-number-select
+                    select-window
+                    select-window-1
+                    select-window-2
+                    select-window-3
+                    select-window-4
+                    select-window-5
+                    select-window-6
+                    select-window-7
+                    select-window-8
+                    select-window-9)))
+    (golden-ratio-mode 1))
+#+END_SRC
 ***** Window Numbering
 Numbered window shortcuts for Emacs
 #+BEGIN_SRC emacs-lisp
@@ -4236,6 +4274,7 @@ Keybindings for managing packages
       "tf" 'toggle-serif
       "tF" 'toggle-frame-maximized
       "tg" 'git-gutter-mode
+      "tG" 'golden-ratio-mode 
       "th" 'hl-line-mode
       "te" 'toggle-indicate-empty-lines
       "tE" 'eldoc-mode
