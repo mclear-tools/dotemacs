@@ -3828,7 +3828,7 @@ Better dired navigation using ranger-like settings
  Tidy Up modeline modes.
  #+BEGIN_SRC emacs-lisp
    (use-package diminish
-     :demand t)
+     :commands (diminish diminish-modes))
  #+END_SRC
 ***** Diminish minor modes
  #+BEGIN_SRC emacs-lisp
