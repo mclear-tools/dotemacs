@@ -2353,6 +2353,12 @@ Easy workspace creation and switching
     (find-file "~/Dropbox/Work/projects/KantReflection/Kant_reflection_notes.org")
     (split-window-right)
     (find-file "~/Dropbox/Work/projects/KantReflection/KantReflection.md"))
+  (defun cpm/load-emacs-config ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "Emacs Config")
+    (toggle-frame-maximized)
+    (find-file "~/.emacs.d/config.org.org"))
 
 #+END_SRC
 
