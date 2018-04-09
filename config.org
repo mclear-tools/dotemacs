@@ -5038,6 +5038,7 @@ Make capture the only window and close after refiling.
   (general-define-key :states '(normal) :keymaps 'org-mode-map
         "RET" 'org-open-at-point     ;; Open with return in evil
         "p"   'org-yank ;; better pasting behavior
+        "s-J" 'crux-top-join-line
         )
   ;;      "L" 'org-shiftright
   ;;      "H" 'org-shiftleft
