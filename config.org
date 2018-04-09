@@ -3694,7 +3694,8 @@ Automatic resizing of Emacs windows to the [[https://github.com/roman/golden-rat
                     select-window-6
                     select-window-7
                     select-window-8
-                    select-window-9)))
+                    select-window-9
+                    magit-status)))
     (golden-ratio-mode 1))
 #+END_SRC
 ***** Window Numbering
