@@ -4533,6 +4533,7 @@ Keybindings for managing packages
   ("C-h k" #'helpful-key)
   ("C-h v" #'helpful-variable)
   ("C-c C-." #'helpful-at-point)
+  ("C-h C-l" #'find-library)
   :commands (helpful-function helpful-callable helpful-key helpful-variable helpful-at-point))
 #+END_SRC
 
