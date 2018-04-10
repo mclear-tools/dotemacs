@@ -2358,7 +2358,8 @@ Easy workspace creation and switching
     (persp-mode 1)
     (nameframe-create-frame "Emacs Config")
     (toggle-frame-maximized)
-    (find-file "~/.emacs.d/config.org.org"))
+    (find-file "~/.emacs.d/config.org")
+    (magit-status))
 
 #+END_SRC
 
