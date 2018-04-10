@@ -4214,6 +4214,7 @@ Keybindings for managing packages
       "ps2" #'cpm/load-phil232
       "ps5" #'cpm/load-phil105
       "psr" #'cpm/load-kant-reflection
+      "psc" #'cpm/load-emacs-config
       "pT"  'projectile-find-test-file
       "pv"  'hydra-persp/body
       "pV"  'projectile-vc
