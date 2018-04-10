@@ -114,7 +114,7 @@ Let's set some variables with basic user information.
  #+END_SRC
 
  Here I set the variable values, including a variable font face for themes
- that use that for headings, such as [[*Solarized][solarized]]. 
+ that use that for headings, such as [[*Solarized][solarized]]. The settings are called [[git:~/.emacs.d/config.org::master@{2018-04-09}::2426][below]].
 
  #+BEGIN_SRC emacs-lisp
  (defvar cpm-font (font-spec :family "Inconsolata LGC" :size 13))
