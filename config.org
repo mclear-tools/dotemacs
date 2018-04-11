@@ -4728,18 +4728,27 @@ Open exported docx files in Word/Open Office rather than emacs
 *** Org-Agenda
 Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]]. 
 #+BEGIN_SRC emacs-lisp
-    (setq org-agenda-files '("~/Dropbox/org-files/"))
+  (setq org-agenda-files '("~/Dropbox/org-files/"))
+  (general-define-key "C-c a" #'org-agenda)
+  ; https://orgmode.org/manual/Storing-searches.html#Storing-searches
+  (setq org-agenda-custom-commands
+        '(("x" agenda)
+          ("y" agenda*) ; or agenda entries planned this week/day with an hour specification like [h]h:mm
+          ("z" todo "TODO")
+          ("n" todo "NEXT")
+          ("r" todo "REVISE")
+          ("w" todo "WAITING")))
 
-    ;; Display properties
-    (setq org-cycle-separator-lines 0
-          org-tags-column 80
-          org-agenda-tags-column org-tags-column
-          org-agenda-window-setup 'only-window
-          org-agenda-restore-windows-after-quit t
-          org-agenda-todo-ignore-scheduled 'all
-          org-agenda-todo-ignore-deadlines 'all 
-          ;; org-agenda-sticky t
-          org-agenda-span 'day)
+  ;; Display properties
+  (setq org-cycle-separator-lines 0
+        org-tags-column 80
+        org-agenda-tags-column org-tags-column
+        org-agenda-window-setup 'only-window
+        org-agenda-restore-windows-after-quit t
+        org-agenda-todo-ignore-scheduled 'all
+        org-agenda-todo-ignore-deadlines 'all 
+        ;; org-agenda-sticky t
+        org-agenda-span 'day)
 
   (with-eval-after-load 'org-agenda
     (general-define-key :keymaps 'org-agenda-mode-map 
@@ -4759,7 +4768,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
   (defun cpm/jump-to-org-agenda-all-todos ()
     "open agenda with all unscheduled/non-deadline todos"
     (interactive)
-    (org-agenda nil "t"))
+    (org-agenda nil "z"))
 #+END_SRC
 
 *** Org-Super-Agenda
