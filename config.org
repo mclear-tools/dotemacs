@@ -4317,6 +4317,15 @@ Keybindings for managing packages
     :non-normal-prefix "C-SPC"
 
       "u"  '(:ignore t :which-key "User")
+      "uA" '(:ignore r which-key "Agenda Files")
+      "uAa" #'cpm/goto-articles.org
+      "uAc" #'cpm/goto-classes.org
+      "uAf" #'cpm/goto-org-files
+      "uAi" #'cpm/goto-inbox.org
+      "uAn" #'cpm/goto-notes.org
+      "uAp" #'cpm/goto-projects.org
+      "uAs" #'cpm/goto-someday.org
+      "uAt" #'cpm/org-goto-todo.org
       "ua" 'cpm/jump-to-org-agenda
       "um" 'cpm/org-to-markdown
       "uc" 'cpm/pandoc-convert-to-pdf
@@ -4331,8 +4340,8 @@ Keybindings for managing packages
       "ur" 'remember-notes
       "us" 'sb-expand-current-file
       "uS" 'just-one-space
-      "ut" 'cpm/org-goto-todo
-      "uT" 'cpm/jump-to-org-agenda-all-todos
+      ;; "ut" 'cpm/org-goto-todo
+      "ut" 'cpm/jump-to-org-agenda-all-todos
       "ud" 'distraction-free
       "uD" 'my-desktop
       "uj" 'cpm/goto-journal
@@ -5018,15 +5027,6 @@ Make capture the only window and close after refiling.
          "il" #'org-insert-link
          "if" #'org-footnote-new
 
-   "O"  '(:ignore t :which-key "Org files...")
-         "Oa" #'cpm/goto-articles.org
-         "Of" #'cpm/goto-org-files
-         "Oi" #'cpm/goto-inbox.org
-         "On" #'cpm/goto-notes.org
-         "Op" #'cpm/goto-projects.org
-         "Os" #'cpm/goto-someday.org
-         "Ot" #'cpm/goto-teaching.org
-
    "R"  '(:ignore t :which-key "RevealJS..." )
          "Rr" #'org-reveal-export-to-html-and-browse
          "Rs" #'cpm/narrowed-subtree-to-html
@@ -5422,10 +5422,10 @@ Functions to advance forwards or backwards through narrowed tree
   "goto org-articles"
   (interactive)
   (find-file "~/Dropbox/org-files/articles.org"))
-(defun cpm/goto-teaching.org ()
-  "goto org-teaching"
+(defun cpm/goto-classes.org ()
+  "goto org-classes"
   (interactive)
-  (find-file "~/Dropbox/org-files/teaching.org"))
+  (find-file "~/Dropbox/org-files/classes.org"))
 (defun cpm/goto-notes.org ()
   "goto org-notes"
   (interactive)
