@@ -3639,6 +3639,7 @@ Automatic resizing of Emacs windows to the [[https://github.com/roman/golden-rat
                     select-window-7
                     select-window-8
                     select-window-9
+                    previous-multiframe-window
                     magit-status)))
     (golden-ratio-mode 1))
 #+END_SRC
@@ -4261,7 +4262,7 @@ Keybindings for managing packages
       "uAn" #'cpm/goto-notes.org
       "uAp" #'cpm/goto-projects.org
       "uAs" #'cpm/goto-someday.org
-      "uAt" #'cpm/org-goto-todo.org
+      "uAt" #'cpm/org-goto-todo
       "ua" 'cpm/jump-to-org-agenda
       "um" 'cpm/org-to-markdown
       "uc" 'cpm/pandoc-convert-to-pdf
@@ -4831,7 +4832,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
            "** STARTED %? \n  %i")
           ("c" "Capture" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
            "* TODO %?\n %i")
-          ("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
+          ("j" "Journal" entry (file+olp+datetree "~/Dropbox/org-files/journal.org")
            "**** %<%H:%M>\n%?")
           ("l" "A link, for reading later." entry (file+headline "~/Dropbox/org-files/org-notes.org" "Reading List")
             "* %:description\n%u\n\n%c\n\n%i"
@@ -5558,6 +5559,12 @@ A useful [[https://gist.github.com/deerpig/3cebadb236fed15c54b45f73a4321336#file
         ))
 #+END_SRC
 
+*** Org Export
+Various exporters to use. Right now it is just markdown that I need.
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "org"
+  '(require 'ox-md nil t))
+#+END_SRC
 
 ** Search
 *** Ag
@@ -6471,6 +6478,7 @@ Great for managing citations and notes
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
             markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
+            markdown-footnote-location 'immediately
             )
        ;; add keybindings to hook
      :config
