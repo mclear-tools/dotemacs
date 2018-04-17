@@ -6,7 +6,7 @@
 ;; Description: Another org exporter for Pandoc
 ;; Author: KAWABATA, Taichi <kawabata.taichi@gmail.com>
 ;; Created: 2014-07-20
-;; Version: 1.171107
+;; Version: 1.180411
 ;; Package-Version: 20171107.341
 ;; Package-Requires: ((org "8.2") (emacs "24") (dash "2.8") (ht "2.0") (cl-lib "0.5"))
 ;; Keywords: tools
@@ -199,9 +199,9 @@
     ;;(?j "to json." org-pandoc-export-to-json)
     (?j "to json and open." org-pandoc-export-to-json-and-open)
     (?J "as json." org-pandoc-export-as-json)
-    ;;(?k "to markdown." org-pandoc-export-to-markdown)
-    ;;(?k "to markdown and open." org-pandoc-export-to-markdown-and-open)
-    ;;(?K "as markdown." org-pandoc-export-as-markdown)
+    (?k "to markdown." org-pandoc-export-to-markdown)
+    (?k "to markdown and open." org-pandoc-export-to-markdown-and-open)
+    (?K "as markdown." org-pandoc-export-as-markdown)
     (?l "to latex-pdf and open." org-pandoc-export-to-latex-pdf-and-open)
     (?L "to latex-pdf." org-pandoc-export-to-latex-pdf)
     ;;(?m "to man." org-pandoc-export-to-man)
@@ -215,8 +215,8 @@
     ;;(?p "to plain." org-pandoc-export-to-plain)
     (?p "to plain and open." org-pandoc-export-to-plain-and-open)
     (?P "as plain." org-pandoc-export-as-plain)
-    ;;(?q "to commonmark." org-pandoc-export-to-commonmark)
-    ;;(?q "to commonmark and open." org-pandoc-export-to-commonmark-and-open)
+    (?q "to commonmark." org-pandoc-export-to-commonmark)
+    (?q "to commonmark and open." org-pandoc-export-to-commonmark-and-open)
     ;;(?Q "as commonmark." org-pandoc-export-as-commonmark)
     ;;(?r "to rtf." org-pandoc-export-to-rtf)
     (?r "to rtf and open." org-pandoc-export-to-rtf-and-open)
