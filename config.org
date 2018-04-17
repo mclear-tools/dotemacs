@@ -1994,7 +1994,7 @@ There are some other useful setup packages for evil
       (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
       (unless (file-directory-p undo-dir)
         (make-directory undo-dir t)))
-    (setq undo-tree-auto-save-history t))
+    (setq undo-tree-auto-save-history nil))
 #+end_src
 ***** Evil Multiedit
 A version of multiple cursors for use with evil. Courtesy of [[https://github.com/hlissner/evil-multiedit][hlissner]]. 
