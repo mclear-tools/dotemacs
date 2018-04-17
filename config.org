@@ -61,6 +61,8 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#programming][Programming]]
   - [[#version-control][Version Control]]
 - [[#research--writing][Research & Writing]]
+  - [[#spelling][Spelling]]
+  - [[#spelling-autocorrect][Spelling Autocorrect]]
   - [[#helm-bibtex][Helm-Bibtex]]
   - [[#markdown-mode][Markdown mode]]
   - [[#writeroom-distraction-free-mode][Writeroom (Distraction free mode)]]
@@ -1569,84 +1571,6 @@ General Text settings and hooks
 #+BEGIN_SRC emacs-lisp
 ; Iterate through CamelCase words
 (global-subword-mode 1)                           
-#+END_SRC
-**** Spelling
-Use flyspell and aspell
-#+BEGIN_SRC emacs-lisp
-  (use-package ispell
-    :commands (ispell-word ispell-region ispell-buffer)
-    :config
-    ;; Save a new word to personal dictionary without asking
-    (setq ispell-silently-savep t)
-    (setq-default ispell-program-name "aspell")
-    (setq-default ispell-list-command "list")
-    (setq ispell-extra-args
-        (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
-              "--lang=en_US"
-              "--ignore=3")))
-
-  (use-package flyspell
-    :hook ((org-mode markdown-mode latex-mode) . turn-on-flyspell)
-    :init
-    ;; Below variables need to be set before `flyspell' is loaded.
-    (setq flyspell-use-meta-tab nil)
-    :config
-    ;; Use mouse
-    (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-    (define-key flyspell-mouse-map [mouse-3] #'undefined)
-    ;; reduce messages & slowdown
-    (setq flyspell-issue-message-flag nil)
-    (setq flyspell-issue-welcome-flag nil))
-#+END_SRC 
-
-**** Spelling Autocorrect
-Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
-#+BEGIN_SRC emacs-lisp
-(define-key ctl-x-map "\C-i"
-  #'endless/ispell-word-then-abbrev)
-
-(defun endless/simple-get-word ()
-  (car-safe (save-excursion (ispell-get-word nil))))
-
-(defun endless/ispell-word-then-abbrev (p)
-  "Call `ispell-word', then create an abbrev for it.
-With prefix P, create local abbrev. Otherwise it will
-be global.
-If there's nothing wrong with the word at point, keep
-looking for a typo until the beginning of buffer. You can
-skip typos you don't want to fix with `SPC', and you can
-abort completely with `C-g'."
-  (interactive "P")
-  (let (bef aft)
-    (save-excursion
-      (while (if (setq bef (endless/simple-get-word))
-                 ;; Word was corrected or used quit.
-                 (if (ispell-word nil 'quiet)
-                     nil ; End the loop.
-                   ;; Also end if we reach `bob'.
-                   (not (bobp)))
-               ;; If there's no word at point, keep looking
-               ;; until `bob'.
-               (not (bobp)))
-        (backward-word)
-        (backward-char))
-      (setq aft (endless/simple-get-word)))
-    (if (and aft bef (not (equal aft bef)))
-        (let ((aft (downcase aft))
-              (bef (downcase bef)))
-          (define-abbrev
-            (if p local-abbrev-table global-abbrev-table)
-            bef aft)
-          (message "\"%s\" now expands to \"%s\" %sally"
-                   bef aft (if p "loc" "glob")))
-      (user-error "No typo at or before point"))))
-
-(setq save-abbrevs 'silently)
-
-(use-package abbrev
-  :ensure nil
-  :commands (abbrev-mode))
-
 #+END_SRC
 **** Only use spaces
 #+BEGIN_SRC emacs-lisp
@@ -3538,16 +3462,20 @@ Hide minibuffer while helm is active
     (setq helm-swoop-use-fuzzy-match t)
     (setq helm-swoop-split-with-multiple-windows t))
 #+end_src
-****** Helm flyspell
+****** DISABLED Helm flyspell
+CLOSED: [2018-04-16 Mon 15:08]
 
 Use helm with flyspell
-#+begin_src emacs-lisp
-(use-package helm-flyspell
-  :if (not noninteractive)
-  :commands helm-flyspell-correct
-  :config
-  (general-define-key :keymaps 'flyspell-mode-map 
-     "C-;" 'helm-flyspell-correct))
+#+begin_src emacs-lisp 
+  (use-package helm-flyspell
+    :disabled t
+    ;; :if (not noninteractive)
+    :commands helm-flyspell-correct
+    :after flyspell
+    :demand t
+    :config
+    (general-define-key :keymaps 'flyspell-mode-map
+       "C-;" 'helm-flyspell-correct))
 #+end_src
 ****** Helm recent directories
 Recent directories
@@ -6400,6 +6328,88 @@ workflow I used to use in Sublime Text. Perfect for short commit messages.
  
  
 * Research & Writing
+** Spelling
+Use flyspell and aspell
+#+BEGIN_SRC emacs-lisp
+  (use-package ispell
+    :commands (ispell-word ispell-region ispell-buffer)
+    :config
+    ;; Save a new word to personal dictionary without asking
+    (setq ispell-silently-savep t)
+    (setq-default ispell-program-name "aspell")
+    (setq-default ispell-list-command "list")
+    (setq ispell-extra-args
+        (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
+              "--lang=en_US"
+              "--ignore=3")))
+
+  (use-package flyspell
+    :commands flyspell-auto-correct-word
+    :hook ((org-mode markdown-mode latex-mode) . turn-on-flyspell)
+    :general
+    ("C-;" 'flyspell-auto-correct-word)
+    :init
+    ;; Below variables need to be set before `flyspell' is loaded.
+    (setq flyspell-use-meta-tab nil)
+    :config
+    ;; Use mouse
+    (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+    (define-key flyspell-mouse-map [mouse-3] #'undefined)
+    ;; reduce messages & slowdown
+    (setq flyspell-issue-message-flag nil)
+    (setq flyspell-issue-welcome-flag nil))
+#+END_SRC 
+
+** Spelling Autocorrect
+Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
+#+BEGIN_SRC emacs-lisp
+(define-key ctl-x-map "\C-i"
+  #'endless/ispell-word-then-abbrev)
+
+(defun endless/simple-get-word ()
+  (car-safe (save-excursion (ispell-get-word nil))))
+
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+With prefix P, create local abbrev. Otherwise it will
+be global.
+If there's nothing wrong with the word at point, keep
+looking for a typo until the beginning of buffer. You can
+skip typos you don't want to fix with `SPC', and you can
+abort completely with `C-g'."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (if (setq bef (endless/simple-get-word))
+                 ;; Word was corrected or used quit.
+                 (if (ispell-word nil 'quiet)
+                     nil ; End the loop.
+                   ;; Also end if we reach `bob'.
+                   (not (bobp)))
+               ;; If there's no word at point, keep looking
+               ;; until `bob'.
+               (not (bobp)))
+        (backward-word)
+        (backward-char))
+      (setq aft (endless/simple-get-word)))
+    (if (and aft bef (not (equal aft bef)))
+        (let ((aft (downcase aft))
+              (bef (downcase bef)))
+          (define-abbrev
+            (if p local-abbrev-table global-abbrev-table)
+            bef aft)
+          (message "\"%s\" now expands to \"%s\" %sally"
+                   bef aft (if p "loc" "glob")))
+      (user-error "No typo at or before point"))))
+
+(setq save-abbrevs 'silently)
+
+(use-package abbrev
+  :ensure nil
+  :commands (abbrev-mode))
+
+#+END_SRC
+
 ** Helm-Bibtex
 Great for managing citations and notes
 #+begin_src emacs-lisp
