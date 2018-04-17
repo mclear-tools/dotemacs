@@ -5753,12 +5753,12 @@ Various exporters to use. Right now it is just markdown that I need.
     :config
     (venv-initialize-interactive-shells) ;; if you want interactive shell support
     (venv-initialize-eshell) ;; if you want eshell support
-    (setq venv-location "/Users/roambot/bin/virtualenvs")
-    (setq venv-project-home "/Users/roambot/Dropbox/Work/projects/")
+    (setq venv-location "~/bin/virtualenvs")
+    (setq venv-project-home "~/Dropbox/Work/projects/")
     (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
    (defcustom venv-project-home
-     (expand-file-name (or (getenv "PROJECT_HOME") "/Users/roambot/Dropbox/Work/projects/"))
+     (expand-file-name (or (getenv "PROJECT_HOME") "~/Dropbox/Work/projects/"))
        "The location(s) of your virtualenv projects."
        :group 'virtualenvwrapper)
 
@@ -6039,7 +6039,7 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
   :after company
   :demand t
   :config
-  (setq company-bibtex-bibliography "/Users/roambot/Dropbox/Work/master.bib")
+  (setq company-bibtex-bibliography "~/Dropbox/Work/master.bib")
   (setq company-bibtex-org-citation-regex "-?@")
   (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
@@ -6452,10 +6452,10 @@ Great for managing citations and notes
   :END: 
   [[pdfview:${file}][file link]]
        ")
-    (setq bibtex-completion-bibliography "/Users/roambot/Dropbox/Work/Master.bib" 
-          bibtex-completion-library-path "/Users/roambot/Dropbox/Work/MasterLib/"
+    (setq bibtex-completion-bibliography "~/Dropbox/Work/Master.bib" 
+          bibtex-completion-library-path "~/Dropbox/Work/MasterLib/"
           bibtex-completion-pdf-field nil
-          bibtex-completion-notes-path "/Users/Roambot/Dropbox/org-files/articles.org"
+          bibtex-completion-notes-path "~/Dropbox/org-files/articles.org"
           ;; bibtex-completion-additional-search-fields '(keywords)
           bibtex-completion-notes-extension ".org"
           helm-bibtex-full-frame nil) 
@@ -6474,10 +6474,10 @@ Great for managing citations and notes
     (add-hook 'markdown-mode-hook
           '(lambda ()
              (turn-on-auto-fill) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (hl-todo-mode)))
-    (setq markdown-command "pandoc -s -N --smart --bibliography=/Users/Roambot/Dropbox/Work/Master.bib"
+    (setq markdown-command "pandoc -s -N --smart --bibliography=~/Dropbox/Work/Master.bib"
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
-            markdown-open-command "/Users/Roambot/bin/scripts/mark.sh"
+            markdown-open-command "~/bin/scripts/mark.sh"
             markdown-footnote-location 'immediately
             )
        ;; add keybindings to hook
@@ -6515,7 +6515,7 @@ Pandoc mode for markdown conversion
     (defun cpm/pandoc-command-line-convert-to-pdf ()
      "convert to pdf"
      (interactive)
-     (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/Master.bib --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
+     (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=~/Dropbox/Work/Master.bib --template=~/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
 
     (defun cpm/pandoc-pdf-open ()
      "Open created PDF file"  
