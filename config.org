@@ -2378,13 +2378,12 @@ Emacs now has native line number support in the C source code, rather
 than the other packages, which utilize elisp hacks, making it /much/
 faster.
 #+BEGIN_SRC emacs-lisp
-(use-package line-numbers
-  :ensure nil
-  :hook ((markdown-mode prog-mode) . display-line-numbers-mode)
-  :commands display-line-numbers-mode
-  :init
-  (setq-default display-line-numbers-type 'visual)
-) 
+  (use-package line-numbers
+    :ensure nil
+    ;; :hook (markdown-mode prog-mode)
+    :commands display-line-numbers-mode
+    :init
+    (setq-default display-line-numbers-type 'visual)) 
 #+END_SRC
 
 
@@ -5662,7 +5661,7 @@ A useful [[https://gist.github.com/deerpig/3cebadb236fed15c54b45f73a4321336#file
                                     (kill-buffer (when (buffer-live-p (process-buffer proc)))
                                     (delete-window))))))
       (add-hook 'shell-pop-out-hook 'kill-this-buffer)
-      (add-hook 'term-mode-hook (lambda () (nlinum-mode -1) (linum-mode -1) (ansi-term-handle-close)))))
+      (add-hook 'term-mode-hook (lambda () (linum-mode -1) (ansi-term-handle-close)))))
  #+end_src
 *** Shell settings
  Other useful shell settings  
@@ -6534,7 +6533,6 @@ mode of writing.
       (interactive)
       (git-gutter-mode 0) 
       (linum-mode 0) 
-      (nlinum-mode 0) 
       (centered-cursor-mode)
       (writeroom-mode)
       )
