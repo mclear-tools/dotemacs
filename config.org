@@ -3809,7 +3809,7 @@ Better dired navigation using ranger-like settings
      (use-package centered-cursor-mode
        :diminish centered-cursor-mode
        :hook 
-       ((org-mode markdown-mode) . centered-cursor-mode)
+       ((markdown-mode) . centered-cursor-mode)
        :commands (centered-cursor-mode
                   global-centered-cursor-mode)
        :config
@@ -3820,8 +3820,6 @@ Better dired navigation using ranger-like settings
                                       widget-button-click
                                       scroll-bar-toolkit-scroll
                                       evil-mouse-drag-region))))
-
-   (add-hook 'text-mode-hook 'centered-cursor-mode)
  #+END_SRC
  
 **** Namespaced Keybindings
