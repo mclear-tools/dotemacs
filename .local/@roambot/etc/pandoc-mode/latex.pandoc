@@ -4,14 +4,14 @@
 ;; saved on 2015.11.30 21:14
 
 ((mathjax . "")
- (bibliography "/Users/Roambot/Dropbox/Work/Master.bib")
- (csl . "/Users/Roambot/.pandoc/styles/chicago-author-date.csl")
+ (bibliography "~/Dropbox/Work/Master.bib")
+ (csl . "~/.pandoc/styles/chicago-author-date.csl")
  ;; (reference-links . t)
  (number-sections . t)
- (reference-doc . "/Users/Roambot/.pandoc/pandoc-templates/reference.docx")
- ;; (reference-docx . "/Users/Roambot/.pandoc/pandoc-templates/reference.docx")
+ (reference-doc . "~/.pandoc/pandoc-templates/reference.docx")
+ ;; (reference-docx . "~/.pandoc/pandoc-templates/reference.docx")
  (standalone . t)
- (template . "/Users/Roambot/.pandoc/pandoc-templates/default.latex")
+ (template . "~/.pandoc/pandoc-templates/default.latex")
  (pdf-engine . "xelatex")
  ;; (latex-engine . "/Library/TeX/texbin/xelatex")
  (variable

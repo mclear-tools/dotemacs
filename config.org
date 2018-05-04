@@ -88,10 +88,10 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#tabs][Tabs]]
   - [[#academic-phrases][Academic Phrases]]
   - [[#org-projectile][Org Projectile]]
-  - [[#org-export-top-level-trees][Org Export Top-Level Trees]]
   - [[#eterm-256-color][Eterm-256 Color]]
   - [[#quelpa][Quelpa]]
   - [[#github-stars][Github Stars]]
+  - [[#mixed-pitch][Mixed-Pitch]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7244,4 +7244,9 @@ Browse your [[https://github.com/xuchunyang/github-stars.el/tree/894a2c3fd72ae23
   (use-package github-stars
     :ensure t
     :quelpa (github-stars :fetcher github :repo "xuchunyang/github-stars.el"))
+#+END_SRC
+** TESTING Mixed-Pitch
+Mix fixed-pitch and variable-pitch fonts [[https://github.com/jabranham/mixed-pitch/tree/b6b1601c7a3eb9ab23e33192bc479bccc4dd5e7b][in Emacs]]
+#+BEGIN_SRC emacs-lisp
+(use-package mixed-pitch)
 #+END_SRC
