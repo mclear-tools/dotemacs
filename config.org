@@ -6548,7 +6548,7 @@ Pandoc mode for markdown conversion
      ((eq major-mode 'org-mode)
       (call-interactively 'org-pandoc-export-to-latex-pdf-and-open))
      (t
-      (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open) (previous-multiframe-window))))
+      (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open) (evil-window-prev 1))))
 
     (defun cpm/pandoc-command-line-convert-to-pdf ()
      "convert to pdf"
