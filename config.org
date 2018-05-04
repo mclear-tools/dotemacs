@@ -4645,10 +4645,11 @@ get a completing read of all headings up to three levels deep in all
 files in =org-agenda-files=. You can also refile to the top header in a
 document and create new parents.
 #+BEGIN_SRC emacs-lisp
-(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-(setq org-refile-use-outline-path 'file)
-(setq org-outline-path-complete-in-steps nil)
-(setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)
+                             ("/Users/roambot/.emacs.d/config.org" :maxlevel . 8)))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
 *** Open Docx Files In Default Application (Ie Msword)
 Open exported docx files in Word/Open Office rather than emacs
@@ -5066,9 +5067,10 @@ Make capture the only window and close after refiling.
     :demand t
     :hook (org-mode . (lambda () (org-bullets-mode 1)))
     :config 
-    (setq org-bullets-bullet-list '("●" "◉"))) 
+    (setq org-bullets-bullet-list '("◉" "⚫"))) 
 
     ;; Other bullets
+    ;; "●" "◉" "→"
     ;; ("◉" "◎" "⚫" "○" "►" "◇")
     ;;  "∙" "∶" "∵" "∷" "∺" )))
     ;; (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
@@ -5562,6 +5564,44 @@ Various exporters to use. Right now it is just markdown that I need.
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "org"
   '(require 'ox-md nil t))
+#+END_SRC
+
+*** Org Export Top-Level Trees
+From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
+#+BEGIN_SRC emacs-lisp
+(defun cpm/org-map-entries (org-file in-tags func)
+  (let ((tags (if (stringp in-tags)
+                   (list in-tags)
+                 in-tags)))
+
+    (with-temp-buffer
+      (org-mode)
+      (insert-file-contents org-file-main)
+
+      ;; Execute func at each heading that matches tags.
+      (while (< (point) (point-max))
+
+        ;; If find a heading...
+        (and (search-forward-regexp "^\* " nil "end")
+
+             ;; ...that matches the given tags...
+             (seq-reduce
+              (lambda(a b) (and a b))
+              (mapcar
+               (lambda (tag)
+                 (beginning-of-line)
+                 (search-forward-regexp
+                  (concat ":" tag ":") (line-end-position) "end"))
+               tags)
+              t)
+
+             ;; ... then execute given function with cursor at beginning of
+             ;; heading.
+             (progn
+               (beginning-of-line)
+               (save-excursion
+                 (funcall func))
+               (end-of-line)))))))
 #+END_SRC
 
 ** Search
@@ -7166,43 +7206,6 @@ useful but we'll see.
     (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates))
   :ensure t)
-#+END_SRC
-** Org Export Top-Level Trees
-From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
-#+BEGIN_SRC emacs-lisp
-(defun cpm/org-map-entries (org-file in-tags func)
-  (let ((tags (if (stringp in-tags)
-                   (list in-tags)
-                 in-tags)))
-
-    (with-temp-buffer
-      (org-mode)
-      (insert-file-contents org-file-main)
-
-      ;; Execute func at each heading that matches tags.
-      (while (< (point) (point-max))
-
-        ;; If find a heading...
-        (and (search-forward-regexp "^\* " nil "end")
-
-             ;; ...that matches the given tags...
-             (seq-reduce
-              (lambda(a b) (and a b))
-              (mapcar
-               (lambda (tag)
-                 (beginning-of-line)
-                 (search-forward-regexp
-                  (concat ":" tag ":") (line-end-position) "end"))
-               tags)
-              t)
-
-             ;; ... then execute given function with cursor at beginning of
-             ;; heading.
-             (progn
-               (beginning-of-line)
-               (save-excursion
-                 (funcall func))
-               (end-of-line)))))))
 #+END_SRC
 ** TESTING Eterm-256 Color
 Add [[https://github.com/dieggsy/eterm-256color][customizable 256 color support]] to =term= and =ansiterm=
