@@ -204,7 +204,7 @@ long GC pauses during normal usage.
         gc-cons-percentage 0.6)))
 
 (defun cpm/config-exit-hook ()
-  (setq gc-cons-threshold 100000
+  (setq gc-cons-threshold 80000
       gc-cons-percentage 0.1))
 
 (add-hook 'before-init-hook #'cpm/config-setup-hook)
@@ -1908,7 +1908,7 @@ Install, automatically load, and enable evil. It's like vim, but better!
       (evil-set-initial-state 'messages-buffer-mode 'normal)
       (evil-set-initial-state 'magit-log-edit-mode 'insert)
       ;; evil-normal-state is preferred, so revert when idle
-      (run-with-idle-timer 60 t 'evil-normal-state)
+      ;; (run-with-idle-timer 60 t 'evil-normal-state)
       ;; don't echo evil state
       (setq evil-echo-state nil)
       ;; evil everywhere
@@ -6350,7 +6350,7 @@ Use flyspell and aspell
     :commands (ispell-word ispell-region ispell-buffer)
     :config
     ;; Save a new word to personal dictionary without asking
-    (setq ispell-silently-savep t)
+    (setq ispell-silently-savep nil)
     (setq-default ispell-program-name "aspell")
     (setq-default ispell-list-command "list")
     (setq ispell-extra-args
