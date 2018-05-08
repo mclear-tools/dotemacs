@@ -1548,6 +1548,11 @@ From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill p
     ;; There is no need for "^" as the regexp is matched at the beginning of line.
     (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
 #+END_SRC
+*** Pretty symbols
+#+BEGIN_SRC emacs-lisp
+(setq prettify-symbols-unprettify-at-point t)
+(global-prettify-symbols-mode +1)
+#+END_SRC
 *** Startup Message
 #+BEGIN_SRC emacs-lisp
   ;; Change the echo message
