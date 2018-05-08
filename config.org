@@ -121,7 +121,7 @@ Let's set some variables with basic user information.
  that use that for headings, such as [[*Solarized][solarized]]. The settings are called [[git:~/.emacs.d/config.org::master@{2018-04-09}::2426][below]].
 
  #+BEGIN_SRC emacs-lisp
- (defvar cpm-font (font-spec :family "Inconsolata LGC" :size 13))
+ (defvar cpm-font (font-spec :family "hasklig" :size 13))
  (defvar cpm-vari-font (font-spec :family "Avenir"))
  (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
  #+END_SRC
@@ -2518,7 +2518,8 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
                   (custom-theme-set-faces
                   'solarized-dark
                   ;; make bg darker for higher contrast
-                  '(default ((t (:inherit nil :stipple nil :background "#002833" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 130 :width normal :foundry "nil" :family "Inconsolata LGC"))))
+                  ;; '(default ((t (:inherit nil :stipple nil :background "#002833" :foreground "#839496" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 130 :width normal :foundry "nil" :family "Inconsolata LGC"))))
+                  '(default ((t (:background "#002833" :foreground "#839496"))))
                   ;; matching fringe
                   '(fringe ((t (:background "#002833" :foreground "#586e75"))))
                   ;; fix modeline underline
