@@ -376,12 +376,13 @@ These are useful built-in functions, but you have to enable them
   (put 'narrow-to-region 'disabled nil)
   (put 'dired-find-alternate-file 'disabled nil)
 #+END_SRC
-*** FIXME Call an emacs instance
+*** Call an emacs instance
 Call an emacs instance for testing
 #+BEGIN_SRC emacs-lisp
-(defun cpm/call-emacs ()
-  (interactive)
-  (async-shell-command "emacs"))
+  (defun cpm/call-emacs ()
+    (interactive)
+    (start-process "Emacs" nil
+                   (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
 #+END_SRC
 *** Clipboard to/from Buffer
 #+BEGIN_SRC emacs-lisp
