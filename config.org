@@ -376,7 +376,7 @@ These are useful built-in functions, but you have to enable them
   (put 'narrow-to-region 'disabled nil)
   (put 'dired-find-alternate-file 'disabled nil)
 #+END_SRC
-*** Call an emacs instance
+*** FIXME Call an emacs instance
 Call an emacs instance for testing
 #+BEGIN_SRC emacs-lisp
 (defun cpm/call-emacs ()
