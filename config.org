@@ -92,6 +92,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#quelpa][Quelpa]]
   - [[#github-stars][Github Stars]]
   - [[#mixed-pitch][Mixed-Pitch]]
+  - [[#shell-path][Shell Path]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7257,4 +7258,13 @@ Browse your [[https://github.com/xuchunyang/github-stars.el/tree/894a2c3fd72ae23
 Mix fixed-pitch and variable-pitch fonts [[https://github.com/jabranham/mixed-pitch/tree/b6b1601c7a3eb9ab23e33192bc479bccc4dd5e7b][in Emacs]]
 #+BEGIN_SRC emacs-lisp
 (use-package mixed-pitch)
+#+END_SRC
+** TESTING Shell Path
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :if (eq system-type 'darwin)
+  :custom
+  (exec-path-from-shell-check-startup-files nil)
+  :config
+  (exec-path-from-shell-initialize))
 #+END_SRC
