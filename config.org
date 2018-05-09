@@ -2291,7 +2291,7 @@ Easy workspace creation and switching
     (persp-mode 1)
     (nameframe-create-frame "Kant on Rational Agency")
     (toggle-frame-maximized)
-    (find-file "~/Dropbox/Work/projects/Kant_Agency_Book/Kant_Rational_Agency_Notes.org")
+    (find-file "~/Dropbox/Work/projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
     (split-window-right)
     (magit-status))
   (defun cpm/load-emacs-config ()
