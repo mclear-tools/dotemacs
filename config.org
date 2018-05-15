@@ -93,6 +93,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#github-stars][Github Stars]]
   - [[#mixed-pitch][Mixed-Pitch]]
   - [[#shell-path][Shell Path]]
+  - [[#ligatures][Ligatures]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -103,10 +104,11 @@ Let's set some variables with basic user information.
 #+END_SRC
 * Variables
 ** Font
- [[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font. I use a version, Inconsolata-LGC,
- that also has bold and italic fonts.
-
- To install it on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew Cask]].
+ [[http://levien.com/type/myfonts/inconsolata.html][Inconsolata]] is a nice monospaced font. I've useed a version, Inconsolata-LGC,
+ that also has bold and italic fonts. I'm currently using [[https://github.com/i-tu/Hasklig/issues/84][hasklig]], which is a
+ fork of [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] with ligatures added.  
+ 
+ To install a font on OS X, you can use Homebrew with [[http://caskroom.io/][Homebrew Cask]].
 
  #+begin_src sh :tangle no
 
@@ -122,7 +124,7 @@ Let's set some variables with basic user information.
  that use that for headings, such as [[*Solarized][solarized]]. The settings are called [[git:~/.emacs.d/config.org::master@{2018-04-09}::2426][below]].
 
  #+BEGIN_SRC emacs-lisp
- (defvar cpm-font (font-spec :family "hasklig" :size 13))
+ (defvar cpm-font (font-spec :family "Hasklig" :size 13))
  (defvar cpm-vari-font (font-spec :family "Avenir"))
  (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
  #+END_SRC
@@ -7268,3 +7270,42 @@ Mix fixed-pitch and variable-pitch fonts [[https://github.com/jabranham/mixed-pi
   :config
   (exec-path-from-shell-initialize))
 #+END_SRC
+** TESTING Ligatures
+Per the [[https://github.com/i-tu/Hasklig/issues/84][discussion here]]. 
+#+BEGIN_SRC emacs-lisp 
+ (defun my-correct-symbol-bounds (pretty-alist)
+    "Prepend a TAB character to each symbol in this alist,
+this way compose-region called by prettify-symbols-mode
+will use the correct width of the symbols
+instead of the width measured by char-width."
+    (mapcar (lambda (el)
+              (setcdr el (string ?\t (cdr el)))
+              el)
+            pretty-alist))
+
+  (defun my-ligature-list (ligatures codepoint-start)
+    "Create an alist of strings to replace with
+codepoints starting from codepoint-start."
+    (let ((codepoints (-iterate '1+ codepoint-start (length ligatures))))
+      (-zip-pair ligatures codepoints)))
+
+  ; list can be found at https://github.com/i-tu/Hasklig/blob/master/GlyphOrderAndAliasDB#L1588
+  (setq my-hasklig-ligatures
+    (let* ((ligs '("&&" "***" "*>" "\\\\" "||" "|>" "::"
+                   "==" "===" "==>" "=>" "=<<" "!!" ">>"
+                   ">>=" ">>>" ">>-" ">-" "->" "-<" "-<<"
+                   "<*" "<*>" "<|" "<|>" "<$>" "<>" "<-"
+                   "<<" "<<<" "<+>" ".." "..." "++" "+++"
+                   "/=" ":::" ">=>" "->>" "<=>" "<=<" "<->")))
+      (my-correct-symbol-bounds (my-ligature-list ligs #Xe100))))
+
+  ;; nice glyphs for haskell with hasklig
+  (defun my-set-hasklig-ligatures ()
+    "Add hasklig ligatures for use with prettify-symbols-mode."
+    (setq prettify-symbols-alist
+          (append my-hasklig-ligatures prettify-symbols-alist))
+    (prettify-symbols-mode))
+
+  (add-hook 'text-mode-hook 'my-set-hasklig-ligatures)
+#+END_SRC
+
