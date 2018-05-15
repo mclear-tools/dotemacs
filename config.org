@@ -5,9 +5,9 @@
 #+TODO: FIXME TESTING | DISABLED 
 #+STARTUP: overview
 
-This is my emacs configuration file. I use [[http://orgmode.org][org-mode]] to organize it and
-then "tangle" the file using [[http://orgmode.org/worg/org-contrib/babel/][org-babel]]. You can find a helpful
-discussion of this method [[http://stackoverflow.com/questions/17416738/emacs-initialization-as-org-file-how-can-i-get-the-right-version-of-org-mode][here]].
+This is my emacs configuration file. I use [[http://orgmode.org][org-mode]] to organize it and then
+"tangle" the file using [[http://orgmode.org/worg/org-contrib/babel/][org-babel]]. You can find a helpful discussion of this
+method [[http://stackoverflow.com/questions/17416738/emacs-initialization-as-org-file-how-can-i-get-the-right-version-of-org-mode][here]].
 
 I use emacs for all my academic work. The configuration tends in that
 direction. It also uses [[http://www.vim.org][vim]] keybindings. I used vim (or [[https://neovim.io][neovim]]) previously. I
@@ -359,8 +359,8 @@ Useful function for archiving done tasks. From [[https://stackoverflow.com/a/270
 #+END_SRC
 *** Blank Buffer New Frame
 Make a blank buffer when opening a new frame. From
-https://stackoverflow.com/a/25792276. I added a call to persp-mode since
-I only ever want new frames to use new perspectives
+https://stackoverflow.com/a/25792276. I added a call to persp-mode since I
+only ever want new frames to use new perspectives
 #+BEGIN_SRC emacs-lisp
 (defun cpm/new-buffer-new-frame ()
   "Create a new frame with a new empty buffer & turn on persp-mode."
