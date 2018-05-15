@@ -7179,8 +7179,16 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
           :ni     "m" (dashboard-insert-shortcut "m" "Bookmarks:")
           :ni     "p" (dashboard-insert-shortcut "p" "Projects:"))))
 
+  (defun cpm/dashboard-banner ()
+    "Set a dashboard banner including information on package initialization
+     time and garbage collections."
+    (setq dashboard-banner-logo-title
+          (format "Emacs ready in %.2f seconds with %d garbage collections."
+                  (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+
 
   (defun cpm/dashboard ()
+   "load dashboard and swith to buffer"
   (interactive)
   (let ((buffer "*dashboard*"))
     (when (not (get-buffer buffer))
