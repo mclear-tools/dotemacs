@@ -2244,65 +2244,90 @@ Easy workspace creation and switching
 *** TESTING Nameframe
 [[https://github.com/john2x/nameframe][Nameframe]] provides utility functions to manage frames by their names.
 #+BEGIN_SRC emacs-lisp
-  (use-package nameframe
-    :commands (nameframe-create-frame)
-    :general
-    ("M-p" 'nameframe-switch-frame)
-    :after (:any perspective projectile)
-    :demand t
-    :config
-    (nameframe-projectile-mode t)
-    (nameframe-perspective-mode t))
+   (use-package nameframe
+     :commands (nameframe-create-frame)
+     :general
+     ("s-p" 'nameframe-switch-frame)
+     :after (:any perspective projectile)
+     :demand t
+     :config
+     (nameframe-projectile-mode t)
+     (nameframe-perspective-mode t))
 
 
- ;; functions for named work frames
-  (defun cpm/load-phil101 ()
+  ;; functions for named work frames
+  (defun cpm/load-org-agenda-todo ()
     (interactive)
     (persp-mode 1)
-    (nameframe-create-frame "PHIL 101")
+    (nameframe-create-frame "Org Agenda")
     (toggle-frame-maximized)
-    (find-file "~/Dropbox/Work/projects/phil101/content/slides/lecture_outline.org")
+    (cpm/jump-to-org-agenda)
     (split-window-right)
-    (find-file "~/Dropbox/Work/projects/phil101/content/pages/schedule.org"))
-  (defun cpm/load-phil105 ()
-    (interactive)
-    (persp-mode 1)
-    (nameframe-create-frame "PHIL 105")
-    (toggle-frame-maximized)
-    (find-file "~/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.org")
-    (split-window-right)
-    (find-file "~/Dropbox/Work/projects/phil105/content/pages/schedule.org"))
-  (defun cpm/load-phil232 ()
-    (interactive)
-    (persp-mode 1)
-    (nameframe-create-frame "PHIL 232")
-    (toggle-frame-maximized)
-    (find-file "~/Dropbox/Work/projects/phil232/phil232_lecture_outline.org")
-    (split-window-right)
-    (find-file "~/Dropbox/Work/projects/phil232/content/pages/schedule.org"))
-  (defun cpm/load-kant-reflection ()
-    (interactive)
-    (persp-mode 1)
-    (nameframe-create-frame "Kant on Reflection")
-    (toggle-frame-maximized)
-    (find-file "~/Dropbox/Work/projects/KantReflection/KantReflection.md")
-    (split-window-right)
-    (find-file "~/Dropbox/Work/projects/KantReflection/Kant_reflection_notes.org"))
-  (defun cpm/load-kant-agency-book ()
-    (interactive)
-    (persp-mode 1)
-    (nameframe-create-frame "Kant on Rational Agency")
-    (toggle-frame-maximized)
-    (find-file "~/Dropbox/Work/projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
-    (split-window-right)
-    (magit-status))
-  (defun cpm/load-emacs-config ()
-    (interactive)
-    (persp-mode 1)
-    (nameframe-create-frame "Emacs Config")
-    (toggle-frame-maximized)
-    (find-file "~/.emacs.d/config.org")
-    (magit-status))
+    (find-file "~/Dropbox/org-files/todo.org"))
+   (defun cpm/load-phil101 ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "PHIL 101")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/phil101/content/slides/lecture_outline.org")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/phil101/content/pages/schedule.org"))
+   (defun cpm/load-phil105 ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "PHIL 105")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.org")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/phil105/content/pages/schedule.org"))
+   (defun cpm/load-phil232 ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "PHIL 232")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/phil232/phil232_lecture_outline.org")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/phil232/content/pages/schedule.org"))
+    (defun cpm/load-phil871 ()
+      (interactive)
+      (persp-mode 1)
+      (nameframe-create-frame "PHIL 871")
+      (toggle-frame-maximized)
+      (find-file "~/Dropbox/Work/projects/phil871/phil871-lecture-outline.org")
+      (split-window-right)
+      (find-file "~/Dropbox/Work/projects/phil871/content/pages/schedule.org"))
+   (defun cpm/load-kant-apperception-substance ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Apperception & Substance")
+     (toggle-frame-maximized)
+     (org-open-link-from-string "[[file:~/Dropbox/org-files/todo.org::*Apperception%20&%20Substance]]")
+     (find-file "~/Dropbox/Work/projects/KantApperception/Introspection-and-self-consciousness.org")
+     (find-file "~/Dropbox/Work/projects/KantApperception/ApperceptionNotes.org")
+     (find-file "~/Dropbox/Work/projects/KantApperception/KantSelf.md")
+     (magit-status))
+   (defun cpm/load-kant-reflection ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Reflection")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/KantReflection/KantReflection.md")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/KantReflection/Kant_reflection_notes.org"))
+   (defun cpm/load-kant-agency-book ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Rational Agency")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
+     (magit-status))
+   (defun cpm/load-emacs-config ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Emacs Config")
+     (toggle-frame-maximized)
+     (find-file "~/.emacs.d/config.org")
+     (magit-status))
 
 #+END_SRC
 
@@ -4160,9 +4185,12 @@ Keybindings for managing packages
       "ps1" #'cpm/load-phil101
       "ps2" #'cpm/load-phil232
       "ps5" #'cpm/load-phil105
-      "psr" #'cpm/load-kant-reflection
+      "ps8" #'cpm/load-phil871
+      "psa" #'cpm/load-kant-apperception-substance
       "psb" #'cpm/load-kant-agency-book
       "psc" #'cpm/load-emacs-config
+      "pso" #'cpm/load-org-agenda-todo
+      "psr" #'cpm/load-kant-reflection
       "pT"  'projectile-find-test-file
       "pv"  'hydra-persp/body
       "pV"  'projectile-vc
