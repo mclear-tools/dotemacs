@@ -94,6 +94,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#mixed-pitch][Mixed-Pitch]]
   - [[#shell-path][Shell Path]]
   - [[#ligatures][Ligatures]]
+  - [[#emacs-anywhere][Emacs Anywhere]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7234,7 +7235,7 @@ Use common [[https://github.com/nashamri/academic-phrases][academic phrases]] in
 :DATE_ADDED: March 3, 2018
 :END:
 
-Manage [[https://github.com/IvanMalison/org-projectile][project TODOs]] with org mode and projectile. Seems like it will be
+[[https://github.com/IvanMalison/org-projectile][Manage]] project TODOs with org mode and projectile. Seems like it will be
 useful but we'll see.  
 
 #+BEGIN_SRC emacs-lisp
@@ -7345,4 +7346,18 @@ codepoints starting from codepoint-start."
 
   (add-hook 'text-mode-hook 'my-set-hasklig-ligatures)
 #+END_SRC
+** TESTING Emacs Anywhere
+https://github.com/zachcurry/emacs-anywhere
+#+BEGIN_SRC emacs-lisp
+  (defun popup-handler (app-name window-title x y w h)
+    (cond (t (markdown-mode))) ; default major mode)
+    (setq ea-x 300
+          ea-y 400
+          ea-width 90
+          ea-height 15
+          ea-paste t)
 
+    ;; Hook your function
+    (add-hook 'ea-popup-hook 'popup-handler)
+    )
+#+END_SRC
