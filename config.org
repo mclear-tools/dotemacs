@@ -2329,8 +2329,17 @@ Easy workspace creation and switching
      (toggle-frame-maximized)
      (find-file "~/.emacs.d/config.org")
      (magit-status))
+   (defun cpm/load-kant-free-thought ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Free Intellect")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/KantFreeThought/KantFreeThought.md")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/KantFreeThought/kant-notes-intellectual-freedom.org"))
 
 #+END_SRC
+
 
 ** Appearance & UI
 Various settings to make Emacs (mostly the GUI version) look better or
@@ -4190,6 +4199,7 @@ Keybindings for managing packages
       "psa" #'cpm/load-kant-apperception-substance
       "psb" #'cpm/load-kant-agency-book
       "psc" #'cpm/load-emacs-config
+      "psf" #'cpm/load-kant-free-thought
       "pso" #'cpm/load-org-agenda-todo
       "psr" #'cpm/load-kant-reflection
       "pT"  'projectile-find-test-file
