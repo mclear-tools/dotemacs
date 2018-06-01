@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "avy" "20180514.1100" "Jump to arbitrary positions in visible text and select text quickly." '((emacs "24.1") (cl-lib "0.5")) :stars '(#("585" 0 3 (font-lock-face paradox-star-face)) #("266K" 0 4 (value 266318 font-lock-face paradox-download-face))) :commit "58e8636d32d0e0a987f60e1620787951f31d0020" :keywords '("point" "location") :url "https://github.com/abo-abo/avy")
