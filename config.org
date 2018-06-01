@@ -4543,6 +4543,7 @@ The incomparable [[https://orgmode.org][org mode]]
   :commands (org-capture)
   :ensure org-plus-contrib)
 #+END_SRC
+
 *** Settings
 **** New Org
 Ensure ELPA org is prioritized above built-in org.
@@ -5308,7 +5309,7 @@ Make counsel display org headings nicely.
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
-    :after org
+    :after ox
     :demand t
     :config
     ;; default options for all output formats
@@ -6434,6 +6435,7 @@ workflow I used to use in Sublime Text. Perfect for short commit messages.
  #+END_SRC
  
 
+ 
  
  
  
