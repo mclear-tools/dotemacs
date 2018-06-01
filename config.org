@@ -5615,6 +5615,14 @@ Various exporters to use. Right now it is just markdown that I need.
   '(require 'ox-md nil t))
 #+END_SRC
 
+*** Ox-Hugo
+[[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
+#+BEGIN_SRC emacs-lisp
+(use-package ox-hugo
+  :after ox
+  :demand ox-hugo)
+#+END_SRC
+
 *** Org Export Top-Level Trees
 From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
 #+BEGIN_SRC emacs-lisp
