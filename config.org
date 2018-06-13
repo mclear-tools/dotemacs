@@ -1458,13 +1458,18 @@ Per [[https://emacs.stackexchange.com/a/28746/11934][this]] post on stack overfl
 #+END_SRC
 *** Dired settings
 #+BEGIN_SRC emacs-lisp
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump dired-jump-other-window)
+  :config
   (setq insert-directory-program "gls" dired-use-ls-dired t)
+  (setq diredp-toggle-find-file-reuse-dir 1)
   ;; list directories first
   ;; (setq dired-listing-switches "-al --group-directories-first")
   (setq dired-listing-switches "-laGh1v --group-directories-first")
   ;; stop asking about recurisve actions
   (setq dired-recursive-copies 'always)
-  (setq dired-recursive-deletes 'always)
+  (setq dired-recursive-deletes 'always))
 #+END_SRC
 *** Dired Copy Large Files & Directories
 Lets you copy huge files and directories without Emacs freezing up and
@@ -3968,36 +3973,37 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+END_SRC
 ***** General Keybindings
 #+BEGIN_SRC emacs-lisp
- (general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
- 
-    "A" 'helm-apropos
-    "B" #'cpm/dashboard
-    "?" 'helm-descbinds
-    "<SPC>" 'helm-M-x
-    "d" #'deer
-    "D" #'cpm/deer-split-window
-    "E" 'cpm/call-emacs
-    "e" 'server-edit
-    "G" 'general-describe-keybindings
-    "h" 'helm-resume
-    "j" 'avy-goto-char
-    "k" 'helm-show-kill-ring
-    "l" 'repeat
-    "N" 'research-notes
-    "n" 'big-notes
-    ;; "W" 'woman
-    "`" 'beacon-blink
-    "'" 'shell-pop
-    "." 'quick-commit
-    ";" 'evil-commentary-line
-    "[" 'cpm/previous-user-buffer
-    "]" 'cpm/next-user-buffer
-    "TAB" 'switch-to-previous-buffer
-    )
+  (general-define-key
+   :states '(normal motion visual insert emacs)
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
+
+     "A" 'helm-apropos
+     "B" #'cpm/dashboard
+     "?" 'helm-descbinds
+     "<SPC>" 'helm-M-x
+     "d" #'deer
+     ;; "D" #'dired-jump-other-window
+     "D" #'cpm/deer-split-window
+     "E" 'cpm/call-emacs
+     "e" 'server-edit
+     "G" 'general-describe-keybindings
+     "h" 'helm-resume
+     "j" 'avy-goto-char
+     "k" 'helm-show-kill-ring
+     "l" 'repeat
+     "N" 'research-notes
+     "n" 'big-notes
+     ;; "W" 'woman
+     "`" 'beacon-blink
+     "'" 'shell-pop
+     "." 'quick-commit
+     ";" 'evil-commentary-line
+     "[" 'cpm/previous-user-buffer
+     "]" 'cpm/next-user-buffer
+     "TAB" 'switch-to-previous-buffer
+     )
 #+END_SRC
 ***** Make/Compile Keybindings
 #+BEGIN_SRC emacs-lisp
