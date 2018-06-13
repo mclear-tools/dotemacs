@@ -7387,3 +7387,21 @@ https://github.com/zachcurry/emacs-anywhere
     (add-hook 'ea-popup-hook 'popup-handler)
     )
 #+END_SRC
+** TESTING Neotree
+A [[https://github.com/jaypei/emacs-neotree][emacs tree plugin]] like NerdTree for Vim
+#+BEGIN_SRC emacs-lisp
+(use-package neotree
+  :bind ("s-t" . neotree)
+  :config
+  (setq neo-dont-be-alone t
+        neo-theme 'icons
+        neo-smart-open t
+        projectile-switch-project-action 'neotree-projectile-action)
+  (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
+  (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
+  (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
+  (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+  (evil-define-key 'normal neotree-mode-map (kbd "u") 'neotree-select-up-node)
+  (evil-define-key 'normal neotree-mode-map (kbd "i") 'neotree-enter)
+  (evil-define-key 'normal neotree-mode-map (kbd "K") 'neotree-delete-node))
+#+END_SRC
