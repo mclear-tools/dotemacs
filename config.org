@@ -95,8 +95,6 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#shell-path][Shell Path]]
   - [[#ligatures][Ligatures]]
   - [[#emacs-anywhere][Emacs Anywhere]]
-  - [[#startup-todos][Startup todos]]
-  - [[#org-markdown-link-export][Org markdown link export]]
   - [[#neotree][Neotree]]
 
 * Personal Information
@@ -2123,7 +2121,7 @@ From bling: https://github.com/bling/evil-visualstar
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
-    :load-path "~/.emacs.d/.local/elisp/perspective"
+    ;; :load-path "~/.emacs.d/.local/elisp/perspective"
     :commands (persp-switch persp-add-buffer persp-set-buffer)
     ;; :init
     ;; (when (not (fboundp 'make-variable-frame-local))
