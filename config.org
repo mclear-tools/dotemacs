@@ -95,6 +95,9 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#shell-path][Shell Path]]
   - [[#ligatures][Ligatures]]
   - [[#emacs-anywhere][Emacs Anywhere]]
+  - [[#startup-todos][Startup todos]]
+  - [[#org-markdown-link-export][Org markdown link export]]
+  - [[#neotree][Neotree]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -3390,6 +3393,7 @@ MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
             helm-buffers-fuzzy-matching t
             helm-imenu-fuzzy-match t
             helm-recentf-fuzzy-match t
+            helm-adaptive-mode 1 ; learn from selections
             helm-prevent-escaping-from-minibuffer t
             helm-bookmark-show-location t
             helm-ff-file-name-history-use-recentf t
@@ -3400,7 +3404,7 @@ MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
             helm-split-window-in-side-p nil
             ;; helm-split-window-default-side 'other
             helm-echo-input-in-header-line t)
-      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*osx-location"))
+      (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*osx-location" "\\*Dired by name" "\\*Deer" "\\*Deer\:name"))
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
       (setq helm-autoresize-min-height 35)
