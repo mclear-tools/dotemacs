@@ -26,11 +26,7 @@ named collections of buffers and window configurations.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "perspective" '("persp-" "quick-perspective-keys" "with-perspective" "make-persp" "check-persp")))
-
-;;;***
-
-;;;### (autoloads nil nil ("perspective-pkg.el") (0 0 0 0))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "perspective" '("persp" "quick-perspective-keys" "with-perspective" "make-persp" "check-persp")))
 
 ;;;***
 

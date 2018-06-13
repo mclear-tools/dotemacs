@@ -4,7 +4,7 @@
 
 ;; Author: Ivan Malison <IvanMalison@gmail.com>
 ;; Keywords: org-mode projectile todo tools outlines
-;; Package-Version: 20171022.950
+;; Package-Version: 20180531.1942
 ;; URL: https://github.com/IvanMalison/org-projectile
 ;; Version: 1.1.0
 ;; Package-Requires: ((projectile "0.11.0") (dash "2.10.0") (emacs "24") (s "1.9.0") (org-category-capture "0.0.0"))
@@ -48,8 +48,10 @@
   :group 'org-projectile)
 
 (defcustom org-projectile-per-project-filepath "TODO.org"
-  "The path (relative to the project) where todos will be stored."
-  :type '(string)
+  "The path (relative to the project) where todos will be stored.
+Alternatively you may provide a function that will compute this
+path."
+  :type '(choice string function)
   :group 'org-projectile)
 
 (defcustom org-projectile-capture-template "* TODO %?\n"
@@ -138,8 +140,12 @@
 ;; One file per project strategy
 
 (defun org-projectile-get-project-todo-file (project-path)
-  (concat
-   (file-name-as-directory project-path) org-projectile-per-project-filepath))
+  (let ((relative-filepath
+         (if (stringp org-projectile-per-project-filepath)
+             org-projectile-per-project-filepath
+           (funcall org-projectile-per-project-filepath project-path))))
+    (concat
+     (file-name-as-directory project-path) relative-filepath)))
 
 (defun org-projectile-get-category-from-project-todo-file (project-path)
   (let ((todo-filepath (org-projectile-get-project-todo-file project-path)))
@@ -192,21 +198,6 @@
 (defun org-projectile-get-categories-from-project-paths ()
   (mapcar 'org-projectile-category-from-project-root projectile-known-projects))
 
-(defclass org-projectile-top-level-heading-files-strategy nil nil)
-
-(defmethod org-projectile-category-to-project-path
-    ((_s org-projectile-top-level-heading-files-strategy))
-  (org-projectile-default-project-categories))
-
-(defmethod occ-get-categories
-    ((_s org-projectile-top-level-heading-files-strategy))
-  (cl-remove-if
-   'null
-   (delete-dups
-    (nconc
-     (org-projectile-get-categories-from-project-paths)
-     (occ-get-categories-from-filepath org-projectile-projects-file)))))
-
 (defun org-projectile-linked-heading (heading)
   (org-make-link-string
    (format "elisp:(org-projectile-open-project \"%s\")" heading) heading))
@@ -217,8 +208,25 @@
   (if org-projectile-counts-in-heading (concat heading " [/]")
     heading))
 
-(defclass org-projectile-single-file-strategy
-  (org-projectile-top-level-heading-files-strategy) nil)
+(defclass org-projectile-top-level-categories-specifier nil nil)
+
+(defmethod org-projectile-get-existing-categories
+  )
+
+(defclass org-projectile-single-file-strategy nil nil)
+
+(defmethod org-projectile-category-to-project-path
+    ((_s org-projectile-single-file-strategy))
+  (org-projectile-default-project-categories))
+
+(defmethod occ-get-categories
+    ((_s org-projectile-single-file-strategy))
+  (cl-remove-if
+   'null
+   (delete-dups
+    (nconc
+     (org-projectile-get-categories-from-project-paths)
+     (occ-get-categories-from-filepath org-projectile-projects-file)))))
 
 (defmethod occ-get-categories ((_s org-projectile-single-file-strategy))
   (cl-remove-if
@@ -275,13 +283,14 @@
            (capture-template org-projectile-capture-template)
            (capture-heading "Project Todo") &allow-other-keys)
   (let ((target-fn
-         (lambda () (occ-capture-goto-marker
-                     (make-instance 'occ-context
-                                    :category (org-projectile-category-from-file
-                                               (org-capture-get :original-file))
-                                    :template capture-template
-                                    :strategy org-projectile-strategy
-                                    :options additional-options)))))
+         (lambda ()
+           (occ-capture-goto-marker
+            (make-instance 'occ-context
+                           :category (org-projectile-category-from-file
+                                      (org-capture-get :original-file))
+                           :template capture-template
+                           :strategy org-projectile-strategy
+                           :options additional-options)))))
     `(,capture-character ,capture-heading entry
                          (function
                           ,target-fn)

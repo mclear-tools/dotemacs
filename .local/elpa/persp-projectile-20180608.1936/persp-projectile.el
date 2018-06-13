@@ -5,7 +5,7 @@
 ;; Author: Daniel Wu
 ;; Created: 2014-04-14
 ;; Keywords: project, convenience
-;; Package-Version: 20160709.2317
+;; Package-Version: 20180608.1936
 ;; Version: 0.2.0
 ;; Package-Requires: ((perspective "1.9") (projectile "0.11.0") (cl-lib "0.3"))
 
@@ -32,7 +32,7 @@
 ;;
 ;; This library bridges perspective mode to the awesome library
 ;; Projectile.  The idea is to create a separate perspective when
-;; switching project.  A perspective is an independant workspace for
+;; switching project.  A perspective is an independent workspace for
 ;; Emacs, similar to multiple desktops in Gnome and MacOS.  I often
 ;; work on many projects at the same time, and using perspective and
 ;; projectile together allows me to easily know which project I'm
@@ -57,7 +57,7 @@ project, this advice creates a new perspective for that project."
   `(defadvice ,func-name (before projectile-create-perspective-after-switching-projects activate)
      "Create a dedicated perspective for current project's window after switching projects."
      (let ((project-name (projectile-project-name)))
-       (when (projectile-project-p)
+       (when (and persp-mode projectile-project-p)
          (persp-switch project-name)))))
 
 (projectile-persp-bridge projectile-dired)
@@ -77,7 +77,7 @@ perspective."
   (interactive (list (projectile-completing-read "Switch to project: "
                                                  (projectile-relevant-known-projects))))
   (let* ((name (file-name-nondirectory (directory-file-name project-to-switch)))
-         (persp (gethash name perspectives-hash)))
+         (persp (gethash name (perspectives-hash))))
     (cond
      ;; project-specific perspective already exists
      ((and persp (not (equal persp persp-curr)))

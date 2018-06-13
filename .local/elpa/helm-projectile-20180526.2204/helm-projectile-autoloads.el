@@ -1,15 +1,18 @@
 ;;; helm-projectile-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "helm-projectile" "helm-projectile.el" (22848
-;;;;;;  3096 0 0))
+;;;### (autoloads nil "helm-projectile" "helm-projectile.el" (0 0
+;;;;;;  0 0))
 ;;; Generated autoloads from helm-projectile.el
 
 (defvar helm-projectile-fuzzy-match t "\
 Enable fuzzy matching for Helm Projectile commands.
-This needs to be set before loading helm-projectile.")
+This needs to be set before loading helm-projectile.el.")
 
 (custom-autoload 'helm-projectile-fuzzy-match "helm-projectile" t)
 
@@ -26,12 +29,12 @@ Other file extensions can be customized with the variable `projectile-other-file
 \(fn &optional FLEX-MATCHING)" t nil)
 
 (autoload 'helm-projectile-on "helm-projectile" "\
-Turn on helm-projectile key bindings.
+Turn on `helm-projectile' key bindings.
 
 \(fn)" t nil)
 
 (autoload 'helm-projectile-off "helm-projectile" "\
-Turn off helm-projectile key bindings.
+Turn off `helm-projectile' key bindings.
 
 \(fn)" t nil)
 
@@ -47,9 +50,14 @@ Helm version of projectile-ack.
 \(fn &optional DIR)" t nil)
 
 (autoload 'helm-projectile-ag "helm-projectile" "\
-Helm version of projectile-ag.
+Helm version of `projectile-ag'.
 
 \(fn &optional OPTIONS)" t nil)
+
+(autoload 'helm-projectile-rg "helm-projectile" "\
+Projectile version of `helm-rg'.
+
+\(fn)" t nil)
 
 (autoload 'helm-projectile-toggle "helm-projectile" "\
 Toggle Helm version of Projectile commands.
@@ -66,11 +74,14 @@ If invoked outside of a project, displays a list of known projects to jump.
 
 (eval-after-load 'projectile '(progn (define-key projectile-command-map (kbd "h") #'helm-projectile)))
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helm-projectile" '("helm-")))
+
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; helm-projectile-autoloads.el ends here

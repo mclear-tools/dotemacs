@@ -274,6 +274,13 @@ regular expression.
 
 \(fn SEARCH-TERM &optional ARG)" t nil)
 
+(autoload 'projectile-ripgrep "projectile" "\
+Run a Ripgrep search with `SEARCH-TERM' at current project root.
+
+SEARCH-TERM is a regexp.
+
+\(fn SEARCH-TERM)" t nil)
+
 (autoload 'projectile-regenerate-tags "projectile" "\
 Regenerate the project's [e|g]tags.
 
@@ -361,12 +368,26 @@ Open `vc-dir' at the root of the project.
 For git projects `magit-status-internal' is used if available.
 For hg projects `monky-status' is used if available.
 
+If PROJECT-ROOT is given, it is opened instead of the project
+root directory of the current buffer file.  If interactively
+called with a prefix argument, the user is prompted for a project
+directory to open.
+
 \(fn &optional PROJECT-ROOT)" t nil)
 
 (autoload 'projectile-recentf "projectile" "\
 Show a list of recently visited files in a project.
 
 \(fn)" t nil)
+
+(autoload 'projectile-configure-project "projectile" "\
+Run project configure command.
+
+Normally you'll be prompted for a compilation command, unless
+variable `compilation-read-command'.  You can force the prompt
+with a prefix ARG.
+
+\(fn ARG)" t nil)
 
 (autoload 'projectile-compile-project "projectile" "\
 Run project compilation command.
@@ -375,7 +396,7 @@ Normally you'll be prompted for a compilation command, unless
 variable `compilation-read-command'.  You can force the prompt
 with a prefix ARG.
 
-\(fn ARG &optional DIR)" t nil)
+\(fn ARG)" t nil)
 
 (autoload 'projectile-test-project "projectile" "\
 Run project test command.
