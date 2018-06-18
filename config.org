@@ -6829,92 +6829,99 @@ Make arbitrary blocks or sentences of text.
 ** PDF-Tools
 Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp 
-      (use-package pdf-tools
-        :mode (("\\.pdf$" . pdf-view-mode))
-        :config
-        (progn
-          (pdf-tools-install)
-          (evil-set-initial-state 'pdf-view-mode 'normal)
-          (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
-          (general-define-key :states '(normal) :keymaps 'pdf-view-mode-map
-              ;; Navigation
-              "j"  'pdf-view-next-line-or-next-page
-              "k"  'pdf-view-previous-line-or-previous-page
-              "l"  'pdf-view-next-page 
-              "h"  'pdf-view-previous-page
-              "J"  'image-forward-hscroll
-              "K"  'image-backward-hscroll
-              "gg"  'pdf-view-first-page
-              "G"  'pdf-view-last-page
-              "gt"  'pdf-view-goto-page
-              "gl"  'pdf-view-goto-label
-              "u" 'pdf-view-scroll-down-or-previous-page
-              "d" 'pdf-view-scroll-up-or-next-page
-              "-"  'pdf-view-shrink
-              "+"  'pdf-view-enlarge
-              "="  'pdf-view-fit-page-to-window
-              (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
-              (kbd "C-d") 'pdf-view-scroll-up-or-next-page
-              (kbd "``")  'pdf-history-backward
-              ;; Search
-              "/" 'isearch-forward
-              "?" 'isearch-backward
-              ;; Actions
-              "r"   'pdf-view-revert-buffer
-              "o"   'pdf-links-action-perform
-              "O"   'pdf-outline
-              )
-          (general-define-key :states '(insert) :keymaps 'pdf-view-mode-map
-              "y" 'pdf-view-kill-ring-save )
+    (use-package pdf-tools
+      :mode (("\\.pdf$" . pdf-view-mode))
+      :config
+      (progn
+        (pdf-tools-install)
+        (evil-set-initial-state 'pdf-view-mode 'normal)
+        (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
+        (general-define-key :states '(normal) :keymaps 'pdf-view-mode-map
+            ;; Navigation
+            "j"  'pdf-view-next-line-or-next-page
+            "k"  'pdf-view-previous-line-or-previous-page
+            "l"  'pdf-view-next-page 
+            "h"  'pdf-view-previous-page
+            "J"  'image-forward-hscroll
+            "K"  'image-backward-hscroll
+            "gg"  'pdf-view-first-page
+            "G"  'pdf-view-last-page
+            "gt"  'pdf-view-goto-page
+            "gl"  'pdf-view-goto-label
+            "u" 'pdf-view-scroll-down-or-previous-page
+            "d" 'pdf-view-scroll-up-or-next-page
+            "-"  'pdf-view-shrink
+            "+"  'pdf-view-enlarge
+            "="  'pdf-view-fit-page-to-window
+            (kbd "C-u") 'pdf-view-scroll-down-or-previous-page
+            (kbd "C-d") 'pdf-view-scroll-up-or-next-page
+            (kbd "``")  'pdf-history-backward
+            ;; Search
+            "/" 'isearch-forward
+            "?" 'isearch-backward
+            ;; Actions
+            "r"   'pdf-view-revert-buffer
+            "o"   'pdf-links-action-perform
+            "O"   'pdf-outline
+            )
+        (general-define-key :states '(insert) :keymaps 'pdf-view-mode-map
+            "y" 'pdf-view-kill-ring-save )
 
-         ;; midnite mode
-         (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
+       ;; midnite mode
+       (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
 
-         (defun bms/pdf-no-filter ()
-         "View pdf without colour filter."
-         (interactive)
-         (pdf-view-midnight-minor-mode -1)
-         )
+       (defun bms/pdf-no-filter ()
+       "View pdf without colour filter."
+       (interactive)
+       (pdf-view-midnight-minor-mode -1)
+       )
 
-        ;; change midnite mode colours functions
-        (defun bms/pdf-midnite-original ()
-          "Set pdf-view-midnight-colors to original colours."
-          (interactive)
-          (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
-          (pdf-view-midnight-minor-mode)
-          )
+      ;; change midnite mode colours functions
+      (defun bms/pdf-midnite-original ()
+        "Set pdf-view-midnight-colors to original colours."
+        (interactive)
+        (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
+        (pdf-view-midnight-minor-mode)
+        )
 
-        (defun bms/pdf-midnite-amber ()
-          "Set pdf-view-midnight-colors to amber on dark slate blue."
-          (interactive)
-          (setq pdf-view-midnight-colors '("#ff9900" . "#0a0a12" )) ; amber
-          (pdf-view-midnight-minor-mode)
-          )
+      (defun bms/pdf-midnite-amber ()
+        "Set pdf-view-midnight-colors to amber on dark slate blue."
+        (interactive)
+        (setq pdf-view-midnight-colors '("#ff9900" . "#0a0a12" )) ; amber
+        (pdf-view-midnight-minor-mode)
+        )
 
-        (defun bms/pdf-midnite-green ()
-          "Set pdf-view-midnight-colors to green on black."
-          (interactive)
-          (setq pdf-view-midnight-colors '("#00B800" . "#000000" )) ; green
-          (pdf-view-midnight-minor-mode)
-          )
+      (defun bms/pdf-midnite-green ()
+        "Set pdf-view-midnight-colors to green on black."
+        (interactive)
+        (setq pdf-view-midnight-colors '("#00B800" . "#000000" )) ; green
+        (pdf-view-midnight-minor-mode)
+        )
 
-        (defun bms/pdf-midnite-colour-schemes ()
-          "Midnight mode colour schemes bound to keys"
-                (local-set-key (kbd "!") (quote bms/pdf-no-filter))
-                (local-set-key (kbd "@") (quote bms/pdf-midnite-amber))
-                (local-set-key (kbd "#") (quote bms/pdf-midnite-green))
-                    (local-set-key (kbd "$") (quote bms/pdf-midnite-original))
-         )
-          ;; midnite mode hook
-          (add-hook 'pdf-view-mode-hook (lambda ()
-                                          (bms/pdf-midnite-colour-schemes)
-                                          ; automatically turns on midnight-mode for pdfs
-                                          (pdf-view-midnight-minor-mode)
-                                          ; fixes blinking pdf in evil
-                                          (blink-cursor-mode -1)
-                                          (beacon-mode -1)))
+      (defun bms/pdf-midnite-colour-schemes ()
+        "Midnight mode colour schemes bound to keys"
+              (local-set-key (kbd "!") (quote bms/pdf-no-filter))
+              (local-set-key (kbd "@") (quote bms/pdf-midnite-amber))
+              (local-set-key (kbd "#") (quote bms/pdf-midnite-green))
+                  (local-set-key (kbd "$") (quote bms/pdf-midnite-original))
+       )
 
-    ))      
+      (defun cpm/pdf-color-theme ()
+        (when (eq active-theme 'solarized-light)
+          (bms/pdf-no-filter)
+          (bms/pdf-midnight-green)))
+
+        ;; midnite mode hook
+        (add-hook 'pdf-view-mode-hook (lambda ()
+                                        (cpm/pdf-color-theme)
+                                        (bms/pdf-midnite-colour-schemes)
+                                        ; automatically turns on midnight-mode for pdfs
+                                        (pdf-view-midnight-minor-mode)
+                                        ; fixes blinking pdf in evil
+                                        (blink-cursor-mode -1)
+                                        (beacon-mode -1)))
+
+  ))
 
 #+END_SRC
 *** Org PDF View
