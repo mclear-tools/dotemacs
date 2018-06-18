@@ -2377,7 +2377,7 @@ make interaction smoother.
               (height . 60) ;; lines
               ))))
 #+END_SRC
-**** Transparent titlebar
+**** Transparent frame titlebar
 #+BEGIN_SRC emacs-lisp
 ;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
 ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
@@ -5143,8 +5143,8 @@ Make capture the only window and close after refiling.
 #+END_SRC
 *** Org Prettify Source Blocks
 Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
-Last updated: 2018-01-11
-#+BEGIN_SRC emacs-lisp 
+Last updated: 2018-04-06
+#+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'org
     (defvar-local rasmus/org-at-src-begin -1
       "Variable that holds whether last position was a ")
