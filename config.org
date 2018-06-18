@@ -2579,6 +2579,7 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
                   ;; org faces
                   '(org-block ((t (:foreground "#2E8B57"))))
                   '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+                  '(org-block-end-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
                   '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.5))))
                   '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.3))))
                   '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
@@ -2612,6 +2613,7 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
               ;; org faces
               '(org-block ((t (:foreground "#2E8B57"))))
               '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+              '(org-block-end-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
               '(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
               '(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
               '(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
