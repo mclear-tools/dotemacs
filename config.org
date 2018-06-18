@@ -96,6 +96,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#ligatures][Ligatures]]
   - [[#emacs-anywhere][Emacs Anywhere]]
   - [[#neotree][Neotree]]
+  - [[#treemacs][Treemacs]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7416,6 +7417,7 @@ A [[https://github.com/jaypei/emacs-neotree][emacs tree plugin]] like NerdTree f
   (evil-define-key 'normal neotree-mode-map (kbd "i") 'neotree-enter)
   (evil-define-key 'normal neotree-mode-map (kbd "K") 'neotree-delete-node))
 #+END_SRC
+** TESTING Treemacs
 [[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file and project explorer 
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
@@ -7436,7 +7438,7 @@ A [[https://github.com/jaypei/emacs-neotree][emacs tree plugin]] like NerdTree f
             treemacs-is-never-other-window      nil
             treemacs-no-png-images              nil
             treemacs-project-follow-cleanup     nil
-            treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+            treemacs-persist-file               (concat cpm-cache-dir "treemacs-persist") 
             treemacs-recenter-after-file-follow nil
             treemacs-recenter-after-tag-follow  nil
             treemacs-show-hidden-files          t
