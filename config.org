@@ -98,6 +98,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#neotree][Neotree]]
   - [[#treemacs][Treemacs]]
   - [[#org-brain][Org-Brain]]
+  - [[#evil-collection][Evil Collection]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -1505,20 +1506,20 @@ Per [[https://emacs.stackexchange.com/a/28746/11934][this]] post on stack overfl
 #+BEGIN_SRC emacs-lisp
 (setq auto-window-vscroll nil)
 #+END_SRC
-*** Dired settings
+*** TESTING Dired settings
 #+BEGIN_SRC emacs-lisp
-(use-package dired
-  :ensure nil
-  :commands (dired dired-jump dired-jump-other-window)
-  :config
-  (setq insert-directory-program "gls" dired-use-ls-dired t)
-  (setq diredp-toggle-find-file-reuse-dir 1)
-  ;; list directories first
-  ;; (setq dired-listing-switches "-al --group-directories-first")
-  (setq dired-listing-switches "-laGh1v --group-directories-first")
-  ;; stop asking about recurisve actions
-  (setq dired-recursive-copies 'always)
-  (setq dired-recursive-deletes 'always))
+  (use-package dired
+    :ensure nil
+    :commands (dired dired-jump dired-jump-other-window)
+    :config
+    (setq insert-directory-program "gls" dired-use-ls-dired t)
+    (setq diredp-toggle-find-file-reuse-dir 1)
+    ;; list directories first
+    ;; (setq dired-listing-switches "-al --group-directories-first")
+    (setq dired-listing-switches "-laGh1v --group-directories-first")
+    ;; stop asking about recurisve actions
+    (setq dired-recursive-copies 'always)
+    (setq dired-recursive-deletes 'always))
 #+END_SRC
 *** Dired Copy Large Files & Directories
 Lets you copy huge files and directories without Emacs freezing up and
@@ -1937,6 +1938,8 @@ Install, automatically load, and enable evil. It's like vim, but better!
 #+BEGIN_SRC emacs-lisp
   (use-package evil
     :demand t
+    :init 
+    (setq evil-want-integration nil)
     :config
     (progn
     ;; Cursor shape and color
@@ -2291,7 +2294,7 @@ Easy workspace creation and switching
     "s-3" 'eyebrowse-switch-to-window-config-3
     "s-4" 'eyebrowse-switch-to-window-config-4)
   :config 
-  (setq eyebrowse-new-workspace t)
+  (setq eyebrowse-new-workspace 'dired)
   (eyebrowse-mode t))  
 #+END_SRC
 
@@ -3816,11 +3819,15 @@ Winner mode is a [[https://www.emacswiki.org/emacs/WinnerMode][built-in package]
  :config
  (winner-mode 1))
 #+END_SRC
-**** Ranger & Deer
-Better dired navigation using ranger-like settings
+**** DISABLED Ranger & Deer
+CLOSED: [2018-07-04 Wed 14:14]
+Better dired navigation using ranger-like settings. But I'm having lots of
+performance issues and weird buffer problems. So disabling for now in favor of
+dired with evil keybindings. 
 #+BEGIN_SRC emacs-lisp
   (use-package ranger
     :commands (ranger deer deer-jump-other-window cpm/deer-split-window)
+    :disabled t
     :init
     (setq ranger-override-dired t
           ranger-cleanup-eagerly t)
@@ -4035,9 +4042,10 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
      "B" #'cpm/dashboard
      "?" 'helm-descbinds
      "<SPC>" 'helm-M-x
-     "d" #'deer
-     ;; "D" #'dired-jump-other-window
-     "D" #'cpm/deer-split-window
+     ;; "d" #'deer
+     "d" #'dired-jump
+     "D" #'dired-jump-other-window
+     ;; "D" #'cpm/deer-split-window
      "E" 'cpm/call-emacs
      "e" 'server-edit
      "G" 'general-describe-keybindings
@@ -7540,4 +7548,15 @@ A [[https://github.com/jaypei/emacs-neotree][emacs tree plugin]] like NerdTree f
           org-capture-templates)
     (setq org-brain-visualize-default-choices 'all)
     (setq org-brain-title-max-length 12))
+#+END_SRC
+
+** TESTING Evil Collection
+A collection of keybindings for evil
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :demand t
+    :config
+    (evil-collection-init))
 #+END_SRC
