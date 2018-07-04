@@ -11,6 +11,8 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
+(define-abbrev-table 'ag-mode-abbrev-table '())
+
 (define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
 
 (define-abbrev-table 'applescript-mode-abbrev-table '())
@@ -43,6 +45,8 @@
 
 (define-abbrev-table 'change-log-mode-abbrev-table '())
 
+(define-abbrev-table 'cmake-mode-abbrev-table '())
+
 (define-abbrev-table 'comint-mode-abbrev-table '())
 
 (define-abbrev-table 'completion-list-mode-abbrev-table '())
@@ -66,6 +70,10 @@
 (define-abbrev-table 'conf-xdefaults-mode-abbrev-table '())
 
 (define-abbrev-table 'css-mode-abbrev-table '())
+
+(define-abbrev-table 'custom-new-theme-mode-abbrev-table '())
+
+(define-abbrev-table 'custom-theme-choose-mode-abbrev-table '())
 
 (define-abbrev-table 'data-debug-mode-abbrev-table '())
 
@@ -232,7 +240,7 @@
     ("appointiment" "appointment" nil 0)
     ("approrpiate" "appropriate" nil 0)
     ("approrpriate" "appropriate" nil 0)
-    ("apriori" "priori" nil 0)
+    ("apriori" "priori" nil 2)
     ("aquisition" "acquisition" nil 0)
     ("aquisitions" "acquisitions" nil 0)
     ("arent" "aren't" nil 0)
@@ -774,6 +782,7 @@
     ("necessitation" "necessitating" nil 0)
     ("negotiaing" "negotiating" nil 0)
     ("neverthless" "nevertheless" nil 0)
+    ("nidnight" "midnight" nil 0)
     ("nkow" "know" nil 0)
     ("notgrounded" "not grounded" nil 0)
     ("nothign" "nothing" nil 0)
@@ -1247,6 +1256,10 @@
 
 (define-abbrev-table 'jdee-stacktrace-mode-abbrev-table '())
 
+(define-abbrev-table 'js-jsx-mode-abbrev-table '())
+
+(define-abbrev-table 'js-mode-abbrev-table '())
+
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
 (define-abbrev-table 'lisp-mode-abbrev-table '())
@@ -1257,7 +1270,11 @@
 
 (define-abbrev-table 'log-edit-mode-abbrev-table '())
 
-(define-abbrev-table 'lua-mode-abbrev-table '())
+(define-abbrev-table 'log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'lua-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'magit-cherry-mode-abbrev-table '())
 
@@ -1450,17 +1467,25 @@
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
+(define-abbrev-table 'proced-mode-abbrev-table '())
+
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'profiler-report-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'ranger-mode-abbrev-table '())
 
 (define-abbrev-table 'restclient-mode-abbrev-table '())
+
+(define-abbrev-table 'ruby-mode-abbrev-table '())
 
 (define-abbrev-table 'scss-mode-abbrev-table '())
 
@@ -1506,11 +1531,15 @@
 
 (define-abbrev-table 'use-package-statistics-mode-abbrev-table '())
 
+(define-abbrev-table 'vc-annotate-mode-abbrev-table '())
+
 (define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-region-history-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'vimrc-mode-abbrev-table '())
 
@@ -1519,6 +1548,8 @@
 (define-abbrev-table 'woman-mode-abbrev-table '())
 
 (define-abbrev-table 'xref--xref-buffer-mode-abbrev-table '())
+
+(define-abbrev-table 'yaml-mode-abbrev-table '())
 
 (define-abbrev-table 'ycmd-fixit-mode-abbrev-table '())
 
