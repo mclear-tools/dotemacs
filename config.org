@@ -3774,6 +3774,7 @@ Keybindings for managing packages
       "th" 'hl-line-mode
       "te" 'toggle-indicate-empty-lines
       "tE" 'eldoc-mode
+      "tl" #'imenu-list-smart-toggle
       "tm" 'hidden-mode-line-mode
       "tM" 'spaceline-toggle-minor-modes
       ;; "tn" 'nlinum-mode
