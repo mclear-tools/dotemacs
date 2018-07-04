@@ -2020,15 +2020,17 @@ There are some other useful setup packages for evil
     :after evil-surround
     :demand t
     :hook ((LaTeX-mode . embrace-LaTeX-mode-hook)
-           (org-mode-hook . embrace-org-mode-hook)
+           (org-mode . embrace-org-mode-hook)
+           (org-mode . embrace-markdown-mode-hook)
            (markdown-mode . embrace-markdown-mode-hook)))
            
   (use-package evil-embrace
    :after evil-surround
    :demand t
+   :init
+   (evil-embrace-enable-evil-surround-integration)
    :config
    (setq evil-embrace-show-help-p nil)
-   (evil-embrace-enable-evil-surround-integration)
    (defun embrace-markdown-mode-hook ()
    (dolist (lst '((?* "*" . "*")  
                   (?\ "\\" . "\\")
