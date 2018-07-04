@@ -3408,6 +3408,40 @@ that I use anything other than solarized :)
  #+END_SRC
  
 
+***** Doom Modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    ;; :load-path "~/.Emacs.d/.local/elisp/doom-modeline/doom-modeline.el"
+    :demand t
+    :init
+    (doom-modeline-init)
+
+    :config
+    (setq doom-modeline-bar-width 3
+          doom-modeline-height 38)
+
+    (doom-modeline-def-segment window-number
+      (if (bound-and-true-p window-numbering-mode)
+          (propertize (format " %s " (window-numbering-get-number-string))
+                      'face (if (doom-modeline--active)
+                                'doom-modeline-active-window-number
+                              'doom-modeline-inactive-window-number))
+     ""))
+
+     (defface doom-modeline-active-window-number
+     '((t (:inherit warning)))
+     "Face for active window number segment of the mode-line."
+     :group 'doom-modeline)
+     (defface doom-modeline-inactive-window-number
+     '((t (:inherit mode-line-emphasis)))
+     "Face for inactive window number segment of the mode-line."
+     :group 'doom-modeline)
+
+    :custom-face
+    (doom-modeline-eyebrowse ((t (:inherit highlight))))
+    (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
+    (doom-modeline-inactive-bar ((t (:inherit highlight)))))
+#+END_SRC
 *** Navigation
 **** Bookmarks
 Use [[https://www.emacswiki.org/emacs/BookmarkPlus][Bookmark Plus]]. Since it is an emacs wiki package you can't get it from
