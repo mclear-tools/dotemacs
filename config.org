@@ -100,6 +100,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#treemacs][Treemacs]]
   - [[#org-brain][Org-Brain]]
   - [[#evil-collection][Evil Collection]]
+  - [[#dired][Dired]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -1507,65 +1508,6 @@ Per [[https://emacs.stackexchange.com/a/28746/11934][this]] post on stack overfl
 #+BEGIN_SRC emacs-lisp
 (setq auto-window-vscroll nil)
 #+END_SRC
-*** TESTING Dired settings
-#+BEGIN_SRC emacs-lisp
-  (use-package dired
-    :ensure nil
-    :commands (dired dired-jump dired-jump-other-window)
-    :config
-    (setq insert-directory-program "gls" dired-use-ls-dired t)
-    ;; list directories first
-    ;; (setq dired-listing-switches "-al --group-directories-first")
-    (setq dired-listing-switches "-laGh1v --group-directories-first")
-    ;; don't ask about killing buffer visiting file
-    (setq dired-clean-confirm-killing-deleted-buffers nil)
-    ;; stop asking about recurisve actions
-    (setq dired-recursive-copies 'always)
-    (setq dired-recursive-deletes 'always))
-
-  (use-package dired+
-    :ensure t
-    :after dired
-    :demand t
-    :config
-    (setq diredp-toggle-find-file-reuse-dir 1))
-#+END_SRC
-*** Dired Copy Large Files & Directories
-Lets you copy huge files and directories without Emacs freezing up and
-with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/24/dired-rsync/][Or Emacs]]. 
-#+BEGIN_SRC emacs-lisp
-;;;###autoload
-(defun ora-dired-rsync (dest)
-  (interactive
-   (list
-    (expand-file-name
-     (read-file-name
-      "Rsync to:"
-      (dired-dwim-target-directory)))))
-  ;; store all selected files into "files" list
-  (let ((files (dired-get-marked-files
-                nil current-prefix-arg))
-        ;; the rsync command
-        (tmtxt/rsync-command
-         "rsync -arvz --progress "))
-    ;; add all selected file names as arguments
-    ;; to the rsync command
-    (dolist (file files)
-      (setq tmtxt/rsync-command
-            (concat tmtxt/rsync-command
-                    (shell-quote-argument file)
-                    " ")))
-    ;; append the destination
-    (setq tmtxt/rsync-command
-          (concat tmtxt/rsync-command
-                  (shell-quote-argument dest)))
-    ;; run the async shell command
-    (async-shell-command tmtxt/rsync-command "*rsync*")
-    ;; finally, switch to that window
-    (other-window 1)))
-
-
-#+END_SRC
 *** Disable Welcome Screen
 
 #+BEGIN_SRC emacs-lisp
@@ -2305,7 +2247,7 @@ Easy workspace creation and switching
     "s-3" 'eyebrowse-switch-to-window-config-3
     "s-4" 'eyebrowse-switch-to-window-config-4)
   :config 
-  (setq eyebrowse-new-workspace 'dired)
+  (setq eyebrowse-new-workspace 'dired-jump)
   (eyebrowse-mode t))  
 #+END_SRC
 
@@ -3383,7 +3325,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
  
   "a"  '(:ignore t :which-key "Applications") 
   "ac" '(:ignore t :which-key "Cmus")
-  "ad" 'deer
+  "ad" 'dired-jump
   "ae" 'eshell
   "am" 'multi-term
   "ar" 'ranger
@@ -7073,4 +7015,95 @@ A collection of keybindings for evil
     :demand t
     :config
     (evil-collection-init))
+#+END_SRC
+** TESTING Dired 
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :ensure nil
+    :commands (dired dired-jump dired-jump-other-window)
+    :general
+    (:keymaps 'dired-mode-map
+     :states '(normal motion)
+     "l" #'dired-find-file
+     "h" #'dired-up-directory)
+    :config
+    (setq insert-directory-program "gls" dired-use-ls-dired t)
+    ;; list directories first
+    ;; (setq dired-listing-switches "-al --group-directories-first")
+    (setq dired-listing-switches "-laGh1v --group-directories-first")
+    ;; don't ask about killing buffer visiting file
+    (setq dired-clean-confirm-killing-deleted-buffers nil)
+    ;; stop asking about recurisve actions
+    (setq dired-recursive-copies 'always)
+    (setq dired-recursive-deletes 'always))
+#+END_SRC
+*** Dired Extensions
+**** TESTING Dired Plus
+Add [[https://www.emacswiki.org/emacs/DiredPlus][extra functionality]] to dired. Not quite sure about this one yet. 
+#+BEGIN_SRC emacs-lisp
+  (use-package dired+
+    :ensure t
+    :after dired
+    :demand t
+    :init
+    (setq font-lock-maximum-decoration nil)
+    (setq diredp-hide-details-initially-flag nil)
+    (diredp-toggle-find-file-reuse-dir 1))
+#+END_SRC
+**** Peep Dired
+[[https://github.com/asok/peep-dired][Quicklook-like]] extension for dired 
+#+BEGIN_SRC emacs-lisp
+  (use-package peep-dired
+    :ensure t
+    :after dired
+    :demand t
+    :general
+    (:keymaps 'dired-mode-map
+     :states '(normal motion)
+     "P" #'peep-dired)
+    (:keymaps 'peep-dired-mode-map
+     :states '(normal)
+     "j" #'peep-dired-next-file
+     "k" #'peep-dired-prev-file)
+    :config
+    (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+    (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
+          peep-dired-max-size 5242880))
+#+END_SRC 
+
+**** Dired Copy Large Files & Directories
+Lets you copy huge files and directories without Emacs freezing up and
+with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/24/dired-rsync/][Or Emacs]]. 
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun ora-dired-rsync (dest)
+  (interactive
+   (list
+    (expand-file-name
+     (read-file-name
+      "Rsync to:"
+      (dired-dwim-target-directory)))))
+  ;; store all selected files into "files" list
+  (let ((files (dired-get-marked-files
+                nil current-prefix-arg))
+        ;; the rsync command
+        (tmtxt/rsync-command
+         "rsync -arvz --progress "))
+    ;; add all selected file names as arguments
+    ;; to the rsync command
+    (dolist (file files)
+      (setq tmtxt/rsync-command
+            (concat tmtxt/rsync-command
+                    (shell-quote-argument file)
+                    " ")))
+    ;; append the destination
+    (setq tmtxt/rsync-command
+          (concat tmtxt/rsync-command
+                  (shell-quote-argument dest)))
+    ;; run the async shell command
+    (async-shell-command tmtxt/rsync-command "*rsync*")
+    ;; finally, switch to that window
+    (other-window 1)))
+
+
 #+END_SRC
