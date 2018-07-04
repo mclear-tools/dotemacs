@@ -5072,8 +5072,9 @@ Other useful org packages
     (require 'ox-extra)
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
-*** Org Wiki
-#+begin_src emacs-lisp
+*** DISABLED Org Wiki
+CLOSED: [2018-06-20 Wed 00:15]
+#+begin_src emacs-lisp :tangle no
 (use-package org-wiki
   :load-path "~/.emacs.d/.local/elisp"
   :commands (org-wiki-export-html-sync org-wiki-open org-wiki-helm org-wiki-dired org-wiki-index)
@@ -5696,7 +5697,12 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
    (use-package rainbow-delimiters 
      :commands rainbow-delimiters-mode
      :init
-     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+     :config
+     (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+            :foreground "red"
+            :inherit 'error
+            :box t)) 
    #+END_SRC
 *** Rainbow identifiers
 [[https://github.com/Fanael/rainbow-identifiers][Rainbow identifiers mode]] is an Emacs minor mode providing highlighting of identifiers based on their names. Each identifier gets a color based on a hash of its name.
@@ -5712,9 +5718,11 @@ A template system for Emacs http://joaotavora.github.com/yasnippet/
 (use-package rainbow-mode
   :commands rainbow-mode)
 #+END_SRC 
-*** Electric Pair (Autopair)
+*** DISABLED Electric Pair (Autopair)
+CLOSED: [2018-06-28 Thu 12:02]
 #+BEGIN_SRC emacs-lisp
 (use-package electric-pair
+  :disabled t
   :ensure nil
   :commands electric-pair-mode
   :init
@@ -6819,16 +6827,18 @@ Use common [[https://github.com/nashamri/academic-phrases][academic phrases]] in
 (use-package academic-phrases
  :commands (academic-phrases academic-phrases-by-section))
 #+END_SRC
-** TESTING Org Projectile
+** DISABLED Org Projectile
+CLOSED: [2018-06-18 Mon 18:29]
 :PROPERTIES:
 :DATE_ADDED: March 3, 2018
 :END:
-
+[Not quite there yet - but should keep an eye on this project]
 [[https://github.com/IvanMalison/org-projectile][Manage]] project TODOs with org mode and projectile. Seems like it will be
 useful but we'll see.  
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-projectile
+  :commands (org-projectile-project-todo-entry org-projectile-project-todo-completing-read)
   :general 
   (:states '(normal visual emacs)
   :keymaps 'override
@@ -6838,8 +6848,7 @@ useful but we'll see.
   "pt" 'org-projectile-project-todo-completing-read)
   :config
   (progn
-    (setq org-projectile-projects-file
-          "~/Dropbox/org-files/projects.org")
+    (setq org-projectile-projects-file "~/Dropbox/org-files/todo.org")
     (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates))
   :ensure t)
