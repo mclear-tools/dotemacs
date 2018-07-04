@@ -6421,6 +6421,8 @@ Better than doc-view, but doesn't render well on retina screens :(
             "r"   'pdf-view-revert-buffer
             "o"   'pdf-links-action-perform
             "O"   'pdf-outline
+            "!"   'bms/pdf-no-filter
+            "#"   'bms/pdf-midnight-original
             )
         (general-define-key :states '(insert) :keymaps 'pdf-view-mode-map
             "y" 'pdf-view-kill-ring-save )
@@ -6465,16 +6467,16 @@ Better than doc-view, but doesn't render well on retina screens :(
        )
 
       (defun cpm/pdf-color-theme ()
-        (when (eq active-theme 'solarized-light)
-          (bms/pdf-no-filter)
-          (bms/pdf-midnight-green)))
+        (if (eq active-theme 'solarized-light)
+            (bms/pdf-no-filter)
+          (bms/pdf-midnite-original)))
 
         ;; midnite mode hook
         (add-hook 'pdf-view-mode-hook (lambda ()
-                                        (cpm/pdf-color-theme)
-                                        (bms/pdf-midnite-colour-schemes)
                                         ; automatically turns on midnight-mode for pdfs
                                         (pdf-view-midnight-minor-mode)
+                                        (cpm/pdf-color-theme)
+                                        (bms/pdf-midnite-colour-schemes)
                                         ; fixes blinking pdf in evil
                                         (blink-cursor-mode -1)
                                         (beacon-mode -1)))
