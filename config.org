@@ -1514,13 +1514,21 @@ Per [[https://emacs.stackexchange.com/a/28746/11934][this]] post on stack overfl
     :commands (dired dired-jump dired-jump-other-window)
     :config
     (setq insert-directory-program "gls" dired-use-ls-dired t)
-    (setq diredp-toggle-find-file-reuse-dir 1)
     ;; list directories first
     ;; (setq dired-listing-switches "-al --group-directories-first")
     (setq dired-listing-switches "-laGh1v --group-directories-first")
+    ;; don't ask about killing buffer visiting file
+    (setq dired-clean-confirm-killing-deleted-buffers nil)
     ;; stop asking about recurisve actions
     (setq dired-recursive-copies 'always)
     (setq dired-recursive-deletes 'always))
+
+  (use-package dired+
+    :ensure t
+    :after dired
+    :demand t
+    :config
+    (setq diredp-toggle-find-file-reuse-dir 1))
 #+END_SRC
 *** Dired Copy Large Files & Directories
 Lets you copy huge files and directories without Emacs freezing up and
