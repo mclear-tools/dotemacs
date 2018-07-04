@@ -3690,7 +3690,8 @@ Keybindings for managing packages
     "sl" 'last-search-buffer
     "so" 'helm-occur
     "sp" 'helm-ag-project-root
-    "sr" 'helm-org-rifle
+    "sr" #'vr/query-replace
+    "sR" 'helm-org-rifle
     "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
     "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
     "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
