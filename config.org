@@ -2140,20 +2140,20 @@ From bling: https://github.com/bling/evil-visualstar
 ** Session & Project Management
 *** Hydra
 #+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :commands (cpm/hydra-desktop/body))
-  
-  ;; hydra for TODOs
-  (with-eval-after-load 'hydra
-  (defhydra hydra-todo (:pre
-                  (hl-todo-mode 1)
-              :post
-             (hl-todo-mode -1))
-  "Todo"
-  ("n" hl-todo-next "Next")
-  ("p" hl-todo-previous "Previous")
-  ("o" hl-todo-occur "Occur")
-  ("q" nil "Quit" :color blue :exit t)))
+  (use-package hydra
+    ;; :commands (cpm/hydra-desktop/body))
+    :defer 2)
+    ;; hydra for TODOs
+    (with-eval-after-load 'hydra
+    (defhydra hydra-todo (:pre
+                    (hl-todo-mode 1)
+                :post
+               (hl-todo-mode -1))
+    "Todo"
+    ("n" hl-todo-next "Next")
+    ("p" hl-todo-previous "Previous")
+    ("o" hl-todo-occur "Occur")
+    ("q" nil "Quit" :color blue :exit t)))
 #+END_SRC
 *** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -3453,12 +3453,13 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
      "E" 'cpm/call-emacs
      "e" 'server-edit
      "G" 'general-describe-keybindings
-     "h" 'helm-resume
      "j" 'avy-goto-char
      "k" 'helm-show-kill-ring
      "l" 'repeat
      "N" 'research-notes
      "n" 'big-notes
+     "r" 'helm-resume
+     "S" 'hydra-spelling/body
      ;; "W" 'woman
      "`" 'beacon-blink
      "'" 'shell-pop
@@ -3753,8 +3754,8 @@ Keybindings for managing packages
       "tp" 'smartparens-mode
       "tP" 'show-paren-mode 
       "tr" 'rainbow-identifiers-mode
-      "ts" 'ispell-buffer
-      "tS" 'flyspell-mode
+      "ts" 'flyspell-buffer
+      "tS" 'ispell-buffer
       "tt" 'toggle-dark-light-theme
       "tT" 'helm-themes
       "tw" 'writeroom-mode
@@ -5073,7 +5074,8 @@ A useful [[https://gist.github.com/deerpig/3cebadb236fed15c54b45f73a4321336#file
   (add-hook 'org-mode-hook
       (lambda () 
         (turn-on-auto-fill)
-        (flyspell-mode 1)
+        (turn-on-flyspell)
+        ;; (flyspell-mode 1)
         (org-zotxt-mode)
         (global-git-gutter-mode 0)
         ))
@@ -5916,35 +5918,87 @@ Use flyspell and aspell
   (use-package ispell
     :commands (ispell-word ispell-region ispell-buffer)
     :config
+    (when (executable-find "aspell")
+      (setq ispell-program-name "aspell")
+      ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
+      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))))
+    ;; (when (executable-find "hunspell")
+    ;;   (setq-default ispell-program-name "hunspell")
+    ;;   (setq ispell-extra-args   '("-d en_US"))
+    ;;   (setq ispell-really-hunspell t)))
+
     ;; Save a new word to personal dictionary without asking
-    (setq ispell-silently-savep nil)
-    (setq-default ispell-program-name "aspell")
-    (setq-default ispell-list-command "list")
-    (setq ispell-extra-args
-        (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
-              "--lang=en_US"
-              "--ignore=3")))
+    ;; (setq ispell-silently-savep nil)
+
+    ;; (setq-default ispell-program-name "/usr/local/bin/aspell")
+    ;; (setq ispell-extra-args
+    ;;     (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
+    ;;           "--lang=en_US"
+    ;;           "--ignore=3")))
 
   (use-package flyspell
-    :commands flyspell-auto-correct-word
-    :hook ((org-mode markdown-mode latex-mode) . turn-on-flyspell)
-    :general
-    ("C-;" 'flyspell-auto-correct-word)
+    :commands (flyspell-auto-correct-previous-word flyspell-correct-word-generic)
     :init
     ;; Below variables need to be set before `flyspell' is loaded.
     (setq flyspell-use-meta-tab nil)
+    :custom
+    (flyspell-abbrev-p t)
+    (flyspell-use-global-abbrev-table-p t)
+    (flyspell-issue-message-flag nil)
+    (flyspell-issue-welcome-flag nil)
     :config
     ;; Use mouse
     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-    (define-key flyspell-mouse-map [mouse-3] #'undefined)
-    ;; reduce messages & slowdown
-    (setq flyspell-issue-message-flag nil)
-    (setq flyspell-issue-welcome-flag nil))
+    (define-key flyspell-mouse-map [mouse-3] #'undefined))
+    (add-hook 'flyspell-mode-hook 'flyspell-buffer) ; show misspelled
+
+  (use-package flyspell-correct-ivy
+    :general
+    (:states '(normal insert emacs) :keymaps 'flyspell-mode-map
+     "C-;" 'flyspell-auto-correct-previous-word
+     "C-:" 'flyspell-correct-word-generic)
+    :custom (flyspell-correct-interface 'flyspell-correct-ivy))
+
+  (with-eval-after-load 'hydra
+    (defhydra hydra-spelling (:color blue)
+    "
+    ^
+    ^Spelling^          ^Errors^            ^Checker^
+    ^────────^──────────^──────^────────────^───────^───────
+    _q_ quit            _<_ previous        _c_ correction
+    ^^                  _>_ next            _d_ dictionary
+    ^^                  _f_ check           _m_ mode
+    ^^                  ^^                  ^^
+    "
+    ("q" nil)
+    ("<" flyspell-correct-previous :color pink)
+    (">" flyspell-correct-next :color pink)
+    ("c" ispell)
+    ("d" ispell-change-dictionary)
+    ("f" flyspell-buffer :color pink)
+    ("m" flyspell-mode)))
 #+END_SRC 
 
-** Spelling Autocorrect
-Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
+
+** Abbrev
+Abbrev mode
 #+BEGIN_SRC emacs-lisp
+(use-package abbrev
+  :ensure nil
+  :config
+  (add-hook 'text-mode-hook #'abbrev-mode)
+  (setq abbrev-file-name (concat cpm-local-dir "abbrev/.abbrev_defs")
+        save-abbrevs 'silently)
+  (if (file-exists-p abbrev-file-name)
+      (quietly-read-abbrev-file)))
+#+END_SRC
+
+** DISABLED Spelling Autocorrect
+CLOSED: [2018-06-18 Mon 19:16]
+[I think this is otiose given flyspell-abbrev-p]
+Use abbrev-mode as my autocorrect. Via [[http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html][Endless Parentheses]]. 
+
+#+BEGIN_SRC emacs-lisp :tangle no
 (define-key ctl-x-map "\C-i"
   #'endless/ispell-word-then-abbrev)
 
@@ -6040,7 +6094,7 @@ Great for managing citations and notes
     ;; markdown hooks
     (add-hook 'markdown-mode-hook
           '(lambda ()
-             (turn-on-auto-fill) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (hl-todo-mode)))
+          (turn-on-auto-fill) (turn-on-flyspell) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (hl-todo-mode)))
     (setq markdown-command "pandoc -s -N --smart --bibliography=~/Dropbox/Work/Master.bib"
             markdown-enable-math t
             markdown-nested-imenu-heading-index t
