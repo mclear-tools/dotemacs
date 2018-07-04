@@ -29,3 +29,6 @@
  ;; If there is more than one, they won't work right.
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ '(doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
+ '(doom-modeline-eyebrowse ((t (:inherit highlight))))
+ '(doom-modeline-inactive-bar ((t (:inherit highlight))))
