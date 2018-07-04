@@ -2605,11 +2605,26 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
            (interactive)
            (if (eq active-theme 'solarized-light) 
                (progn (setq active-theme 'solarized-dark) 
-                     (cpm/osx-menubar-theme-dark))
+                      (cpm/osx-menubar-theme-dark)
+                      (add-to-list 'default-frame-alist '(ns-appearance . dark))
+                      (force-mode-line-update))
                (progn (setq active-theme 'solarized-light) 
-                      (cpm/osx-menubar-theme-light)))
+                      (cpm/osx-menubar-theme-light)
+                      (add-to-list 'default-frame-alist '(ns-appearance . light))
+                      (force-mode-line-update)))
            (load-theme active-theme)))
            ;; (powerline-reset)))
+
+           ;; Change the lettering color dependent on solarized theme
+           (defun cpm/frame-title-color ()
+           (if (eq active-theme 'solarized-light)
+               (progn
+                 (add-to-list 'default-frame-alist '(ns-appearance . light))
+                 (force-mode-line-update))
+             (progn
+             (add-to-list 'default-frame-alist '(ns-appearance . dark))
+             (force-mode-line-update))))
+           (add-hook! (before-make-frame-hook nameframe-make-frame-hook) 'cpm/frame-title-color)
 
             (progn
             (defvar after-load-theme-hook nil
