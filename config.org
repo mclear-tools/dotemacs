@@ -5194,6 +5194,7 @@ From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-to
  #+END_SRC
  
 *** TESTING Ripgrep (rg)
+An [[https://github.com/Wilfred/deadgrep][interface]] for [[https://github.com/BurntSushi/ripgrep][ripgrep]]
  #+BEGIN_SRC emacs-lisp 
    (use-package deadgrep
      :ensure t
