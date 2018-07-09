@@ -25,9 +25,17 @@
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
+(define-abbrev-table 'bmkp-edit-bookmark-record-mode-abbrev-table '())
+
+(define-abbrev-table 'bmkp-edit-bookmark-records-mode-abbrev-table '())
+
+(define-abbrev-table 'bmkp-edit-tags-mode-abbrev-table '())
+
 (define-abbrev-table 'bookmark-bmenu-mode-abbrev-table '())
 
 (define-abbrev-table 'bookmark-edit-annotation-mode-abbrev-table '())
+
+(define-abbrev-table 'bookmark-show-annotation-mode-abbrev-table '())
 
 (define-abbrev-table 'bsh-script-mode-abbrev-table '())
 
@@ -238,6 +246,7 @@
     ("applicaitons" "applications" nil 0)
     ("applyed" "applied" nil 0)
     ("appointiment" "appointment" nil 0)
+    ("appromately" "Apparently" nil 0)
     ("approrpiate" "appropriate" nil 0)
     ("approrpriate" "appropriate" nil 0)
     ("apriori" "priori" nil 2)
@@ -251,6 +260,7 @@
     ("arond" "around" nil 0)
     ("artical" "article" nil 0)
     ("articel" "article" nil 0)
+    ("artisitic" "artistic" nil 0)
     ("asdvertising" "advertising" nil 0)
     ("assistent" "assistant" nil 0)
     ("asthe" "as the" nil 0)
@@ -330,6 +340,7 @@
     ("channells" "channels" nil 0)
     ("charachter" "character" nil 0)
     ("charachters" "characters" nil 0)
+    ("characterisitics" "characteristics" nil 0)
     ("charactor" "character" nil 0)
     ("charecter" "character" nil 0)
     ("charector" "character" nil 0)
@@ -378,6 +389,7 @@
     ("comunicate" "communicate" nil 0)
     ("comunity" "community" nil 0)
     ("concenring" "concerning" nil 0)
+    ("concepiton" "conception" nil 0)
     ("concerningcognition" "concerning cognition" nil 0)
     ("concomittant" "concomitant" nil 0)
     ("condersider" "consider" nil 0)
@@ -420,6 +432,8 @@
     ("creme" "creme" nil 0)
     ("critque" "critique" nil 0)
     ("crticicism" "criticism" nil 0)
+    ("crtiqiue" "critique" nil 0)
+    ("crtique" "critique" nil 0)
     ("ctaegory" "category" nil 0)
     ("cusotmer" "customer" nil 0)
     ("cusotmers" "customers" nil 0)
@@ -523,6 +537,8 @@
     ("engsrom" "Engstrom" nil 0)
     ("enought" "enough" nil 0)
     ("entree" "entree" nil 0)
+    ("epistemolgical" "epistemological" nil 0)
+    ("epxression" "expression" nil 0)
     ("equalluy" "equally" nil 0)
     ("equippment" "equipment" nil 0)
     ("equivalant" "equivalent" nil 0)
@@ -533,7 +549,7 @@
     ("espesially" "especially" nil 0)
     ("exacty" "exact" nil 0)
     ("excellant" "excellent" nil 0)
-    ("excercise" "exercise" nil 0)
+    ("excercise" "exercise" nil 1)
     ("exchagne" "exchange" nil 0)
     ("exchagnes" "exchanges" nil 0)
     ("excitment" "excitement" nil 0)
@@ -638,7 +654,7 @@
     ("howerver" "however" nil 0)
     ("hsa" "has" nil 0)
     ("hsi" "his" nil 0)
-    ("hte" "the" nil 29)
+    ("hte" "the" nil 30)
     ("htere" "there" nil 0)
     ("htese" "these" nil 0)
     ("htey" "they" nil 0)
@@ -667,6 +683,7 @@
     ("impossable" "impossible" nil 0)
     ("improvemnt" "improvement" nil 0)
     ("improvment" "improvement" nil 0)
+    ("inclucde" "include" nil 0)
     ("includ" "include" nil 0)
     ("indecate" "indicate" nil 0)
     ("indenpendence" "independence" nil 0)
@@ -837,6 +854,7 @@
     ("oxident" "oxidant" nil 0)
     ("papaer" "paper" nil 0)
     ("parliment" "parliament" nil 0)
+    ("particlar" "particular" nil 0)
     ("partof" "part of" nil 0)
     ("paticular" "particular" nil 0)
     ("paymetn" "payment" nil 0)
@@ -1272,9 +1290,7 @@
 
 (define-abbrev-table 'log-view-mode-abbrev-table '())
 
-(define-abbrev-table 'lua-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'lua-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-cherry-mode-abbrev-table '())
 
@@ -1477,9 +1493,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'ranger-mode-abbrev-table '())
 
