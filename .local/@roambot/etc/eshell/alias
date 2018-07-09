@@ -1,4 +1,4 @@
-alias 871 workon phil871
+alias 871 cd ~/Dropbox/Work/projects/phil871-kant-survey & hugo serve -w -F
 alias ox workon ox-kant
 alias 232 workon phil232 
 alias 105 workon phil105
