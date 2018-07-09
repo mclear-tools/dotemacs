@@ -5193,10 +5193,23 @@ From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-to
 
  #+END_SRC
  
-*** Ripgrep (rg)
+*** TESTING Ripgrep (rg)
  #+BEGIN_SRC emacs-lisp 
- (use-package rg 
-   :commands rg)
+   (use-package deadgrep
+     :ensure t
+     :general
+     (:states '(normal motion visual insert emacs)
+     :keymaps 'override
+     :prefix "SPC"
+     :non-normal-prefix "C-SPC"
+     "sg" #'deadgrep)
+     (:states '(normal motion visal)
+      :keymaps 'deadgrep-mode-map
+      "j" #'deadgrep-forward
+      "k" #'deadgrep-backward
+      "l" #'deadgrep-visit-result))
+   ;; (use-package rg
+   ;;   :commands rg)
  #+END_SRC
 *** Anzu
 [[https://github.com/syohex/emacs-anzu][anzu.el]] is an Emacs port of anzu.vim. anzu.el provides a minor mode which displays current match and total matches information in the mode-line in various search modes.
