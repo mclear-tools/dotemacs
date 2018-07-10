@@ -561,7 +561,7 @@ navigating in tagged buffers.
       (call-interactively 'helm-semantic-or-imenu))))
       
 ;; resume last jump
-(defun cpm/last-jump ()
+(defun cpm/resume-last-jump ()
   (interactive)
     (cond
      ((eq major-mode 'org-mode)
@@ -791,6 +791,9 @@ Find a file in a project and open in a vertical split
                (helm-resume "*helm-ag*"))
               ((get-buffer "*hgrep*")
                (switch-to-buffer-other-window "*hgrep*"))
+              ((get-buffer "*helm occur*")
+               (helm-resume "*helm occur*"))
+              ((ivy-resume))
               (t
                (message "No previous search buffer found"))))
 #+END_SRC
@@ -3327,10 +3330,10 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
      "G" 'general-describe-keybindings
      "j" 'avy-goto-char
      "k" 'helm-show-kill-ring
-     "l" 'repeat
+     "l" 'cpm/last-search-buffer
      "N" 'research-notes
      "n" 'big-notes
-     "r" 'helm-resume
+     "r" 'cpm/resume-last-jump
      "S" 'hydra-spelling/body
      ;; "W" 'woman
      "`" 'beacon-blink
