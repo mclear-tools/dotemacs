@@ -1,1 +1,0 @@
-Evil mode compatibility.

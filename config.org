@@ -4088,7 +4088,7 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
     (setq projectile-enable-caching t
           projectile-files-cache-expire 60)
     :config
-    (projectile-global-mode t))
+    (projectile-mode t))
 #+END_SRC
 *** Perspectives
 Yet another attempt to manage buffers/workspaces
