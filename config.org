@@ -793,7 +793,6 @@ Find a file in a project and open in a vertical split
                (switch-to-buffer-other-window "*hgrep*"))
               ((get-buffer "*helm occur*")
                (helm-resume "*helm occur*"))
-              ((ivy-resume))
               (t
                (message "No previous search buffer found"))))
 #+END_SRC
@@ -2554,8 +2553,7 @@ that I use anything other than solarized :)
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :ensure t
-    :defer 1
-    ;; :hook ((prog-mode text-mode) . company-mode)
+    :hook ((prog-mode text-mode) . company-mode)
     :init
     (setq company-idle-delay 0.45
           company-minimum-prefix-length 3
@@ -3633,7 +3631,7 @@ Keybindings for managing packages
       "tp" 'smartparens-mode
       "tP" 'show-paren-mode 
       "tr" 'rainbow-identifiers-mode
-      "ts" 'flyspell-buffer
+      "ts" 'flyspell-mode
       "tS" 'ispell-buffer
       "tt" 'toggle-dark-light-theme
       "tT" 'helm-themes
@@ -5636,6 +5634,7 @@ Make counsel display org headings nicely.
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
     :after ox
+    :demand t
     :config
     ;; default options for all output formats
     (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
@@ -5659,7 +5658,8 @@ Various exporters to use. Right now it is just markdown that I need.
 [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
 #+BEGIN_SRC emacs-lisp
 (use-package ox-hugo
-  :after ox)
+  :after ox
+  :demand t)
 
 #+END_SRC
 
@@ -5712,26 +5712,26 @@ Some useful org-specific functions
  Functions to calculate apt offsets and call regular org fill stuff. There's a
  useful [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack overflow thread]] on this. 
 #+BEGIN_SRC emacs-lisp
-(defun calc-offset-on-org-level ()
-  "Calculate offset (in chars) on current level in org mode file."
-  (* (or (org-current-level) 0) org-indent-indentation-per-level))
+  (defun calc-offset-on-org-level ()
+    "Calculate offset (in chars) on current level in org mode file."
+    (* (or (org-current-level) 0) org-indent-indentation-per-level))
 
-(defun my-org-fill-paragraph (&optional JUSTIFY)
-  "Calculate apt fill-column value and fill paragraph."
-  (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
-    (org-fill-paragraph JUSTIFY)))
+  (defun my-org-fill-paragraph (&optional JUSTIFY)
+    "Calculate apt fill-column value and fill paragraph."
+    (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
+      (org-fill-paragraph JUSTIFY)))
 
-(defun my-org-auto-fill-function ()
-  "Calculate apt fill-column value and do auto-fill"
-  (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
-    (org-auto-fill-function)))
+  (defun my-org-auto-fill-function ()
+    "Calculate apt fill-column value and do auto-fill"
+    (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
+      (org-auto-fill-function)))
     
-(defun my-org-mode-hook ()
-  (setq fill-paragraph-function   'my-org-fill-paragraph
-        normal-auto-fill-function 'my-org-auto-fill-function))
+  (defun my-org-mode-hook ()
+    (setq fill-paragraph-function   'my-org-fill-paragraph
+          normal-auto-fill-function 'my-org-auto-fill-function))
 
-(add-hook 'org-load-hook 'my-org-mode-hook)
-(add-hook 'org-mode-hook 'my-org-mode-hook)
+  ;; (add-hook 'org-load-hook 'my-org-mode-hook)
+  ;; (add-hook 'org-mode-hook 'my-org-mode-hook)
 #+END_SRC
 *** Narrow & Advance/Retreat
 Functions to advance forwards or backwards through narrowed tree
