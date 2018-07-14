@@ -3623,8 +3623,8 @@ Keybindings for managing packages
       "te" 'toggle-indicate-empty-lines
       "tE" 'eldoc-mode
       "tl" #'imenu-list-smart-toggle
-      "tm" 'hidden-mode-line-mode
-      "tM" 'spaceline-toggle-minor-modes
+      "tm" #'treemacs
+      "tM" 'hidden-mode-line-mode
       ;; "tn" 'nlinum-mode
       "tn" 'display-line-numbers-mode
       "tN" 'org-numbers-overlay-mode
