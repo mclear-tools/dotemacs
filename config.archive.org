@@ -151,64 +151,6 @@ A [[https://github.com/jaypei/emacs-neotree][emacs tree plugin]] like NerdTree f
   (evil-define-key 'normal neotree-mode-map (kbd "i") 'neotree-enter)
   (evil-define-key 'normal neotree-mode-map (kbd "K") 'neotree-delete-node))
 #+END_SRC
-** TESTING Treemacs
-[[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file and project explorer 
-#+BEGIN_SRC emacs-lisp
-  (use-package treemacs
-    :ensure t
-    :defer t
-    :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :config
-    (progn
-      (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
-            treemacs-file-event-delay           5000
-            treemacs-follow-after-init          t
-            treemacs-follow-recenter-distance   0.1
-            treemacs-goto-tag-strategy          'refetch-index
-            treemacs-indentation                2
-            treemacs-indentation-string         " "
-            treemacs-is-never-other-window      nil
-            treemacs-no-png-images              nil
-            treemacs-project-follow-cleanup     nil
-            treemacs-persist-file               (concat cpm-cache-dir "treemacs-persist") 
-            treemacs-recenter-after-file-follow nil
-            treemacs-recenter-after-tag-follow  nil
-            treemacs-show-hidden-files          t
-            treemacs-silent-filewatch           nil
-            treemacs-silent-refresh             nil
-            treemacs-sorting                    'alphabetic-desc
-            treemacs-space-between-root-nodes   t
-            treemacs-tag-follow-cleanup         t
-            treemacs-tag-follow-delay           1.5
-            treemacs-width                      35)
-
-      (treemacs-follow-mode t)
-      (treemacs-filewatch-mode t)
-      (pcase (cons (not (null (executable-find "git")))
-                   (not (null (executable-find "python3"))))
-        (`(t . t)
-         (treemacs-git-mode 'extended))
-        (`(t . _)
-         (treemacs-git-mode 'simple)))))
-    ;; :bind
-    ;; (:map global-map
-    ;;       ("M-0"       . treemacs-select-window)
-    ;;       ("C-x t 1"   . treemacs-delete-other-windows)
-    ;;       ("C-x t t"   . treemacs)
-    ;;       ("C-x t B"   . treemacs-bookmark)
-    ;;       ("C-x t C-t" . treemacs-find-file)
-    ;;       ("C-x t M-t" . treemacs-find-tag)))
-
-  (use-package treemacs-evil
-    :after treemacs evil
-    :ensure t)
-
-  (use-package treemacs-projectile
-    :after treemacs projectile
-    :ensure t)
-#+END_SRC
 ** DISABLED Ranger & Deer
 CLOSED: [2018-07-04 Wed 14:14]
 Better dired navigation using ranger-like settings. But I'm having lots of
