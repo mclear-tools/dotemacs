@@ -155,6 +155,8 @@
 
 (define-abbrev-table 'gfm-view-mode-abbrev-table '())
 
+(define-abbrev-table 'git-commit-elisp-text-mode-abbrev-table '())
+
 (define-abbrev-table 'git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'git-rebase-mode-abbrev-table '())
@@ -561,7 +563,7 @@
     ("espesially" "especially" nil 0)
     ("exacty" "exact" nil 0)
     ("excellant" "excellent" nil 0)
-    ("excercise" "exercise" nil 1)
+    ("excercise" "exercise" nil 2)
     ("exchagne" "exchange" nil 0)
     ("exchagnes" "exchanges" nil 0)
     ("excitment" "excitement" nil 0)
@@ -1049,6 +1051,7 @@
     ("shouldent" "shouldn't" nil 0)
     ("shouldnt" "shouldn't" nil 0)
     ("showinf" "showing" nil 0)
+    ("signficance" "significance" nil 0)
     ("signifacnt" "significant" nil 0)
     ("simalar" "similar" nil 0)
     ("similiar" "similar" nil 0)
@@ -1585,6 +1588,8 @@
     ("abbreeviation" "abbreviation" nil 0)
     ("ciations" "cations" nil 0)
    ))
+
+(define-abbrev-table 'treemacs-mode-abbrev-table '())
 
 (define-abbrev-table 'url-cookie-mode-abbrev-table '())
 
