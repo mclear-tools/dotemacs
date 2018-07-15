@@ -1946,7 +1946,7 @@ There are some other useful setup packages for evil
 #+begin_src emacs-lisp
   (use-package evil-surround
     :commands (evil-surround-region evil-surround-change evil-surround-delete)
-    :hook ((LaTeX-mode org-mode markdown-mode prog-mode) . evil-surround-mode)
+    ;; :hook ((LaTeX-mode org-mode markdown-mode prog-mode) . evil-surround-mode)
     :general
     (:states '(visual)
     "s" 'evil-surround-region
@@ -1956,12 +1956,12 @@ There are some other useful setup packages for evil
 
   (use-package embrace 
     :after evil-surround
-    :demand t
-    :hook ((LaTeX-mode . embrace-LaTeX-mode-hook)
-           (org-mode . embrace-org-mode-hook)
-           (org-mode . embrace-markdown-mode-hook)
-           (markdown-mode . embrace-markdown-mode-hook)))
-           
+    :demand t)
+    ;; :hook ((LaTeX-mode . embrace-LaTeX-mode-hook)
+    ;;        (org-mode . embrace-org-mode-hook)
+    ;;        (org-mode . embrace-markdown-mode-hook)
+    ;;        (markdown-mode . embrace-markdown-mode-hook)))
+
   (use-package evil-embrace
    :after evil-surround
    :demand t
@@ -2505,15 +2505,14 @@ that I use anything other than solarized :)
 ***** Doom Modeline
 #+BEGIN_SRC emacs-lisp
     (use-package doom-modeline
-      ;; :load-path "~/.Emacs.d/.local/elisp/doom-modeline/doom-modeline.el"
       :demand t
       :init
       (doom-modeline-init)
-
       :config
       (setq doom-modeline-bar-width 3
             doom-modeline-height 38)
 
+      ;; window number faces & formatting
       (doom-modeline-def-segment window-number
         (if (bound-and-true-p window-numbering-mode)
             (propertize (format " %s " (window-numbering-get-number-string))
@@ -2521,7 +2520,7 @@ that I use anything other than solarized :)
                                   'doom-modeline-active-window-number
                                 'doom-modeline-inactive-window-number))
        ""))
-
+      ;; workspace number faces & formatting
       (doom-modeline-def-segment workspace-number
         "The current workspace name or number. Requires `eyebrowse-mode' to be
   enabled."
@@ -3110,7 +3109,8 @@ A nice tip from [[http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal
   (global-unset-key (kbd (format "M-%d" n)))
   )
 #+END_SRC
-**** Windmove
+**** DISABLED Windmove
+CLOSED: [2018-07-14 Sat 00:06]
 #+BEGIN_SRC emacs-lisp
 (use-package windmove
   :commands (windmove-up windmove-down windmove-left windmove-right)
@@ -4116,6 +4116,7 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
 *** Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
+   :defer 1
    :init
    ;; save projectile-known-projects-file in cache folder
     (setq projectile-known-projects-file
@@ -4136,8 +4137,9 @@ Yet another attempt to manage buffers/workspaces
     ;; :init
     ;; (when (not (fboundp 'make-variable-frame-local))
     ;; (defun make-variable-frame-local (variable) variable))
-    :config
-    (persp-mode 1))
+    )
+    ;; :config
+    ;; (persp-mode 1))
 
   (use-package persp-projectile
       :commands projectile-persp-switch-project
@@ -5663,12 +5665,14 @@ Make counsel display org headings nicely.
   (setq org-randomnote-candidates '("~/Dropbox/org-files/todo.org")))
 #+end_src
 ** Org Export
+#+BEGIN_SRC emacs-lisp
+(setq org-export-backends '(ascii html icalendar latex odt pandoc hugo md))
+#+END_SRC
 *** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
     :after ox
-    :demand t
     :config
     ;; default options for all output formats
     (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
@@ -5681,9 +5685,10 @@ Make counsel display org headings nicely.
     (setq org-pandoc-format-extensions '(org+smart)))
 #+END_SRC 
 
-*** Org Markdown Export
+*** DISABLED Org Markdown Export
+CLOSED: [2018-07-14 Sat 00:45]
 Various exporters to use. Right now it is just markdown that I need.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (eval-after-load "org"
   '(require 'ox-md nil t))
 #+END_SRC
@@ -5691,10 +5696,7 @@ Various exporters to use. Right now it is just markdown that I need.
 *** Ox-Hugo
 [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
 #+BEGIN_SRC emacs-lisp
-(use-package ox-hugo
-  :after ox
-  :demand t)
-
+(use-package ox-hugo)
 #+END_SRC
 
 
@@ -6060,6 +6062,7 @@ Abbrev mode
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
   :ensure nil
+  :defer 2
   :config
   (add-hook 'text-mode-hook #'abbrev-mode)
   (setq abbrev-file-name (concat cpm-local-dir "abbrev/.abbrev_defs")
@@ -6871,7 +6874,7 @@ A collection of keybindings for evil
   (use-package evil-collection
     :ensure t
     :after evil
-    :demand t
+    :defer 1
     :config
     (evil-collection-init))
 #+END_SRC
@@ -6880,7 +6883,7 @@ A collection of keybindings for evil
 #+BEGIN_SRC emacs-lisp
   (use-package treemacs
     :ensure t
-    :defer t
+    :commands treemacs
     :init
     (with-eval-after-load 'winum
       (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
