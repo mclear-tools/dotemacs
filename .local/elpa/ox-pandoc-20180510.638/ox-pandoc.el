@@ -6,7 +6,7 @@
 ;; Description: Another org exporter for Pandoc
 ;; Author: KAWABATA, Taichi <kawabata.taichi@gmail.com>
 ;; Created: 2014-07-20
-;; Version: 1.180510
+;; Version: 1.180714
 ;; Package-Version: 20180510.638
 ;; Package-Requires: ((org "8.2") (emacs "24") (dash "2.8") (ht "2.0") (cl-lib "0.5"))
 ;; Keywords: tools
@@ -122,8 +122,8 @@ set as `(markdown_strict+footnotes)'."
     ;;(?2 "to tei and open." org-pandoc-export-to-tei-and-open)
     ;;(?" "as tei." org-pandoc-export-as-tei)
     ;;(?3 "to markdown_mmd." org-pandoc-export-to-markdown_mmd)
-    ;;(?3 "to markdown_mmd and open." org-pandoc-export-to-markdown_mmd-and-open)
-    ;;(?# "as markdown_mmd." org-pandoc-export-as-markdown_mmd)
+    (?3 "to markdown_mmd and open." org-pandoc-export-to-markdown_mmd-and-open)
+    (?# "as markdown_mmd." org-pandoc-export-as-markdown_mmd)
     ;;(?4 "to html5." org-pandoc-export-to-html5)
     (?4 "to html5 and open." org-pandoc-export-to-html5-and-open)
     (?$ "as html5." org-pandoc-export-as-html5)
@@ -133,8 +133,8 @@ set as `(markdown_strict+footnotes)'."
     ;;(?6 "to markdown_phpextra and open." org-pandoc-export-to-markdown_phpextra-and-open)
     ;;(?& "as markdown_phpextra." org-pandoc-export-as-markdown_phpextra)
     ;;(?7 "to markdown_strict." org-pandoc-export-to-markdown_strict)
-    ;;(?7 "to markdown_strict and open." org-pandoc-export-to-markdown_strict-and-open)
-    ;;(?' "as markdown_strict." org-pandoc-export-as-markdown_strict)
+    (?7 "to markdown_strict and open." org-pandoc-export-to-markdown_strict-and-open)
+    (?' "as markdown_strict." org-pandoc-export-as-markdown_strict)
     ;;(?8 "to opendocument." org-pandoc-export-to-opendocument)
     ;;(?8 "to opendocument and open." org-pandoc-export-to-opendocument-and-open)
     ;;(?( "as opendocument." org-pandoc-export-as-opendocument)
@@ -180,8 +180,8 @@ set as `(markdown_strict+footnotes)'."
     (?j "to json and open." org-pandoc-export-to-json-and-open)
     (?J "as json." org-pandoc-export-as-json)
     ;;(?k "to markdown." org-pandoc-export-to-markdown)
-    ;;(?k "to markdown and open." org-pandoc-export-to-markdown-and-open)
-    ;;(?K "as markdown." org-pandoc-export-as-markdown)
+    (?k "to markdown and open." org-pandoc-export-to-markdown-and-open)
+    (?K "as markdown." org-pandoc-export-as-markdown)
     (?l "to latex-pdf and open." org-pandoc-export-to-latex-pdf-and-open)
     (?L "to latex-pdf." org-pandoc-export-to-latex-pdf)
     ;;(?m "to man." org-pandoc-export-to-man)
@@ -194,9 +194,9 @@ set as `(markdown_strict+footnotes)'."
     (?O "to odt." org-pandoc-export-to-odt)
     (?p "to pptx and open." org-pandoc-export-to-pptx-and-open)
     (?P "to pptx." org-pandoc-export-to-pptx)
-    ;;(?q "to commonmark." org-pandoc-export-to-commonmark)
-    ;;(?q "to commonmark and open." org-pandoc-export-to-commonmark-and-open)
-    ;;(?Q "as commonmark." org-pandoc-export-as-commonmark)
+    ;; (?q "to commonmark." org-pandoc-export-to-commonmark)
+    (?q "to commonmark and open." org-pandoc-export-to-commonmark-and-open)
+    (?Q "as commonmark." org-pandoc-export-as-commonmark)
     ;;(?r "to rtf." org-pandoc-export-to-rtf)
     (?r "to rtf and open." org-pandoc-export-to-rtf-and-open)
     (?R "as rtf." org-pandoc-export-as-rtf)
