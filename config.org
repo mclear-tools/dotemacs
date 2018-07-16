@@ -3109,8 +3109,7 @@ A nice tip from [[http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal
   (global-unset-key (kbd (format "M-%d" n)))
   )
 #+END_SRC
-**** DISABLED Windmove
-CLOSED: [2018-07-14 Sat 00:06]
+**** Windmove
 #+BEGIN_SRC emacs-lisp
 (use-package windmove
   :commands (windmove-up windmove-down windmove-left windmove-right)
