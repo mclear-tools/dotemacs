@@ -1,6 +1,54 @@
 #+TITLE: Archive
 #+DATE: 2018-07-09
 
+
+
+** Deft Notes
+#+BEGIN_SRC emacs-lisp
+  (use-package deft
+    :commands (deft deft-find-file cpm/deft)
+    :init
+    (progn
+      ;; start in insert mode
+      (add-to-list 'evil-insert-state-modes 'deft-mode)
+      (setq deft-extensions '("org" "md" "txt")
+            deft-directory "~/Dropbox/org-files"
+            deft-text-mode 'org-mode
+            deft-use-filter-string-for-filename t ;; use filter string as filename
+            deft-org-mode-title-prefix t ;; add #+TITLE prefix
+            deft-recursive t  ;; search recursively in folders
+            deft-use-filename-as-title t)
+    :config
+    ;; Make sure titles have no spaces: from [[http://pragmaticemacs.com/category/deft/][pragmaticemacs]]
+    ;;advise deft-new-file-named to replace spaces in file names with -
+    (defun bjm-deft-strip-spaces (args)
+    "Replace spaces with - in the string contained in the first element of the list args. Used to advise deft's file naming function."
+    (list (replace-regexp-in-string " " "-" (car args)))
+    )
+    (advice-add 'deft-new-file-named :filter-args #'bjm-deft-strip-spaces)
+
+  ;;function to run deft in specified directory
+  (defun any-deft (dir)
+    "Run deft in directory DIR"
+    (setq deft-directory dir)
+    (switch-to-buffer "*Deft*")
+    (kill-this-buffer)
+    (require 'org)
+    (deft)
+    )
+  (defun big-notes ()
+    "Goto main notes with deft"
+    (interactive)
+    (any-deft "~/Dropbox/Notes")
+    (kill-this-buffer)
+    (any-deft "~/Dropbox/Notes")
+  )
+  (defun research-notes ()
+    "Goto research notes"
+    (interactive)
+    (any-deft "~/Dropbox/org-files/Wiki"))))
+#+END_SRC
+
 ** DISABLED Org Wiki
 CLOSED: [2018-06-20 Wed 00:15]
 #+begin_src emacs-lisp :tangle no
