@@ -112,6 +112,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#treemacs][Treemacs]]
   - [[#zettelkasten][Zettelkasten]]
   - [[#helm-gitignore][Helm Gitignore]]
+  - [[#org-demotepromote-region][Org demote/promote region]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7347,4 +7348,21 @@ Creates new deft file with id and STR as name."
   (use-package helm-gitignore
     :ensure t
     :commands helm-gitignore)
+#+END_SRC
+** TESTING Org demote/promote region
+#+BEGIN_SRC emacs-lisp
+(defun endless/demote-everything (number beg end)
+  "Add a NUMBER of * to all headlines between BEG and END.
+Interactively, NUMBER is the prefix argument and BEG and END are
+the region boundaries."
+  (interactive "p\nr")
+  (save-excursion
+    (save-restriction
+      (save-match-data
+        (widen)
+        (narrow-to-region beg end)
+        (goto-char (point-min))
+        (let ((string (make-string number ?*)))
+          (while (search-forward-regexp "^\\*" nil t)
+            (insert string)))))))
 #+END_SRC
