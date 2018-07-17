@@ -111,6 +111,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#evil-collection][Evil Collection]]
   - [[#treemacs][Treemacs]]
   - [[#zettelkasten][Zettelkasten]]
+  - [[#helm-gitignore][Helm Gitignore]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -7340,4 +7341,10 @@ Creates new deft file with id and STR as name."
 )
 
 
+#+END_SRC
+** TESTING Helm Gitignore
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-gitignore
+    :ensure t
+    :commands helm-gitignore)
 #+END_SRC
