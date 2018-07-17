@@ -2508,8 +2508,7 @@ that I use anything other than solarized :)
 #+BEGIN_SRC emacs-lisp
     (use-package doom-modeline
       :demand t
-      :init
-      (doom-modeline-init)
+      :hook (after-init . doom-modeline-init)
       :config
       (setq doom-modeline-bar-width 3
             doom-modeline-height 38)
