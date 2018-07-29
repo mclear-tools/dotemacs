@@ -75,6 +75,7 @@
 (require 'ox-blackfriday)
 (require 'ffap)                         ;For `ffap-url-regexp'
 (require 'ob-core)                      ;For `org-babel-parse-header-arguments'
+(declare-function org-hugo-pandoc-cite--parse-citations-maybe "ox-hugo-pandoc-cite")
 
 (defvar ffap-url-regexp)                ;Silence byte-compiler
 
@@ -123,6 +124,19 @@ within `org-hugo-export-wim-to-md' regardless.  This variable
 helps set the bundle path correctly for such cases (where
 EXPORT_HUGO_BUNDLE and EXPORT_FILE_NAME are set in the same
 subtree).")
+
+(defvar org-hugo--fm nil
+  "Variable to store the current Hugo post's front-matter string.
+
+This variable is used to cache the original ox-hugo generated
+front-matter that's used after Pandoc Citation parsing.")
+
+(defvar org-hugo--fm-yaml nil
+  "Variable to store the current Hugo post's front-matter string in YAML format.
+
+Pandoc understands meta-data only in YAML format.  So when Pandoc
+Citations are enabled, Pandoc is handed over the file with this
+YAML front-matter.")
 
 (defvar org-hugo-allow-export-after-save t
   "Enable flag for `org-hugo-export-wim-to-md-after-save'.
@@ -781,6 +795,8 @@ newer."
                    (:hugo-front-matter-key-replace "HUGO_FRONT_MATTER_KEY_REPLACE" nil nil space)
                    (:hugo-date-format "HUGO_DATE_FORMAT" nil org-hugo-date-format)
                    (:hugo-paired-shortcodes "HUGO_PAIRED_SHORTCODES" nil org-hugo-paired-shortcodes space)
+                   (:hugo-pandoc-citations "HUGO_PANDOC_CITATIONS" nil nil)
+                   (:bibliography "BIBLIOGRAPHY" nil nil newline) ;Used in ox-hugo-pandoc-cite
 
                    ;; Front matter variables
                    ;; https://gohugo.io/content-management/front-matter/#front-matter-variables
@@ -947,17 +963,31 @@ This is an internal function."
     (setq org-hugo--subtree-coord nil))
   (advice-add 'org-babel-exp-code :around #'org-hugo--org-babel-exp-code))
 
-(defun org-hugo--after-export-function ()
+(defun org-hugo--after-export-function (info outfile)
   "Function to be run after an ox-hugo export.
 
 This function is called in the very end of
 `org-hugo-export-to-md', `org-hugo-export-as-md' and
 `org-hugo-publish-to-md'.
 
+INFO is a plist used as a communication channel.
+
+OUTFILE is the Org exported file name.
+
 This is an internal function."
   (setq org-hugo--section nil)
   (setq org-hugo--bundle nil)
-  (advice-remove 'org-babel-exp-code #'org-hugo--org-babel-exp-code))
+  (advice-remove 'org-babel-exp-code #'org-hugo--org-babel-exp-code)
+  (let ((pandoc-enabled (or (org-entry-get nil "EXPORT_HUGO_PANDOC_CITATIONS" :inherit)
+                            (org-hugo--plist-get-true-p info :hugo-pandoc-citations))))
+    (when (and outfile
+               pandoc-enabled)
+      (require 'ox-hugo-pandoc-cite)
+      (plist-put info :outfile outfile)
+      (plist-put info :front-matter org-hugo--fm)
+      (org-hugo-pandoc-cite--parse-citations-maybe info)))
+  (setq org-hugo--fm nil)
+  (setq org-hugo--fm-yaml nil))
 
 ;;;; HTMLized section number for headline
 (defun org-hugo--get-headline-number (headline info &optional toc)
@@ -2426,7 +2456,10 @@ INFO is a plist holding export options."
         (body (if (org-string-nw-p body) ;Insert extra newline if body is non-empty
                   (format "\n%s" body)
                 "")))
-    (format "%s%s%s" fm body org-hugo-footer)))
+    (setq org-hugo--fm fm)
+    (if (org-hugo--plist-get-true-p info :hugo-pandoc-citations)
+        (format "%s%s%s" org-hugo--fm-yaml body org-hugo-footer)
+      (format "%s%s%s" fm body org-hugo-footer))))
 
 ;;;;; Hugo Front Matter
 (defun org-hugo--quote-string (val &optional prefer-no-quotes format)
@@ -2934,7 +2967,8 @@ INFO is a plist used as a communication channel."
                  (blackfriday . ,blackfriday)
                  (menu . ,menu-alist)
                  (resources . ,resources)))
-         (data `,(append data weight-data custom-fm-data)))
+         (data `,(append data weight-data custom-fm-data))
+         ret)
     ;; (message "[get fm DBG] tags: %s" tags)
     ;; (message "dbg: hugo tags: %S" (plist-get info :hugo-tags))
     ;; (message "[get fm info DBG] %S" info)
@@ -2948,7 +2982,15 @@ INFO is a plist used as a communication channel."
     ;; (message "[fm categories DBG] %S" categories)
     ;; (message "[fm keywords DBG] %S" keywords)
     (setq data (org-hugo--replace-keys-maybe data info))
-    (org-hugo--gen-front-matter data fm-format)))
+    (setq ret (org-hugo--gen-front-matter data fm-format))
+    (if (and (string= "toml" fm-format)
+             (org-hugo--plist-get-true-p info :hugo-pandoc-citations))
+        ;; Pandoc parses fields like csl and nocite from YAML
+        ;; front-matter.  So create the `org-hugo--fm-yaml'
+        ;; front-matter in YAML format just for Pandoc.
+        (setq org-hugo--fm-yaml (org-hugo--gen-front-matter data "yaml"))
+      (setq org-hugo--fm-yaml ret))
+    ret))
 
 (defun org-hugo--calc-weight ()
   "Calculate the weight for a Hugo post or menu item.
@@ -3230,6 +3272,8 @@ are \"toml\" and \"yaml\"."
                      "HUGO_EXPIRYDATE"
                      "HUGO_LASTMOD"
                      "HUGO_SLUG" ;Useful for inheriting same slug to same posts in different languages
+                     "HUGO_PANDOC_CITATIONS"
+                     "BIBLIOGRAPHY"
                      "HUGO_AUTO_SET_LASTMOD")))
     (mapcar (lambda (str)
               (concat "EXPORT_" str))
@@ -3334,11 +3378,16 @@ Return the buffer the export happened to."
   (interactive)
   (org-hugo--before-export-function subtreep)
   ;; Allow certain `ox-hugo' properties to be inherited.
-  (let ((org-use-property-inheritance (org-hugo--selective-property-inheritance)))
+  (let ((org-use-property-inheritance (org-hugo--selective-property-inheritance))
+        (info (org-combine-plists
+               (org-export--get-export-attributes
+                'hugo subtreep visible-only)
+               (org-export--get-buffer-attributes)
+               (org-export-get-environment 'hugo subtreep))))
     (prog1
         (org-export-to-buffer 'hugo "*Org Hugo Export*"
           async subtreep visible-only nil nil (lambda () (text-mode)))
-      (org-hugo--after-export-function))))
+      (org-hugo--after-export-function info nil))))
 
 ;;;###autoload
 (defun org-hugo-export-to-md (&optional async subtreep visible-only)
@@ -3396,7 +3445,7 @@ Return output file's name."
     (when do-export
       (prog1
           (org-export-to-file 'hugo outfile async subtreep visible-only)
-        (org-hugo--after-export-function)))))
+        (org-hugo--after-export-function info outfile)))))
 
 ;; FIXME: org-publish based exporting is not yet supported.
 ;; ;;;###autoload

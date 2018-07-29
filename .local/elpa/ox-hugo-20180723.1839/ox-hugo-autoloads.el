@@ -222,6 +222,14 @@ buffer and returned as a string in Org format.
 
 ;;;***
 
+;;;### (autoloads nil "ox-hugo-pandoc-cite" "ox-hugo-pandoc-cite.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from ox-hugo-pandoc-cite.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ox-hugo-pandoc-cite" '("org-hugo-pandoc-cite-")))
+
+;;;***
+
 ;;;### (autoloads nil nil ("ox-hugo-pkg.el") (0 0 0 0))
 
 ;;;***
