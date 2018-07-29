@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "epl" "20180205.2049" "Emacs Package Library" '((cl-lib "0.3")) :stars '(#("53" 0 2 (font-lock-face paradox-star-face)) #("407K" 0 4 (value 407030 font-lock-face paradox-download-face))) :commit "78ab7a85c08222cd15582a298a364774e3282ce6" :keywords '("convenience") :authors '(("Sebastian Wiesner" . "swiesner@lunaryorn.com")) :maintainer '("Johan Andersson" . "johan.rejeep@gmail.com") :url "http://github.com/cask/epl")

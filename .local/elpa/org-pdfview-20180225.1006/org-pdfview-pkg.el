@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "org-pdfview" "20180225.1006" "Support for links to documents in pdfview mode" '((org "8.2.10") (pdf-tools "0.80")) :stars '(#("19" 0 2 (font-lock-face paradox-star-face)) #("4K" 0 2 (value 4598 font-lock-face paradox-download-face))) :commit "09ef4bf8ff8319c1ac78046c7e6b89f6a0beb82c" :keywords '("org" "pdf-view" "pdf-tools") :authors '(("Markus Hauck" . "markus1189@gmail.com")) :maintainer '("Markus Hauck" . "markus1189@gmail.com"))

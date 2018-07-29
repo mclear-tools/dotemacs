@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "rainbow-identifiers" "20141102.1526" "Highlight identifiers according to their names" '((emacs "24")) :stars '(#("80" 0 2 (font-lock-face paradox-star-face)) #("22K" 0 3 (value 22068 font-lock-face paradox-download-face))) :commit "19fbfded1baa98d12335f26f6d7b20e5ae44ce2e" :authors '(("Fanael Linithien" . "fanael4@gmail.com")) :maintainer '("Fanael Linithien" . "fanael4@gmail.com") :url "https://github.com/Fanael/rainbow-identifiers")

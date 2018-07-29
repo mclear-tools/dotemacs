@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "request" "20170201.147" "Compatible layer for URL request in Emacs" '((emacs "24.4")) :stars '(#("221" 0 3 (font-lock-face paradox-star-face)) #("173K" 0 4 (value 173676 font-lock-face paradox-download-face))) :commit "a3d080e57eb8be606fbf39d1baff94e1b16e1fb8" :authors '(("Takafumi Arakaki <aka.tkf at gmail.com>")) :maintainer '("Takafumi Arakaki <aka.tkf at gmail.com>"))

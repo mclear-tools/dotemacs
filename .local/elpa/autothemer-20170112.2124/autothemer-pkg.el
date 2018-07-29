@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "autothemer" "20170112.2124" "Conveniently define themes." '((dash "2.10.0") (emacs "24") (cl-lib "0.5")) :stars '(#("10" 0 2 (font-lock-face paradox-star-face)) #("17K" 0 3 (value 17457 font-lock-face paradox-download-face))) :commit "8c467f57571c154129d660dfccebd151c998f2d9" :authors '(("Sebastian Sturm")) :maintainer '("Sebastian Sturm") :url "https://github.com/sebastiansturm/autothemer")

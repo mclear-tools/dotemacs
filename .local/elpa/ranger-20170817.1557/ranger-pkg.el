@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "ranger" "20170817.1557" "Make dired more like ranger" '((emacs "24.4")) :stars '(#("263" 0 3 (font-lock-face paradox-star-face)) #("17K" 0 3 (value 17871 font-lock-face paradox-download-face))) :commit "6bbff5df2e55f56047fca5058d9ca93ba4963aef" :keywords '("files" "convenience" "dired") :authors '(("Rich Alesi <https://github.com/ralesi>")) :maintainer '("Rich Alesi <https://github.com/ralesi>") :url "https://github.com/ralesi/ranger")
