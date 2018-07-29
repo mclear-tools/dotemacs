@@ -305,6 +305,31 @@ initialization will still take place at startup.
         paradox-automatically-star nil))
 #+END_SRC
 
+** TESTING Quelpa
+Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywhere]] and use with [[https://github.com/quelpa/quelpa-use-package][use-package]]
+#+BEGIN_SRC emacs-lisp
+  (use-package quelpa
+    :ensure t
+    :demand t
+    :init
+    ;; disable checking Melpa
+    (setq quelpa-update-melpa-p nil)
+    ;; don't use Melpa at all
+    (setq quelpa-checkout-melpa-p nil)
+    ;; quelpa dir settings
+    (setq quelpa-dir (concat cpm-local-dir "quelpa")))
+
+  (use-package quelpa-use-package
+    :ensure t
+    :demand t
+    :config
+    ;; advince for maybe installing with quelpa
+    (quelpa-use-package-activate-advice))
+
+
+#+END_SRC
+
+
 * Useful Libraries
 
 [[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing,

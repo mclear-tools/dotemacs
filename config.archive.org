@@ -361,29 +361,6 @@ Add [[https://github.com/dieggsy/eterm-256color][customizable 256 color support]
     (add-hook 'term-mode-hook #'eterm-256color-mode))
 #+END_SRC
 # "
-** TESTING Quelpa
-Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywhere]] and use with [[https://github.com/quelpa/quelpa-use-package][use-package]]
-#+BEGIN_SRC emacs-lisp
-  (use-package quelpa
-    :ensure t
-    :demand t
-    :init
-    ;; disable checking Melpa
-    (setq quelpa-update-melpa-p nil)
-    ;; don't use Melpa at all
-    (setq quelpa-checkout-melpa-p nil)
-    ;; quelpa dir settings
-    (setq quelpa-dir (concat cpm-local-dir "quelpa")))
-
-  (use-package quelpa-use-package
-    :ensure t
-    :demand t
-    :config
-    ;; advince for maybe installing with quelpa
-    (quelpa-use-package-activate-advice))
-
-
-#+END_SRC
 ** TESTING Github Stars
 Browse your [[https://github.com/xuchunyang/github-stars.el/tree/894a2c3fd72ae233f7cce63f3af45afc32f18be3][Github stars]]
 #+BEGIN_SRC emacs-lisp
