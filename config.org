@@ -2675,11 +2675,11 @@ Add [[https://www.emacswiki.org/emacs/DiredPlus][extra functionality]] to dired.
   (use-package peep-dired
     :ensure t
     :after dired
-    :demand t
+    :commands (peep-dired)
     :general
     (:keymaps 'dired-mode-map
      :states '(normal motion)
-     "P" #'peep-dired)
+     "p" #'peep-dired)
     (:keymaps 'peep-dired-mode-map
      :states '(normal)
      "j" #'peep-dired-next-file
