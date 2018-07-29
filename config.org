@@ -33,6 +33,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#manually-set-load-path][Manually Set Load Path]]
   - [[#initialize-package-management][Initialize Package Management]]
   - [[#paradox-package-management][Paradox Package Management]]
+  - [[#quelpa][Quelpa]]
 - [[#useful-libraries][Useful Libraries]]
 - [[#functions--macros][Functions & Macros]]
   - [[#useful-functions][Useful Functions]]
@@ -61,25 +62,22 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#settings][Settings]]
   - [[#org-archive][Org Archive]]
   - [[#org-refile][Org Refile]]
-  - [[#open-docx-files-in-default-application-ie-msword][Open Docx Files In Default Application (Ie Msword)]]
+  - [[#open-files-in-default-application][Open Files In Default Application]]
   - [[#org-agenda][Org-Agenda]]
   - [[#org-super-agenda][Org-Super-Agenda]]
   - [[#org-capture][Org Capture]]
-  - [[#org-keybindings][Org Keybindings]]
   - [[#org-template-expansions][Org Template Expansions]]
   - [[#org-bullets][Org Bullets]]
   - [[#org-prettify-source-blocks][Org Prettify Source Blocks]]
   - [[#org-goto][Org-Goto]]
   - [[#org-reveal][Org-Reveal]]
   - [[#org-organization-gtd][Org Organization (GTD)]]
-  - [[#org-export][Org Export]]
   - [[#org-functions][Org Functions]]
   - [[#org-rifle][Org Rifle]]
   - [[#org-download][Org-Download]]
   - [[#org-pomodoro][Org Pomodoro]]
   - [[#org-indirect-buffer][Org Indirect Buffer]]
   - [[#org-numbers-overlay][Org Numbers Overlay]]
-  - [[#toc-org][Toc-org]]
   - [[#org-miscellaneous-packages][Org Miscellaneous Packages]]
 - [[#research--writing][Research & Writing]]
   - [[#spelling][Spelling]]
@@ -113,6 +111,7 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#zettelkasten][Zettelkasten]]
   - [[#helm-gitignore][Helm Gitignore]]
   - [[#org-demotepromote-region][Org demote/promote region]]
+  - [[#imenu-list][Imenu-List]]
 
 * Personal Information
 Let's set some variables with basic user information.
@@ -2171,12 +2170,12 @@ make interaction smoother.
 #+END_SRC
 **** Transparent frame titlebar
 #+BEGIN_SRC emacs-lisp
-;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
-;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
-(when (memq window-system '(mac ns))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+  ;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
+  ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
+  (when (memq window-system '(mac ns))
+    (add-to-list 'default-frame-alist '(ns-appearance . dark))
+    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 #+END_SRC
 
 
@@ -2609,14 +2608,14 @@ that I use anything other than solarized :)
 
 *** Company-Bibtex
 #+BEGIN_SRC emacs-lisp
-(use-package company-bibtex
-  :ensure t
-  :after company
-  :demand t
-  :config
-  (setq company-bibtex-bibliography "~/Dropbox/Work/master.bib")
-  (setq company-bibtex-org-citation-regex "-?@")
-  (add-to-list 'company-backends 'company-bibtex))
+  (use-package company-bibtex
+    :ensure t
+    :after company
+    :demand t
+    :config
+    (setq company-bibtex-bibliography "~/Dropbox/Work/All.bib")
+    (setq company-bibtex-org-citation-regex "-?@")
+    (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
 *** Yasnippet
 A template system for Emacs http://joaotavora.github.com/yasnippet/
@@ -3064,6 +3063,7 @@ Automatic resizing of Emacs windows to the [[https://github.com/roman/golden-rat
     ;; :demand t
     :defer 3
     :config
+    (setq golden-ratio-exclude-buffer-names '("*Ilist*"))
     (setq golden-ratio-exclude-buffer-regexp '("Ilist"))
     ;; inhibit in helm windows
     (defun pl/helm-alive-p ()
@@ -3575,6 +3575,7 @@ Keybindings for managing packages
       "psf" #'cpm/load-kant-free-thought
       "psr" #'cpm/load-kant-reflection
       "pst" #'cpm/load-org-agenda-todo
+      "pt"  #'cpm/search-todo-markers
       "pT"  'projectile-find-test-file
       "pv"  'hydra-persp/body
       "pV"  'projectile-vc
@@ -4342,9 +4343,8 @@ Easy workspace creation and switching
      (persp-mode 1)
      (nameframe-create-frame "PHIL 105")
      (toggle-frame-maximized)
-     (find-file "~/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.org")
-     (split-window-right)
-     (find-file "~/Dropbox/Work/projects/phil105/content/pages/schedule.org"))
+     (find-file "~/Dropbox/Work/projects/phil105/phil105-classplan.org")
+     (magit-status))
    (defun cpm/load-phil232 ()
      (interactive)
      (persp-mode 1)
@@ -4952,16 +4952,9 @@ workflow I used to use in Sublime Text. Perfect for short commit messages.
    (evil-ex '"!Git add % && Git commit -m '" ))
  #+END_SRC
 
- 
-* Org Mode
-The incomparable [[https://orgmode.org][org mode]]
-#+BEGIN_SRC emacs-lisp
-;; install org for bootstrapping config
-(use-package org
-  :commands (org-capture)
-  :ensure org-plus-contrib)
-#+END_SRC
 
+
+* Org Mode
 ** Settings
 *** New Org
 Ensure ELPA org is prioritized above built-in org.
@@ -4969,21 +4962,22 @@ Ensure ELPA org is prioritized above built-in org.
 (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 #+END_SRC
 *** Org Directories 
-     #+BEGIN_SRC emacs-lisp
-     (setq org-directory "~/Dropbox/org-files")
-     (setq org-default-notes-file (concat org-directory "/org-notes.org"))
-     #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/Dropbox/org-files")
+(setq org-default-notes-file (concat org-directory "/org-notes.org"))
+#+END_SRC
 *** State Settings
-     #+BEGIN_SRC emacs-lisp
-     (setq org-todo-keywords
-      '((sequence "TODO" "NEXT" "|" "DONE")
-        (sequence "INPROGRESS" "WAITING(w@/!)" "|" "CANCELED" "INACTIVE")))
-     #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+ '((sequence "TODO" "NEXT" "|" "DONE")
+   (sequence "INPROGRESS" "WAITING(w@/!)" "|" "CANCELED" "INACTIVE")))
+#+END_SRC
 *** Org Logging
-     #+BEGIN_SRC emacs-lisp
-    ; log timestamp when task is marked "DONE" or other finished keyword
-    (setq org-log-done 'time)
-     #+END_SRC
+Log timestamp when task is marked "DONE" or other finished keyword
+#+BEGIN_SRC emacs-lisp
+(setq org-log-done 'time)
+#+END_SRC
+    
 *** Org Babel Languages
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'org
@@ -4993,7 +4987,7 @@ Ensure ELPA org is prioritized above built-in org.
    (lisp . t)
    (shell . t)))
 
-(defun my-org-confirm-babel-evaluate (lang body)
+(defun cpm/org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
   (not (or (string= lang "emacs-lisp"))))
         
@@ -5057,25 +5051,14 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
 
 #+END_SRC
-*** Org Tags
-Set tags
-#+BEGIN_SRC emacs-lisp
-(setq org-tag-persistent-alist 
-        '(("UNL" . ?u)
-          ("CONTACTS" . ?C)
-          ("INBOX" . ?i)
-          ))
-#+END_SRC
 *** Hooks
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
       (lambda () 
         (turn-on-auto-fill)
-        ;; (turn-on-flyspell)
-        (org-zotxt-mode)
-        (global-git-gutter-mode 0)
         ))
 #+END_SRC
+
 
 
 ** Org Archive
@@ -5102,6 +5085,7 @@ From [[https://changelog.complete.org/archives/9877-emacs-3-more-on-org-mode][he
 )
 
 #+END_SRC
+
 ** Org Refile
 Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
 
@@ -5116,8 +5100,9 @@ document and create new parents.
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
-** Open Docx Files In Default Application (Ie Msword)
-Open exported docx files in Word/Open Office rather than emacs
+
+** Open Files In Default Application
+Open files in their default applications (ms word being the prime example)
 #+BEGIN_SRC emacs-lisp
   (setq org-file-apps
         '(("\\.docx\\'" . default)
@@ -5126,6 +5111,7 @@ Open exported docx files in Word/Open Office rather than emacs
           ("\\.pdf\\'" . default)
           (auto-mode . emacs)))
 #+END_SRC
+
 ** Org-Agenda
 Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]]. 
 #+BEGIN_SRC emacs-lisp
@@ -5171,6 +5157,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     (interactive)
     (org-agenda nil "z"))
 #+END_SRC
+
 
 ** Org-Super-Agenda
 [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/fuxialexander/doom-emacs-private-xfu][fuxialexander]]
@@ -5286,6 +5273,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     (org-agenda nil "a"))
 #+END_SRC
 
+
 ** Org Capture
 *** Capture Settings
 #+BEGIN_SRC emacs-lisp
@@ -5372,133 +5360,6 @@ Make capture the only window and close after refiling.
              ))
 #+END_SRC
 
-** Org Keybindings
-*** Evil Org 
-#+BEGIN_SRC emacs-lisp
-(use-package evil-org
-  :init
-  (add-hook 'org-mode-hook 'evil-org-mode)  
-  :config
-  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
-#+END_SRC
-*** Org Local Leader Keybindings
-
-#+BEGIN_SRC emacs-lisp
-  (general-define-key
-  :states '(normal visual)
-  :keymaps 'org-mode-map
-  :prefix "SPC m" 
-  :non-normal-prefix "C-SPC m"
-
-   ""    '(nil :which-key "Local Leader")
-   "RET" #'cpm/org-archive-done-tasks
-   "SPC" #'org-toggle-checkbox
-   "."   #'org-cycle-agenda-files
-   "/"   #'org-sparse-tree
-   "="   #'org-align-all-tags
-   "?"   #'org-tags-view
-   ":"   #'org-set-tags
-   "a"   #'super-jump-to-org-agenda
-   "A"   #'org-archive-subtree
-   "b"   #'org-tree-to-indirect-buffer
-   "B"   #'org-babel-tangle
-   "c"   #'org-capture
-   "d"   #'org-time-stamp
-   "D"   #'org-deadline
-   "e"   #'org-edit-special
-   "n"   #'cpm/narrow-or-widen-dwim
-   "r"   #'org-refile
-   "s"   #'org-schedule
-   "t"   #'counsel-org-tag
-   "T"   #'org-todo
-   "v"   #'variable-pitch-mode
-   "l"   #'org-insert-link
-   "L"   #'org-store-link
-   "+"   #'org-timestamp-up-day
-   "-"   #'org-timestamp-down-day
-   "<"   #'org-metaleft
-   ">"   #'org-metaright
-
-   "i"  '(:ignore t :which-key "Insert...")
-         "il" #'org-insert-link
-         "if" #'org-footnote-new
-
-   "R"  '(:ignore t :which-key "RevealJS..." )
-         "Rr" #'org-reveal-export-to-html-and-browse
-         "Rs" #'cpm/narrowed-subtree-to-html
-         "RS" #'org-reveal-export-current-subtree
-         "Rp" #'cpm/reveal-to-pdf)
-
-  (general-define-key
-    :states '(normal motion emacs)
-    :keymaps 'org-agenda-mode-map
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC"
-      "<escape>" #'org-agenda-Quit
-      "m"   #'org-agenda-month-view
-      "C-j" #'org-agenda-next-item
-      "C-k" #'org-agenda-previous-item
-      "C-n" #'org-agenda-next-item
-      "C-p" #'org-agenda-previous-item)
-#+END_SRC
-*** Alternate Bindings
-#+BEGIN_SRC emacs-lisp
-  (general-define-key :states '(normal) :keymaps 'org-mode-map
-        "RET" 'org-open-at-point     ;; Open with return in evil
-        "p"   'org-yank ;; better pasting behavior
-        "s-J" 'crux-top-join-line
-        )
-  ;;      "L" 'org-shiftright
-  ;;      "H" 'org-shiftleft
-  ;;      "$" 'org-end-of-line
-  ;;      "^" 'org-beginning-of-line
-  ;;      "<" 'org-metaleft
-  ;;      ">" 'org-metaright
-  ;;      "-" 'org-cycle-list-bullet)
-  
-  ;;   normal, insert, visual shortcuts
-    (general-define-key :states '(normal insert visual) :keymaps 'org-mode-map
-      "M-q" #'cpm/fill-or-unfill)
-  ;;   ;; normal & insert state shortcuts.
-    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-       ;; easily emphasize text
-       ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-       "s-b" (lambda () (interactive) (org-emphasize ?\*))
-       "s-i" (lambda () (interactive) (org-emphasize ?\/))
-       "s-=" (lambda () (interactive) (org-emphasize ?\=))
-        ;; better pasting behavior in org-mode
-       "s-v" 'org-yank)
-  ;;      "TAB" 'org-cycle
-  ;;      "s-l" 'org-metaright
-  ;;      "s-h" 'org-metaleft
-  ;;      "s-k" 'org-metaup
-  ;;      "s-j" 'org-metadown
-  ;;      "s-L" 'org-shiftmetaright
-  ;;      "s-H" 'org-shiftmetaleft
-  ;;      "s-K" 'org-shiftmetaup
-  ;;      "s-J" 'org-shiftmetadown
-  ;;      "s-o" '(lambda () (interactive)
-  ;;               (evil-org-eol-call
-  ;;                '(lambda()
-  ;;                   (org-insert-heading)
-  ;;                   (org-metaright))))
-  ;;      "s-t" '(lambda () (interactive)
-  ;;               (evil-org-eol-call
-  ;;                '(lambda()
-  ;;                   (org-insert-todo-heading nil)
-  ;;                   (org-metaright)))))
-  ;;   ;; Use tab in insert mode
-  ;;   (general-define-key :states '(insert) :keymaps 'org-mode-map "\t" nil
-  ;;      "RET" #'org-return-indent
-  ;;      "C-j" nil
-  ;;      "C-k" nil
-  ;;      "H-j"   #'org-next-visible-heading
-  ;;      "H-k"   #'org-previous-visible-heading
-  ;;      "H-S-j"     #'org-forward-heading-same-level
-  ;;      "H-S-k"     #'org-backward-heading-same-level
-  ;;      )
-#+END_SRC
-
 
 ** Org Template Expansions
 
@@ -5515,7 +5376,6 @@ Make capture the only window and close after refiling.
   (add-to-list 'org-structure-template-alist
     '("f" "#+ATTR_REVEAL: :frag (appear)?")))
 #+END_SRC
-
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
@@ -5539,6 +5399,7 @@ Make capture the only window and close after refiling.
 #+END_SRC
 
 ** Org Prettify Source Blocks
+
 Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
 Last updated: 2018-04-06
 #+BEGIN_SRC emacs-lisp
@@ -5712,80 +5573,6 @@ Make counsel display org headings nicely.
   :init
   (setq org-randomnote-candidates '("~/Dropbox/org-files/todo.org")))
 #+end_src
-** Org Export
-#+BEGIN_SRC emacs-lisp
-(setq org-export-backends '(ascii html icalendar latex odt pandoc hugo md))
-#+END_SRC
-*** Org & Pandoc (Ox-pandoc)
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ox-pandoc
-    :after ox
-    :config
-    ;; default options for all output formats
-    (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
-    (setq org-pandoc-options '((standalone . t)))
-    ;; cancel above settings only for 'docx' format
-    (setq org-pandoc-options-for-docx '((standalone . nil)))
-    ;; special settings for beamer-pdf and latex-pdf exporters
-    (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
-    (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
-    (setq org-pandoc-format-extensions '(org+smart)))
-#+END_SRC 
-
-*** DISABLED Org Markdown Export
-CLOSED: [2018-07-14 Sat 00:45]
-Various exporters to use. Right now it is just markdown that I need.
-#+BEGIN_SRC emacs-lisp :tangle no
-(eval-after-load "org"
-  '(require 'ox-md nil t))
-#+END_SRC
-
-*** Ox-Hugo
-[[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
-#+BEGIN_SRC emacs-lisp
-(use-package ox-hugo)
-#+END_SRC
-
-
-*** Org Export Top-Level Trees
-From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
-#+BEGIN_SRC emacs-lisp
-(defun cpm/org-map-entries (org-file in-tags func)
-  (let ((tags (if (stringp in-tags)
-                   (list in-tags)
-                 in-tags)))
-
-    (with-temp-buffer
-      (org-mode)
-      (insert-file-contents org-file-main)
-
-      ;; Execute func at each heading that matches tags.
-      (while (< (point) (point-max))
-
-        ;; If find a heading...
-        (and (search-forward-regexp "^\* " nil "end")
-
-             ;; ...that matches the given tags...
-             (seq-reduce
-              (lambda(a b) (and a b))
-              (mapcar
-               (lambda (tag)
-                 (beginning-of-line)
-                 (search-forward-regexp
-                  (concat ":" tag ":") (line-end-position) "end"))
-               tags)
-              t)
-
-             ;; ... then execute given function with cursor at beginning of
-             ;; heading.
-             (progn
-               (beginning-of-line)
-               (save-excursion
-                 (funcall func))
-               (end-of-line)))))))
-#+END_SRC
-
 
 
 
@@ -6013,16 +5800,76 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
                              s)))))))))
 (provide 'org-numbers-overlay)
 #+END_SRC
-** Toc-org
-Let's install and load the =toc-org= package after org mode is loaded. This is the
-package that automatically generates an up to date table of contents for us.
+** Org Export
+#+BEGIN_SRC emacs-lisp
+(setq org-export-backends '(ascii html icalendar latex odt pandoc hugo md))
+#+END_SRC
+*** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
-(use-package toc-org
-  :after org
-  :demand t
-  :init (add-hook 'org-mode-hook #'toc-org-enable))
+  (use-package ox-pandoc
+    :after ox
+    :config
+    ;; default options for all output formats
+    (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
+    (setq org-pandoc-options '((standalone . t)))
+    ;; cancel above settings only for 'docx' format
+    (setq org-pandoc-options-for-docx '((standalone . nil)))
+    ;; special settings for beamer-pdf and latex-pdf exporters
+    (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+    (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
+    (setq org-pandoc-format-extensions '(org+smart)))
+#+END_SRC 
+
+*** Ox-Hugo
+[[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
+#+BEGIN_SRC emacs-lisp
+(use-package ox-hugo :after ox)
 #+END_SRC
+
+
+*** Org Export Top-Level Trees
+From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
+#+BEGIN_SRC emacs-lisp
+(defun cpm/org-map-entries (org-file in-tags func)
+  (let ((tags (if (stringp in-tags)
+                   (list in-tags)
+                 in-tags)))
+
+    (with-temp-buffer
+      (org-mode)
+      (insert-file-contents org-file-main)
+
+      ;; Execute func at each heading that matches tags.
+      (while (< (point) (point-max))
+
+        ;; If find a heading...
+        (and (search-forward-regexp "^\* " nil "end")
+
+             ;; ...that matches the given tags...
+             (seq-reduce
+              (lambda(a b) (and a b))
+              (mapcar
+               (lambda (tag)
+                 (beginning-of-line)
+                 (search-forward-regexp
+                  (concat ":" tag ":") (line-end-position) "end"))
+               tags)
+              t)
+
+             ;; ... then execute given function with cursor at beginning of
+             ;; heading.
+             (progn
+               (beginning-of-line)
+               (save-excursion
+                 (funcall func))
+               (end-of-line)))))))
+#+END_SRC
+
+
+
+
+
 
 ** Org Miscellaneous Packages  
 Other useful org packages
@@ -6035,6 +5882,97 @@ Other useful org packages
     (require 'ox-extra)
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
+
+** Org Keybindings
+*** Evil Org 
+#+BEGIN_SRC emacs-lisp
+(use-package evil-org
+  :init
+  (add-hook 'org-mode-hook 'evil-org-mode)  
+  :config
+  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
+#+END_SRC
+*** Org Local Leader Keybindings
+
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+  :states '(normal visual)
+  :keymaps 'org-mode-map
+  :prefix "SPC m" 
+  :non-normal-prefix "C-SPC m"
+
+   ""    '(nil :which-key "Local Leader")
+   "RET" #'cpm/org-archive-done-tasks
+   "SPC" #'org-toggle-checkbox
+   "."   #'org-cycle-agenda-files
+   "/"   #'org-sparse-tree
+   "="   #'org-align-all-tags
+   "?"   #'org-tags-view
+   ":"   #'org-set-tags
+   "a"   #'super-jump-to-org-agenda
+   "A"   #'org-archive-subtree
+   "b"   #'org-tree-to-indirect-buffer
+   "B"   #'org-babel-tangle
+   "c"   #'org-capture
+   "d"   #'org-time-stamp
+   "D"   #'org-deadline
+   "e"   #'org-edit-special
+   "n"   #'cpm/narrow-or-widen-dwim
+   "r"   #'org-refile
+   "s"   #'org-schedule
+   "t"   #'counsel-org-tag
+   "T"   #'org-todo
+   "v"   #'variable-pitch-mode
+   "l"   #'org-insert-link
+   "L"   #'org-store-link
+   "+"   #'org-timestamp-up-day
+   "-"   #'org-timestamp-down-day
+   "<"   #'org-metaleft
+   ">"   #'org-metaright
+
+   "i"  '(:ignore t :which-key "Insert...")
+         "il" #'org-insert-link
+         "if" #'org-footnote-new
+
+   "R"  '(:ignore t :which-key "RevealJS..." )
+         "Rr" #'org-reveal-export-to-html-and-browse
+         "Rs" #'cpm/narrowed-subtree-to-html
+         "RS" #'org-reveal-export-current-subtree
+         "Rp" #'cpm/reveal-to-pdf)
+
+  (general-define-key
+    :states '(normal motion emacs)
+    :keymaps 'org-agenda-mode-map
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
+      "<escape>" #'org-agenda-Quit
+      "m"   #'org-agenda-month-view
+      "C-j" #'org-agenda-next-item
+      "C-k" #'org-agenda-previous-item
+      "C-n" #'org-agenda-next-item
+      "C-p" #'org-agenda-previous-item)
+#+END_SRC
+*** Alternate Bindings
+#+BEGIN_SRC emacs-lisp
+  (general-define-key :states '(normal) :keymaps 'org-mode-map
+        "RET" 'org-open-at-point     ;; Open with return in evil
+        "p"   'org-yank ;; better pasting behavior
+        "s-J" 'crux-top-join-line)
+  ;;   normal, insert, visual shortcuts
+    (general-define-key :states '(normal insert visual) :keymaps 'org-mode-map
+      "M-q" #'cpm/fill-or-unfill)
+  ;;   ;; normal & insert state shortcuts.
+    (general-define-key :states '(normal insert) :keymaps 'org-mode-map
+       ;; easily emphasize text
+       ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+       "s-b" (lambda () (interactive) (org-emphasize ?\*))
+       "s-i" (lambda () (interactive) (org-emphasize ?\/))
+       "s-=" (lambda () (interactive) (org-emphasize ?\=))
+        ;; better pasting behavior in org-mode
+       "s-v" 'org-yank)
+#+END_SRC
+
+
 
 * Research & Writing
 ** Spelling
@@ -6146,8 +6084,8 @@ Great for managing citations and notes
   :END: 
   [[pdfview:${file}][file link]]
        ")
-    (setq bibtex-completion-bibliography "~/Dropbox/Work/Master.bib" 
-          bibtex-completion-library-path "~/Dropbox/Work/MasterLib/"
+    (setq bibtex-completion-bibliography "~/Dropbox/Work/All.bib" 
+          bibtex-completion-library-path "~/Dropbox/Work/be-master-pdflib/"
           bibtex-completion-pdf-field nil
           bibtex-completion-notes-path "~/Dropbox/org-files/org-brain/references/"
           ;; bibtex-completion-additional-search-fields '(keywords)
@@ -6373,6 +6311,7 @@ Better than doc-view, but doesn't render well on retina screens :(
 #+BEGIN_SRC emacs-lisp 
     (use-package pdf-tools
       :mode (("\\.pdf$" . pdf-view-mode))
+      :commands (pdf-view-mode)
       :config
       (progn
         (pdf-tools-install)
@@ -6879,7 +6818,8 @@ A collection of keybindings for evil
     :after evil
     :defer 1
     :config
-    (evil-collection-init))
+    (evil-collection-init)
+    (setq evil-collection-mode-list nil))
 #+END_SRC
 ** TESTING Treemacs
 [[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file and project explorer 
@@ -7173,4 +7113,19 @@ the region boundaries."
         (let ((string (make-string number ?*)))
           (while (search-forward-regexp "^\\*" nil t)
             (insert string)))))))
+#+END_SRC
+** TESTING Imenu-List
+#+BEGIN_SRC emacs-lisp
+  (use-package imenu-list
+    :ensure t
+    :commands (imenu-list-smart-toggle imenu-list-minor-mode)
+    :config
+    (setq imenu-list-focus-after-activation t
+          imenu-list-auto-resize t
+          imenu-list-position 'left)
+    :custom-face
+    (imenu-list-entry-face-0 ((t (:inherit imenu-list-entry-face :foreground "#269bd2"))))
+    (imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
+    (imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
+    (imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
 #+END_SRC
