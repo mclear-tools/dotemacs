@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "counsel-projectile" "20180718.1542" "Ivy integration for Projectile" '((counsel "0.10.0") (projectile "0.14.0")) :stars '(#("53" 0 2 (font-lock-face paradox-star-face)) #("25K" 0 3 (value 25061 font-lock-face paradox-download-face))) :commit "3aa0d8c1b127f2609c684c66b24c0974b507ddee" :keywords '("project" "convenience") :authors '(("Eric Danan")) :maintainer '("Eric Danan") :url "https://github.com/ericdanan/counsel-projectile")

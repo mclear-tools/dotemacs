@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "doom-modeline" "20180713.315" "A minimal modeline from DOOM." '((emacs "25.1") (all-the-icons "1.0.0") (projectile "0.10.0") (shrink-path "0.2.0") (eldoc-eval "0.1") (dash "2.11.0")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "8af6cb74f6f94ec863076966fd3b2d85ce386b02" :keywords '("faces") :authors '(("Vincent Zhang" . "seagle0128@gmail.com")) :maintainer '("Vincent Zhang" . "seagle0128@gmail.com") :url "https://github.com/seagle0128/doom-modeline")
