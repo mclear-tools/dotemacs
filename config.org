@@ -3575,6 +3575,7 @@ Keybindings for managing packages
       "psf" #'cpm/load-kant-free-thought
       "psr" #'cpm/load-kant-reflection
       "pst" #'cpm/load-org-agenda-todo
+      "psw" #'cpm/load-website
       "pt"  #'cpm/search-todo-markers
       "pT"  'projectile-find-test-file
       "pv"  'hydra-persp/body
@@ -4322,6 +4323,13 @@ Easy workspace creation and switching
 
 
   ;; functions for named work frames
+  (defun cpm/load-website ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "Website")
+    (toggle-frame-maximized)
+    (find-file "~/Dropbox/Work/projects/website/website.org")
+    (magit-status))
   (defun cpm/load-org-agenda-todo ()
     (interactive)
     (persp-mode 1)
