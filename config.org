@@ -1584,11 +1584,12 @@ From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill p
 (defun display-startup-echo-area-message ()
   (message ""))
 #+END_SRC
-*** Start scratch in fundamental mode 
+*** Scratch startup mode 
 Useful to get a faster Emacs load time because it avoids autoloads of
-elisp modes or other minor modes
+elisp modes or other minor modes. I start it in org-mode though because that
+seems to ease loading when launching org projects. 
 #+BEGIN_SRC emacs-lisp
-  (setq initial-major-mode 'fundamental-mode)
+  (setq initial-major-mode 'org-mode)
 #+END_SRC
 *** Text Settings
 General Text settings and hooks
