@@ -1,3 +1,16 @@
+** DISABLED Org Fancy Priorities
+CLOSED: [2018-08-04 Sat 12:30]
+Display Org Mode priorities as [[https://github.com/harrybournis/org-fancy-priorities][custom strings]]
+Unfortunately slows down org file opening
+#+BEGIN_SRC emacs-lisp
+  (use-package org-fancy-priorities
+    :ensure t
+    :hook
+    (org-mode . org-fancy-priorities-mode)
+    :config
+    (setq org-fancy-priorities-list '("⚑⚑⚑" "⚑⚑" "⚑" "OPTIONAL")))
+#+END_SRC
+
 ** Org Mode
 The incomparable [[https://orgmode.org][org mode]]
 #+BEGIN_SRC emacs-lisp

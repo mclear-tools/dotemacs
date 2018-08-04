@@ -4985,6 +4985,13 @@ Ensure ELPA org is prioritized above built-in org.
  '((sequence "TODO" "NEXT" "|" "DONE")
    (sequence "INPROGRESS" "WAITING(w@/!)" "|" "CANCELED" "INACTIVE")))
 #+END_SRC
+*** Priority Settings
+#+BEGIN_SRC emacs-lisp
+(setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
+                           (?B . (:foreground "orange"))
+                           (?C . (:foreground "yellow"))
+                           (?D . (:forefround "green"))))
+#+END_SRC
 *** Org Logging
 Log timestamp when task is marked "DONE" or other finished keyword
 #+BEGIN_SRC emacs-lisp
@@ -5411,7 +5418,7 @@ Make capture the only window and close after refiling.
                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
-** Org Prettify Source Blocks
+*** Org Prettify Source Blocks
 
 Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
 Last updated: 2018-04-06
@@ -5497,7 +5504,7 @@ Last updated: 2018-04-06
 #+END_SRC
 
 
-** Org-Goto
+*** Org-Goto
 Make counsel display org headings nicely. 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'org
@@ -5507,7 +5514,7 @@ Make counsel display org headings nicely.
   (define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
   (define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all))
 #+END_SRC
-** Org-Reveal
+*** Org-Reveal
 #+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
   :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
@@ -5524,8 +5531,8 @@ Make counsel display org headings nicely.
   (org-reveal-export-current-subtree)
   (org-narrow-to-subtree))
 #+END_SRC
-** Org Organization (GTD)
-*** GTD Projects
+*** Org Organization (GTD)
+**** GTD Projects
 #+begin_src emacs-lisp
 (defun cpm/org-goto-todo ()
   (interactive)
@@ -5556,14 +5563,14 @@ Make counsel display org headings nicely.
   (org-narrow-to-subtree)
   (org-columns))
 #+end_src
-*** Stuck Projects
+**** Stuck Projects
 #+begin_src emacs-lisp
 (defun cpm/my-org-agenda-list-stuck-projects ()
   (interactive)
   (cpm/org-goto-projects)
   (org-agenda nil "#" 'subtree))
 #+end_src
-*** Areas
+**** Areas
 #+begin_src emacs-lisp
 (defun cpm/go-to-areas ()
     (interactive)
@@ -5579,7 +5586,7 @@ Make counsel display org headings nicely.
     (org-narrow-to-subtree)
     (org-columns))
 #+end_src
-*** Random Notes
+**** Random Notes
 #+begin_src emacs-lisp
 (use-package org-randomnote
   :commands (org-randomnote org-randomnote--go-to-random-header org-randomnote--get-random-file org-randomnote--get-random-subtree)
@@ -5590,9 +5597,9 @@ Make counsel display org headings nicely.
 
 
 
-** Org Functions
+*** Org Functions
 Some useful org-specific functions
-*** Org-Fill Functions
+**** Org-Fill Functions
  Functions to calculate apt offsets and call regular org fill stuff. There's a
  useful [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack overflow thread]] on this. 
 #+BEGIN_SRC emacs-lisp
@@ -5617,7 +5624,7 @@ Some useful org-specific functions
   ;; (add-hook 'org-load-hook 'my-org-mode-hook)
   ;; (add-hook 'org-mode-hook 'my-org-mode-hook)
 #+END_SRC
-*** Narrow & Advance/Retreat
+**** Narrow & Advance/Retreat
 Functions to advance forwards or backwards through narrowed tree
 #+BEGIN_SRC emacs-lisp
 (defun cpm/org-advance ()
@@ -5636,7 +5643,7 @@ Functions to advance forwards or backwards through narrowed tree
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
 #+END_SRC
-*** Org files
+**** Org files
 #+BEGIN_SRC emacs-lisp
 (defun cpm/goto-org-files ()
   "goto org-files directory"
@@ -5668,7 +5675,7 @@ Functions to advance forwards or backwards through narrowed tree
   (interactive)
   (find-file "~/Dropbox/org-files/someday.org"))
 #+END_SRC
-*** Export Headings as Separate PDF Files
+**** Export Headings as Separate PDF Files
 Helpful advice from [[http://pragmaticemacs.com/emacs/export-org-mode-headlines-to-separate-files/][pragmatic emacs]]
 #+BEGIN_SRC emacs-lisp
 ;; export headlines to separate files
@@ -5700,13 +5707,13 @@ are exported to a filename derived from the headline text."
            (set-buffer-modified-p modifiedp)))
        "-noexport" 'region-start-level))))
 #+END_SRC
-** Org Rifle
+*** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm-org-rifle
     :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
 #+END_SRC
-** Org-Download
+*** Org-Download
 Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]]. 
 #+BEGIN_SRC emacs-lisp
   (use-package org-download
@@ -5717,7 +5724,7 @@ Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo
            org-download-image-latex-width 500
    )
 #+END_SRC
-** Org Pomodoro
+*** Org Pomodoro
 Helps with time tracking
 #+BEGIN_SRC emacs-lisp
   (use-package org-pomodoro
@@ -5726,14 +5733,14 @@ Helps with time tracking
     (progn
       (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 #+END_SRC emacs-lisp
-** Org Indirect Buffer
+*** Org Indirect Buffer
 Some advice to automatically switch to a new indirect buffer upon creation
 #+BEGIN_SRC emacs-lisp
 (defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
 #+END_SRC
 
 
-** Org Numbers Overlay
+*** Org Numbers Overlay
 [[https://github.com/larkery/emacs/blob/master/site-lisp/org-numbers-overlay.el][This]] is a useful minor-mode to number org-mode headings. It came up in
 the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to_display_numbers_at_the/][this reddit]] discussion. 
 #+BEGIN_SRC emacs-lisp
@@ -5813,11 +5820,11 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
                              s)))))))))
 (provide 'org-numbers-overlay)
 #+END_SRC
-** Org Export
+*** Org Export
 #+BEGIN_SRC emacs-lisp
 (setq org-export-backends '(ascii html icalendar latex odt pandoc hugo md))
 #+END_SRC
-*** Org & Pandoc (Ox-pandoc)
+**** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
@@ -5834,14 +5841,14 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
     (setq org-pandoc-format-extensions '(org+smart)))
 #+END_SRC 
 
-*** Ox-Hugo
+**** Ox-Hugo
 [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
 #+BEGIN_SRC emacs-lisp
 (use-package ox-hugo :after ox)
 #+END_SRC
 
 
-*** Org Export Top-Level Trees
+**** Org Export Top-Level Trees
 From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
 #+BEGIN_SRC emacs-lisp
 (defun cpm/org-map-entries (org-file in-tags func)
@@ -5884,7 +5891,7 @@ From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-to
 
 
 
-** Org Miscellaneous Packages  
+*** Org Miscellaneous Packages  
 Other useful org packages
 
 #+BEGIN_SRC emacs-lisp
@@ -5896,8 +5903,8 @@ Other useful org packages
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
 
-** Org Keybindings
-*** Evil Org 
+*** Org Keybindings
+**** Evil Org 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-org
   :init
@@ -5905,7 +5912,7 @@ Other useful org packages
   :config
   (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
 #+END_SRC
-*** Org Local Leader Keybindings
+**** Org Local Leader Keybindings
 
 #+BEGIN_SRC emacs-lisp
   (general-define-key
@@ -5965,7 +5972,7 @@ Other useful org packages
       "C-n" #'org-agenda-next-item
       "C-p" #'org-agenda-previous-item)
 #+END_SRC
-*** Alternate Bindings
+**** Alternate Bindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key :states '(normal) :keymaps 'org-mode-map
         "RET" 'org-open-at-point     ;; Open with return in evil
@@ -7254,4 +7261,24 @@ the region boundaries."
     (imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
     (imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
     (imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
+#+END_SRC
+** TESTING Git Auto Commit
+[[https://github.com/ryuslash/git-auto-commit-mode][Automatically commit to git]] after each save
+#+BEGIN_SRC emacs-lisp
+  (use-package git-auto-commit-mode
+    :ensure t
+    :commands git-auto-commit-mode
+    :config
+    (setq gac-automatically-push-p 1
+          gac-ask-for-summary-p 0))
+#+END_SRC
+** TESTING Magithub
+Magit & Github = [[https://github.com/vermiculus/magithub][Awesome]]
+#+BEGIN_SRC emacs-lisp
+(use-package magithub
+  :ensure t
+  :after magit
+  :config
+  (magithub-feature-autoinject t)
+  (setq magithub-clone-default-directory "~/.emacs.d/.local/elisp/"))
 #+END_SRC
