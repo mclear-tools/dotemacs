@@ -1,4 +1,6 @@
 ;;-*-coding: utf-8;-*-
+;; -*- eval: (git-auto-commit-mode 1) -*-
+
 (define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'Custom-mode-abbrev-table '())
