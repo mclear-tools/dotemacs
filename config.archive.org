@@ -1,3 +1,18 @@
+** Zotero Keybindings 
+#+BEGIN_SRC emacs-lisp
+(general-define-key
+  :states '(normal)
+  :keymaps 'override
+  :prefix "SPC"
+  :non-normal-prefix "C-SPC"
+
+  "z" '(:ignore t :which-key "Zotero")
+  "za" 'org-zotxt-open-attachment
+  "zi" 'org-zotxt-insert-reference-link
+  "zu" 'org-zotxt-update-reference-link-at-point
+)
+#+END_SRC
+
 ** DISABLED Org Fancy Priorities
 CLOSED: [2018-08-04 Sat 12:30]
 Display Org Mode priorities as [[https://github.com/harrybournis/org-fancy-priorities][custom strings]]

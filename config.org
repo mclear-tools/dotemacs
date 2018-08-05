@@ -3362,7 +3362,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
      "k" 'helm-show-kill-ring
      "l" 'cpm/last-search-buffer
      ;; "N" 'research-notes
-     ;; "n" 'big-notes
+     "n" 'big-notes
      "r" 'cpm/resume-last-jump
      "S" 'hydra-spelling/body
      ;; "W" 'woman
@@ -3831,37 +3831,23 @@ Keybindings for managing packages
   :prefix "SPC"
   :non-normal-prefix "C-SPC"
  
-  "n"  '(:ignore t :which-key "Zettelkasten")
-  "nc" 'zd-search-current-id
-  "nf" 'zd-avy-file-search
-  "ni" 'zd-find-file-id-insert
-  "nI" 'zd-find-file-full-title-insert
-  "nl" 'zd-avy-link-search
-  "nL" 'zd-insert-list-links
-  "nn" 'zd-new-file
-  "nN" 'zd-new-file-and-link
-  "no" 'zd-find-file
-  "nO" 'zd-org-include-search
-  "nr" 'deft-refresh
-  "ns" 'zd-deft-new-search
-  "nS" 'zd-search-at-point
-  "nt" 'zd-avy-tag-search
-  "nT" 'zd-insert-org-title
+  "z"  '(:ignore t :which-key "Zettelkasten")
+  "zc" 'zd-search-current-id
+  "zf" 'zd-avy-file-search
+  "zi" 'zd-find-file-id-insert
+  "zI" 'zd-find-file-full-title-insert
+  "zl" 'zd-avy-link-search
+  "zL" 'zd-insert-list-links
+  "zn" 'zd-new-file
+  "zN" 'zd-new-file-and-link
+  "zo" 'zd-find-file
+  "zO" 'zd-org-include-search
+  "zr" 'deft-refresh
+  "zs" 'zd-deft-new-search
+  "zS" 'zd-search-at-point
+  "zt" 'zd-avy-tag-search
+  "zT" 'zd-insert-org-title
  ) 
-#+END_SRC
-***** Zotero Keybindings 
-#+BEGIN_SRC emacs-lisp
-(general-define-key
-  :states '(normal)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
-
-  "z" '(:ignore t :which-key "Zotero")
-  "za" 'org-zotxt-open-attachment
-  "zi" 'org-zotxt-insert-reference-link
-  "zu" 'org-zotxt-update-reference-link-at-point
-)
 #+END_SRC
 
 **** Smooth Scrolling
@@ -5996,6 +5982,51 @@ Other useful org packages
 
 
 * Research & Writing
+** Deft
+#+BEGIN_SRC emacs-lisp
+  (use-package deft
+    :ensure t
+    :commands (deft deft-open-file-other-window big-notes zd-new-file deft-new-file-named)
+    :general
+    (:keymaps 'deft-mode-map :states '(normal motion)
+     "o" 'cpm/deft-open)
+    (:keymaps 'deft-mode-map :states '(insert)
+     "C-j" 'evil-next-line
+     "C-k" 'evil-previous-line
+     "C-o" 'cpm/deft-open)
+    :config
+    (add-to-list 'evil-insert-state-modes 'deft-mode)
+    ;; basic settings for use with zettel
+    (setq deft-directory (concat org-directory "/zettel/")
+          deft-recursive t
+          deft-extensions '("org" "md" "txt")
+          deft-default-extension "org"
+          deft-new-file-format zd-id-format
+          deft-org-mode-title-prefix t)
+    ;; file renaming rules
+    (setq deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+    ;;function to run deft in specified directory
+    (defun any-deft (dir)
+      "Run deft in directory DIR"
+      (setq deft-directory dir)
+      (switch-to-buffer "*Deft*")
+      (kill-this-buffer)
+      (require 'org)
+      (deft))
+    (defun big-notes ()
+      "Goto main notes with deft"
+      (interactive)
+      (any-deft "~/Dropbox/Notes")
+      (kill-this-buffer)
+      (any-deft "~/Dropbox/Notes"))
+    (defun cpm/deft-open ()
+      (interactive)
+      (deft-open-file-other-window t)))
+#+END_SRC
+
 ** Spelling
 Use flyspell and aspell
 #+BEGIN_SRC emacs-lisp
@@ -6901,34 +6932,6 @@ A collection of keybindings for evil
     :ensure t)
 #+END_SRC
 ** TESTING Zettelkasten
-#+BEGIN_SRC emacs-lisp
-  (use-package deft
-    :ensure t
-    :commands (deft deft-open-file-other-window zd-new-file deft-new-file-named)
-    :general
-    (:keymaps 'deft-mode-map :states '(normal motion)
-     "o" 'cpm/deft-open)
-    (:keymaps 'deft-mode-map :states '(insert)
-     "C-j" 'evil-next-line
-     "C-k" 'evil-previous-line
-     "C-o" 'cpm/deft-open)
-    :config
-    (defun cpm/deft-open ()
-    (interactive)
-    (deft-open-file-other-window t))
-    ;; basic settings for use with zettel
-    (setq deft-directory (concat org-directory "/zettel/")
-          deft-recursive t
-          deft-extensions '("org" "md" "txt")
-          deft-default-extension "org"
-          deft-new-file-format zd-id-format
-          deft-org-mode-title-prefix t)
-    ;; file renaming rules
-    (setq deft-file-naming-rules
-        '((noslash . "-")
-          (nospace . "-")
-          (case-fn . downcase))))
-#+END_SRC
 
 A useful set of functions for managing a Zettelkasten. From [[https://github.com/EFLS/zetteldeft][EFLS]]. 
 #+BEGIN_SRC emacs-lisp
@@ -7119,6 +7122,7 @@ Opens immediately if there is only one result."
  (interactive)
  (deft)
  (deft-filter-clear)
+ (any-deft "~/Dropbox/org-files/zettel/")
  (when (featurep 'evil) (evil-insert-state))
 )
 
