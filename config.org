@@ -7283,3 +7283,10 @@ Magit & Github = [[https://github.com/vermiculus/magithub][Awesome]]
   (magithub-feature-autoinject t)
   (setq magithub-clone-default-directory "~/.emacs.d/.local/elisp/"))
 #+END_SRC
+** Insert Second Time Stamp
+#+BEGIN_SRC emacs-lisp
+(defun cpm/insert-seconds-epoch ()
+  (interactive)
+  (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
+(global-set-key (kbd "C-c t") 'cpm/insert-seconds-epoch)
+#+END_SRC
