@@ -1,3 +1,1140 @@
+***** Zotero Keybindings 
+#+BEGIN_SRC emacs-lisp
+(general-define-key
+  :states '(normal)
+  :keymaps 'override
+  :prefix "SPC"
+  :non-normal-prefix "C-SPC"
+
+  "z" '(:ignore t :which-key "Zotero")
+  "za" 'org-zotxt-open-attachment
+  "zi" 'org-zotxt-insert-reference-link
+  "zu" 'org-zotxt-update-reference-link-at-point
+)
+#+END_SRC
+
+**** Smooth Scrolling
+ #+BEGIN_SRC emacs-lisp
+  ;; Keyboard smooth scrolling: Prevent the awkward "snap to re-center" when
+   ;; the text cursor moves off-screen. Instead, only scroll the minimum amount
+   ;; necessary to show the new line. (A number of 101+ disables re-centering.)
+   (setq scroll-conservatively 101)
+
+   ;; Optimize mouse wheel scrolling for smooth-scrolling trackpad use.
+   ;; Trackpads send a lot more scroll events than regular mouse wheels,
+   ;; so the scroll amount and acceleration must be tuned to smooth it out.
+   (setq
+    ;; If the frame contains multiple windows, scroll the one under the cursor
+    ;; instead of the one that currently has keyboard focus.
+    mouse-wheel-follow-mouse 't
+    ;; Completely disable mouse wheel acceleration to avoid speeding away.
+    mouse-wheel-progressive-speed nil
+    ;; The most important setting of all! Make each scroll-event move 2 lines at
+    ;; a time (instead of 5 at default). Simply hold down shift to move twice as
+    ;; fast, or hold down control to move 3x as fast. Perfect for trackpads.
+    mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6)))
+ #+END_SRC
+**** Which-key
+ #+BEGIN_SRC emacs-lisp
+ (use-package which-key
+   :defer 1
+   :diminish ""
+   :config
+   (setq which-key-special-keys nil)
+   ;; Set the time delay (in seconds) for the which-key popup to appear.
+   (setq which-key-idle-delay .3)
+   (which-key-mode))
+ #+END_SRC
+**** Doom-Quit
+ Quit prompt with messages from Doom exit messages
+
+ #+BEGIN_SRC emacs-lisp
+ (defun doom-quit-p (&optional prompt)
+   "Return t if this session should be killed. Prompts the user for
+ confirmation."
+ (or (yes-or-no-p (format "››› %s" (or prompt "Quit Emacs?")))
+     (ignore (message "Aborted"))))
+ (setq confirm-kill-emacs nil)
+ (add-hook 'kill-emacs-query-functions #'doom-quit-p)
+ #+END_SRC
+
+
+ #+BEGIN_SRC emacs-lisp
+ (defvar +doom-quit-messages
+   '(;; from Doom 1
+     "Let's beat it -- This is turning into a bloodbath!"
+     "I wouldn't leave if I were you. DOS is much worse."
+     "Ya know, next time you come in here I'm gonna toast ya."
+     "Go ahead and leave. See if I care."
+     "Are you sure you want to quit this great editor?"
+     ;; Custom
+     "Emacs! Emacs!! Emacs!!!"
+     "The King is dead, long live the King!"
+     "Like you have somewhere better to be..."
+     "Don't worry, I won't tell everyone you're a failure"
+     "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"
+     "(setq nothing t everything 'permitted)"
+     "Emacs will remember that."
+     "Emacs, Emacs never changes."
+     "Hey! Hey, M-x listen!"
+     "Okay, look. We've both said a lot of things you're going to regret..."
+     "You are *not* prepared!")
+   "A list of quit messages, picked randomly by `+doom-quit'. Taken from
+ http://doom.wikia.com/wiki/Quit_messages and elsewhere.")
+
+ (defun +doom|quit (&rest _)
+   (doom-quit-p
+    (format "%s  Quit?"
+            (nth (random (length +doom-quit-messages))
+                 +doom-quit-messages))))
+
+ (remove-hook 'kill-emacs-query-functions #'doom-quit-p)
+ (add-hook 'kill-emacs-query-functions #'+doom|quit)
+ #+END_SRC
+**** Popup Windows
+[[https://github.com/wasamasa/shackle][A package]] that puts an end to popped-up windows not behaving they way you'd like them to.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package shackle
+    :after helm
+    :demand t
+    :config
+    ;; make helm pop-ups behave
+    (setq helm-display-function #'pop-to-buffer)
+    (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
+    (shackle-mode 1))
+#+END_SRC
+
+
+
+**** Helpful (Documentation)
+[[http://www.wilfred.me.uk/blog/2017/08/30/helpful-adding-contextual-help-to-emacs/][Contextual help]] for emacs
+#+BEGIN_SRC emacs-lisp
+(use-package helpful
+  :config (evil-set-initial-state 'helpful-mode 'motion)
+  :general
+  ("C-h f" #'helpful-callable)
+  ("C-h k" #'helpful-key)
+  ("C-h v" #'helpful-variable)
+  ("C-c C-." #'helpful-at-point)
+  ("C-h C-l" #'find-library)
+  :commands (helpful-function helpful-callable helpful-key helpful-variable helpful-at-point))
+#+END_SRC
+
+** Programming
+*** Alignment
+[[https://github.com/edkolev/evil-lion][This package]] provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
+#+BEGIN_SRC emacs-lisp
+(use-package evil-lion
+  :defer t
+  :config
+  (general-define-key :states '(normal) :keymaps 'prog-mode-map
+  "g l" 'evil-lion-left
+  "g L" 'evil-lion-right)
+
+  (general-define-key :states '(visual) :keymaps 'prog-mode-map
+  "g l" 'evil-lion-left
+  "g L" 'evil-lion-right)
+  )
+#+END_SRC
+*** Rainbow delimiters
+[[https://github.com/Fanael/rainbow-delimiters][Useful package]] that will highlight delimiters such as parentheses, brackets or braces according to their depth. Each successive level is highlighted in a different color. This makes it easy to spot matching delimiters, orient yourself in the code, and tell which statements are at a given depth.
+   #+BEGIN_SRC emacs-lisp
+   (use-package rainbow-delimiters 
+     :commands rainbow-delimiters-mode
+     :init
+     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+     :config
+     (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+            :foreground "red"
+            :inherit 'error
+            :box t)) 
+   #+END_SRC
+*** Rainbow identifiers
+[[https://github.com/Fanael/rainbow-identifiers][Rainbow identifiers mode]] is an Emacs minor mode providing highlighting of identifiers based on their names. Each identifier gets a color based on a hash of its name.
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-identifiers
+  :commands rainbow-identifiers-mode
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
+#+END_SRC
+*** Rainbow mode
+[[https://github.com/emacsmirror/rainbow-mode][Colorize color names]] in buffers 
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :commands rainbow-mode)
+#+END_SRC 
+*** DISABLED Electric Pair (Autopair)
+CLOSED: [2018-06-28 Thu 12:02]
+#+BEGIN_SRC emacs-lisp
+(use-package electric-pair
+  :disabled t
+  :ensure nil
+  :commands electric-pair-mode
+  :init
+  (add-hook 'prog-mode-hook 'electric-pair-mode)
+  (add-hook 'org-mode-hook 'electric-pair-mode)
+  (add-hook 'markdown-mode-hook 'electric-pair-mode)
+  :config 
+  ;; via https://www.topbug.net/blog/2016/09/29/emacs-disable-certain-pairs-for-electric-pair-mode/
+  (setq electric-pair-inhibit-predicate
+      (lambda (c)
+        (if (char-equal c ?\") t (electric-pair-default-inhibit c)))))
+#+END_SRC
+*** Languages
+**** Applescript
+#+BEGIN_SRC emacs-lisp
+  (use-package applescript-mode
+    :ensure t
+    :commands (applescript-mode))
+#+END_SRC
+**** Elisp
+#+BEGIN_SRC emacs-lisp 
+  (use-package elisp-slime-nav
+    :commands elisp-slime-nav-mode
+    :config
+    (add-hook! (emacs-lisp-mode ielm-mode) '(elisp-slime-nav-mode)))
+
+  (use-package eldoc
+    :commands eldoc-mode
+    :diminish eldoc-mode
+    :config 
+    ;; Show ElDoc messages in the echo area immediately, instead of after
+    ;; 1/2 a second.
+    (setq eldoc-idle-delay 0))
+
+    ;; Elisp hook
+    (add-hook 'emacs-lisp-mode-hook (lambda ()
+                (setq show-trailing-whitespace t)
+                (prettify-symbols-mode)
+                (eldoc-mode)
+                (yas-minor-mode)
+                (company-mode)
+                (rainbow-delimiters-mode)))
+
+#+END_SRC
+**** Haskell
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :commands haskell-mode)
+#+END_SRC
+**** Html
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode
+  :commands (web-mode)
+  :mode ("\\.html$" . web-mode)
+  :config
+  (setq web-mode-enable-auto-pairing t
+        web-mode-enable-auto-expanding t
+        web-mode-enable-css-colorization t
+        web-mode-enable-auto-closing t
+        web-mode-enable-auto-quoting t)) 
+#+END_SRC
+**** Lua
+#+BEGIN_SRC emacs-lisp
+(use-package lua-mode
+  :commands lua-mode
+  :init
+  (dolist (pattern '("\\.lua\\'"))
+  (add-to-list 'auto-mode-alist (cons pattern 'lua-mode))))
+#+END_SRC
+**** PHP
+#+BEGIN_SRC emacs-lisp
+(use-package php-mode
+  :commands php-mode
+  :init
+  (dolist (pattern '("\\.php\\'"))
+  (add-to-list 'auto-mode-alist (cons pattern 'php-mode))))
+#+END_SRC
+**** Shell script mode
+#+BEGIN_SRC emacs-lisp
+  (use-package sh-script
+    :commands sh-script-mode
+    :init
+    (progn
+      ;; Use sh-mode when opening `.zsh' files, and when opening Prezto runcoms.
+      (dolist (pattern '("\\.zsh\\'"
+                         "zlogin\\'"
+                         "zlogout\\'"
+                         "zpreztorc\\'"
+                         "zprofile\\'"
+                         "zshenv\\'"
+                         "zshrc\\'"))
+        (add-to-list 'auto-mode-alist (cons pattern 'sh-mode)))))
+
+    (defun spacemacs//setup-shell ()
+        (when (and buffer-file-name
+                   (string-match-p "\\.zsh\\'" buffer-file-name))
+          (sh-set-shell "zsh")))
+      (add-hook 'sh-mode-hook 'spacemacs//setup-shell)
+#+END_SRC
+**** Yaml
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :commands yaml-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+    (add-hook 'yaml-mode-hook (lambda () (run-hooks 'prog-mode-hook)))
+  )
+#+END_SRC
+**** Vim
+#+BEGIN_SRC emacs-lisp
+(use-package vimrc-mode
+  :commands vimrc-mode)
+#+END_SRC
+*** Macrostep
+Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
+#+BEGIN_SRC emacs-lisp
+(use-package macrostep
+  :commands macrostep-expand
+) 
+#+END_SRC
+*** Documentation
+#+BEGIN_SRC emacs-lisp
+(use-package tldr 
+  :commands (tldr tldr-update-docs)
+  :init 
+  (evil-set-initial-state 'tldr-mode 'emacs)
+  :config
+  (setq tldr-directory-path (expand-file-name "tldr/" cpm-etc-dir)))
+#+END_SRC
+
+** Session & Project Management
+*** Hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    ;; :commands (cpm/hydra-desktop/body))
+    :defer 2)
+    ;; hydra for TODOs
+    (with-eval-after-load 'hydra
+    (defhydra hydra-todo (:pre
+                    (hl-todo-mode 1)
+                :post
+               (hl-todo-mode -1))
+    "Todo"
+    ("n" hl-todo-next "Next")
+    ("p" hl-todo-previous "Previous")
+    ("o" hl-todo-occur "Occur")
+    ("q" nil "Quit" :color blue :exit t)))
+#+END_SRC
+*** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+   :defer 1
+   :init
+   ;; save projectile-known-projects-file in cache folder
+    (setq projectile-known-projects-file
+       (concat cpm-cache-dir "projectile-bookmarks.eld"))
+    (setq projectile-cache-file
+       (concat cpm-cache-dir "projectile.cache"))
+    (setq projectile-enable-caching t
+          projectile-files-cache-expire 60)
+    :config
+    (projectile-mode t))
+#+END_SRC
+*** Perspectives
+Yet another attempt to manage buffers/workspaces
+#+BEGIN_SRC emacs-lisp 
+  (use-package perspective
+    ;; :load-path "~/.emacs.d/.local/elisp/perspective"
+    :commands (persp-switch persp-add-buffer persp-set-buffer)
+    ;; :init
+    ;; (when (not (fboundp 'make-variable-frame-local))
+    ;; (defun make-variable-frame-local (variable) variable))
+    )
+    ;; :config
+    ;; (persp-mode 1))
+
+  (use-package persp-projectile
+      :commands projectile-persp-switch-project
+      :config
+      (defhydra hydra-persp (:columns 4
+                             :color blue)
+        "Perspective"
+        ("a" persp-add-buffer "Add Buffer")
+        ("i" persp-import "Import")
+        ("c" persp-kill "Close")
+        ("n" persp-next "Next")
+        ("p" persp-prev "Prev")
+        ("k" persp-remove-buffer "Kill Buffer")
+        ("r" persp-rename "Rename")
+        ("A" persp-set-buffer "Set Buffer")
+        ("s" persp-switch "Switch")
+        ("C-x" persp-switch-last "Switch Last")
+        ("b" persp-switch-to-buffer "Switch to Buffer")
+        ("P" projectile-persp-switch-project "Switch Project")
+        ("q" nil "Quit")))
+
+  (defhydra cpm/hydra-desktop (:columns 4
+                               :color blue)
+    "Desktops"
+    ("c" desktop+-create "Create desktop")
+    ("l" desktop+-load "Load desktop")) 
+
+    ;; (defun helm-persp-projectile-switch-project ()
+    ;; (interactive)
+    ;; (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
+    ;;                     (random-string ""))
+    ;;                 (dotimes (i 6 random-string)
+    ;;                   (setq random-string
+    ;;                         (concat
+    ;;                          random-string
+    ;;                          (char-to-string (elt temp-charset (random (length temp-charset)))))
+    ;;                         ))
+    ;;                 ))
+    ;; (helm-projectile-switch-project)
+    ;; (persp-rename (projectile-project-name)))
+#+END_SRC
+*** Desktop Perspective Integration
+A [[https://github.com/nex3/perspective-el/issues/19][useful set of functions]] for loading perspectives via desktop-save
+#+BEGIN_SRC emacs-lisp
+(defun perspectives-buffer-name-p (buffer)
+    (if (and buffer
+         (buffer-name buffer)
+         (not (string-prefix-p "*" (buffer-name buffer)))
+         (not (string-suffix-p "*" (buffer-name buffer))))
+    t
+      nil))
+
+  (defun perspectives-hash-filter (current filtered parameters saving)
+    (let ((value (cdr current))
+      (result ())
+      (keys (hash-table-keys (cdr current))))
+      ;; for every perspective...
+      (dolist (key keys)
+    (let ((persp (gethash key value)))
+      ;; that isn't killed...
+      (if (not (persp-killed persp))
+          (add-to-list
+           'result
+           (cons key
+             ;; save the list of buffers
+             (list (cons "buffers"
+             (list
+              (mapcar 'buffer-name (seq-filter 'perspectives-buffer-name-p (persp-buffers persp)))))))))))
+    ;; return a different variable name so perspectives doesn't clobber it
+    (cons 'perspectives-hash-serialized result)))
+
+  ;; serialize perspectives hash
+  (add-to-list 'frameset-filter-alist '(perspectives-hash . perspectives-hash-filter))
+  ;; don't serialize anything else
+  (add-to-list 'frameset-filter-alist '(persp-modestring . :never))
+  (add-to-list 'frameset-filter-alist '(persp-recursive . :never))
+  (add-to-list 'frameset-filter-alist '(persp-last . :never))
+  (add-to-list 'frameset-filter-alist '(persp-curr . :never))
+
+  (defun perspectives-restore-state ()
+    (dolist (frame (frame-list))
+      ;; get the serialized state off of the frame
+      (let ((state (frame-parameter frame 'perspectives-hash-serialized)))
+    (if state (progn
+            (message "Found state, attempting restore")
+            ;; delete it so we don't end up in a loop
+            (set-frame-parameter frame 'perspectives-hash-serialized nil)
+            (with-selected-frame frame
+              (dolist (elem state)
+            ;; recreate the perspective
+            (with-perspective (car elem)
+              (dolist (buffer-name (car (cdr (assoc "buffers" (cdr elem)))))
+                ;; add the buffer back to the perspective
+                (persp-add-buffer buffer-name)
+                )))
+              ))
+      (message "No state found")
+      )
+    )))
+
+  (add-hook 'desktop-after-read-hook 'perspectives-restore-state)
+
+#+END_SRC
+*** Eyebrowse Workspace & Window Management
+Easy workspace creation and switching
+#+BEGIN_SRC emacs-lisp
+(use-package eyebrowse
+  :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
+  :init
+  (general-define-key :states '(insert normal) :keymaps 'override
+    "s-1" 'eyebrowse-switch-to-window-config-1
+    "s-2" 'eyebrowse-switch-to-window-config-2
+    "s-3" 'eyebrowse-switch-to-window-config-3
+    "s-4" 'eyebrowse-switch-to-window-config-4)
+  :config 
+  (setq eyebrowse-new-workspace 'dired-jump)
+  (eyebrowse-mode t))  
+#+END_SRC
+
+
+*** Nameframe
+[[https://github.com/john2x/nameframe][Nameframe]] provides utility functions to manage frames by their names.
+#+BEGIN_SRC emacs-lisp
+   (use-package nameframe
+     :commands (nameframe-create-frame)
+     :general
+     ("s-p" 'nameframe-switch-frame)
+     :config
+     (nameframe-projectile-mode t)
+     (nameframe-perspective-mode t))
+
+
+  ;; functions for named work frames
+  (defun cpm/load-website ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "Website")
+    (toggle-frame-maximized)
+    (find-file "~/Dropbox/Work/projects/website/website.org")
+    (magit-status))
+  (defun cpm/load-org-agenda-todo ()
+    (interactive)
+    (persp-mode 1)
+    (nameframe-create-frame "Org Agenda")
+    (toggle-frame-maximized)
+    (cpm/jump-to-org-agenda)
+    (split-window-right)
+    (find-file "~/Dropbox/org-files/todo.org"))
+   (defun cpm/load-phil101 ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "PHIL 101")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/phil101/content/slides/lecture_outline.org")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/phil101/content/pages/schedule.org"))
+   (defun cpm/load-phil105 ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "PHIL 105")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/phil105/phil105-classplan.org")
+     (magit-status))
+   (defun cpm/load-phil232 ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "PHIL 232")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/phil232/phil232_lecture_outline.org")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/phil232/content/pages/schedule.org"))
+    (defun cpm/load-phil871 ()
+      (interactive)
+      (persp-mode 1)
+      (nameframe-create-frame "PHIL 871")
+      (toggle-frame-maximized)
+      (find-file "~/Dropbox/Work/projects/phil871-kant-survey/phil871-kant-survey.org"))
+   (defun cpm/load-kant-apperception-substance ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Apperception & Substance")
+     (toggle-frame-maximized)
+     (org-open-link-from-string "[[file:~/Dropbox/org-files/todo.org::*Apperception%20&%20Substance]]")
+     (find-file "~/Dropbox/Work/projects/KantApperception/Introspection-and-self-consciousness.org")
+     (find-file "~/Dropbox/Work/projects/KantApperception/ApperceptionNotes.org")
+     (find-file "~/Dropbox/Work/projects/KantApperception/KantSelf.org")
+     (magit-status))
+   (defun cpm/load-kant-reflection ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Reflection")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/KantReflection/KantReflection.md")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/KantReflection/Kant-reflection-notes.org"))
+   (defun cpm/load-kant-agency-book ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Rational Agency")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
+     (magit-status))
+   (defun cpm/load-emacs-config ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Emacs Config")
+     (toggle-frame-maximized)
+     (find-file "~/.emacs.d/config.org")
+     (magit-status))
+   (defun cpm/load-kant-free-thought ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Free Intellect")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/Work/projects/KantFreeThought/KantFreeThought.md")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/KantFreeThought/kant-notes-intellectual-freedom.org"))
+
+#+END_SRC
+
+
+
+** Search
+*** Ag
+ #+BEGIN_SRC emacs-lisp
+   (use-package ag
+   :commands (helm-do-ag cpm/helm-files-do-ag cpm/helm-files-search-current-directory helm-do-ag-this-file helm-ag-buffers)
+   :config
+   (progn
+     (defun ag/jump-to-result-if-only-one-match ()
+       "Jump to the first ag result if that ag search came up with just one match."
+       (let (only-one-match)
+         (when (member "--stats" ag-arguments)
+           (save-excursion
+             (goto-char (point-min))
+             (setq only-one-match (re-search-forward "^1 matches\\s-*$" nil :noerror)))
+           (when only-one-match
+             (next-error)
+             (kill-buffer (current-buffer))
+             (message (concat "ag: Jumping to the only found match and "
+                              "killing the *ag* buffer."))))))
+     (add-hook 'ag-search-finished-hook #'ag/jump-to-result-if-only-one-match)  
+    
+     ;; Set default ag arguments
+     ;; It looks like the ~/.agignore is used when launching ag from emacs too.
+     ;; So the ignores from ~/.agignore don't have to be set here again.
+
+     (setq ag-highlight-search t)
+     ;; By default, ag.el will open results in a different window in the frame, so
+     ;; the results buffer is still visible. You can override this so the results
+     ;; buffer is hidden and the selected result is shown in its place:
+     (setq ag-reuse-window nil)
+     ;; reuse the same *ag* buffer for all your searches
+     (setq ag-reuse-buffers t)
+     ;; ;; To save buffer automatically when `wgrep-finish-edit'
+     ;; (setq wgrep-auto-save-buffer t)
+
+     (with-eval-after-load 'projectile
+       ;; Override the default function to use the projectile function instead
+       (defun ag/project-root (file-path)
+         (let ((proj-name (projectile-project-root)))
+           (if proj-name
+               proj-name ; return `projectile-project-root' if non-nil
+             ;; Else condition is same as the `ag/project-root' definition
+             ;; from ag.el
+             (if ag-project-root-function
+                 (funcall ag-project-root-function file-path)
+               (or (ag/longest-string
+                    (vc-git-root file-path)
+                    (vc-svn-root file-path)
+                    (vc-hg-root file-path))
+                   file-path))))))))
+
+ #+END_SRC
+ 
+*** TESTING Ripgrep (rg)
+An [[https://github.com/Wilfred/deadgrep][interface]] for [[https://github.com/BurntSushi/ripgrep][ripgrep]]
+ #+BEGIN_SRC emacs-lisp 
+   (use-package deadgrep
+     :ensure t
+     :general
+     (:states '(normal motion visual insert emacs)
+     :keymaps 'override
+     :prefix "SPC"
+     :non-normal-prefix "C-SPC"
+     "sg" #'deadgrep)
+     (:states '(normal motion visal)
+      :keymaps 'deadgrep-mode-map
+      "j" #'deadgrep-forward
+      "k" #'deadgrep-backward
+      "l" #'deadgrep-visit-result))
+   ;; (use-package rg
+   ;;   :commands rg)
+ #+END_SRC
+*** Anzu
+[[https://github.com/syohex/emacs-anzu][anzu.el]] is an Emacs port of anzu.vim. anzu.el provides a minor mode which displays current match and total matches information in the mode-line in various search modes.
+#+BEGIN_SRC emacs-lisp
+(use-package anzu
+  :commands (isearch-foward isearch-backward)
+  :config (global-anzu-mode))
+(use-package evil-anzu
+  :commands (evil-search-forward evil-search-backward))
+#+END_SRC
+
+
+** Shell
+*** Sane term
+ Sane settings for ansi-term
+ #+BEGIN_SRC emacs-lisp
+   (use-package sane-term
+     :commands sane-term
+     :init
+     ;; shell to use for sane-term
+     (setq sane-term-shell-command "/usr/local/bin/zsh")
+     ;; sane-term will create first term if none exist
+     (setq sane-term-initial-create t)
+     ;; `C-d' or `exit' will kill the term buffer.
+     (setq sane-term-kill-on-exit t)
+     ;; After killing a term buffer, not cycle to another.
+     (setq sane-term-next-on-kill nil))
+ #+END_SRC
+*** Shell Pop
+ A popup shell
+ #+begin_src emacs-lisp 
+   (use-package shell-pop
+     :commands shell-pop
+     :init
+     (setq shell-pop-term-shell "/usr/local/bin/zsh")
+     (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
+     :config
+       (defun ansi-term-handle-close ()
+        "Close current term buffer when `exit' from term buffer."
+        (when (ignore-errors (get-buffer-process (current-buffer)))
+          (set-process-sentinel (get-buffer-process (current-buffer))
+                                (lambda (proc change)
+                                  (when (string-match "\\(finished\\|exited\\)" change)
+                                    (kill-buffer (when (buffer-live-p (process-buffer proc)))
+                                    (delete-window))))))
+      (add-hook 'shell-pop-out-hook 'kill-this-buffer)
+      (add-hook 'term-mode-hook (lambda () (linum-mode -1) (ansi-term-handle-close)))))
+ #+end_src
+*** Shell settings
+ Other useful shell settings  
+ #+begin_src emacs-lisp
+    ;; basic settings
+    ;; (evil-set-initial-state 'term-mode 'emacs)
+    (setq explicit-shell-file-name "/usr/local/bin/zsh")
+    ;; don't add newline in long lines
+    (setq-default term-suppress-hard-newline t)
+    ;; kill process buffers without query
+    (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+    ;; (global-set-key (kbd "C-x k") 'kill-this-buffer) 
+    ;; kill ansi-buffer on exit
+    (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+      (if (memq (process-status proc) '(signal exit))
+          (let ((buffer (process-buffer proc)))
+             ad-do-it
+             (kill-buffer buffer))
+            ad-do-it))
+          (ad-activate 'term-sentinel)
+
+   ;; clickable links & no highlight of line
+   (defun my-term-hook ()
+     (goto-address-mode) (global-hl-line-mode 0))
+   (add-hook 'term-mode-hook 'my-term-hook)
+    
+   ;; paste and navigation
+   (defun term-send-tab ()
+   "Send tab in term mode."
+     (interactive)
+     (term-send-raw-string "\t"))
+
+   ;; Emacs doesn’t handle less well, so use cat instead for the shell pager 
+   (setenv "PAGER" "cat")
+
+   ;; hack to fix pasting issue, the paste micro-state won't work in term
+   (general-define-key :states '(normal) :keymaps 'term-raw-map 
+          "p" 'term-paste
+          "C-k" 'term-send-up
+          "C-j" 'term-send-down)
+
+   (general-define-key :states '(insert) :keymaps 'term-raw-map 
+          "C-c C-d" 'term-send-eof
+          "C-c C-z" 'term-stop-subjob
+          "<tab>"   'term-send-tab
+          "s-v"     'term-paste
+          "C-k"     'term-send-up
+          "C-j"     'term-send-down)
+ #+end_src
+*** Compilation buffer
+
+ Whenever I run ~compile~, the buffer stays even after a successful compilation. Let's make it close automatically if the compilation is successful.
+
+ #+BEGIN_SRC emacs-lisp
+ (setq compilation-finish-functions
+       (lambda (buf str)
+         (if (null (string-match ".*exited abnormally.*" str))
+             ;;no errors, make the compilation window go away in a few seconds
+             (progn
+               (run-at-time "0.4 sec" nil
+                            (lambda ()
+                              (select-window (get-buffer-window (get-buffer-create "*compilation*")))
+                              (switch-to-buffer nil)
+                              (delete-window)))
+               (message "No Compilation Errors!")))))
+ #+END_SRC
+*** Completion buffer
+ Kill the completion buffer
+ #+BEGIN_SRC emacs-lisp
+   ;; Remove completion buffer when done
+   (add-hook 'minibuffer-exit-hook 
+   '(lambda ()
+            (let ((buffer "*Completions*"))
+              (and (get-buffer buffer)
+               (kill-buffer buffer)))))
+ #+END_SRC
+*** Virtualenvwrapper
+ #+BEGIN_SRC emacs-lisp
+   (use-package virtualenvwrapper
+    :after (:any eshell sane-term ansi-term)
+    :demand t
+    :config
+    (venv-initialize-interactive-shells) ;; if you want interactive shell support
+    (venv-initialize-eshell) ;; if you want eshell support
+    (setq venv-location "~/bin/virtualenvs")
+    (setq venv-project-home "~/Dropbox/Work/projects/")
+    (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
+
+   (defcustom venv-project-home
+     (expand-file-name (or (getenv "PROJECT_HOME") "~/Dropbox/Work/projects/"))
+       "The location(s) of your virtualenv projects."
+       :group 'virtualenvwrapper)
+
+   (defun workon-venv ()
+    "change directory to project in eshell"
+     (eshell/cd (concat venv-project-home venv-current-name)))
+ #+END_SRC
+*** Tramp
+An easy way to ssh
+#+BEGIN_SRC emacs-lisp
+(use-package tramp-term
+  :commands tramp-term
+)
+#+END_SRC
+*** Eshell
+ Eshell is an [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][elisp shell]]. It has its own configuration parameters, distinct
+ from those of shell or ansi-terminal.
+**** Eshell Settings
+ Basic settings
+ #+BEGIN_SRC emacs-lisp 
+   (use-package eshell
+     :commands eshell
+     :init
+     (setq eshell-directory-name (concat cpm-etc-dir "eshell/")
+           eshell-history-file-name (concat cpm-etc-dir "eshell/history")
+           eshell-aliases-file (concat cpm-etc-dir "eshell/alias")
+           eshell-last-dir-ring-file-name (concat cpm-etc-dir "eshell/lastdir")
+           eshell-highlight-prompt nil
+           eshell-buffer-shorthand t
+           eshell-cmpl-ignore-case t
+           eshell-cmpl-cycle-completions t
+           eshell-destroy-buffer-when-process-dies t
+           eshell-history-size 10000
+           ;; auto truncate after 20k lines
+           eshell-buffer-maximum-lines 20000
+           eshell-hist-ignoredups t
+           eshell-error-if-no-glob t
+           eshell-glob-case-insensitive t
+           eshell-scroll-to-bottom-on-input 'all
+           eshell-scroll-to-bottom-on-output 'all
+           eshell-list-files-after-cd t
+           eshell-banner-message ""
+           ;; eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
+           ;; eshell-banner-message "What would you like to do?\n\n"
+         )
+         ;; Visual commands
+     (setq eshell-visual-commands '("ranger" "vi" "screen" "top" "less" "more" "lynx"
+                                        "ncftp" "pine" "tin" "trn" "elm" "vim"
+                                        "nmtui" "alsamixer" "htop" "el" "elinks"
+                                        ))
+     (setq eshell-visual-subcommands '(("git" "log" "diff" "show"))))
+
+
+
+   (defun cpm/setup-eshell ()
+    (interactive)
+     ;; turn off semantic-mode in eshell buffers
+     (semantic-mode -1)
+     ;; turn off hl-line-mode
+     (hl-line-mode -1))
+#+END_SRC
+
+**** Eshell Helm
+#+BEGIN_SRC emacs-lisp
+     ;; helm support
+     (add-hook 'eshell-mode-hook
+          (lambda ()
+            (eshell-cmpl-initialize)
+            (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+            (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
+            (cpm/setup-eshell)))
+
+         (when (not (functionp 'eshell/rgrep))
+           (defun eshell/rgrep (&rest args)
+             "Use Emacs grep facility instead of calling external grep."
+             (eshell-grep "rgrep" args t)))
+#+END_SRC
+
+**** Eshell Truncate Buffers
+Per this [[https://emacs.stackexchange.com/a/10874/11934][stack exchange discussion]]
+#+BEGIN_SRC emacs-lisp
+(defun my/truncate-eshell-buffers ()
+  "Truncates all eshell buffers"
+  (interactive)
+  (save-current-buffer
+    (dolist (buffer (buffer-list t))
+      (set-buffer buffer)
+      (when (eq major-mode 'eshell-mode)
+        (eshell-truncate-buffer)))))
+
+;; After being idle for 5 seconds, truncate all the eshell-buffers if
+;; needed. If this needs to be canceled, you can run `(cancel-timer
+;; my/eshell-truncate-timer)'
+(setq my/eshell-truncate-timer
+      (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
+ #+END_SRC
+**** Eshell Evil History Navigation
+History browsing. Note keybindings need to be buffer local as per https://github.com/noctuid/general.el/issues/80
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook
+(lambda ()
+(general-define-key :states  '(normal insert emacs) :keymaps 'eshell-mode-map
+    "<down>" 'eshell-next-input
+    "<up>"   'eshell-previous-input
+    "C-k"    'eshell-next-input
+    "C-j"    'eshell-previous-input)
+    ))
+#+END_SRC
+**** Eshell Prompt
+A nicer [[https://gist.github.com/ekaschalk/f0ac91c406ad99e53bb97752683811a5][eshell prompt]] with some [[http://www.modernemacs.com/post/custom-eshell/][useful discussion]] of how it was put together.
+I've made just a few tiny modifications.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'dash)
+  (require 's)
+
+  (defmacro with-face (STR &rest PROPS)
+    "Return STR propertized with PROPS."
+    `(propertize ,STR 'face (list ,@PROPS)))
+
+  (defmacro esh-section (NAME ICON FORM &rest PROPS)
+    "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
+    `(setq ,NAME
+           (lambda () (when ,FORM
+                   (-> ,ICON
+                      (concat esh-section-delim ,FORM)
+                      (with-face ,@PROPS))))))
+
+  (defun esh-acc (acc x)
+    "Accumulator for evaluating and concatenating esh-sections."
+    (--if-let (funcall x)
+        (if (s-blank? acc)
+            it
+          (concat acc esh-sep it))
+      acc))
+
+  (defun esh-prompt-func ()
+    "Build `eshell-prompt-function'"
+    (concat esh-header
+            (-reduce-from 'esh-acc "" eshell-funcs)
+            "\n"
+            eshell-prompt-string))
+
+  (esh-section esh-dir
+               "\xf07c"  ;  (faicon folder)
+               (abbreviate-file-name (eshell/pwd))
+               '(:foreground "#268bd2" :underline t))
+
+  (esh-section esh-git
+               "\xe907"  ;  (git icon)
+               (with-eval-after-load 'magit
+               (magit-get-current-branch))
+               '(:foreground "#b58900"))
+
+  (esh-section esh-python
+               "\xe928"  ;  (python icon)
+               (with-eval-after-load "virtualenvwrapper"
+               venv-current-name))
+
+  (esh-section esh-clock
+               "\xf017"  ;  (clock icon)
+               (format-time-string "%H:%M" (current-time))
+               '(:foreground "forest green"))
+
+  ;; Below I implement a "prompt number" section
+  (setq esh-prompt-num 0)
+  (add-hook 'eshell-exit-hook (lambda () (setq esh-prompt-num 0)))
+  (advice-add 'eshell-send-input :before
+              (lambda (&rest args) (setq esh-prompt-num (incf esh-prompt-num))))
+
+  (esh-section esh-num
+               "\xf0c9"  ;  (list icon)
+               (number-to-string esh-prompt-num)
+               '(:foreground "brown"))
+
+  ;; Separator between esh-sections
+  (setq esh-sep " | ")  ; or "  "
+
+  ;; Separator between an esh-section icon and form
+  (setq esh-section-delim " ")
+
+  ;; Eshell prompt header
+  (setq esh-header "\n┌─")  ; or "\n "
+
+  ;; Eshell prompt regexp and string. Unless you are varying the prompt by eg.
+  ;; your login, these can be the same.
+  (setq eshell-prompt-regexp "^└─>> ") ;; note the '^' to get regex working right
+  (setq eshell-prompt-string "└─>> ") 
+
+  ;; Choose which eshell-funcs to enable
+  (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num))
+
+  ;; Enable the new eshell prompt
+  (setq eshell-prompt-function 'esh-prompt-func)
+#+END_SRC
+**** Shell Switcher
+ Useful for switching between [[https://github.com/DamienCassou/shell-switcher][multiple instances]] of eshell. But you can
+ configure for any shell that you use.
+ #+BEGIN_SRC emacs-lisp
+   (use-package shell-switcher
+     :general
+     ("C-'"  'shell-switcher-switch-buffer-other-window)
+     :config
+     (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
+     (setq shell-switcher-mode t))
+ #+END_SRC
+**** Clear Eshell 
+ Make eshell act like a standard unix terminal.
+ #+BEGIN_SRC emacs-lisp
+   (defun eshell-clear-buffer ()
+   "Clear terminal"
+   (interactive)
+   (let ((inhibit-read-only t))
+     (erase-buffer)
+     (eshell-send-input)))
+ (add-hook 'eshell-mode-hook
+       '(lambda()
+           (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
+ #+END_SRC
+**** Eshell Magit
+ #+BEGIN_SRC emacs-lisp
+ (defun eshell/magit ()
+ "Function to open magit-status for the current directory"
+   (interactive)
+   (magit-status default-directory)
+   nil)
+ #+END_SRC
+**** Eshell Fringe Status
+Show [[https://github.com/ryuslash/eshell-fringe-status][last status in fringe]]
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-fringe-status
+  :defer t
+  :config
+  (add-hook 'eshell-mode-hook 'eshell-fringe-status-mode))
+#+END_SRC
+**** Eshell Autosuggest
+Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions]] in eshell
+#+BEGIN_SRC emacs-lisp
+(use-package esh-autosuggest
+  :hook (eshell-mode . esh-autosuggest-mode))
+#+END_SRC
+
+** Version Control
+ Magit is a great interface for git projects. It's much more pleasant to use than
+ the standard git interface on the command line. I've set up some easy
+ keybindings to access magit and related packages.
+
+*** Magit
+ #+BEGIN_SRC emacs-lisp
+   (use-package magit
+     :commands 
+     (magit-blame-mode
+      magit-commit
+      magit-diff
+      magit-log
+      magit-status)
+     :init
+     (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
+     (add-hook 'magit-mode-hook 'evil-magit-init)
+     (setq vc-follow-symlinks t)
+     ;; Suppress the message we get about "Turning on
+     ;; magit-auto-revert-mode" when loading Magit.
+     (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
+     :config
+     ;; make magit go fullscreen
+     ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+     (setq magit-diff-refine-hunk 'all)
+     (global-git-commit-mode t) ; use emacs as editor for git commits
+     (setq magit-push-always-verify nil)
+     )
+ #+END_SRC
+
+*** Evil Magit
+ Evil bindings for magit
+ #+BEGIN_SRC emacs-lisp
+ (use-package evil-magit
+   :after magit
+   :demand t
+   :config
+   (setq evil-magit-use-y-for-yank t))
+ #+END_SRC
+
+*** Git timemachine
+ #+BEGIN_SRC emacs-lisp
+ (use-package git-timemachine            ; Go back in Git time
+   :commands git-timemachine
+ )
+ #+END_SRC
+ 
+*** Gited
+Give git projects branches the dired treatment
+#+BEGIN_SRC emacs-lisp
+(use-package gited
+  :commands (gited-list gited-list-branches))
+#+END_SRC
+ 
+*** Git gutter
+Git gutter is great for giving visual feedback on changes, but it doesn't play
+well with org-mode using org-indent. So I don't use it globally. 
+ #+BEGIN_SRC emacs-lisp
+   (use-package git-gutter
+     :defer t
+     :init
+     (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
+     (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
+           git-gutter:update-interval 2
+           git-gutter:window-width 2))
+
+   (use-package git-gutter-fringe
+     :diminish git-gutter-mode
+     :after git-gutter
+     :demand t
+     ;; :demand fringe-helper
+     :config
+     ;; subtle diff indicators in the fringe
+     ;; places the git gutter outside the margins.
+     (setq-default fringes-outside-margins t)
+     ;; thin fringe bitmaps
+     (define-fringe-bitmap 'git-gutter-fr:added
+     [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+     nil nil 'center)
+     (define-fringe-bitmap 'git-gutter-fr:modified
+     [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+     nil nil 'center)
+     (define-fringe-bitmap 'git-gutter-fr:deleted
+     [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+     nil nil 'center))
+
+ #+END_SRC
+
+*** Quick commits
+Make a quick commit without opening magit. This is a version of a
+workflow I used to use in Sublime Text. Perfect for short commit messages.
+ #+BEGIN_SRC emacs-lisp
+   (defun quick-commit ()
+   "make a quick commit from the mini-buffer"
+   (interactive)
+   (evil-ex '"!Git add % && Git commit -m '" ))
+ #+END_SRC
+
+
+
+
+** Zotero
+Interface with Zotero.
+#+BEGIN_SRC emacs-lisp
+  (use-package zotxt
+    :after (any: org markdown-mode)
+    :demand t
+    :commands (org-zotxt-mode zotxt-easykey-mode org-zotxt-insert-reference-link-to-item org-zotxt-open-attachment org-zotxt-update-reference-link-at-point)
+    :diminish (org-zoxt zotxt org-zotxt-mode)
+    :config
+    (setq org-zotxt-default-search-method :title-creator-year)
+    )
+
+#+END_SRC
+
+
+
+
 ** DISABLED Org Fancy Priorities
 CLOSED: [2018-08-04 Sat 12:30]
 Display Org Mode priorities as [[https://github.com/harrybournis/org-fancy-priorities][custom strings]]
