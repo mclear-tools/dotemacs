@@ -19,9 +19,7 @@
 
 (define-abbrev-table 'apropos-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'biblio-selection-mode-abbrev-table '())
 
@@ -41,13 +39,9 @@
 
 (define-abbrev-table 'bsh-script-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c++-mode-abbrev-table '())
 
-(define-abbrev-table 'c-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c-mode-abbrev-table '())
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -177,6 +171,7 @@
     ("aboutit" "about it" nil 0)
     ("aboutthe" "about the" nil 0)
     ("abscence" "absence" nil 0)
+    ("acceept" "accept" nil 0)
     ("accesories" "accessories" nil 0)
     ("accidant" "accident" nil 0)
     ("accomodate" "accommodate" nil 0)
@@ -194,6 +189,7 @@
     ("acomodate" "accommodate" nil 0)
     ("acomplished" "accomplished" nil 0)
     ("activty" "activity" nil 1)
+    ("actuaity" "actuality" nil 0)
     ("actualyl" "actually" nil 0)
     ("acurate" "accurate" nil 0)
     ("adament" "adamant's" nil 0)
@@ -203,7 +199,7 @@
     ("addtions" "additions" nil 0)
     ("adequit" "adequate" nil 0)
     ("adequite" "adequate" nil 0)
-    ("adn" "and" nil 0)
+    ("adn" "and" nil 1)
     ("advanage" "advantage" nil 0)
     ("affraid" "afraid" nil 0)
     ("afterthe" "after the" nil 0)
@@ -308,6 +304,7 @@
     ("becomming" "becoming" nil 0)
     ("becuase" "because" nil 0)
     ("becuse" "because" nil 0)
+    ("beetwee" "between" nil 0)
     ("befoer" "before" nil 0)
     ("beggining" "beginning" nil 0)
     ("begining" "beginning" nil 0)
@@ -325,7 +322,8 @@
     ("beliveve" "believe" nil 0)
     ("benifit" "benefit" nil 0)
     ("benifits" "benefits" nil 0)
-    ("betwen" "between" nil 0)
+    ("betwen" "between" nil 1)
+    ("betyween" "between" nil 0)
     ("beutiful" "beautiful" nil 0)
     ("blase" "blase" nil 0)
     ("boxs" "boxes" nil 0)
@@ -376,6 +374,7 @@
     ("cloesest" "closest" nil 0)
     ("cna" "can" nil 2)
     ("coeherent" "coherent" nil 0)
+    ("cogntion" "cognition" nil 0)
     ("colection" "collection" nil 0)
     ("comanies" "companies" nil 0)
     ("comany" "company" nil 0)
@@ -417,17 +416,20 @@
     ("conceptulaists" "conceptualists" nil 0)
     ("concerningcognition" "concerning cognition" nil 0)
     ("concomittant" "concomitant" nil 0)
+    ("concpts" "concepts" nil 0)
     ("condersider" "consider" nil 0)
     ("condolances" "condolences" nil 0)
     ("conected" "connected" nil 0)
     ("conept" "concept" nil 0)
     ("coneption" "conception" nil 0)
-    ("conerning" "concerning" nil 0)
+    ("conerning" "concerning" nil 1)
     ("conferance" "conference" nil 0)
     ("configration" "configuration" nil 0)
     ("confirmmation" "confirmation" nil 0)
+    ("conformatiy" "conformity" nil 0)
     ("confrence" "conference" nil 0)
     ("conjuntion" "conjunction" nil 0)
+    ("conneceted" "connected" nil 0)
     ("connecetion" "connection" nil 0)
     ("conscousness" "consciousness" nil 0)
     ("considerattion" "consideration" nil 0)
@@ -439,6 +441,7 @@
     ("consonent" "consonant" nil 0)
     ("conspiricy" "conspiracy" nil 0)
     ("constuction" "construction" nil 0)
+    ("consturing" "construing" nil 0)
     ("consultent" "consultant" nil 0)
     ("consumeable" "consumable" nil 0)
     ("conteent" "content" nil 0)
@@ -453,6 +456,7 @@
     ("corproations" "corporations" nil 0)
     ("corrospond" "correspond" nil 0)
     ("corruptable" "corruptible" nil 0)
+    ("corupus" "crops" nil 0)
     ("cotten" "cotton" nil 0)
     ("coudl" "could" nil 0)
     ("coudln" "couldn" nil 0)
@@ -464,6 +468,7 @@
     ("cpoy" "copy" nil 0)
     ("creme" "creme" nil 0)
     ("critque" "critique" nil 0)
+    ("crtical" "critical" nil 0)
     ("crticicism" "criticism" nil 0)
     ("crtiqiue" "critique" nil 0)
     ("crtique" "critique" nil 0)
@@ -486,6 +491,7 @@
     ("defintely" "definitely" nil 0)
     ("deonsn't" "doesn't" nil 0)
     ("dependances" "dependencies" nil 0)
+    ("dependecne" "dependence" nil 0)
     ("dependnce" "dependence" nil 0)
     ("deptartment" "department" nil 0)
     ("derivatively" "derivative" nil 0)
@@ -543,6 +549,7 @@
     ("distiction" "distinction" nil 0)
     ("distribusion" "distribution" nil 0)
     ("distrubution" "distribution" nil 0)
+    ("disucssion" "discussion" nil 0)
     ("divsion" "division" nil 0)
     ("docuement" "documents" nil 0)
     ("docuemnt" "document" nil 0)
@@ -571,7 +578,7 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 1)
+    ("emacs" "Emacs" nil 3)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("emply" "employ" nil 0)
@@ -600,10 +607,16 @@
     ("excitment" "excitement" nil 0)
     ("exhcange" "exchange" nil 0)
     ("exhcanges" "exchanges" nil 0)
+    ("exiostence" "existence" nil 0)
+    ("existeence" "existence" nil 0)
+    ("existencee" "existence" nil 0)
+    ("existnce" "existence" nil 0)
     ("experiance" "experience" nil 0)
     ("experienc" "experience" nil 0)
     ("explantion" "explanation" nil 1)
     ("explantory" "explanatory" nil 0)
+    ("explcicitly" "explicitly" nil 0)
+    ("expliclity" "expliclity" nil 0)
     ("exprience" "experience" nil 0)
     ("exprienced" "experienced" nil 0)
     ("extenseive" "extensive" nil 0)
@@ -729,6 +742,7 @@
     ("hwich" "which" nil 0)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
+    ("ideeal" "ideal" nil 0)
     ("ideentical" "identical" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
@@ -777,6 +791,8 @@
     ("introspectedsubject" "introspected subject" nil 0)
     ("intuive" "intuitive" nil 0)
     ("inturn" "in turn" nil 1)
+    ("intutive" "intuitive" nil 0)
+    ("intuuiton" "intuiting" nil 0)
     ("invitaion" "invitation" nil 0)
     ("invstigated" "investigated" nil 0)
     ("inwhich" "in which" nil 0)
@@ -845,6 +861,7 @@
     ("mantain" "maintain" nil 0)
     ("marraige" "marriage" nil 0)
     ("matematics" "mathematics" nil 0)
+    ("meagre" "meager" nil 0)
     ("membsers" "members" nil 0)
     ("memeber" "member" nil 0)
     ("merchent" "merchant" nil 0)
@@ -861,6 +878,7 @@
     ("mkaing" "making" nil 0)
     ("moeny" "money" nil 0)
     ("monospaced" "unsurpassed" nil 0)
+    ("morever" "moreover" nil 0)
     ("morgage" "mortgage" nil 0)
     ("mroe" "more" nil 0)
     ("mysefl" "myself" nil 0)
@@ -926,6 +944,7 @@
     ("otehr" "other" nil 0)
     ("otu" "out" nil 0)
     ("outof" "out of" nil 0)
+    ("ouvre" "oeuvre" nil 0)
     ("overthe" "over the" nil 0)
     ("ovverides" "overrides" nil 0)
     ("owrk" "work" nil 0)
@@ -975,6 +994,7 @@
     ("prelease" "release" nil 0)
     ("prerelease" "pre-release" nil 0)
     ("presance" "presence" nil 0)
+    ("presumbaly" "presumably" nil 0)
     ("privleged" "privileged" nil 0)
     ("probelm" "problem" nil 1)
     ("probelms" "problems" nil 1)
@@ -982,6 +1002,7 @@
     ("proceding" "proceeding" nil 0)
     ("proctetion" "protection" nil 0)
     ("prominant" "prominent" nil 0)
+    ("propeerties" "properties" nil 0)
     ("protction" "protection" nil 0)
     ("protoge" "protege" nil 0)
     ("prpvides" "provides" nil 0)
@@ -1005,6 +1026,7 @@
     ("raidus" "RADIUS" nil 0)
     ("rasise" "raise" nil 0)
     ("rationalpsychology" "rational psychology" nil 0)
+    ("realta" "relate" nil 0)
     ("realyl" "really" nil 0)
     ("reasoably" "reasonably" nil 0)
     ("reccomend" "recommend" nil 0)
@@ -1124,12 +1146,13 @@
     ("somethign" "something" nil 0)
     ("someting" "something" nil 0)
     ("somewaht" "somewhat" nil 0)
-    ("somthing" "something" nil 1)
+    ("somthing" "something" nil 2)
     ("somtimes" "sometimes" nil 0)
     ("sorry" "Sorry" nil 0)
     ("soudn" "sound" nil 0)
     ("soudns" "sounds" nil 0)
     ("speach" "speech" nil 0)
+    ("specfically" "specifically" nil 0)
     ("specificaly" "specifically" nil 0)
     ("specificalyl" "specifically" nil 0)
     ("spoint" "spinet" nil 0)
@@ -1168,7 +1191,6 @@
     ("suprisingly" "surprisingly" nil 0)
     ("swiming" "swimming" nil 0)
     ("symlinks" "slinks" nil 0)
-    ("synonymously" "anonymously" nil 0)
     ("synthesiszed" "synthesized" nil 0)
     ("tahn" "than" nil 0)
     ("taht" "that" nil 5)
@@ -1180,7 +1202,7 @@
     ("tecnical" "technical" nil 0)
     ("teension" "teens ion" nil 0)
     ("teextual" "textual" nil 0)
-    ("teh" "the" nil 34)
+    ("teh" "the" nil 35)
     ("tehy" "they" nil 1)
     ("terminiated" "terminated" nil 0)
     ("termoil" "turmoil" nil 0)
@@ -1192,7 +1214,7 @@
     ("thatthis" "that this" nil 0)
     ("thecambridge" "the Cambridge" nil 0)
     ("thecompany" "the company" nil 0)
-    ("theere" "there" nil 0)
+    ("theere" "there" nil 1)
     ("thefirst" "the first" nil 0)
     ("thegovernment" "the government" nil 0)
     ("themself" "themselves" nil 1)
@@ -1217,7 +1239,7 @@
     ("thnig" "thing" nil 0)
     ("thnigs" "things" nil 0)
     ("threatend" "threatened" nil 0)
-    ("throught" "throughout" nil 0)
+    ("throught" "throughout" nil 1)
     ("thsi" "this" nil 0)
     ("thsoe" "those" nil 0)
     ("thta" "that" nil 1)
@@ -1374,9 +1396,7 @@
 
 (define-abbrev-table 'ivy-occur-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'java-mode-abbrev-table '())
 
 (define-abbrev-table 'jdee-mode-abbrev-table
   '(
@@ -1542,9 +1562,9 @@
 
 (define-abbrev-table 'notmuch-tree-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'nxml-mode-abbrev-table '())
+
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1599,9 +1619,7 @@
 
 (define-abbrev-table 'pdf-outline-buffer-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
