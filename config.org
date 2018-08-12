@@ -1618,6 +1618,7 @@ General Text settings and hooks
 **** Fill column
 #+BEGIN_SRC emacs-lisp
 (setq-default fill-column 78)
+(global-visual-fill-column-mode)
 #+END_SRC
 **** Visual replace
 This is the [[https://github.com/benma/visual-regexp.el][good old search and replace]] as opposed to the fancy alternatives
@@ -2634,6 +2635,7 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
     (add-to-list 'company-backends 'company-files)
     ;; key bindings
     (let ((map company-active-map))
+     (define-key map (kbd "TAB") 'company-complete-selection)
      (define-key map (kbd "C-/") 'company-search-candidates)
      (define-key map (kbd "C-M-/") 'company-filter-candidates)
      (define-key map (kbd "C-d") 'company-show-doc-buffer)
