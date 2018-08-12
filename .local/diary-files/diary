@@ -1,0 +1,164 @@
+%%(and (diary-block 3 30 2018 3 30 2018)) PHIL232 First Paper
+%%(and (diary-block 4 13 2018 4 13 2018)) PHIL 232 Paper draft
+%%(and (diary-block 10 15 2018 10 15 2018)) Moving day
+%%(and (diary-block 2 16 2018 2 16 2018)) PHIL 232 honors thesis statement
+%%(and (diary-block 4 1 2019 4 1 2019)) SEP entry deadline
+%%(and (diary-block 4 5 2019 4 6 2019)) Chambers Conference on normative ethics
+ Location: UNL
+%%(and (diary-block 3 16 2018 3 16 2018)) PHIL 232 thesis statement
+%%(and (diary-block 10 26 2018 10 26 2018)) Brie Gertler Visit
+%%(and (diary-block 5 18 2018 5 20 2018)) NAKS Biennial Conference
+ Location: Vancouver
+%%(and (diary-block 4 13 2018 4 14 2018)) Chambers Conference
+%%(and (diary-block 2 21 2018 2 24 2018)) 2018 Central Division Meeting
+ Location: Chicago
+%%(and (diary-block 11 16 2018 11 16 2018)) Halla Kim Kant Conference
+ Location: UNO
+%%(and (diary-block 8 11 2018 8 11 2018)) test cal-entry here
+8/21/2018 15:30-16:30 open forum on the search for a new Dean of the College of Arts and Sciences
+ Location: the City Union Auditorium
+4/9/2018 12:30-13:30 Teaching meeting
+4/5/2018 14:00-15:00 Meet Nate Ingracia
+%%(and (diary-block 3 16 2018 3 18 2018)) the Chapel Hill workshop on reasoning and inference
+ Location: 2018
+3/1/2018 10:00-11:00 Meet w/Eduardo Salazar
+ Location: my office
+%%(and (diary-block 8 20 2018 8 20 2018)) First Day of Fall Classes
+%%(and (diary-block 10 7 2018 10 10 2018)) APR Review
+%%(and (diary-block 3 28 2018 4 1 2018)) 2018 Pacific Division Meeting
+ Location: San Diego
+%%(and (diary-block 11 30 2018 11 30 2018)) Julia Jorati Visit
+%%(and (diary-block 6 30 2018 6 30 2018)) MNAKS Submission Deadline
+%%(and (diary-block 3 16 2018 3 16 2018)) PHIL 232 First honors draft
+%%(and (memq (calendar-day-of-week date) '(2 4)) (diary-block 1 9 2018 5 1 2018)) 12:30-13:45 PHIL 232
+ Location: Oldfather Hall 208
+%%(and (memq (calendar-day-of-week date) '(2 4)) (diary-block 1 9 2018 5 1 2018)) 11:00-11:50 PHIL 105
+ Location: Brace Lab 105
+%%(and (diary-block 3 18 2018 3 25 2018)) UNL Spring Break
+4/27/2018 13:00-14:00 Kyra Stradley exam
+4/26/2018 14:00-15:00 Dentist
+%%(and (diary-block 5 2 2018 5 2 2018)) Phil 232 Final Paper
+%%(and (diary-block 4 24 2018 4 24 2018)) UNL Tenure Reception
+8/24/2018 15:00-16:00 Department Meeting
+2/21/2018 18:00-20:00 APA Comments on Nunez
+%%(and (diary-block 2 28 2018 3 3 2018)) Prospective students visit
+8/24/2018 16:00-17:00 Department Welcome Back Party
+ Location: 1038 Oldfather Hall (the common room)
+%%(and (not (diary-date 10 16 2018)) (diary-cyclic 7 8 21 2018) (diary-block 8 21 2018 12 8 2018)) 15:30-18:05 PHIL 871
+ Location: M&N B7
+%%(and (memq (calendar-day-of-week date) '(2 4)) (diary-block 8 21 2018 8 27 2018)) 12:00-13:00 PHIL 105
+8/21/2018 09:30-10:20 PHIL 105
+ Location: Hamilton 102
+%%(and (diary-block 12 7 2018 12 7 2018)) Last Day of Classes
+%%(and (not (diary-date 6 29 2018)) (not (diary-date 8 10 2018)) (not (diary-date 7 6 2018)) (not (diary-date 8 17 2018)) (not (diary-date 6 1 2018)) (not (diary-date 7 13 2018)) (not (diary-date 8 24 2018)) (not (diary-date 11 23 2018)) (not (diary-date 6 8 2018)) (not (diary-date 7 20 2018)) (not (diary-date 8 31 2018)) (not (diary-date 6 15 2018)) (not (diary-date 7 27 2018)) (not (diary-date 9 7 2018)) (not (diary-date 6 22 2018)) (not (diary-date 8 3 2018)) (diary-cyclic 7 9 13 2013)) 16:00-17:00 Grad Colloquium
+ Location: Oldfather Hall 1007
+11/25/2016 16:00-17:00 Grad Colloquium
+ Location: Oldfather Hall 1007
+%%(and (diary-block 10 16 2018 10 16 2018)) Fall Break
+%%(and (diary-block 2 20 2019 2 23 2019)) Central APA
+ Location: Denver
+3/27/2018 12:00-12:30 Meet with Izzy
+6/26/2018 14:00-15:00 Phone call w/Renee
+6/22/2018 16:00-17:00 Skype with Tyke
+%%(and (diary-block 4 20 2018 4 20 2018)) Elisabeth Camp visit
+%%(and (diary-block 4 21 2018 4 22 2018)) Toronto Metaphysics Conference
+4/24/2018 10:00-11:00 Stratman Program of Studies Meeting
+%%(and (diary-block 4 6 2018 4 6 2018)) Observe Lauren teaching
+%%(and (diary-block 4 27 2018 4 27 2018)) Possible UNL faculty party
+4/4/2018 18:00-19:30 AI Panel Discussion
+%%(and (not (diary-date 10 16 2018)) (memq (calendar-day-of-week date) '(2 4)) (diary-block 8 28 2018 12 8 2018)) 09:30-10:20 PHIL 105
+ Location: Hamilton 102
+3/7/2018 12:30-13:30 meeting with the deans
+7/27/2018 16:00-17:00 New Hampshire Proctored Exam
+ Location: MOULTONBOROUGH PUBLIC SAFETY BUILDING in MOULTONBOROUGH, NH.
+%%(and (diary-block 3 27 2018 3 27 2018)) Change PUR Filter
+6/26/2018 09:30-10:30 Blood work
+ Location: 160 Wayland Ave
+ Providence, RI, United States
+%%(and (diary-block 2 8 2018 2 12 2018)) Visit Jess
+6/27/2018 14:45-15:45 haircut
+5/10/2018 11:15-12:15 haircut
+%%(and (diary-anniversary 10 4 2017))  Janna's birthday
+%%(and (diary-block 10 11 2018 10 15 2018)) Visit Jess
+9/3/2018 19:15-20:15 Dune reservation
+%%(and (diary-block 8 31 2018 9 8 2018)) Visit Jess
+ Location: Providence RI
+4/14/2018 11:30-12:30 MRI hold
+5/29/2018 12:30-14:30 MRI Biopsy
+ Location: 110 Lockwood St
+ Providence, RI, United States
+8/9/2018 12:45-13:45 Haircut
+6/20/2018 11:00-12:00 Optometrist & glasses selection
+ Location: Providence Optical
+ 210 Westminster St, Providence, RI  02903, United States
+6/15/2018 13:00-14:00 dog grooming
+ Location: plaid and stripe
+6/1/2018 13:30-14:30 haircut
+%%(and (diary-block 5 10 2018 5 14 2018)) Jess's B-day weekend
+ Location: Cottage
+5/9/2018 19:45-20:45 MRI
+ Desc: Arrive 7:45 PM; MRI at 8:15 PM
+ Behind women & infants hospital—Ambulatory patient Center
+ MRI parking on the right
+ 
+ Check in MRI dept on 1st floor
+ 
+ Phone: 401-444-4881
+ 
+ Location: 110 Lockwood St
+ Providence, RI, United States
+%%(and (diary-block 11 8 2018 11 12 2018)) Visit Jess
+%%(and (diary-block 9 20 2018 9 24 2018)) Visit Jess
+%%(and (diary-block 2 23 2018 2 26 2018)) Visit Jess
+%%(and (diary-block 7 25 2018 8 4 2018)) NH Vacation
+4/13/2018 13:45-14:45 Haircut
+7/25/2018 14:00-15:00 haircut
+%%(and (diary-block 4 13 2018 4 16 2018)) Visit Jess
+%%(and (diary-block 11 14 2018 11 18 2018)) Jess at POD
+ Location: Portland
+%%(and (diary-block 3 16 2018 3 25 2018)) Visit Jess
+3/8/2018 08:30-09:30 Vet appointment
+%%(and (diary-block 4 7 2018 4 7 2018)) Eye exam
+2/24/2018 10:30-11:30 haircut
+9/6/2018 12:00-13:00 Haircut
+%%(and (diary-block 8 7 2018 8 7 2018)) Visit mom
+%%(and (diary-anniversary 8 29 2008)) 12:00-13:00 Mom's B-day (62)
+8/29/2009 12:00-13:00 Mom's B-day (63)
+%%(and (diary-anniversary 7 9 2010)) 18:00-19:00 Lyndsey's birthday
+3/22/2018 15:30-16:30 Haircut
+4/25/2018 11:45-12:45 Dentist (Crown)
+4/11/2018 11:30-12:30 Dentist (Crown)
+4/25/2018 10:45-11:45 Dental Cleaning
+%%(and (diary-block 5 15 2018 5 15 2018)) David Metzler surgery
+12/10/2018 14:10-15:10 Doctor appointment
+6/24/2018 11:00-12:00 Computer sale
+ Location: Seven Stars Bakery
+ 820 Hope St
+ Providence RI 02906
+%%(and (diary-block 9 12 2018 9 12 2018)) Credit monitoring expires (from Equifax)
+%%(and (diary-block 2 15 2018 2 15 2018)) Pete leaves for SF
+8/10/2018 12:00-13:00 Sadie Grooming
+%%(and (diary-anniversary 10 16 2008)) 20:00-21:00 First Date with Jess
+10/16/2013 09:00-10:00 First Date with Jess
+%%(and (diary-block 8 6 2018 8 6 2018)) Balloon Payment
+%%(and (diary-anniversary 8 30 2009)) 12:30-13:30 Dad's B-day (63)
+%%(and (diary-date t 1 t) (diary-block 2 1 2017 1 1 9999))  Sadie heartworm pill & flea meds
+%%(and (diary-block 10 1 2017 10 1 2017)) Sadie heartworm pill & flea meds
+ Desc: Done!
+%%(and (diary-block 8 1 2018 8 1 2018)) Sadie heartworm pill & flea meds
+ Desc: Done!
+%%(and (diary-block 2 1 2017 2 1 2017)) Sadie heartworm pill & flea meds
+%%(and (diary-block 6 1 2018 6 1 2018)) Sadie heartworm pill & flea meds
+ Desc: Done!
+%%(and (diary-block 12 1 2017 12 1 2017)) Sadie heartworm pill & flea meds
+ Desc: Done!
+%%(and (diary-anniversary 7 23 2011)) 19:30-20:30 Jodie's Birthday
+%%(and (diary-anniversary 5 14 2012))  Jess's B-day
+%%(and (diary-anniversary 4 4 2015))  Margy Metzler's Birthday
+%%(and (diary-block 4 4 2018 4 4 2018)) Margy Metzler's Birthday
+%%(and (diary-anniversary 5 8 2012))  Charlie's Birthday
+%%(and (diary-block 2 20 2018 2 20 2018)) PEN Awards
+3/21/2018 20:30-21:30 Drinks with Matt
+12/10/2018 14:15-15:15 physical
+12/10/2018 08:00-09:00 blood work
+%%(and (diary-block 3 13 2018 3 13 2018)) Pete Returns?

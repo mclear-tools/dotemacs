@@ -1,0 +1,71 @@
+%%(and (diary-block 3 30 2018 3 30 2018)) PHIL232 First Paper
+%%(and (diary-block 4 13 2018 4 13 2018)) PHIL 232 Paper draft
+%%(and (diary-block 10 15 2018 10 15 2018)) Moving day
+%%(and (diary-block 2 16 2018 2 16 2018)) PHIL 232 honors thesis statement
+%%(and (diary-block 4 1 2019 4 1 2019)) SEP entry deadline
+%%(and (diary-block 4 5 2019 4 6 2019)) Chambers Conference on normative ethics
+ Location: UNL
+%%(and (diary-block 3 16 2018 3 16 2018)) PHIL 232 thesis statement
+%%(and (diary-block 10 26 2018 10 26 2018)) Brie Gertler Visit
+%%(and (diary-block 5 18 2018 5 20 2018)) NAKS Biennial Conference
+ Location: Vancouver
+%%(and (diary-block 4 13 2018 4 14 2018)) Chambers Conference
+%%(and (diary-block 2 21 2018 2 24 2018)) 2018 Central Division Meeting
+ Location: Chicago
+%%(and (diary-block 11 16 2018 11 16 2018)) Halla Kim Kant Conference
+ Location: UNO
+%%(and (diary-block 8 11 2018 8 11 2018)) test cal-entry here
+8/21/2018 15:30-16:30 open forum on the search for a new Dean of the College of Arts and Sciences
+ Location: the City Union Auditorium
+4/9/2018 12:30-13:30 Teaching meeting
+4/5/2018 14:00-15:00 Meet Nate Ingracia
+%%(and (diary-block 3 16 2018 3 18 2018)) the Chapel Hill workshop on reasoning and inference
+ Location: 2018
+3/1/2018 10:00-11:00 Meet w/Eduardo Salazar
+ Location: my office
+%%(and (diary-block 8 20 2018 8 20 2018)) First Day of Fall Classes
+%%(and (diary-block 10 7 2018 10 10 2018)) APR Review
+%%(and (diary-block 3 28 2018 4 1 2018)) 2018 Pacific Division Meeting
+ Location: San Diego
+%%(and (diary-block 11 30 2018 11 30 2018)) Julia Jorati Visit
+%%(and (diary-block 6 30 2018 6 30 2018)) MNAKS Submission Deadline
+%%(and (diary-block 3 16 2018 3 16 2018)) PHIL 232 First honors draft
+%%(and (memq (calendar-day-of-week date) '(2 4)) (diary-block 1 9 2018 5 1 2018)) 12:30-13:45 PHIL 232
+ Location: Oldfather Hall 208
+%%(and (memq (calendar-day-of-week date) '(2 4)) (diary-block 1 9 2018 5 1 2018)) 11:00-11:50 PHIL 105
+ Location: Brace Lab 105
+%%(and (diary-block 3 18 2018 3 25 2018)) UNL Spring Break
+4/27/2018 13:00-14:00 Kyra Stradley exam
+4/26/2018 14:00-15:00 Dentist
+%%(and (diary-block 5 2 2018 5 2 2018)) Phil 232 Final Paper
+%%(and (diary-block 4 24 2018 4 24 2018)) UNL Tenure Reception
+8/24/2018 15:00-16:00 Department Meeting
+2/21/2018 18:00-20:00 APA Comments on Nunez
+%%(and (diary-block 2 28 2018 3 3 2018)) Prospective students visit
+8/24/2018 16:00-17:00 Department Welcome Back Party
+ Location: 1038 Oldfather Hall (the common room)
+%%(and (not (diary-date 10 16 2018)) (diary-cyclic 7 8 21 2018) (diary-block 8 21 2018 12 8 2018)) 15:30-18:05 PHIL 871
+ Location: M&N B7
+%%(and (memq (calendar-day-of-week date) '(2 4)) (diary-block 8 21 2018 8 27 2018)) 12:00-13:00 PHIL 105
+8/21/2018 09:30-10:20 PHIL 105
+ Location: Hamilton 102
+%%(and (diary-block 12 7 2018 12 7 2018)) Last Day of Classes
+%%(and (not (diary-date 6 29 2018)) (not (diary-date 8 10 2018)) (not (diary-date 7 6 2018)) (not (diary-date 8 17 2018)) (not (diary-date 6 1 2018)) (not (diary-date 7 13 2018)) (not (diary-date 8 24 2018)) (not (diary-date 11 23 2018)) (not (diary-date 6 8 2018)) (not (diary-date 7 20 2018)) (not (diary-date 8 31 2018)) (not (diary-date 6 15 2018)) (not (diary-date 7 27 2018)) (not (diary-date 9 7 2018)) (not (diary-date 6 22 2018)) (not (diary-date 8 3 2018)) (diary-cyclic 7 9 13 2013)) 16:00-17:00 Grad Colloquium
+ Location: Oldfather Hall 1007
+11/25/2016 16:00-17:00 Grad Colloquium
+ Location: Oldfather Hall 1007
+%%(and (diary-block 10 16 2018 10 16 2018)) Fall Break
+%%(and (diary-block 2 20 2019 2 23 2019)) Central APA
+ Location: Denver
+3/27/2018 12:00-12:30 Meet with Izzy
+6/26/2018 14:00-15:00 Phone call w/Renee
+6/22/2018 16:00-17:00 Skype with Tyke
+%%(and (diary-block 4 20 2018 4 20 2018)) Elisabeth Camp visit
+%%(and (diary-block 4 21 2018 4 22 2018)) Toronto Metaphysics Conference
+4/24/2018 10:00-11:00 Stratman Program of Studies Meeting
+%%(and (diary-block 4 6 2018 4 6 2018)) Observe Lauren teaching
+%%(and (diary-block 4 27 2018 4 27 2018)) Possible UNL faculty party
+4/4/2018 18:00-19:30 AI Panel Discussion
+%%(and (not (diary-date 10 16 2018)) (memq (calendar-day-of-week date) '(2 4)) (diary-block 8 28 2018 12 8 2018)) 09:30-10:20 PHIL 105
+ Location: Hamilton 102
+3/7/2018 12:30-13:30 meeting with the deans
