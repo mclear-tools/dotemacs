@@ -5268,6 +5268,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
               :scheduled future)))
 
               
+              ;; see https://github.com/alphapapa/org-super-agenda/issues/11
 (org-super-agenda--defgroup time-grid
   "Group items that appear on a time grid.
 This matches the `dotime' text-property, which, if NOT set to
@@ -5290,7 +5291,7 @@ agenda time-grid. "
 
     ;; Hydra for org agenda (graciously taken from Spacemacs)
     (after! org-agenda
-    (org-super-agenda-mode)
+    (org-super-agenda-mode 1)
     (general-define-key :states '(normal emacs) :keymaps 'org-agenda-keymap
       "."  'cpm/hydra-org-agenda/body)
     (defhydra cpm/hydra-org-agenda (:color pink :hint none)

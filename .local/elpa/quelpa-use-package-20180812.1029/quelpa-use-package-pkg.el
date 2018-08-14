@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "quelpa-use-package" "20180812.1029" "quelpa handler for use-package" '((emacs "24.3") (quelpa "0") (use-package "2")) :stars '("" #("1K" 0 2 (value 1851 font-lock-face paradox-download-face))) :commit "90fc1eadf3f7ff3a3bef07d229a807aba2f7beef" :keywords '("package" "management" "elpa" "use-package") :authors '(("steckerhalter")) :maintainer '("steckerhalter") :url "https://framagit.org/steckerhalter/quelpa-use-package")

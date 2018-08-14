@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "treemacs-evil" "20180622.1126" "Evil mode integration for treemacs" '((evil "1.2.12") (treemacs "0")) :stars '(#("153" 0 3 (font-lock-face paradox-star-face)) #("294" 0 3 (value 294 font-lock-face paradox-download-face))) :commit "7b831e9d86cb8c964ebae10502823478c0c51d26" :authors '(("Alexander Miller" . "alexanderm@web.de")) :maintainer '("Alexander Miller" . "alexanderm@web.de") :url "https://github.com/Alexander-Miller/treemacs")
