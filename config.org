@@ -231,7 +231,7 @@ doing, e.g., a quick restart-and-check of something in emacs. But I still
 use always-defer, as it seems to shave another .4 secs off load time. 
 
 #+BEGIN_SRC emacs-lisp
-  (setq use-package-always-defer t
+  (setq use-package-always-defer nil
         use-package-verbose t)
 #+END_SRC
 
@@ -2616,6 +2616,7 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
      ;; send everything to a diary file
      (shell-command-to-string "cat work family home > diary"))
 #+END_SRC
+
 
 
 ** Completion
@@ -5011,6 +5012,8 @@ workflow I used to use in Sublime Text. Perfect for short commit messages.
 
 
 
+
+
 * Org Mode
 ** Settings
 *** New Org
@@ -5187,6 +5190,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         '(("x" agenda)
           ("y" agenda*) ; or agenda entries planned this week/day with an hour specification like [h]h:mm
           ("z" todo "TODO")
+          ("i" todo "INPROGRESS")
           ("n" todo "NEXT")
           ("r" todo "REVISE")
           ("w" todo "WAITING")))
@@ -5221,160 +5225,154 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     "open agenda with all unscheduled/non-deadline todos"
     (interactive)
     (org-agenda nil "z"))
+    
 #+END_SRC
 
 
 ** Org-Super-Agenda
-[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/fuxialexander/doom-emacs-private-xfu][fuxialexander]]
+[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
 #+BEGIN_SRC emacs-lisp
-    (use-package org-super-agenda
-      :commands (org-super-agenda-mode)
-      :after org
-      :init
-      (setq org-super-agenda-groups
-       '((:log t)  ; Automatically named "Log"
-         (:name "Schedule"
-                :time-grid t)
-         (:name "Today"
-                :scheduled today)
-         (:habit t)
-         (:name "Due today"
-                :deadline today)
-         (:name "Overdue"
-                :deadline past)
-         (:name "Due soon"
-                :deadline future)
-         (:name "In progress\n"
-                :todo "INPROGRESS"
-                :order 88)
-         (:name "Unimportant"
-                :todo ("SOMEDAY" "MAYBE" "TOREAD")
-                :order 100)
-         (:name "Waiting..."
-                :todo "WAITING"
-                :order 98)
-         (:name "Scheduled earlier"
-                :scheduled past))))
-      
-      ;; (setq org-super-agenda-groups
-      ;;  '((:name "Next Items"
-      ;;       :time-grid t
-      ;;       :todo ("NEXT" "inbox"))
-      ;;    (:name "Important"
-      ;;       :priority "A")
-      ;;    (:priority<= "B"
-      ;;             :scheduled future
-      ;;             :order 1)))
-      ;; )
-      ;; (setq org-super-agenda-groups
-      ;;       '((:name "Log\n"
-      ;;                :log t)  ; Automatically named "Log"
-      ;;         (:name "Schedule\n"
-      ;;                :time-grid t)
-      ;;         (:name "Today\n"
-      ;;                :scheduled today)
-      ;;         ;; (:name "Habits\n"
-      ;;         ;;        :habit t)
-      ;;         (:name "Due today\n"
-      ;;                :deadline today)
-      ;;         (:name "Overdue\n"
-      ;;                :deadline past)
-      ;;         (:name "Due soon\n"
-      ;;                :deadline future)
-      ;;         (:name "In progress\n"
-      ;;                :todo "INPROGRESS"
-      ;;                :order 88)
-      ;;         (:name "Waiting\n"
-      ;;                :todo "WAITING"
-      ;;                :order 98)
-      ;;         (:name "Scheduled earlier\n"
-      ;;                :scheduled past))))
+  (use-package org-super-agenda
+    :commands (org-super-agenda-mode)
+    :config
+    (setq org-super-agenda-groups
+     '((:log t)  ; Automatically named "Log"
+       (:name "Schedule"
+              :time-grid t)
+       (:name "Today"
+              :scheduled today)
+       (:habit t)
+       (:name "Due today"
+              :deadline today)
+       (:name "Overdue"
+              :deadline past)
+       (:name "Due soon"
+              :deadline future)
+       (:name "Important"
+              :priority "#A")
+       (:name "In progress\n"
+              :todo "INPROGRESS"
+              :order 88)
+       (:priority<= "B"
+              :scheduled future
+              :order 95)
+       (:name "Unimportant"
+              :todo ("SOMEDAY" "MAYBE" "TOREAD")
+              :order 100)
+       (:name "Waiting..."
+              :todo "WAITING"
+              :order 98)
+       (:name "Scheduled earlier"
+              :scheduled past)
+       (:name "Scheduled soon"
+              :scheduled future)))
 
-  ;; Hydra for org agenda (graciously taken from Spacemacs)
-  (after! org-agenda
-  (org-super-agenda-mode)
-  (general-define-key :states '(normal emacs) :keymaps 'org-agenda-keymap
-    "."  'cpm/hydra-org-agenda/body)
-  (defhydra cpm/hydra-org-agenda (:color pink :hint none)
+              
+(org-super-agenda--defgroup time-grid
+  "Group items that appear on a time grid.
+This matches the `dotime' text-property, which, if NOT set to
+`time' (I know, this gets confusing), means it WILL appear in the
+agenda time-grid. "
+  :section-name "Timed items"  ; Note: this does not mean the item has a "SCHEDULED:" line
+  :test (or (--when-let (org-find-text-property-in-string 'time item)
+              ;; This property is a string; if empty, it doesn't match
+              (not (string-empty-p it)))
+            ;; This property is nil if it doesn't match
+            (org-find-text-property-in-string 'time-of-day item)
+            (--when-let (org-find-text-property-in-string 'dotime item)
+              ;; For this to match, the 'dotime property must be set, and
+              ;; it must not be equal to 'time.  If it is not set, or if
+              ;; it is set and is equal to 'time, the item is not part of
+              ;; the time-grid.  Yes, this is confusing.  :)
+              (not (eql it 'time)))))
+
+)
+
+    ;; Hydra for org agenda (graciously taken from Spacemacs)
+    (after! org-agenda
+    (org-super-agenda-mode)
+    (general-define-key :states '(normal emacs) :keymaps 'org-agenda-keymap
+      "."  'cpm/hydra-org-agenda/body)
+    (defhydra cpm/hydra-org-agenda (:color pink :hint none)
+      "
+    Org agenda (_q_uit)
+
+    ^Clock^      ^Visit entry^              ^Date^             ^Other^
+    ^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
+    _ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
+    _co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
+    _cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
+    _cj_ jump    _o_   link                 _+_  do later      ^^
+    ^^           ^^                         _-_  do earlier    ^^
+    ^^           ^^                         ^^                 ^^
+    ^View^          ^Filter^                 ^Headline^         ^Toggle mode^
+    ^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
+    _vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
+    _vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
+    _vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
+    _vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
+    _vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
+    _vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
+    _vp_ prev span  ^^                       ^^                 ^^
+    _vr_ reset      ^^                       ^^                 ^^
+    ^^              ^^                       ^^                 ^^
     "
-  Org agenda (_q_uit)
+      ;; Entry
+      ("hA" org-agenda-archive-default)
+      ("hk" org-agenda-kill)
+      ("hp" org-agenda-priority)
+      ("hr" org-agenda-refile)
+      ("h:" org-agenda-set-tags)
+      ("ht" org-agenda-todo)
+      ;; Visit entry
+      ("o"   link-hint-open-link :exit t)
+      ("<tab>" org-agenda-goto :exit t)
+      ("TAB" org-agenda-goto :exit t)
+      ("SPC" org-agenda-show-and-scroll-up)
+      ("RET" org-agenda-switch-to :exit t)
+      ;; Date
+      ("dt" org-agenda-date-prompt)
+      ("dd" org-agenda-deadline)
+      ("+" org-agenda-do-date-later)
+      ("-" org-agenda-do-date-earlier)
+      ("ds" org-agenda-schedule)
+      ;; View
+      ("vd" org-agenda-day-view)
+      ("vw" org-agenda-week-view)
+      ("vt" org-agenda-fortnight-view)
+      ("vm" org-agenda-month-view)
+      ("vy" org-agenda-year-view)
+      ("vn" org-agenda-later)
+      ("vp" org-agenda-earlier)
+      ("vr" org-agenda-reset-view)
+      ;; Toggle mode
+      ("ta" org-agenda-archives-mode)
+      ("tA" (org-agenda-archives-mode 'files))
+      ("tr" org-agenda-clockreport-mode)
+      ("tf" org-agenda-follow-mode)
+      ("tl" org-agenda-log-mode)
+      ("td" org-agenda-toggle-diary)
+      ;; Filter
+      ("fc" org-agenda-filter-by-category)
+      ("fx" org-agenda-filter-by-regexp)
+      ("ft" org-agenda-filter-by-tag)
+      ("fr" org-agenda-filter-by-tag-refine)
+      ("fh" org-agenda-filter-by-top-headline)
+      ("fd" org-agenda-filter-remove-all)
+      ;; Clock
+      ("cq" org-agenda-clock-cancel)
+      ("cj" org-agenda-clock-goto :exit t)
+      ("ci" org-agenda-clock-in :exit t)
+      ("co" org-agenda-clock-out)
+      ;; Other
+      ("q" nil :exit t)
+      ("gd" org-agenda-goto-date)
+      ("." org-agenda-goto-today)
+      ("gr" org-agenda-redo)))
 
-  ^Clock^      ^Visit entry^              ^Date^             ^Other^
-  ^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
-  _ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
-  _co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
-  _cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
-  _cj_ jump    _o_   link                 _+_  do later      ^^
-  ^^           ^^                         _-_  do earlier    ^^
-  ^^           ^^                         ^^                 ^^
-  ^View^          ^Filter^                 ^Headline^         ^Toggle mode^
-  ^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
-  _vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
-  _vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
-  _vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
-  _vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
-  _vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
-  _vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
-  _vp_ prev span  ^^                       ^^                 ^^
-  _vr_ reset      ^^                       ^^                 ^^
-  ^^              ^^                       ^^                 ^^
-  "
-    ;; Entry
-    ("hA" org-agenda-archive-default)
-    ("hk" org-agenda-kill)
-    ("hp" org-agenda-priority)
-    ("hr" org-agenda-refile)
-    ("h:" org-agenda-set-tags)
-    ("ht" org-agenda-todo)
-    ;; Visit entry
-    ("o"   link-hint-open-link :exit t)
-    ("<tab>" org-agenda-goto :exit t)
-    ("TAB" org-agenda-goto :exit t)
-    ("SPC" org-agenda-show-and-scroll-up)
-    ("RET" org-agenda-switch-to :exit t)
-    ;; Date
-    ("dt" org-agenda-date-prompt)
-    ("dd" org-agenda-deadline)
-    ("+" org-agenda-do-date-later)
-    ("-" org-agenda-do-date-earlier)
-    ("ds" org-agenda-schedule)
-    ;; View
-    ("vd" org-agenda-day-view)
-    ("vw" org-agenda-week-view)
-    ("vt" org-agenda-fortnight-view)
-    ("vm" org-agenda-month-view)
-    ("vy" org-agenda-year-view)
-    ("vn" org-agenda-later)
-    ("vp" org-agenda-earlier)
-    ("vr" org-agenda-reset-view)
-    ;; Toggle mode
-    ("ta" org-agenda-archives-mode)
-    ("tA" (org-agenda-archives-mode 'files))
-    ("tr" org-agenda-clockreport-mode)
-    ("tf" org-agenda-follow-mode)
-    ("tl" org-agenda-log-mode)
-    ("td" org-agenda-toggle-diary)
-    ;; Filter
-    ("fc" org-agenda-filter-by-category)
-    ("fx" org-agenda-filter-by-regexp)
-    ("ft" org-agenda-filter-by-tag)
-    ("fr" org-agenda-filter-by-tag-refine)
-    ("fh" org-agenda-filter-by-top-headline)
-    ("fd" org-agenda-filter-remove-all)
-    ;; Clock
-    ("cq" org-agenda-clock-cancel)
-    ("cj" org-agenda-clock-goto :exit t)
-    ("ci" org-agenda-clock-in :exit t)
-    ("co" org-agenda-clock-out)
-    ;; Other
-    ("q" nil :exit t)
-    ("gd" org-agenda-goto-date)
-    ("." org-agenda-goto-today)
-    ("gr" org-agenda-redo)))
-
-    (defun cpm/jump-to-org-agenda ()
-    (interactive)
-    (org-agenda nil "a"))
+      (defun cpm/jump-to-org-agenda ()
+      (interactive)
+      (org-agenda nil "a"))
 #+END_SRC
 
 
@@ -6075,7 +6073,6 @@ Other useful org packages
         ;; better pasting behavior in org-mode
        "s-v" 'org-yank)
 #+END_SRC
-
 
 
 * Research & Writing
