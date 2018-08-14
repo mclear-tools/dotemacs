@@ -4938,6 +4938,19 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
    (setq evil-magit-use-y-for-yank t))
  #+END_SRC
 
+*** Git Commit
+#+BEGIN_SRC emacs-lisp
+(use-package git-commit
+  :ensure t
+  :after magit
+  :hook (git-commit-mode . cpm/git-commit-auto-fill-everywhere)
+  :custom (git-commit-summary-max-length 50)
+  :preface
+  (defun cpm/git-commit-auto-fill-everywhere ()
+    "Ensures that the commit body does not exceed 72 characters."
+    (setq fill-column 72)
+    (setq-local comment-auto-fill-only-comments nil)))
+#+END_SRC
 *** Git timemachine
  #+BEGIN_SRC emacs-lisp
  (use-package git-timemachine            ; Go back in Git time
