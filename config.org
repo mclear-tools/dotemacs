@@ -5091,7 +5091,7 @@ Log timestamp when task is marked "DONE" or other finished keyword
 *** Org Modules
 A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
-(setq org-modules (quote (org-info org-protocol org-mac-link)))
+(setq org-modules (quote (org-info org-protocol org-habit)))
 #+END_SRC
 *** Org ID
 #+BEGIN_SRC emacs-lisp
@@ -5197,8 +5197,8 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'only-window
         org-agenda-restore-windows-after-quit t
-        org-agenda-todo-ignore-scheduled 'all
-        org-agenda-todo-ignore-deadlines 'all 
+        org-agenda-todo-ignore-scheduled nil
+        org-agenda-todo-ignore-deadlines nil 
         ;; org-agenda-sticky t
         org-agenda-span 'day)
 
@@ -5229,27 +5229,66 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 #+BEGIN_SRC emacs-lisp
     (use-package org-super-agenda
       :commands (org-super-agenda-mode)
-      :config
+      :after org
+      :init
       (setq org-super-agenda-groups
-            '((:name "Log\n"
-                     :log t)  ; Automatically named "Log"
-              (:name "Schedule\n"
-                     :time-grid t)
-              (:name "Today\n"
-                     :scheduled today)
-              ;; (:name "Habits\n"
-              ;;        :habit t)
-              (:name "Due today\n"
-                     :deadline today)
-              (:name "Overdue\n"
-                     :deadline past)
-              (:name "Due soon\n"
-                     :deadline future)
-              (:name "Waiting\n"
-                     :todo "WAITING"
-                     :order 98)
-              (:name "Scheduled earlier\n"
-                     :scheduled past))))
+       '((:log t)  ; Automatically named "Log"
+         (:name "Schedule"
+                :time-grid t)
+         (:name "Today"
+                :scheduled today)
+         (:habit t)
+         (:name "Due today"
+                :deadline today)
+         (:name "Overdue"
+                :deadline past)
+         (:name "Due soon"
+                :deadline future)
+         (:name "In progress\n"
+                :todo "INPROGRESS"
+                :order 88)
+         (:name "Unimportant"
+                :todo ("SOMEDAY" "MAYBE" "TOREAD")
+                :order 100)
+         (:name "Waiting..."
+                :todo "WAITING"
+                :order 98)
+         (:name "Scheduled earlier"
+                :scheduled past))))
+      
+      ;; (setq org-super-agenda-groups
+      ;;  '((:name "Next Items"
+      ;;       :time-grid t
+      ;;       :todo ("NEXT" "inbox"))
+      ;;    (:name "Important"
+      ;;       :priority "A")
+      ;;    (:priority<= "B"
+      ;;             :scheduled future
+      ;;             :order 1)))
+      ;; )
+      ;; (setq org-super-agenda-groups
+      ;;       '((:name "Log\n"
+      ;;                :log t)  ; Automatically named "Log"
+      ;;         (:name "Schedule\n"
+      ;;                :time-grid t)
+      ;;         (:name "Today\n"
+      ;;                :scheduled today)
+      ;;         ;; (:name "Habits\n"
+      ;;         ;;        :habit t)
+      ;;         (:name "Due today\n"
+      ;;                :deadline today)
+      ;;         (:name "Overdue\n"
+      ;;                :deadline past)
+      ;;         (:name "Due soon\n"
+      ;;                :deadline future)
+      ;;         (:name "In progress\n"
+      ;;                :todo "INPROGRESS"
+      ;;                :order 88)
+      ;;         (:name "Waiting\n"
+      ;;                :todo "WAITING"
+      ;;                :order 98)
+      ;;         (:name "Scheduled earlier\n"
+      ;;                :scheduled past))))
 
   ;; Hydra for org agenda (graciously taken from Spacemacs)
   (after! org-agenda
