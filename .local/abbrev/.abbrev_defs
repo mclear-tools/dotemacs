@@ -584,7 +584,7 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 3)
+    ("emacs" "Emacs" nil 4)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("emply" "employ" nil 0)
@@ -608,9 +608,11 @@
     ("exacty" "exact" nil 0)
     ("excellant" "excellent" nil 0)
     ("excercise" "exercise" nil 2)
+    ("excercises" "exercises" nil 0)
     ("exchagne" "exchange" nil 0)
     ("exchagnes" "exchanges" nil 0)
     ("excitment" "excitement" nil 0)
+    ("exercsie" "exercise" nil 0)
     ("exhcange" "exchange" nil 0)
     ("exhcanges" "exchanges" nil 0)
     ("exiostence" "existence" nil 0)
@@ -732,7 +734,7 @@
     ("hsa" "has" nil 0)
     ("hsi" "his" nil 1)
     ("hsow" "show" nil 0)
-    ("hte" "the" nil 55)
+    ("hte" "the" nil 56)
     ("htere" "there" nil 0)
     ("htese" "these" nil 0)
     ("htey" "they" nil 0)
@@ -1094,6 +1096,7 @@
     ("reveiw" "review" nil 0)
     ("reveiwing" "reviewing" nil 0)
     ("revleant" "relevant" nil 0)
+    ("rsponding" "responding" nil 0)
     ("rumers" "rumors" nil 0)
     ("runnning" "running" nil 0)
     ("rwite" "write" nil 0)
@@ -1306,7 +1309,7 @@
     ("veyr" "very" nil 0)
     ("virtualyl" "virtually" nil 0)
     ("vrey" "very" nil 0)
-    ("vritue" "virtue" nil 0)
+    ("vritue" "virtue" nil 1)
     ("vulnerible" "vulnerable" nil 0)
     ("waht" "what" nil 0)
     ("warrent" "warrant" nil 0)
@@ -1467,6 +1470,14 @@
 (define-abbrev-table 'magit-stashes-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-status-mode-abbrev-table '())
+
+(define-abbrev-table 'magithub-dash-mode-abbrev-table '())
+
+(define-abbrev-table 'magithub-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'magithub-gfm-view-mode-abbrev-table '())
+
+(define-abbrev-table 'magithub-issue-view-mode-abbrev-table '())
 
 (define-abbrev-table 'makefile-automake-mode-abbrev-table '())
 
@@ -1646,6 +1657,8 @@
 (define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'ranger-mode-abbrev-table '())
+
+(define-abbrev-table 'remember-mode-abbrev-table '())
 
 (define-abbrev-table 'restclient-mode-abbrev-table '())
 
