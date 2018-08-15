@@ -14,7 +14,7 @@
  '(flyspell-issue-welcome-flag nil)
  '(flyspell-use-global-abbrev-table-p t)
  '(golden-ratio-exclude-buffer-regexp (quote ("iedit")))
- '(helm-follow-mode-persistent t)
+ '(helm-follow-mode-persistent t t)
  '(org-footnote-auto-adjust t)
  '(package-selected-packages
    (quote

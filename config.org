@@ -117,9 +117,12 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
 Let's set some variables with basic user information.
 
 #+BEGIN_SRC emacs-lisp
+
 (setq user-full-name "Colin McLear"
       user-mail-address "mclear@fastmail.com")
+      
 #+END_SRC
+
 * Directory Variables
 
  We're going to define a number of directories that are used throughout this
@@ -172,6 +175,7 @@ Properly verify outgoing ssl connections.
                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
 #+END_SRC
+ 
 * Emacs Initialization
 ** Garbage Collection 
 We increase the gc-cons-threshold to a very high number to decrease the load
@@ -309,7 +313,7 @@ Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywher
 #+BEGIN_SRC emacs-lisp
   (use-package quelpa
     :ensure t
-    :demand t
+    :commands quelpa
     :init
     ;; disable checking Melpa
     (setq quelpa-update-melpa-p nil)
@@ -320,9 +324,10 @@ Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywher
 
   (use-package quelpa-use-package
     :ensure t
-    :demand t
+    :defer 5
     :config
     ;; advince for maybe installing with quelpa
+    (setq quelpa-use-package-inhibit-loading-quelpa t)
     (quelpa-use-package-activate-advice))
 
 
@@ -470,7 +475,7 @@ A collection of ridiculously useful extensions. Indeed.
 #+BEGIN_SRC emacs-lisp
 (use-package crux :defer 10)
 #+END_SRC
-*** Cycle Through Useful Buffers
+*** FIXME Cycle Through Useful Buffers
 From a [[http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html][useful post]] by Xah. 
 #+BEGIN_SRC emacs-lisp
 (defun cpm/user-buffer-q ()
@@ -575,6 +580,14 @@ paragraphs with the same command.
     (interactive)
     (find-file "/Users/Roambot/Dropbox/org-files/journal.org"))
 #+END_SRC
+*** Insert Seconds (Epoch) Time Stamp
+#+BEGIN_SRC emacs-lisp
+(defun cpm/insert-seconds-epoch ()
+  (interactive)
+  (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
+(global-set-key (kbd "C-c t") 'cpm/insert-seconds-epoch)
+#+END_SRC
+
 *** Jump in buffer
 I got the inspiration for this from the [[https://github.com/syl20bnr/spacemacs/blob/5f26b82e1abdde81cdf7cd17ba06f64db2343667/layers/%2Bdistribution/spacemacs-base/funcs.el][spacemacs config]]. Useful for
 navigating in tagged buffers.
@@ -1566,7 +1579,8 @@ Warn only for files over 100MB
 #+BEGIN_SRC emacs-lisp
 (setq large-file-warning-threshold 100000000)
 #+END_SRC
-*** Paragraphs
+*** DISABLED Paragraphs
+CLOSED: [2018-08-14 Tue 12:11]
 From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill paragraph.
 #+BEGIN_SRC emacs-lisp
 ;; The original value is "\f\\|[      ]*$", so we add the bullets (-), (+), and (*).
@@ -1578,7 +1592,7 @@ From the [[https://www.emacswiki.org/emacs/FillParagraph][Emacs Wiki]] on fill p
 (setq prettify-symbols-unprettify-at-point t)
 (global-prettify-symbols-mode +1)
 #+END_SRC
-*** Startup Message
+*** Startup Echo Message
 #+BEGIN_SRC emacs-lisp
   ;; Change the echo message
 (defun display-startup-echo-area-message ()
@@ -1611,13 +1625,9 @@ General Text settings and hooks
 #+END_SRC
 **** Line wrap
 #+BEGIN_SRC emacs-lisp
+(setq-default fill-column 78)
 (global-visual-line-mode)
 (setq line-move-visual t) ;; move via visual lines
-(global-visual-fill-column-mode)
-#+END_SRC
-**** Fill column
-#+BEGIN_SRC emacs-lisp
-(setq-default fill-column 78)
 (global-visual-fill-column-mode)
 #+END_SRC
 **** Visual replace
@@ -1700,12 +1710,13 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
 
 (setq auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+      auto-save-interval 300            ; number of keystrokes between auto-saves (default: 300)
       auto-save-visited-file-name nil
       delete-auto-save-files t
       create-lockfiles nil)
 #+END_SRC
-*** Full Auto Save
+*** DISABLED Full Auto Save
+CLOSED: [2018-08-14 Tue 18:20]
 I also make emacs just outright save all buffers. 
 #+BEGIN_SRC emacs-lisp
   (defun full-auto-save ()
@@ -1930,13 +1941,15 @@ Install, automatically load, and enable evil. It's like vim, but better!
       (setq evil-search-module 'evil-search)
       (setq evil-magic 'very-magic)
       ;; (setq evil-want-C-i-jump nil)
-      (setq evil-emacs-state-cursor `(,dotemacs-evil/emacs-cursor box))
+      ;; Set colors for cursor states
+      (setq evil-emacs-state-cursor '("SkyBlue2" box))
       (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
       (setq evil-visual-state-cursor '("gray" box)) 
       (setq evil-insert-state-cursor '("chartreuse3" (bar . 2)))
       (setq evil-replace-state-cursor '("red" hbar))
+      (setq evil-motion-state-cursor  '("plum3" box))
       (setq evil-operator-state-cursor '("red" hollow))
-      (setq evil-visual-state-tag "VISUAL")
+      ;; (setq evil-visual-state-tag "VISUAL")
       ;use insert in commits automatically 
       (add-hook 'git-commit-mode-hook 'evil-insert-state)
       (evil-set-initial-state 'messages-buffer-mode 'normal)
@@ -1950,6 +1963,18 @@ Install, automatically load, and enable evil. It's like vim, but better!
 #+END_SRC
 **** Evil Related Packages & Settings
 There are some other useful setup packages for evil
+***** TESTING Evil Collection
+A collection of keybindings for evil
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :defer 1
+    :config
+    (evil-collection-init)
+    (setq evil-collection-mode-list nil))
+#+END_SRC
+
 ***** Evil indent
 #+BEGIN_SRC emacs-lisp
 (use-package evil-indent-textobject :commands (evil-indent))
@@ -1992,7 +2017,6 @@ There are some other useful setup packages for evil
 
   (use-package evil-embrace
    :after evil-surround
-   :demand t
    :init
    (evil-embrace-enable-evil-surround-integration)
    :config
@@ -2038,7 +2062,6 @@ A version of multiple cursors for use with evil. Courtesy of [[https://github.co
 (use-package evil-multiedit
  :ensure t
  :after evil-visualstar
- :demand t
  :config
  ;; Default keybindings
  ;; Highlights all matches of the selection in the buffer.
@@ -2100,9 +2123,7 @@ Increment an decrement numbers
 From bling: https://github.com/bling/evil-visualstar
 #+BEGIN_SRC emacs-lisp
 (use-package evil-visualstar
-  :commands (evil-visualstar/begin-search-forward evil-visualstar/begin-search-backward)
-  :config
-  (global-evil-visualstar-mode t))
+  :commands (evil-visualstar/begin-search-forward evil-visualstar/begin-search-backward))
 #+END_SRC
 
 ** Appearance & UI
@@ -2143,8 +2164,6 @@ make interaction smoother.
  (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
  (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
  #+END_SRC
-
-
 **** Frame Title 
  Show the filepath in the frame title (disabled due to text color issues).
  #+BEGIN_SRC emacs-lisp
@@ -2256,6 +2275,7 @@ Like the title says...
 #+BEGIN_SRC emacs-lisp
   ;; icons for dired
   (use-package all-the-icons-dired
+    :defer t
     :init
     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC 
@@ -2265,8 +2285,8 @@ Like the title says...
  #+BEGIN_SRC emacs-lisp
  (use-package beacon
    :defer 10
-   :init (beacon-mode 1)
    :config
+   (beacon-mode 1)
    (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
  #+END_SRC
 **** Emoji
@@ -2533,11 +2553,34 @@ that I use anything other than solarized :)
 ***** Doom Modeline
 #+BEGIN_SRC emacs-lisp
     (use-package doom-modeline
-      :demand t
       :hook (after-init . doom-modeline-init)
       :config
       (setq doom-modeline-bar-width 3
             doom-modeline-height 38)
+
+       ;; Change the evil tag 
+       (setq evil-normal-state-tag   (propertize " 🅝 " )
+             evil-emacs-state-tag    (propertize " 🅔 " )
+             evil-insert-state-tag   (propertize " 🅘 " )
+             evil-replace-state-tag  (propertize " 🅡 " )
+             evil-motion-state-tag   (propertize " 🅜 " )
+             evil-visual-state-tag   (propertize " 🅥 " )
+             evil-operator-state-tag (propertize " 🅞 " ))
+
+       (doom-modeline-def-segment evil-state
+       "The current evil state. Requires `evil-mode' to be enabled."
+       (when (bound-and-true-p evil-local-mode)
+         (let ((tag (evil-state-property evil-state :tag t)))
+           (propertize tag 'face
+                  (if (doom-modeline--active)
+                      (cond ((eq tag evil-normal-state-tag)   '(:foreground "DarkGoldenrod2"))
+                            ((eq tag evil-emacs-state-tag)    '(:foreground "SkyBlue2"))
+                            ((eq tag evil-insert-state-tag)   '(:foreground "chartreuse3"))
+                            ((eq tag evil-motion-state-tag)   '(:foreground "plum3"))
+                            ((eq tag evil-replace-state-tag)  '(:foreground "red"))
+                            ((eq tag evil-visual-state-tag)   '(:foreground "gray"))
+                            ((eq tag evil-operator-state-tag) '(:foreground "red"))))))))
+
 
       ;; window number faces & formatting
       (doom-modeline-def-segment window-number
@@ -2594,7 +2637,7 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
           ("family" . "https://p03-calendarws.icloud.com/ca/subscribe/1/dns1xyaQvy2VnPHiHQQngVwdr7dNGlaWzp2Q3e_UdjCs-vkJ-8TEl_QU9Fyhm_-5BSPmwSHOtdoqgJi11kJgcpu2AYlReZuNXGpGFBhziq0")
           ))
 
-  (defun getcal (url file)
+  (defun cpm--getcal (url file)
     "Download ics file and add it to file"
     (let ((tmpfile (url-file-local-copy url)))
       (icalendar-import-file tmpfile file)
@@ -2610,14 +2653,12 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
                   (find-file file)
                   ;; (flush-lines "^[& ]") ;; if you import ical as non marking
                   (erase-buffer) ;; to avoid duplicating events
-                  (getcal url file)
+                  (cpm--getcal url file)
                   ))
             calendars)
      ;; send everything to a diary file
      (shell-command-to-string "cat work family home > diary"))
 #+END_SRC
-
-
 
 ** Completion
 *** Company
@@ -2625,6 +2666,12 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
   (use-package company
     :ensure t
     :hook ((prog-mode text-mode) . company-mode)
+    :custom-face
+    ;; Nicer looking faces
+    (company-tooltip-common
+      ((t (:inherit company-tooltip :weight bold :underline nil))))
+    (company-tooltip-common-selection
+      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
     :init
     (setq company-idle-delay 0.45
           company-minimum-prefix-length 3
@@ -2643,12 +2690,6 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
      (define-key map (kbd "C-j") 'company-select-next)
      (define-key map (kbd "C-k") 'company-select-previous)
      (define-key map (kbd "C-l") 'company-complete-selection))
-   ;; Nicer looking faces
-   (custom-set-faces
-    '(company-tooltip-common
-      ((t (:inherit company-tooltip :weight bold :underline nil))))
-    '(company-tooltip-common-selection
-      ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   )
 #+END_SRC
 
@@ -2657,7 +2698,6 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
   (use-package company-bibtex
     :ensure t
     :after company
-    :demand t
     :config
     (setq company-bibtex-bibliography "~/Dropbox/Work/All.bib")
     (setq company-bibtex-org-citation-regex "-?@")
@@ -2698,7 +2738,7 @@ MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark+
     :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
-    :init
+    :config
     (setq bookmark-default-file (concat cpm-cache-dir "bookmarks"))
     (setq bmkp-last-as-first-bookmark-file (concat cpm-cache-dir "bookmarks"))
   )
@@ -2733,7 +2773,6 @@ Add [[https://www.emacswiki.org/emacs/DiredPlus][extra functionality]] to dired.
   (use-package dired+
     :ensure t
     :after dired
-    :demand t
     :init
     (setq font-lock-maximum-decoration nil)
     (setq diredp-hide-details-initially-flag nil)
@@ -2744,7 +2783,6 @@ Add [[https://www.emacswiki.org/emacs/DiredPlus][extra functionality]] to dired.
 #+BEGIN_SRC emacs-lisp
   (use-package peep-dired
     :ensure t
-    :after dired
     :commands (peep-dired)
     :general
     (:keymaps 'dired-mode-map
@@ -2793,11 +2831,7 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
     (async-shell-command tmtxt/rsync-command "*rsync*")
     ;; finally, switch to that window
     (other-window 1)))
-
-
 #+END_SRC
-
-
 
 
 
@@ -2812,15 +2846,14 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
     ("C-h i" 'helm-info)
     :diminish (helm-mode . "")
     :commands (helm-mini helm-M-x helm-find-files helm-find)
-    :init
-    (setq helm-locate-fuzzy-match nil
-          helm-locate-command "mdfind -interpret -name %s %s")
     :config
     (progn
       ;; Use helm to provide :ls, unless ibuffer is used
       (evil-ex-define-cmd "buffers" 'helm-buffers-list)
       (set-face-attribute 'helm-source-header nil
       :height 180)
+      (setq helm-locate-fuzzy-match nil
+            helm-locate-command "mdfind -interpret -name %s %s")
       (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
             helm-apropos-fuzzy-match t
             helm-buffers-fuzzy-matching t
@@ -2849,11 +2882,10 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
               "\\*eshell"
               "\\*ansi-term"
               )))
-      ;; (setq helm-boring-buffer-regexp-list '("\\*SPEEDBAR" "\\*magit" "\\*Sunshine" "\\*Help" "\\*Shell Command Output" "\\*Flycheck error message" "\\*Compile-Log" "\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*osx-location" "\\*Dired by name" "\\*Deer" "\\*Deer\:name"))
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
       (setq helm-autoresize-min-height 35)
-      (define-key helm-map (kbd "C-a") (kbd "RET"))
+      ;; (define-key helm-map (kbd "C-a") (kbd "RET"))
       ;;; helm vim-bindings in buffer ;;
       (map! (:map helm-map
         "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
@@ -2864,7 +2896,7 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
         "C-h"   'helm-next-source
         "C-l"   'helm-previous-source
         "C-S-h" 'describe-key)))
-       (helm-mode 1))
+      (helm-mode 1))
 
   ;; use helm follow mode for search
   (with-eval-after-load 'helm-regexp
@@ -2872,7 +2904,7 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
         (helm-make-source "Occur" 'helm-source-multi-occur
           :follow 1)))
 #+END_SRC
-**** Hide Mode Lines
+**** Hide Mode Lines in Helm
 Hide modelines of other windows while helm is open, again from
 https://github.com/hatschipuh/better-helm.
 
@@ -2915,7 +2947,7 @@ https://github.com/hatschipuh/better-helm.
   (add-hook 'helm-cleanup-hook #'my-helm-bottom-buffers-show-mode-line)
   (advice-add 'helm-keyboard-quit :around #'my-helm-keyboard-quit-advice)
 #+END_SRC
-**** Hide Minibuffer
+**** Hide Minibuffer in Helm
 Hide minibuffer while helm is active
 
 #+BEGIN_SRC emacs-lisp
@@ -3069,6 +3101,22 @@ load it when =swiper= or =swiper-all= is called.
 (use-package swiper
   :commands (swiper swiper-all))
 #+END_SRC
+*** TESTING Imenu-List
+#+BEGIN_SRC emacs-lisp
+  (use-package imenu-list
+    :ensure t
+    :commands (imenu-list-smart-toggle imenu-list-minor-mode)
+    :config
+    (setq imenu-list-focus-after-activation t
+          imenu-list-auto-resize t
+          imenu-list-position 'left)
+    :custom-face
+    (imenu-list-entry-face-0 ((t (:inherit imenu-list-entry-face :foreground "#269bd2"))))
+    (imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
+    (imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
+    (imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
+#+END_SRC
+
 *** Historian
 Completion [[https://github.com/PythonNut/historian.el][history]]
 #+BEGIN_SRC emacs-lisp
@@ -3114,11 +3162,15 @@ Automatic resizing of Emacs windows to the [[https://github.com/roman/golden-rat
     (setq golden-ratio-exclude-buffer-names '("*Ilist*"))
     (setq golden-ratio-exclude-buffer-regexp '("Ilist"))
     ;; inhibit in helm windows
-    (defun pl/helm-alive-p ()
+    (defun cpm--helm-alive-p ()
     (if (boundp 'helm-alive-p)
         (symbol-value 'helm-alive-p)))
-
-        (add-to-list 'golden-ratio-inhibit-functions 'pl/helm-alive-p)
+        (add-to-list 'golden-ratio-inhibit-functions 'cpm--helm-alive-p)
+    ;;fix for ispell
+    (defun cpm--ispell-alive-p ()
+      (get-buffer ispell-choices-buffer))
+    (add-to-list 'golden-ratio-inhibit-functions 'cpm--ispell-alive-p)
+    ;; use golden ratio for the following    
     (setq golden-ratio-extra-commands
           (append golden-ratio-extra-commands
                   '(evil-window-left
@@ -3210,7 +3262,6 @@ Winner mode is a [[https://www.emacswiki.org/emacs/WinnerMode][built-in package]
 #+BEGIN_SRC emacs-lisp
 (use-package winner
  :ensure nil
- :defer 5
  :commands (winner-undo winner-redo winner-mode)
  :config
  (winner-mode 1))
@@ -3232,47 +3283,72 @@ Winner mode is a [[https://www.emacswiki.org/emacs/WinnerMode][built-in package]
 
  
 
-*** Other UI
-**** Diminish Modes
- Tidy Up modeline modes.
- #+BEGIN_SRC emacs-lisp
-   (use-package diminish
-     :commands (diminish diminish-modes))
- #+END_SRC
-***** Diminish minor modes
- #+BEGIN_SRC emacs-lisp
-   (eval-after-load "flyspell" '(diminish 'flyspell-mode "Ⓢ")) 
-   (eval-after-load "abbrev" '(diminish 'abbrev-mode "Ⓐ"))
-   (eval-after-load "lispy" '(diminish 'lispy-mode "")) 
-   (eval-after-load "lispyville" '(diminish 'lispyville-mode "Ⓛ")) 
-   (eval-after-load "centered-window-mode" '(diminish 'centered-window-mode "⦿"))
-   (eval-after-load "org-indent" '(diminish 'org-indent-mode))
-   (eval-after-load "simple" '(diminish 'auto-fill-function "Ⓕ")) 
-   (eval-after-load "pandoc-mode" '(diminish 'pandoc-mode "Ⓟ"))
-   (eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
-   (eval-after-load "company" '(diminish 'company-mode "Ⓒ"))
-   (eval-after-load "cm-mode" '(diminish 'cm-mode "ⓒ"))
-   (eval-after-load "reftex" '(diminish 'reftex-mode "ⓡ"))
-   (eval-after-load "autorevert" '(diminish 'auto-revert-mode "Ⓡ"))
-   (eval-after-load "simple" '(diminish 'auto-revert-mode "Ⓡ"))
-   (eval-after-load "aggressive-indent" '(diminish 'aggressive-indent-mode "Ⓘ"))
-   (eval-after-load "auto-indent-mode" '(diminish 'auto-indent-mode "ⓘ"))
-   (eval-after-load "smartparens" '(diminish 'smartparens-mode "ⓟ"))
-   (eval-after-load "org-zotxt" '(diminish 'org-zotxt-mode ""))
-   (eval-after-load "back-button" '(diminish 'back-button-mode ""))
-   ;; (eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
-   (eval-after-load "undo-tree" '(diminish 'undo-tree-mode ""))
-   (eval-after-load "projectile" '(diminish 'projectile-mode ""))
-   (eval-after-load "helm" '(diminish 'helm-mode ""))
-   #+END_SRC
+*** TESTING Treemacs
+[[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file and project explorer 
+#+BEGIN_SRC emacs-lisp
+  (use-package treemacs
+    :ensure t
+    :commands treemacs
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+            treemacs-file-event-delay           5000
+            treemacs-follow-after-init          t
+            treemacs-follow-recenter-distance   0.1
+            treemacs-goto-tag-strategy          'refetch-index
+            treemacs-indentation                2
+            treemacs-indentation-string         " "
+            treemacs-is-never-other-window      nil
+            treemacs-no-png-images              nil
+            treemacs-project-follow-cleanup     nil
+            treemacs-persist-file               (concat cpm-cache-dir "treemacs-persist") 
+            treemacs-recenter-after-file-follow nil
+            treemacs-recenter-after-tag-follow  nil
+            treemacs-show-hidden-files          t
+            treemacs-silent-filewatch           nil
+            treemacs-silent-refresh             nil
+            treemacs-sorting                    'alphabetic-desc
+            treemacs-space-between-root-nodes   t
+            treemacs-tag-follow-cleanup         t
+            treemacs-tag-follow-delay           1.5
+            treemacs-width                      35)
 
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (pcase (cons (not (null (executable-find "git")))
+                   (not (null (executable-find "python3"))))
+        (`(t . t)
+         (treemacs-git-mode 'extended))
+        (`(t . _)
+         (treemacs-git-mode 'simple)))))
+    ;; :bind
+    ;; (:map global-map
+    ;;       ("M-0"       . treemacs-select-window)
+    ;;       ("C-x t 1"   . treemacs-delete-other-windows)
+    ;;       ("C-x t t"   . treemacs)
+    ;;       ("C-x t B"   . treemacs-bookmark)
+    ;;       ("C-x t C-t" . treemacs-find-file)
+    ;;       ("C-x t M-t" . treemacs-find-tag)))
+
+  (use-package treemacs-evil
+    :after treemacs evil
+    :ensure t)
+
+  (use-package treemacs-projectile
+    :after treemacs projectile
+    :ensure t)
+#+END_SRC
+
+*** Other UI
 **** Centered Cursor Mode
  Keep the cursor centered in the screen
  #+BEGIN_SRC emacs-lisp
      (use-package centered-cursor-mode
        :diminish centered-cursor-mode
-       :hook 
-       ((markdown-mode) . centered-cursor-mode)
+       :hook ((markdown-mode org-mode) . centered-cursor-mode)
        :commands (centered-cursor-mode
                   global-centered-cursor-mode)
        :config
@@ -3735,7 +3811,7 @@ Keybindings for managing packages
       "uAp" #'cpm/goto-projects.org
       "uAs" #'cpm/goto-someday.org
       "uAt" #'cpm/org-goto-todo
-      "ua" 'cpm/jump-to-org-agenda
+      "ua" 'cpm/jump-to-org-super-agenda
       "um" 'cpm/org-to-markdown
       "uc" 'cpm/pandoc-convert-to-pdf
       "uC" 'cpm/pandoc-command-line-convert-to-pdf
@@ -3979,14 +4055,12 @@ Keybindings for managing packages
 #+BEGIN_SRC emacs-lisp
   (use-package shackle
     :after helm
-    :demand t
     :config
     ;; make helm pop-ups behave
     (setq helm-display-function #'pop-to-buffer)
     (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
     (shackle-mode 1))
 #+END_SRC
-
 
 
 **** Helpful (Documentation)
@@ -4068,23 +4142,21 @@ CLOSED: [2018-06-28 Thu 12:02]
 #+BEGIN_SRC emacs-lisp
   (use-package applescript-mode
     :ensure t
+    :mode (("\\.scpt\\'" . applescript-mode))
     :commands (applescript-mode))
 #+END_SRC
 **** Elisp
 #+BEGIN_SRC emacs-lisp 
   (use-package elisp-slime-nav
     :commands elisp-slime-nav-mode
-    :config
-    (add-hook! (emacs-lisp-mode ielm-mode) '(elisp-slime-nav-mode)))
+    :hook ((emacs-lisp-mode ielm-mode) . (elisp-slime-nav-mode)))
 
   (use-package eldoc
     :commands eldoc-mode
     :diminish eldoc-mode
     :config 
-    ;; Show ElDoc messages in the echo area immediately, instead of after
-    ;; 1/2 a second.
+    ;; Show ElDoc messages in the echo area immediately, instead of after 1/2 a second.
     (setq eldoc-idle-delay 0))
-
     ;; Elisp hook
     (add-hook 'emacs-lisp-mode-hook (lambda ()
                 (setq show-trailing-whitespace t)
@@ -4190,10 +4262,11 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
     :defer 2)
     ;; hydra for TODOs
     (with-eval-after-load 'hydra
-    (defhydra hydra-todo (:pre
-                    (hl-todo-mode 1)
+    (defhydra cpm/hydra-todo 
+               (:pre
+                (hl-todo-mode 1)
                 :post
-               (hl-todo-mode -1))
+                (hl-todo-mode -1))
     "Todo"
     ("n" hl-todo-next "Next")
     ("p" hl-todo-previous "Previous")
@@ -4219,18 +4292,11 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
-    ;; :load-path "~/.emacs.d/.local/elisp/perspective"
-    :commands (persp-switch persp-add-buffer persp-set-buffer)
-    ;; :init
-    ;; (when (not (fboundp 'make-variable-frame-local))
-    ;; (defun make-variable-frame-local (variable) variable))
-    )
-    ;; :config
-    ;; (persp-mode 1))
+    :commands (persp-switch persp-add-buffer persp-set-buffer))
 
   (use-package persp-projectile
-      :commands projectile-persp-switch-project
-      :config
+      :commands projectile-persp-switch-project)
+  (with-eval-after-load 'persp-projectile
       (defhydra hydra-persp (:columns 4
                              :color blue)
         "Perspective"
@@ -4248,27 +4314,14 @@ Yet another attempt to manage buffers/workspaces
         ("P" projectile-persp-switch-project "Switch Project")
         ("q" nil "Quit")))
 
+  (with-eval-after-load 'desktop+
   (defhydra cpm/hydra-desktop (:columns 4
                                :color blue)
     "Desktops"
     ("c" desktop+-create "Create desktop")
-    ("l" desktop+-load "Load desktop")) 
-
-    ;; (defun helm-persp-projectile-switch-project ()
-    ;; (interactive)
-    ;; (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
-    ;;                     (random-string ""))
-    ;;                 (dotimes (i 6 random-string)
-    ;;                   (setq random-string
-    ;;                         (concat
-    ;;                          random-string
-    ;;                          (char-to-string (elt temp-charset (random (length temp-charset)))))
-    ;;                         ))
-    ;;                 ))
-    ;; (helm-projectile-switch-project)
-    ;; (persp-rename (projectile-project-name)))
+    ("l" desktop+-load "Load desktop"))) 
 #+END_SRC
-*** Desktop Perspective Integration
+*** FIXME Desktop Perspective Integration
 A [[https://github.com/nex3/perspective-el/issues/19][useful set of functions]] for loading perspectives via desktop-save
 #+BEGIN_SRC emacs-lisp
 (defun perspectives-buffer-name-p (buffer)
@@ -4335,8 +4388,8 @@ Easy workspace creation and switching
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
   :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
-  :init
-  (general-define-key :states '(insert normal) :keymaps 'override
+  :general
+  (:states '(insert normal) :keymaps 'override
     "s-1" 'eyebrowse-switch-to-window-config-1
     "s-2" 'eyebrowse-switch-to-window-config-2
     "s-3" 'eyebrowse-switch-to-window-config-3
@@ -4372,7 +4425,7 @@ Easy workspace creation and switching
     (persp-mode 1)
     (nameframe-create-frame "Org Agenda")
     (toggle-frame-maximized)
-    (cpm/jump-to-org-agenda)
+    (cpm/jump-to-org-super-agenda)
     (split-window-right)
     (find-file "~/Dropbox/org-files/todo.org"))
    (defun cpm/load-phil101 ()
@@ -4446,7 +4499,6 @@ Easy workspace creation and switching
      (find-file "~/Dropbox/Work/projects/KantFreeThought/kant-notes-intellectual-freedom.org"))
 
 #+END_SRC
-
 
 
 ** Search
@@ -4530,7 +4582,6 @@ An [[https://github.com/Wilfred/deadgrep][interface]] for [[https://github.com/B
 (use-package evil-anzu
   :commands (evil-search-forward evil-search-backward))
 #+END_SRC
-
 
 ** Shell
 *** Sane term
@@ -4647,7 +4698,6 @@ An [[https://github.com/Wilfred/deadgrep][interface]] for [[https://github.com/B
  #+BEGIN_SRC emacs-lisp
    (use-package virtualenvwrapper
     :after (:any eshell sane-term ansi-term)
-    :demand t
     :config
     (venv-initialize-interactive-shells) ;; if you want interactive shell support
     (venv-initialize-eshell) ;; if you want eshell support
@@ -4938,6 +4988,24 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
    :config
    (setq evil-magit-use-y-for-yank t))
  #+END_SRC
+ 
+*** TESTING Magithub
+Magit & Github = [[https://github.com/vermiculus/magithub][Awesome]]
+#+BEGIN_SRC emacs-lisp
+(use-package magithub
+  :ensure t
+  :after magit
+  :config
+  (magithub-feature-autoinject t)
+  (setq magithub-clone-default-directory "~/.emacs.d/.local/elisp/"))
+#+END_SRC
+
+*** TESTING Helm Gitignore
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-gitignore
+    :ensure t
+    :commands helm-gitignore)
+#+END_SRC
 
 *** Git Commit
 #+BEGIN_SRC emacs-lisp
@@ -4952,11 +5020,21 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
     (setq fill-column 72)
     (setq-local comment-auto-fill-only-comments nil)))
 #+END_SRC
+*** TESTING Git Auto Commit
+[[https://github.com/ryuslash/git-auto-commit-mode][Automatically commit to git]] after each save
+#+BEGIN_SRC emacs-lisp
+  (use-package git-auto-commit-mode
+    :ensure t
+    :commands git-auto-commit-mode
+    :config
+    (setq gac-automatically-push-p 1
+          gac-ask-for-summary-p nil))
+#+END_SRC
+
 *** Git timemachine
  #+BEGIN_SRC emacs-lisp
  (use-package git-timemachine            ; Go back in Git time
-   :commands git-timemachine
- )
+   :commands git-timemachine)
  #+END_SRC
  
 *** Gited
@@ -4974,6 +5052,7 @@ well with org-mode using org-indent. So I don't use it globally.
      :defer t
      :init
      (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
+     :config
      (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
            git-gutter:update-interval 2
            git-gutter:window-width 2))
@@ -4981,7 +5060,6 @@ well with org-mode using org-indent. So I don't use it globally.
    (use-package git-gutter-fringe
      :diminish git-gutter-mode
      :after git-gutter
-     :demand t
      ;; :demand fringe-helper
      :config
      ;; subtle diff indicators in the fringe
@@ -5123,6 +5201,7 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
   (add-hook 'org-mode-hook
       (lambda () 
       (turn-on-visual-fill-column-mode) 
+      (centered-cursor-mode)
         ;; (turn-on-auto-fill)
         ))
 #+END_SRC
@@ -5181,10 +5260,220 @@ Open files in their default applications (ms word being the prime example)
 #+END_SRC
 
 ** Org-Agenda
-Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]]. 
+*** Agenda Settings
+Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files '("~/Dropbox/org-files/"))
-  (general-define-key "C-c a" #'org-agenda)
+    (setq org-agenda-files '("~/Dropbox/org-files/"))
+    (general-define-key "C-c a" #'org-agenda)
+
+    ;; Display properties
+    (setq org-cycle-separator-lines 0
+          org-tags-column 80
+          org-agenda-tags-column org-tags-column
+          org-agenda-window-setup 'only-window
+          org-agenda-restore-windows-after-quit t
+          org-agenda-todo-ignore-scheduled nil
+          org-agenda-todo-ignore-deadlines nil 
+          ;; org-agenda-sticky t
+          org-agenda-span 'day)
+
+    (with-eval-after-load 'org-agenda
+      (general-define-key :keymaps 'org-agenda-mode-map 
+                          "j" 'org-agenda-next-item
+                          "k" 'org-agenda-previous-item))
+
+    ;; automatically refresh the agenda after adding a task
+    (defun cpm/org-agenda-refresh ()
+    (interactive)
+    (when (get-buffer "*Org Agenda*")
+        (with-current-buffer "*Org Agenda*"
+            (org-agenda-redo t)
+            (message "[org agenda] refreshed!"))))
+    (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+
+    ;; show all todos
+    (defun cpm/jump-to-org-agenda-all-todos ()
+      "open agenda with all unscheduled/non-deadline todos"
+      (interactive)
+      (org-agenda nil "z"))
+    
+#+END_SRC
+*** Agenda Navigation
+Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html][Aaron Bieber]]
+#+BEGIN_SRC emacs-lisp
+(defun air-org-agenda-next-header ()
+  "Jump to the next header in an agenda series."
+  (interactive)
+  (air--org-agenda-goto-header))
+
+(defun air-org-agenda-previous-header ()
+  "Jump to the previous header in an agenda series."
+  (interactive)
+  (air--org-agenda-goto-header t))
+
+(defun air--org-agenda-goto-header (&optional backwards)
+  "Find the next agenda series header forwards or BACKWARDS."
+  (let ((pos (save-excursion
+               (goto-char (if backwards
+                              (line-beginning-position)
+                            (line-end-position)))
+               (let* ((find-func (if backwards
+                                     'previous-single-property-change
+                                   'next-single-property-change))
+                      (end-func (if backwards
+                                    'max
+                                  'min))
+                      (all-pos-raw (list (funcall find-func (point) 'org-agenda-structural-header)
+                                         (funcall find-func (point) 'org-agenda-date-header)))
+                      (all-pos (cl-remove-if-not 'numberp all-pos-raw))
+                      (prop-pos (if all-pos (apply end-func all-pos) nil)))
+                 prop-pos))))
+    (if pos (goto-char pos))
+    (if backwards (goto-char (line-beginning-position)))))
+ 
+(with-eval-after-load 'org-agenda
+(general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
+  "J" 'air-org-agenda-next-header
+  "K" 'air-org-agenda-previous-header))
+#+END_SRC
+*** Org Super-Agenda
+[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
+#+BEGIN_SRC emacs-lisp
+  (use-package org-super-agenda
+   :general 
+   (:states '(normal motion emacs) :keymaps 'org-agenda-keymap 
+   ","  'cpm/hydra-org-agenda/body)
+   :config
+   (org-super-agenda-mode +1) 
+    ;; see https://github.com/alphapapa/org-super-agenda/issues/11
+    (org-super-agenda--defgroup time-grid
+    "Group items that appear on a time grid. This matches the `dotime' text-property, which, if NOT set to `time' (I know, this gets confusing), means it WILL appear in the agenda time-grid. "
+    :section-name "Timed items"  ; Note: this does not mean the item has a "SCHEDULED:" line
+    :test (or (--when-let (org-find-text-property-in-string 'time item)
+                ;; This property is a string; if empty, it doesn't match
+                (not (string-empty-p it)))
+              ;; This property is nil if it doesn't match
+              (org-find-text-property-in-string 'time-of-day item)
+              (--when-let (org-find-text-property-in-string 'dotime item)
+                ;; For this to match, the 'dotime property must be set, and
+                ;; it must not be equal to 'time.  If it is not set, or if
+                ;; it is set and is equal to 'time, the item is not part of
+                ;; the time-grid.  Yes, this is confusing.  :)
+                (not (eql it 'time))))))
+
+#+END_SRC
+
+*** Hydra for Agenda
+Hydra for org agenda (graciously offered by Spacemacs)
+#+BEGIN_SRC emacs-lisp
+(after! org-agenda
+(org-super-agenda-mode)
+(defhydra cpm/hydra-org-agenda (:color pink :hint none)
+  "
+Org agenda (_q_uit)
+
+^Clock^      ^Visit entry^              ^Date^             ^Other^
+^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
+_ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
+_co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
+_cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
+_cj_ jump    _o_   link                 _+_  do later      ^^
+^^           ^^                         _-_  do earlier    ^^
+^^           ^^                         ^^                 ^^
+^View^          ^Filter^                 ^Headline^         ^Toggle mode^
+^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
+_vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
+_vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
+_vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
+_vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
+_vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
+_vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
+_vp_ prev span  ^^                       ^^                 ^^
+_vr_ reset      ^^                       ^^                 ^^
+^^              ^^                       ^^                 ^^
+"
+  ;; Entry
+  ("hA" org-agenda-archive-default)
+  ("hk" org-agenda-kill)
+  ("hp" org-agenda-priority)
+  ("hr" org-agenda-refile)
+  ("h:" org-agenda-set-tags)
+  ("ht" org-agenda-todo)
+  ;; Visit entry
+  ("o"   link-hint-open-link :exit t)
+  ("<tab>" org-agenda-goto :exit t)
+  ("TAB" org-agenda-goto :exit t)
+  ("SPC" org-agenda-show-and-scroll-up)
+  ("RET" org-agenda-switch-to :exit t)
+  ;; Date
+  ("dt" org-agenda-date-prompt)
+  ("dd" org-agenda-deadline)
+  ("+" org-agenda-do-date-later)
+  ("-" org-agenda-do-date-earlier)
+  ("ds" org-agenda-schedule)
+  ;; View
+  ("vd" org-agenda-day-view)
+  ("vw" org-agenda-week-view)
+  ("vt" org-agenda-fortnight-view)
+  ("vm" org-agenda-month-view)
+  ("vy" org-agenda-year-view)
+  ("vn" org-agenda-later)
+  ("vp" org-agenda-earlier)
+  ("vr" org-agenda-reset-view)
+  ;; Toggle mode
+  ("ta" org-agenda-archives-mode)
+  ("tA" (org-agenda-archives-mode 'files))
+  ("tr" org-agenda-clockreport-mode)
+  ("tf" org-agenda-follow-mode)
+  ("tl" org-agenda-log-mode)
+  ("td" org-agenda-toggle-diary)
+  ;; Filter
+  ("fc" org-agenda-filter-by-category)
+  ("fx" org-agenda-filter-by-regexp)
+  ("ft" org-agenda-filter-by-tag)
+  ("fr" org-agenda-filter-by-tag-refine)
+  ("fh" org-agenda-filter-by-top-headline)
+  ("fd" org-agenda-filter-remove-all)
+  ;; Clock
+  ("cq" org-agenda-clock-cancel)
+  ("cj" org-agenda-clock-goto :exit t)
+  ("ci" org-agenda-clock-in :exit t)
+  ("co" org-agenda-clock-out)
+  ;; Other
+  ("q" nil :exit t)
+  ("gd" org-agenda-goto-date)
+  ("." org-agenda-goto-today)
+  ("gr" org-agenda-redo))
+
+  (defun cpm/jump-to-org-super-agenda ()
+  (interactive)
+  (org-agenda nil "s")))
+
+#+END_SRC
+
+
+
+*** Agenda Custom Commands
+#+BEGIN_SRC emacs-lisp
+(defun air-org-skip-subtree-if-habit ()
+  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (if (string= (org-entry-get nil "STYLE") "habit")
+        subtree-end
+      nil)))
+
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
   ; https://orgmode.org/manual/Storing-searches.html#Storing-searches
   (setq org-agenda-custom-commands
         '(("x" agenda)
@@ -5193,189 +5482,82 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
           ("i" todo "INPROGRESS")
           ("n" todo "NEXT")
           ("r" todo "REVISE")
-          ("w" todo "WAITING")))
+          ("w" todo "WAITING")
+          ;; ("W" "Week view"
+          ;;  ((agenda "" ((org-agenda-span 'week)
+          ;;               (org-super-agenda-groups
+          ;;                '((:name "Schedule"
+          ;;                         :time-grid t)
+          ;;                  (:name "Today"
+          ;;                         :scheduled today)
+          ;;                  (:name "Due Today"
+          ;;                         :deadline today
+          ;;                         :order 2)
+          ;;                  (:name "Due Soon"
+          ;;                         :deadline future
+          ;;                         :order 8)
+          ;;                  (:name "Overdue"
+          ;;                  :deadline past
+          ;;                         :order 7)))))
+          ;;   ))
 
-  ;; Display properties
-  (setq org-cycle-separator-lines 0
-        org-tags-column 80
-        org-agenda-tags-column org-tags-column
-        org-agenda-window-setup 'only-window
-        org-agenda-restore-windows-after-quit t
-        org-agenda-todo-ignore-scheduled nil
-        org-agenda-todo-ignore-deadlines nil 
-        ;; org-agenda-sticky t
-        org-agenda-span 'day)
+          ("W" "Week's agenda and all TODOs"
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "High-priority unfinished tasks:")))
+            (agenda "" ((org-agenda-span 'week)))
+            (alltodo ""
+                     ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+                                                     (air-org-skip-subtree-if-priority ?A)
+                                                     (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "ALL normal priority tasks:"))))
+           ((org-agenda-compact-blocks nil)))
 
-  (with-eval-after-load 'org-agenda
-    (general-define-key :keymaps 'org-agenda-mode-map 
-                        "j" 'org-agenda-next-item
-                        "k" 'org-agenda-previous-item))
+          ("s" "Super Agenda"
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-super-agenda-groups
+                         '((:name "Schedule"
+                                  :time-grid t)
+                           (:name "Today"
+                                  :scheduled today)
+                           (:name "Due Today"
+                                  :deadline today
+                                  :order 2)
+                           (:name "Due Soon"
+                                  :deadline future
+                                  :order 8)
+                           (:name "Overdue"
+                                  :deadline past
+                                  :order 7)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:name "Next to do"
+                                   :todo "NEXT"
+                                   :order 1)
+                            (:name "Important"
+                                   :tag "Important"
+                                   :priority "A"
+                                   :order 6)
+                            (:name "Projects"
+                                   :category "Projects"
+                                   :children t
+                                   :order 14)
+                            (:name "To read"
+                                   :todo "TOREAD"
+                                   :order 30)
+                            (:name "Waiting"
+                                   :todo "WAITING"
+                                   :order 20)
+                            (:name "Low priority"
+                                   :priority<= "C"
+                                   :todo ("SOMEDAY" )
+                                   :order 90)
+                            (:discard (:tag ("Chore" "Routine" "Daily")))
 
-  ;; automatically refresh the agenda after adding a task
-  (defun cpm/org-agenda-refresh ()
-  (interactive)
-  (when (get-buffer "*Org Agenda*")
-      (with-current-buffer "*Org Agenda*"
-          (org-agenda-redo t)
-          (message "[org agenda] refreshed!"))))
-  (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+                            )))))
+          )))
 
-  ;; show all todos
-  (defun cpm/jump-to-org-agenda-all-todos ()
-    "open agenda with all unscheduled/non-deadline todos"
-    (interactive)
-    (org-agenda nil "z"))
-    
 #+END_SRC
-
-
-** Org-Super-Agenda
-[[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
-#+BEGIN_SRC emacs-lisp
-  (use-package org-super-agenda
-    :commands (org-super-agenda-mode)
-    :config
-    (setq org-super-agenda-groups
-     '((:log t)  ; Automatically named "Log"
-       (:name "Schedule"
-              :time-grid t)
-       (:name "Today"
-              :scheduled today)
-       (:habit t)
-       (:name "Due today"
-              :deadline today)
-       (:name "Overdue"
-              :deadline past)
-       (:name "Due soon"
-              :deadline future)
-       (:name "Important"
-              :priority "#A")
-       (:name "In progress\n"
-              :todo "INPROGRESS"
-              :order 88)
-       (:priority<= "B"
-              :scheduled future
-              :order 95)
-       (:name "Unimportant"
-              :todo ("SOMEDAY" "MAYBE" "TOREAD")
-              :order 100)
-       (:name "Waiting..."
-              :todo "WAITING"
-              :order 98)
-       (:name "Scheduled earlier"
-              :scheduled past)
-       (:name "Scheduled soon"
-              :scheduled future)))
-
-              
-              ;; see https://github.com/alphapapa/org-super-agenda/issues/11
-(org-super-agenda--defgroup time-grid
-  "Group items that appear on a time grid.
-This matches the `dotime' text-property, which, if NOT set to
-`time' (I know, this gets confusing), means it WILL appear in the
-agenda time-grid. "
-  :section-name "Timed items"  ; Note: this does not mean the item has a "SCHEDULED:" line
-  :test (or (--when-let (org-find-text-property-in-string 'time item)
-              ;; This property is a string; if empty, it doesn't match
-              (not (string-empty-p it)))
-            ;; This property is nil if it doesn't match
-            (org-find-text-property-in-string 'time-of-day item)
-            (--when-let (org-find-text-property-in-string 'dotime item)
-              ;; For this to match, the 'dotime property must be set, and
-              ;; it must not be equal to 'time.  If it is not set, or if
-              ;; it is set and is equal to 'time, the item is not part of
-              ;; the time-grid.  Yes, this is confusing.  :)
-              (not (eql it 'time)))))
-
-)
-
-    ;; Hydra for org agenda (graciously taken from Spacemacs)
-    (after! org-agenda
-    (org-super-agenda-mode 1)
-    (general-define-key :states '(normal emacs) :keymaps 'org-agenda-keymap
-      "."  'cpm/hydra-org-agenda/body)
-    (defhydra cpm/hydra-org-agenda (:color pink :hint none)
-      "
-    Org agenda (_q_uit)
-
-    ^Clock^      ^Visit entry^              ^Date^             ^Other^
-    ^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
-    _ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
-    _co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
-    _cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
-    _cj_ jump    _o_   link                 _+_  do later      ^^
-    ^^           ^^                         _-_  do earlier    ^^
-    ^^           ^^                         ^^                 ^^
-    ^View^          ^Filter^                 ^Headline^         ^Toggle mode^
-    ^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
-    _vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
-    _vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
-    _vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
-    _vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
-    _vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
-    _vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
-    _vp_ prev span  ^^                       ^^                 ^^
-    _vr_ reset      ^^                       ^^                 ^^
-    ^^              ^^                       ^^                 ^^
-    "
-      ;; Entry
-      ("hA" org-agenda-archive-default)
-      ("hk" org-agenda-kill)
-      ("hp" org-agenda-priority)
-      ("hr" org-agenda-refile)
-      ("h:" org-agenda-set-tags)
-      ("ht" org-agenda-todo)
-      ;; Visit entry
-      ("o"   link-hint-open-link :exit t)
-      ("<tab>" org-agenda-goto :exit t)
-      ("TAB" org-agenda-goto :exit t)
-      ("SPC" org-agenda-show-and-scroll-up)
-      ("RET" org-agenda-switch-to :exit t)
-      ;; Date
-      ("dt" org-agenda-date-prompt)
-      ("dd" org-agenda-deadline)
-      ("+" org-agenda-do-date-later)
-      ("-" org-agenda-do-date-earlier)
-      ("ds" org-agenda-schedule)
-      ;; View
-      ("vd" org-agenda-day-view)
-      ("vw" org-agenda-week-view)
-      ("vt" org-agenda-fortnight-view)
-      ("vm" org-agenda-month-view)
-      ("vy" org-agenda-year-view)
-      ("vn" org-agenda-later)
-      ("vp" org-agenda-earlier)
-      ("vr" org-agenda-reset-view)
-      ;; Toggle mode
-      ("ta" org-agenda-archives-mode)
-      ("tA" (org-agenda-archives-mode 'files))
-      ("tr" org-agenda-clockreport-mode)
-      ("tf" org-agenda-follow-mode)
-      ("tl" org-agenda-log-mode)
-      ("td" org-agenda-toggle-diary)
-      ;; Filter
-      ("fc" org-agenda-filter-by-category)
-      ("fx" org-agenda-filter-by-regexp)
-      ("ft" org-agenda-filter-by-tag)
-      ("fr" org-agenda-filter-by-tag-refine)
-      ("fh" org-agenda-filter-by-top-headline)
-      ("fd" org-agenda-filter-remove-all)
-      ;; Clock
-      ("cq" org-agenda-clock-cancel)
-      ("cj" org-agenda-clock-goto :exit t)
-      ("ci" org-agenda-clock-in :exit t)
-      ("co" org-agenda-clock-out)
-      ;; Other
-      ("q" nil :exit t)
-      ("gd" org-agenda-goto-date)
-      ("." org-agenda-goto-today)
-      ("gr" org-agenda-redo)))
-
-      (defun cpm/jump-to-org-agenda ()
-      (interactive)
-      (org-agenda nil "a"))
-#+END_SRC
-
 
 ** Org Capture
 *** Capture Settings
@@ -5790,6 +5972,24 @@ are exported to a filename derived from the headline text."
            (set-buffer-modified-p modifiedp)))
        "-noexport" 'region-start-level))))
 #+END_SRC
+**** TESTING Org demote/promote region
+#+BEGIN_SRC emacs-lisp
+(defun endless/demote-everything (number beg end)
+  "Add a NUMBER of * to all headlines between BEG and END.
+Interactively, NUMBER is the prefix argument and BEG and END are
+the region boundaries."
+  (interactive "p\nr")
+  (save-excursion
+    (save-restriction
+      (save-match-data
+        (widen)
+        (narrow-to-region beg end)
+        (goto-char (point-min))
+        (let ((string (make-string number ?*)))
+          (while (search-forward-regexp "^\\*" nil t)
+            (insert string)))))))
+#+END_SRC
+
 *** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 #+BEGIN_SRC emacs-lisp
@@ -5989,11 +6189,16 @@ Other useful org packages
 *** Org Keybindings
 **** Evil Org 
 #+BEGIN_SRC emacs-lisp
-(use-package evil-org
-  :init
-  (add-hook 'org-mode-hook 'evil-org-mode)  
-  :config
-  (add-hook 'evil-org-mode-hook  (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift)))))
+  (use-package evil-org
+    :ensure t
+    :after org
+    :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
+    (add-hook 'evil-org-mode-hook
+              (lambda ()
+                (evil-org-set-key-theme '(textobjects insert navigation additional shift))))
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
 #+END_SRC
 **** Org Local Leader Keybindings
 
@@ -6075,7 +6280,6 @@ Other useful org packages
        "s-v" 'org-yank)
 #+END_SRC
 
-
 * Research & Writing
 ** Deft
 #+BEGIN_SRC emacs-lisp
@@ -6120,6 +6324,306 @@ Other useful org packages
     (defun cpm/deft-open ()
       (interactive)
       (deft-open-file-other-window t)))
+#+END_SRC
+
+** TESTING Zettelkasten
+
+A useful set of functions for managing a Zettelkasten. From [[https://github.com/EFLS/zetteldeft][EFLS]]. 
+#+BEGIN_SRC emacs-lisp
+  (setq deft-strip-summary-regexp
+   (concat "\\("
+           "[\n\t]" ;; blank
+           "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+           "\\)"))
+
+  (defun zd-get-thing-at-point ()
+  "Return the thing at point, which can be a link, tag or word."
+    (require 'thingatpt)
+    (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
+           (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
+     (cond
+      ((thing-at-point-looking-at link-re)
+        (match-string-no-properties 1))
+       ((thing-at-point-looking-at htag-re)
+        (match-string-no-properties 1))
+       (t (thing-at-point 'word t)))
+    ))
+
+  (defun zd-search-at-point ()
+  "Search deft with thing-at-point as filter.
+  Thing can be a double-bracketed link, a hashtag, or a word."
+    (interactive)
+    (let ((string (zd-get-thing-at-point)))
+     (if string
+         (zd-search-global string t)
+       (user-error "No search term at point")))
+    )
+
+  (defun zd-search-global (str &optional dntOpn)
+  "Search deft with STR as filter.
+  If there is only one result, open that file (unless DNTOPN is true)."
+    ;; Sanitize the filter string
+    (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+    ;; Call deft search on the filter string
+    (let ((deft-incremental-search t))
+     (deft)
+     (deft-filter str t))
+    ;; If there is a single match, open the file
+    (unless dntOpn
+     (when (eq (length deft-current-files) 1)
+       (deft-open-file (car deft-current-files)))))
+
+  (defun zd-search-filename (str)
+  "Search for deft files with string STR in filename.
+  Open if there is only one result."
+    ;; Sanitize the filter string
+    (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
+    ;; Call deft search on the filter string
+    (let ((deft-filter-only-filenames t))
+     (deft)
+     (deft-filter str t))
+    ;; If there is a single match, open the file
+    (when (eq (length deft-current-files) 1)
+      (deft-open-file (car deft-current-files))))
+
+  (defun zd-search-current-id ()
+  "Search deft with the id of the current file as filter.
+  Open if there is only one result."
+   (interactive)
+   (zd-search-global (zd-id-current-file) t)
+  )
+
+  (defcustom zd-id-format "%Y-%m-%d-%H%M"
+    "Format used when generating zetteldeft IDs."
+    :type 'string
+    :group 'zetteldeft
+  )
+
+  (setq deft-new-file-format zd-id-format)
+
+  (defun zd-generate-id ()
+   "Generates an id in `zd-id-format'."
+   (format-time-string zd-id-format)
+  )
+
+  (defun zd-id-insert ()
+   (interactive)
+   "Inserts an id in `zd-id-format'."
+   (insert (zd-generate-id) " ")
+  )
+
+  (defun zd-id-sanitized (str)
+  "Strip STRING from everything that is not a number or a dash."
+   (replace-regexp-in-string "[^(0-9)-]+" "" str)
+  )
+
+  (defun zd-file-id-stripped (file)
+  "Returns file id stripped from given filename FILE."
+   (let ((file (substring file 0 16)))
+     (zd-id-sanitized file)
+  ))
+
+  (defun zd-id-current-file ()
+  "Return the id from the filename the buffer is currently visiting."
+   (zd-file-id-stripped (file-name-base (buffer-file-name)))
+  )
+
+  (defun zd-copy-id-current-file ()
+  "Add the id from the filename the buffer is currently visiting to the kill ring."
+  (interactive)
+   (kill-new (zd-id-current-file))
+  )
+
+  (defun zd-find-file (file)
+  "Open deft file FILE."
+   (interactive
+    (list (completing-read "Deft find file: "
+          (deft-find-all-files-no-prefix))))
+   (deft-find-file file)
+  )
+
+  (defun zd-find-file-id-copy (file)
+  "Find deft file FILE and add its id to the kill ring."
+   (interactive (list
+          (completing-read "File to copy id from: "
+          (deft-find-all-files-no-prefix))))
+    (kill-new (concat "§" (zd-file-id-stripped file)))
+  )
+
+  (defun zd-find-file-id-insert (file)
+  "Find deft file FILE and insert its link id, prepended by §."
+   (interactive (list
+          (completing-read "File to insert id from: "
+          (deft-find-all-files-no-prefix))))
+    (insert (concat "§" (zd-file-id-stripped file)))
+  )
+
+  (defun zd-find-file-full-title-insert (file)
+  "Find deft file FILE and insert its link id with title, prepended by §."
+   (interactive (list
+          (completing-read "File to insert full title from: "
+          (deft-find-all-files-no-prefix))))
+    (insert (concat "§" (file-name-base file)))
+  )
+
+  (defun zd-new-file (str &optional empty)
+  "Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed.
+
+  After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."
+   (interactive (list (read-string "name: ")))
+   (let* ((zdId (zd-generate-id))
+          (zdName (concat zdId " " str)))
+   (deft-new-file-named zdName)
+   (kill-new zdName)
+   (unless empty (zd-insert-org-title))
+   (when (featurep 'evil) (evil-insert-state))
+  ))
+
+  (defun zd-new-file-and-link (str)
+  "Inserts generated id with `zd-id-format' appended with STR.
+  Creates new deft file with id and STR as name."
+   (interactive (list (read-string "name: ")))
+   (insert "§" (zd-generate-id) " " str)
+   (zd-new-file str)
+  )
+
+  (defun zd-avy-tag-search ()
+  "Call on avy to jump and search tags indicated with #."
+   (interactive)
+   (save-excursion
+    (avy-goto-char ?#)
+    (zd-search-at-point)
+  ))
+
+  (defun zd-avy-link-search ()
+  "Call on avy to jump and search link ids indicated with §.
+  Opens immediately if there is only one result."
+   (interactive)
+   (save-excursion
+    (avy-goto-char ?§)
+    (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))
+  ))
+
+  (defun zd-avy-file-search ()
+  "Call on avy to jump to link ids indicated with § and use it to search for filenames."
+   (interactive)
+   (save-excursion
+    (avy-goto-char ?§)
+    (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))
+  ))
+
+  (defun zd-deft-new-search ()
+  "Launch deft, clear filter and enter insert state."
+   (interactive)
+   (deft)
+   (deft-filter-clear)
+   (any-deft "~/Dropbox/org-files/zettel/")
+   (when (featurep 'evil) (evil-insert-state))
+  )
+
+  (defun zd-file-rename ()
+  "Rename the current file via the deft function. Use this on files in the deft-directory."
+   (interactive)
+    (let ((old-filename (buffer-file-name))
+          (deft-dir (file-name-as-directory deft-directory))
+          new-filename old-name new-name)
+      (when old-filename
+        (setq old-name (deft-base-filename old-filename))
+        (setq new-name (read-string
+                        (concat "Rename " old-name " to (without extension): ")
+                        old-name))
+        (setq new-filename
+              (concat deft-dir new-name "." deft-default-extension))
+        (rename-file old-filename new-filename)
+        (deft-update-visiting-buffers old-filename new-filename)
+        (deft-refresh))))
+
+  (defun zd-insert-org-title ()
+   (interactive)
+   (insert
+     "#+title: "
+     (zd-lift-file-title (file-name-base (buffer-file-name)))
+     "\n"
+     zd-string-below-title
+     ))
+
+  (defcustom zd-string-below-title ""
+    "String inserted below title when `zd-insert-org-title' is called. Empty by default."
+    :type 'string
+    :group 'zetteldeft
+  )
+
+  (defun zd-get-file-list (srch)
+  "Returns a list of files with the search item SRCH."
+    (let ((deft-current-sort-method 'title))
+     (deft-filter srch t)
+     deft-current-files
+  ))
+
+  (defun zd-lift-file-title (zdFile)
+   (let ((baseName (file-name-base zdFile)))
+     (replace-regexp-in-string
+      "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
+      "" baseName)
+  ))
+
+  (defun zd-insert-list-links (zdSrch)
+  "Inserts at point a list of links to all deft files with a search string ZDSRCH.
+  When searching for a tag, include # manually in the prompt."
+   (interactive (list (read-string "search string: ")))
+   (dolist (zdFile (zd-get-file-list zdSrch))
+    (zd-list-entry-file-link zdFile)
+  ))
+
+  (defun zd-list-entry-file-link (zdFile)
+  "Insert ZDFILE as list entry."
+   (insert " - " (concat "§" (file-name-base zdFile)) "\n")
+  )
+
+  (defun zd-org-include-search (zdSrch)
+  "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
+   (interactive (list (read-string "tag (include the #): ")))
+   (dolist (zdFile (zd-get-file-list zdSrch))
+    (zd-org-include-file zdFile)
+  ))
+
+  (defun zd-org-include-file (zdFile)
+  "Insert code to include org-file zdFile."
+   (insert
+     ;; Insert org-mode title
+     "\n* " (zd-lift-file-title zdFile) "\n"
+     ;; Insert #+INCLUDE: "file.org" :lines 2-
+     "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"
+   ))
+
+  ;; ; highlight zetteldeft links
+  ;; (font-lock-add-keywords 'org-mode '(
+  ;;   ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)
+  ;;   ))
+
+  ;; (with-eval-after-load 'deft
+  ;;   (define-key spacemacs-deft-mode-map-prefix
+  ;;     "o" 'efls/deft-open)
+  ;;   (define-key spacemacs-deft-mode-map-prefix
+  ;;     [?\t] 'efls/deft-open-preview)
+  ;;  )
+
+  (defun efls/deft-open-other ()
+   (interactive)
+   (deft-open-file-other-window t)
+  )
+
+  (defun efls/deft-open-preview ()
+   (interactive)
+   (deft-open-file-other-window)
+  )
+
+  (with-eval-after-load 'deft
+    (define-key deft-mode-map
+      (kbd "<tab>") 'efls/deft-open-preview)
+    (define-key deft-mode-map
+      (kbd "<s-return>") 'efls/deft-open-other)
+  )
 #+END_SRC
 
 ** Spelling
@@ -6554,20 +7058,19 @@ Better than doc-view, but doesn't render well on retina screens :(
   ))
 
 #+END_SRC
-*** Org PDF View
+** Org PDF View
  For annotation and jumping to file
 #+BEGIN_SRC emacs-lisp
   (use-package org-pdfview
-    ;; :commands (org-pdfview-open)
-    :after org
-    :defer 5
+    :commands (org-pdfview-open)
+    :after pdf-tools
     :init
     (add-to-list 'org-file-apps 
                '("\\.pdf\\'" . (lambda (file link)
                                   (org-pdfview-open link))))
    )
 #+END_SRC
-*** Extract annotations
+** Extract annotations
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools-org 
     :ensure nil
@@ -6725,21 +7228,19 @@ Better than doc-view, but doesn't render well on retina screens :(
       )
 
 #+END_SRC
-** Zotero
-Interface with Zotero.
+** TESTING Remember
+A built-in [[info:remember][remember]] buffer
 #+BEGIN_SRC emacs-lisp
-  (use-package zotxt
-    :after (any: org markdown-mode)
-    :demand t
-    :commands (org-zotxt-mode zotxt-easykey-mode org-zotxt-insert-reference-link-to-item org-zotxt-open-attachment org-zotxt-update-reference-link-at-point)
-    :diminish (org-zoxt zotxt org-zotxt-mode)
-    :config
-    (setq org-zotxt-default-search-method :title-creator-year)
-    )
-
+(use-package remember
+ :ensure nil
+ :commands (remember remember-notes)
+ :config
+ (setq remember-data-dir (concat cpm-cache-dir "remember")
+       remember-data-file (concat cpm-cache-dir "remember/notes"))
+ (unless (file-directory-p remember-data-dir)
+         (make-directory remember-data-dir t)))
+ 
 #+END_SRC
-
-
 
 * Miscellaneous Packages
 ** Restart emacs
@@ -6752,7 +7253,7 @@ Auto-revert buffers of changed files
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert                 
     :ensure nil
-    :defer 8
+    :defer 2
     :init
     (setq auto-revert-interval 1)
     (global-auto-revert-mode 1)
@@ -6766,7 +7267,7 @@ Auto-revert buffers of changed files
 ** URL & Request
 #+BEGIN_SRC emacs-lisp
 (use-package request
-  :defer 10
+  :defer t
   :ensure nil
   :config
   (setq request-storage-directory (concat cpm-cache-dir "request"))
@@ -6781,24 +7282,11 @@ Auto-revert buffers of changed files
 
 
 * Post-Initialization
-** Remember
-A built-in [[info:remember][remember]] buffer
-#+BEGIN_SRC emacs-lisp
-(use-package remember
- :ensure nil
- :commands (remember remember-notes)
- :config
- (setq remember-data-dir (concat cpm-cache-dir "remember")
-       remember-data-file (concat cpm-cache-dir "remember/notes"))
- (unless (file-directory-p remember-data-dir)
-         (make-directory remember-data-dir t)))
- 
-#+END_SRC
 ** Server
 Start server
 #+BEGIN_SRC emacs-lisp
   (use-package server
-   :defer 10
+   :defer 5
    :config
     (if (display-graphic-p)
         (unless (or (daemonp) (server-running-p))
@@ -6879,514 +7367,4 @@ Display Startup time
 
 (message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
 
-#+END_SRC
-* Test
-** TESTING Ligatures
-Per the [[https://github.com/i-tu/Hasklig/issues/84][discussion here]]. 
-#+BEGIN_SRC emacs-lisp 
- (defun my-correct-symbol-bounds (pretty-alist)
-    "Prepend a TAB character to each symbol in this alist,
-this way compose-region called by prettify-symbols-mode
-will use the correct width of the symbols
-instead of the width measured by char-width."
-    (mapcar (lambda (el)
-              (setcdr el (string ?\t (cdr el)))
-              el)
-            pretty-alist))
-
-  (defun my-ligature-list (ligatures codepoint-start)
-    "Create an alist of strings to replace with
-codepoints starting from codepoint-start."
-    (let ((codepoints (-iterate '1+ codepoint-start (length ligatures))))
-      (-zip-pair ligatures codepoints)))
-
-  ; list can be found at https://github.com/i-tu/Hasklig/blob/master/GlyphOrderAndAliasDB#L1588
-  (setq my-hasklig-ligatures
-    (let* ((ligs '("&&" "***" "*>" "\\\\" "||" "|>" "::"
-                   "==" "===" "==>" "=>" "=<<" "!!" ">>"
-                   ">>=" ">>>" ">>-" ">-" "->" "-<" "-<<"
-                   "<*" "<*>" "<|" "<|>" "<$>" "<>" "<-"
-                   "<<" "<<<" "<+>" ".." "..." "++" "+++"
-                   "/=" ":::" ">=>" "->>" "<=>" "<=<" "<->")))
-      (my-correct-symbol-bounds (my-ligature-list ligs #Xe100))))
-
-  ;; nice glyphs for haskell with hasklig
-  (defun my-set-hasklig-ligatures ()
-    "Add hasklig ligatures for use with prettify-symbols-mode."
-    (setq prettify-symbols-alist
-          (append my-hasklig-ligatures prettify-symbols-alist))
-    (prettify-symbols-mode))
-
-  (add-hook 'text-mode-hook 'my-set-hasklig-ligatures)
-#+END_SRC
-** TESTING Emacs Anywhere
-https://github.com/zachcurry/emacs-anywhere
-#+BEGIN_SRC emacs-lisp
-  (defun popup-handler (app-name window-title x y w h)
-    (setq ea-x 300
-          ea-y 400
-          ea-width 90
-          ea-height 15
-          ea-paste t)
-    (cond (t (markdown-mode)))) ; default major mode
-
-
-    ;; Hook your function
-    (add-hook 'ea-popup-hook 'popup-handler)
-#+END_SRC
-
-** TESTING Org-Brain
-[[https://github.com/Kungsgeten/org-brain][Mindmapping and wiki]] for org
-#+BEGIN_SRC emacs-lisp
-  (use-package org-brain
-  :commands (org-brain-visualize)
-    :ensure t
-    :init
-    (setq org-brain-path "~/Dropbox/org-files/org-brain/")
-    ;; For Evil users
-    (with-eval-after-load 'evil
-      (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
-    :config
-    (setq org-id-track-globally t)
-    (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
-    (push '("b" "Brain" plain (function org-brain-goto-end)
-            "* %i%?" :empty-lines 1)
-          org-capture-templates)
-    (setq org-brain-visualize-default-choices 'all)
-    (setq org-brain-title-max-length 12))
-#+END_SRC
-
-
-** TESTING Evil Collection
-A collection of keybindings for evil
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-collection
-    :ensure t
-    :after evil
-    :defer 1
-    :config
-    (evil-collection-init)
-    (setq evil-collection-mode-list nil))
-#+END_SRC
-** TESTING Treemacs
-[[https://github.com/Alexander-Miller/treemacs][Treemacs]] is a file and project explorer 
-#+BEGIN_SRC emacs-lisp
-  (use-package treemacs
-    :ensure t
-    :commands treemacs
-    :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :config
-    (progn
-      (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
-            treemacs-file-event-delay           5000
-            treemacs-follow-after-init          t
-            treemacs-follow-recenter-distance   0.1
-            treemacs-goto-tag-strategy          'refetch-index
-            treemacs-indentation                2
-            treemacs-indentation-string         " "
-            treemacs-is-never-other-window      nil
-            treemacs-no-png-images              nil
-            treemacs-project-follow-cleanup     nil
-            treemacs-persist-file               (concat cpm-cache-dir "treemacs-persist") 
-            treemacs-recenter-after-file-follow nil
-            treemacs-recenter-after-tag-follow  nil
-            treemacs-show-hidden-files          t
-            treemacs-silent-filewatch           nil
-            treemacs-silent-refresh             nil
-            treemacs-sorting                    'alphabetic-desc
-            treemacs-space-between-root-nodes   t
-            treemacs-tag-follow-cleanup         t
-            treemacs-tag-follow-delay           1.5
-            treemacs-width                      35)
-
-      (treemacs-follow-mode t)
-      (treemacs-filewatch-mode t)
-      (pcase (cons (not (null (executable-find "git")))
-                   (not (null (executable-find "python3"))))
-        (`(t . t)
-         (treemacs-git-mode 'extended))
-        (`(t . _)
-         (treemacs-git-mode 'simple)))))
-    ;; :bind
-    ;; (:map global-map
-    ;;       ("M-0"       . treemacs-select-window)
-    ;;       ("C-x t 1"   . treemacs-delete-other-windows)
-    ;;       ("C-x t t"   . treemacs)
-    ;;       ("C-x t B"   . treemacs-bookmark)
-    ;;       ("C-x t C-t" . treemacs-find-file)
-    ;;       ("C-x t M-t" . treemacs-find-tag)))
-
-  (use-package treemacs-evil
-    :after treemacs evil
-    :ensure t)
-
-  (use-package treemacs-projectile
-    :after treemacs projectile
-    :ensure t)
-#+END_SRC
-** TESTING Zettelkasten
-
-A useful set of functions for managing a Zettelkasten. From [[https://github.com/EFLS/zetteldeft][EFLS]]. 
-#+BEGIN_SRC emacs-lisp
-  (setq deft-strip-summary-regexp
-   (concat "\\("
-           "[\n\t]" ;; blank
-           "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
-           "\\)"))
-
-  (defun zd-get-thing-at-point ()
-  "Return the thing at point, which can be a link, tag or word."
-    (require 'thingatpt)
-    (let* ((link-re "\\[\\[\\([^]]+\\)\\]\\]")
-           (htag-re "\\([§#@][[:alnum:]_-]+\\)"))
-     (cond
-      ((thing-at-point-looking-at link-re)
-        (match-string-no-properties 1))
-       ((thing-at-point-looking-at htag-re)
-        (match-string-no-properties 1))
-       (t (thing-at-point 'word t)))
-    ))
-
-  (defun zd-search-at-point ()
-  "Search deft with thing-at-point as filter.
-  Thing can be a double-bracketed link, a hashtag, or a word."
-    (interactive)
-    (let ((string (zd-get-thing-at-point)))
-     (if string
-         (zd-search-global string t)
-       (user-error "No search term at point")))
-    )
-
-  (defun zd-search-global (str &optional dntOpn)
-  "Search deft with STR as filter.
-  If there is only one result, open that file (unless DNTOPN is true)."
-    ;; Sanitize the filter string
-    (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
-    ;; Call deft search on the filter string
-    (let ((deft-incremental-search t))
-     (deft)
-     (deft-filter str t))
-    ;; If there is a single match, open the file
-    (unless dntOpn
-     (when (eq (length deft-current-files) 1)
-       (deft-open-file (car deft-current-files)))))
-
-  (defun zd-search-filename (str)
-  "Search for deft files with string STR in filename.
-  Open if there is only one result."
-    ;; Sanitize the filter string
-    (setq str (replace-regexp-in-string "[[:space:]\n]+" " " str))
-    ;; Call deft search on the filter string
-    (let ((deft-filter-only-filenames t))
-     (deft)
-     (deft-filter str t))
-    ;; If there is a single match, open the file
-    (when (eq (length deft-current-files) 1)
-      (deft-open-file (car deft-current-files))))
-
-  (defun zd-search-current-id ()
-  "Search deft with the id of the current file as filter.
-  Open if there is only one result."
-   (interactive)
-   (zd-search-global (zd-id-current-file) t)
-  )
-
-  (defcustom zd-id-format "%Y-%m-%d-%H%M"
-    "Format used when generating zetteldeft IDs."
-    :type 'string
-    :group 'zetteldeft
-  )
-
-  (setq deft-new-file-format zd-id-format)
-
-  (defun zd-generate-id ()
-   "Generates an id in `zd-id-format'."
-   (format-time-string zd-id-format)
-  )
-
-  (defun zd-id-insert ()
-   (interactive)
-   "Inserts an id in `zd-id-format'."
-   (insert (zd-generate-id) " ")
-  )
-
-  (defun zd-id-sanitized (str)
-  "Strip STRING from everything that is not a number or a dash."
-   (replace-regexp-in-string "[^(0-9)-]+" "" str)
-  )
-
-  (defun zd-file-id-stripped (file)
-  "Returns file id stripped from given filename FILE."
-   (let ((file (substring file 0 16)))
-     (zd-id-sanitized file)
-  ))
-
-  (defun zd-id-current-file ()
-  "Return the id from the filename the buffer is currently visiting."
-   (zd-file-id-stripped (file-name-base (buffer-file-name)))
-  )
-
-  (defun zd-copy-id-current-file ()
-  "Add the id from the filename the buffer is currently visiting to the kill ring."
-  (interactive)
-   (kill-new (zd-id-current-file))
-  )
-
-  (defun zd-find-file (file)
-  "Open deft file FILE."
-   (interactive
-    (list (completing-read "Deft find file: "
-          (deft-find-all-files-no-prefix))))
-   (deft-find-file file)
-  )
-
-  (defun zd-find-file-id-copy (file)
-  "Find deft file FILE and add its id to the kill ring."
-   (interactive (list
-          (completing-read "File to copy id from: "
-          (deft-find-all-files-no-prefix))))
-    (kill-new (concat "§" (zd-file-id-stripped file)))
-  )
-
-  (defun zd-find-file-id-insert (file)
-  "Find deft file FILE and insert its link id, prepended by §."
-   (interactive (list
-          (completing-read "File to insert id from: "
-          (deft-find-all-files-no-prefix))))
-    (insert (concat "§" (zd-file-id-stripped file)))
-  )
-
-  (defun zd-find-file-full-title-insert (file)
-  "Find deft file FILE and insert its link id with title, prepended by §."
-   (interactive (list
-          (completing-read "File to insert full title from: "
-          (deft-find-all-files-no-prefix))))
-    (insert (concat "§" (file-name-base file)))
-  )
-
-  (defun zd-new-file (str &optional empty)
-  "Create a new deft file. Filename is `zd-id-format' appended by STR. No extension needed.
-
-  After creating, the title is inserted in org-mode format (unless EMPTY is true) and the full file name is added to the kill ring."
-   (interactive (list (read-string "name: ")))
-   (let* ((zdId (zd-generate-id))
-          (zdName (concat zdId " " str)))
-   (deft-new-file-named zdName)
-   (kill-new zdName)
-   (unless empty (zd-insert-org-title))
-   (when (featurep 'evil) (evil-insert-state))
-  ))
-
-  (defun zd-new-file-and-link (str)
-  "Inserts generated id with `zd-id-format' appended with STR.
-  Creates new deft file with id and STR as name."
-   (interactive (list (read-string "name: ")))
-   (insert "§" (zd-generate-id) " " str)
-   (zd-new-file str)
-  )
-
-  (defun zd-avy-tag-search ()
-  "Call on avy to jump and search tags indicated with #."
-   (interactive)
-   (save-excursion
-    (avy-goto-char ?#)
-    (zd-search-at-point)
-  ))
-
-  (defun zd-avy-link-search ()
-  "Call on avy to jump and search link ids indicated with §.
-  Opens immediately if there is only one result."
-   (interactive)
-   (save-excursion
-    (avy-goto-char ?§)
-    (zd-search-global (zd-id-sanitized (zd-get-thing-at-point)))
-  ))
-
-  (defun zd-avy-file-search ()
-  "Call on avy to jump to link ids indicated with § and use it to search for filenames."
-   (interactive)
-   (save-excursion
-    (avy-goto-char ?§)
-    (zd-search-filename (zd-id-sanitized (zd-get-thing-at-point)))
-  ))
-
-  (defun zd-deft-new-search ()
-  "Launch deft, clear filter and enter insert state."
-   (interactive)
-   (deft)
-   (deft-filter-clear)
-   (any-deft "~/Dropbox/org-files/zettel/")
-   (when (featurep 'evil) (evil-insert-state))
-  )
-
-  (defun zd-file-rename ()
-  "Rename the current file via the deft function. Use this on files in the deft-directory."
-   (interactive)
-    (let ((old-filename (buffer-file-name))
-          (deft-dir (file-name-as-directory deft-directory))
-          new-filename old-name new-name)
-      (when old-filename
-        (setq old-name (deft-base-filename old-filename))
-        (setq new-name (read-string
-                        (concat "Rename " old-name " to (without extension): ")
-                        old-name))
-        (setq new-filename
-              (concat deft-dir new-name "." deft-default-extension))
-        (rename-file old-filename new-filename)
-        (deft-update-visiting-buffers old-filename new-filename)
-        (deft-refresh))))
-
-  (defun zd-insert-org-title ()
-   (interactive)
-   (insert
-     "#+title: "
-     (zd-lift-file-title (file-name-base (buffer-file-name)))
-     "\n"
-     zd-string-below-title
-     ))
-
-  (defcustom zd-string-below-title ""
-    "String inserted below title when `zd-insert-org-title' is called. Empty by default."
-    :type 'string
-    :group 'zetteldeft
-  )
-
-  (defun zd-get-file-list (srch)
-  "Returns a list of files with the search item SRCH."
-    (let ((deft-current-sort-method 'title))
-     (deft-filter srch t)
-     deft-current-files
-  ))
-
-  (defun zd-lift-file-title (zdFile)
-   (let ((baseName (file-name-base zdFile)))
-     (replace-regexp-in-string
-      "[0-9]\\{2,\\}-[0-9-]+[[:space:]]"
-      "" baseName)
-  ))
-
-  (defun zd-insert-list-links (zdSrch)
-  "Inserts at point a list of links to all deft files with a search string ZDSRCH.
-  When searching for a tag, include # manually in the prompt."
-   (interactive (list (read-string "search string: ")))
-   (dolist (zdFile (zd-get-file-list zdSrch))
-    (zd-list-entry-file-link zdFile)
-  ))
-
-  (defun zd-list-entry-file-link (zdFile)
-  "Insert ZDFILE as list entry."
-   (insert " - " (concat "§" (file-name-base zdFile)) "\n")
-  )
-
-  (defun zd-org-include-search (zdSrch)
-  "Inserts at point org-mode code to include all files with the selected tag. Include the # manually in the prompt."
-   (interactive (list (read-string "tag (include the #): ")))
-   (dolist (zdFile (zd-get-file-list zdSrch))
-    (zd-org-include-file zdFile)
-  ))
-
-  (defun zd-org-include-file (zdFile)
-  "Insert code to include org-file zdFile."
-   (insert
-     ;; Insert org-mode title
-     "\n* " (zd-lift-file-title zdFile) "\n"
-     ;; Insert #+INCLUDE: "file.org" :lines 2-
-     "#+INCLUDE: \"" zdFile "\" :lines \"2-\"\n"
-   ))
-
-  ;; ; highlight zetteldeft links
-  ;; (font-lock-add-keywords 'org-mode '(
-  ;;   ("§[0-9]\\{2,\\}-[0-9-]+" . font-lock-warning-face)
-  ;;   ))
-
-  ;; (with-eval-after-load 'deft
-  ;;   (define-key spacemacs-deft-mode-map-prefix
-  ;;     "o" 'efls/deft-open)
-  ;;   (define-key spacemacs-deft-mode-map-prefix
-  ;;     [?\t] 'efls/deft-open-preview)
-  ;;  )
-
-  (defun efls/deft-open-other ()
-   (interactive)
-   (deft-open-file-other-window t)
-  )
-
-  (defun efls/deft-open-preview ()
-   (interactive)
-   (deft-open-file-other-window)
-  )
-
-  (with-eval-after-load 'deft
-    (define-key deft-mode-map
-      (kbd "<tab>") 'efls/deft-open-preview)
-    (define-key deft-mode-map
-      (kbd "<s-return>") 'efls/deft-open-other)
-  )
-#+END_SRC
-** TESTING Helm Gitignore
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-gitignore
-    :ensure t
-    :commands helm-gitignore)
-#+END_SRC
-** TESTING Org demote/promote region
-#+BEGIN_SRC emacs-lisp
-(defun endless/demote-everything (number beg end)
-  "Add a NUMBER of * to all headlines between BEG and END.
-Interactively, NUMBER is the prefix argument and BEG and END are
-the region boundaries."
-  (interactive "p\nr")
-  (save-excursion
-    (save-restriction
-      (save-match-data
-        (widen)
-        (narrow-to-region beg end)
-        (goto-char (point-min))
-        (let ((string (make-string number ?*)))
-          (while (search-forward-regexp "^\\*" nil t)
-            (insert string)))))))
-#+END_SRC
-** TESTING Imenu-List
-#+BEGIN_SRC emacs-lisp
-  (use-package imenu-list
-    :ensure t
-    :commands (imenu-list-smart-toggle imenu-list-minor-mode)
-    :config
-    (setq imenu-list-focus-after-activation t
-          imenu-list-auto-resize t
-          imenu-list-position 'left)
-    :custom-face
-    (imenu-list-entry-face-0 ((t (:inherit imenu-list-entry-face :foreground "#269bd2"))))
-    (imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
-    (imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
-    (imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
-#+END_SRC
-** TESTING Git Auto Commit
-[[https://github.com/ryuslash/git-auto-commit-mode][Automatically commit to git]] after each save
-#+BEGIN_SRC emacs-lisp
-  (use-package git-auto-commit-mode
-    :ensure t
-    :commands git-auto-commit-mode
-    :config
-    (setq gac-automatically-push-p 1
-          gac-ask-for-summary-p nil))
-#+END_SRC
-** TESTING Magithub
-Magit & Github = [[https://github.com/vermiculus/magithub][Awesome]]
-#+BEGIN_SRC emacs-lisp
-(use-package magithub
-  :ensure t
-  :after magit
-  :config
-  (magithub-feature-autoinject t)
-  (setq magithub-clone-default-directory "~/.emacs.d/.local/elisp/"))
-#+END_SRC
-** Insert Second Time Stamp
-#+BEGIN_SRC emacs-lisp
-(defun cpm/insert-seconds-epoch ()
-  (interactive)
-  (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
-(global-set-key (kbd "C-c t") 'cpm/insert-seconds-epoch)
 #+END_SRC
