@@ -3802,7 +3802,7 @@ Keybindings for managing packages
     :non-normal-prefix "C-SPC"
 
       "u"  '(:ignore t :which-key "User")
-      "uA" '(:ignore r which-key "Agenda Files")
+      "uA" '(:ignore t which-key "Agenda Files")
       "uAa" #'cpm/goto-articles.org
       "uAc" #'cpm/goto-classes.org
       "uAf" #'cpm/goto-org-files
@@ -3811,7 +3811,9 @@ Keybindings for managing packages
       "uAp" #'cpm/goto-projects.org
       "uAs" #'cpm/goto-someday.org
       "uAt" #'cpm/org-goto-todo
-      "ua" 'cpm/jump-to-org-super-agenda
+      "ua"  '(:ignore t :which-key "Agenda")
+      "uaa" 'cpm/jump-to-org-super-agenda
+      "uaw" 'cpm/jump-to-week-agenda
       "um" 'cpm/org-to-markdown
       "uc" 'cpm/pandoc-convert-to-pdf
       "uC" 'cpm/pandoc-command-line-convert-to-pdf
@@ -5270,40 +5272,46 @@ Open files in their default applications (ms word being the prime example)
 *** Agenda Settings
 Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 #+BEGIN_SRC emacs-lisp
-    (setq org-agenda-files '("~/Dropbox/org-files/"))
-    (general-define-key "C-c a" #'org-agenda)
+  (setq org-agenda-files '("~/Dropbox/org-files/"))
+  (general-define-key "C-c a" #'org-agenda)
 
-    ;; Display properties
-    (setq org-cycle-separator-lines 0
-          org-tags-column 80
-          org-agenda-tags-column org-tags-column
-          org-agenda-window-setup 'only-window
-          org-agenda-restore-windows-after-quit t
-          org-agenda-todo-ignore-scheduled nil
-          org-agenda-todo-ignore-deadlines nil 
-          ;; org-agenda-sticky t
-          org-agenda-span 'day)
+  ;; Display properties
+  (setq org-cycle-separator-lines 0
+        org-tags-column 80
+        org-agenda-tags-column org-tags-column
+        org-agenda-window-setup 'only-window
+        org-agenda-restore-windows-after-quit t
+        org-agenda-todo-ignore-scheduled nil
+        org-agenda-todo-ignore-deadlines nil 
+        ;; org-agenda-sticky t
+        org-agenda-span 'day)
 
-    (with-eval-after-load 'org-agenda
-      (general-define-key :keymaps 'org-agenda-mode-map 
-                          "j" 'org-agenda-next-item
-                          "k" 'org-agenda-previous-item))
+  (with-eval-after-load 'org-agenda
+    (general-define-key :keymaps 'org-agenda-mode-map 
+                        "j" 'org-agenda-next-item
+                        "k" 'org-agenda-previous-item))
 
-    ;; automatically refresh the agenda after adding a task
-    (defun cpm/org-agenda-refresh ()
+  ;; automatically refresh the agenda after adding a task
+  (defun cpm/org-agenda-refresh ()
+  (interactive)
+  (when (get-buffer "*Org Agenda*")
+      (with-current-buffer "*Org Agenda*"
+          (org-agenda-redo t)
+          (message "[org agenda] refreshed!"))))
+  (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+
+  ;; show all todos
+  (defun cpm/jump-to-org-agenda-all-todos ()
+    "open agenda with all unscheduled/non-deadline todos"
     (interactive)
-    (when (get-buffer "*Org Agenda*")
-        (with-current-buffer "*Org Agenda*"
-            (org-agenda-redo t)
-            (message "[org agenda] refreshed!"))))
-    (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+    (org-agenda nil "z"))
 
-    ;; show all todos
-    (defun cpm/jump-to-org-agenda-all-todos ()
-      "open agenda with all unscheduled/non-deadline todos"
-      (interactive)
-      (org-agenda nil "z"))
-    
+  ;; jump to week agenda
+  (defun cpm/jump-to-week-agenda ()
+    "open custom week agenda"
+    (interactive)
+    (org-agenda nil "W"))
+
 #+END_SRC
 *** Agenda Navigation
 Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html][Aaron Bieber]]
