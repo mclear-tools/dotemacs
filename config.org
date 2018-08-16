@@ -5196,6 +5196,13 @@ Per this [[https://emacs.stackexchange.com/questions/13820/inline-verbatim-and-c
 (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
 
 #+END_SRC
+*** Org Entities
+Display proper utf-8 characters
+#+BEGIN_SRC emacs-lisp
+(setq org-entities-user
+      '(("nec" "\Box" nil "◻" "" "" "◻")
+        ("pos" "\Diamond" nil "◇" "" "" "◇")))
+#+END_SRC
 *** Hooks
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
