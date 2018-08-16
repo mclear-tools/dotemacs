@@ -5545,16 +5545,15 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                    :tag "Important"
                                    :priority "A"
                                    :order 6)
-                            (:name "Projects"
-                                   :category "Projects"
-                                   :children t
-                                   :order 14)
-                            (:name "To read"
-                                   :todo "TOREAD"
-                                   :order 30)
+                            (:name "In progress"
+                                   :todo "INPROGRESS"
+                                   :order 15)
                             (:name "Waiting"
                                    :todo "WAITING"
                                    :order 20)
+                            (:name "To read"
+                                   :todo "TOREAD"
+                                   :order 30)
                             (:name "Low priority"
                                    :priority<= "C"
                                    :todo ("SOMEDAY" )
@@ -5837,6 +5836,7 @@ Make counsel display org headings nicely.
 #+end_src
 **** Stuck Projects
 #+begin_src emacs-lisp
+(setq org-stuck-projects '("/PROJECT" ("NEXT") nil ""))
 (defun cpm/my-org-agenda-list-stuck-projects ()
   (interactive)
   (cpm/org-goto-projects)
