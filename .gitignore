@@ -19,3 +19,4 @@ var/
 .local/@roambot/etc/tldr/
 .local/@roambot/etc/emojis/
 *.DS_Store
+*/abbrev/*
