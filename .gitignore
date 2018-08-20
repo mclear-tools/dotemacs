@@ -20,3 +20,4 @@ var/
 .local/@roambot/etc/emojis/
 *.DS_Store
 */abbrev/*
+magithub/
