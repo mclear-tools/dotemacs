@@ -1715,8 +1715,7 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
       delete-auto-save-files t
       create-lockfiles nil)
 #+END_SRC
-*** DISABLED Full Auto Save
-CLOSED: [2018-08-14 Tue 18:20]
+*** Full Auto Save
 I also make emacs just outright save all buffers. 
 #+BEGIN_SRC emacs-lisp
   (defun full-auto-save ()
