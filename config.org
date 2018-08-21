@@ -2413,7 +2413,7 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
                   '(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
                   '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
                   ;; helm faces
-                  '(helm-selection ((t (:background "#073642" :underline nil))))
+                  '(helm-selection ((t (:background "#073642" :foreground "goldenrod1" :underline nil))))
                   '(helm-match ((t (:foreground "#b58900"))))
                   ;; line number highlighting 
                   '(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
@@ -2449,7 +2449,7 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
               '(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
 
               ;; helm faces
-              '(helm-selection ((t (:background "#eee8d5" :underline nil :weight bold))))
+              '(helm-selection ((t (:background "#eee8d5" :foreground "#268bd2" :underline nil :weight bold))))
               '(helm-match ((t (:foreground "#cb4b16" :weight bold))))
 
               ;; '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
