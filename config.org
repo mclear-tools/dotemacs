@@ -3382,27 +3382,28 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+END_SRC
 ***** Buffer Keybindings
 #+BEGIN_SRC emacs-lisp
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+    :states '(normal motion visual insert emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
 
-  "b"  '(:ignore t :which-key "Buffers")
-  "bb" 'helm-mini
-  "bc" 'cpm/copy-whole-buffer-to-clipboard
-  "bD" 'kill-buffer-and-window
-  "bd" 'kill-this-buffer
-  "be" 'erase-buffer
-  "bf" 'cpm/browse-file-directory
-  "bj" 'cpm/jump-in-buffer 
-  "bk" 'evil-delete-buffer
-  "bK" 'crux-kill-other-buffers
-  "bn" 'evil-buffer-new
-  "br" 'revert-buffer
-  "bR" 'crux-rename-buffer-and-file
-  "bt" 'open-dir-in-iterm
-  )
+    "b"  '(:ignore t :which-key "Buffers")
+    "bb" 'helm-mini
+    "bc" 'cpm/copy-whole-buffer-to-clipboard
+    "bD" 'kill-buffer-and-window
+    "bd" 'kill-this-buffer
+    "be" 'erase-buffer
+    "bf" 'cpm/browse-file-directory
+    "bj" 'cpm/jump-in-buffer
+    "bk" 'evil-delete-buffer
+    "bK" 'crux-kill-other-buffers
+    "bn" 'evil-buffer-new
+    "bN" 'cpm/new-buffer-new-frame
+    "br" 'revert-buffer
+    "bR" 'crux-rename-buffer-and-file
+    "bt" 'open-dir-in-iterm
+    )
 #+END_SRC
 ***** Comment Keybindings
 #+BEGIN_SRC emacs-lisp
@@ -5173,7 +5174,7 @@ Log timestamp when task is marked "DONE" or other finished keyword
 *** Org Modules
 A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
-(setq org-modules (quote (org-info org-protocol org-habit)))
+(setq org-modules (quote (org-info org-protocol org-habit org-mac-link)))
 #+END_SRC
 *** Org ID
 #+BEGIN_SRC emacs-lisp
