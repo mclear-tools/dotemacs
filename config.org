@@ -5018,7 +5018,8 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
    (setq evil-magit-use-y-for-yank t))
  #+END_SRC
  
-*** TESTING Magithub
+*** DISABLED Magithub
+CLOSED: [2018-09-07 Fri 00:53]
 Magit & Github = [[https://github.com/vermiculus/magithub][Awesome]]
 #+BEGIN_SRC emacs-lisp
 (use-package magithub
@@ -5049,7 +5050,8 @@ Magit & Github = [[https://github.com/vermiculus/magithub][Awesome]]
     (setq fill-column 72)
     (setq-local comment-auto-fill-only-comments nil)))
 #+END_SRC
-*** TESTING Git Auto Commit
+*** DISABLED Git Auto Commit
+CLOSED: [2018-08-22 Wed 16:17]
 [[https://github.com/ryuslash/git-auto-commit-mode][Automatically commit to git]] after each save
 #+BEGIN_SRC emacs-lisp
   (use-package git-auto-commit-mode
