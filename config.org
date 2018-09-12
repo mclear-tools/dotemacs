@@ -872,10 +872,10 @@ Find a file in a project and open in a vertical split
 *** Reveal to PDF
 #+BEGIN_SRC emacs-lisp
   (defun cpm/reveal-to-pdf ()
-  "print reveal.js slides to pdf"
-  (interactive)
-  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/content/slides/phil105_lecture_outline.html?print-pdf'")
-  (delete-windows-on "*Async Shell Command*" t)) 
+    "print reveal.js slides to pdf"
+    (interactive)
+    (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/phil105-classplan.html?print-pdf'")
+    (delete-windows-on "*Async Shell Command*" t))
 #+END_SRC
 *** Rotate windows
 #+BEGIN_SRC emacs-lisp
@@ -1733,7 +1733,7 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
       (concat cpm-cache-dir "auto-save-list/.saves-"))
 
 (setq auto-save-default t               ; auto-save every buffer that visits a file
-      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+      auto-save-timeout 30              ; number of seconds idle time before auto-save (default: 30)
       auto-save-interval 300            ; number of keystrokes between auto-saves (default: 300)
       auto-save-visited-file-name nil
       delete-auto-save-files t
@@ -1981,8 +1981,10 @@ Install, automatically load, and enable evil. It's like vim, but better!
       ;; (run-with-idle-timer 60 t 'evil-normal-state)
       ;; don't echo evil state
       (setq evil-echo-state nil)
+      ;; don't move cursor back when exiting insert state
+      (setq evil-move-cursor-back nil)
       ;; evil everywhere
-      (evil-mode 1)))
+      (evil-mode 1))) 
 #+END_SRC
 **** Evil Related Packages & Settings
 There are some other useful setup packages for evil
@@ -2044,12 +2046,14 @@ A collection of keybindings for evil
    (evil-embrace-enable-evil-surround-integration)
    :config
    (setq evil-embrace-show-help-p nil)
+   (add-hook 'org-mode-hook 'embrace-org-mode-hook)
    (defun embrace-markdown-mode-hook ()
    (dolist (lst '((?* "*" . "*")  
                   (?\ "\\" . "\\")
                   (?$ "$" . "$")
                   (?/ "/" . "/")))
     (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
+    (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook)
     )
 #+end_src 
 
@@ -2277,12 +2281,12 @@ faster.
 **** Highlight TODOs
  highlight TODO statements in comments 
  #+BEGIN_SRC emacs-lisp
- (use-package hl-todo
-   :defer t
-   :init
-   (add-hook 'org-mode-hook #'hl-todo-mode)
-   (add-hook 'prog-mode-hook #'hl-todo-mode)
-   (add-hook 'markdown-mode-hook #'hl-todo-mode))
+   (use-package hl-todo
+     :defer t
+     :init
+     ;; (add-hook 'org-mode-hook #'hl-todo-mode)
+     (add-hook 'prog-mode-hook #'hl-todo-mode)
+     (add-hook 'markdown-mode-hook #'hl-todo-mode))
  #+END_SRC
 **** All the icons
 Like the title says...
@@ -2624,7 +2628,7 @@ that I use anything other than solarized :)
                    (str (if (and tag (< 0 (length tag)))
                             tag
                           (when num (int-to-string num)))))
-              (propertize (format " %s |" str) 'face 'doom-modeline-eyebrowse))
+              (propertize (format " %s |" str) 'face 'doom-modeline-highlight))
           ""))
 
 
@@ -3680,7 +3684,7 @@ Keybindings for managing packages
 ***** Project Keybindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key
-    :states '(normal visual emacs)
+    :states '(normal visual emacs motion)
     :keymaps 'override
     :prefix "SPC"
     :non-normal-prefix "C-SPC"
@@ -4513,8 +4517,7 @@ Easy workspace creation and switching
      (persp-mode 1)
      (nameframe-create-frame "Emacs Config")
      (toggle-frame-maximized)
-     (find-file "~/.emacs.d/config.org")
-     (magit-status))
+     (find-file "~/.emacs.d/config.org"))
    (defun cpm/load-kant-free-thought ()
      (interactive)
      (persp-mode 1)
@@ -5702,9 +5705,7 @@ Make capture the only window and close after refiling.
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :after org
-    :demand t
-    :hook (org-mode . (lambda () (org-bullets-mode 1)))
+    :hook (org-mode . org-bullets-mode)
     :config 
     (setq org-bullets-bullet-list '("◉" "⚫"))) 
 
@@ -5721,7 +5722,7 @@ Make capture the only window and close after refiling.
                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
-*** Org Prettify Source Blocks
+** Org Prettify Source Blocks
 
 Make source blocks look better. Courtesy of [[https://pank.eu/blog/pretty-babel-src-blocks.html][Rasmus Pank Roulund]].
 Last updated: 2018-04-06
@@ -5807,7 +5808,7 @@ Last updated: 2018-04-06
 #+END_SRC
 
 
-*** Org-Goto
+** Org-Goto
 Make counsel display org headings nicely. 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'org
@@ -5817,25 +5818,29 @@ Make counsel display org headings nicely.
   (define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
   (define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all))
 #+END_SRC
-*** Org-Reveal
+** Org-Reveal
 #+BEGIN_SRC emacs-lisp
   (use-package ox-reveal
-  :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
+  ;; :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
+  :after ox
   :config
   (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
         org-reveal-theme "moon"
         org-reveal-default-frag-style "roll-in"
         org-reveal-hlevel 2
         ))
-       
-(defun cpm/narrowed-subtree-to-html ()
-  "export narrowed tree to html"
-  (interactive)
-  (org-reveal-export-current-subtree)
-  (org-narrow-to-subtree))
+     
+  (defun cpm/narrowed-subtree-to-html ()
+    "export narrowed tree to html"
+    (interactive)
+    (org-reveal-export-current-subtree)
+    (org-narrow-to-subtree))
+    
+  (fset 'cpm/reveal-to-html-open
+   "\C-c\C-e\C-sRB")
 #+END_SRC
-*** Org Organization (GTD)
-**** GTD Projects
+** Org Organization (GTD)
+*** GTD Projects
 #+begin_src emacs-lisp
 (defun cpm/org-goto-todo ()
   (interactive)
@@ -5866,7 +5871,7 @@ Make counsel display org headings nicely.
   (org-narrow-to-subtree)
   (org-columns))
 #+end_src
-**** Stuck Projects
+*** Stuck Projects
 #+begin_src emacs-lisp
 (setq org-stuck-projects '("/PROJECT" ("NEXT") nil ""))
 (defun cpm/my-org-agenda-list-stuck-projects ()
@@ -5874,7 +5879,7 @@ Make counsel display org headings nicely.
   (cpm/org-goto-projects)
   (org-agenda nil "#" 'subtree))
 #+end_src
-**** Areas
+*** Areas
 #+begin_src emacs-lisp
 (defun cpm/go-to-areas ()
     (interactive)
@@ -5890,7 +5895,7 @@ Make counsel display org headings nicely.
     (org-narrow-to-subtree)
     (org-columns))
 #+end_src
-**** Random Notes
+*** Random Notes
 #+begin_src emacs-lisp
 (use-package org-randomnote
   :commands (org-randomnote org-randomnote--go-to-random-header org-randomnote--get-random-file org-randomnote--get-random-subtree)
@@ -5901,9 +5906,9 @@ Make counsel display org headings nicely.
 
 
 
-*** Org Functions
+** Org Functions
 Some useful org-specific functions
-**** Org-Fill Functions
+*** Org-Fill Functions
  Functions to calculate apt offsets and call regular org fill stuff. There's a
  useful [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack overflow thread]] on this. 
 #+BEGIN_SRC emacs-lisp
@@ -5928,7 +5933,7 @@ Some useful org-specific functions
   ;; (add-hook 'org-load-hook 'my-org-mode-hook)
   ;; (add-hook 'org-mode-hook 'my-org-mode-hook)
 #+END_SRC
-**** Narrow & Advance/Retreat
+*** Narrow & Advance/Retreat
 Functions to advance forwards or backwards through narrowed tree
 #+BEGIN_SRC emacs-lisp
 (defun cpm/org-advance ()
@@ -5947,7 +5952,7 @@ Functions to advance forwards or backwards through narrowed tree
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
 #+END_SRC
-**** Org files
+*** Org files
 #+BEGIN_SRC emacs-lisp
 (defun cpm/goto-org-files ()
   "goto org-files directory"
@@ -5979,7 +5984,7 @@ Functions to advance forwards or backwards through narrowed tree
   (interactive)
   (find-file "~/Dropbox/org-files/someday.org"))
 #+END_SRC
-**** Export Headings as Separate PDF Files
+*** Export Headings as Separate PDF Files
 Helpful advice from [[http://pragmaticemacs.com/emacs/export-org-mode-headlines-to-separate-files/][pragmatic emacs]]
 #+BEGIN_SRC emacs-lisp
 ;; export headlines to separate files
@@ -6011,7 +6016,7 @@ are exported to a filename derived from the headline text."
            (set-buffer-modified-p modifiedp)))
        "-noexport" 'region-start-level))))
 #+END_SRC
-**** TESTING Org demote/promote region
+*** TESTING Org demote/promote region
 #+BEGIN_SRC emacs-lisp
 (defun endless/demote-everything (number beg end)
   "Add a NUMBER of * to all headlines between BEG and END.
@@ -6028,14 +6033,13 @@ the region boundaries."
           (while (search-forward-regexp "^\\*" nil t)
             (insert string)))))))
 #+END_SRC
-
-*** Org Rifle
+** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm-org-rifle
     :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
 #+END_SRC
-*** Org-Download
+** Org-Download
 Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]]. 
 #+BEGIN_SRC emacs-lisp
   (use-package org-download
@@ -6046,7 +6050,7 @@ Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo
            org-download-image-latex-width 500
    )
 #+END_SRC
-*** Org Pomodoro
+** Org Pomodoro
 Helps with time tracking
 #+BEGIN_SRC emacs-lisp
   (use-package org-pomodoro
@@ -6055,14 +6059,14 @@ Helps with time tracking
     (progn
       (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 #+END_SRC emacs-lisp
-*** Org Indirect Buffer
+** Org Indirect Buffer
 Some advice to automatically switch to a new indirect buffer upon creation
 #+BEGIN_SRC emacs-lisp
 (defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
 #+END_SRC
 
 
-*** Org Numbers Overlay
+** Org Numbers Overlay
 [[https://github.com/larkery/emacs/blob/master/site-lisp/org-numbers-overlay.el][This]] is a useful minor-mode to number org-mode headings. It came up in
 the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to_display_numbers_at_the/][this reddit]] discussion. 
 #+BEGIN_SRC emacs-lisp
@@ -6142,11 +6146,13 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
                              s)))))))))
 (provide 'org-numbers-overlay)
 #+END_SRC
-*** Org Export
+** Org Export
+Some useful settings
 #+BEGIN_SRC emacs-lisp
+;; backends
 (setq org-export-backends '(ascii html icalendar latex odt pandoc hugo md))
 #+END_SRC
-**** Org & Pandoc (Ox-pandoc)
+*** Org & Pandoc (Ox-pandoc)
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
@@ -6163,14 +6169,15 @@ the course of [[https://www.reddit.com/r/emacs/comments/6crtzw/it_is_possible_to
     (setq org-pandoc-format-extensions '(org+smart)))
 #+END_SRC 
 
-**** Ox-Hugo
+*** Ox-Hugo
 [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
 #+BEGIN_SRC emacs-lisp
 (use-package ox-hugo :after ox)
+(use-package ox-hugo-auto-export :ensure nil :after ox-hugo)
 #+END_SRC
 
 
-**** Org Export Top-Level Trees
+*** Org Export Top-Level Trees
 From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
 #+BEGIN_SRC emacs-lisp
 (defun cpm/org-map-entries (org-file in-tags func)
@@ -6213,7 +6220,7 @@ From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-to
 
 
 
-*** Org Miscellaneous Packages  
+** Org Miscellaneous Packages  
 Other useful org packages
 
 #+BEGIN_SRC emacs-lisp
@@ -6225,8 +6232,8 @@ Other useful org packages
     (ox-extras-activate '(ignore-headlines)))
 #+END_SRC 
 
-*** Org Keybindings
-**** Evil Org 
+** Org Keybindings
+*** Evil Org 
 #+BEGIN_SRC emacs-lisp
   (use-package evil-org
     :ensure t
@@ -6239,7 +6246,7 @@ Other useful org packages
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
 #+END_SRC
-**** Org Local Leader Keybindings
+*** Org Local Leader Keybindings
 
 #+BEGIN_SRC emacs-lisp
   (general-define-key
@@ -6282,7 +6289,7 @@ Other useful org packages
          "if" #'org-footnote-new
 
    "R"  '(:ignore t :which-key "RevealJS..." )
-         "Rr" #'org-reveal-export-to-html-and-browse
+         "Rr" #'cpm/reveal-to-html-open
          "Rs" #'cpm/narrowed-subtree-to-html
          "RS" #'org-reveal-export-current-subtree
          "Rp" #'cpm/reveal-to-pdf)
@@ -6299,7 +6306,7 @@ Other useful org packages
       "C-n" #'org-agenda-next-item
       "C-p" #'org-agenda-previous-item)
 #+END_SRC
-**** Alternate Bindings
+*** Alternate Bindings
 #+BEGIN_SRC emacs-lisp
   (general-define-key :states '(normal) :keymaps 'org-mode-map
         "RET" 'org-open-at-point     ;; Open with return in evil
