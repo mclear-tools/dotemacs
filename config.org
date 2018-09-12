@@ -3293,6 +3293,12 @@ Winner mode is a [[https://www.emacswiki.org/emacs/WinnerMode][built-in package]
  :config
  (winner-mode 1))
 #+END_SRC
+**** Other window
+Move to other window
+#+BEGIN_SRC emacs-lisp
+(general-define-key :states '(normal motion visual insert)
+  "C-o" 'other-window)
+#+END_SRC
 *** Recent files
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
