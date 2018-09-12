@@ -7329,13 +7329,13 @@ Auto-revert buffers of changed files
 
 * Post-Initialization
 ** Server
-Start server
+Start server. For the proper way to check whether a server is running see [[http://emacshorrors.com/posts/determining-if-the-server-is-started-or-the-wonders-of-server-running-p.html][this post]]. 
 #+BEGIN_SRC emacs-lisp
   (use-package server
    :defer 5
    :config
     (if (display-graphic-p)
-        (unless (or (daemonp) (server-running-p))
+        (unless (and (boundp server-process) server-process)
            (message "Starting server...")
            (server-start)))
     )
