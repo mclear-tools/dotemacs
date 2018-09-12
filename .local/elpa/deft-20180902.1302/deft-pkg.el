@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "deft" "20180902.1302" "quickly browse, filter, and edit plain text notes" 'nil :stars '(#("210" 0 3 (font-lock-face paradox-star-face)) #("26K" 0 3 (value 26262 font-lock-face paradox-download-face))) :commit "9d31a92ed8407ee92cfd7102538dc9ec6c41559c" :keywords '("plain text" "notes" "simplenote" "notational velocity") :authors '(("Jason R. Blevins" . "jrblevin@xbeta.org")) :maintainer '("Jason R. Blevins" . "jrblevin@xbeta.org") :url "https://jblevins.org/projects/deft/")
