@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.local/@roambot/cache/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
@@ -14,6 +14,7 @@
  '(flyspell-issue-message-flag nil)
  '(flyspell-issue-welcome-flag nil)
  '(flyspell-use-global-abbrev-table-p t)
+ '(git-commit-summary-max-length 50)
  '(golden-ratio-exclude-buffer-regexp (quote ("iedit")))
  '(helm-follow-mode-persistent t)
  '(org-footnote-auto-adjust t)

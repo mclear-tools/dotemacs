@@ -4,15 +4,10 @@
 6/26/2018 09:30-10:30 Blood work
  Location: 160 Wayland Ave
  Providence, RI, United States
-%%(and (diary-block 2 8 2018 2 12 2018)) Visit Jess
-6/27/2018 14:45-15:45 haircut
+6/15/2018 13:00-14:00 dog grooming
+ Location: plaid and stripe
 5/10/2018 11:15-12:15 haircut
-%%(and (diary-anniversary 10 4 2017))  Janna's birthday
-%%(and (diary-block 10 11 2018 10 15 2018)) Visit Jess
-9/3/2018 19:15-20:15 Dune reservation
-%%(and (diary-block 8 31 2018 9 8 2018)) Visit Jess
- Location: Providence RI
-4/14/2018 11:30-12:30 MRI hold
+%%(and (diary-block 7 25 2018 8 4 2018)) NH Vacation
 5/29/2018 12:30-14:30 MRI Biopsy
  Location: 110 Lockwood St
  Providence, RI, United States
@@ -20,8 +15,7 @@
 6/20/2018 11:00-12:00 Optometrist & glasses selection
  Location: Providence Optical
  210 Westminster St, Providence, RI  02903, United States
-6/15/2018 13:00-14:00 dog grooming
- Location: plaid and stripe
+6/27/2018 14:45-15:45 haircut
 6/1/2018 13:30-14:30 haircut
 %%(and (diary-block 5 10 2018 5 14 2018)) Jess's B-day weekend
  Location: Cottage
@@ -36,13 +30,25 @@
  
  Location: 110 Lockwood St
  Providence, RI, United States
-%%(and (diary-block 11 8 2018 11 12 2018)) Visit Jess
+9/5/2018 18:15-20:00 Shoulder MRI
+ Desc: 6:15 arrival
+ Take sedative by 6:30
+ 7 pm MRI
+ 
+ 1 Randall Sq; Suite 103
+ Location: 1 Randall Sq
+ Providence, RI, United States
+%%(and (diary-anniversary 10 4 2017))  Janna's birthday
 %%(and (diary-block 9 20 2018 9 24 2018)) Visit Jess
-%%(and (diary-block 2 23 2018 2 26 2018)) Visit Jess
-%%(and (diary-block 7 25 2018 8 4 2018)) NH Vacation
+%%(and (diary-block 10 4 2018 10 8 2018)) Visit Jess
+9/3/2018 19:15-20:15 Dune reservation
+%%(and (diary-block 8 31 2018 9 8 2018)) Visit Jess
+ Location: Providence RI
+4/14/2018 11:30-12:30 MRI hold
 4/13/2018 13:45-14:45 Haircut
 7/25/2018 14:00-15:00 haircut
 %%(and (diary-block 4 13 2018 4 16 2018)) Visit Jess
 %%(and (diary-block 11 14 2018 11 18 2018)) Jess at POD
  Location: Portland
+%%(and (diary-block 10 18 2018 10 22 2018)) Visit Jess
 %%(and (diary-block 3 16 2018 3 25 2018)) Visit Jess
