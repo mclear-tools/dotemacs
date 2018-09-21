@@ -793,43 +793,49 @@ A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org
   (defun cpm/org-to-markdown ()
     "convert clipboard contents from org to markdown and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --atx-headers -f org -t markdown"))
+    (kill-new (shell-command-to-string "pbpaste | pandoc --atx-headers -f org -t markdown"))
     (yank))
 
   (defun cpm/markdown-to-org ()
     "convert clipboard contents from markdown to org and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t org"))
+    (kill-new (shell-command-to-string "pbpaste | pandoc -f markdown -t org"))
     (yank))
 
   (defun cpm/tex-to-org ()
     "convert clipboard contents from markdown to org and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t org --atx-headers"))
+    (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t org"))
     (yank))
+    
+  (defun cpm/org-to-tex ()
+   "convert clipboard contents from org to tex and paste"
+   (interactive)
+   (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t latex"))
+   (yank))
 
   (defun cpm/tex-to-markdown ()
     "convert clipboard contents from markdown to org and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f latex -t markdown --atx-headers"))
+    (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t markdown --atx-headers"))
     (yank))
     
   (defun cpm/markdown-to-tex ()
     "convert clipboard contents from markdown to org and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc -f markdown -t latex"))
+    (kill-new (shell-command-to-string "pbpaste | pandoc -f markdown -t latex"))
     (yank))
 
   (defun cpm/cite-to-org ()
     "convert clipboard contents from markdown to org with citations and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
+    (kill-new (shell-command-to-string "pbapaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
     (yank))
 
   (defun cpm/cite-to-markdown ()
     "convert clipboard contents to markdown with citations and paste"
     (interactive)
-    (kill-new (shell-command-to-string "osascript -e 'the clipboard as unicode text' | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
+    (kill-new (shell-command-to-string "pbapaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
     (yank))
 
 
