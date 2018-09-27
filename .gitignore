@@ -21,3 +21,5 @@ var/
 *.DS_Store
 */abbrev/*
 magithub/
+/.local/eshell/history
+/bookmarks
