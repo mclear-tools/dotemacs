@@ -2186,7 +2186,7 @@ make interaction smoother.
  that use that for headings, such as [[*Solarized][solarized]]. The settings are called below. 
 
  #+BEGIN_SRC emacs-lisp
- (defvar cpm-font (font-spec :family "Hasklig" :size 13))
+ (defvar cpm-font (font-spec :family "Hasklug Nerd Font" :size 13))
  (defvar cpm-vari-font (font-spec :family "Avenir"))
  (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
  #+END_SRC
@@ -4536,7 +4536,7 @@ Easy workspace creation and switching
      (persp-mode 1)
      (nameframe-create-frame "Kant on Rational Agency")
      (toggle-frame-maximized)
-     (find-file "~/Dropbox/Work/projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
+     (find-file "~/Dropbox/Work/projects/Book-Projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
      (magit-status))
    (defun cpm/load-emacs-config ()
      (interactive)
@@ -6060,6 +6060,20 @@ the region boundaries."
         (let ((string (make-string number ?*)))
           (while (search-forward-regexp "^\\*" nil t)
             (insert string)))))))
+#+END_SRC
+*** Org Hide Property Drawers
+From [[https://www.reddit.com/r/emacs/comments/9htd0r/how_to_completely_hide_the_properties_drawer_in/e6fehiw][Reddit]]
+#+BEGIN_SRC emacs-lisp
+(defun org-toggle-properties ()
+  ;; toggle visibility of properties in current header if it exists
+  (save-excursion
+    (when (not (org-at-heading-p))
+      (org-previous-visible-heading 1))
+    (when (org-header-property-p)
+      (let* ((a (re-search-forward "\n\\:" nil t)))
+        (if (outline-invisible-p (point))
+            (outline-show-entry)
+          (org-cycle-hide-drawers 'all))))))
 #+END_SRC
 ** Org Rifle
 Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
