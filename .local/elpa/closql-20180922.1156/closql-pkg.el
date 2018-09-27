@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "closql" "20180922.1156" "store EIEIO objects using EmacSQL" '((emacs "25.1") (emacsql-sqlite "2.0.3")) :stars '(#("7" 0 1 (font-lock-face paradox-star-face)) #("742" 0 3 (value 742 font-lock-face paradox-download-face))) :commit "253ceab31a826c211eb16ec74aeb1712d3e8f089" :keywords '("extensions") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/emacscollective/closql")

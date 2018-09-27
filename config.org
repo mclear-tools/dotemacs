@@ -1946,7 +1946,8 @@ Install, automatically load, and enable evil. It's like vim, but better!
   (use-package evil
     :demand t
     :init 
-    (setq evil-want-integration nil)
+    (setq evil-want-integration nil
+          evil-want-keybinding nil)
     :config
     (progn
     ;; Cursor shape and color
