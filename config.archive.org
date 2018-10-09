@@ -1,3 +1,62 @@
+** Org super agenda/agenda custom commands
+ #+BEGIN_SRC emacs-lisp :tangle no
+
+          ("W" "Week's agenda and all TODOs"
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "High-priority unfinished tasks:")))
+            (agenda "" ((org-agenda-span 'week)))
+            (alltodo ""
+                     ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+                                                     (air-org-skip-subtree-if-priority ?A)
+                                                     (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "ALL normal priority tasks:"))))
+           ((org-agenda-compact-blocks nil)))
+
+          ("A" "Super Agenda"
+           ((agenda "" ((org-agenda-span 'day)
+                        (let ((org-super-agenda-groups
+                         '((:name "Schedule"
+                                  :time-grid t)
+                           (:name "Today"
+                                  :scheduled today)
+                           (:name "Due Today"
+                                  :deadline today
+                                  :order 2)
+                           (:name "Due Soon"
+                                  :deadline future
+                                  :order 8)
+                           (:name "Overdue"
+                                  :deadline past
+                                  :order 7)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (let ((org-super-agenda-groups
+                          '((:name "Next to do"
+                                   :todo "NEXT"
+                                   :order 1)
+                            (:name "Important"
+                                   :tag "Important"
+                                   :priority "A"
+                                   :order 6)
+                            (:name "In progress"
+                                   :todo "INPROGRESS"
+                                   :order 15)
+                            (:name "Waiting"
+                                   :todo "WAITING"
+                                   :order 20)
+                            (:name "To read"
+                                   :todo "TOREAD"
+                                   :order 30)
+                            (:name "Low priority"
+                                   :priority<= "C"
+                                   :todo ("SOMEDAY" )
+                                   :order 90)
+                            (:discard (:tag ("Chore" "Routine" "Daily")))
+
+                            ))))))))))))
+
+#+END_SRC
+
 ** Zotero Keybindings 
 #+BEGIN_SRC emacs-lisp
 (general-define-key

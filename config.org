@@ -1739,8 +1739,8 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
       (concat cpm-cache-dir "auto-save-list/.saves-"))
 
 (setq auto-save-default t               ; auto-save every buffer that visits a file
-      auto-save-timeout 30              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 300            ; number of keystrokes between auto-saves (default: 300)
+      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
       auto-save-visited-file-name nil
       delete-auto-save-files t
       create-lockfiles nil)
@@ -1985,7 +1985,7 @@ Install, automatically load, and enable evil. It's like vim, but better!
       (evil-set-initial-state 'messages-buffer-mode 'normal)
       (evil-set-initial-state 'magit-log-edit-mode 'insert)
       ;; evil-normal-state is preferred, so revert when idle
-      ;; (run-with-idle-timer 60 t 'evil-normal-state)
+      (run-with-idle-timer 60 t 'evil-normal-state)
       ;; don't echo evil state
       (setq evil-echo-state nil)
       ;; don't move cursor back when exiting insert state
@@ -2030,18 +2030,21 @@ A collection of keybindings for evil
 ***** Evil Surround Commands Like Vim-Surround
 #+begin_src emacs-lisp
   (use-package evil-surround
-    :commands (evil-surround-region evil-surround-change evil-surround-delete)
+    ;; :commands (evil-surround-region evil-surround-change evil-surround-delete)
     ;; :hook ((LaTeX-mode org-mode markdown-mode prog-mode) . evil-surround-mode)
     :general
     (:states '(visual)
     "s" 'evil-surround-region
     "S" 'evil-substitute)
     ;; :config (global-evil-surround-mode 1)
+    :init
+    (global-evil-surround-mode 1)
     )
 
-  (use-package embrace 
-    :after evil-surround
-    :demand t)
+  ;; (use-package embrace 
+  ;;   :disabled t
+  ;;   :after evil-surround
+  ;;   :demand t)
     ;; :hook ((LaTeX-mode . embrace-LaTeX-mode-hook)
     ;;        (org-mode . embrace-org-mode-hook)
     ;;        (org-mode . embrace-markdown-mode-hook)
@@ -2049,6 +2052,7 @@ A collection of keybindings for evil
 
   (use-package evil-embrace
    :after evil-surround
+   :demand t
    :init
    (evil-embrace-enable-evil-surround-integration)
    :config
@@ -5406,7 +5410,26 @@ Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer
 (general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
   "J" 'air-org-agenda-next-header
   "K" 'air-org-agenda-previous-header))
+  
+(defun air-org-skip-subtree-if-habit ()
+  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (if (string= (org-entry-get nil "STYLE") "habit")
+        subtree-end
+      nil)))
+
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
 #+END_SRC
+
 *** Org Super-Agenda
 [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
 #+BEGIN_SRC emacs-lisp
@@ -5414,23 +5437,50 @@ Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer
    :general 
    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap 
    ","  'cpm/hydra-org-agenda/body)
+   :after (org org-agenda)
+   :demand t
    :config
-   (org-super-agenda-mode +1) 
-    ;; see https://github.com/alphapapa/org-super-agenda/issues/11
-    (org-super-agenda--defgroup time-grid
-    "Group items that appear on a time grid. This matches the `dotime' text-property, which, if NOT set to `time' (I know, this gets confusing), means it WILL appear in the agenda time-grid. "
-    :section-name "Timed items"  ; Note: this does not mean the item has a "SCHEDULED:" line
-    :test (or (--when-let (org-find-text-property-in-string 'time item)
-                ;; This property is a string; if empty, it doesn't match
-                (not (string-empty-p it)))
-              ;; This property is nil if it doesn't match
-              (org-find-text-property-in-string 'time-of-day item)
-              (--when-let (org-find-text-property-in-string 'dotime item)
-                ;; For this to match, the 'dotime property must be set, and
-                ;; it must not be equal to 'time.  If it is not set, or if
-                ;; it is set and is equal to 'time, the item is not part of
-                ;; the time-grid.  Yes, this is confusing.  :)
-                (not (eql it 'time))))))
+   (org-super-agenda-mode)
+   (setq org-super-agenda-groups
+     '((:name "Schedule"
+        :time-grid t)
+       (:name "Today"
+        :scheduled today)
+       (:name "Due Today"
+        :deadline today
+        :order 2)
+       (:name "Due Soon"
+        :deadline future
+        :order 8)
+       (:name "Overdue"
+        :deadline past
+        :order 7)
+       (:name "Next to do"
+        :todo "NEXT"
+        :order 1)
+       (:name "Important"
+        :tag "Important"
+        :priority "A"
+        :order 6)
+       (:name "In progress"
+        :todo "INPROGRESS"
+        :order 15)
+       (:name "Waiting"
+        :todo "WAITING"
+        :order 20)
+       (:name "To read"
+        :todo "TOREAD"
+        :order 30)
+       (:name "Low priority"
+        :priority<= "C"
+        :todo ("SOMEDAY")
+        :order 90)
+       (:discard (:tag ("Chore" "Routine" "Daily"))))))
+       
+  (defun cpm/jump-to-org-super-agenda ()
+  (interactive)
+  (org-agenda nil "A"))
+
 
 #+END_SRC
 
@@ -5514,37 +5564,14 @@ _vr_ reset      ^^                       ^^                 ^^
   ("q" nil :exit t)
   ("gd" org-agenda-goto-date)
   ("." org-agenda-goto-today)
-  ("gr" org-agenda-redo))
-
-  (defun cpm/jump-to-org-super-agenda ()
-  (interactive)
-  (org-agenda nil "s")))
+  ("gr" org-agenda-redo)))
 
 #+END_SRC
 
 
 
 *** Agenda Custom Commands
-#+BEGIN_SRC emacs-lisp
-(defun air-org-skip-subtree-if-habit ()
-  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-    (if (string= (org-entry-get nil "STYLE") "habit")
-        subtree-end
-      nil)))
-
-(defun air-org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
-
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   ; https://orgmode.org/manual/Storing-searches.html#Storing-searches
   (setq org-agenda-custom-commands
         '(("x" agenda)
@@ -5554,24 +5581,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
           ("n" todo "NEXT")
           ("r" todo "REVISE")
           ("w" todo "WAITING")
-          ;; ("W" "Week view"
-          ;;  ((agenda "" ((org-agenda-span 'week)
-          ;;               (org-super-agenda-groups
-          ;;                '((:name "Schedule"
-          ;;                         :time-grid t)
-          ;;                  (:name "Today"
-          ;;                         :scheduled today)
-          ;;                  (:name "Due Today"
-          ;;                         :deadline today
-          ;;                         :order 2)
-          ;;                  (:name "Due Soon"
-          ;;                         :deadline future
-          ;;                         :order 8)
-          ;;                  (:name "Overdue"
-          ;;                  :deadline past
-          ;;                         :order 7)))))
-          ;;   ))
-
+          ("A" agenda "Super Agenda")
           ("W" "Week's agenda and all TODOs"
            ((tags "PRIORITY=\"A\""
                   ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
@@ -5582,52 +5592,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                                      (air-org-skip-subtree-if-priority ?A)
                                                      (org-agenda-skip-if nil '(scheduled deadline))))
                       (org-agenda-overriding-header "ALL normal priority tasks:"))))
-           ((org-agenda-compact-blocks nil)))
-
-          ("s" "Super Agenda"
-           ((agenda "" ((org-agenda-span 'day)
-                        (org-super-agenda-groups
-                         '((:name "Schedule"
-                                  :time-grid t)
-                           (:name "Today"
-                                  :scheduled today)
-                           (:name "Due Today"
-                                  :deadline today
-                                  :order 2)
-                           (:name "Due Soon"
-                                  :deadline future
-                                  :order 8)
-                           (:name "Overdue"
-                                  :deadline past
-                                  :order 7)))))
-            (alltodo "" ((org-agenda-overriding-header "")
-                         (org-super-agenda-groups
-                          '((:name "Next to do"
-                                   :todo "NEXT"
-                                   :order 1)
-                            (:name "Important"
-                                   :tag "Important"
-                                   :priority "A"
-                                   :order 6)
-                            (:name "In progress"
-                                   :todo "INPROGRESS"
-                                   :order 15)
-                            (:name "Waiting"
-                                   :todo "WAITING"
-                                   :order 20)
-                            (:name "To read"
-                                   :todo "TOREAD"
-                                   :order 30)
-                            (:name "Low priority"
-                                   :priority<= "C"
-                                   :todo ("SOMEDAY" )
-                                   :order 90)
-                            (:discard (:tag ("Chore" "Routine" "Daily")))
-
-                            )))))
-          )))
-
-#+END_SRC
+           ((org-agenda-compact-blocks nil)))))
+ #+END_SRC
+         
 
 ** Org Capture
 *** Capture Settings
@@ -6357,7 +6324,8 @@ Other useful org packages
         "s-J" 'crux-top-join-line)
   ;;   normal, insert, visual shortcuts
     (general-define-key :states '(normal insert visual) :keymaps 'org-mode-map
-      "M-q" #'cpm/fill-or-unfill)
+      "M-q" #'cpm/fill-or-unfill
+      "C-t" #'transpose-chars)
   ;;   ;; normal & insert state shortcuts.
     (general-define-key :states '(normal insert) :keymaps 'org-mode-map
        ;; easily emphasize text

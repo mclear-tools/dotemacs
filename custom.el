@@ -80,4 +80,5 @@
  '(imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
  '(imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
  '(imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900"))))
+ '(org-agenda-date ((t (:background "#002833" :foreground "dark cyan" :inverse-video nil :box (:line-width 3 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
  '(org-link ((t (:foreground "#b58900" :underline nil)))))
