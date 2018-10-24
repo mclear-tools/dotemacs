@@ -2227,6 +2227,15 @@ make interaction smoother.
               (height . 60) ;; lines
               ))))
 #+END_SRC
+**** Titlebar color
+This Emacs package provides a global minor mode, ns-auto-titlebar-mode which - when enabled - keeps the "ns-appearance" frame parameter correctly set in GUI frames so that it matches the currently-enabled theme, whether it is light or dark.
+
+For this package to work correctly, it is generally necessary that the theme you use sets the frame-background-mode variable appropriately. This can be set manually if necessary, but see the docs for that variable.
+#+BEGIN_SRC emacs-lisp
+  (use-package ns-auto-titlebar
+    :config
+    (when (eq system-type 'darwin) (ns-auto-titlebar-mode)))
+#+END_SRC
 **** Transparent frame titlebar
 #+BEGIN_SRC emacs-lisp
   ;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
@@ -2404,17 +2413,6 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
                       (force-mode-line-update)))
            (load-theme active-theme)))
            ;; (powerline-reset)))
-
-           ;; Change the lettering color dependent on solarized theme
-           (defun cpm/frame-title-color ()
-           (if (eq active-theme 'solarized-light)
-               (progn
-                 (add-to-list 'default-frame-alist '(ns-appearance . light))
-                 (force-mode-line-update))
-             (progn
-             (add-to-list 'default-frame-alist '(ns-appearance . dark))
-             (force-mode-line-update))))
-           (add-hook! (before-make-frame-hook nameframe-make-frame-hook) 'cpm/frame-title-color)
 
             (progn
             (defvar after-load-theme-hook nil
@@ -2642,6 +2640,29 @@ that I use anything other than solarized :)
               (propertize (format " %s |" str) 'face 'doom-modeline-highlight))
           ""))
 
+       ;;
+       ;; Mode lines
+       ;;
+       
+       (doom-modeline-def-modeline 'main
+                                   '(workspace-number window-number bar evil-state matches " " buffer-info buffer-position " " selection-info)
+                                   '(global input-method buffer-encoding major-mode process vcs flycheck))
+       
+       (doom-modeline-def-modeline 'minimal
+                                   '(bar matches " " buffer-info)
+                                   '(media-info major-mode))
+       
+       (doom-modeline-def-modeline 'special
+                                   '(window-number bar evil-state matches " " buffer-info-simple buffer-position " " selection-info)
+                                   '(global input-method buffer-encoding major-mode process flycheck))
+       
+       (doom-modeline-def-modeline 'project
+                                   '(window-number bar buffer-default-directory)
+                                   '(global major-mode))
+       
+       (doom-modeline-def-modeline 'media
+                                   '(window-number bar " %b  ")
+                                   '(global media-info major-mode))
 
        (defface doom-modeline-active-window-number
        '((t (:inherit warning)))

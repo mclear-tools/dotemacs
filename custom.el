@@ -16,7 +16,7 @@
  '(flyspell-use-global-abbrev-table-p t)
  '(git-commit-summary-max-length 50)
  '(golden-ratio-exclude-buffer-regexp (quote ("iedit")))
- '(helm-follow-mode-persistent t)
+ '(helm-follow-mode-persistent t t)
  '(org-footnote-auto-adjust t)
  '(org-html-preamble nil)
  '(package-selected-packages
