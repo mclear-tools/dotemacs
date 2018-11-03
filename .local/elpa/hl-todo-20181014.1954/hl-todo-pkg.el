@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "hl-todo" "20181014.1954" "highlight TODO and similar keywords" 'nil :stars '(#("64" 0 2 (font-lock-face paradox-star-face)) #("215K" 0 4 (value 215954 font-lock-face paradox-download-face))) :commit "b1b1b693acd3dc71fcc41a553481c21a734ba7d9" :keywords '("convenience") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/tarsius/hl-todo")
