@@ -5197,7 +5197,7 @@ Ensure ELPA org is prioritized above built-in org.
 #+BEGIN_SRC emacs-lisp
 (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
                            (?B . (:foreground "orange"))
-                           (?C . (:foreground "yellow"))
+                           (?C . (:foreground "DarkGoldenrod2"))
                            (?D . (:forefround "green"))))
 #+END_SRC
 *** Org Logging
