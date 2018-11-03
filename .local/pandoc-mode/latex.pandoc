@@ -4,12 +4,11 @@
 ;; saved on 2015.11.30 21:14
 
 ((mathjax . "")
- (bibliography "~/Dropbox/Work/Master.bib")
+ (bibliography "~/Dropbox/Work/bibfile.bib")
  (csl . "~/.pandoc/styles/chicago-author-date.csl")
- ;; (reference-links . t)
+ (reference-links . t)
  (number-sections . t)
  (reference-doc . "~/.pandoc/pandoc-templates/reference.docx")
- ;; (reference-docx . "~/.pandoc/pandoc-templates/reference.docx")
  (standalone . t)
  (template . "~/.pandoc/pandoc-templates/default.latex")
  (pdf-engine . "xelatex")
