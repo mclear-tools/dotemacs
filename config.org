@@ -411,6 +411,20 @@ Call an emacs instance for testing
     (clipboard-yank)
     (deactivate-mark))
 #+END_SRC
+*** Commit Config
+From [[https://www.reddit.com/r/emacs/comments/9vi3pr/magit_found_a_simple_way_to_force_me_to_keep/][reddit]]
+#+BEGIN_SRC emacs-lisp
+(defun cpm/tangle-commit-load ()
+  (interactive)
+  (save-excursion
+    (widen)
+    (save-buffer)
+    (org-babel-tangle)
+    (magit-stage-modified)
+    (magit-commit-create)
+    (load-file user-init-file)
+    (delete-other-windows)))
+#+END_SRC
 *** Config functions
 Useful functions for calling config files
 #+BEGIN_SRC emacs-lisp
