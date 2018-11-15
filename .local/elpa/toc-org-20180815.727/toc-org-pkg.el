@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "toc-org" "20180815.727" "add table of contents to org-mode files (formerly, org-toc)" 'nil :stars '(#("90" 0 2 (font-lock-face paradox-star-face)) #("198K" 0 4 (value 198565 font-lock-face paradox-download-face))) :commit "ce9e49303c602c30c58ae98d3ce5202e8419a3bc" :keywords '("org-mode" "org-toc" "toc-org" "org" "toc" "table" "of" "contents") :authors '(("Sergei Nosov <sergei.nosov [at] gmail.com>")) :maintainer '("Sergei Nosov <sergei.nosov [at] gmail.com>") :url "https://github.com/snosov1/toc-org")
