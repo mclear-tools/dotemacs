@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "perspective" "20181101.2234" "switch between named \"perspectives\" of the editor" '((cl-lib "0.5")) :stars '(#("339" 0 3 (font-lock-face paradox-star-face)) #("12K" 0 3 (value 12030 font-lock-face paradox-download-face))) :commit "1358ba2c1727bd9eaa6c52b727e1e7b0c11ec5ca" :keywords '("workspace" "convenience" "frames") :authors '(("Natalie Weizenbaum" . "nex342@gmail.com")) :maintainer '("Natalie Weizenbaum" . "nex342@gmail.com") :url "http://github.com/nex3/perspective-el")
