@@ -1,0 +1,237 @@
+This is excorporate.info, produced by makeinfo version 6.4 from
+excorporate.texi.
+
+Copyright (C) 2016 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.2 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover, or
+     Back-Cover Texts.  A copy of the license is included in the section
+     entitled "GNU Free Documentation License" in the Emacs manual.
+
+     This document is part of a collection distributed under the GNU
+     Free Documentation License.  If you want to distribute this
+     document separately from the collection, you can do so by adding a
+     copy of the license to the document, as described in section 6 of
+     the license.
+
+     All Emacs Lisp code contained in this document may be used,
+     distributed, and modified without restriction.
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Excorporate: (excorporate).  Exchange Web Services integration for Emacs.
+END-INFO-DIR-ENTRY
+
+
+File: excorporate.info,  Node: Top,  Next: Installation,  Up: (dir)
+
+Excorporate Manual
+******************
+
+Excorporate provides Exchange Web Services (EWS) support for Emacs.
+
+   If the Exchange server you access is configured to provide EWS
+support, then there's an 83% chance that Excorporate will enable you to
+retrieve your calendar entries from the comfort of Emacs.
+
+   The 17% failure rate is because authenticating against an Exchange
+server can be challenging.
+
+   Kerberos/GSSAPI authentication is known to fail.  Accessing the
+server through a proxy may be possible now that
+<https://debbugs.gnu.org/cgi/bugreport.cgi?bug=10> is fixed.
+
+   Reports of success or failure of different connection types are
+welcome, as are patches to enable more of these access scenarios.  See
+*note Reporting Bugs::.
+
+* Menu:
+
+* Installation::                Getting and installing 'excorporate'.
+* Configuration::               Configuring 'excorporate'.
+* Usage::                       Using 'excorporate'.
+* Troubleshooting::             Debugging why a connection failed
+* Reporting Bugs::              Reporting bugs
+
+
+File: excorporate.info,  Node: Installation,  Next: Configuration,  Prev: Top,  Up: Top
+
+1 Installation
+**************
+
+Excorporate works on Emacs versions >= 24.1.
+
+Install 'excorporate' from the GNU ELPA repository:
+
+   'M-x package-install RET excorporate'
+
+
+File: excorporate.info,  Node: Configuration,  Next: Usage,  Prev: Installation,  Up: Top
+
+2 Configuration
+***************
+
+Ideally you won't need to configure Excorporate at all.  On friendly
+Exchange setups, Excorporate can discover the EWS URL automatically.
+
+First try:
+
+   'M-x excorporate'
+
+which will prompt you for the Exchange account email address.  Follow
+the prompts and if all goes well, you'll see a message in the minibuffer
+or in *Messages* saying that the connection is ready.
+
+If autodiscovery runs out of URLs to try, then customize
+'excorporate-configuration':
+
+   'M-x customize-variable RET excorporate-configuration'
+
+From the value menu select "Skip autodiscovery".  This allows you to
+enter the Exchange account email address and the EWS URL directly.  The
+EWS URL is of the form 'https://mail.gnu.org/ews/exchange.asmx'.
+
+After saving the configuration, try 'M-x excorporate' again.
+
+If that doesn't work, *note Troubleshooting::.
+
+
+File: excorporate.info,  Node: Usage,  Next: Troubleshooting,  Prev: Configuration,  Up: Top
+
+3 Usage
+*******
+
+Excorporate can put entries it retrieves into the Emacs Diary, and use
+'appt' to remind you a few minutes before a meeting starts.  To enable
+this support, do:
+
+   'M-x excorporate-diary-enable'
+
+Open the calendar with:
+
+   'M-x calendar'
+
+move the cursor to the date you want to see meetings for, and press 'd'.
+Some time later, asynchronously, a window will pop up containing events
+retrieved from the Exchange server in addition to locally-entered diary
+events.  The events are all sorted by time.
+
+   Excorporate also binds 'e' in '*Calendar*' buffers to
+'excorporate-calendar-show-day-function' to allow a different view of
+retrieved events.  By default, 'excorporate-calendar-show-day-function'
+is set to 'exco-org-show-day' which displays meetings in a temporary
+read-only Org Mode buffer named '*Excorporate*'.
+
+   If you prefer, you can install the 'calfw' package, and set
+'excorporate-calendar-show-day-function' to 'exco-calfw-show-day'.
+
+   After you've retrieved today's meetings, 'appt' will warn you several
+minutes before your next meeting starts by popping up a window with the
+meeting details.
+
+   If you leave Emacs running overnight, at 12:01 AM 'appt' (via
+Excorporate) will retrieve your meetings and display your diary so that
+you see the day's events first thing in the morning.
+
+
+File: excorporate.info,  Node: Troubleshooting,  Next: Reporting Bugs,  Prev: Usage,  Up: Top
+
+4 Troubleshooting
+*****************
+
+First, you'll want to double-check that the Exchange server you're
+trying to access provides EWS support.  If it doesn't, Excorporate can't
+do anything for you.  Before asking your Exchange administrator, check
+intranet wikis and so forth; other users of non-standard clients may
+have already found the EWS URL. This is called the "EWS endpoint".  It
+can be as simple as, e.g.:
+
+   'https://mail.gnu.org/ews/exchange.asmx'
+
+First you need to make sure you can access the endpoint.
+
+For Exchange Web Services (EWS) which Excorporate uses, you'll have to
+determine the EWS endpoint for your Exchange account, call it 'ews-url'.
+It is usually something like:
+
+   https://<mail host name>/ews/exchange.asmx
+
+Excorporate calculates the WSDL URL, call it 'wsdl-url', by replacing
+the endpoint's last path element with "Services.wsdl":
+
+   https://<mail host name>/ews/Services.wsdl
+
+Before even attempting Excorporate, you have to make these succeed:
+
+     (with-current-buffer
+      (url-retrieve-synchronously ews-url)
+      (buffer-string))
+
+When this works, you'll see web page text in *Messages*, containing a
+message about having created a service.
+
+     (with-current-buffer
+      (url-retrieve-synchronously wsdl-url)
+      (buffer-string))
+
+When this works, it will show a bunch of WSDL (XML) in *Messages*.
+
+Debug the above URL retrievals with (setq url-debug t), and with this
+patch:
+
+     diff --git a/lisp/url/url-http.el b/lisp/url/url-http.el
+     index d49e527..0f1c8ae 100644
+     --- a/lisp/url/url-http.el
+     +++ b/lisp/url/url-http.el
+     @ -869,6 +869,7 @ url-http-parse-headers
+            (url-handle-content-transfer-encoding))
+          (url-http-debug "Finished parsing HTTP headers: %S" success)
+          (widen)
+     +    (url-http-debug "Response: %s" (buffer-string))
+          (goto-char (point-min))
+          success))
+
+
+(Beware that HTTP responses are out-of-order with this patch.)
+
+Once you're sure the above steps are working, try 'M-x excorporate'.
+
+The buffer '*fsm-debug*' shows 'excorporate' state transitions and
+should provide details of where things went wrong.
+
+Also check '*Messages*' for anything obvious.
+
+If you suspect something wrong with accessing the EWS URL, try setting
+'url-debug' to t and retry 'M-x excorporate', then check the
+'*URL-DEBUG*' buffer for output.
+
+If you suspect NTLM authentication is failing, as a long shot, you might
+try setting 'ntlm-compatibility-level' to 0 and retrying 'M-x
+excorporate'.
+
+Excorporate's dependencies implement the tricky elements of asynchronous
+Exchange access: a state machine ('fsm'), TLS negotiation ('gnutls'),
+NTLM authentication ('ntlm' and 'url-http-ntlm') and SOAP communication
+('soap-client').
+
+
+File: excorporate.info,  Node: Reporting Bugs,  Prev: Troubleshooting,  Up: Top
+
+5 Reporting Bugs
+****************
+
+To report a bug, use 'M-x report-emacs-bug', and put Excorporate
+somewhere in the subject.
+
+
+
+Tag Table:
+Node: Top1103
+Node: Installation2222
+Node: Configuration2485
+Node: Usage3445
+Node: Troubleshooting4863
+Node: Reporting Bugs7698
+
+End Tag Table

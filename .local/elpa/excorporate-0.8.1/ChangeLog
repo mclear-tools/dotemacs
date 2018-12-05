@@ -1,0 +1,257 @@
+2018-09-15  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.8.1
+
+	* packages/excorporate/excorporate.el: Bump version to 0.8.1. Bump
+	nadvice version requirement to 0.3.
+
+2018-09-13  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.8.0
+
+	* excorporate/excorporate.el: Bump version to 0.8.0.
+
+2018-09-13  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Mention appt features in documentation
+
+	* packages/excorporate/excorporate.texi (Usage): Mention features of
+	appt integration.
+
+2018-09-12  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Support diary on Emacs 24.1, 24.2, 24.3
+
+	* packages/excorporate/excorporate.el: Update copyright year. Unbump
+	Emacs version requirement to 24.1.  Add nadvice 0.2 requirement.
+	(exco-calendar-item-with-details-iterate): Do not pass identifier to
+	finalizer.
+	* packages/excorporate/excorporate-diary.el: Require nadvice.
+	(exco-diary-icalendar--add-diary-entry-around): Port defadvice to 
+	nadvice.
+	(exco-diary-initialize): Move retrieval message to 
+	exco-diary-diary-advice.
+	(exco-diary-diary-advice): Add retrieval message from 
+	exco-diary-initialize.	Explicitly return nil.
+	(excorporate-diary-enable): Create excorporate diary directory and blank
+	files.	Sharp quote and reorder diary hooks.
+	(excorporate-diary-disable): Remove autoload cookie.
+
+2018-09-12  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Update documentation for Diary support
+
+	* packages/excorporate/excorporate.texi (Top): Suggest testing proxy
+	connections.
+	(Configuration): Simplify.
+	(Usage): Recommend diary first.
+	(Troubleshooting): Fix typo.
+	* packages/excorporate/excorporate.info: Rebuild.
+
+2018-09-12  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Add diary and appt integration
+
+	* packages/excorporate/excorporate-diary.el: New file.
+	* packages/excorporate/excorporate.el: Bump Emacs version requirement to
+	24.4.
+	(exco-calendar-item-iterate): Silence a byte compilation warning.
+
+2018-09-11  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Support retrieving meeting details
+
+	* packages/excorporate/excorporate.el
+	(exco-calendar-item-get-details): New function.
+	(exco--calendar-item-dolist): New macro.
+	(exco-calendar-item-with-details-iterate): New function.
+	(exco-calendar-item-iterate): Use new exco--calendar-item-dolist macro.
+
+2018-09-11  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Extend exco-connection-iterate
+
+	* packages/excorporate/excorporate.el (exco-connection-iterate): Add
+	optional callback-will-call-finalize argument.	Allow callback to call
+	finalize function.
+
+2018-09-04  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.7.7
+
+	* excorporate/excorporate.el: Bump version to 0.7.7.
+
+2018-09-04  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	excorporate.el: Require org for org-trim
+
+	* excorporate/excorporate.el: Require org for org-trim.
+
+2018-09-04  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	excorporate-calfw.el: Enable clean byte-compiling in GNU ELPA
+
+	* excorporate/excorporate-calfw.el: Specify NOERROR when require'ing
+	calfw.
+	(cfw:component-model, cfw:cp-add-selection-change-hook)
+	(cfw:cp-get-contents-sources)
+	(cfw:create-calendar-component-buffer, cfw:cursor-to-nearest-date)
+	(cfw:date, cfw:model-set-contents-sources)
+	(cfw:refresh-calendar-buffer, make-cfw:event, make-cfw:source): Declare
+	functions.
+	(cfw:component): Declare variable.
+	(cfw:cp-set-contents-sources): Override to fix a bug.
+	* excorporate/excorporate-calfw.el (exco-calfw-add-meetings)
+	(exco-calfw-finalize-buffer): Do not declare cfw:component special.
+	* copyright_exceptions: Add exception for description of calfw's 
+	copyright situation in excorporate-calfw.el.
+
+2018-09-04  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	excorporate-calfw.el: Rename from excorporate-calfw.el.txt
+
+	* excorporate/excorporate-calfw.el: Rename from 
+	excorporate-calfw.el.txt.
+
+2018-09-04  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	excorporate.el: Bump soap-client requirement to 3.1.4
+
+	* excorporate/excorporate.el (Package-Requires): Bump soap-client 
+	version to 3.1.4.
+
+2016-10-05  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	excorporate.texi: Increase authentication success likelihood
+
+2016-10-05  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	excorporate.el: Bump version to 0.7.6
+
+	* packages/excorporate/excorporate.el: Bump version to 0.7.6.
+
+2016-10-05  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump url-http-ntlm required version to 2.0.3
+
+2016-10-05  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Acknowledge Fabio Leimgruber
+
+2016-06-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.7.5
+
+2016-06-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Interoperate with `save-some-buffers'
+
+	* packages/excorporate/excorporate-org.el
+	(exco-org-initialize-buffer): Set buffer-file-name to 
+	excorporate-org-buffer-name during org-mode initialization
+	(bug#23765).
+
+2016-06-14  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.7.4
+
+2016-06-14  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Interoperate with LaTeX preview
+
+	* packages/excorporate/excorporate-org.el
+	(exco-org-initialize-buffer): Set buffer-file-name to 
+	excorporate-org-buffer-name (bug#23765).
+
+2016-04-01  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.7.3
+
+2016-04-01  Mitchel Humpherys  <mitch.special@gmail.com>
+
+	packages/excorporate/excorporate-org.el: Allow quitting window
+
+	* packages/excorporate/excorporate-org.el
+	(exco-org-initialize-buffer): Use a copy of org-mode-map as the local
+	keymap.	 Bind q to quit-window.
+
+	Copyright-paperwork-exempt: yes
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Add NEWS file
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Bump version to 0.7.2
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Require soap-client 3.1.1
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Acknowledge Erik Hetzner
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Improve exco-get-meetings-for-day
+
+	* packages/excorporate/excorporate.el (exco-get-meetings-for-day): Add
+	RequestVersion header to FindItem request.  Use soap-operation-arity to
+	calculate how many nil arguments to send.
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Change server version lookup
+
+	* packages/excorporate/excorporate.el (exco--get-server-version): Change
+	version lookup algorithm.
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Retrieve Services.wsdl directly
+
+	* packages/excorporate/excorporate.el (exco--fsm): Retrieve 
+	Services.wsdl directly, instead of via the endpoint.
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Update manual
+
+	* packages/excorporate/excorporate.texi: Update troubleshooting section,
+	add bug reporting section.
+
+2016-03-16  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: Handle nil list of main invitees
+
+	* packages/excorporate/excorporate.el
+	(exco-calendar-item-iterate): Handle nil list of main invitees.
+	* packages/excorporate/excorporate-org.el
+	(exco-org-insert-meeting): Likewise.
+	* packages/excorporate/excorporate-calfw.el.txt
+	(exco-calfw-add-meeting): Likewise.
+
+2016-02-26  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate/excorporate.el: Bump version to 0.7.1
+
+2016-02-26  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate/excorporate.texi: New manual
+
+	* packages/excorporate/excorporate.texi, 
+	packages/excorporate/excorporate.info, packages/excorporate/dir: New
+	files.
+
+2016-02-24  Thomas Fitzsimmons	<fitzsim@fitzsim.org>
+
+	packages/excorporate: New package, import version 0.7.0
+
+	* packages/excorporate/README, 
+	packages/excorporate/excorporate-calendar.el, 
+	packages/excorporate/excorporate-calfw.el.txt, 
+	packages/excorporate/excorporate-org.el, 
+	packages/excorporate/excorporate.el: New files.
+
