@@ -5378,7 +5378,7 @@ get a completing read of all headings up to three levels deep in all
 files in =org-agenda-files=. You can also refile to the top header in a
 document and create new parents.
 #+BEGIN_SRC emacs-lisp
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 8)
                              ("/Users/roambot/.emacs.d/config.org" :maxlevel . 8)))
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
@@ -6528,7 +6528,7 @@ Other useful org packages
        ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
        "s-b" (lambda () (interactive) (org-emphasize ?\*))
        "s-i" (lambda () (interactive) (org-emphasize ?\/))
-       "s-=" (lambda () (interactive) (org-emphasize ?\=))
+       "s-l" (lambda () (interactive) (org-emphasize ?\=))
         ;; better pasting behavior in org-mode
        "s-v" 'org-yank)
 #+END_SRC
@@ -7659,4 +7659,3 @@ codepoints starting from codepoint-start."
 
   (add-hook 'text-mode-hook 'my-set-hasklig-ligatures)
 #+END_SRC
-
