@@ -2285,9 +2285,9 @@ For this package to work correctly, it is generally necessary that the theme you
 **** Change Font Size
  #+BEGIN_SRC emacs-lisp
  (when IS-MAC
-   (global-set-key (kbd "s-=") 'scale-up-font)
-   (global-set-key (kbd "s--") 'scale-down-font)
-   (global-set-key (kbd "s-0") 'reset-font-size))
+   (global-set-key (kbd "s-=") 'text-scale-increase)
+   (global-set-key (kbd "s--") 'text-scale-decrease)
+   (global-set-key (kbd "s-0") 'text-scale-adjust))
  #+END_SRC
 **** Native Line Numbers (Emacs 26)
 Emacs now has native line number support in the C source code, rather
