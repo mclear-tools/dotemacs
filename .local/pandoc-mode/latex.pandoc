@@ -11,12 +11,12 @@
  (reference-doc . "~/.pandoc/pandoc-templates/reference.docx")
  (standalone . t)
  (template . "~/.pandoc/pandoc-templates/default.latex")
- (pdf-engine . "xelatex")
+ (pdf-engine . "/Library/TeX/texbin/xelatex")
  ;; (latex-engine . "/Library/TeX/texbin/xelatex")
- (variable
-  (#("mainfont" 0 8
-     (ws-butler-chg chg))
-   . "Optima"))
+ ;; (variable
+ ;;  (#("mainfont" 0 8
+ ;;     (ws-butler-chg chg))
+ ;;   . "Optima"))
  ;; (smart . t)
  (read . "markdown")
  (write . "latex"))
