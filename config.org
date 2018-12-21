@@ -2660,7 +2660,7 @@ that I use anything other than solarized :)
        
        (doom-modeline-def-modeline 'main
                                    '(workspace-number window-number bar evil-state matches " " buffer-info vcs)
-                                   '(global process flycheck buffer-position " " selection-info))
+                                   '(process flycheck buffer-position " " selection-info))
        
        (doom-modeline-def-modeline 'minimal
                                    '(bar matches " " buffer-info)
@@ -2668,15 +2668,15 @@ that I use anything other than solarized :)
        
        (doom-modeline-def-modeline 'special
                                    '(window-number bar evil-state matches " " buffer-info-simple)
-                                   '(global process flycheck))
+                                   '(process flycheck))
        
        (doom-modeline-def-modeline 'project
                                    '(window-number bar buffer-default-directory buffer-position " " selection-info)
-                                   '(global))
+                                   '())
        
        (doom-modeline-def-modeline 'media
                                    '(window-number bar " %b  ")
-                                   '(global media-info))
+                                   '(media-info))
 
        (defface doom-modeline-active-window-number
        '((t (:inherit warning)))
