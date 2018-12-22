@@ -170,7 +170,6 @@
   ("link_attributes")
   ("lists_without_preceding_blankline")
   ("markdown_attribute")
-  ("markdown_in_html_blocks")
   ("mmd_header_identifiers")
   ("mmd_link_attributes")
   ("mmd_title_block")

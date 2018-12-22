@@ -6768,6 +6768,10 @@ Pandoc mode for markdown conversion
   (use-package pandoc-mode
     :commands (cpm/pandoc-convert-to-pdf run-pandoc pandoc-convert-to-pdf)
     :config
+    (setq pandoc-use-async t)
+    ;; stop pandoc from just hanging forever and not completing conversion
+    ;; see https://github.com/joostkremers/pandoc-mode/issues/44
+    (setq pandoc-process-connection-type nil)
     (progn
       (defun run-pandoc ()
         "Start pandoc for the buffer and open the menu"
