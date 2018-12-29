@@ -1908,8 +1908,8 @@ First we can define some general system checks
 #+BEGIN_SRC emacs-lisp
   (setq 
     time-stamp-active t          ; do enable time-stamps
-    time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp: 
-    time-stamp-format "Last modified on %02m-%02d-%04y %02H:%02M:%02S (%U)") ; date format
+    time-stamp-line-limit -10     ; check first 10 buffer lines for Time-stamp: 
+    time-stamp-format "Last modified on %04y-%02m%02d-%02H:%02M:%02S") ; date format
   (add-hook 'write-file-hooks 'time-stamp) ; update when saving
 #+END_SRC
 *** Insert time or date
