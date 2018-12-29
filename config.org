@@ -2492,6 +2492,8 @@ A dark mode [[https://github.com/sindresorhus/dark-mode][toggle]] for osx menuba
         (if (member 'solarized-light custom-enabled-themes)
               (custom-theme-set-faces
               'solarized-light
+              ;; fix modeline underline
+              '(mode-line ((t (:background "#eee8d5" :foreground "#657b83" :box (:line-width 1 :color "#fdf6e3" :style unspecified) :overline "#fdf6e3" :underline "#fdf6e3"))))
               ;; org faces
               '(org-block ((t (:foreground "#2E8B57"))))
               '(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
