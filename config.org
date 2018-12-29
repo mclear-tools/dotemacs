@@ -2908,11 +2908,19 @@ Add [[https://www.emacswiki.org/emacs/DiredPlus][extra functionality]] to dired.
     (:keymaps 'peep-dired-mode-map
      :states '(normal)
      "j" #'peep-dired-next-file
-     "k" #'peep-dired-prev-file)
+     "k" #'peep-dired-prev-file
+     "TAB" #'cpm/peep-dired-open)
     :config
     (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
     (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
           peep-dired-max-size 5242880))
+;; helper function for opening files in full window          
+(defun cpm/peep-dired-open ()
+"open files from peep-dired & clean-up"
+  (interactive)
+  (peep-dired-kill-buffers-without-window)
+  (dired-find-file)
+  (delete-other-windows))
 #+END_SRC 
 
 ***** Dired Copy Large Files & Directories
