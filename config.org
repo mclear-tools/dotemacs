@@ -3897,11 +3897,12 @@ Keybindings for managing packages
       "tg" 'git-gutter-mode
       "tG" 'golden-ratio-mode 
       "th" 'hl-line-mode
+      "tH" 'hidden-mode-line-mode
       "te" 'toggle-indicate-empty-lines
       "tE" 'eldoc-mode
       "tl" #'imenu-list-smart-toggle
-      "tm" #'treemacs
-      "tM" 'hidden-mode-line-mode
+      "tM" #'treemacs
+      "tm" #'cpm/toggle-display-markup
       ;; "tn" 'nlinum-mode
       "tn" 'display-line-numbers-mode
       "tN" 'org-numbers-overlay-mode
