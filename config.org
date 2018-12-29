@@ -8457,3 +8457,11 @@ codepoints starting from codepoint-start."
 
   (add-hook 'text-mode-hook 'my-set-hasklig-ligatures)
 #+END_SRC
+** Typography
+Make some writing elements easier with [[https://melpa.org/#/typo][typo.el]]
+#+BEGIN_SRC emacs-lisp
+  (use-package typo
+    :ensure t
+    :config
+    (typo-global-mode))
+#+END_SRC
