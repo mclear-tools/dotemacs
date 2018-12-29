@@ -1436,6 +1436,32 @@ From [[https://github.com/cszang/dotemacs/blob/master/lisp/zettelkasten.el][csza
   )
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle no
+(general-define-key
+  :states '(normal motion visual insert emacs)
+  :keymaps 'override
+  :prefix "SPC"
+  :non-normal-prefix "C-SPC"
+ 
+  "z"  '(:ignore t :which-key "Zettelkasten")
+  "zc" 'zd-search-current-id
+  "zf" 'zd-avy-file-search
+  "zi" 'zd-find-file-id-insert
+  "zI" 'zd-find-file-full-title-insert
+  "zl" 'zd-avy-link-search
+  "zL" 'zd-insert-list-links
+  "zn" 'zd-new-file
+  "zN" 'zd-new-file-and-link
+  "zo" 'zd-find-file
+  "zO" 'zd-org-include-search
+  "zr" 'deft-refresh
+  "zs" 'zd-deft-new-search
+  "zS" 'zd-search-at-point
+  "zt" 'zd-avy-tag-search
+  "zT" 'zd-insert-org-title
+ ) 
+#+END_SRC
+
 ** Org super agenda/agenda custom commands
  #+BEGIN_SRC emacs-lisp :tangle no
 
