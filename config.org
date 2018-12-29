@@ -1095,6 +1095,15 @@ Move from a horizontal to a vertical split and vice versa
       (if this-win-2nd (other-window 1))))))
 
 #+END_SRC
+*** Toggle Markup Display
+Toggle the display of markup in markdown and org modes
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/toggle-display-markup ()
+    (interactive)
+      (if (eq major-mode 'org-mode)
+          (org-toggle-link-display)
+          (markdown-toggle-markup-hiding)))
+#+END_SRC
 *** FIXME Search TODO Markers
 Make an equivalent of vim's quickfix buffer using [[git:~/.emacs.d/config.org::master@{2018-02-18}::3795][helm-ag]] and [[git:~/.emacs.d/config.org::master@{2018-02-18}::2947][highlight-todo]]
 #+BEGIN_SRC emacs-lisp
