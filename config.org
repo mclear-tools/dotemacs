@@ -4084,28 +4084,28 @@ Keybindings for managing packages
 ***** Zettelkasten Notes
 #+BEGIN_SRC emacs-lisp
 (general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
   :prefix "SPC"
   :non-normal-prefix "C-SPC"
- 
-  "z"  '(:ignore t :which-key "Zettelkasten")
-  "zc" 'zd-search-current-id
-  "zf" 'zd-avy-file-search
-  "zi" 'zd-find-file-id-insert
-  "zI" 'zd-find-file-full-title-insert
-  "zl" 'zd-avy-link-search
-  "zL" 'zd-insert-list-links
-  "zn" 'zd-new-file
-  "zN" 'zd-new-file-and-link
-  "zo" 'zd-find-file
-  "zO" 'zd-org-include-search
-  "zr" 'deft-refresh
-  "zs" 'zd-deft-new-search
-  "zS" 'zd-search-at-point
-  "zt" 'zd-avy-tag-search
-  "zT" 'zd-insert-org-title
- ) 
+  :states '(normal visual insert motion emacs)
+  :keymaps 'override
+  "z"  '(nil :wk "Zettelkasten")
+  "zc" '(zd-search-current-id :wk "search current id")
+  "zd" '(deft :wk "deft")
+  "zf" '(zd-avy-file-search :wk "avy file search")
+  "zF" '(zd-avy-file-search-ace-window :wk "avy file other window")
+  "zI" '(zd-find-file-id-insert :wk "insert id")
+  "zi" '(zd-find-file-full-title-insert :wk "insert full title")
+  "zl" '(zd-avy-link-search :wk "avy link search")
+  "zn" '(zd-new-file :wk "new file")
+  "zN" '(zd-new-file-and-link :wk "new file & link")
+  "zo" '(zd-find-file :wk "find file")
+  "zr" '(zd-file-rename :wk "rename")
+  "zR" '(deft-refresh :wk "refresh")
+  "zs" '(zd-deft-new-search :wk "new search")
+  "zS" '(zd-search-at-point :wk "search at point")
+  "zt" '(zd-avy-tag-search :wk "avy tag search")
+  "zT" '(zd-tag-buffer :wk "tag list")
+  )
 #+END_SRC
 
 **** Smooth Scrolling
@@ -6572,11 +6572,13 @@ Other useful org packages
     :commands (deft deft-open-file-other-window big-notes zd-new-file zd-deft-new-search deft-new-file-named)
     :general
     (:keymaps 'deft-mode-map :states '(normal motion)
-     "o" 'cpm/deft-open)
+     "o" 'cpm/deft-open
+     "p" 'cpm/deft-open-preview)
     (:keymaps 'deft-mode-map :states '(insert)
      "C-j" 'evil-next-line
      "C-k" 'evil-previous-line
-     "C-o" 'cpm/deft-open)
+     "C-o" 'cpm/deft-open
+     "C-p" 'cpm/deft-open-preview)
     :config
     (add-to-list 'evil-insert-state-modes 'deft-mode)
     ;; basic settings for use with zettel
@@ -6616,7 +6618,11 @@ Other useful org packages
       (any-deft "~/Dropbox/Notes"))
     (defun cpm/deft-open ()
       (interactive)
-      (deft-open-file-other-window t)))
+      (deft-open-file-other-window t))
+    (defun cpm/deft-open-preview ()
+      (interactive)
+      (deft-open-file-other-window)))
+
 #+END_SRC
 ** Zetteldeft
 A useful set of functions for managing a Zettelkasten. Based on [[https://github.com/EFLS/zetteldeft][EFLS]]. 
@@ -6847,32 +6853,32 @@ Based on =deft-find-file=.
 
 ***** =zd-find-file-id-insert= inserts file id
 
-Select file from minibuffer and insert its link, prepended by =§=.
+Select file from minibuffer and insert its link
 
 Based on =deft-find-file=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-find-file-id-insert (file)
-  "Find deft file FILE and insert its link id, prepended by §."
+  "Find deft file FILE and insert its link id"
   (interactive (list
     (completing-read "File to insert id from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat "§" (zd-lift-id file))))
+  (insert (concat "" (zd-lift-id file))))
 #+END_SRC
 
 ***** =zd-find-file-full-title-insert= inserts id and title
 
-Select file from minibuffer and insert its link, prepended by =§=.
+Select file from minibuffer and insert its link
 
 Based on =deft-find-file=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-find-file-full-title-insert (file)
-  "Find deft file FILE and insert its link id with title, prepended by §."
+  "Find deft file FILE and insert its link id with title"
   (interactive (list
     (completing-read "File to insert full title from: "
       (deft-find-all-files-no-prefix))))
-  (insert (concat "§" (file-name-base file))))
+  (insert (concat "" (file-name-base file))))
 #+END_SRC
 
 **** New file creation
@@ -6913,7 +6919,7 @@ Either provide a name as argument, or enter one in the mini-buffer.
 Creates new deft file with id and STR as name."
   (interactive (list (read-string "name: ")))
   (setq deft-directory "/Users/roambot/Dropbox/notes/zettel/")  
-  (insert "§" (zd-generate-id) " " str)
+  (insert "" (zd-generate-id) " " str)
   (zd-new-file str))
 #+END_SRC
 
@@ -6937,50 +6943,51 @@ The search term should include the =#= as tag identifier, so it's as easy as jum
 
 Use avy to jump to an id and search for it.
 
-Jumps to the =§= identifier and searches for the thing at point -- excluding the =§= character.
+Jumps to the =[[= identifier and searches for the thing at point -- excluding the =[[= character.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-link-search ()
-  "Call on avy to jump and search link ids indicated with §.
+  "Call on avy to jump and search link ids indicated with [[.
 Opens immediately if there is only one result."
   (interactive)
   (save-excursion
-    (avy-goto-char ?§)
+    (avy-goto-char-2 ?\[?\[)
     (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
 #+END_SRC
 
-***** =zd-avy-file-search=
+***** FIXME =zd-avy-file-search=
 
 Select and follow an ID link to a file.
 
-Use avy to jump to an id and find the corresponding file.
-There should be only one result, as the id should be unique.
-That file is then opend (in another window if requested).
+Use avy to jump to an id and find the corresponding file. There should be only
+one result, as the id should be unique. That file is then opend (in another
+window if requested).
 
-Jump to a =§= with =avy=, get the thing at point.
-If it is non-nil, search it after sanitizing.
+Jump to a =[[= with =avy=, get the thing at point. If it is non-nil, search it
+after sanitizing.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-file-search (&optional otherWindow)
- "Call on avy to jump to link ids indicated with § and use it to search for filenames.
+ "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
 Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
   (interactive)
   (save-excursion
-    (avy-goto-char ?§)
+    (avy-goto-char-2 ?\[?\[)
+    (forward-char)
     (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 #+END_SRC
 
-Let's also define a function to open a file in another window.
-Selection of the window occurs via =ace-window=.
+Let's also define a function to open a file in another window. Selection of
+the window occurs via =ace-window=.
 
 #+BEGIN_SRC emacs-lisp
 (defun zd-avy-file-search-ace-window ()
-  "Call on avy to jump to link ids indicated with § and use it to search for filenames.
+  "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
 When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
   (interactive)
   (require 'ace-window)
   (save-excursion
-    (avy-goto-char ?§)
+    (avy-goto-char ?\[?\[)
     (let ((ID (zd-lift-id (zd-get-thing-at-point))))
       (select-window (aw-select "Select window..."))
       (zd-search-filename ID))))
@@ -7140,7 +7147,7 @@ Steps:
   "Add the id from the filename the buffer is currently visiting to the kill ring."
   (interactive)
   (zd--check)
-  (let ((ID (concat "§" (zd-lift-id (file-name-base (buffer-file-name))))))
+  (let ((ID (concat "" (zd-lift-id (file-name-base (buffer-file-name))))))
     (kill-new ID)
     (message "%s" ID)))
 #+END_SRC
@@ -7308,7 +7315,7 @@ Can only be called from a file in the zetteldeft directory."
     ; finally find full title for each ID and insert it
     (dolist (zdID zdFinalIDs)
       (setq zdID (zd-id-to-full-title zdID))
-      (insert " - " (concat "§" zdID "\n")))))
+      (insert " - " (concat "" zdID "\n")))))
 #+END_SRC
 
 ***** =zd-list-entry-file-link= includes a file link as list entry
@@ -7318,7 +7325,7 @@ Inserts for given file a link id and title as a list entry.
 #+BEGIN_SRC emacs-lisp
 (defun zd-list-entry-file-link (zdFile)
   "Insert ZDFILE as list entry."
-  (insert " - " (concat "§" (file-name-base zdFile)) "\n"))
+  (insert " - " (concat "" (file-name-base zdFile)) "\n"))
 #+END_SRC
 
 **** Compiling a single =org=
@@ -7612,7 +7619,7 @@ The following function should achieve that.
   (let ((zdTitle (replace-regexp-in-string "\"" "" (zd-lift-file-title deftFile)))
         (zdId    (zd-lift-id deftFile)))
     (insert "  \"" zdId "\""
-            " [label = \"" zdTitle " (§" zdId ")\"")
+            " [label = \"" zdTitle " (" zdId ")\"")
     (insert "]" "\n"))
   (zd-graph-store-link deftFile))
 #+END_SRC
