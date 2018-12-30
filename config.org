@@ -2880,7 +2880,7 @@ MELPA. The git mirror is [[https://github.com/emacsmirror/bookmark-plus][here]].
     ;; (setq dired-listing-switches "-al --group-directories-first")
     (setq dired-listing-switches "-laGh1v --group-directories-first")
     ;; don't ask about killing buffer visiting file
-    (setq dired-clean-confirm-killing-deleted-buffers nil)
+    (setq dired-clean-confirm-killing-deleted-buffers t)
     ;; stop asking about recurisve actions
     (setq dired-recursive-copies 'always)
     (setq dired-recursive-deletes 'always))
@@ -4093,6 +4093,7 @@ Keybindings for managing packages
   "z"  '(nil :wk "Zettelkasten")
   "zc" '(zd-search-current-id :wk "search current id")
   "zd" '(deft :wk "deft")
+  "zD" '(cpm/zettel-dired :wk "zettel dired view")
   "zf" '(zd-avy-file-search :wk "avy file search")
   "zF" '(zd-avy-file-search-ace-window :wk "avy file other window")
   "zI" '(zd-find-file-id-insert :wk "insert id")
@@ -7171,6 +7172,14 @@ Throws an error when either none or multiple files with said ID are found."
   (file-name-base (car deft-current-files)))
 #+END_SRC
 
+**** Alternative views
+Here's a function to view zettel in dired with peep-dired enabled
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/zettel-dired ()
+    (interactive)
+    (find-file "~/Dropbox/Notes/zettel")
+    (peep-dired))
+#+END_SRC
 *** Listing all tags
 
 =zd-all-tags= puts all tags in =zd-tag-list= and returns them.
