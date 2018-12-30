@@ -7800,24 +7800,16 @@ Great for managing citations and notes
     (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
     (setq bibtex-completion-pdf-symbol "⌘")
     (setq bibtex-completion-notes-symbol "✎")
-    (setq bibtex-completion-notes-template-one-file
-   "* ${author} (${date}): ${title} 
-  :PROPERTIES:
-  :INTERLEAVE_PDF: ${file}
-  :Custom_ID: ${=key=}
-  :END: 
-  [[pdfview:${file}][file link]]
-       ")
-    (setq bibtex-completion-bibliography "~/Dropbox/Work/All.bib" 
-          bibtex-completion-library-path "~/Dropbox/Work/be-master-pdflib/"
+    (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
+    (setq bibtex-completion-notes-template-multiple-files
+          "# ${author} (${year}): ${title}\n ${=key=} | [PDF Link](${file})\n\n ")
+    (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib" 
+          bibtex-completion-library-path "~/Dropbox/Work/be-library/"
           bibtex-completion-pdf-field nil
-          bibtex-completion-notes-path "~/Dropbox/org-files/org-brain/references/"
+          bibtex-completion-notes-path "~/Dropbox/Notes/zettel/reading-notes"
           ;; bibtex-completion-additional-search-fields '(keywords)
-          bibtex-completion-notes-extension ".org"
-          helm-bibtex-full-frame nil) 
-
-  ;; Set global shortcut for calling helm-bibtex
-  )
+          bibtex-completion-notes-extension ".md"
+          helm-bibtex-full-frame nil))
 #+end_src
 ** Markdown mode
 *** Markdown settings
