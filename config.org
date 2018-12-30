@@ -1102,7 +1102,9 @@ Toggle the display of markup in markdown and org modes
     (interactive)
       (if (eq major-mode 'org-mode)
           (org-toggle-link-display)
-          (markdown-toggle-markup-hiding)))
+          (if markdown-hide-markup
+          (markdown-toggle-markup-hiding 0)
+          (markdown-toggle-markup-hiding))))
 #+END_SRC
 *** FIXME Search TODO Markers
 Make an equivalent of vim's quickfix buffer using [[git:~/.emacs.d/config.org::master@{2018-02-18}::3795][helm-ag]] and [[git:~/.emacs.d/config.org::master@{2018-02-18}::2947][highlight-todo]]
