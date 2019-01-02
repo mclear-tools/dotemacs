@@ -1680,7 +1680,7 @@ General Text settings and hooks
 #+END_SRC
 **** Line wrap
 #+BEGIN_SRC emacs-lisp
-(setq-default fill-column 78)
+(setq-default fill-column 85)
 (global-visual-line-mode)
 (setq line-move-visual t) ;; move via visual lines
 (global-visual-fill-column-mode)
@@ -7823,7 +7823,7 @@ Great for managing citations and notes
     ;; markdown hooks
     (add-hook 'markdown-mode-hook
           '(lambda ()
-          (turn-on-flyspell) (centered-cursor-mode) (git-gutter-mode 1) (set-fill-column 78) (hl-todo-mode)))
+          (turn-on-flyspell) (centered-cursor-mode) (git-gutter-mode 1) (hl-todo-mode)))
     (setq markdown-command
       (concat
        "/usr/local/bin/pandoc"

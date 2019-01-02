@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "doom-modeline" "20181230.1357" "A minimal and modern mode-line" '((emacs "25.1") (all-the-icons "1.0.0") (shrink-path "0.2.0") (eldoc-eval "0.1") (dash "2.11.0")) :stars '(#("40" 0 2 (font-lock-face paradox-star-face)) #("263" 0 3 (value 263 font-lock-face paradox-download-face))) :commit "3d1490d6e6c3d07e89d62f44ce87617697dfdb55" :keywords '("faces" "mode-line") :authors '(("Vincent Zhang" . "seagle0128@gmail.com")) :maintainer '("Vincent Zhang" . "seagle0128@gmail.com") :url "https://github.com/seagle0128/doom-modeline")

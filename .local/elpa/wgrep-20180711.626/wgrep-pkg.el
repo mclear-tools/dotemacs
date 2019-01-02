@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "wgrep" "20180711.626" "Writable grep buffer and apply the changes to files" 'nil :stars '(#("201" 0 3 (font-lock-face paradox-star-face)) #("90K" 0 3 (value 90595 font-lock-face paradox-download-face))) :commit "414be70bd313e482cd9f0b70fd2daad4ee23497c" :keywords '("grep" "edit" "extensions") :authors '(("Masahiro Hayashi" . "mhayashi1120@gmail.com")) :maintainer '("Masahiro Hayashi" . "mhayashi1120@gmail.com") :url "http://github.com/mhayashi1120/Emacs-wgrep/raw/master/wgrep.el")
