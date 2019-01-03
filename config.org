@@ -1930,7 +1930,8 @@ keys for insert-date/long and insert-date/short. Courtesy of [[https://ebzzry.gi
   (interactive)
   (format-date "%m-%d-%Y %H:%M:%S"))
 #+END_SRC
-** Location
+** DISABLED Location
+CLOSED: [2019-01-02 Wed 11:21]
 (I only need this if I'm using [[https://github.com/guidoschmidt/circadian.el][circadian]], which I'm not)
 Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-location][geographical location]] on OS X
 #+BEGIN_SRC emacs-lisp
