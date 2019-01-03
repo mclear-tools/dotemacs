@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-mode t)
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.local/@roambot.local/cache/bookmarks")
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
@@ -17,7 +17,7 @@
  '(flyspell-use-global-abbrev-table-p t)
  '(git-commit-summary-max-length 50)
  '(golden-ratio-exclude-buffer-regexp (quote ("iedit")))
- '(helm-follow-mode-persistent t)
+ '(helm-follow-mode-persistent t t)
  '(org-footnote-auto-adjust t)
  '(org-html-preamble nil)
  '(package-selected-packages
