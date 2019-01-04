@@ -3298,7 +3298,7 @@ Automatic resizing of Emacs windows to the [[https://github.com/roman/golden-rat
     ;; :demand t
     :defer 3
     :config
-    (setq golden-ratio-exclude-buffer-names '("*Ilist*"))
+    (setq golden-ratio-exclude-buffer-names '("*Ilist*" "*Deft*"))
     (setq golden-ratio-exclude-buffer-regexp '("Ilist"))
     ;; inhibit in helm windows
     (defun cpm--helm-alive-p ()
@@ -4102,8 +4102,7 @@ Keybindings for managing packages
   :keymaps 'override
   "z"  '(nil :wk "Zettelkasten")
   "zc" '(zd-search-current-id :wk "search current id")
-  "zd" '(deft :wk "deft")
-  "zD" '(cpm/zettel-dired :wk "zettel dired view")
+  "zd" '(cpm/zettel-dired :wk "zettel dired view")
   "zf" '(zd-avy-file-search :wk "avy file search")
   "zF" '(zd-avy-file-search-ace-window :wk "avy file other window")
   "zI" '(zd-find-file-id-insert :wk "insert id")
@@ -6598,6 +6597,7 @@ Other useful org packages
     (setq deft-directory "~/Dropbox/notes/zettel/"
           deft-recursive t
           deft-use-filename-as-title t
+          deft-separator " "
           deft-extensions '("md" "txt" "org")
           deft-default-extension "md")
     ;; file renaming rules
@@ -6609,10 +6609,13 @@ Other useful org packages
      (concat "\\("
              "[\n\t]" ;; blank
              "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+             ;;yaml metadata
+             "\\|^\\-\\{3\\}$"
+             "\\|^[a-zA-Z_]+:.*$"
+             "\\|@[a-zA-Z_].*$"
+             ;; line beginning with markdown links
+             "\\|^\\[.*$"
              "\\|^# .*$" ;; md titles
-             "\\(\\-\\{3\\}\\)$" ;; yaml
-             "\\(\\.\\{3\\}\\|\\-\\{3\\}\\)$"
-             "^\\(%\\)\\([ \t]*\\)\\(.*\\(?:\n[ \t]+.*\\)*\\)"
              "\\)"))
 
     ;;function to run deft in specified directory
