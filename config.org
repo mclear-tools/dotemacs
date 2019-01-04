@@ -2674,7 +2674,7 @@ that I use anything other than solarized :)
        
        (doom-modeline-def-modeline 'main
                                    '(workspace-number window-number bar evil-state matches " " buffer-info vcs)
-                                   '(process flycheck buffer-position " " selection-info))
+                                   '(process buffer-position " " selection-info))
        
        (doom-modeline-def-modeline 'minimal
                                    '(bar matches " " buffer-info)
@@ -2682,7 +2682,7 @@ that I use anything other than solarized :)
        
        (doom-modeline-def-modeline 'special
                                    '(window-number bar evil-state matches " " buffer-info-simple)
-                                   '(process flycheck))
+                                   '(process))
        
        (doom-modeline-def-modeline 'project
                                    '(window-number bar buffer-default-directory buffer-position " " selection-info)
