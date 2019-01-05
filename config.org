@@ -64,7 +64,6 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#org-refile][Org Refile]]
   - [[#open-files-in-default-application][Open Files In Default Application]]
   - [[#org-agenda][Org-Agenda]]
-  - [[#org-super-agenda][Org-Super-Agenda]]
   - [[#org-capture][Org Capture]]
   - [[#org-template-expansions][Org Template Expansions]]
   - [[#org-bullets][Org Bullets]]
@@ -78,8 +77,12 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#org-pomodoro][Org Pomodoro]]
   - [[#org-indirect-buffer][Org Indirect Buffer]]
   - [[#org-numbers-overlay][Org Numbers Overlay]]
+  - [[#org-export][Org Export]]
   - [[#org-miscellaneous-packages][Org Miscellaneous Packages]]
+  - [[#org-keybindings][Org Keybindings]]
 - [[#research--writing][Research & Writing]]
+  - [[#deft][Deft]]
+  - [[#zetteldeft][Zetteldeft]]
   - [[#spelling][Spelling]]
   - [[#abbrev][Abbrev]]
   - [[#helm-bibtex][Helm-Bibtex]]
@@ -90,30 +93,23 @@ is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configur
   - [[#palimpsest-mode][Palimpsest mode]]
   - [[#latex][LaTeX]]
   - [[#pdf-tools][PDF-Tools]]
-  - [[#zotero][Zotero]]
+  - [[#org-pdf-view][Org PDF View]]
+  - [[#extract-annotations][Extract annotations]]
+  - [[#remember][Remember]]
 - [[#miscellaneous-packages][Miscellaneous Packages]]
   - [[#restart-emacs][Restart emacs]]
   - [[#autorevert][Autorevert]]
   - [[#url--request][URL & Request]]
 - [[#private][Private]]
 - [[#post-initialization][Post-Initialization]]
-  - [[#remember][Remember]]
   - [[#server][Server]]
   - [[#page-breaks][Page Breaks]]
   - [[#dashboard][Dashboard]]
   - [[#startup-time][Startup time]]
 - [[#test][Test]]
   - [[#ligatures][Ligatures]]
-  - [[#emacs-anywhere][Emacs Anywhere]]
-  - [[#org-brain][Org-Brain]]
-  - [[#evil-collection][Evil Collection]]
-  - [[#treemacs][Treemacs]]
-  - [[#zettelkasten][Zettelkasten]]
-  - [[#helm-gitignore][Helm Gitignore]]
-  - [[#org-demotepromote-region][Org demote/promote region]]
-  - [[#imenu-list][Imenu-List]]
+  - [[#typography][Typography]]
 
-    
 * Personal Information
 Let's set some variables with basic user information.
 
@@ -1771,6 +1767,7 @@ I make sure Emacs auto-saves often but the result is that it messes up my file t
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-list-file-prefix
       (concat cpm-cache-dir "auto-save-list/.saves-"))
+
 
 (setq auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
