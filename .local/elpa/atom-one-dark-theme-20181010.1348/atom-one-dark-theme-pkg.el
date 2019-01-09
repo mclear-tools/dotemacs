@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "atom-one-dark-theme" "20181010.1348" "Atom One Dark color theme" 'nil :stars '(#("147" 0 3 (font-lock-face paradox-star-face)) #("14K" 0 3 (value 14230 font-lock-face paradox-download-face))) :commit "8cba629dce7a2c53c690337915fdcaa80b4af769" :authors '(("Jonathan Chu" . "me@jonathanchu.is")) :maintainer '("Jonathan Chu" . "me@jonathanchu.is") :url "https://github.com/jonathanchu/atom-one-dark-theme")

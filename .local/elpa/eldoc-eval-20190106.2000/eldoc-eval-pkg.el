@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "eldoc-eval" "20190106.2000" "Enable eldoc support when minibuffer is in use." 'nil :stars '(#("9" 0 1 (font-lock-face paradox-star-face)) #("18K" 0 3 (value 18006 font-lock-face paradox-download-face))) :commit "4a1cf92dc5c4eca7519eb32f61b95e9e9f5755e4" :authors '(("Thierry Volpiatto" . "thierry.volpiatto@gmail.com")) :maintainer '("Thierry Volpiatto" . "thierry.volpiatto@gmail.com"))

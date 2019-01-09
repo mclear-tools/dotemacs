@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "goto-chg" "20190108.1828" "goto last change" 'nil :stars '(#("9" 0 1 (font-lock-face paradox-star-face)) #("302K" 0 4 (value 302997 font-lock-face paradox-download-face))) :commit "6898df7611f41978dae16613a683f31fcd7b1e13" :keywords '("convenience" "matching") :authors '(("David Andersson <l.david.andersson(at)sverige.nu>")) :maintainer '("Vasilij Schneidermann" . "v.schneidermann@gmail.com") :url "https://github.com/emacs-evil/goto-chg")
