@@ -6418,8 +6418,8 @@ Some useful settings
 *** Ox-Hugo
 [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
 #+BEGIN_SRC emacs-lisp
-(use-package ox-hugo :after ox)
-(use-package ox-hugo-auto-export :ensure nil :after ox-hugo)
+  (use-package ox-hugo :after ox)
+  ;; (use-package ox-hugo-auto-export :ensure nil :after ox-hugo)
 #+END_SRC
 
 
