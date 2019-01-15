@@ -3909,8 +3909,8 @@ Keybindings for managing packages
       "tB" 'beacon-mode
       "tc" 'centered-cursor-mode
       "tC" 'centered-window-mode
-      "td" 'cpm/osx-toggle-menubar-theme
-      "tf" 'toggle-serif
+      ;; "td" 'cpm/osx-toggle-menubar-theme
+      ;; "tf" 'toggle-serif
       "tF" 'toggle-frame-maximized
       "tg" 'git-gutter-mode
       "tG" 'golden-ratio-mode 
@@ -3918,14 +3918,14 @@ Keybindings for managing packages
       "tH" 'hidden-mode-line-mode
       "te" 'toggle-indicate-empty-lines
       "tE" 'eldoc-mode
-      "tl" #'imenu-list-smart-toggle
       "tM" #'treemacs
       "tm" #'cpm/toggle-display-markup
       ;; "tn" 'nlinum-mode
       "tn" 'display-line-numbers-mode
       "tN" 'org-numbers-overlay-mode
-      "to" 'org-toggle-link-display
-      "tO" 'outline-toc-mode
+      "to" #'imenu-list-smart-toggle
+      ;; "to" 'org-toggle-link-display
+      ;; "tO" 'outline-toc-mode
       "tp" 'smartparens-mode
       "tP" 'show-paren-mode 
       "tr" 'rainbow-identifiers-mode
