@@ -7847,6 +7847,8 @@ Great for managing citations and notes
        " --standalone --mathjax --highlight-style=pygments"
        " --css=/Users/roambot/.pandoc/pandoc.css"
        " --quiet"
+       " --number-sections"
+       ;; " --lua-filter=/Users/roambot/bin/cutintro.lua" 
        " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"))
 
     (setq markdown-enable-math t
@@ -7864,6 +7866,9 @@ Great for managing citations and notes
 
      )
 
+  ;; macro: delete backslashes in paragraph
+  (fset 'md-delete-backslash
+     (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\361\361f\\x" 0 "%d")) arg)))
 
 #+end_src
 *** Pandoc
