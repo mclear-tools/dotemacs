@@ -5348,7 +5348,7 @@ Log timestamp when task is marked "DONE" or other finished keyword
 *** Org Modules
 A list of org modules to load on startup
 #+BEGIN_SRC emacs-lisp 
-(setq org-modules (quote (org-info org-protocol org-habit org-mac-link)))
+(setq org-modules (quote (org-info org-tempo org-protocol org-habit org-mac-link)))
 #+END_SRC
 *** Org ID
 #+BEGIN_SRC emacs-lisp
@@ -5799,18 +5799,29 @@ Make capture the only window and close after refiling.
 
 ** Org Template Expansions
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (with-eval-after-load 'org
-  (add-to-list 'org-structure-template-alist
-    '("E" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist
-    '("n" "#+BEGIN_NOTES\n?\n#+END_NOTES"))
-  (add-to-list 'org-structure-template-alist
-    '("t" "#+BEGIN_COMMENT TODO: ?  #+END_COMMENT"))
-  (add-to-list 'org-structure-template-alist
-    '("b" "#+REVEAL: split?"))
-  (add-to-list 'org-structure-template-alist
-    '("f" "#+ATTR_REVEAL: :frag (appear)?")))
+  (setq new-structure-template-alist
+        '(("el" . "src emacs-lisp")
+          ("t" . "COMMENT TODO:")
+          ("b" . "REVEAL: split")
+          ("f" . "ATTR_REVEAL: :frag (appear)")))
+  (dolist (ele new-structure-template-alist)
+      (add-to-list 'org-structure-template-alist ele)))
+  ;; (tempo-define-template "src-elisp"
+  ;;              '("src emacs-lisp" L)
+  ;;              "<L"
+  ;;              "Insert an elisp src block")
+  ;; (add-to-list 'org-structure-template-alist
+  ;;   '("L" "src emacs-lisp"))
+  ;; (add-to-list 'org-structure-template-alist
+  ;;   '("n" "notes"))
+  ;; (add-to-list 'org-structure-template-alist
+  ;;   '("t" "COMMENT TODO: "))
+  ;; (add-to-list 'org-structure-template-alist
+  ;;   '("b" "REVEAL: split"))
+  ;; (add-to-list 'org-structure-template-alist
+  ;;   '("f" "ATTR_REVEAL: :frag (appear)")))
 #+END_SRC
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
@@ -6848,11 +6859,11 @@ Or are there better ways than working =with-temp-buffer=?
 Here is a little test.
 
 #+BEGIN_SRC emacs-lisp :exports both :tangle no :results replace value
-(zd-lift-id "2018-11-09-1934-12 Some text (1989) - testing (2000 p. 12-25)")
+(zd-lift-id "2018-1109-1934 Some text (1989) - testing (2000 p. 12-25)")
 #+END_SRC
 
 #+RESULTS:
-: 2018-11-09-1934
+: 2018-1109-1934
 
 **** Finding & linking files from minibuffer
 ***** =zd-find-file= opens file from minibuffer
@@ -8473,6 +8484,15 @@ Display Startup time
 
 #+END_SRC
 * Test
+** Elisp Demos
+[[https://github.com/xuchunyang/elisp-demos/][Elisp demos]] in help buffers and the like.
+#+BEGIN_SRC emacs-lisp
+  (use-package elisp-demos
+    :ensure t
+    :config
+    ;; inject demos into helpful
+    (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+#+END_SRC
 ** Ligatures
 #+BEGIN_SRC emacs-lisp
   (defun my-correct-symbol-bounds (pretty-alist)
