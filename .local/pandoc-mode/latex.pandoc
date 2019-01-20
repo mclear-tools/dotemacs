@@ -10,9 +10,10 @@
  (number-sections . t)
  (reference-doc . "~/.pandoc/pandoc-templates/reference.docx")
  (standalone . t)
+ (lua-filter  "~/.pandoc/cuthead.lua")
  (template . "~/.pandoc/pandoc-templates/default.latex")
+  ;; (template . "~/.pandoc/pandoc-templates/koma.latex")
  (pdf-engine . "/Library/TeX/texbin/xelatex")
- ;; (latex-engine . "/Library/TeX/texbin/xelatex")
  (variable
   (#("mainfont" 0 8
      (ws-butler-chg chg))

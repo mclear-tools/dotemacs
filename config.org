@@ -7852,7 +7852,7 @@ Great for managing citations and notes
     ;; markdown hooks
     (add-hook 'markdown-mode-hook
           '(lambda ()
-          (turn-on-flyspell) (centered-cursor-mode) (git-gutter-mode 1) (hl-todo-mode)))
+          (turn-on-flyspell) (auto-fill-mode) (centered-cursor-mode) (git-gutter-mode 1) (hl-todo-mode)))
     (setq markdown-command
       (concat
        "/usr/local/bin/pandoc"
@@ -7861,8 +7861,10 @@ Great for managing citations and notes
        " --css=/Users/roambot/.pandoc/pandoc.css"
        " --quiet"
        " --number-sections"
+       " --metadata=reference-section-title:'References & Further Reading'"
        ;; " --lua-filter=/Users/roambot/bin/cutintro.lua" 
-       " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"))
+       " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"
+       ))
 
     (setq markdown-enable-math t
           markdown-enable-wiki-links t
