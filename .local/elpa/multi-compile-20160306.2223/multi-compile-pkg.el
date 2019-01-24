@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "multi-compile" "20160306.2223" "Multi target interface to compile." '((emacs "24") (dash "2.12.1")) :commit "bd0331854774e7a269ce8a7dd49580cd397c0ec2" :keywords '("tools" "compile" "build") :authors '(("Kvashnin Vladimir" . "reangd@gmail.com")) :maintainer '("Kvashnin Vladimir" . "reangd@gmail.com") :url "https://github.com/ReanGD/emacs-multi-compile")
