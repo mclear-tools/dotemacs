@@ -2825,7 +2825,7 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
     :ensure t
     :after company
     :config
-    (setq company-bibtex-bibliography "~/Dropbox/Work/All.bib")
+    (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
     (setq company-bibtex-org-citation-regex "-?@")
     (add-to-list 'company-backends 'company-bibtex))
 #+END_SRC
@@ -3016,6 +3016,7 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
               "\\*eshell"
               "\\*ansi-term"
               "\\*Pandoc Output*"
+              "\\*compilation*"
               )))
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
@@ -3535,7 +3536,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "bb" 'helm-mini
     "bc" 'cpm/copy-whole-buffer-to-clipboard
     "bD" 'kill-buffer-and-window
-    "bd" 'kill-this-buffer
+    "bd" 'evil-delete-buffer
     "be" 'erase-buffer
     "bf" 'cpm/browse-file-directory
     "bj" 'cpm/jump-in-buffer
@@ -7874,7 +7875,6 @@ Great for managing citations and notes
           markdown-footnote-location 'immediately
           markdown-unordered-list-item-prefix "-   "
           markdown-use-pandoc-style-yaml-metadata t)
-       ;; add keybindings to hook
      :config
      ;; remove strikout comment face
      (set-face-attribute 'markdown-comment-face nil 
@@ -7882,7 +7882,7 @@ Great for managing citations and notes
 
      )
 
-  ;; macro: delete backslashes in paragraph
+  ;; macro: delete backslashes in paragraph to cleanup markdown conversion
   (fset 'md-delete-backslash
      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\361\361f\\x" 0 "%d")) arg)))
 
