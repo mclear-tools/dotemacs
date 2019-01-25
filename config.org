@@ -4303,10 +4303,11 @@ CLOSED: [2018-06-28 Thu 12:02]
 *** Languages
 **** Applescript
 #+BEGIN_SRC emacs-lisp
-  (use-package applescript-mode
-    :ensure t
-    :mode (("\\.scpt\\'" . applescript-mode))
-    :commands (applescript-mode))
+    (use-package applescript-mode
+      :ensure t
+      :mode (("\\.scpt\\'" . applescript-mode)
+             ("\\.applescript\\'"       . applescript-mode))
+      :commands (applescript-mode))
 #+END_SRC
 **** Elisp
 #+BEGIN_SRC emacs-lisp 
