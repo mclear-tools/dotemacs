@@ -8561,3 +8561,10 @@ Make some writing elements easier with [[https://melpa.org/#/typo][typo.el]]
     :config
     (typo-global-mode))
 #+END_SRC
+** Sunrise Commander
+[[https://github.com/escherdragon/sunrise-commander][Sunrise Commander]] is an "[[https://medium.com/@enzuru/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e][orthodox file manager]]"
+#+begin_src emacs-lisp
+  (use-package sunrise-commander
+    :ensure nil
+    :load-path "~/.emacs.d/.local/elisp/sunrise-commander/")
+#+end_src
