@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "visual-fill-column" "20190115.1627" "fill-column for visual-line-mode" '((emacs "24.3")) :stars '(#("81" 0 2 (font-lock-face paradox-star-face)) #("28K" 0 3 (value 28178 font-lock-face paradox-download-face))) :commit "da5a8d688a687c85d0f51722cc035595c8de853f" :authors '(("Joost Kremers" . "joostkremers@fastmail.fm")) :maintainer '("Joost Kremers" . "joostkremers@fastmail.fm"))
