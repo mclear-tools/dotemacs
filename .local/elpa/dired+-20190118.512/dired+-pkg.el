@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "dired+" "20190118.512" "Extensions to Dired." 'nil :stars '("" #("85K" 0 3 (value 85195 font-lock-face paradox-download-face))) :commit "bdd208ebf64e9698cb9ceb1819e6823440346f1b" :keywords '("unix" "mouse" "directories" "diredp" "dired") :authors '(("Drew Adams")) :maintainer '(nil . "Drew Adams (concat \"drew.adams\" \"@\" \"oracle\" \".com\")") :url "https://www.emacswiki.org/emacs/download/dired%2b.el")

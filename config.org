@@ -459,6 +459,10 @@ Useful functions for calling config files
     (interactive)
     (require 'ranger)
     (find-file org-directory))
+  (defun goto-pandoc-config ()
+    "open pandoc metadata file"
+    (interactive)
+    (find-file "~/.pandoc/metadata.yml"))
 
 
 #+END_SRC
@@ -664,6 +668,16 @@ navigating in tagged buffers.
         ((looking-at "\\s)") (forward-char) (backward-sexp arg))
         ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 #+END_SRC
+
+*** Kill current buffer
+=(kill-this-buffer)= is unreliable when not invoked from the menubar. So here's a
+wrapper on =(kill-buffer)= to kill the current buffer. This is sometimes better than
+=(evil-delete-buffer)= since it keeps the window.
+#+begin_src emacs-lisp
+  (defun cpm/kill-this-buffer ()
+    (interactive)
+    (kill-buffer))
+#+end_src
 *** Make move
 #+BEGIN_SRC emacs-lisp
 (defun cpm/make-move ()
@@ -1146,6 +1160,19 @@ within other words, but this means that non-word keywords such as
            (helm-follow-mode-persistent t))
       (helm-do-ag (projectile-project-root) nil bounded)))
 #+END_SRC
+*** Yaml Wrap Region
+Wrap a visual region in =---= for a yaml block
+#+begin_src emacs-lisp
+(defun cpm/yaml-wrap ()
+  "wrap region in --- for yaml block"
+(interactive)
+(let ((start (region-beginning))
+      (end (region-end)))
+  (goto-char end)
+  (insert "---" "\n")
+  (goto-char start)
+  (insert "---" "\n")))
+#+end_src
 ** DOOM! Macros
 
 A set of fantastic macros written by [[https://github.com/hlissner][hlissner]]. There won't be much
@@ -3536,9 +3563,10 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
     "bb" 'helm-mini
     "bc" 'cpm/copy-whole-buffer-to-clipboard
     "bD" 'kill-buffer-and-window
-    "bd" 'evil-delete-buffer
+    "bd" 'cpm/kill-this-buffer
     "be" 'erase-buffer
-    "bf" 'cpm/browse-file-directory
+    ;; "bf" 'cpm/browse-file-directory
+    "bf" 'reveal-in-osx-finder
     "bj" 'cpm/jump-in-buffer
     "bk" 'evil-delete-buffer
     "bK" 'crux-kill-other-buffers
@@ -3551,18 +3579,20 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
 #+END_SRC
 ***** Comment Keybindings
 #+BEGIN_SRC emacs-lisp
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+    :states '(normal motion visual insert emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
 
-  "c"  '(:ignore t :which-key "Commenting")
-  "cb" 'org-block-wrap
-  "cc" 'evil-commentary
-  "cl" 'evil-commentary-line
-  "cy" 'evil-commentary-yank-line
- )
+    "c"   '(:ignore t :which-key "Commenting")
+    "cb"  '(nil :wk "Block Wrap")
+    "cbo" 'org-block-wrap
+    "cby" 'cpm/yaml-wrap
+    "cc"  'evil-commentary
+    "cl"  'evil-commentary-line
+    "cy"  'evil-commentary-yank-line
+   )
 #+END_SRC
 ***** Config Keybindings
 #+BEGIN_SRC emacs-lisp
@@ -3581,6 +3611,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   "Cl" 'load-config
   "Ci" 'goto-init.el
   "Co" 'goto-org-files
+  "Cp" 'goto-pandoc-config
   "Cs" 'goto-custom.el
   )
 
@@ -4636,9 +4667,8 @@ Easy workspace creation and switching
      (persp-mode 1)
      (nameframe-create-frame "Kant on Reflection")
      (toggle-frame-maximized)
-     (find-file "~/Dropbox/Work/projects/KantReflection/KantReflection.md")
-     (split-window-right)
-     (find-file "~/Dropbox/Work/projects/KantReflection/Kant-reflection-notes.org"))
+     (find-file "~/Dropbox/Work/projects/KantReflection/Kant-reflection-notes.org")
+     (magit-status))
    (defun cpm/load-kant-agency-book ()
      (interactive)
      (persp-mode 1)
@@ -5757,9 +5787,10 @@ overflow]] for help on hooks for the created frame.
 
 (defun cpm/what-are-you-doing-capture ()
   (interactive)
-  (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 12)))
+  (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
   (select-frame-by-name "What are you doing?")
   (cpm/org-journal)
+  (cpm/insert-weather)
   )
 
 #+END_SRC
@@ -6613,7 +6644,7 @@ Other useful org packages
     :config
     (add-to-list 'evil-insert-state-modes 'deft-mode)
     ;; basic settings for use with zettel
-    (setq deft-directory "~/Dropbox/notes/zettel/"
+    (setq deft-directory (concat (getenv "HOME") "/Dropbox/notes/zettel/")
           deft-recursive t
           deft-use-filename-as-title t
           deft-separator " "
@@ -7806,9 +7837,9 @@ Abbrev mode
   :ensure nil
   :defer 2
   :config
-  (add-hook 'text-mode-hook #'abbrev-mode)
+  ;; (add-hook 'text-mode-hook #'abbrev-mode)
   (setq abbrev-file-name (concat cpm-local-dir "abbrev/.abbrev_defs")
-        save-abbrevs 't)
+        save-abbrevs 'nil)
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
 #+END_SRC
@@ -7834,7 +7865,7 @@ Great for managing citations and notes
     (setq bibtex-completion-notes-symbol "✎")
     (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
     (setq bibtex-completion-notes-template-multiple-files
-          "# ${author} (${year}): ${title}\n ${=key=} | [PDF Link](${file})\n\n ")
+          "---\ntitle: '${author} (${year}): ${title}'\nnocite: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n")
     (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib" 
           bibtex-completion-library-path "~/Dropbox/Work/be-library/"
           bibtex-completion-pdf-field nil
@@ -7864,12 +7895,14 @@ Great for managing citations and notes
        " --css=/Users/roambot/.pandoc/pandoc.css"
        " --quiet"
        " --number-sections"
+       " --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua"
+       " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
+       " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
        " --metadata=reference-section-title:'References & Further Reading'"
-       ;; " --lua-filter=/Users/roambot/bin/cutintro.lua" 
        " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"
        ))
 
-    (setq markdown-enable-math t
+    (setq markdown-enable-math nil
           markdown-enable-wiki-links t
           markdown-nested-imenu-heading-index t
           markdown-open-command "~/bin/mark.sh"
@@ -7982,7 +8015,8 @@ Make arbitrary blocks or sentences of text.
 #+BEGIN_SRC emacs-lisp
   ;; Basic settings
   (use-package auctex
-    :mode ("\\.tex\\'" . latex-mode)
+    :mode (("\\.tex\\'" . latex-mode)
+           ("\\.latex\\'" . latex-mode))
     :commands (latex-mode LaTeX-mode plain-tex-mode)
     :init
     (progn
@@ -8404,12 +8438,15 @@ Like the [[https://github.com/ReanGD/emacs-multi-compile][name says]]
       (setq multi-compile-alist '(
             ;; commands for pandoc 
             (markdown-mode . (
-                              ("pandoc-pdf & Open" . "pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o %file-sans.pdf %file-name && open %file-sans.pdf")
-                              ("pandoc-docx & Open" . "pandoc -s -N --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua -o %file-sans.docx %file-name && open %file-sans.docx")
-                              ("pandoc-html & Open" . "pandoc -f markdown -t html5 -N -s --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/roambot/.pandoc/pandoc-templates/default.html5 --css=/Users/roambot/.pandoc/pandoc.css -o %file-sans.html %file-name && open %file-sans.html")
-                              ("pandoc-pdf" . "pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex -o %file-sans.pdf %file-name")
-                              ("pandoc-docx" . "pandoc -s -N --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua -o %file-sans.docx %file-name")
-                              ("pandoc-html" . "pandoc -f markdown -t html5 -N -s --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/roambot/.pandoc/pandoc-templates/default.html5 --css=/Users/roambot/.pandoc/pandoc.css -o %file-sans.html %file-name"))))))
+                              ("pandoc-pdf & Open" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")
+                              ("pandoc-handout & Open" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --template=/Users/Roambot/.pandoc/pandoc-templates/tufte.tex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")
+                              ("pandoc-docx & Open" . "pandoc -s --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.docx %file-name && open %file-sans.docx")
+                              ("pandoc-html & Open" . "pandoc -f markdown -t html5 -s --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/roambot/.pandoc/pandoc-templates/default.html5 --css=/Users/roambot/.pandoc/pandoc.css --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.html %file-name && open %file-sans.html")
+                              ("pandoc-pdf" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/Roambot/.pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name")
+                              ("pandoc-docx" . "pandoc -s --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.docx %file-name")
+                              ("pandoc-html" . "pandoc -f markdown -t html5 -s --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/roambot/.pandoc/pandoc-templates/default.html5 --css=/Users/roambot/.pandoc/pandoc.css --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.html %file-name")
+                              ("pandoc-handout" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --template=/Users/Roambot/.pandoc/pandoc-templates/tufte.tex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name")
+                              ("test pdf" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf"))))))
 #+end_src
 * Private
 #+BEGIN_SRC emacs-lisp
@@ -8566,5 +8603,47 @@ Make some writing elements easier with [[https://melpa.org/#/typo][typo.el]]
 #+begin_src emacs-lisp
   (use-package sunrise-commander
     :ensure nil
-    :load-path "~/.emacs.d/.local/elisp/sunrise-commander/")
+    :load-path "~/.emacs.d/.local/elisp/sunrise-commander/"
+    :commands (sunrise sunrise-cd)
+    :bind
+    (("C-x d" . sr-dired)
+     :map sr-mode-map
+     ("J" . sr-goto-dir)
+     ("j" . dired-next-line)
+     ("k" . dired-previous-line)
+     ("n" . sr-goto-dir)
+     ("C-k" . dired-do-kill-lines))
+    :init
+      (progn
+        (defun cb-sunrise-commander/dired-this-dir ()
+          (interactive)
+          (sr-dired default-directory))
+
+      (evil-ex-define-cmd "sr" #'sunrise)
+      (evil-ex-define-cmd "sd" #'cb-sunrise-commander/dired-this-dir))
+
+     :config
+      (progn
+        (setq sr-windows-locked nil)
+        (setq sr-cursor-follows-mouse nil)
+        (setq sr-windows-default-ratio 75)
+        (setq sr-use-commander-keys nil)
+        (setq dired-auto-revert-buffer t)))
+#+end_src
+** Insert weather
+From [[https://www.baty.blog/2019/insert-weather-into-emacs-buffer][Jack Baty]] with some slight modifications for formatting. See also [[https://github.com/chubin/wttr.in][wttr.in]]. 
+#+begin_src emacs-lisp
+(defun cpm/insert-weather ()
+  (interactive)
+  (let ((w (shell-command-to-string "curl -s 'wttr.in/?0qT'")))
+  (insert (mapconcat (function (lambda (x) (format ": %s" x)))
+           (split-string w "\n")
+           "\n")))
+  (newline))
+#+end_src
+** Reveal in MacOS Finder
+Like the [[https://github.com/kaz-yos/reveal-in-osx-finder][name says]]
+#+begin_src emacs-lisp
+  (use-package reveal-in-osx-finder
+    :ensure t)
 #+end_src

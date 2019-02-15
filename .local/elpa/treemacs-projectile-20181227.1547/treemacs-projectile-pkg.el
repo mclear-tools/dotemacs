@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "treemacs-projectile" "20181227.1547" "Projectile integration for treemacs" '((projectile "0.14.0") (treemacs "0.0")) :stars '(#("389" 0 3 (font-lock-face paradox-star-face)) #("5K" 0 2 (value 5667 font-lock-face paradox-download-face))) :commit "c2a82e2db25522561ef3ba520338397b89b57f07" :authors '(("Alexander Miller" . "alexanderm@web.de")) :maintainer '("Alexander Miller" . "alexanderm@web.de") :url "https://github.com/Alexander-Miller/treemacs")

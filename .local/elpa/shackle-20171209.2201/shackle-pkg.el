@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "shackle" "20171209.2201" "Enforce rules for popups" '((cl-lib "0.5")) :stars '(#("98" 0 2 (font-lock-face paradox-star-face)) #("3K" 0 2 (value 3606 font-lock-face paradox-download-face))) :commit "4189c1c773aab533969b587f7801ffbcd1d7d613" :keywords '("convenience") :authors '(("Vasilij Schneidermann" . "v.schneidermann@gmail.com")) :maintainer '("Vasilij Schneidermann" . "v.schneidermann@gmail.com") :url "https://github.com/wasamasa/shackle")

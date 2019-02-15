@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "imenu-list" "20180601.1402" "Show imenu entries in a separate buffer" '((cl-lib "0.5")) :stars '(#("77" 0 2 (font-lock-face paradox-star-face)) #("14K" 0 3 (value 14626 font-lock-face paradox-download-face))) :commit "04f0632f7b8c81be8747617768c57b66e5d60994" :authors '(("Bar Magal (2015)")) :maintainer '("Bar Magal (2015)") :url "https://github.com/bmag/imenu-list")
