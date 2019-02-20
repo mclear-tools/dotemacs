@@ -31,6 +31,15 @@
 (require 'biblio-core)
 (require 'biblio-doi)
 
+(defcustom biblio-crossref-user-email-address nil
+  "Email address to include in CrossRef queries, or nil.
+CrossRef gives priority to queries that include an email address.
+See URL `https://github.com/CrossRef/rest-api-doc#etiquette' for
+more details."
+  :group 'biblio
+  :type '(choice (const :tag "Do not include an email address." nil)
+                 (string :tag "Include an email address.")))
+
 (defun biblio-crossref--forward-bibtex (metadata forward-to)
   "Forward BibTeX for CrossRef entry METADATA to FORWARD-TO."
   (biblio-doi-forward-bibtex (biblio-alist-get 'doi metadata) forward-to))
@@ -69,7 +78,10 @@
 
 (defun biblio-crossref--url (query)
   "Create a CrossRef url to look up QUERY."
-  (format "http://api.crossref.org/works?query=%s" (url-encode-url query)))
+  (format "http://api.crossref.org/works?query=%s%s"
+          (url-encode-url query)
+          (if biblio-crossref-user-email-address
+              (format "&mailto=%s" (url-encode-url biblio-crossref-user-email-address)) "")))
 
 ;;;###autoload
 (defun biblio-crossref-backend (command &optional arg &rest more)

@@ -4,7 +4,7 @@
 
 ;; Author: Clément Pit-Claudel <clement.pitclaudel@live.com>
 ;; Version: 0.2
-;; Package-Version: 20160901.1815
+;; Package-Version: 20190215.243
 ;; Package-Requires: ((emacs "24.3") (let-alist "1.0.4") (seq "1.11") (dash "2.12.1"))
 ;; Keywords: bib, tex, convenience, hypermedia
 ;; URL: http://github.com/cpitclaudel/biblio.el
@@ -144,7 +144,7 @@ With non-nil AUTOKEY, automatically generate a key for BIBTEX."
       (funcall biblio-cleanup-bibtex-function autokey))
     (if (fboundp 'font-lock-ensure) (font-lock-ensure)
       (with-no-warnings (font-lock-fontify-buffer)))
-    (buffer-string)))
+    (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun biblio--beginning-of-response-body ()
   "Move point to beginning of response body."

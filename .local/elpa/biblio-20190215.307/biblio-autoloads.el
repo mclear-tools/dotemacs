@@ -47,7 +47,7 @@ Start a CrossRef search for QUERY, prompting if needed.
 
 (defalias 'crossref-lookup 'biblio-crossref-lookup)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "biblio-crossref" '("biblio-crossref--")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "biblio-crossref" '("biblio-crossref-")))
 
 ;;;***
 

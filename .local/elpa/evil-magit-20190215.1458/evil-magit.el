@@ -3,8 +3,8 @@
 ;; Copyright (C) 2015-2016 Justin Burkett
 
 ;; Author: Justin Burkett <justin@burkett.cc>
-;; Package-Requires: ((evil "1.2.3") (magit "2.6.0"))
-;; Package-Version: 20190203.443
+;; Package-Requires: ((evil "1.2.3") (magit "2.6.0") (magit-popup "2.12.5"))
+;; Package-Version: 20190215.1458
 ;; Homepage: https://github.com/justbur/evil-magit
 ;; Version: 0.4.1
 
@@ -50,6 +50,7 @@
 
 (require 'evil)
 (require 'magit)
+(require 'magit-popup) ; FIXME only temporary
 
 (defcustom evil-magit-use-y-for-yank t
   "When non nil, replace \"y\" for `magit-show-refs-popup' with
@@ -146,6 +147,7 @@ should be a string suitable for `kbd'."
   "Modes that switch from default state to `evil-magit-state'")
 
 (defvar evil-magit-untouched-modes
+  ;; TODO do something here
   '(git-popup-mode
     magit-blame-mode
     magit-blame-read-only-mode
@@ -160,7 +162,7 @@ should be a string suitable for `kbd'."
     magit-blame-put-keymap-before-view-mode
     magit-diff-mode
     magit-merge-preview-mode
-    magit-popup-help-mode
+    transient-resume-mode
     magit-rebase-mode
     magit-file-mode-major-mode
     magit-wip-after-save-mode
@@ -286,13 +288,13 @@ moment.")
        (,states magit-mode-map "x"     magit-delete-thing             "k")
        (,states magit-mode-map "X"     magit-file-untrack             "K")
        (,states magit-mode-map "-"     magit-revert-no-commit         "v")
-       (,states magit-mode-map "_"     magit-revert-popup             "V")
-       (,states magit-mode-map "p"     magit-push-popup               "P")
+       (,states magit-mode-map "_"     magit-revert                   "V")
+       (,states magit-mode-map "p"     magit-push                     "P")
        (,states magit-mode-map "o"     magit-reset-quickly            "x")
-       (,states magit-mode-map "O"     magit-reset-popup              "X")
+       (,states magit-mode-map "O"     magit-reset                    "X")
        (,states magit-mode-map "|"     magit-git-command              ":")
-       (,states magit-mode-map "'"     magit-submodule-popup          "o")
-       (,states magit-mode-map "\""    magit-subtree-popup            "O")
+       (,states magit-mode-map "'"     magit-submodule                "o")
+       (,states magit-mode-map "\""    magit-subtree                  "O")
        (,states magit-mode-map "="     magit-diff-less-context        "-")
        (,states magit-mode-map "j"     evil-next-visual-line)
        (,states magit-mode-map "k"     evil-previous-visual-line)
@@ -334,12 +336,14 @@ moment.")
        (,states magit-status-mode-map "gh"  magit-section-up                       "^")
        (,states magit-diff-mode-map "gj" magit-section-forward)
        (,states magit-diff-mode-map "gd" magit-jump-to-diffstat-or-diff "j")
-       ((emacs) magit-popup-mode-map "<escape>" "q"))
+       ;; NOTE This is now transient-map and the binding is C-g.
+       ;; ((emacs) magit-popup-mode-map "<escape>" "q")
+       )
 
      (when evil-magit-want-horizontal-movement
-       `((,states magit-mode-map "H"    magit-dispatch-popup    "h")
-         (,states magit-mode-map "L"    magit-log-popup         "l")
-         (,states magit-mode-map "C-l"  magit-log-refresh-popup "L")
+       `((,states magit-mode-map "H"    magit-dispatch    "h")
+         (,states magit-mode-map "L"    magit-log         "l")
+         (,states magit-mode-map "C-l"  magit-log-refresh "L")
          (,states magit-mode-map "h"    evil-backward-char)
          (,states magit-mode-map "l"    evil-forward-char)))
 
@@ -352,7 +356,7 @@ moment.")
            (,states magit-mode-map "C-w"  evil-window-map)
            (,states magit-mode-map "y")
            (,states magit-mode-map "yy"   evil-yank-line)
-           (,states magit-mode-map "yr"   magit-show-refs-popup      "y")
+           (,states magit-mode-map "yr"   magit-show-refs            "y")
            (,states magit-mode-map "ys"   magit-copy-section-value   "C-w")
            (,states magit-mode-map "yb"   magit-copy-buffer-revision "M-w")
            ((visual) magit-mode-map "y"   evil-yank))
@@ -525,7 +529,7 @@ evil-magit affects.")
 
 ;; Popups
 
-(defvar evil-magit-dispatch-popup-backup (copy-sequence magit-dispatch-popup))
+;; (defvar evil-magit-dispatch-popup-backup (copy-sequence magit-dispatch-popup))
 (defvar evil-magit-popup-keys-changed nil)
 
 (defvar evil-magit-popup-changes
@@ -567,7 +571,7 @@ evil-magit affects.")
 
 (defun evil-magit-revert-popups ()
   "Revert popup keys changed by evil-magit."
-  (setq magit-dispatch-popup evil-magit-dispatch-popup-backup)
+  ;; (setq magit-dispatch-popup evil-magit-dispatch-popup-backup)
   (when evil-magit-popup-keys-changed
     (dolist (change evil-magit-popup-changes)
       (magit-change-popup-key
@@ -583,7 +587,7 @@ this function is if you've called `evil-magit-revert' and wish to
 go back to evil-magit behavior."
   (interactive)
   (evil-magit-adjust-section-bindings)
-  (evil-magit-adjust-popups)
+  ;; TODO (evil-magit-adjust-popups)
   (evil-magit-set-initial-states))
 (evil-magit-init)
 
@@ -592,7 +596,7 @@ go back to evil-magit behavior."
   "Revert changes by evil-magit that affect default evil+magit behavior."
   (interactive)
   (evil-magit-revert-section-bindings)
-  (evil-magit-revert-popups)
+  ;; TODO (evil-magit-revert-popups)
   (evil-magit-revert-initial-states)
   (message "evil-magit reverted"))
 
@@ -631,6 +635,18 @@ using `evil-magit-toggle-text-mode'"
          (evil-change-state evil-magit-state))
         (t
          (user-error "evil-magit-toggle-text-mode unexpected state"))))
+
+;; TODO
+;; ;; Make room for forge popup when loaded
+;; (eval-after-load 'forge
+;;   '(progn
+;;      (evil-magit-define-key evil-magit-state 'magit-mode-map "p" 'magit-pull-popup)
+;;      (evil-magit-define-key evil-magit-state 'magit-mode-map "P" 'magit-push-popup)
+;;      (evil-magit-define-key evil-magit-state 'magit-mode-map "F" 'forge-dispatch)
+;;      (magit-change-popup-key 'magit-dispatch-popup :actions ?p ?P)
+;;      (magit-remove-popup-key 'magit-dispatch-popup :actions ?F)
+;;      (magit-define-popup-action 'magit-dispatch-popup ?p "Pulling" 'magit-pull-popup ?P t)
+;;      (magit-define-popup-action 'magit-dispatch-popup ?F "Forge" 'forge-dispatch ?f)))
 
 ;;; evil-magit.el ends soon
 (provide 'evil-magit)

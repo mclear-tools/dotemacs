@@ -1414,6 +1414,7 @@ EDIT may be non-nil."
       (transient--pre-exit)))))
 
 (defun transient--pre-exit ()
+  (transient--debug 'pre-exit)
   (let ((window (selected-window)))
     (lv-delete-window)
     (select-window window))
@@ -1976,7 +1977,7 @@ The last value is \"don't use any of these switches\"."
   (save-match-data
     (cl-block nil
       (while t
-        (let ((str (read-from-minibuffer prompt initial-input nil history)))
+        (let ((str (read-from-minibuffer prompt initial-input nil nil history)))
           (cond ((string-equal str "")
                  (cl-return nil))
                 ((string-match-p (if include-zero
