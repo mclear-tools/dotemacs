@@ -2378,6 +2378,7 @@ Like the title says...
  #+END_SRC
  
 **** All the icons dired
+[[https://github.com/jtbm37/all-the-icons-dired][Icons]] for dired
 #+BEGIN_SRC emacs-lisp
   ;; icons for dired
   (use-package all-the-icons-dired
@@ -3250,7 +3251,7 @@ with richer versions.
 #+BEGIN_SRC emacs-lisp 
 (use-package counsel-projectile :commands counsel-projectile-bookmark)
 (use-package counsel
-  :commands (council-org-goto jump-in-buffer)
+  :commands (council-org-goto jump-in-buffer counsel-org-tag)
   :config
   (map! (:map counsel-mode-map
          :ni "C-j" #'ivy-next-line
@@ -3625,14 +3626,12 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
   :non-normal-prefix "C-SPC"
 
     "f"  '(:ignore t :which-key "Files")
-    "fd" 'fzf-directory
     "ff" 'helm-find-files
     "fl" 'helm-locate
     "fo" 'crux-open-with
     "fs" 'save-buffer
     "fr" 'helm-recentf
-    "fy" 'spacemacs/show-and-copy-buffer-filename
-    "fz" 'fzf
+    "fy" 'cpm/show-and-copy-buffer-filename
     )
 #+END_SRC
 ***** General Keybindings
@@ -3870,7 +3869,9 @@ Keybindings for managing packages
       "ps5" #'cpm/load-phil105
       "ps8" #'cpm/load-phil871
       "psa" #'cpm/load-kant-apperception-substance
-      "psb" #'cpm/load-kant-agency-book
+      "psb" #'(:ignore t :which-key "Books")
+      "psba" #'cpm/load-kant-agency-book
+      "psbr" #'cpm/load-kant-rationality-book
       "psc" #'cpm/load-emacs-config
       "psf" #'cpm/load-kant-free-thought
       "psr" #'cpm/load-kant-reflection
@@ -4676,6 +4677,16 @@ Easy workspace creation and switching
      (toggle-frame-maximized)
      (find-file "~/Dropbox/Work/projects/Book-Projects/Kant-Agency-Book/Kant-Rational-Agency-Notes.org")
      (magit-status))
+   (defun cpm/load-kant-rationality-book ()
+     (interactive)
+     (persp-mode 1)
+     (nameframe-create-frame "Kant on Rationality")
+     (toggle-frame-maximized)
+     (find-file "~/Dropbox/notes/zettel/2019-0119-1607-book-notes.md")
+     (split-window-right)
+     (find-file "~/Dropbox/Work/projects/Book-Projects/rationality-book/chapters")
+     (split-window-below)
+     (magit-status))
    (defun cpm/load-emacs-config ()
      (interactive)
      (persp-mode 1)
@@ -5173,7 +5184,7 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
      :config
      ;; make magit go fullscreen
      ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
-     (setq magit-diff-refine-hunk 'all)
+     (setq magit-diff-refine-hunk t)
      (global-git-commit-mode t) ; use emacs as editor for git commits
      (setq magit-push-always-verify nil)
      )
@@ -5186,7 +5197,8 @@ Fish-like [[https://github.com/dieggsy/esh-autosuggest/][history autosuggestions
    :after magit
    :demand t
    :config
-   (setq evil-magit-use-y-for-yank t))
+   (setq evil-magit-use-y-for-yank t
+         evil-magit-use-z-for-folds t))
  #+END_SRC
  
  
@@ -8446,7 +8458,14 @@ Like the [[https://github.com/ReanGD/emacs-multi-compile][name says]]
                               ("pandoc-docx" . "pandoc -s --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.docx %file-name")
                               ("pandoc-html" . "pandoc -f markdown -t html5 -s --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --template=/Users/roambot/.pandoc/pandoc-templates/default.html5 --css=/Users/roambot/.pandoc/pandoc.css --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.html %file-name")
                               ("pandoc-handout" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --template=/Users/Roambot/.pandoc/pandoc-templates/tufte.tex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name")
-                              ("test pdf" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf"))))))
+                              ("test pdf" . "pandoc -s -V mainfont=Optima --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")))
+            ((string/starts-with buffer-file-name "/Users/roambot/Dropbox/Work/projects/Book-Projects/rationality-book/") . (("compile rationality book" . "cd %make-dir && make -k && open %make-dirbuild/pdf/book.pdf")))
+
+)))
+
+(defun string/starts-with (string prefix)
+    "Return t if STRING starts with prefix."
+    (and (stringp string) (string-match (rx-to-string `(: bos ,prefix) t) string)))
 #+end_src
 * Private
 #+BEGIN_SRC emacs-lisp
