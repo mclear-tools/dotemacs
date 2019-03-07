@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "evil-magit" "20190215.1458" "evil-based key bindings for magit" '((evil "1.2.3") (magit "2.6.0") (magit-popup "2.12.5")) :stars '(#("122" 0 3 (font-lock-face paradox-star-face)) #("135K" 0 4 (value 135003 font-lock-face paradox-download-face))) :commit "8cdda5ccd7cbf9ac2da0e01c4ed62bd27c570e54" :authors '(("Justin Burkett" . "justin@burkett.cc")) :maintainer '("Justin Burkett" . "justin@burkett.cc") :url "https://github.com/justbur/evil-magit")

@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "ace-window" "20190219.947" "Quickly switch windows." '((avy "0.2.0")) :stars '(#("379" 0 3 (font-lock-face paradox-star-face)) #("321K" 0 4 (value 321482 font-lock-face paradox-download-face))) :commit "a429c66f318af0452a009f96b39a18f9b0fe232b" :keywords '("window" "location") :authors '(("Oleh Krehel" . "ohwoeowho@gmail.com")) :maintainer '("Oleh Krehel" . "ohwoeowho@gmail.com") :url "https://github.com/abo-abo/ace-window")
