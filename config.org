@@ -3802,6 +3802,12 @@ Evil mode markdown commmands
     "M--"      #'markdown-insert-hr
     "M-RET"    #'markdown-insert-header
     )
+    
+  (general-define-key
+    :states '(normal motion)
+    :keymaps 'markdown-mode-map
+
+    "RET"    #'markdown-follow-thing-at-point)
 
 #+END_SRC
 ***** Miscellaneous Keybindings
@@ -3986,7 +3992,7 @@ Keybindings for managing packages
       "uAa" #'cpm/goto-articles.org
       "uAc" #'cpm/goto-classes.org
       "uAf" #'cpm/goto-org-files
-      "uAi" #'cpm/goto-inbox.org
+      "uAi" #'cpm/org-goto-inbox
       "uAn" #'cpm/goto-notes.org
       "uAp" #'cpm/goto-projects.org
       "uAs" #'cpm/goto-someday.org
@@ -4586,7 +4592,7 @@ Easy workspace creation and switching
 (use-package eyebrowse
   :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
   :general
-  (:states '(insert normal) :keymaps 'override
+  (:states '(insert normal motion emacs) :keymaps 'override
     "s-1" 'eyebrowse-switch-to-window-config-1
     "s-2" 'eyebrowse-switch-to-window-config-2
     "s-3" 'eyebrowse-switch-to-window-config-3
@@ -6132,7 +6138,7 @@ Functions to advance forwards or backwards through narrowed tree
 (defun cpm/goto-mail-inbox.org ()
   "goto org-mail-inbox"
   (interactive)
-  (find-file "~/Dropbox/org-files/mail.org"))
+  (find-file "~/Dropbox/org-files/inbox.org"))
 (defun cpm/goto-todo.org ()
   "goto org-todo"
   (interactive)
@@ -6998,7 +7004,7 @@ Either provide a name as argument, or enter one in the mini-buffer.
 Creates new deft file with id and STR as name."
   (interactive (list (read-string "name: ")))
   (setq deft-directory "/Users/roambot/Dropbox/notes/zettel/")  
-  (insert "" (zd-generate-id) " " str)
+  (insert "" (zd-generate-id) "-" str)
   (zd-new-file str))
 #+END_SRC
 
@@ -7930,7 +7936,7 @@ Great for managing citations and notes
      )
 
   ;; macro: delete backslashes in paragraph to cleanup markdown conversion
-  (fset 'md-delete-backslash
+  (fset 'cpm/md-delete-backslash
      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\361\361f\\x" 0 "%d")) arg)))
 
 #+end_src
