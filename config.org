@@ -8666,3 +8666,12 @@ Like the [[https://github.com/kaz-yos/reveal-in-osx-finder][name says]]
   (use-package reveal-in-osx-finder
     :ensure t)
 #+end_src
+** Diff-hl
+VC status in [[https://github.com/dgutov/diff-hl][fringe]]. Use it only for dired tho (git gutter covers everything else).
+#+begin_src emacs-lisp
+  (use-package diff-hl
+    :ensure t
+    :config
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+#+end_src
