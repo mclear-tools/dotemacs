@@ -3045,6 +3045,7 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
               "\\*ansi-term"
               "\\*Pandoc Output*"
               "\\*compilation*"
+              "\\*dashboard*"
               )))
       (helm-autoresize-mode 1)
       (setq helm-autoresize-max-height 40)
@@ -8499,8 +8500,10 @@ Dashboard depends on this.
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
     (use-package dashboard
-      :commands (dashboard-insert-startupify-lists cpm/dashboard)
+      ;; :commands (dashboard-insert-startupify-lists cpm/dashboard)
       :config
+      (evil-set-initial-state 'dashboard-mode 'motion)
+      (setq dashboard-center-content t)
       (setq dashboard-items '((agenda . 5)
                               (recents  . 5)
                               (bookmarks . 5)
@@ -8520,7 +8523,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
         (defun dashboard-insert-totd (list-size) (totd)) (add-to-list 'dashboard-item-generators '(totd . dashboard-insert-totd))
 
         (setq dashboard-startup-banner 2)
-        ;; (dashboard-setup-startup-hook)
+        (dashboard-setup-startup-hook)
         (map! (:map dashboard-mode-map
           :ni     "TAB" 'widget-forward
           :ni     "C-i" 'widget-forward
