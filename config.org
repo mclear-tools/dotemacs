@@ -5602,6 +5602,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
 #+BEGIN_SRC emacs-lisp
   (use-package org-super-agenda
+   :pin manual ;; throws errors for some reason when I update
    :general 
    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap 
    ","  'cpm/hydra-org-agenda/body)
