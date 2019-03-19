@@ -8685,3 +8685,45 @@ VC status in [[https://github.com/dgutov/diff-hl][fringe]]. Use it only for dire
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 #+end_src
+** FIXME Org Recur
+Define [[https://github.com/m-cat/org-recur][recurring tasks]] in org
+#+begin_src emacs-lisp
+  (use-package org-recur
+    :ensure t
+    :hook ((org-mode . org-recur-mode)
+           (org-agenda-mode . org-recur-agenda-mode)
+           (org-super-agenda-mode . org-recur-agenda-mode))
+    :demand t
+    :config
+    (define-key org-recur-mode-map (kbd "C-c d") 'org-recur-finish)
+
+    ;; Rebind the 'd' key in org-agenda (default: `org-agenda-day-view').
+    (define-key org-recur-agenda-mode-map (kbd "d") 'org-recur-finish)
+    (define-key org-recur-agenda-mode-map (kbd "C-c d") 'org-recur-finish)
+
+    (setq org-recur-finish-done t
+          org-recur-finish-archive t))
+
+  ;; Refresh org-agenda after rescheduling a task.
+  (defun org-agenda-refresh ()
+    "Refresh all `org-agenda' buffers."
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (derived-mode-p 'org-agenda-mode)
+          (org-agenda-maybe-redo)))))
+
+  (defadvice org-schedule (after refresh-agenda activate)
+    "Refresh org-agenda."
+    (org-agenda-refresh))
+
+  ;; Keep the task metadata clean:
+
+  ;;;; Log time a task was set to Done.
+  (setq org-log-done (quote time))
+  ;;;; Don't log the time a task was rescheduled or redeadlined.
+  (setq org-log-redeadline nil)
+  (setq org-log-reschedule nil)
+
+  ;; Prefer rescheduling to future dates and times:
+  (setq org-read-date-prefer-future 'time)
+#+end_src
