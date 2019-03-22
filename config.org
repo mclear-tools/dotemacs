@@ -2657,16 +2657,21 @@ that I use anything other than solarized :)
       :hook (after-init . doom-modeline-init)
       :config
       (setq doom-modeline-bar-width 3
-            doom-modeline-height 38)
+            doom-modeline-height 38
+            doom-modeline-buffer-file-name-style 'truncate-upto-project
+            doom-modeline-major-mode-color-icon t
+            doom-modeline-enable-word-count t
+            doom-modeline-persp-name nil
+            doom-modeline-minor-modes nil)
 
        ;; Change the evil tag 
-       (setq evil-normal-state-tag   (propertize " 🅝 " )
-             evil-emacs-state-tag    (propertize " 🅔 " )
-             evil-insert-state-tag   (propertize " 🅘 " )
-             evil-replace-state-tag  (propertize " 🅡 " )
-             evil-motion-state-tag   (propertize " 🅜 " )
-             evil-visual-state-tag   (propertize " 🅥 " )
-             evil-operator-state-tag (propertize " 🅞 " ))
+       (setq evil-normal-state-tag   (propertize " 🅝" )
+             evil-emacs-state-tag    (propertize " 🅔" )
+             evil-insert-state-tag   (propertize " 🅘" )
+             evil-replace-state-tag  (propertize " 🅡" )
+             evil-motion-state-tag   (propertize " 🅜" )
+             evil-visual-state-tag   (propertize " 🅥" )
+             evil-operator-state-tag (propertize " 🅞" ))
 
        (doom-modeline-def-segment evil-state
        "The current evil state. Requires `evil-mode' to be enabled."
@@ -2691,6 +2696,7 @@ that I use anything other than solarized :)
                                   'doom-modeline-active-window-number
                                 'doom-modeline-inactive-window-number))
        ""))
+
       ;; workspace number faces & formatting
       (doom-modeline-def-segment workspace-number
         "The current workspace name or number. Requires `eyebrowse-mode' to be
@@ -2702,32 +2708,44 @@ that I use anything other than solarized :)
                    (str (if (and tag (< 0 (length tag)))
                             tag
                           (when num (int-to-string num)))))
-              (propertize (format " %s |" str) 'face 'doom-modeline-highlight))
+              (concat 
+                (propertize (format " %s " str) 'face (if (doom-modeline--active) 
+                                                          '(:foreground "#2aa198") 
+                                                          'doom-modeline-inactive-window-number))
+                (propertize (format "|" str) 'face '(:foreground "#586e75"))))
+
           ""))
 
        ;;
        ;; Mode lines
        ;;
+       (doom-modeline-def-modeline 'cpm/my-doom-mode-line
+       '(workspace-number window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
+       '(misc-info input-method buffer-encoding process checker buffer-position " "))
 
-       (doom-modeline-def-modeline 'main
-                                   '(workspace-number window-number bar evil-state matches " " buffer-info vcs)
-                                   '(process buffer-position " " selection-info))
+       (defun setup-custom-doom-modeline ()
+       (doom-modeline-set-modeline 'cpm/my-doom-mode-line 'default))
 
-       (doom-modeline-def-modeline 'minimal
-                                   '(bar matches " " buffer-info)
-                                   '(media-info major-mode))
+       (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline)
+       ;; (doom-modeline-def-modeline 'main
+       ;;                             '(workspace-number window-number bar evil-state matches " " buffer-info vcs)
+       ;;                             '(process buffer-position " " selection-info))
 
-       (doom-modeline-def-modeline 'special
-                                   '(window-number bar evil-state matches " " buffer-info-simple)
-                                   '(process))
+       ;; (doom-modeline-def-modeline 'minimal
+       ;;                             '(bar matches " " buffer-info)
+       ;;                             '(media-info major-mode))
 
-       (doom-modeline-def-modeline 'project
-                                   '(window-number bar buffer-default-directory buffer-position " " selection-info)
-                                   '())
+       ;; (doom-modeline-def-modeline 'special
+       ;;                             '(window-number bar evil-state matches " " buffer-info-simple)
+       ;;                             '(process))
 
-       (doom-modeline-def-modeline 'media
-                                   '(window-number bar " %b  ")
-                                   '(media-info))
+       ;; (doom-modeline-def-modeline 'project
+       ;;                             '(window-number bar buffer-default-directory buffer-position " " selection-info)
+       ;;                             '())
+
+       ;; (doom-modeline-def-modeline 'media
+       ;;                             '(window-number bar " %b  ")
+       ;;                             '(media-info))
 
        (defface doom-modeline-active-window-number
        '((t (:inherit warning)))
