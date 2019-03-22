@@ -754,10 +754,27 @@ Courtesy of a helpful [[https://www.reddit.com/r/emacs/comments/70ke5w/help_fix_
   (defun cpm/goto-projects ()
       "Open projects dir"
       (interactive)
-      (require 'ranger)
       (find-file "~/Dropbox/Work/projects"))
 
 #+END_SRC
+*** Open in iTerm
+#+begin_src emacs-lisp
+(defun open-dir-in-iterm ()
+  "Open the current directory of the buffer in iTerm."
+  (interactive)
+  (let* ((iterm-app-path "/Applications/iTerm.app")
+         (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
+         (iterm-path (if (file-directory-p iterm-app-path)
+                         iterm-app-path
+                       iterm-brew-path)))
+    (shell-command (concat "open -a " iterm-path " ."))))
+    (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
+
+;; Not going to use these commands
+(put 'ns-print-buffer 'disabled t)
+(put 'suspend-frame 'disabled t)
+
+#+end_src
 *** Org Tree to File
 Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659823][this]] superuser answer.
 #+begin_src emacs-lisp
@@ -1575,7 +1592,7 @@ compilation."
 #+BEGIN_SRC emacs-lisp
 
 (defmacro find-file-in! (path &optional project-p)
-  "Returns a interactive function for searching files"
+  "Returns an interactive function for searching files"
   `(lambda () (interactive)
      (let ((default-directory ,path))
        (call-interactively
@@ -1918,20 +1935,6 @@ First we can define some general system checks
       (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
   )
 
-      (defun open-dir-in-iterm ()
-        "Open the current directory of the buffer in iTerm."
-        (interactive)
-        (let* ((iterm-app-path "/Applications/iTerm.app")
-               (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
-               (iterm-path (if (file-directory-p iterm-app-path)
-                               iterm-app-path
-                             iterm-brew-path)))
-          (shell-command (concat "open -a " iterm-path " ."))))
-          (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
-
-      ;; Not going to use these commands
-      (put 'ns-print-buffer 'disabled t)
-      (put 'suspend-frame 'disabled t)
 
       ;; -- This is for TextExpander
       ;; (setq ns-alternate-modifier 'alt)
