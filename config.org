@@ -4498,7 +4498,9 @@ Interactive [[https://github.com/joddie/macrostep][macro expander]] for emacs
 Yet another attempt to manage buffers/workspaces
 #+BEGIN_SRC emacs-lisp 
   (use-package perspective
-    :commands (persp-switch persp-add-buffer persp-set-buffer))
+    :commands (persp-switch persp-add-buffer persp-set-buffer)
+    :config
+    (setq persp-show-modestring nil))
 
   (use-package persp-projectile
       :commands projectile-persp-switch-project)
@@ -4592,17 +4594,47 @@ A [[https://github.com/nex3/perspective-el/issues/19][useful set of functions]] 
 *** Eyebrowse Workspace & Window Management
 Easy workspace creation and switching
 #+BEGIN_SRC emacs-lisp
-(use-package eyebrowse
-  :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2) 
-  :general
-  (:states '(insert normal motion emacs) :keymaps 'override
-    "s-1" 'eyebrowse-switch-to-window-config-1
-    "s-2" 'eyebrowse-switch-to-window-config-2
-    "s-3" 'eyebrowse-switch-to-window-config-3
-    "s-4" 'eyebrowse-switch-to-window-config-4)
-  :config 
-  (setq eyebrowse-new-workspace 'dired-jump)
-  (eyebrowse-mode t))  
+  (use-package eyebrowse
+    :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
+    :general
+    (:states '(insert normal motion emacs) :keymaps 'override
+      "s-1" 'eyebrowse-switch-to-window-config-1
+      "s-2" 'eyebrowse-switch-to-window-config-2
+      "s-3" 'eyebrowse-switch-to-window-config-3
+      "s-4" 'eyebrowse-switch-to-window-config-4
+      "s-5" 'eyebrowse-switch-to-window-config-5)
+    :config
+    (setq eyebrowse-new-workspace 'dired-jump
+          eyebrowse-mode-line-style 'hide
+          eyebrowse-wrap-around t
+          eyebrowse-switch-back-and-forth t)
+
+    ;; Define a tabedit command (a la Vim) to create new tabs with
+    ;; optional file name or directory name. When no filename is passed on
+    ;; it calls the default eyebrowse function.
+    (evil-define-command cpm/eyebrowse-create-window-config-with-file (file)
+      :repeat nil
+      (interactive "<f>")
+      (if (and file (f-exists? file))
+        (progn
+          (eyebrowse-create-window-config)
+          (find-file file))
+        (eyebrowse-create-window-config)))
+
+    (evil-ex-define-cmd "tabc[lose]" 'eyebrowse-close-window-config)
+    (evil-ex-define-cmd "tabe[dit]"  'cpm/eyebrowse-create-window-config-with-file)
+    (evil-ex-define-cmd "tabfirst"   'eyebrowse-switch-to-window-config-0)
+    (evil-ex-define-cmd "tablast"    'eyebrowse-last-window-config)
+    (evil-ex-define-cmd "tabn"       'eyebrowse-next-window-config)
+    (evil-ex-define-cmd "tabp"       'eyebrowse-prev-window-config)
+    (evil-ex-define-cmd "tabs"       'eyebrowse-switch-to-window-config)
+
+    ;; This one doesn't exist in Vim, but it's useful if you'd like to use
+    ;; tabs like Tmux, where it's very common to rename tabs.
+    (evil-ex-define-cmd "tabr[ename]" 'eyebrowse-rename-window-config)
+
+    (eyebrowse-setup-evil-keys)
+    (eyebrowse-mode t))
 #+END_SRC
 
 
