@@ -8572,6 +8572,7 @@ Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listin
     (use-package dashboard
       ;; :commands (dashboard-insert-startupify-lists cpm/dashboard)
       :config
+      (set-frame-name "Dashboard")
       (evil-set-initial-state 'dashboard-mode 'motion)
       (setq dashboard-center-content t)
       (setq dashboard-items '((agenda . 5)
