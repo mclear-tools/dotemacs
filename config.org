@@ -5508,7 +5508,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
 
   ;; Display properties
   (setq org-cycle-separator-lines 0
-        org-tags-column 80
+        org-tags-column 72
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'only-window
         org-agenda-restore-windows-after-quit t
@@ -5543,6 +5543,16 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
     (interactive)
     (org-agenda nil "W"))
 
+;; from stack overflow https://stackoverflow.com/a/22900459/6277148
+;; note that the formatting is nicer that just using '%b'
+(setq org-agenda-prefix-format    
+ '((agenda . " %i %-12:c%?-12t% s")
+  (timeline . "  % s")
+  (todo .
+   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \|\") ")
+  (tags .
+   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \|\") ")
+  (search . " %i %-12:c")))
 #+END_SRC
 *** Agenda Navigation
 Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html][Aaron Bieber]]
