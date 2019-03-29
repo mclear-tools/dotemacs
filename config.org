@@ -2774,9 +2774,9 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
     ; calendars you want to download
     ; each item links to a remote iCal calendar
     (setq calendars
-          '(("work" . "https://p03-calendarws.icloud.com/ca/subscribe/1/tIT1AJEoqkLRxp8CxCHhXyjFoeUBDYfAOUw0oyxmqy21qQl2olDRxHslZ4QNxavP")
-            ("home" . "https://p03-calendarws.icloud.com/ca/subscribe/1/BTg33u3i0rudppklqMA7T09Ynq1HyJEjmw-rnTsbE1B8Nz5NEXd7RtG_xRtpgp54")
-            ("family" . "https://p03-calendarws.icloud.com/ca/subscribe/1/dns1xyaQvy2VnPHiHQQngVwdr7dNGlaWzp2Q3e_UdjCs-vkJ-8TEl_QU9Fyhm_-5BSPmwSHOtdoqgJi11kJgcpu2AYlReZuNXGpGFBhziq0")
+          '(("work" . "https://p61-calendars.icloud.com/published/2/MTAwNDQ1NjExMTAwNDQ1NvqO3jypeWV-KlipO2n5STkuGJF1NzTG9s64U7XcFCDT")
+            ("gcal" . "https://p61-calendars.icloud.com/published/2/AAAAAAAAAAAAAAAAAAAAAPkLfBERGnksMQnVd3nx2P4xR3jfU07OcBrCKtHbDzrtZD3XYz-dZDrvl_XI65XcbaccAbCfSNonTpwKbkC-QI8")
+            ("family" . "https://p61-calendars.icloud.com/published/2/AAAAAAAAAAAAAAAAAAAAAH_i27rWIsLXpCfLP97efwOETWdrBMrE6rUBhE6yHj98zRBt932T1OFdmI9ZVsOv3dnt9DUvo9wMQUpsf3F4HtQ")
             ))
 
     (defun cpm--getcal (url file)
@@ -2799,7 +2799,13 @@ Settings for using org with calander entries, with help from [[https://www.ict4g
                     ))
               calendars)
        ;; send everything to a diary file
-       (shell-command-to-string "cat work family home > diary"))
+       (shell-command-to-string "cat work family gcal > diary"))
+       
+(defun cpm/refresh-ical ()
+ "get ical appointments via batch emacs call"
+ (interactive)
+ (shell-command-to-string "emacs-get-cals.sh")
+ (cpm/org-agenda-refresh))
      
 #+END_SRC
 *** Exchange Calendar
@@ -4010,14 +4016,15 @@ Keybindings for managing packages
 
       "u"  '(:ignore t :which-key "User")
       "uA" '(:ignore t which-key "Agenda Files")
-      "uAa" #'cpm/goto-articles.org
+      "uAa" #'cpm/goto-reading.org
       "uAc" #'cpm/goto-classes.org
       "uAf" #'cpm/goto-org-files
-      "uAi" #'cpm/org-goto-inbox
-      "uAn" #'cpm/goto-notes.org
+      "uAi" #'cpm/goto-inbox.org
+      "uAl" #'cpm/goto-links.org
+      "uAr" #'cpm/goto-reference.org
       "uAp" #'cpm/goto-projects.org
       "uAs" #'cpm/goto-someday.org
-      "uAt" #'cpm/org-goto-todo
+      "uAt" #'cpm/goto-todo
       "ua"  '(:ignore t :which-key "Agenda")
       "uaa" 'cpm/jump-to-org-super-agenda
       "uaw" 'cpm/jump-to-week-agenda
@@ -5385,13 +5392,13 @@ Ensure ELPA org is prioritized above built-in org.
 *** Org Directories 
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/Dropbox/org-files")
-(setq org-default-notes-file (concat org-directory "/org-notes.org"))
+(setq org-default-notes-file (concat org-directory "/inbox.org"))
 #+END_SRC
 *** State Settings
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords
- '((sequence "TODO" "NEXT" "|" "DONE")
-   (sequence "INPROGRESS" "WAITING(w@/!)" "|" "CANCELED" "INACTIVE")))
+ '((sequence "TODO(t)" "DOING(g)" "NEXT(n)" "|" "DONE(d)")
+   (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELED(c@/!)")))
 #+END_SRC
 *** Priority Settings
 #+BEGIN_SRC emacs-lisp
@@ -5404,8 +5411,24 @@ Ensure ELPA org is prioritized above built-in org.
 Log timestamp when task is marked "DONE" or other finished keyword
 #+BEGIN_SRC emacs-lisp
 (setq org-log-done 'time)
+(setq org-log-into-drawer t)
+(setq org-log-state-notes-insert-after-drawers nil)
+;;;; Don't log the time a task was rescheduled or redeadlined.
+(setq org-log-redeadline nil)
+(setq org-log-reschedule nil)
+
+;; Prefer rescheduling to future dates and times:
+(setq org-read-date-prefer-future 'time)
 #+END_SRC
-    
+*** Org Tags
+#+begin_src emacs-lisp
+(setq org-tag-alist (quote (("@errand" . ?e)
+                            ("@unl" . ?s)
+                            ("@home" . ?h)
+                            ("@computer" . ?c))))
+
+(setq org-fast-tag-selection-single-key nil)
+#+end_src
 *** Org Babel Languages
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'org
@@ -5564,6 +5587,7 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
         org-agenda-restore-windows-after-quit t
         org-agenda-todo-ignore-scheduled nil
         org-agenda-todo-ignore-deadlines nil 
+        org-agenda-block-separator ""
         ;; org-agenda-sticky t
         org-agenda-span 'day)
 
@@ -5599,9 +5623,9 @@ Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
  '((agenda . " %i %-12:c%?-12t% s")
   (timeline . "  % s")
   (todo .
-   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \|\") ")
+   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
   (tags .
-   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \|\") ")
+   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
   (search . " %i %-12:c")))
 #+END_SRC
 *** Agenda Navigation
@@ -5630,7 +5654,8 @@ Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer
                                     'max
                                   'min))
                       (all-pos-raw (list (funcall find-func (point) 'org-agenda-structural-header)
-                                         (funcall find-func (point) 'org-agenda-date-header)))
+                                         (funcall find-func (point) 'org-agenda-date-header)
+                                         (funcall find-func (point) 'org-super-agenda-header)))
                       (all-pos (cl-remove-if-not 'numberp all-pos-raw))
                       (prop-pos (if all-pos (apply end-func all-pos) nil)))
                  prop-pos))))
@@ -5665,7 +5690,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
 #+BEGIN_SRC emacs-lisp
   (use-package org-super-agenda
-   :pin manual ;; throws errors for some reason when I update
+   ;; :pin manual ;; throws errors for some reason when I update
    :general 
    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap 
    ","  'cpm/hydra-org-agenda/body)
@@ -5674,41 +5699,20 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
    :config
    (org-super-agenda-mode)
    (setq org-super-agenda-groups
-     '((:name "Schedule"
-        :time-grid t)
+     '((:name "Overdue"
+        :deadline past)
        (:name "Today"
-        :scheduled today)
+        :scheduled today
+        :time-grid t
+        :deadline nil)
        (:name "Due Today"
-        :deadline today
-        :order 2)
-       (:name "Due Soon"
+        :deadline today)
+       (:name "Upcoming"
         :deadline future
-        :order 8)
-       (:name "Overdue"
-        :deadline past
-        :order 7)
-       (:name "Next to do"
-        :todo "NEXT"
-        :order 1)
-       (:name "Important"
-        :tag "Important"
-        :priority "A"
-        :order 6)
-       (:name "In progress"
-        :todo "INPROGRESS"
-        :order 15)
-       (:name "Waiting"
-        :todo "WAITING"
-        :order 20)
-       (:name "To read"
-        :todo "TOREAD"
-        :order 30)
-       (:name "Low priority"
-        :priority<= "C"
-        :todo ("SOMEDAY")
-        :order 90)
-       (:discard (:tag ("Chore" "Routine" "Daily"))))))
-       
+        :scheduled future)
+       (:name "Scheduled"
+        :scheduled t)
+        )))
   (defun cpm/jump-to-org-super-agenda ()
   (interactive)
   (org-agenda nil "A"))
@@ -5813,7 +5817,21 @@ _vr_ reset      ^^                       ^^                 ^^
           ("n" todo "NEXT")
           ("r" todo "REVISE")
           ("w" todo "WAITING")
-          ("A" agenda "Super Agenda")
+          ("A" "Super Agenda" (
+                               (agenda "" ((org-agenda-span 'day)))
+                               (alltodo "" ((org-agenda-overriding-header "")
+                               (org-super-agenda-groups 
+                                 '((:name "Next to do"
+                                    :todo "NEXT")
+                                   (:name "In Progress"
+                                    :todo "DOING")
+                                   (:name "Important"
+                                    :tag "Important"
+                                    :priority "A")
+                                   (:todo ("WAITING" "HOLD"))
+                                   (:todo "MAYBE")
+                                   (:name "Reading List"
+                                    :todo "TOREAD")))))))
           ("W" "Week's agenda and all TODOs"
            ((tags "PRIORITY=\"A\""
                   ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
@@ -5834,18 +5852,18 @@ _vr_ reset      ^^                       ^^                 ^^
   (general-define-key "C-c c" 'org-capture)
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
   (setq org-capture-templates
-        '(("p" "Projects" entry (file+headline "~/Dropbox/org-files/todo.org" "Projects")
-           "** STARTED %? \n  %i")
-          ("c" "Capture" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
+        '(("p" "Projects" entry (file "~/Dropbox/org-files/projects.org")
+           "* %? \n  %i")
+          ("c" "Capture" entry (file "~/Dropbox/org-files/inbox.org")
            "* TODO %?\n %i")
           ("j" "Journal" entry (file+olp+datetree "~/Dropbox/org-files/journal.org")
            "**** %<%H:%M>\n%?")
-          ("l" "A link, for reading later." entry (file+headline "~/Dropbox/org-files/org-notes.org" "Reading List")
+          ("l" "A link, for reading later." entry (file "~/Dropbox/org-files/links.org")
             "* %:description\n%u\n\n%c\n\n%i"
             :empty-lines 1)
-          ("m" "Mail-Task" entry (file+headline "~/Dropbox/org-files/todo.org" "Inbox")
-           "** TODO %:description                         :email: \n[[message://%l][Email link]] \n%? ")
-          ("n" "Notes" entry (file "~/Dropbox/org-files/org-notes.org")
+          ("m" "Mail-Task" entry (file "~/Dropbox/org-files/inbox.org")
+           "* TODO %:description                         :email: \n[[message://%l][Email link]] \n%? ")
+          ("r" "Reference" entry (file "~/Dropbox/org-files/reference.org")
           "* %?")
           ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
             (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
@@ -6086,9 +6104,8 @@ Make counsel display org headings nicely.
   (interactive)
   (find-file "~/Dropbox/org-files/todo.org")
   (widen)
-  (beginning-of-buffer)
-  (re-search-forward "* Inbox")
-  (beginning-of-line))
+  (beginning-of-buffer))
+  
 
 (defun cpm/org-goto-inbox ()
   (interactive)
@@ -6097,27 +6114,24 @@ Make counsel display org headings nicely.
   (beginning-of-buffer)
   (beginning-of-line))
 
-(defun cpm/org-goto-projects ()
+(defun cpm/org-goto-projects.org ()
   (interactive)
-  (find-file "~/Dropbox/org-files/todo.org")
-  (widen)
-  (beginning-of-buffer)
-  (re-search-forward "* Projects")
-  (beginning-of-line))
+  (find-file "~/Dropbox/org-files/projects.org"))
 
 (defun cpm/project-overview ()
   (interactive)
-  (cpm/org-goto-projects)
+  (cpm/org-goto-projects.org)
   (org-narrow-to-subtree)
   (org-columns))
 #+end_src
 *** Stuck Projects
 #+begin_src emacs-lisp
-(setq org-stuck-projects '("/PROJECT" ("NEXT") nil ""))
-(defun cpm/my-org-agenda-list-stuck-projects ()
-  (interactive)
-  (cpm/org-goto-projects)
-  (org-agenda nil "#" 'subtree))
+  ;; (setq org-stuck-projects '("/PROJECT" ("NEXT") nil ""))
+  (setq org-stuck-projects '("+LEVEL=2/-DONE" ("TODO" "NEXT" "WAITING") nil ""))
+  (defun cpm/my-org-agenda-list-stuck-projects ()
+    (interactive)
+    (cpm/org-goto-projects.org)
+    (org-agenda nil "#" 'subtree))
 #+end_src
 *** Areas
 #+begin_src emacs-lisp
@@ -6199,8 +6213,8 @@ Functions to advance forwards or backwards through narrowed tree
   (interactive)
   (require 'ranger)
   (find-file "~/Dropbox/org-files"))
-(defun cpm/goto-mail-inbox.org ()
-  "goto org-mail-inbox"
+(defun cpm/goto-inbox.org ()
+  "goto org-inbox"
   (interactive)
   (find-file "~/Dropbox/org-files/inbox.org"))
 (defun cpm/goto-todo.org ()
@@ -6215,14 +6229,24 @@ Functions to advance forwards or backwards through narrowed tree
   "goto org-classes"
   (interactive)
   (find-file "~/Dropbox/org-files/classes.org"))
-(defun cpm/goto-notes.org ()
-  "goto org-notes"
+(defun cpm/goto-reference.org ()
+  "goto org reference notes"
   (interactive)
-  (find-file "~/Dropbox/org-files/org-notes.org"))
+  (find-file "~/Dropbox/org-files/reference.org"))
 (defun cpm/goto-someday.org ()
   "goto org-someday"
   (interactive)
-  (find-file "~/Dropbox/org-files/someday.org"))
+  (find-file "~/Dropbox/org-files/someday-maybe.org"))
+(defun cpm/goto-links.org ()
+  "goto org-links"
+  (interactive)
+  (find-file "~/Dropbox/org-files/links.org"))
+(defun cpm/goto-reading.org ()
+  "goto reading list"
+  (interactive)
+  (find-file "~/Dropbox/org-files/reading.org"))
+
+
 #+END_SRC
 *** Export Headings as Separate PDF Files
 Helpful advice from [[http://pragmaticemacs.com/emacs/export-org-mode-headlines-to-separate-files/][pragmatic emacs]]
@@ -8782,12 +8806,4 @@ Define [[https://github.com/m-cat/org-recur][recurring tasks]] in org
 
   ;; Keep the task metadata clean:
 
-  ;;;; Log time a task was set to Done.
-  (setq org-log-done (quote time))
-  ;;;; Don't log the time a task was rescheduled or redeadlined.
-  (setq org-log-redeadline nil)
-  (setq org-log-reschedule nil)
-
-  ;; Prefer rescheduling to future dates and times:
-  (setq org-read-date-prefer-future 'time)
 #+end_src
