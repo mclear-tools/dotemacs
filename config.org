@@ -1095,6 +1095,7 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
 #+BEGIN_SRC emacs-lisp
   (defun cpm/tangle-emacs-config ()
     "If the current file is in '~/.emacs.d/', the code blocks are tangled"
+    (interactive)
     (when (equal (file-name-directory (directory-file-name buffer-file-name))
                  (concat (getenv "HOME") "/.emacs.d/"))
       (org-babel-tangle)
@@ -3689,6 +3690,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
      "r" 'cpm/resume-last-jump
      "S" 'hydra-spelling/body
      ;; "W" 'woman
+     "#" 'universal-argument
      "`" 'beacon-blink
      "'" 'shell-pop
      "." 'quick-commit
