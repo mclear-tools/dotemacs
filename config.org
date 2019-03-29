@@ -135,21 +135,21 @@ Let's set some variables with basic user information.
      storage for files that are safe to share across systems (if
      this config is symlinked across several computers).")
 
-     (defvar cpm-host-dir (concat cpm-local-dir "@" (system-name))
-       "Directory for hostname-specific file storage. Used by `cpm-etc-dir' and
-     `cpm-cache-dir'.")
+     (defvar cpm-temp-dir (concat cpm-local-dir "/temp/")
+       "Directory for non-essential file storage. Used by
+     `cpm-etc-dir' and `cpm-cache-dir'.")
 
-     (defvar cpm-etc-dir (concat cpm-host-dir "/etc/")
-       "Host-namespaced directory for non-volatile storage. These are not deleted or
-     tampored with by emacs functions. Use this for dependencies like servers or
-     config files that are stable (i.e. it should be unlikely that you need to delete
-     them if something goes wrong).")
+     (defvar cpm-etc-dir (concat cpm-temp-dir "/etc/")
+       "Directory for non-volatile storage. These are not deleted or
+     tampored with by emacs functions. Use this for dependencies
+     like servers or config files that are stable (i.e. it should be
+     unlikely that you need to delete them if something goes
+     wrong).")
 
-     (defvar cpm-cache-dir (concat cpm-host-dir "/cache/")
-       "Host-namespaced directory for volatile storage. Deleted when `cpm/reset' is
-     called. Use this for transient files that are generated on the fly like caches
-     and temporary files. Anything that may need to be cleared if there are
-     problems.")
+     (defvar cpm-cache-dir (concat cpm-temp-dir "/cache/")
+       "Directory for volatile storage. Use this for transient files
+     that are generated on the fly like caches and temporary files.
+     Anything that may need to be cleared if there are problems.")
 
      (defvar cpm-elisp-dir (concat cpm-local-dir "/elisp/")
        "Where personal elisp packages and scripts are stored.")
