@@ -8762,20 +8762,22 @@ From [[https://www.baty.blog/2019/insert-weather-into-emacs-buffer][Jack Baty]] 
 Like the [[https://github.com/kaz-yos/reveal-in-osx-finder][name says]]
 #+begin_src emacs-lisp
   (use-package reveal-in-osx-finder
-    :ensure t)
+    :ensure t
+    :defer 2)
 #+end_src
 ** Diff-hl
 VC status in [[https://github.com/dgutov/diff-hl][fringe]]. Use it only for dired tho (git gutter covers everything else).
 #+begin_src emacs-lisp
   (use-package diff-hl
     :ensure t
+    :defer 1
     :config
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 #+end_src
 ** FIXME Org Recur
 Define [[https://github.com/m-cat/org-recur][recurring tasks]] in org
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package org-recur
     :ensure t
     :hook ((org-mode . org-recur-mode)
