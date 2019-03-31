@@ -229,7 +229,7 @@ problems]]. I've since revised all my defer settings. I explicitly
 defer/demand, and put a lot of loading of packages off until after about 10
 secs of idle. The latter means package loading stays out of my way if I'm
 doing, e.g., a quick restart-and-check of something in emacs. But I still
-use always-defer, as it seems to shave another .4 secs off load time. 
+like always-defer, as it seems to shave around .4 secs off load time. 
 
 #+BEGIN_SRC emacs-lisp
   (setq use-package-always-defer nil
@@ -2009,7 +2009,7 @@ Install, automatically load, and enable evil. It's like vim, but better!
   (use-package evil
     :demand t
     :init 
-    (setq evil-want-integration nil
+    (setq evil-want-integration t
           evil-want-keybinding nil)
     :config
     (progn
@@ -2064,10 +2064,9 @@ A collection of keybindings for evil
   (use-package evil-collection
     :ensure t
     :after evil
-    :defer 1
     :config
     (evil-collection-init)
-    (setq evil-collection-mode-list nil))
+    (setq evil-collection-mode-list t))
 #+END_SRC
 
 ***** Evil indent
@@ -4382,7 +4381,9 @@ CLOSED: [2018-06-28 Thu 12:02]
 #+BEGIN_SRC emacs-lisp 
   (use-package elisp-slime-nav
     :commands elisp-slime-nav-mode
-    :hook ((emacs-lisp-mode ielm-mode) . (elisp-slime-nav-mode)))
+    :config
+    (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+      (add-hook hook 'turn-on-elisp-slime-nav-mode)))
 
   (use-package eldoc
     :commands eldoc-mode
@@ -6083,6 +6084,7 @@ Make counsel display org headings nicely.
   (use-package ox-reveal
   ;; :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
   :after ox
+  :defer 5
   :config
   (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
         org-reveal-theme "moon"
@@ -6437,6 +6439,7 @@ Some useful settings
 #+BEGIN_SRC emacs-lisp
   (use-package ox-pandoc
     :after ox
+    :defer 5 
     :config
     ;; default options for all output formats
     (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
@@ -8542,6 +8545,7 @@ Like the [[https://github.com/ReanGD/emacs-multi-compile][name says]]
 #+begin_src emacs-lisp
     (use-package multi-compile
       :ensure t
+      :defer 3
       :config
       (setq multi-compile-completion-system 'helm)
       (setq multi-compile-alist '(
@@ -8705,6 +8709,7 @@ Make some writing elements easier with [[https://melpa.org/#/typo][typo.el]]
 #+BEGIN_SRC emacs-lisp
   (use-package typo
     :ensure t
+    :defer 5
     :config
     (typo-global-mode))
 #+END_SRC
