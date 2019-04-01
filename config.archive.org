@@ -1,3 +1,83 @@
+** FIXME Org Recur
+Define [[https://github.com/m-cat/org-recur][recurring tasks]] in org
+#+begin_src emacs-lisp 
+  (use-package org-recur
+    :ensure t
+    :hook ((org-mode . org-recur-mode)
+           (org-agenda-mode . org-recur-agenda-mode)
+           (org-super-agenda-mode . org-recur-agenda-mode))
+    :config
+    (define-key org-recur-mode-map (kbd "C-c d") 'org-recur-finish)
+
+    ;; Rebind the 'd' key in org-agenda (default: `org-agenda-day-view').
+    (define-key org-recur-agenda-mode-map (kbd "d") 'org-recur-finish)
+    (define-key org-recur-agenda-mode-map (kbd "C-c d") 'org-recur-finish)
+
+    (setq org-recur-finish-done t
+          org-recur-finish-archive t))
+
+  ;; Refresh org-agenda after rescheduling a task.
+  (defun org-agenda-refresh ()
+    "Refresh all `org-agenda' buffers."
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (derived-mode-p 'org-agenda-mode)
+          (org-agenda-maybe-redo)))))
+
+  (defadvice org-schedule (after refresh-agenda activate)
+    "Refresh org-agenda."
+    (org-agenda-refresh))
+
+  ;; Keep the task metadata clean:
+
+#+end_src
+
+** Tangle file on save
+#+BEGIN_SRC emacs-lisp
+  (defun cpm/tangle-emacs-config ()
+    "If the current file is in '~/.emacs.d/', the code blocks are tangled"
+    (interactive)
+    (when (equal (file-name-directory (directory-file-name buffer-file-name))
+                 (concat (getenv "HOME") "/.emacs.d/"))
+      (org-babel-tangle)
+      (message "%s tangled" buffer-file-name)))
+
+  ;; (add-hook 'after-save-hook #'cpm/tangle-emacs-config)
+#+END_SRC
+
+** Exchange Calendar
+#+BEGIN_SRC emacs-lisp
+  ;; add exchange support
+  (use-package excorporate
+    :ensure t
+    :after org
+    :disabled t
+    :config
+       ;; configure excorporate
+   ;; allow opening the exchange calendar with 'e' from calendar 
+   (evil-define-key 'motion calendar-mode-map "e" #'exco-calendar-show-day)
+
+   (setq-default
+    ;; configure email address and office 365 exchange server adddress for exchange web services
+    excorporate-configuration
+     (quote
+      ("cmclear2@unl.edu" . "https://outlook.office365.com/EWS/Exchange.asmx"))
+     ;; integrate emacs diary entries into org agenda
+     org-agenda-include-diary t
+     )
+   ;; activate excorporate and request user/password to start connection
+   (excorporate)
+   ;; enable the diary integration (i.e. write exchange calendar to emacs diary file -> ~/.emacs.d/diary must exist)
+   (excorporate-diary-enable)
+   (defun cpm/exco-agenda-update-diary ()
+     "call excorporate to update the diary for today"
+     (exco-diary-diary-advice (calendar-current-date) (calendar-current-date) #'message "diary updated")
+     )
+
+   ;; update the diary every time the org agenda is refreshed
+   (add-hook 'org-agenda-cleanup-fancy-diary-hook 'cpm/exco-agenda-update-diary))
+#+END_SRC
+
 ** Zetteldeft
 #+BEGIN_SRC emacs-lisp
   (use-package zetteldeft
