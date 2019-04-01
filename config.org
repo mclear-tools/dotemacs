@@ -1091,18 +1091,14 @@ Courtesy of Mike Zamansky's [[http://cestlaz.github.io/posts/using-emacs-36-touc
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 #+END_SRC
-*** Tangle file on save
-#+BEGIN_SRC emacs-lisp
-  (defun cpm/tangle-emacs-config ()
-    "If the current file is in '~/.emacs.d/', the code blocks are tangled"
+*** Tangle & load config file
+Tangle and load the config file. Useful if I've made changes and don't want to restart.
+#+begin_src emacs-lisp
+  (defun cpm/tangle-and-load-config ()
     (interactive)
-    (when (equal (file-name-directory (directory-file-name buffer-file-name))
-                 (concat (getenv "HOME") "/.emacs.d/"))
-      (org-babel-tangle)
-      (message "%s tangled" buffer-file-name)))
-
-  ;; (add-hook 'after-save-hook #'cpm/tangle-emacs-config)
-#+END_SRC
+    (my-tangle-config-org "~/.emacs.d/config.org" "~/.emacs.d/config.el")
+    (load-file "~/.emacs.d/config.el"))
+#+end_src
 *** Toggle Window Split
 Move from a horizontal to a vertical split and vice versa
 #+BEGIN_SRC emacs-lisp
@@ -2067,6 +2063,7 @@ A collection of keybindings for evil
     :config
     (evil-collection-init)
     (setq evil-collection-mode-list t))
+    
 #+END_SRC
 
 ***** Evil indent
