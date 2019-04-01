@@ -5821,13 +5821,12 @@ _vr_ reset      ^^                       ^^                 ^^
                                (agenda "" ((org-agenda-span 'day)))
                                (alltodo "" ((org-agenda-overriding-header "")
                                (org-super-agenda-groups 
-                                 '((:name "Next to do"
+                                 '((:name "Priority"
+                                    :priority>= "C")
+                                   (:name "Next to do"
                                     :todo "NEXT")
                                    (:name "In Progress"
                                     :todo "DOING")
-                                   (:name "Important"
-                                    :tag "Important"
-                                    :priority "A")
                                    (:todo ("WAITING" "HOLD"))
                                    (:todo "MAYBE")
                                    (:name "Reading List"
@@ -8770,4 +8769,17 @@ VC status in [[https://github.com/dgutov/diff-hl][fringe]]. Use it only for dire
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 #+end_src
+** Org-Projectile
+Project management using org TODOs; from [[https://github.com/IvanMalison/org-projectile][Ivan Malison]]
+#+begin_src emacs-lisp
+(use-package org-projectile
+  :ensure t
+  :bind (("C-c n p" . org-projectile-project-todo-completing-read))
+  :config
+  (progn
+    (setq org-projectile-projects-file
+          "~/Dropbox/org-files/projects.org")
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (push (org-projectile-project-todo-entry) org-capture-templates))
+  )
 #+end_src
