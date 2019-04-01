@@ -4013,7 +4013,7 @@ Keybindings for managing packages
     :non-normal-prefix "C-SPC"
 
       "u"  '(:ignore t :which-key "User")
-      "uA" '(:ignore t which-key "Agenda Files")
+      "uA" '(:ignore t :which-key "Agenda Files")
       "uAa" #'cpm/goto-reading.org
       "uAc" #'cpm/goto-classes.org
       "uAf" #'cpm/goto-org-files
@@ -4022,7 +4022,7 @@ Keybindings for managing packages
       "uAr" #'cpm/goto-reference.org
       "uAp" #'cpm/goto-projects.org
       "uAs" #'cpm/goto-someday.org
-      "uAt" #'cpm/goto-todo
+      "uAt" #'cpm/goto-todo.org
       "ua"  '(:ignore t :which-key "Agenda")
       "uaa" 'cpm/jump-to-org-super-agenda
       "uaw" 'cpm/jump-to-week-agenda
@@ -6115,7 +6115,7 @@ Make counsel display org headings nicely.
   (beginning-of-buffer)
   (beginning-of-line))
 
-(defun cpm/org-goto-projects.org ()
+(defun cpm/goto-projects.org ()
   (interactive)
   (find-file "~/Dropbox/org-files/projects.org"))
 
@@ -8711,7 +8711,7 @@ Make some writing elements easier with [[https://melpa.org/#/typo][typo.el]]
     (typo-global-mode))
 #+END_SRC
 ** Sunrise Commander
-[[https://github.com/escherdragon/sunrise-commander][Sunrise Commander]] is an "[[https://medium.com/@enzuru/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e][orthodox file manager]]"
+[[https://github.com/escherdragon/sunrise-commander][Sunrise Commander]] is an "[[https://medium.com/@enzuru/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e][orthodox file manager]]". Not sure that I'll ever use this but it looks interesting. 
 #+begin_src emacs-lisp
   (use-package sunrise-commander
     :ensure nil
