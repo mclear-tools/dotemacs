@@ -321,9 +321,8 @@ Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywher
 
   (use-package quelpa-use-package
     :ensure t
-    :defer 5
     :config
-    ;; advince for maybe installing with quelpa
+    ;; advice for maybe installing with quelpa
     (setq quelpa-use-package-inhibit-loading-quelpa t)
     (quelpa-use-package-activate-advice))
 
@@ -778,7 +777,7 @@ Courtesy of a helpful [[https://www.reddit.com/r/emacs/comments/70ke5w/help_fix_
 *** Org Tree to File
 Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659823][this]] superuser answer.
 #+begin_src emacs-lisp
-(defun cpm/subtree-to-new-file ()
+(defun cpm/org-tree-to-new-file ()
   (interactive)
   "Move an org subtree to a new file"
   (org-copy-subtree nil t)
@@ -786,6 +785,7 @@ Send an org tree to its own file. Inspiration from [[https://superuser.com/a/659
     (read-file-name "Move subtree to file:" "$HOME"))
 (org-paste-subtree))
 #+end_src
+*** Send org tree/heading to md file
 *** Org wrap in block template
 A helpful function I found [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][here]] for wrapping text in a block template. 
 #+begin_src emacs-lisp
@@ -3909,7 +3909,7 @@ Keybindings for managing packages
       "pst" #'cpm/load-org-agenda-todo
       "psw" #'cpm/load-website
       "psz" #'cpm/load-zettelkasten
-      "pt"  #'cpm/search-todo-markers
+      "pt"  #'org-projectile-helm-template-or-project
       "pT"  'projectile-find-test-file
       "pv"  'hydra-persp/body
       "pV"  'projectile-vc
@@ -5856,21 +5856,20 @@ _vr_ reset      ^^                       ^^                 ^^
            "* TODO %?\n %i")
           ("j" "Journal" entry (file+olp+datetree "~/Dropbox/org-files/journal.org")
            "**** %<%H:%M>\n%?")
-          ("l" "A link, for reading later." entry (file "~/Dropbox/org-files/links.org")
-            "* %:description\n%u\n\n%c\n\n%i"
-            :empty-lines 1)
+          ("l" "A link, for reading later" entry (file "~/Dropbox/org-files/links.org") 
+            "* %? :link: \n%(grab-mac-link 'safari 'org)")
           ("m" "Mail-Task" entry (file "~/Dropbox/org-files/inbox.org")
            "* TODO %:description                         :email: \n[[message://%l][Email link]] \n%? ")
           ("r" "Reference" entry (file "~/Dropbox/org-files/reference.org")
           "* %?")
           ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
-            (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
+          (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
 
     ;; Add date to captured items
     (defun add-property-with-date-captured ()
       "Add DATE_CAPTURED property to the current item."
       (interactive)
-      (org-set-property "DATE_CAPTURED" (format-time-string "%c")))
+      (org-set-property "DATE_CAPTURED" (format-time-string "%F %A")))
 
     (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
 
@@ -5896,10 +5895,22 @@ overflow]] for help on hooks for the created frame.
 *** Alfred capture workflow
 Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.
 #+BEGIN_SRC emacs-lisp
+(defun cpm/org-capture-link-frame ()
+ "Capture link from frontmost safari tab"
+  (interactive)
+  (org-capture nil "l"))
+(defun cpm/make-org-capture-link-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
+                (top . 400) (left . 300)
+                ))
+  (select-frame-by-name "alfred-capture")
+  (cpm/org-capture-link-frame))
+
 (defun cpm/org-capture-frame ()
   (interactive)
   (org-capture nil "c"))
-  
 (defun cpm/make-orgcapture-frame ()
   "Create a new frame and run org-capture."
   (interactive)
@@ -5963,12 +5974,15 @@ Make capture the only window and close after refiling.
   (use-package org-bullets
     :hook (org-mode . org-bullets-mode)
     :config 
-    (setq org-bullets-bullet-list '("◉" "⚫"))) 
+    (setq org-bullets-bullet-list '("⚫")))
+
+    ;; (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "" "✸")))
+    ;; (setq org-bullets-bullet-list '("◉" "⚫"))) 
 
     ;; Other bullets
     ;; "●" "◉" "→"
     ;; ("◉" "◎" "⚫" "○" "►" "◇")
-    ;;  "∙" "∶" "∵" "∷" "∺" )))
+    ;;  "∙" "∶" "∵" "∷" "⸭" "∺" )))
     ;; (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
 
   ;; Asterisks and dashes for bullet lists are fine, but actual circular bullets are better
@@ -8773,12 +8787,19 @@ Project management using org TODOs; from [[https://github.com/IvanMalison/org-pr
 #+begin_src emacs-lisp
 (use-package org-projectile
   :ensure t
-  :bind (("C-c n p" . org-projectile-project-todo-completing-read))
+  :defer 3
   :config
-  (progn
-    (setq org-projectile-projects-file
-          "~/Dropbox/org-files/projects.org")
-    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-    (push (org-projectile-project-todo-entry) org-capture-templates))
-  )
+  (setq org-projectile-projects-file "~/Dropbox/org-files/projects.org"))
+    
+ (use-package org-projectile-helm
+  :ensure t
+  :after org-projectile)
+  
+#+end_src
+** Grab Mac Link
+Prompt for an application to [[https://github.com/xuchunyang/grab-mac-link.el][grab a link]] from and prompt for a link type to insert as, then insert it at point.
+#+begin_src emacs-lisp
+  (use-package grab-mac-link
+    :ensure t
+    :defer 3)
 #+end_src

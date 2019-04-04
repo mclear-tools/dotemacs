@@ -1,3 +1,17 @@
+  ;; (defun cpm/helm-last-search-buffer ()
+  ;;       "open last helm-ag or hgrep buffer."
+  ;;       (interactive)
+  ;;       (cond ((get-buffer "*helm ag results*")
+  ;;              (switch-to-buffer-other-window "*helm ag results*"))
+  ;;             ((get-buffer "*helm-ag*")
+  ;;              (helm-resume "*helm-ag*"))
+  ;;             ((get-buffer "*hgrep*")
+  ;;              (switch-to-buffer-other-window "*hgrep*"))
+  ;;             ((get-buffer "*helm occur*")
+  ;;              (helm-resume "*helm occur*"))
+  ;;             (t
+  ;;              (message "No previous search buffer found"))))
+
 ** FIXME Org Recur
 Define [[https://github.com/m-cat/org-recur][recurring tasks]] in org
 #+begin_src emacs-lisp 
@@ -48,6 +62,7 @@ Define [[https://github.com/m-cat/org-recur][recurring tasks]] in org
 ** Exchange Calendar
 #+BEGIN_SRC emacs-lisp
   ;; add exchange support
+  ;; useful info: https://www.reddit.com/r/emacs/comments/b85317/using_excorporate_to_connect_emacs_to_microsoft/
   (use-package excorporate
     :ensure t
     :after org
