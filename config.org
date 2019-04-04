@@ -900,21 +900,14 @@ Find a file in a project and open in a vertical split
    (helm-projectile-find-file))
 
 #+END_SRC
-*** Resume last search
+*** Resume last helm search
+This is useful if I have more than one kind of helm search going. It calls
+helm-resume with a prefix argument to give me the helm search buffer list.
 #+BEGIN_SRC emacs-lisp
-  (defun cpm/last-search-buffer ()
-        "open last helm-ag or hgrep buffer."
-        (interactive)
-        (cond ((get-buffer "*helm ag results*")
-               (switch-to-buffer-other-window "*helm ag results*"))
-              ((get-buffer "*helm-ag*")
-               (helm-resume "*helm-ag*"))
-              ((get-buffer "*hgrep*")
-               (switch-to-buffer-other-window "*hgrep*"))
-              ((get-buffer "*helm occur*")
-               (helm-resume "*helm occur*"))
-              (t
-               (message "No previous search buffer found"))))
+  (defun cpm/helm-list-search-buffers ()
+    "get list of helm search buffers"
+    (interactive)
+    (helm-resume 1))
 #+END_SRC
 *** Reveal in Finder
 #+BEGIN_SRC emacs-lisp
@@ -1980,7 +1973,11 @@ Make Emacs watch and respond to changes in [[https://github.com/purcell/osx-loca
                        calendar-longitude osx-location-longitude
                        calendar-location-name (format "%s, %s" osx-location-latitude osx-location-longitude)))))
 #+END_SRC
-
+** Universal Argument
+Use regular emacs keybinds for Insert state. Also bind universal arg to M-u for all states
+#+begin_src emacs-lisp
+(general-define-key "M-u" 'universal-argument)
+#+end_src
 * Core Packages
 ** Modal Editing
 *** General  (Evil)
@@ -3055,7 +3052,8 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
             helm-always-two-windows t
             helm-split-window-in-side-p nil
             ;; helm-split-window-default-side 'other
-            helm-echo-input-in-header-line t)
+            helm-echo-input-in-header-line t
+            helm-occur-auto-update-on-resume 'noask)
       (setq helm-boring-buffer-regexp-list
             (quote
              ("\\Minibuf.+\\*"
@@ -3088,10 +3086,11 @@ with convenient progress bar updates. Courtesy of [[https://oremacs.com/2016/02/
       (helm-mode 1))
 
   ;; use helm follow mode for search
-  (with-eval-after-load 'helm-regexp
-  (setq helm-source-occur
-        (helm-make-source "Occur" 'helm-source-multi-occur
-          :follow 1)))
+  ;; (with-eval-after-load 'helm-regexp
+  ;; (setq helm-source-occur
+  ;;       (helm-make-source "Occur" 'helm-source-multi-occur
+  ;;         :follow 1))
+          
 #+END_SRC
 **** Hide Mode Lines in Helm
 Hide modelines of other windows while helm is open, again from
@@ -3680,7 +3679,7 @@ I use a lot of keybindings, with <SPC> as my "leader" key.
      "G" 'general-describe-keybindings
      "j" 'avy-goto-char
      "k" 'helm-show-kill-ring
-     "l" 'cpm/last-search-buffer
+     "l" 'helm-resume
      ;; "N" 'research-notes
      "n" 'big-notes
      "r" 'cpm/resume-last-jump
@@ -3947,7 +3946,7 @@ Keybindings for managing packages
     "sf" 'helm-do-ag-this-file
     "sj" 'cpm/forward-or-backward-sexp
     "sk" 'helm-show-kill-ring
-    "sl" 'last-search-buffer
+    "sl" 'cpm/helm-list-search-buffers
     "so" 'helm-occur
     "sp" 'helm-ag-project-root
     "sr" #'vr/query-replace
