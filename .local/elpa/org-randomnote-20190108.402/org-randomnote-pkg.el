@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "org-randomnote" "20190108.402" "Find a random note in your Org-Mode files" '((f "0.19.0") (dash "2.12.0") (org "0")) :stars '(#("18" 0 2 (font-lock-face paradox-star-face)) #("181" 0 3 (value 181 font-lock-face paradox-download-face))) :commit "e7b286cc780660441da9efb9b28ae5fb3a8d4491" :authors '(("Michael Fogleman" . "michaelwfogleman@gmail.com")) :maintainer '("Michael Fogleman" . "michaelwfogleman@gmail.com") :url "http://github.com/mwfogleman/org-randomnote")

@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "helm-org-rifle" "20180923.2209" "Rifle through your Org files" '((emacs "24.4") (dash "2.12") (f "0.18.1") (helm "1.9.4") (s "1.10.0")) :stars '(#("152" 0 3 (font-lock-face paradox-star-face)) #("5K" 0 2 (value 5836 font-lock-face paradox-download-face))) :commit "e272fc43b964ef06a2673afd7c341dba87ae9ac4" :keywords '("hypermedia" "outlines") :authors '(("Adam Porter" . "adam@alphapapa.net")) :maintainer '("Adam Porter" . "adam@alphapapa.net") :url "http://github.com/alphapapa/helm-org-rifle")

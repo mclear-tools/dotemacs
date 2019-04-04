@@ -2947,11 +2947,11 @@ Add [[https://www.emacswiki.org/emacs/DiredPlus][extra functionality]] to dired.
 #+BEGIN_SRC emacs-lisp
   (use-package dired+
     :ensure t
-    :after dired
+    :defer 2
     :init
     (setq font-lock-maximum-decoration nil)
     (setq diredp-hide-details-initially-flag nil)
-    (diredp-toggle-find-file-reuse-dir 1))
+    (setq diredp-toggle-find-file-reuse-dir 1))
 #+END_SRC
 ***** Peep Dired
 [[https://github.com/asok/peep-dired][Quicklook-like]] extension for dired 
