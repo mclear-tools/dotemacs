@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "dash" "20190413.1058" "A modern list library for Emacs" 'nil :stars '(#("955" 0 3 (font-lock-face paradox-star-face)) #("872K" 0 4 (value 872776 font-lock-face paradox-download-face))) :commit "15498602f42c19c1b8d7f8768f6b998dfd5b3a22" :keywords '("lists") :authors '(("Magnar Sveen" . "magnars@gmail.com")) :maintainer '("Magnar Sveen" . "magnars@gmail.com"))
