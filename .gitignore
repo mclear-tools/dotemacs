@@ -27,3 +27,4 @@ diary-files
 /.local/eshell/lastdir
 multi-compile.cache
 transient*
+/.local/temp/etc/recentf
