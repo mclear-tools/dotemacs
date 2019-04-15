@@ -563,6 +563,27 @@ Duplicate a file in dired or deer
   (interactive)
   (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 (copy).\\2"))
 #+END_SRC
+*** Ediff Hydra
+From the hydra [[https://github.com/abo-abo/hydra/wiki/Emacs#ediff][wiki]]
+#+begin_src emacs-lisp
+(defhydra hydra-ediff (:color blue :hint nil)
+  "
+^Buffers           Files           VC                     Ediff regions
+----------------------------------------------------------------------
+_b_uffers           _f_iles (_=_)       _r_evisions              _l_inewise
+_B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
+                  _c_urrent file
+"
+  ("b" ediff-buffers)
+  ("B" ediff-buffers3)
+  ("=" ediff-files)
+  ("f" ediff-files)
+  ("F" ediff-files3)
+  ("c" ediff-current-file)
+  ("r" ediff-revision)
+  ("l" ediff-regions-linewise)
+  ("w" ediff-regions-wordwise))
+#+end_src
 *** Escape all the Things!!
 From a [[https://juanjoalvarez.net/en/detail/2014/sep/19/vim-emacsevil-chaotic-migration-guide/][great vim migration guide]] by Juanjo Álvarez (original code from [[https://github.com/davvil/.emacs.d/blob/master/init.el][davvil]]). 
 #+BEGIN_SRC emacs-lisp
@@ -1091,6 +1112,22 @@ Tangle and load the config file. Useful if I've made changes and don't want to r
     (interactive)
     (my-tangle-config-org "~/.emacs.d/config.org" "~/.emacs.d/config.el")
     (load-file "~/.emacs.d/config.el"))
+#+end_src
+*** Transpose characters Hydra
+From the hydra [[https://github.com/abo-abo/hydra/wiki/Emacs#transpose][wiki]]
+#+begin_src emacs-lisp
+ (global-set-key (kbd "C-c t")
+    (defhydra hydra-transpose (:color red)
+    "Transpose"
+     ("c" transpose-chars "characters")
+     ("w" transpose-words "words")
+     ("o" org-transpose-words "Org mode words")
+     ("l" transpose-lines "lines")
+     ("s" transpose-sentences "sentences")
+     ("e" org-transpose-elements "Org mode elements")
+     ("p" transpose-paragraphs "paragraphs")
+     ("t" org-table-transpose-table-at-point "Org mode table")
+     ("q" nil "cancel" :color blue)))
 #+end_src
 *** Toggle Window Split
 Move from a horizontal to a vertical split and vice versa
@@ -2219,7 +2256,6 @@ From bling: https://github.com/bling/evil-visualstar
 (use-package evil-visualstar
   :commands (evil-visualstar/begin-search-forward evil-visualstar/begin-search-backward))
 #+END_SRC
-
 ** Appearance & UI
 Various settings to make Emacs (mostly the GUI version) look better or
 make interaction smoother. 
@@ -4065,6 +4101,7 @@ Keybindings for managing packages
   "gb" 'magit-blame
   "gc" 'magit-commit
   "gd" 'magit-diff
+  "gh" #'hydra-git-gutter/body
   "gl" 'magit-log
   "gn" 'git-gutter:next-hunk
   "gp" 'git-gutter:previous-hunk
@@ -5341,33 +5378,59 @@ Give git projects branches the dired treatment
 Git gutter is great for giving visual feedback on changes, but it doesn't play
 well with org-mode using org-indent. So I don't use it globally. 
  #+BEGIN_SRC emacs-lisp
-   (use-package git-gutter
-     :defer t
-     :init
-     (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
-     :config
-     (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
-           git-gutter:update-interval 2
-           git-gutter:window-width 2))
-
-   (use-package git-gutter-fringe
-     :diminish git-gutter-mode
-     :after git-gutter
-     ;; :demand fringe-helper
-     :config
-     ;; subtle diff indicators in the fringe
-     ;; places the git gutter outside the margins.
-     (setq-default fringes-outside-margins t)
-     ;; thin fringe bitmaps
-     (define-fringe-bitmap 'git-gutter-fr:added
-     [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-     nil nil 'center)
-     (define-fringe-bitmap 'git-gutter-fr:modified
-     [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-     nil nil 'center)
-     (define-fringe-bitmap 'git-gutter-fr:deleted
-     [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-     nil nil 'center))
+      (use-package git-gutter
+        :defer t
+        :init
+        (add-hook! (markdown-mode prog-mode conf-mode) 'git-gutter-mode)
+        :config
+        (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
+              git-gutter:update-interval 2
+              git-gutter:window-width 2)
+      (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
+                               :hint nil)
+         "
+       Git gutter:
+         _j_: next hunk        _s_tage hunk     _q_uit
+         _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
+         ^ ^                   _p_opup hunk
+         _h_: first hunk
+         _l_: last hunk        set start _R_evision
+       "
+       ("j" git-gutter:next-hunk)
+       ("k" git-gutter:previous-hunk)
+       ("h" (progn (goto-char (point-min))
+                   (git-gutter:next-hunk 1)))
+       ("l" (progn (goto-char (point-min))
+                   (git-gutter:previous-hunk 1)))
+       ("s" git-gutter:stage-hunk)
+       ("r" git-gutter:revert-hunk)
+       ("p" git-gutter:popup-hunk)
+       ("R" git-gutter:set-start-revision)
+       ("q" nil :color blue)
+       ("Q" (progn (git-gutter-mode -1)
+                   ;; git-gutter-fringe doesn't seem to
+                   ;; clear the markup right away
+                   (sit-for 0.1)
+                   (git-gutter:clear))
+                   :color blue)))
+      (use-package git-gutter-fringe
+        :diminish git-gutter-mode
+        :after git-gutter
+        ;; :demand fringe-helper
+        :config
+        ;; subtle diff indicators in the fringe
+        ;; places the git gutter outside the margins.
+        (setq-default fringes-outside-margins t)
+        ;; thin fringe bitmaps
+        (define-fringe-bitmap 'git-gutter-fr:added
+        [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+        nil nil 'center)
+        (define-fringe-bitmap 'git-gutter-fr:modified
+        [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+        nil nil 'center)
+        (define-fringe-bitmap 'git-gutter-fr:deleted
+        [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+        nil nil 'center))
 
  #+END_SRC
 
