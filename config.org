@@ -652,7 +652,7 @@ paragraphs with the same command.
 (defun cpm/insert-seconds-epoch ()
   (interactive)
   (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
-(global-set-key (kbd "C-c t") 'cpm/insert-seconds-epoch)
+(global-set-key (kbd "C-c e") 'cpm/insert-seconds-epoch)
 #+END_SRC
 
 *** Jump in buffer
@@ -2424,7 +2424,7 @@ Like the title says...
  Useful for letting you know where the cursor is
  #+BEGIN_SRC emacs-lisp
  (use-package beacon
-   :defer 10
+   :defer 5
    :config
    (beacon-mode 1)
    (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
@@ -4807,7 +4807,7 @@ Easy workspace creation and switching
      (toggle-frame-maximized)
      (find-file "~/Dropbox/Work/projects/KantFreeThought/KantFreeThought.md")
      (split-window-right)
-     (org-open-link-from-string "[[file:~/Dropbox/org-files/todo.org::*Freedom%20of%20thought][Freedom of thought]]"))
+     (org-open-link-from-string "[[file:~/Dropbox/org-files/projects.org::*Kant%20Free%20Intellect][Kant Free Intellect]]"))
    (defun cpm/load-zettelkasten ()
        (interactive)
        (persp-mode 1)
@@ -8675,56 +8675,56 @@ Dashboard depends on this.
 ** Dashboard
 Startup with a [[https://github.com/rakanalh/emacs-dashboard][dashboard]] listing recent files, bookmarks, and projects.
 #+BEGIN_SRC emacs-lisp
-(use-package dashboard
-  ;; :commands (dashboard-insert-startupify-lists cpm/dashboard)
- :if (< (length command-line-args) 2)
- :preface
- ;; from https://www.reddit.com/r/emacs/comments/8jaflq/tip_how_to_use_your_dashboard_properly/
- (defun cpm/dashboard-banner ()
-   "Sets a dashboard banner including information on package initialization
- time and garbage collections."
-   (setq dashboard-banner-logo-title
-      (format "Emacs ready in %.2f seconds with %d garbage collections."
-              (float-time
-               (time-subtract after-init-time before-init-time)) gcs-done)))
-  :init
-  (add-hook 'after-init-hook 'dashboard-refresh-buffer)
-  (add-hook 'dashboard-mode-hook 'cpm/dashboard-banner)
-  :custom (dashboard-startup-banner "~/.emacs.d/.local/icons/64x64@2x.png")
-  :config
-  (set-frame-name "Dashboard")
-  (evil-set-initial-state 'dashboard-mode 'motion)
-  (setq dashboard-center-content t)
-  (setq dashboard-items '((agenda . 5)
-                          (recents  . 5)
-                          (bookmarks . 5)
-                          (projects . 5)))
-    (dashboard-setup-startup-hook)
-    (map! (:map dashboard-mode-map
-      :ni     "TAB" 'widget-forward
-      :ni     "C-i" 'widget-forward
-      :ni     "backtab" 'widget-backward
-      :ni     "RET" 'widget-button-press
-      :ni     "down-mouse-1" 'widget-button-click
-      :ni     "g" #'dashboard-insert-startupify-lists
-      :ni     "a" (dashboard-insert-shortcut "a" "Agenda for today:")
-      :ni     "r" (dashboard-insert-shortcut "r" "Recent Files:")
-      :ni     "m" (dashboard-insert-shortcut "m" "Bookmarks:")
-      :ni     "p" (dashboard-insert-shortcut "p" "Projects:"))))
+  (use-package dashboard
+   :commands (dashboard-insert-startupify-lists cpm/dashboard)
+   :if (< (length command-line-args) 2)
+   :preface
+   ;; from https://www.reddit.com/r/emacs/comments/8jaflq/tip_how_to_use_your_dashboard_properly/
+   (defun cpm/dashboard-banner ()
+     "Sets a dashboard banner including information on package initialization
+   time and garbage collections."
+     (setq dashboard-banner-logo-title
+        (format "Emacs ready in %.2f seconds with %d garbage collections."
+                (float-time
+                 (time-subtract after-init-time before-init-time)) gcs-done)))
+    :init
+    (add-hook 'after-init-hook 'dashboard-refresh-buffer)
+    (add-hook 'dashboard-mode-hook 'cpm/dashboard-banner)
+    :custom (dashboard-startup-banner "~/.emacs.d/.local/icons/64x64@2x.png")
+    :config
+    (set-frame-name "Dashboard")
+    (evil-set-initial-state 'dashboard-mode 'motion)
+    (setq dashboard-center-content t)
+    (setq dashboard-items '((agenda . 5)
+                            (recents  . 5)
+                            (bookmarks . 5)
+                            (projects . 5)))
+      (dashboard-setup-startup-hook)
+      (map! (:map dashboard-mode-map
+        :ni     "TAB" 'widget-forward
+        :ni     "C-i" 'widget-forward
+        :ni     "backtab" 'widget-backward
+        :ni     "RET" 'widget-button-press
+        :ni     "down-mouse-1" 'widget-button-click
+        :ni     "g" #'dashboard-insert-startupify-lists
+        :ni     "a" (dashboard-insert-shortcut "a" "Agenda for today:")
+        :ni     "r" (dashboard-insert-shortcut "r" "Recent Files:")
+        :ni     "m" (dashboard-insert-shortcut "m" "Bookmarks:")
+        :ni     "p" (dashboard-insert-shortcut "p" "Projects:"))))
 
-    ;; functions to call dashboard when it kas been killed or not loaded
-    (defun cpm/dashboard ()
-     "load dashboard and swith to buffer"
-    (interactive)
-    (let ((buffer "*dashboard*"))
-      (when (not (get-buffer buffer))
-        (dashboard-insert-startupify-lists))
-      (switch-to-buffer buffer)))
-
-    (defun goto-dashboard ()
-      "goto the dashboard"
+      ;; functions to call dashboard when it kas been killed or not loaded
+      (defun cpm/dashboard ()
+       "load dashboard and swith to buffer"
       (interactive)
-      (switch-to-buffer "*dashboard*"))
+      (let ((buffer "*dashboard*"))
+        (when (not (get-buffer buffer))
+          (dashboard-insert-startupify-lists))
+        (switch-to-buffer buffer)))
+
+      (defun goto-dashboard ()
+        "goto the dashboard"
+        (interactive)
+        (switch-to-buffer "*dashboard*"))
 #+END_SRC
 ** Startup time
 Display Startup time
@@ -8869,4 +8869,167 @@ Prompt for an application to [[https://github.com/xuchunyang/grab-mac-link.el][g
   (use-package grab-mac-link
     :ensure t
     :defer 3)
+#+end_src
+** Org-Devonthink
+From [[https://github.com/jwiegley/dot-emacs/blob/master/lisp/org-devonthink.el][jweigley]]
+#+begin_src emacs-lisp
+;;; org-devonthink.el - Support for links to dtp messages by their UUID
+
+;; version 1.1, by John Wiegley <johnw@gnu.org>
+
+(require 'org)
+
+(org-add-link-type "x-devonthink-item" 'org-dtp-open)
+
+(defun org-dtp-open (record-location)
+  "Visit the dtp message with the given Message-ID."
+  (shell-command (concat "open x-devonthink-item:" record-location)))
+
+(defun org-get-dtp-link (&optional given-name)
+  (interactive)
+  (let ((name (or given-name
+                  (do-applescript (format "
+	tell application \"DEVONthink Pro\"
+		get name of content record
+	end tell"))))
+	(location (do-applescript (format "
+	tell application \"DEVONthink Pro\"
+		get uuid of content record
+	end tell"))))
+    (org-make-link-string
+     (concat "x-devonthink-item://" location) name)))
+
+(defun org-insert-dtp-link ()
+  (interactive)
+  (let (name)
+    (when (region-active-p)
+      (setq name (buffer-substring-no-properties (region-beginning)
+                                                 (region-end)))
+      (delete-region (region-beginning) (region-end)))
+    (insert (org-get-dtp-link name))))
+
+(defun org-dtp-store-link ()
+  "Store a link to an dtp e-mail message by Message-ID."
+  (let ((link-name
+	 (with-temp-buffer
+	   (clipboard-yank)
+	   (buffer-string))))
+    (org-store-link-props
+     :type "x-devonthink-item"
+     :link (cons (concat "x-devonthink-item://" link-name)
+		 (concat "x-devonthink-item://" link-name))
+     :description (file-name-nondirectory link-name))))
+
+(provide 'org-devonthink)
+
+;;; org-devonthink.el ends here
+#+end_src
+** Plist mode
+#+begin_src emacs-lisp
+;;; plist-mode.el --- Plist major mode
+
+;; Author: wiml <wiml@omnigroup.com>
+;; Maintainer: wiml
+
+
+;; This file may be distributed under the terms of the GNU General Public
+;; License. You will find a copy of the General Public License in your
+;; emacs distribution. If you don't have emacs this file won't be very
+;; useful to you.
+
+;; History:
+;;   November, 1998 (wiml):
+;;      Created. Does paren-balancing and indentation. 
+;;
+
+;; Things to do:
+;;
+;; Font lock isn't very useful with this mode because plist semantics are
+;; so arbitrary. Perhaps minor modes should define the keys that are
+;; useful and/or valid in each dictionary (i.e., provide a schema).
+;; Or (less complicated) plist-mode could understand that a string 
+;; to the left of an equals sign is probably a dictionary key, and
+;; therefore should have a different face, and possibly be matched against
+;; a list of known dictionary keys for a given kind of plist (a simpler
+;; sort of schema).
+;;
+;; Font-lock doesn't understand that barewords are strings too.
+;;
+;; Would it be useful to automatically add and remove doublequotes around
+;; strings when the user puts an invalid character in the middle? This is
+;; the second most common cause of unparsable plists (after unmatched 
+;; braces and incorrect semicolons --- okay, make that the third most
+;; common cause).
+;;
+;; Indentation doesn't understand multiline comments.
+
+
+(defvar plist-mode-syntax-table nil 
+  "syntax table used in plist-mode")
+(if plist-mode-syntax-table
+    ()
+  (setq plist-mode-syntax-table (make-syntax-table))
+  (modify-syntax-entry ?{ "(}" plist-mode-syntax-table)
+  (modify-syntax-entry ?} "){" plist-mode-syntax-table)
+  (modify-syntax-entry ?/ "  14" plist-mode-syntax-table)
+  (modify-syntax-entry ?* "  23" plist-mode-syntax-table))
+
+(defvar plist-mode-map nil "Keymap for plist-mode.")
+(if plist-mode-map
+    ()
+  (setq plist-mode-map (make-sparse-keymap))
+  (define-key plist-mode-map "\t" 'plist-indent-line)
+)
+
+(defvar plist-indentation 4 "Amount to indent nested items in plist mode.")
+(defvar plist-mode-hook nil "Hooks to run on entry to plist mode.")
+
+(defun plist-mode ()
+  "Major mode for editing plist files as used by OpenStep and its
+descendants (Rhapsody, MacOS X, etc.).
+
+A plist consists of one toplevel item. Items are strings, arrays, and
+dictionaries. A string is a sequence of characters between
+double-quotes. A string containing no special characters need not be
+quoted. An array consists of a number of items, separated by commas,
+surrounded by parentheses. A dictionary is delimited by curly braces
+and has entries of the form STRING = ITEM ;.
+
+The following keys are active in plist-mode:
+\\{plist-mode-map}"
+  (interactive)
+  (kill-all-local-variables)
+  (use-local-map plist-mode-map)
+  (set-syntax-table plist-mode-syntax-table)
+  (setq mode-name "Plist")
+  (setq major-mode 'plist-mode)
+  (run-hooks 'plist-mode-hook))
+
+(defun calculate-plist-indent ()
+  (save-excursion
+    (beginning-of-line)
+    (if (< (point) 2)
+	0
+      (skip-chars-forward " \t")
+      (let ((indent-above (if (eq (char-syntax (following-char)) ?\) )
+			      0
+			    plist-indentation)))
+	(up-list -1)
+	(+ (current-indentation) indent-above)))))
+
+(defun plist-indent-line ()
+  (interactive)
+  (let ((level (calculate-plist-indent))
+	(pos (- (point-max) (point)))
+	beg)
+    (beginning-of-line)
+    (setq beg (point))
+    (skip-chars-forward " \t")
+    (if (equal level (current-column))
+	nil
+      (delete-region beg (point))
+      (indent-to level)
+      ;; ???
+)))
+
 #+end_src
