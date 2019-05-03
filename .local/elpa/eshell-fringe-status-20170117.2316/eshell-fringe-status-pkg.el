@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "eshell-fringe-status" "20170117.2316" "Show last status in fringe" 'nil :stars '(#("10" 0 2 (font-lock-face paradox-star-face)) #("526" 0 3 (value 526 font-lock-face paradox-download-face))) :commit "adc6997c68e39c0d52a2af1b2fd5cf2057783797" :authors '(("Tom Willemse" . "tom@ryuslash.org")) :maintainer '("Tom Willemse" . "tom@ryuslash.org") :url "http://projects.ryuslash.org/eshell-fringe-status/")
+(define-package "eshell-fringe-status" "20170117.2316" "Show last status in fringe" 'nil :commit "adc6997c68e39c0d52a2af1b2fd5cf2057783797" :authors '(("Tom Willemse" . "tom@ryuslash.org")) :maintainer '("Tom Willemse" . "tom@ryuslash.org") :url "http://projects.ryuslash.org/eshell-fringe-status/")

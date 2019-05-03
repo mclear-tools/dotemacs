@@ -1,87 +1,251 @@
+;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
+
+;;; Commentary:
+;; A bare-boned config template. Use "outshine-cycle-buffer" (<Tab> and <S-Tab>
+;; in org style) to navigate through sections, and "imenu" to locate individual
+;; use-package definition.
+
+;;; Startup
+;;;; Speed up startup
+;; Help speed up emacs initialization
 (defvar cpm--file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
-;;; Startup timing
-(defvar my-start-time (current-time)
-  "Time when Emacs was started")
+;; Garbage collection
+(setq gc-cons-threshold 402653184
+      gc-cons-percentage 0.6)
+(add-hook 'after-init-hook
+          `(lambda ()
+             (setq gc-cons-threshold 800000
+                   gc-cons-percentage 0.1)
+             (garbage-collect)) t)
 
-;;; Untangling and loading
-;;; Taken, with slight modifications, from http://www.holgerschurig.de/en/emacs-init-tangle/
+;;;; Clean View
+;; Disable start-up screen
+(setq-default inhibit-startup-screen t)
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message "")
 
-(defun my-tangle-section-canceled ()
-  "Checks if the previous section header was DISABLED"
-  (save-excursion
-    (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
-        (progn
-          ;; (message "FOUND '%s'" (match-string 1))
-          (string-prefix-p "DISABLED" (match-string 1)))
-      nil)))
+;; UI - Disable visual cruft
+(unless (eq window-system 'ns)
+  (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
 
-(defun my-tangle-config-org (orgfile elfile)
-  "This function will write all source blocks from =config.org= into
-=config.el= that are ...
+;; Quick start scratch buffer
+(setq initial-major-mode 'fundamental-mode)
 
-- not marked as :tangle no
-- have a source-code of =emacs-lisp=
-- doesn't have the todo-marker DISABLED"
-  (let* (;; list where we cobble together body parts
-         (body-list ())
-         ;; disable special file handlers when loading .org files
-         (file-name-handler-alist nil)
-         ;; monster-regexp to extract pieces out of an .org file
-         (org-babel-src-block-regexp (concat
-                                      ;; (1) indentation                 (2) lang
-                                      "^\\([ \t]*\\)#\\+begin_src[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*"
-                                      ;; (3) switches
-                                      "\\([^\":\n]*\"[^\"\n*]*\"[^\":\n]*\\|[^\":\n]*\\)"
-                                      ;; (4) header arguments
-                                      "\\([^\n]*\\)\n"
-                                      ;; (5) body
-                                      "\\([^\000]*?\n\\)??[ \t]*#\\+end_src")))
-    (with-temp-buffer
-      (insert-file-contents orgfile)
-      (goto-char (point-min))
-      (while (re-search-forward org-babel-src-block-regexp nil t)
-        (let ((lang (match-string 2))
-              (args (match-string 4))
-              (body (match-string 5))
-              (canc (my-tangle-section-canceled)))
-          (when (and (string= lang "emacs-lisp")
-                     (not (string-match-p ":tangle\\s-+no" args))
-                     (not canc))
-              (add-to-list 'body-list body)))))
-    (with-temp-file elfile
-      (insert ";; *- lexical-binding: t; -*-\n")
-      (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
-      ;; (insert (apply 'concat (reverse body-list)))
-      (apply 'insert (reverse body-list)))
-    ))
+;; echo buffer
+;; https://emacs.stackexchange.com/a/437/11934
+(defun display-startup-echo-area-message ()
+  (message ""))
 
-(defun my-load-file (fname)
-  "This loads an elisp configuration file. If an .org file exists,
-it will be first untangled. If a byte-compiled file does NOT exist,
-it will be created. After this, the normal loading logic happens."
-  (let* (;; disable garbage collection while we do heavy string work
-		 (gc-cons-threshold most-positive-fixnum)
-         ;; fname with various extensions
-         (sansfile (expand-file-name (file-name-sans-extension fname) user-emacs-directory))
-         (orgfile (concat sansfile ".org"))
-         (elfile  (concat sansfile ".el"))
-         (elcfile (concat sansfile ".elc")))
-    (when (file-exists-p orgfile)
-      (when (or (not (file-exists-p elfile))
-                (file-newer-than-file-p orgfile elfile))
-        (my-tangle-config-org orgfile elfile)))
-    ;; (when (or (not (file-exists-p elcfile))
-    ;;           (file-newer-than-file-p elfile elcfile))
-    ;;   (byte-compile-file elfile))
-    (load elfile nil 'nomessage)))
+;; And bury the scratch buffer, don't kill it
+(defadvice kill-buffer (around kill-buffer-around-advice activate)
+  (let ((buffer-to-kill (ad-get-arg 0)))
+    (if (equal buffer-to-kill "*scratch*")
+        (bury-buffer)
+      ad-do-it)))
 
-;;; Actually loading my configuration
+;;;; Directory Variables
+(eval-and-compile
+  (defvar cpm-emacs-dir (expand-file-name user-emacs-directory)
+    "The path to the emacs.d directory.")
 
-(my-load-file "config")
+  (defvar cpm-local-dir (concat cpm-emacs-dir ".local/")
+    "Root directory for local Emacs files. Use this as permanent
+  storage for files that are safe to share across systems (if
+  this config is symlinked across several computers).")
+
+  (defvar cpm-temp-dir (concat cpm-local-dir "temp/")
+    "Directory for non-essential file storage. Used by
+  `cpm-etc-dir' and `cpm-cache-dir'.")
+
+  (defvar cpm-etc-dir (concat cpm-temp-dir "etc/")
+    "Directory for non-volatile storage. These are not deleted or
+  tampered with by emacs functions. Use this for dependencies
+  like servers or config files that are stable (i.e. it should be
+  unlikely that you need to delete them if something goes
+  wrong).")
+
+  (defvar cpm-cache-dir (concat cpm-temp-dir "cache/")
+    "Directory for volatile storage. Use this for transient files
+  that are generated on the fly like caches and temporary files.
+  Anything that may need to be cleared if there are problems.")
+
+  (defvar cpm-elisp-dir (concat cpm-local-dir "elisp/")
+    "Where personal elisp packages and scripts are stored.")
+
+  (defvar cpm-setup-dir (concat cpm-elisp-dir "setup-config/")
+    "Where the setup-init files are stored.")
+
+;;;; Path Settings
+;; Directory paths
+(dolist (dir (list cpm-local-dir cpm-etc-dir cpm-cache-dir cpm-elisp-dir cpm-setup-dir))
+  (unless (file-directory-p dir)
+(make-directory dir t))))
+
+;; Exec path
+(defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
+(defvar usr-local-bin "/usr/local/bin")
+(defvar usr-local-sbin "/usr/local/sbin")
+(setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
+(setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
+
+;; Path to init files
+(push cpm-setup-dir load-path)
+
+;;;; Security
+(setq gnutls-verify-error t
+      tls-checktrust gnutls-verify-error
+      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                        ;; compatibility fallbacks
+                        "gnutls-cli -p %p %h"
+                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
+      nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
+
+;;;; Package Initialization Settings
+(setq package-enable-at-startup nil)
+(setq load-prefer-newer t
+      package-user-dir (concat cpm-local-dir "/elpa/")
+      package--init-file-ensured t)
+
+(unless (file-directory-p package-user-dir)
+  (make-directory package-user-dir t))
+
+;; We're going to set the load path ourselves so that we don't have to call
+;; =package-initialize= at runtime and incur a large performance hit. This
+;; load-path will actually be faster than the one created by =package-initialize=
+;; because it appends the elpa packages to the end of the load path. Otherwise
+;; any time a builtin package was required it would have to search all of third
+;; party paths first.
+(eval-and-compile
+  (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t))))
+
+;;;; Use-Package Settings
+(setq use-package-always-defer t
+      use-package-verbose t
+      use-package-enable-imenu-support t)
+
+  (require 'package)
+
+  (unless (assoc-default "melpa" package-archives)
+    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+  (unless (assoc-default "gnu" package-archives)
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t))
+  (unless (assoc-default "org" package-archives)
+    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+  ;; https://github.com/emacs-china/emacswiki-elpa
+  (unless (assoc-default "emacswiki" package-archives)
+    (add-to-list 'package-archives '("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/") t))
+
+
+  (package-initialize)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+;;;; Paradox Package Management
+(use-package paradox
+  :commands (paradox-list-packages paradox-upgrade-packages)
+  :config
+  (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
+  (setq paradox-execute-asynchronously nil
+         ;; Show all possible counts
+        paradox-display-download-count t
+        paradox-display-star-count t
+        ;; Don't star automatically
+        paradox-automatically-star nil))
+
+;;;; Quelpa
+(use-package quelpa
+  :ensure t
+  :commands quelpa
+  :init
+  ;; disable checking Melpa
+  (setq quelpa-update-melpa-p nil)
+  ;; don't use Melpa at all
+  (setq quelpa-checkout-melpa-p nil)
+  ;; quelpa dir settings
+  (setq quelpa-dir (concat cpm-local-dir "quelpa")))
+
+(use-package quelpa-use-package
+  :ensure t
+  :config
+  ;; advice for maybe installing with quelpa
+  (setq quelpa-use-package-inhibit-loading-quelpa t)
+  (quelpa-use-package-activate-advice))
+
+
+
+
+;;; Personal Information
+(setq user-full-name "Colin McLear"
+      user-mail-address "mclear@fastmail.com")
+
+;;; Load Modules
+
+;;;; Core Modules
+(require 'setup-libraries)
+(require 'setup-keybindings)
+(require 'setup-evil)
+(require 'setup-evil-packages)
+(require 'setup-dired)
+(require 'setup-helm)
+(require 'setup-helm-packages)
+(require 'setup-ivy)
+
+;;;; Other Modules
+(require 'setup-ui)
+(require 'setup-functions-macros)
+(require 'setup-core)
+(require 'setup-modeline)
+(require 'setup-theme)
+(require 'setup-osx)
+(require 'setup-search)
+(require 'setup-vc)
+(require 'setup-completion)
+(require 'setup-shell)
+(require 'setup-org)
+(require 'setup-writing)
+(require 'setup-projects)
+(require 'setup-programming)
+(require 'setup-pdf)
+(require 'setup-notes)
+(require 'setup-calendars)
+(require 'setup-dashboard)
+(require 'setup-testing)
+(require 'setup-devonthink)
+
+;;; Config Helper Functions
+
+;; Function to navigate config files
+(defun cpm/find-files-setup-config-directory ()
+  (interactive)
+  (helm-find-files-1 cpm-setup-dir))
+
+;; Function to search config files
+(defun cpm/search-setup-config-files ()
+  (interactive)
+  (helm-do-ag cpm-setup-dir))
+
+;; Load init file
+(defun cpm/load-init-file ()
+  (interactive)
+  (load-file (concat user-emacs-directory "init.el")))
 
 ;; reset file-name-handler-alist
-(add-hook! 'emacs-startup-hook
-  (setq file-name-handler-alist cpm--file-name-handler-alist))
+(add-hook 'emacs-startup-hook (lambda ()
+  (setq file-name-handler-alist cpm--file-name-handler-alist)))
 
+;; Startup time
+(message (format "Emacs ready in %.2f seconds with %d garbage collections."
+                (float-time
+                 (time-subtract after-init-time before-init-time)) gcs-done))
