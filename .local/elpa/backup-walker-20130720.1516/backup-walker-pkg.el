@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "backup-walker" "20130720.1516" "quickly traverse all backups of a file" 'nil :stars '(#("9" 0 1 (font-lock-face paradox-star-face)) #("1K" 0 2 (value 1055 font-lock-face paradox-download-face))) :commit "934a4128c122972ac32bb9952addf279a60a94da" :keywords '("backup") :authors '(("Le Wang")) :maintainer '("Le Wang") :url "https://github.com/lewang/backup-walker")
+(define-package "backup-walker" "20130720.1516" "quickly traverse all backups of a file" 'nil :commit "934a4128c122972ac32bb9952addf279a60a94da" :keywords '("backup") :authors '(("Le Wang")) :maintainer '("Le Wang") :url "https://github.com/lewang/backup-walker")

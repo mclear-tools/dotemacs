@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "sane-term" "20181130.101" "Multi Term is crazy. This is not." '((emacs "24.1")) :stars '(#("41" 0 2 (font-lock-face paradox-star-face)) #("1K" 0 2 (value 1961 font-lock-face paradox-download-face))) :commit "ae0b3c024b66275f22809e2b41f428b01c259b96" :authors '(("Adam Patterson" . "adam@adamrt.com")) :maintainer '("Adam Patterson" . "adam@adamrt.com") :url "http://github.com/adamrt/sane-term")
+(define-package "sane-term" "20181130.101" "Multi Term is crazy. This is not." '((emacs "24.1")) :commit "ae0b3c024b66275f22809e2b41f428b01c259b96" :authors '(("Adam Patterson" . "adam@adamrt.com")) :maintainer '("Adam Patterson" . "adam@adamrt.com") :url "http://github.com/adamrt/sane-term")

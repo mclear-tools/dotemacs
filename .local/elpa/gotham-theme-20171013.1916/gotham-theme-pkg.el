@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "gotham-theme" "20171013.1916" "A very dark Emacs color theme." 'nil :stars '(#("102" 0 3 (font-lock-face paradox-star-face)) #("38K" 0 3 (value 38589 font-lock-face paradox-download-face))) :commit "5e97554d1f9639698faedb0660e63694be33bd84" :authors '(("Vasilij Schneidermann" . "v.schneidermann@gmail.com")) :maintainer '("Vasilij Schneidermann" . "v.schneidermann@gmail.com") :url "https://github.com/wasamasa/gotham-theme")

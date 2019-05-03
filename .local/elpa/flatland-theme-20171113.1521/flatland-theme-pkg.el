@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "flatland-theme" "20171113.1521" "A simple theme for Emacs based on the Flatland theme for Sublime Text" 'nil :stars '(#("49" 0 2 (font-lock-face paradox-star-face)) #("31K" 0 3 (value 31186 font-lock-face paradox-download-face))) :commit "a98a6f19ad4dff0fa3fad1ea487b7d0ef634a19a" :authors '(("Greg Chapple" . "info@gregchapple.com")) :maintainer '("Greg Chapple" . "info@gregchapple.com") :url "http://github.com/gregchapple/flatland-emacs")
