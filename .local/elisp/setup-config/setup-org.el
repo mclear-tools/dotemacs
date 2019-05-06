@@ -567,8 +567,7 @@ _vr_ reset      ^^                       ^^                 ^^
   (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
   (select-frame-by-name "What are you doing?")
   (cpm/org-journal)
-  (cpm/insert-weather)
-  )
+  (cpm/insert-weather))
 
 ;;;; Alfred Capture Workflow
 ;; Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.

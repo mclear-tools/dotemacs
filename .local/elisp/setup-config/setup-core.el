@@ -194,8 +194,8 @@
    "M-RET" 'outshine-insert-heading
    "M-j"   'outline-move-subtree-down
    "M-k"   'outline-move-subtree-up
-   "M-h"   'outline-demote
-   "M-l"   'outline-promote)
+   "M-h"   'outline-promote
+   "M-l"   'outline-demote)
   :config
   (setq outshine-use-speed-commands t
         outshine-cycle-emulate-tab 'white

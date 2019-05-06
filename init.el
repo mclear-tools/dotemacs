@@ -8,18 +8,38 @@
 ;;; Startup
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
+;; See https://blog.d46.us/advanced-emacs-startup/
+;; and http://tvraman.github.io/emacspeak/blog/emacs-start-speed-up.html
+;; and https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/
+
 (defvar cpm--file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
 ;; Garbage collection
-(setq gc-cons-threshold 402653184
+;; from http://akrl.sdf.org NOTE: Keep an eye on this -- I may go back to old settings if there are too many pauses
+(defmacro k-time (&rest body)
+  "Measure and return the time it takes evaluating BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (float-time (time-since time))))
+
+;; Set garbage collection threshold to ludicrous levels.
+(setq gc-cons-threshold #x400000000
       gc-cons-percentage 0.6)
+
+;; Post-init set garbage collection threshold to slightly less ludicrous 1GB.
 (add-hook 'after-init-hook
           `(lambda ()
-             (setq gc-cons-threshold 800000
-                   gc-cons-percentage 0.1)
+             (setq gc-cons-threshold #x40000000
+                   gc-cons-percentage 0.6)
              (garbage-collect)) t)
 
+;; When idle for 10sec run the GC no matter what.
+(defvar k-gc-timer
+  (run-with-idle-timer 10 t
+                       (lambda ()
+                         (message "Garbage Collector has run for %.06fsec"
+                                  (k-time (garbage-collect))))))
 ;;;; Clean View
 ;; Disable start-up screen
 (setq-default inhibit-startup-screen t)
@@ -53,6 +73,9 @@
       ad-do-it)))
 
 ;;;; Directory Variables
+;;  We're going to define a number of directories that are used throughout this
+;;  configuration to store different types of files.
+
 (eval-and-compile
   (defvar cpm-emacs-dir (expand-file-name user-emacs-directory)
     "The path to the emacs.d directory.")
@@ -90,17 +113,20 @@
   (unless (file-directory-p dir)
 (make-directory dir t))))
 
-;; Exec path
+;; Exec path -- Emacs won't know where to load things without this
 (defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
 (defvar usr-local-bin "/usr/local/bin")
 (defvar usr-local-sbin "/usr/local/sbin")
 (setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
 (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
 
-;; Path to init files
+;; Path to init setup files
 (push cpm-setup-dir load-path)
 
 ;;;; Security
+;; Properly verify outgoing ssl connections.
+;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
+
 (setq gnutls-verify-error t
       tls-checktrust gnutls-verify-error
       tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
@@ -110,6 +136,8 @@
       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
 
 ;;;; Package Initialization Settings
+;; we're setting =package-enable-at-startup= to nil so that packages will not
+;; automatically be loaded for us since =use-package= will be handling that.
 (setq package-enable-at-startup nil)
 (setq load-prefer-newer t
       package-user-dir (concat cpm-local-dir "/elpa/")
@@ -120,14 +148,22 @@
 
 ;; We're going to set the load path ourselves so that we don't have to call
 ;; =package-initialize= at runtime and incur a large performance hit. This
-;; load-path will actually be faster than the one created by =package-initialize=
-;; because it appends the elpa packages to the end of the load path. Otherwise
-;; any time a builtin package was required it would have to search all of third
-;; party paths first.
+;; load-path will actually be faster than the one created by
+;; =package-initialize= because it appends the elpa packages to the end of the
+;; load path. Otherwise any time a builtin package was required it would have to
+;; search all of third party paths first.
 (eval-and-compile
   (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t))))
 
 ;;;; Use-Package Settings
+;; I tell =use-package= to always defer loading packages unless explicitly told
+;; otherwise. This speeds up initialization significantly as many packages are
+;; only loaded later when they are explicitly used. But it can also
+;; [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][cause
+;; problems]]. I also put a lot of loading of packages off until up to 10
+;; secs of idle. The latter means package loading stays out of my way if I'm
+;; doing, e.g., a quick restart-and-check of something in emacs.
+
 (setq use-package-always-defer t
       use-package-verbose t
       use-package-enable-imenu-support t)
@@ -165,6 +201,8 @@
         paradox-automatically-star nil))
 
 ;;;; Quelpa
+;; Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywhere]] and use with [[https://github.com/quelpa/quelpa-use-package][use-package]]
+
 (use-package quelpa
   :ensure t
   :commands quelpa
@@ -187,12 +225,15 @@
 
 
 ;;; Personal Information
+;; Give emacs some personal info
 (setq user-full-name "Colin McLear"
       user-mail-address "mclear@fastmail.com")
 
 ;;; Load Modules
+;; Load all the setup modules
 
 ;;;; Core Modules
+;; These are the "can't live without" modules
 (require 'setup-libraries)
 (require 'setup-keybindings)
 (require 'setup-evil)
@@ -201,17 +242,17 @@
 (require 'setup-helm)
 (require 'setup-helm-packages)
 (require 'setup-ivy)
+(require 'setup-core)
 
 ;;;; Other Modules
 (require 'setup-ui)
 (require 'setup-functions-macros)
-(require 'setup-core)
+(require 'setup-completion)
 (require 'setup-modeline)
 (require 'setup-theme)
 (require 'setup-osx)
 (require 'setup-search)
 (require 'setup-vc)
-(require 'setup-completion)
 (require 'setup-shell)
 (require 'setup-org)
 (require 'setup-writing)
