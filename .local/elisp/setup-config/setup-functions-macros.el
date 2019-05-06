@@ -1,4 +1,17 @@
 ;;; Useful Functions
+
+;;;; Insert Weather
+;; From [[https://www.baty.blog/2019/insert-weather-into-emacs-buffer][Jack Baty]] with some slight modifications for formatting. See also [[https://github.com/chubin/wttr.in][wttr.in]]. 
+(defun cpm/insert-weather ()
+  (interactive)
+  (let ((w (shell-command-to-string "curl -s 'wttr.in/?0qT'")))
+  (insert (mapconcat (function (lambda (x) (format ": %s" x)))
+           (split-string w "\n")
+           "\n")))
+  (newline))
+
+
+;;;; Org Archive
 (defun cpm/org-archive-done-tasks ()
   (interactive)
   (org-map-entries
@@ -339,7 +352,7 @@ is already narrowed."
       (find-file "~/Dropbox/Work/projects"))
 
 ;;;; Open in iTerm
-(defun open-dir-in-iterm ()
+(defun cpm/open-dir-in-iterm ()
   "Open the current directory of the buffer in iTerm."
   (interactive)
   (let* ((iterm-app-path "/Applications/iTerm.app")

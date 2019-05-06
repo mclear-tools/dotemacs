@@ -55,7 +55,7 @@
     "bN" 'cpm/new-buffer-new-frame
     "br" 'revert-buffer
     "bR" 'crux-rename-buffer-and-file
-    "bt" 'open-dir-in-iterm
+    "bt" 'cpm/open-dir-in-iterm
     )
 
 ;;;;  Comment Keybindings
@@ -169,7 +169,9 @@
   (use-package evil-markdown
     :ensure nil
     :load-path "~/.emacs.d/.local/elisp/evil-markdown"
-    :after markdown-mode)
+    :after markdown-mode evil
+    :demand t)
+
   (general-define-key
     :states '(normal motion visual)
     :keymaps 'markdown-mode-map

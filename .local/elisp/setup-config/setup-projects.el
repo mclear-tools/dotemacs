@@ -262,10 +262,14 @@
      (zd-deft-new-search))
 
 ;;; Bookmarks
+(use-package bookmark
+  :defer 2
+  :config
+  (setq bookmark-default-file (concat cpm-cache-dir "bookmarks")))
+
 (use-package bookmark+
   :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
   :config
-  (setq bookmark-default-file (concat cpm-cache-dir "bookmarks"))
   (setq bmkp-last-as-first-bookmark-file (concat cpm-cache-dir "bookmarks")))
 
 ;;; Org and Projectile
