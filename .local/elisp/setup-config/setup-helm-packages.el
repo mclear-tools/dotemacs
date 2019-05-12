@@ -1,5 +1,6 @@
 ;;; Helm  Packages
 
+
 (use-package helm-ag
   :load-path "~/.emacs.d/.local/elisp/helm-ag/"
   :after helm
@@ -296,4 +297,16 @@
   ("q" nil "Quit" :color blue :exit t)))
 
 
+;;;; Search info manuals with helm
+;;   Search the Emacs, Emacs Lisp, and Emacs Common Lisp manuals, all at the same time
+;; Courtesy of alphapapa and reddit:
+;; https://www.reddit.com/r/emacs/comments/bl3dsb/search_entire_info_manual_with_swiper/emmxsxg?utm_source=share&utm_medium=web2x
+(defun cpm/helm-info-emacs-elisp-cl ()
+  "Helm for Emacs, Elisp, and CL-library info pages."
+  (interactive)
+  (helm :sources '(helm-source-info-emacs
+                   helm-source-info-eintr
+                   helm-source-info-cl)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-helm-packages)
