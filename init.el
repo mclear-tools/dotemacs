@@ -189,6 +189,7 @@
   (setq use-package-always-ensure t)
 
 ;;;; Paradox Package Management
+;; Better interface for package management https://github.com/Malabarba/paradox
 (use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
   :config
@@ -220,9 +221,6 @@
   ;; advice for maybe installing with quelpa
   (setq quelpa-use-package-inhibit-loading-quelpa t)
   (quelpa-use-package-activate-advice))
-
-
-
 
 ;;; Personal Information
 ;; Give emacs some personal info
