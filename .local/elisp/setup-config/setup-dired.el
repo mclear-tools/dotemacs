@@ -1,4 +1,4 @@
-;;;; Dired
+;;; Dired
 ;; I used to use ranger but it was buggy and I can get almost everything I want from
 ;; dired. See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer for
 ;; discussion of how to avoid creating lots of dired buffers.
@@ -26,6 +26,7 @@
   (interactive)
   (find-alternate-file ".."))
 
+;;;; Dired Plus
 ;; I used thism mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
 (use-package dired+
   :disabled t
@@ -37,6 +38,7 @@
   (setq diredp-hide-details-initially-flag nil)
   (setq diredp-toggle-find-file-reuse-dir 1))
 
+;;;; Peep Dired
 (use-package peep-dired
   :ensure t
   :commands (peep-dired)
@@ -62,6 +64,18 @@
   (dired-find-file)
   (delete-other-windows))
 
+
+;;;;  Dired Ranger
+;; https://github.com/Fuco1/dired-hacks#dired-ranger
+;; Very helpful way of copying/moving files
+;; Note that to move first you need to copy the file and then go to the target directory and move
+(use-package dired-ranger
+  :after dired
+  :general (:keymaps 'dired-mode-map
+            :states '(normal motion)
+              "s-c"  'dired-ranger-copy
+              "s-m"  'dired-ranger-move
+              "s-v"  'dired-ranger-paste))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-dired)
