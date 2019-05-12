@@ -36,7 +36,7 @@
   :group 'helm)
 
 (defcustom helm-info-default-sources
-  '(helm-source-info-elisp
+  '(helm-source-info-eintr
     helm-source-info-cl
     helm-source-info-eieio
     helm-source-info-pages)
