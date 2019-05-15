@@ -241,6 +241,7 @@
   :ensure t
   :defer 3
   :config
+  (setq multi-compile-history-file (concat cpm-cache-dir "multi-compile.cache"))
   (setq multi-compile-completion-system 'helm)
   (setq multi-compile-alist '(
         ;; commands for pandoc

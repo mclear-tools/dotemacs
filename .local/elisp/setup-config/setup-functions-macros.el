@@ -5,7 +5,7 @@
 (defun cpm/insert-weather ()
   (interactive)
   (let ((w (shell-command-to-string "curl -s 'wttr.in/?0qT'")))
-  (insert (mapconcat (function (lambda (x) (format ": %s" x)))
+    (insert (mapconcat (function (lambda (x) (format ": %s" x)))
            (split-string w "\n")
            "\n")))
   (newline))
@@ -34,7 +34,8 @@
   (defun cpm/call-emacs ()
     (interactive)
     (start-process "Emacs" nil
-                   (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
+                   (executable-find "/usr/local/bin/emacs")))
+                   ;; (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
   ;; http://stackoverflow.com/a/10216338/4869
   (defun cpm/copy-whole-buffer-to-clipboard ()
     "Copy entire buffer to clipboard"
