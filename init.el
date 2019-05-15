@@ -1,7 +1,7 @@
 ;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
 
 ;;; Commentary:
-;; A bare-boned config template. Use "outshine-cycle-buffer" (<Tab> and <S-Tab>
+;; Base init file to load config. Use "outshine-cycle-buffer" (<Tab> and <S-Tab>
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
@@ -61,6 +61,7 @@
 (setq initial-major-mode 'fundamental-mode)
 
 ;; echo buffer
+;; Don't display any message
 ;; https://emacs.stackexchange.com/a/437/11934
 (defun display-startup-echo-area-message ()
   (message ""))
@@ -249,6 +250,8 @@
 (require 'setup-modeline)
 (require 'setup-theme)
 (require 'setup-osx)
+(require 'setup-navigation)
+(require 'setup-windows)
 (require 'setup-search)
 (require 'setup-vc)
 (require 'setup-shell)

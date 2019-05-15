@@ -14,6 +14,7 @@
 (setq org-directory "~/Dropbox/org-files/")
 (setq org-default-notes-file (concat org-directory "inbox.org"))
 ;;;; Org Config Settings
+(setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
 (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
               org-return-follows-link t ;; make RET follow links
               org-list-allow-alphabetical t ;; allow alphabetical list
@@ -30,7 +31,11 @@
               org-fontify-quote-and-verse-blocks t ;; make quotes stand out
               org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
               ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼"
+              org-cycle-separator-lines 0 ;; Give a more compact and consistent view
               org-startup-indented t ;; start in indent mode
+              ;; prevent editing invisible area, and show an error message in echo area instead;
+              ;; additionally expand text and move focus to the expected point.
+              org-catch-invisible-edits 'show-and-error
               org-imenu-depth 8
 imenu-auto-rescan t)
    (add-hook 'auto-save-hook 'org-save-all-org-buffers)
@@ -625,6 +630,12 @@ _vr_ reset      ^^                       ^^                 ^^
 (font-lock-add-keywords 'org-mode
                       '(("^ +\\([-*]\\) "
                          (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+;; Demote sequence for list bullets
+(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+;; Increase sub-item indentation
+(setq org-list-indent-offset 1)
+
 
 ;; Other bullet patterns
  ;; (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "" "✸")))
