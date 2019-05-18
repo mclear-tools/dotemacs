@@ -327,8 +327,9 @@
       "pG"  'projectile-regenerate-tags
       "pI"  'projectile-invalidate-cache
       "pk"  'projectile-kill-buffers
+      "po" #'cpm/open-project-and-frame
       ;; "pl"  'desktop+-load
-      "po"  'projectile-multi-occur
+      ;; "po"  'projectile-multi-occur
       "pp"  'helm-projectile-switch-project
       "pP"  'projectile-persp-switch-project
       ;; "pp"  'helm-persp-projectile-switch-project

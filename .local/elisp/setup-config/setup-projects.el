@@ -2,6 +2,8 @@
 
 ;;; Projectile
 (use-package projectile
+ :ensure t
+ ;; :load-path (lambda () (concat cpm-elisp-dir "projectile-2.0.0"))
  :defer 1
  :init
  ;; save projectile-known-projects-file in cache folder
@@ -12,16 +14,19 @@
   (setq projectile-enable-caching t
         projectile-files-cache-expire 60)
   :config
-  (projectile-mode t))
+  (setq projectile-git-submodule-command nil)
+  (projectile-global-mode))
 
 ;;; Perspective
 (use-package perspective
-  :commands (persp-switch persp-add-buffer persp-set-buffer)
+  :defer 1
   :config
-  (setq persp-show-modestring nil))
+  (setq persp-show-modestring nil)
+  (persp-mode))
 
 (use-package persp-projectile
-    :commands projectile-persp-switch-project)
+  :after (projectile perspective)
+  :demand t)
 
 (with-eval-after-load 'persp-projectile
     (defhydra hydra-persp (:columns 4
@@ -41,69 +46,33 @@
       ("P" projectile-persp-switch-project "Switch Project")
       ("q" nil "Quit")))
 
-(with-eval-after-load 'desktop+
-(defhydra cpm/hydra-desktop (:columns 4
-                             :color blue)
-  "Desktops"
-  ("c" desktop+-create "Create desktop")
-  ("l" desktop+-load "Load desktop")))
-(defun perspectives-buffer-name-p (buffer)
-    (if (and buffer
-         (buffer-name buffer)
-         (not (string-prefix-p "*" (buffer-name buffer)))
-         (not (string-suffix-p "*" (buffer-name buffer))))
-    t
-      nil))
+;;; Frame Purpose & Workflow
+;; (use-package frame-purpose
+;;   :ensure t
+;;   :defer 1
+;;   :config
+;;   (setq persp-show-modestring nil))
 
-(defun perspectives-hash-filter (current filtered parameters saving)
-  (let ((value (cdr current))
-    (result ())
-    (keys (hash-table-keys (cdr current))))
-    ;; for every perspective...
-    (dolist (key keys)
-  (let ((persp (gethash key value)))
-    ;; that isn't killed...
-    (if (not (persp-killed persp))
-        (add-to-list
-         'result
-         (cons key
-           ;; save the list of buffers
-           (list (cons "buffers"
-           (list
-            (mapcar 'buffer-name (seq-filter 'perspectives-buffer-name-p (persp-buffers persp)))))))))))
-  ;; return a different variable name so perspectives doesn't clobber it
-  (cons 'perspectives-hash-serialized result)))
+  ;; (frame-purpose-mode 1)
 
-;; serialize perspectives hash
-(add-to-list 'frameset-filter-alist '(perspectives-hash . perspectives-hash-filter))
-;; don't serialize anything else
-(add-to-list 'frameset-filter-alist '(persp-modestring . :never))
-(add-to-list 'frameset-filter-alist '(persp-recursive . :never))
-(add-to-list 'frameset-filter-alist '(persp-last . :never))
-(add-to-list 'frameset-filter-alist '(persp-curr . :never))
+;; (use-package frame-workflow
+;;   :quelpa (frame-workflow :fetcher github :repo "akirak/frame-workflow")
+;;   :general
+;;   ("s-p" 'frame-workflow-switch-frame)
+;;   :config
+;;   (frame-workflow-mode 1)
+;;   ;; (autoload 'helm-frame-workflow "helm-frame-workflow")
+;;   (setq projectile-switch-project-action #'frame-workflow-switch-directory-frame))
 
-(defun perspectives-restore-state ()
-  (dolist (frame (frame-list))
-    ;; get the serialized state off of the frame
-    (let ((state (frame-parameter frame 'perspectives-hash-serialized)))
-  (if state (progn
-          (message "Found state, attempting restore")
-          ;; delete it so we don't end up in a loop
-          (set-frame-parameter frame 'perspectives-hash-serialized nil)
-          (with-selected-frame frame
-            (dolist (elem state)
-          ;; recreate the perspective
-          (with-perspective (car elem)
-            (dolist (buffer-name (car (cdr (assoc "buffers" (cdr elem)))))
-              ;; add the buffer back to the perspective
-              (persp-add-buffer buffer-name)
-              )))
-            ))
-    (message "No state found")
-    )
-  )))
+;; (defun frame-workflow-set-projectile-frame-name (frame-action)
+;;   "Set the frame's name and call FRAME-ACTION."
+;;   (set-frame-parameter nil 'name (projectile-project-name))
+;;   (funcall frame-action))
 
-(add-hook 'desktop-after-read-hook 'perspectives-restore-state)
+;; (setq frame-workflow-directory-frame-action
+;;       (lambda ()
+;;         (frame-workflow-set-projectile-frame-name #'projectile-dired)))
+
 
 ;;; Eyebrowse
 (use-package eyebrowse
@@ -149,16 +118,43 @@
   (eyebrowse-mode t))
 
 
+;;; Project Functions
+;; Some useful functions for opening projects in new frames
+(defun cpm/open-project-and-frame ()
+  (interactive)
+  (let ((buffer (generate-new-buffer "untitled")))
+  (set-buffer-major-mode buffer)
+  (display-buffer buffer '(display-buffer-pop-up-frame . nil)))
+  (crux-create-scratch-buffer)
+  (helm-projectile-switch-project)
+  (setq frame-title-format
+    '(""
+      "%b"
+      (:eval
+       (let ((project-name (projectile-project-name)))
+         (unless (string= "-" project-name)
+           (format " in [%s]" project-name)))))))
+
 ;;; Nameframe
 (use-package nameframe
   :commands (nameframe-create-frame)
   :after projectile
+  :demand t
   :general
-  ("s-p" 'nameframe-switch-frame)
-  :config
-  (nameframe-projectile-mode t)
-  (nameframe-perspective-mode t))
+  ("s-p" 'nameframe-switch-frame))
 
+(use-package namefram-projectile
+  :ensure t
+  :disabled t
+  :config
+  (nameframe-projectile-mode t))
+
+(use-package nameframe-perspective
+  :ensure t
+  :after nameframe
+  :demand t
+  :config
+  (nameframe-perspective-mode t))
 
 ;;; Nameframe Project Functions
 ;; functions for named work frames
