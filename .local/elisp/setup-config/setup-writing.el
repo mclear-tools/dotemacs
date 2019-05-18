@@ -131,10 +131,7 @@
         markdown-use-pandoc-style-yaml-metadata t)
    :config
    ;; remove strikout comment face
-   (set-face-attribute 'markdown-comment-face nil
-   :weight 'bold :strike-through nil)
-
-   )
+   (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil))
 
 ;; macro: delete backslashes in paragraph to cleanup markdown conversion
 (fset 'cpm/md-delete-backslash
@@ -193,14 +190,16 @@
   (setq writeroom-width 85)
   (setq writeroom-mode-line t)
   (setq writeroom-bottom-divider-width 0))
-    (defun distraction-free ()
-    "distraction free writing"
-      (interactive)
-      (git-gutter-mode 0)
-      (linum-mode 0)
-      (centered-cursor-mode)
-      (writeroom-mode)
-      )
+
+;; Set up a distraction free space
+(defun distraction-free ()
+  "distraction free writing"
+  (interactive)
+  (git-gutter-mode 0)
+  (linum-mode 0)
+  (centered-cursor-mode)
+  (writeroom-mode)
+  )
 
 ;;; Interleave (Notes)
 (use-package interleave
