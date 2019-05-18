@@ -58,11 +58,12 @@
 
 ;;;; Backups / Auto-Save
 (let ((backup-dir (concat cpm-cache-dir "backup")))
-  ;; Move backup file to `~/.emacs.d/.cache/backup'
+  ;; Move backup file to `~/.emacs.d/.local/cache/backup'
   (setq backup-directory-alist `(("." . ,backup-dir)))
   ;; Makesure backup directory exist
   (when (not (file-exists-p backup-dir))
     (make-directory backup-dir t)))
+
 
 (setq make-backup-files t               ; backup of a file the first time it is saved.
       backup-by-copying t               ; don't clobber symlinks
@@ -79,12 +80,19 @@
 
 (setq auto-save-list-file-prefix
       (concat cpm-cache-dir "auto-save-list/.saves-"))
+(let ((auto-save-files-dir (concat cpm-cache-dir "auto-save-files")))
+  (setq auto-save-file-name-transforms
+      `((".*" ,auto-save-files-dir t)))
+  (when (not (file-exists-p auto-save-files-dir))
+    (make-directory auto-save-files-dir t)))
+
 (setq auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
       auto-save-visited-file-name nil
       delete-auto-save-files t
       create-lockfiles nil)
+
 (defun full-auto-save ()
   (interactive)
   (save-excursion
@@ -94,7 +102,12 @@
           (basic-save-buffer)))))
 (add-hook 'auto-save-hook 'full-auto-save)
 
+;; Save all buffers after idle time or exit from insert state
+(run-with-idle-timer 5 t (lambda () (save-some-buffers t)))
+(add-hook 'evil-insert-state-exit-hook 'full-auto-save)
 
+
+;;;; Desktop
 (when (file-exists-p custom-file)
   (load custom-file))
   (setq desktop-dirname             (concat cpm-cache-dir "desktops")
