@@ -19,13 +19,15 @@
      (org-archive-subtree)
      (setq org-map-continue-from (outline-previous-heading)))
    "/DONE" 'agenda))
+
 (defun cpm/new-buffer-new-frame ()
   "Create a new frame with a new empty buffer & turn on persp-mode."
   (interactive)
-  (persp-mode 1)
-  (let ((buffer (generate-new-buffer "untitled")))
-    (set-buffer-major-mode buffer)
-    (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
+  (nameframe-make-frame "untitled"))
+  ;; (let ((buffer (generate-new-buffer "untitled")))
+  ;;   (set-buffer-major-mode buffer)
+  ;;   (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
+
   (put 'erase-buffer 'disabled nil)
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
