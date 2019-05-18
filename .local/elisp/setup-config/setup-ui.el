@@ -29,7 +29,8 @@
 (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
 
 ;;; Frames
-(setq frame-title-format '('nil))
+(setq frame-title-format "\n") 
+;; (setq frame-title-format '('nil))
     ;; (setq-default frame-title-format
     ;;           '((buffer-file-name "%f" "%b")))
 (if (display-graphic-p)
