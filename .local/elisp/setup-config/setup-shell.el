@@ -159,20 +159,6 @@
            (defun eshell/rgrep (&rest args)
              "Use Emacs grep facility instead of calling external grep."
              (eshell-grep "rgrep" args t)))
-(defun my/truncate-eshell-buffers ()
-  "Truncates all eshell buffers"
-  (interactive)
-  (save-current-buffer
-    (dolist (buffer (buffer-list t))
-      (set-buffer buffer)
-      (when (eq major-mode 'eshell-mode)
-        (eshell-truncate-buffer)))))
-
-;; After being idle for 5 seconds, truncate all the eshell-buffers if
-;; needed. If this needs to be canceled, you can run `(cancel-timer
-;; my/eshell-truncate-timer)'
-(setq my/eshell-truncate-timer
-      (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
 (add-hook 'eshell-mode-hook
 (lambda ()
 (general-define-key :states  '(normal insert emacs) :keymaps 'eshell-mode-map
