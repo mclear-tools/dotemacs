@@ -143,7 +143,7 @@
   :general
   ("s-p" 'nameframe-switch-frame))
 
-(use-package namefram-projectile
+(use-package nameframe-projectile
   :ensure t
   :disabled t
   :config
