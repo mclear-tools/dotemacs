@@ -218,6 +218,7 @@
 
 (use-package quelpa-use-package
   :ensure t
+  :defer 1
   :config
   ;; advice for maybe installing with quelpa
   (setq quelpa-use-package-inhibit-loading-quelpa t)

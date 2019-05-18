@@ -200,13 +200,14 @@ If MESSAGEBUF is not nil then MSG is also written in message buffer."
   (when (file-exists-p banner)
     (let* ((title dashboard-banner-logo-title)
            (spec
-            (if (image-type-available-p 'imagemagick)
-                (apply 'create-image banner 'imagemagick nil
-                       (append (when (> dashboard-image-banner-max-width 0)
-                                 (list :max-width dashboard-image-banner-max-width))
-                               (when (> dashboard-image-banner-max-height 0)
-                                 (list :max-height dashboard-image-banner-max-height))))
-              (create-image banner)))
+            ;; don't use imagemagick as it 
+            ;; (if (image-type-available-p 'imagemagick)
+            ;;     (apply 'create-image banner 'imagemagick nil
+            ;;            (append (when (> dashboard-image-banner-max-width 0)
+            ;;                      (list :max-width dashboard-image-banner-max-width))
+            ;;                    (when (> dashboard-image-banner-max-height 0)
+            ;;                      (list :max-height dashboard-image-banner-max-height))))
+              (create-image banner))
            (size (image-size spec))
            (width (car size))
            (left-margin (max 0 (floor (- dashboard-banner-length width) 2))))
