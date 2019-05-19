@@ -24,14 +24,14 @@
      (float-time (time-since time))))
 
 ;; Set garbage collection threshold to ludicrous levels.
-(setq gc-cons-threshold #x400000000
+(setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6)
 
-;; Post-init set garbage collection threshold to slightly less ludicrous 1GB.
+;; Post-init set garbage collection threshold to less ludicrous levels.
 (add-hook 'after-init-hook
           `(lambda ()
-             (setq gc-cons-threshold #x40000000
-                   gc-cons-percentage 0.6)
+             (setq gc-cons-threshold 80000
+                   gc-cons-percentage 0.1)
              (garbage-collect)) t)
 
 ;; When idle for 10sec run the GC no matter what.
