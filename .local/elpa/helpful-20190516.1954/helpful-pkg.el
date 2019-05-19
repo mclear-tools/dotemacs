@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "helpful" "20190516.1954" "a better *help* buffer" '((emacs "25.1") (dash "2.12.0") (dash-functional "1.2.0") (s "1.11.0") (f "0.20.0") (elisp-refs "1.2") (shut-up "0.3")) :stars '(#("356" 0 3 (font-lock-face paradox-star-face)) #("18K" 0 3 (value 18481 font-lock-face paradox-download-face))) :commit "f61d0a060ad54bdf0c305afe1e362518f64463dd" :keywords '("help" "lisp") :authors '(("Wilfred Hughes" . "me@wilfred.me.uk")) :maintainer '("Wilfred Hughes" . "me@wilfred.me.uk") :url "https://github.com/Wilfred/helpful")
