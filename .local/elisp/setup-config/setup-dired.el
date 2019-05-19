@@ -17,14 +17,20 @@
   (setq dired-listing-switches "-laGh1v --group-directories-first")
   ;; don't ask about killing buffer visiting file
   (setq dired-clean-confirm-killing-deleted-buffers t)
-  ;; stop asking about recurisve actions
+  ;; always delete and copy recursively 
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
   )
 
+;; Function to move up a directory like in ranger
 (defun cpm/dired-updirectory ()
   (interactive)
   (find-alternate-file ".."))
+
+;; Colourful dired
+(use-package diredfl
+  :init (diredfl-global-mode 1))
+
 
 ;;;; Dired Plus
 ;; I used thism mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
