@@ -683,53 +683,46 @@ Return 'left, 'right, 'both or nil."
       (select-window first-win)
       (if this-win-2nd (other-window 1))))))
 
-  (defun cpm/toggle-display-markup ()
-    (interactive)
-      (if (eq major-mode 'org-mode)
-          (org-toggle-link-display)
-          (if markdown-hide-markup
-          (markdown-toggle-markup-hiding 0)
-          (markdown-toggle-markup-hiding))))
+(defun cpm/toggle-display-markup ()
+  "single toggle to display markup either in org or markdown"
+  (interactive)
+    (if (eq major-mode 'org-mode)
+        (org-toggle-link-display)
+        (if markdown-hide-markup
+        (markdown-toggle-markup-hiding 0)
+        (markdown-toggle-markup-hiding))))
+
 (defun cpm/search-file-todo-markers ()
-    "Search for any TODO markers as specified in hl-todo-keyword-faces.
-
-Note that this uses the word boundary \\b to avoid matching these
-within other words, but this means that non-word keywords such as
-???, which is in the list by default, will not be matched."
-    (interactive)
-    (require 'projectile)
-
-    (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
-           (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
-                                     grouped))
-           (bounded (concat "\\b" unescaped "\\b"))
-           (helm-follow-mode-persistent t))
-      (helm-do-ag-this-file bounded)))
+  "Search file for any TODO markers as specified in hl-todo-keyword-faces. Note that this uses the word boundary \\b to avoid matching these within other words, but this means that non-word keywords such as ???, which is in the list by default, will not be matched."
+  (interactive)
+  (require 'projectile)
+  (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
+         (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
+                                   grouped))
+         (bounded (concat "\\b" unescaped "\\b"))
+         (helm-follow-mode-persistent t))
+    (helm-do-ag-this-file bounded)))
 
 (defun cpm/search-todo-markers ()
-    "Search for any TODO markers as specified in hl-todo-keyword-faces.
-
-Note that this uses the word boundary \\b to avoid matching these
-within other words, but this means that non-word keywords such as
-???, which is in the list by default, will not be matched."
+  "Search directory for any TODO markers as specified in hl-todo-keyword-faces. Note that this uses the word boundary \\b to avoid matching these within other words, but this means that non-word keywords such as ???, which is in the list by default,will not be matched."
     (interactive)
     (require 'projectile)
-
     (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
            (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
                                      grouped))
            (bounded (concat "\\b" unescaped "\\b"))
            (helm-follow-mode-persistent t))
       (helm-do-ag (projectile-project-root) nil bounded)))
+
 (defun cpm/yaml-wrap ()
   "wrap region in --- for yaml block"
-(interactive)
-(let ((start (region-beginning))
-      (end (region-end)))
-  (goto-char end)
-  (insert "---" "\n")
-  (goto-char start)
-  (insert "---" "\n")))
+  (interactive)
+  (let ((start (region-beginning))
+        (end (region-end)))
+    (goto-char end)
+    (insert "---" "\n")
+    (goto-char start)
+    (insert "---" "\n")))
 
 ;;; Doom Functions & Macros
 (defmacro after! (feature &rest forms)
