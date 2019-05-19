@@ -13,9 +13,9 @@
    "Sets a dashboard banner including information on package initialization
  time and garbage collections."
    (setq dashboard-banner-logo-title
-      (format "Emacs ready in %.2f seconds with %d garbage collections."
+      (format "Emacs ready in %.2f seconds with %d packages loaded and %d garbage collections."
               (float-time
-               (time-subtract after-init-time before-init-time)) gcs-done)))
+               (time-subtract after-init-time before-init-time)) (length package-activated-list) gcs-done)))
   :init
   (add-hook 'dashboard-mode-hook 'cpm/dashboard-banner)
   :general
@@ -34,7 +34,7 @@
   :config
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png"))
   (setq dashboard-center-content t)
-  (setq dashboard-items '((recents  . 5)
+  (setq dashboard-items '((recents  . 10)
                           (projects . 5)))
   (dashboard-setup-startup-hook))
 
@@ -57,6 +57,32 @@
         (insert (make-string (max 0 (floor (/ (- dashboard-banner-length
                                                  (+ (length title) 1)) 2))) ?\ ))
         (insert (format "%s\n\n" (propertize title 'face 'dashboard-banner-logo-title)))))))
+
+;; Open projects in new frames
+(defun dashboard-insert-projects (list-size)
+  "Add the list of LIST-SIZE items of projects."
+  (require 'projectile)
+  (projectile-load-known-projects)
+  (dashboard-insert-section
+   "Projects:"
+   (dashboard-subseq (projectile-relevant-known-projects)
+                     0 list-size)
+   list-size
+   "p"
+   `(lambda (&rest ignore)
+        (let ((buffer (generate-new-buffer "untitled")))
+  (set-buffer-major-mode buffer)
+  (display-buffer buffer '(display-buffer-pop-up-frame . nil)))
+  (crux-create-scratch-buffer)
+  (projectile-switch-project-by-name ,el)
+  (setq frame-title-format
+    '(""
+      "%b"
+      (:eval
+       (let ((project-name (projectile-project-name)))
+         (unless (string= "-" project-name)
+           (format " in [%s]" project-name)))))))
+(abbreviate-file-name el)))
 
 ;; functions to call dashboard when it kas been killed or not loaded
 (defun cpm/dashboard ()
