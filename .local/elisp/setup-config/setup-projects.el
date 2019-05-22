@@ -127,13 +127,16 @@
   (display-buffer buffer '(display-buffer-pop-up-frame . nil)))
   (crux-create-scratch-buffer)
   (helm-projectile-switch-project)
+  (toggle-frame-maximized)
   (setq frame-title-format
     '(""
       "%b"
       (:eval
        (let ((project-name (projectile-project-name)))
          (unless (string= "-" project-name)
-           (format " in [%s]" project-name)))))))
+           (format " in [%s]" project-name))))))
+  (split-window-right)
+  (magit-status))
 
 ;;; Nameframe
 (use-package nameframe

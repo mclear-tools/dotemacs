@@ -33,11 +33,11 @@
       (setq delete-by-moving-to-trash t)
       (setq trash-directory "~/.Trash")
 
-      ;; Don't make new frames when opening a new file with Emacs
-      (setq ns-pop-up-frames nil)
+      ;; Make new frames when opening a new file with Emacs unless on scratch buffer
+      (setq ns-pop-up-frames 1)
 
       ;; fullscreen (disable for non-space full screen)
-      (setq ns-use-native-fullscreen t)
+      (setq ns-use-native-fullscreen nil)
 
       ;; disable emacs-mac smooth scrolling because it is seriously janky
       (setq mac-mouse-wheel-smooth-scroll nil)
