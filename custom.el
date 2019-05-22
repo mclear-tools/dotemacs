@@ -35,7 +35,7 @@
  '(diredfl-compressed-file-suffix ((t (:foreground "#839496"))))
  '(diredfl-date-time ((t (:foreground "#9EA0E5"))))
  '(diredfl-deletion ((t (:background "Red" :foreground "Yellow"))))
- '(diredfl-dir-heading ((t (:background "#DEB542" :foreground "#002b36"))))
+ '(diredfl-dir-heading ((t (:background "#69B7F0" :foreground "#002b36"))))
  '(diredfl-dir-name ((t (:foreground "#69B7F0"))))
  '(diredfl-dir-priv ((t (:foreground "#268bd2"))))
  '(diredfl-exec-priv ((t (:foreground "#990A1b"))))
