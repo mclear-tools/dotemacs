@@ -17,15 +17,23 @@
   (setq dired-listing-switches "-laGh1v --group-directories-first")
   ;; don't ask about killing buffer visiting file
   (setq dired-clean-confirm-killing-deleted-buffers t)
-  ;; always delete and copy recursively 
+  ;; always delete and copy recursively
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
-  )
+  ;; allow editing file permissions
+  (setq wdired-allow-to-change-permissions t))
 
 ;; Function to move up a directory like in ranger
 (defun cpm/dired-updirectory ()
   (interactive)
   (find-alternate-file ".."))
+
+;;narrow dired to match filter
+(use-package dired-narrow
+  :ensure t
+  :general (:keymaps 'dired-mode-map
+            "/"  'dired-narrow))
+
 
 ;; Colourful dired
 (use-package diredfl
