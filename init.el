@@ -36,7 +36,7 @@
 
 ;; When idle for 10sec run the GC no matter what.
 (defvar k-gc-timer
-  (run-with-idle-timer 10 t
+  (run-with-idle-timer 5 t
                        (lambda ()
                          (message "Garbage Collector has run for %.06fsec"
                                   (k-time (garbage-collect))))))
