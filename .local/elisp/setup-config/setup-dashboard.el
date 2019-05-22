@@ -35,7 +35,7 @@
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png"))
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 10)
-                          (projects . 5)))
+                          (projects . 8)))
   (dashboard-setup-startup-hook))
 
 ;; don't use imagemagick to create banner as it is notably worse in image quality
