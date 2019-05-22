@@ -275,4 +275,10 @@
 (use-package esh-autosuggest
   :hook (eshell-mode . esh-autosuggest-mode))
 
+;; Add customizable 256 color support: https://github.com/dieggsy/eterm-256color  to term and ansiterm
+(use-package eterm-256color
+  :ensure t
+  :hook (term-mode-hook . eterm-256color-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-shell)
