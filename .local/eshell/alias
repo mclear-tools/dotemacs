@@ -8,7 +8,7 @@ alias bb helm-mini
 alias bs brew search
 alias bu brew update && brew outdated && brew upgrade && brew cleanup && brew doctor
 alias cc (find-file "~/.emacs.d/config.org")
-alias d deer $1
+alias d dired $1
 alias e find-file $1
 alias ec find-file $1
 alias ed (eshell/cd "~/.emacs.d")

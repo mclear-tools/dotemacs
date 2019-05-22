@@ -50,6 +50,7 @@
          (quote
           ("\\*magit:"
            "\\*eshell"
+           "\\*scratch*"
            "\\*ansi-term"
            "\\*Pandoc Output*"
            "\\*compilation*"
