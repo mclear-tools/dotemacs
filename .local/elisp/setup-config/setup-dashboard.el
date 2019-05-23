@@ -2,7 +2,11 @@
 ;; dashboard dependency
 (use-package page-break-lines
   :defer t
-  :diminish "")
+  :diminish ""
+  :config
+  (set-fontset-font "fontset-default"
+                  (cons page-break-lines-char page-break-lines-char)
+                  (face-attribute 'default :family)))
 
 (use-package dashboard
   :demand t

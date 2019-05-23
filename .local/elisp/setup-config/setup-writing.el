@@ -187,7 +187,7 @@
   :commands (writeroom-mode)
   :config
   (setq writeroom-fullscreen-effect 'maximized)
-  (setq writeroom-width 85)
+  (setq writeroom-width 90)
   (setq writeroom-mode-line t)
   (setq writeroom-bottom-divider-width 0))
 
