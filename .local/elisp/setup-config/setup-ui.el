@@ -21,15 +21,17 @@
  mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6)))
 
 ;;; Fonts
-(defvar cpm-font (font-spec :family "Hasklug Nerd Font" :size 13))
+;; (defvar cpm-font (font-spec :family "Hasklug Nerd Font" :size 13))
+(defvar cpm-font (font-spec :family "iA Writer Duospace" :size 14))
 (defvar cpm-vari-font (font-spec :family "Avenir"))
 (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
 (set-face-attribute 'default nil :font cpm-font)
 (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
 (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
+(setq line-spacing 0.15)
 
 ;;; Frames
-(setq frame-title-format "\n") 
+(setq frame-title-format "\n")
 ;; (setq frame-title-format '('nil))
     ;; (setq-default frame-title-format
     ;;           '((buffer-file-name "%f" "%b")))
