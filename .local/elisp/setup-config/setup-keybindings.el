@@ -4,11 +4,10 @@
   :demand t
   :config (general-override-mode))
 
-(with-eval-after-load 'evil
-;;; Namespaced Keybindings
-;;;;  Which Key
+;;; Which Key
  (use-package which-key
-   :defer 1
+   :after general
+   :demand t
    :diminish ""
    :config
    (setq which-key-special-keys nil)
@@ -16,6 +15,10 @@
    (setq which-key-idle-delay .3)
    (which-key-mode))
 
+
+;;; Namespaced Keybindings
+;; set keybindings for use with evil
+(with-eval-after-load 'evil
 ;;;;  Application Keybindings
 (general-define-key
   :states '(normal motion visual insert emacs)
@@ -703,6 +706,7 @@
      "s-v" 'org-yank)
 
 
+  ;; end evil keybindings
   )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
