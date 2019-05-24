@@ -22,7 +22,8 @@
 
 ;;; Fonts
 ;; (defvar cpm-font (font-spec :family "Hasklug Nerd Font" :size 13))
-(defvar cpm-font (font-spec :family "iA Writer Duospace" :size 14))
+(defvar cpm-ligatures nil)
+(defvar cpm-font (font-spec :family "iA Writer Mono S" :size 13))
 (defvar cpm-vari-font (font-spec :family "Avenir"))
 (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
 (set-face-attribute 'default nil :font cpm-font)
@@ -51,6 +52,7 @@
 (use-package ns-auto-titlebar
   :config
   (when (eq system-type 'darwin) (ns-auto-titlebar-mode)))
+
 ;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
 ;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
