@@ -8,6 +8,7 @@
     (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
 ;;;; Pretty Ligatures
+(when cpm-ligatures
   (defun my-correct-symbol-bounds (pretty-alist)
     "Prepend a TAB character to each symbol in this alist,
 this way compose-region called by prettify-symbols-mode
@@ -41,7 +42,7 @@ codepoints starting from codepoint-start."
           (append my-hasklig-ligatures prettify-symbols-alist))
     (prettify-symbols-mode))
 
-  (add-hook 'text-mode-hook 'my-set-hasklig-ligatures)
+ (add-hook 'text-mode-hook 'my-set-hasklig-ligatures))
 
 ;;;; Bug Hunter
 (use-package bug-hunter
