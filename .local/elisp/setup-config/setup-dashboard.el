@@ -35,9 +35,14 @@
       "r" (dashboard-insert-shortcut "r" "Recent Files:")
       "m" (dashboard-insert-shortcut "m" "Bookmarks:")
       "p" (dashboard-insert-shortcut "p" "Projects:"))
+  :custom-face
+  (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
   :config
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png"))
   (setq dashboard-center-content t)
+  ;; add icons
+  (setq dashboard-set-heading-icons t
+        dashboard-set-file-icons t)
   (setq dashboard-items '((recents  . 10)
                           (projects . 8)))
   (dashboard-setup-startup-hook))
