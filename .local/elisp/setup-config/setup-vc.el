@@ -46,8 +46,10 @@
 
 ;; add todos in magit
 (use-package magit-todos
-  :load-path "~/.emacs.d/.local/elisp/magit-todos"
+  ;; :load-path "~/.emacs.d/.local/elisp/magit-todos"
+  :ensure t
   :after magit
+  :demand t
   :config
   (magit-todos-mode))
 
