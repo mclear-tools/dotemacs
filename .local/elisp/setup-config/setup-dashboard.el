@@ -43,7 +43,8 @@
   ;; add icons
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t)
-  (setq dashboard-items '((recents  . 10)
+  (setq dashboard-items '((bookmarks . 5)
+                          (recents  . 10)
                           (projects . 8)))
   (dashboard-setup-startup-hook))
 

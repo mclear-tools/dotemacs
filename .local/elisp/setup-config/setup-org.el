@@ -1163,6 +1163,10 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   "goto reading list"
   (interactive)
   (find-file "~/Dropbox/org-files/reading.org"))
+(defun cpm/goto-writing.org ()
+  "goto writing list"
+  (interactive)
+  (find-file "~/Dropbox/org-files/writing.org"))
 
 
 ;;;; Export Headings as Seperate Files
