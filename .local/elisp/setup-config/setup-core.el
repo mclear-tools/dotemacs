@@ -56,6 +56,12 @@
 (blink-cursor-mode 0)
 
 
+;;;;; Whitespace
+;; Manage whitespace in prog modes
+(use-package ws-butler
+  :ensure t
+  :hook (prog-mode . ws-butler-mode))
+
 ;;;; Backups / Auto-Save
 (let ((backup-dir (concat cpm-cache-dir "backup")))
   ;; Move backup file to `~/.emacs.d/.local/cache/backup'
