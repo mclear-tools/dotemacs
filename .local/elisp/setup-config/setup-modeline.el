@@ -49,13 +49,13 @@
          (let ((tag (evil-state-property evil-state :tag t)))
            (propertize tag 'face
                   (if (doom-modeline--active)
-                      (cond ((eq tag evil-normal-state-tag)   '(:foreground "DarkGoldenrod2"))
-                            ((eq tag evil-emacs-state-tag)    '(:foreground "SkyBlue2"))
-                            ((eq tag evil-insert-state-tag)   '(:foreground "chartreuse3"))
-                            ((eq tag evil-motion-state-tag)   '(:foreground "plum3"))
-                            ((eq tag evil-replace-state-tag)  '(:foreground "red"))
-                            ((eq tag evil-visual-state-tag)   '(:foreground "gray"))
-                            ((eq tag evil-operator-state-tag) '(:foreground "red"))))))))
+                      (cond ((eq tag evil-normal-state-tag)   '(:foreground "DarkGoldenrod2" :height 1.25))
+                            ((eq tag evil-emacs-state-tag)    '(:foreground "SkyBlue2" :height 1.25))
+                            ((eq tag evil-insert-state-tag)   '(:foreground "chartreuse3" :height 1.25))
+                            ((eq tag evil-motion-state-tag)   '(:foreground "plum3" :height 1.25))
+                            ((eq tag evil-replace-state-tag)  '(:foreground "red" :height 1.25))
+                            ((eq tag evil-visual-state-tag)   '(:foreground "gray" :height 1.25))
+                            ((eq tag evil-operator-state-tag) '(:foreground "red" :height 1.25))))))))
 
 
       ;; window number faces & formatting
