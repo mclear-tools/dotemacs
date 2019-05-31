@@ -23,7 +23,7 @@
 ;;; Fonts
 ;; (defvar cpm-font (font-spec :family "Hasklug Nerd Font" :size 13))
 (defvar cpm-ligatures nil)
-(defvar cpm-font (font-spec :family "iA Writer Mono S" :size 13))
+(defvar cpm-font (font-spec :family "InconsolataLGC Nerd Font" :size 13))
 (defvar cpm-vari-font (font-spec :family "Avenir"))
 (defvar cpm-unicode-font (font-spec :family "STIXGeneral"))
 (set-face-attribute 'default nil :font cpm-font)
