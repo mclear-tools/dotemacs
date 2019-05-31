@@ -108,6 +108,7 @@
   :non-normal-prefix "C-SPC"
 
     "f"  '(:ignore t :which-key "Files")
+    "fb" 'helm-bookmarks
     "ff" 'helm-find-files
     "fl" 'helm-locate
     "fo" 'crux-open-with
