@@ -167,6 +167,7 @@
 
 (setq use-package-always-defer t
       use-package-verbose t
+      use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
 
   (require 'package)
