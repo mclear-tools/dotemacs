@@ -204,7 +204,9 @@
         paradox-automatically-star nil))
 
 ;;;; Quelpa
-;; Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywhere]] and use with [[https://github.com/quelpa/quelpa-use-package][use-package]]
+;; Get emacs packages from anywhere:
+;; https://github.com/quelpa/quelpa#installation and use with use-package:
+;; https://github.com/quelpa/quelpa-use-package
 
 (use-package quelpa
   :ensure t
