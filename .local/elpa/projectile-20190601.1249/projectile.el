@@ -4,7 +4,7 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
-;; Package-Version: 20190529.515
+;; Package-Version: 20190601.1249
 ;; Keywords: project, convenience
 ;; Version: 2.1.0-snapshot
 ;; Package-Requires: ((emacs "25.1") (pkg-info "0.4"))
@@ -646,7 +646,7 @@ Set to nil to disable listing submodules contents."
 
 (defcustom projectile-generic-command
   (if (executable-find "fd")
-      "fd . -0"
+      "fd . -0 --color=never"
     "find . -type f -print0")
   "Command used by projectile to get the files in a generic project."
   :group 'projectile

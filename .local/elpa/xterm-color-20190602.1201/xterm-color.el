@@ -4,7 +4,7 @@
 ;; All rights reserved
 
 ;; Version: 1.8 - 2019-03-01
-;; Package-Version: 20190519.1243
+;; Package-Version: 20190602.1201
 ;; Author: xristos <xristos@sdf.lonestar.org>
 ;; URL: https://github.com/atomontage/xterm-color
 ;; Package-Requires: ((cl-lib "0.5"))
@@ -235,9 +235,11 @@
   :type '(vector string string string string string string string string)
   :group 'xterm-color)
 
+
 ;;;
 ;;; Buffer locals, used by state machine
 ;;;
+
 
 (defvar xterm-color-preserve-properties nil
   "If T, preserve existing text properties on input about to be filtered.
@@ -283,15 +285,19 @@ inverse-color, frame, overline SGR state machine bits.")
 
 (make-variable-buffer-local 'xterm-color--face-cache)
 
+
 ;;;
 ;;; Constants
 ;;;
 
+
 (defconst +xterm-color--table-256+ [0 #x5f #x87 #xaf #xd7 #xff])
+
 
 ;;;
 ;;; Internal API
 ;;;
+
 
 (cl-defun xterm-color--string-properties (string)
   (cl-loop
