@@ -134,6 +134,23 @@
         recentf-max-saved-items 300
         recentf-max-menu-items 10))
 
+;;; Goto Address
+;; This package allows you to click or hit a key sequence while on a
+;; URL or e-mail address, and either load the URL into a browser of
+;; your choice using the browse-url package, or if it's an e-mail
+;; address, to send an e-mail to that address.
+(use-package goto-addr
+  :ensure nil
+  :hook ((compilation-mode . goto-address-mode)
+         (prog-mode . goto-address-prog-mode)
+         (eshell-mode . goto-address-mode)
+         (shell-mode . goto-address-mode))
+  :bind (:map goto-address-highlight-keymap
+              ("<RET>" . goto-address-at-point)
+              ("M-<RET>" . newline))
+  :commands (goto-address-prog-mode
+             goto-address-mode))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-navigation)
