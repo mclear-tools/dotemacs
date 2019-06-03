@@ -35,7 +35,7 @@
 (use-package visual-regexp
   :commands (vr/query-replace)
   :config
-(use-package visual-regexp-steroids
+  (use-package visual-regexp-steroids
   :commands (vr/select-query-replace)))
 
 ;;;;; UTF 8
