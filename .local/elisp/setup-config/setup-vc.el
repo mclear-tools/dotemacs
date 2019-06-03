@@ -1,6 +1,9 @@
-;;; Version Control
+;; Version Control
+;;  I use git for version control. Magit is a great interface for git projects. It's
+;;  much more pleasant to use than the standard git interface on the command line.
+;;  I've set up some easy keybindings to access magit and related packages.
 
-;;;; Magit
+;;; Magit
 (use-package magit
   :commands
   (magit-blame-mode
@@ -58,7 +61,7 @@
   :ensure t
   :commands helm-gitignore)
 
-;;;; Evil-Magit
+;;  Evil bindings for magit
 (use-package evil-magit
   :after magit
   :demand t
@@ -66,14 +69,16 @@
   (setq evil-magit-use-y-for-yank t
         evil-magit-use-z-for-folds t))
 
-;;;; Git Navigation
-(use-package git-timemachine            ; Go back in Git time
-  :commands git-timemachine)
+;;; Git Navigation
+; Go back in Git time
+(use-package git-timemachine :commands git-timemachine)
 
-(use-package gited
-  :commands (gited-list gited-list-branches))
+;; Give git projects branches the dired treatment
+(use-package gited :commands (gited-list gited-list-branches))
 
-;;;; Git Gutter
+;;; Git Gutter
+;;Git gutter is great for giving visual feedback on changes, but it doesn't play well
+;;with org-mode using org-indent. So I don't use it globally.
 (use-package git-gutter
   :defer t
   :hook ((markdown-mode . git-gutter-mode)
@@ -132,18 +137,22 @@
   [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
   nil nil 'center))
 
-   (defun quick-commit ()
-   "make a quick commit from the mini-buffer"
-   (interactive)
-   (evil-ex '"!Git add % && Git commit -m '" ))
+;;; Quick commits
+;; Make a quick commit without opening magit. This is a version of a
+;; workflow I used to use in Sublime Text. Perfect for short commit messages.
+(defun quick-commit ()
+"make a quick commit from the mini-buffer"
+(interactive)
+(evil-ex '"!Git add % && Git commit -m '" ))
 
-;;;; Show Git Status in Dired
-  (use-package diff-hl
-    :ensure t
-    :defer 1
-    :config
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+;;; Show Git Status in Dired
+(use-package diff-hl
+  :ensure t
+  :defer 1
+  :config
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-vc)
