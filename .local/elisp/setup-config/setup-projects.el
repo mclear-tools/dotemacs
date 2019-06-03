@@ -46,34 +46,6 @@
       ("P" projectile-persp-switch-project "Switch Project")
       ("q" nil "Quit")))
 
-;;; Frame Purpose & Workflow
-;; (use-package frame-purpose
-;;   :ensure t
-;;   :defer 1
-;;   :config
-;;   (setq persp-show-modestring nil))
-
-  ;; (frame-purpose-mode 1)
-
-;; (use-package frame-workflow
-;;   :quelpa (frame-workflow :fetcher github :repo "akirak/frame-workflow")
-;;   :general
-;;   ("s-p" 'frame-workflow-switch-frame)
-;;   :config
-;;   (frame-workflow-mode 1)
-;;   ;; (autoload 'helm-frame-workflow "helm-frame-workflow")
-;;   (setq projectile-switch-project-action #'frame-workflow-switch-directory-frame))
-
-;; (defun frame-workflow-set-projectile-frame-name (frame-action)
-;;   "Set the frame's name and call FRAME-ACTION."
-;;   (set-frame-parameter nil 'name (projectile-project-name))
-;;   (funcall frame-action))
-
-;; (setq frame-workflow-directory-frame-action
-;;       (lambda ()
-;;         (frame-workflow-set-projectile-frame-name #'projectile-dired)))
-
-
 ;;; Eyebrowse
 (use-package eyebrowse
   :commands (eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
@@ -282,6 +254,6 @@
   :ensure t
   :after org-projectile)
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-projects)
