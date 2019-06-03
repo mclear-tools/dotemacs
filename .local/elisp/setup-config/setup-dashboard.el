@@ -11,17 +11,6 @@
 (use-package dashboard
   :demand t
   :if (< (length command-line-args) 2)
-  :preface
-  ;; from https://www.reddit.com/r/emacs/comments/8jaflq/tip_how_to_use_your_dashboard_properly/
-  (defun cpm/dashboard-banner ()
-   "Sets a dashboard banner including information on package initialization
- time and garbage collections."
-   (setq dashboard-banner-logo-title
-      (format "Emacs ready in %.2f seconds with %d packages loaded and %d garbage collections."
-              (float-time
-               (time-subtract after-init-time before-init-time)) (length package-activated-list) gcs-done)))
-  :init
-  (add-hook 'dashboard-mode-hook 'cpm/dashboard-banner)
   :general
   (:states '(normal motion emacs)
    :keymaps 'dashboard-mode-map
@@ -39,13 +28,21 @@
   (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
   :config
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png"))
+  (setq dashboard-banner-logo-title "Sapere aude")
   (setq dashboard-center-content t)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-set-footer t)
+  (setq dashboard-footer-icon (all-the-icons-fileicon "emacs"
+                                                      :height 1.1
+                                                      :v-adjust -0.05
+                                                      :face 'font-lock-string-face))
+
   ;; add icons
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t)
   (setq dashboard-items '((bookmarks . 5)
                           (recents  . 8)
-                          (projects . 8)))
+                          (projects . 5)))
   (dashboard-setup-startup-hook))
 
 ;; don't use imagemagick to create banner as it is notably worse in image quality

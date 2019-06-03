@@ -99,7 +99,7 @@
 
 ;;; Icons
 (use-package all-the-icons
- :defer 1)
+ :demand t)
 ;;dependency
 (use-package font-lock+
   :defer 1)
