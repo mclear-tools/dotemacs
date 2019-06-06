@@ -132,7 +132,7 @@
 ;;;; Plist
 (use-package plist-mode
   :ensure nil
-  :load-path (lambda () (concat cpm-elisp-dir "plist-mode.el")))
+  :load-path cpm-elisp-dir)
 
 ;;;; Vim
 (use-package vimrc-mode
@@ -151,8 +151,26 @@
   :config
   (setq tldr-directory-path (expand-file-name "tldr/" cpm-etc-dir)))
 
+;;; Indentation
+(use-package aggressive-indent
+  :preface
+  (defun cpm/aggressive-indent-mode-off ()
+    (aggressive-indent-mode 0))
+  :hook
+  ((css-mode . aggressive-indent-mode)
+   (emacs-lisp-mode . aggressive-indent-mode)
+   (js-mode . aggressive-indent-mode)
+   (lisp-mode . aggressive-indent-mode)
+   (sgml-mode . aggressive-indent-mode))
+  :config
+  (setq-default aggressive-indent-comments-too t)
+  (add-to-list 'aggressive-indent-protected-commands 'comment-dwim))
 
-
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq-default highlight-indent-guides-method 'character
+                highlight-indent-guides-responsive 'top))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-programming)
