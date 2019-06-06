@@ -27,16 +27,18 @@
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
   :config
-  (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png"))
-  (setq dashboard-banner-logo-title "Sapere aude")
-  (setq dashboard-center-content t)
-  (setq dashboard-set-init-info t)
-  (setq dashboard-set-footer t)
-  (setq dashboard-footer-icon (all-the-icons-fileicon "emacs"
-                                                      :height 1.1
-                                                      :v-adjust -0.05
+  ;; banner & header
+  (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png")
+        dashboard-banner-logo-title "Sapere aude"
+        dashboard-set-init-info t
+        dashboard-center-content t)
+  ;; footer
+  (setq dashboard-set-footer t
+        dashboard-footer "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"
+        dashboard-footer-icon (all-the-icons-fileicon "emacs"
+                                                      :height 1
+                                                      :v-adjust -0.15
                                                       :face 'font-lock-string-face))
-
   ;; add icons
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t)
