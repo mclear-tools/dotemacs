@@ -1617,15 +1617,24 @@ appropriate.  In tables, insert a new row or end the table."
                  (funcall func))
                (end-of-line)))))))
 ;;; Org Miscellaneous Packages
+
 (use-package htmlize :commands (htmlize-buffer))
+
 (use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
-  ;; ignore export of headlines marked with :ignore: tag
+
+ ;; ignore export of headlines marked with :ignore: tag
 (use-package ox-extra
   :ensure nil
   :after ox
   :demand t
   :config
   (ox-extras-activate '(ignore-headlines)))
+
+;; Devonthink integration
+(use-package org-devonthink
+  :commands (org-insert-dtp-link org-dtp-store-link)
+  :ensure nil
+  :load-path cpm-elisp-dir)
 
 ;;; Provide
 (provide 'setup-org)

@@ -268,7 +268,6 @@
 (require 'setup-calendars)
 (require 'setup-dashboard)
 (require 'setup-testing)
-(require 'setup-devonthink)
 
 ;;; Config Helper Functions
 
