@@ -3,11 +3,13 @@
 ;; string manipulation, list manipulation and backward compatibility
 ;; respectively. The git package is also a library.
 
-(use-package async   :defer 4)
-(use-package dash    :defer 4)
-(use-package s       :defer 4)
-(use-package f       :defer 4)
-(use-package subr-x  :defer 4 :ensure nil)
+(use-package async
+  :defer 2
+  :config (async-bytecomp-package-mode 1))
+(use-package dash    :defer 2)
+(use-package s       :defer 2)
+(use-package f       :defer 2)
+(use-package subr-x  :defer 2 :ensure nil)
 ; lots of packages depend on these libraries
 (use-package cl-lib  :demand t :ensure nil)
 (use-package cl      :demand t :ensure nil)
