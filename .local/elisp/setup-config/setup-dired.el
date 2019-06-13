@@ -23,6 +23,10 @@
   ;; allow editing file permissions
   (setq wdired-allow-to-change-permissions t))
 
+;; Async dired
+(autoload 'dired-async-mode "dired-async.el" nil t)
+(dired-async-mode 1)
+
 ;; Function to move up a directory like in ranger
 (defun cpm/dired-updirectory ()
   (interactive)
@@ -41,7 +45,7 @@
 
 
 ;;;; Dired Plus
-;; I used thism mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
+;; I used this mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
 (use-package dired+
   :disabled t
   :ensure t

@@ -241,9 +241,9 @@
 
 (use-package autorevert
   :ensure nil
-  :defer 2
+  :defer 1
   :config
-  (setq auto-revert-interval 1)
+  (setq auto-revert-interval .5)
   (global-auto-revert-mode 1)
   (setq auto-revert-verbose nil ; Shut up, please!
         revert-without-query '(".*") ;; disable revert query
