@@ -88,33 +88,56 @@
   :init
   (setq shell-pop-term-shell "/usr/local/bin/zsh")
   (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
+  ;; (setq shell-pop-shell-type '("vterm" "*vterm*" (lambda nil (vterm))))
   :config
-    (defun ansi-term-handle-close ()
-     "Close current term buffer when `exit' from term buffer."
-     (when (ignore-errors (get-buffer-process (current-buffer)))
-       (set-process-sentinel (get-buffer-process (current-buffer))
-                             (lambda (proc change)
-                               (when (string-match "\\(finished\\|exited\\)" change)
-                                 (kill-buffer (when (buffer-live-p (process-buffer proc)))
-                                 (delete-window))))))
-   (add-hook 'shell-pop-out-hook 'kill-this-buffer)
-   (add-hook 'term-mode-hook (lambda () (linum-mode -1) (ansi-term-handle-close)))))
+  (defun cpm/term-handle-close ()
+    "Close current term buffer when `exit' from term buffer."
+    (when (ignore-errors (get-buffer-process (current-buffer)))
+      (set-process-sentinel (get-buffer-process (current-buffer))
+                            (lambda (proc change)
+                              (when (string-match "\\(finished\\|exited\\)" change)
+                                (kill-buffer (when (buffer-live-p (process-buffer proc)))
+                                             (delete-window))))))
+    (add-hook 'shell-pop-out-hook 'kill-this-buffer)
+    (add-hook 'vterm-mode-hook (lambda () (linum-mode -1) (cpm/term-handle-close)))))
 
 ;;;; Shell Colors
 ;; Add customizable 256 color support: https://github.com/dieggsy/eterm-256color  to term and ansiterm
 (use-package eterm-256color
   :ensure t
-  :hook (term-mode-hook . eterm-256color-mode))
+  :hook
+  (term-mode-hook . eterm-256color-mode)
+  (vterm-mode-hook . eterm-256color-mode))
+
+;;;; Vterm
+;; Better terminal function---way faster than ansi-term
+(use-package vterm
+  :ensure t
+  :defer 1
+  :config
+  ;; set colors -- this is best with dark solarized right now
+  (setq ansi-color-names-vector
+        ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
+  (unless (require 'vterm-module nil t)
+    (vterm-module-compile)
+    (require 'vterm-module)))
+
+;; directory tracking
+(defun vterm--rename-buffer-as-title (title)
+  (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
+    (cd-absolute dir)
+    (rename-buffer (format "term %s" title) t)))
+(add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
 
 ;;; Virtualenvwrapper
 (use-package virtualenvwrapper
- :after (:any eshell sane-term ansi-term)
- :config
- (venv-initialize-interactive-shells) ;; if you want interactive shell support
- (venv-initialize-eshell) ;; if you want eshell support
- (setq venv-location "~/bin/virtualenvs")
- (setq venv-project-home "~/Dropbox/Work/projects/")
- (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
+  :after (:any eshell sane-term ansi-term)
+  :config
+  (venv-initialize-interactive-shells) ;; if you want interactive shell support
+  (venv-initialize-eshell) ;; if you want eshell support
+  (setq venv-location "~/bin/virtualenvs")
+  (setq venv-project-home "~/Dropbox/Work/projects/")
+  (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
 
 (defcustom venv-project-home
   (expand-file-name (or (getenv "PROJECT_HOME") "~/Dropbox/Work/projects/"))
@@ -122,11 +145,14 @@
     :group 'virtualenvwrapper)
 
 (defun workon-venv ()
- "change directory to project in eshell"
+  "change directory to project in eshell"
   (eshell/cd (concat venv-project-home venv-current-name)))
 
 ;;; Tramp
 ;; An easy way to ssh
+(use-package tramp
+  :ensure nil
+  :defer 1)
 (use-package tramp-term :commands tramp-term)
 
 ;;; Eshell

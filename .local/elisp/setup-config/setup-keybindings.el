@@ -20,102 +20,104 @@
 ;; set keybindings for use with evil
 (with-eval-after-load 'evil
 ;;;;  Application Keybindings
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+   :states '(normal motion visual insert emacs)
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
 
-  "a"  '(:ignore t :which-key "Applications")
-  "ac" '(:ignore t :which-key "Cmus")
-  "ad" 'dired-jump
-  "ae" 'eshell
-  "am" 'multi-term
-  "ar" 'ranger
-  "as" 'sane-term
-  "aw" 'wttrin
-  )
+   "a"  '(:ignore t :which-key "Applications")
+   "ac" '(:ignore t :which-key "Cmus")
+   "ad" 'dired-jump
+   "ae" 'eshell
+   "am" 'multi-term
+   "ar" 'ranger
+   "as" 'sane-term
+   "at" 'vterm
+   "av" 'vterm-other-window
+   "aw" 'wttrin
+   )
 
 ;;;;  Buffer Keybindings
   (general-define-key
-    :states '(normal motion visual insert emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC"
+   :states '(normal motion visual insert emacs)
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
 
-    "b"  '(:ignore t :which-key "Buffers")
-    "bb" 'helm-mini
-    "bc" 'cpm/copy-whole-buffer-to-clipboard
-    "bD" 'kill-buffer-and-window
-    "bd" 'cpm/kill-this-buffer
-    "be" 'erase-buffer
-    ;; "bf" 'cpm/browse-file-directory
-    "bf" 'reveal-in-osx-finder
-    "bj" 'cpm/jump-in-buffer
-    "bk" 'evil-delete-buffer
-    "bK" 'crux-kill-other-buffers
-    "bn" 'evil-buffer-new
-    "bN" 'cpm/new-buffer-new-frame
-    "br" 'revert-buffer
-    "bR" 'crux-rename-buffer-and-file
-    "bt" 'cpm/open-dir-in-iterm
-    )
+   "b"  '(:ignore t :which-key "Buffers")
+   "bb" 'helm-mini
+   "bc" 'cpm/copy-whole-buffer-to-clipboard
+   "bD" 'kill-buffer-and-window
+   "bd" 'cpm/kill-this-buffer
+   "be" 'erase-buffer
+   ;; "bf" 'cpm/browse-file-directory
+   "bf" 'reveal-in-osx-finder
+   "bj" 'cpm/jump-in-buffer
+   "bk" 'evil-delete-buffer
+   "bK" 'crux-kill-other-buffers
+   "bn" 'evil-buffer-new
+   "bN" 'cpm/new-buffer-new-frame
+   "br" 'revert-buffer
+   "bR" 'crux-rename-buffer-and-file
+   "bt" 'cpm/open-dir-in-iterm
+   )
 
 ;;;;  Comment Keybindings
   (general-define-key
-    :states '(normal motion visual insert emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC"
+   :states '(normal motion visual insert emacs)
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
 
-    "c"   '(:ignore t :which-key "Commenting")
-    "cb"  '(nil :wk "Block Wrap")
-    "cbo" 'org-block-wrap
-    "cby" 'cpm/yaml-wrap
-    "cc"  'evil-commentary
-    "cl"  'evil-commentary-line
-    "cy"  'evil-commentary-yank-line
+   "c"   '(:ignore t :which-key "Commenting")
+   "cb"  '(nil :wk "Block Wrap")
+   "cbo" 'org-block-wrap
+   "cby" 'cpm/yaml-wrap
+   "cc"  'evil-commentary
+   "cl"  'evil-commentary-line
+   "cy"  'evil-commentary-yank-line
    )
 
 ;;;;  Config Keybindings
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+   :states '(normal motion visual insert emacs)
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
 
-  "C"  '(:ignore t :which-key "Config")
-  "Cc" 'goto-custom.el
-  "Cd" 'goto-dotfiles.org
-  "CD" 'goto-emacs-dir
-  "Ce" 'goto-early-init.el
-  "Cf" 'cpm/find-files-setup-config-directory
-  "Ck" 'cpm/compile-dotemacs
-  "CK" 'cpm/delete-byte-compiled-files
-  "Cl" 'load-config
-  "Ci" 'goto-init.el
-  "CI" 'cpm/load-init-file
-  "Co" 'goto-org-files
-  "Cp" 'goto-pandoc-config
-  "Cs" 'cpm/search-setup-config-files
-  )
+   "C"  '(:ignore t :which-key "Config")
+   "Cc" 'goto-custom.el
+   "Cd" 'goto-dotfiles.org
+   "CD" 'goto-emacs-dir
+   "Ce" 'goto-early-init.el
+   "Cf" 'cpm/find-files-setup-config-directory
+   "Ck" 'cpm/compile-dotemacs
+   "CK" 'cpm/delete-byte-compiled-files
+   "Cl" 'load-config
+   "Ci" 'goto-init.el
+   "CI" 'cpm/load-init-file
+   "Co" 'goto-org-files
+   "Cp" 'goto-pandoc-config
+   "Cs" 'cpm/search-setup-config-files
+   )
 
 ;;;;  File Keybindings
-(general-define-key
-  :states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
+  (general-define-key
+   :states '(normal motion visual insert emacs)
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
 
-    "f"  '(:ignore t :which-key "Files")
-    "fb" 'helm-bookmarks
-    "ff" 'helm-find-files
-    "fl" 'helm-locate
-    "fo" 'crux-open-with
-    "fs" 'save-buffer
-    "fr" 'helm-recentf
-    "fy" 'cpm/show-and-copy-buffer-filename
-    )
+   "f"  '(:ignore t :which-key "Files")
+   "fb" 'helm-bookmarks
+   "ff" 'helm-find-files
+   "fl" 'helm-locate
+   "fo" 'crux-open-with
+   "fs" 'save-buffer
+   "fr" 'helm-recentf
+   "fy" 'cpm/show-and-copy-buffer-filename
+   )
 
 ;;;;  General Keybindings
   (general-define-key
