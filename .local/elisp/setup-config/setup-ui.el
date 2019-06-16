@@ -100,7 +100,7 @@
 
 ;;; Icons
 (use-package all-the-icons
- :demand t)
+  :after dashboard)
 ;;dependency
 (use-package font-lock+
   :defer 1)
