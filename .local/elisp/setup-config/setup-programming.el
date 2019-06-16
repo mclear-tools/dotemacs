@@ -170,7 +170,10 @@
   :hook (prog-mode . highlight-indent-guides-mode)
   :config
   (setq-default highlight-indent-guides-method 'character
-                highlight-indent-guides-responsive 'top))
+                highlight-indent-guides-character ?\│
+                highlight-indent-guides-responsive 'top
+                highlight-indent-guides-auto-enabled t))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-programming)
