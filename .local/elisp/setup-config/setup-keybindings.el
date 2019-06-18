@@ -32,8 +32,7 @@
    "ae" 'eshell
    "am" 'multi-term
    "ar" 'ranger
-   "as" 'sane-term
-   "at" 'vterm
+   "as" 'vterm
    "av" 'vterm-other-window
    "aw" 'wttrin
    )
