@@ -104,7 +104,7 @@
                                  evil-mouse-drag-region))))
 
 ;;; Hydra
-(use-package hydra :defer 2)
+(use-package hydra :defer 1)
 
   ;; hydra for TODOs
   (with-eval-after-load 'hydra
