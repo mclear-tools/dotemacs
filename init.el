@@ -106,13 +106,22 @@
     "Where personal elisp packages and scripts are stored.")
 
   (defvar cpm-setup-dir (concat cpm-elisp-dir "setup-config/")
-    "Where the setup-init files are stored.")
+    "Where the setup-init files are stored."))
+
+;;;; System Variables
+(defconst sys/macp
+  (eq system-type 'darwin)
+  "Are we running on a Mac system?")
+
+(defconst sys/mac-x-p
+  (and (display-graphic-p) sys/macp)
+  "Are we running under X on a Mac system?")
 
 ;;;; Path Settings
 ;; Directory paths
 (dolist (dir (list cpm-local-dir cpm-etc-dir cpm-cache-dir cpm-elisp-dir cpm-setup-dir))
   (unless (file-directory-p dir)
-(make-directory dir t))))
+    (make-directory dir t)))
 
 ;; Exec path -- Emacs won't know where to load things without this
 (defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
