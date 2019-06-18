@@ -113,6 +113,15 @@
 (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
 
 
+;;;; Save History
+(use-package    savehist-mode
+  :ensure nil
+  :defer 1
+  :config
+  (setq savehist-file (concat cpm-cache-dir "savehist"))
+  (setq savehist-save-minibuffer-history t)
+  (savehist-mode))
+
 ;;;; Desktop
 (when (file-exists-p custom-file)
   (load custom-file))
