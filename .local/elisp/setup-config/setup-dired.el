@@ -1,4 +1,4 @@
-;;; Dired
+;;;; Dired
 ;; I used to use ranger but it was buggy and I can get almost everything I want from
 ;; dired. See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer for
 ;; discussion of how to avoid creating lots of dired buffers.
@@ -7,14 +7,29 @@
   :commands (dired dired-jump dired-jump-other-window)
   :general
   (:keymaps 'dired-mode-map
-   :states '(normal motion)
-   "l" #'dired-find-alternate-file
-   "h" #'cpm/dired-updirectory
-   "q" #'quit-window)
+            :states '(normal motion)
+            "l" #'dired-find-alternate-file
+            "h" #'cpm/dired-updirectory
+            "q" #'quit-window)
   :config
-  (setq insert-directory-program "gls" dired-use-ls-dired t)
-  ;; list directories first
-  (setq dired-listing-switches "-laGh1v --group-directories-first")
+  (when sys/macp
+    ;; Suppress the warning: `ls does not support --dired'.
+    (setq dired-use-ls-dired nil)
+
+    (when (executable-find "gls")
+      ;; Use GNU ls as `gls' from `coreutils' if available.
+      (setq insert-directory-program "gls")))
+
+  (when (or (and sys/macp (executable-find "gls"))
+            (and (not sys/macp) (executable-find "ls")))
+    ;; Using `insert-directory-program'
+    (setq ls-lisp-use-insert-directory-program t)
+
+    ;; list directories first
+    (setq dired-listing-switches "-laFGh1v --group-directories-first"))
+
+  ;; Like with ls, append "@" to file names if they're symlinks
+  (setq dired-ls-F-marks-symlinks t)
   ;; don't ask about killing buffer visiting file
   (setq dired-clean-confirm-killing-deleted-buffers t)
   ;; always delete and copy recursively
@@ -36,15 +51,37 @@
 (use-package dired-narrow
   :ensure t
   :general (:keymaps 'dired-mode-map
-            "/"  'dired-narrow))
-
+                     "/"  'dired-narrow))
 
 ;; Colourful dired
 (use-package diredfl
   :init (diredfl-global-mode 1))
 
+;; dired extras
+(use-package dired-x
+  :ensure nil
+  :after dired
+  :demand t
+  :init (setq-default dired-omit-files-p t)
+  :config
+  (add-to-list 'dired-omit-extensions ".DS_Store"))
 
-;;;; Dired Plus
+(use-package dired-aux
+  :ensure nil
+  :after dired
+  :demand t)
+
+;;;; Dired Sort
+(use-package dired-quick-sort
+  :ensure t
+  :general
+  (:keymaps 'dired-mode-map
+            :states '(normal motion)
+            "s" #'hydra-dired-quick-sort/body)
+  :config
+  (dired-quick-sort))
+
+;;;;  Dired Plus
 ;; I used this mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
 (use-package dired+
   :disabled t
@@ -56,19 +93,19 @@
   (setq diredp-hide-details-initially-flag nil)
   (setq diredp-toggle-find-file-reuse-dir 1))
 
-;;;; Peep Dired
+;;;;  Peep Dired
 (use-package peep-dired
   :ensure t
   :commands (peep-dired)
   :general
   (:keymaps 'dired-mode-map
-   :states '(normal motion)
-   "p" #'peep-dired)
+            :states '(normal motion)
+            "p" #'peep-dired)
   (:keymaps 'peep-dired-mode-map
-   :states '(normal)
-   "j" #'peep-dired-next-file
-   "k" #'peep-dired-prev-file
-   "TAB" #'cpm/peep-dired-open)
+            :states '(normal)
+            "j" #'peep-dired-next-file
+            "k" #'peep-dired-prev-file
+            "TAB" #'cpm/peep-dired-open)
   :config
   (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
@@ -76,24 +113,24 @@
 
 ;; helper function for opening files in full window
 (defun cpm/peep-dired-open ()
-"open files from peep-dired & clean-up"
+  "open files from peep-dired & clean-up"
   (interactive)
   (peep-dired-kill-buffers-without-window)
   (dired-find-file)
   (delete-other-windows))
 
 
-;;;;  Dired Ranger
+;;;;   Dired Ranger
 ;; https://github.com/Fuco1/dired-hacks#dired-ranger
 ;; Very helpful way of copying/moving files
 ;; Note that to move first you need to copy the file and then go to the target directory and move
 (use-package dired-ranger
   :after dired
   :general (:keymaps 'dired-mode-map
-            :states '(normal motion)
-              "s-c"  'dired-ranger-copy
-              "s-m"  'dired-ranger-move
-              "s-v"  'dired-ranger-paste))
+                     :states '(normal motion)
+                     "s-c"  'dired-ranger-copy
+                     "s-m"  'dired-ranger-move
+                     "s-v"  'dired-ranger-paste))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-dired)
