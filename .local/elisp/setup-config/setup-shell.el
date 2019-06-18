@@ -56,10 +56,11 @@
 (defun my-term-hook ()
   (goto-address-mode) (global-hl-line-mode 0))
 (add-hook 'term-mode-hook 'my-term-hook)
+(add-hook 'vterm-mode-hook 'my-term-hook)
 
 ;; paste and navigation
 (defun term-send-tab ()
-"Send tab in term mode."
+  "Send tab in term mode."
   (interactive)
   (term-send-raw-string "\t"))
 
