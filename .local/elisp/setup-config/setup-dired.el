@@ -62,7 +62,7 @@
   :ensure nil
   :after dired
   :demand t
-  :init (setq-default dired-omit-files-p t)
+  :init (setq-default dired-omit-mode t)
   :config
   (add-to-list 'dired-omit-extensions ".DS_Store"))
 
@@ -77,9 +77,7 @@
   :general
   (:keymaps 'dired-mode-map
             :states '(normal motion)
-            "s" #'hydra-dired-quick-sort/body)
-  :config
-  (dired-quick-sort))
+            "s" #'hydra-dired-quick-sort/body))
 
 ;;;;  Dired Plus
 ;; I used this mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
