@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "projectile" "20190604.630" "Manage and navigate projects in Emacs easily" '((emacs "25.1") (pkg-info "0.4")) :stars '(#("2614" 0 4 (font-lock-face paradox-star-face)) #("634K" 0 4 (value 634358 font-lock-face paradox-download-face))) :commit "fd85829ef2bdb8b2c183ea1b3ccfd50925824d78" :keywords '("project" "convenience") :authors '(("Bozhidar Batsov" . "bozhidar@batsov.com")) :maintainer '("Bozhidar Batsov" . "bozhidar@batsov.com") :url "https://github.com/bbatsov/projectile")
