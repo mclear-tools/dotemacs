@@ -148,6 +148,7 @@
 ;;; Show Git Status in Dired
 (use-package diff-hl
   :ensure t
+  :disabled t
   :defer 1
   :config
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
