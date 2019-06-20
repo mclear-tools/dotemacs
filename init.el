@@ -273,7 +273,6 @@
 (require 'setup-projects)
 (require 'setup-programming)
 (require 'setup-pdf)
-(require 'setup-notes)
 (require 'setup-calendars)
 (require 'setup-dashboard)
 (require 'setup-testing)
