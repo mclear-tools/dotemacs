@@ -8,157 +8,517 @@
 (use-package org
   :mode (("\\.org$" . org-mode))
   :ensure org-plus-contrib
+  :general ("C-c c" 'org-capture)
   :config
 ;;; Org Settings
 ;;;; Org Directories
-(setq org-directory "~/Dropbox/org-files/")
-(setq org-default-notes-file (concat org-directory "inbox.org"))
+  (setq-default org-directory "~/Dropbox/org-files/")
+  (setq-default org-default-notes-file (concat org-directory "inbox.org"))
 ;;;; Org Config Settings
-(setq org-stuck-projects (quote ("" nil nil "")))
-(setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
-(setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
-              org-return-follows-link t ;; make RET follow links
-              org-list-allow-alphabetical t ;; allow alphabetical list
-              org-hide-emphasis-markers t  ;; hide markers
-              org-pretty-entities t ;; make latex look good
-              org-pretty-entities-include-sub-superscripts t
-              org-hide-leading-stars t
-              org-export-with-smart-quotes t ;; export smart quote marks
-              org-refile-use-cache t  ;; use cache for org refile
-              org-startup-folded t
-              org-yank-adjusted-subtrees t  ;; adjust subtrees to depth when yanked
-              org-yank-folded-subtrees t  ;; fold subtrees on yank
-              org-M-RET-may-split-line '((default . nil))  ;; don't split line when creating a new headline, list item, or table field
-              org-fontify-quote-and-verse-blocks t ;; make quotes stand out
-              org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-              ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼"
-              org-cycle-separator-lines 0 ;; Give a more compact and consistent view
-              org-startup-indented t ;; start in indent mode
-              ;; prevent editing invisible area, and show an error message in echo area instead;
-              ;; additionally expand text and move focus to the expected point.
-              org-catch-invisible-edits 'show-and-error
-              org-imenu-depth 8
-imenu-auto-rescan t)
-   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
+  (setq org-stuck-projects (quote ("" nil nil "")))
+  (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
+  (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
+                org-return-follows-link t ;; make RET follow links
+                org-list-allow-alphabetical t ;; allow alphabetical list
+                org-hide-emphasis-markers t  ;; hide markers
+                org-pretty-entities t ;; make latex look good
+                org-pretty-entities-include-sub-superscripts t
+                org-hide-leading-stars t
+                org-export-with-smart-quotes t ;; export smart quote marks
+                org-refile-use-cache t  ;; use cache for org refile
+                org-startup-folded t
+                org-yank-adjusted-subtrees t  ;; adjust subtrees to depth when yanked
+                org-yank-folded-subtrees t  ;; fold subtrees on yank
+                org-M-RET-may-split-line '((default . nil))  ;; don't split line when creating a new headline, list item, or table field
+                org-fontify-quote-and-verse-blocks t ;; make quotes stand out
+                org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
+                ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼"
+                org-cycle-separator-lines 0 ;; Give a more compact and consistent view
+                org-startup-indented t ;; start in indent mode
+                ;; prevent editing invisible area, and show an error message in echo area instead;
+                ;; additionally expand text and move focus to the expected point.
+                org-catch-invisible-edits 'show-and-error
+                org-imenu-depth 8
+                imenu-auto-rescan t)
+  (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 ;;;; Org Modules
-(setq org-modules (quote (org-info org-tempo org-protocol org-habit org-mac-link)))
+  (setq org-modules (quote (org-info org-tempo org-protocol org-habit org-mac-link)))
 
 ;;;; Org ID
-(setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
+  (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
 
 ;;;; Org State Settings
-(setq org-todo-keywords
- '((sequence "TODO(t)" "DOING(g)" "NEXT(n)" "|" "DONE(d)")
-   (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELED(c@/!)")))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "DOING(g)" "NEXT(n)" "|" "DONE(d)")
+          (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELED(c@/!)")))
 ;;;; Org Priority Settings
-(setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
-                           (?B . (:foreground "orange"))
-                           (?C . (:foreground "DarkGoldenrod2"))
-                           (?D . (:forefround "green"))))
+  (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
+                             (?B . (:foreground "orange"))
+                             (?C . (:foreground "DarkGoldenrod2"))
+                             (?D . (:forefround "green"))))
 ;;;; Org Logging
-(setq org-log-done 'time)
-(setq org-log-into-drawer t)
-(setq org-log-state-notes-insert-after-drawers nil)
-;; Don't log the time a task was rescheduled or redeadlined.
-(setq org-log-redeadline nil)
-(setq org-log-reschedule nil)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+  (setq org-log-state-notes-insert-after-drawers nil)
+  ;; Don't log the time a task was rescheduled or redeadlined.
+  (setq org-log-redeadline nil)
+  (setq org-log-reschedule nil)
 
-;; Prefer rescheduling to future dates and times:
-(setq org-read-date-prefer-future 'time)
+  ;; Prefer rescheduling to future dates and times:
+  (setq org-read-date-prefer-future 'time)
 
 ;;;; Org Tags
-(setq org-tag-alist '((:startgrouptag)
-                      ("@computer" . ?c)
-                      (:grouptags)
-                      ("emacs" . ?m)
-                      (:endgrouptag)
-                      ("@errand" . ?e)
-                      ("@phone" . ?p)
-                      ("@unl" . ?s)
-                      ("email")
-                      ("postal-mail")
-                      ("@home" . ?h)))
-(setq org-fast-tag-selection-single-key nil)
+  (setq org-tag-alist '((:startgrouptag)
+                        ("@computer" . ?c)
+                        (:grouptags)
+                        ("emacs" . ?m)
+                        (:endgrouptag)
+                        ("@errand" . ?e)
+                        ("@phone" . ?p)
+                        ("@unl" . ?s)
+                        ("email")
+                        ("postal-mail")
+                        ("@home" . ?h)))
+  (setq org-fast-tag-selection-single-key nil)
 
 ;;;; Org Entities
-(setq org-entities-user
-      '(("nec" "\Box" nil "◻" "" "" "◻")
-        ("pos" "\Diamond" nil "◇" "" "" "◇")))
+  (setq org-entities-user
+        '(("nec" "\Box" nil "◻" "" "" "◻")
+          ("pos" "\Diamond" nil "◇" "" "" "◇")))
   (add-hook 'org-mode-hook
-      (lambda ()
-      (centered-cursor-mode)
-        (turn-on-auto-fill)
-        ))
+            (lambda ()
+              (centered-cursor-mode)
+              (turn-on-auto-fill)
+              ))
 
 ;;;; Org Regex (Emphasis)
-(with-eval-after-load 'org
-; chars for prematch
-(setcar org-emphasis-regexp-components            "     ('\"{“”\[\\\_\-")
-; chars for postmatch
-(setcar (nthcdr 1 org-emphasis-regexp-components) "\] -   .,!?;:''“”\")}/\\“”\_\-")
-; forbidden chars
-(setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
-; body
-(setcar (nthcdr 3 org-emphasis-regexp-components) ".")
-; max newlines
-(setcar (nthcdr 4 org-emphasis-regexp-components) 1)
-(org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
+  (with-eval-after-load 'org
+                                        ; chars for prematch
+    (setcar org-emphasis-regexp-components            "     ('\"{“”\[\\\_\-")
+                                        ; chars for postmatch
+    (setcar (nthcdr 1 org-emphasis-regexp-components) "\] -   .,!?;:''“”\")}/\\“”\_\-")
+                                        ; forbidden chars
+    (setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
+                                        ; body
+    (setcar (nthcdr 3 org-emphasis-regexp-components) ".")
+                                        ; max newlines
+    (setcar (nthcdr 4 org-emphasis-regexp-components) 1)
+    (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
 
 ;;;; Org Template Expansions
-(setq new-structure-template-alist
-      '(("el" . "src emacs-lisp")
-        ("t" . "COMMENT TODO:")
-        ("b" . "REVEAL: split")
-        ("f" . "ATTR_REVEAL: :frag (appear)")))
-(dolist (ele new-structure-template-alist)
+  (setq new-structure-template-alist
+        '(("el" . "src emacs-lisp")
+          ("t" . "COMMENT TODO:")
+          ("b" . "REVEAL: split")
+          ("f" . "ATTR_REVEAL: :frag (appear)")))
+  (dolist (ele new-structure-template-alist)
     (add-to-list 'org-structure-template-alist ele))
 
+;;; Org Agenda
+  ;; Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
+  ;; sorting
+  '(org-agenda-sorting-strategy
+    (quote
+     ((agenda scheduled-up deadline-up)
+      (todo scheduled-up deadline-up)
+      (tags priority-down category-keep)
+      (search category-keep))))
+
+  ;; Display properties
+  (setq org-cycle-separator-lines 0
+        org-tags-column 72
+        org-agenda-tags-column org-tags-column
+        org-agenda-window-setup 'only-window
+        org-agenda-restore-windows-after-quit t
+        org-agenda-todo-ignore-scheduled nil
+        org-agenda-todo-ignore-deadlines nil
+        org-agenda-block-separator ""
+        ;; org-agenda-sticky t
+        org-agenda-span 'day)
+
+  (with-eval-after-load 'org-agenda
+    (general-define-key :keymaps 'org-agenda-mode-map
+                        "j" 'org-agenda-next-item
+                        "k" 'org-agenda-previous-item))
+
+  ;; automatically refresh the agenda after adding a task
+  (defun cpm/org-agenda-refresh ()
+    (interactive)
+    (when (get-buffer "*Org Agenda*")
+      (with-current-buffer "*Org Agenda*"
+        (org-agenda-redo t)
+        (message "[org agenda] refreshed!"))))
+  (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
+
+  ;; show all todos
+  (defun cpm/jump-to-org-agenda-all-todos ()
+    "open agenda with all unscheduled/non-deadline todos"
+    (interactive)
+    (org-agenda nil "z"))
+
+  ;; jump to week agenda
+  (defun cpm/jump-to-week-agenda ()
+    "open custom week agenda"
+    (interactive)
+    (org-agenda nil "W"))
+
+  ;; from stack overflow https://stackoverflow.com/a/22900459/6277148
+  ;; note that the formatting is nicer that just using '%b'
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-12:c%?-12t% s")
+          (timeline . "  % s")
+          (todo .
+                " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
+          (tags .
+                " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
+          (search . " %i %-12:c")))
+
+;;;; Agenda Navigation
+  ;; Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html][Aaron Bieber]]
+  (defun air-org-agenda-next-header ()
+    "Jump to the next header in an agenda series."
+    (interactive)
+    (air--org-agenda-goto-header))
+
+  (defun air-org-agenda-previous-header ()
+    "Jump to the previous header in an agenda series."
+    (interactive)
+    (air--org-agenda-goto-header t))
+
+  (defun air--org-agenda-goto-header (&optional backwards)
+    "Find the next agenda series header forwards or BACKWARDS."
+    (let ((pos (save-excursion
+                 (goto-char (if backwards
+                                (line-beginning-position)
+                              (line-end-position)))
+                 (let* ((find-func (if backwards
+                                       'previous-single-property-change
+                                     'next-single-property-change))
+                        (end-func (if backwards
+                                      'max
+                                    'min))
+                        (all-pos-raw (list (funcall find-func (point) 'org-agenda-structural-header)
+                                           (funcall find-func (point) 'org-agenda-date-header)
+                                           (funcall find-func (point) 'org-super-agenda-header)))
+                        (all-pos (cl-remove-if-not 'numberp all-pos-raw))
+                        (prop-pos (if all-pos (apply end-func all-pos) nil)))
+                   prop-pos))))
+      (if pos (goto-char pos))
+      (if backwards (goto-char (line-beginning-position)))))
+
+  (with-eval-after-load 'org-agenda
+    (general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
+                        "J" 'air-org-agenda-next-header
+                        "K" 'air-org-agenda-previous-header))
+
+  (defun air-org-skip-subtree-if-habit ()
+    "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (if (string= (org-entry-get nil "STYLE") "habit")
+          subtree-end
+        nil)))
+
+  (defun air-org-skip-subtree-if-priority (priority)
+    "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (pri-value (* 1000 (- org-lowest-priority priority)))
+          (pri-current (org-get-priority (thing-at-point 'line t))))
+      (if (= pri-value pri-current)
+          subtree-end
+        nil)))
+
+;;;; Org Super-Agenda
+  ;; [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
+
+  (use-package org-super-agenda
+    ;; :pin manual ;; throws errors for some reason when I update
+    :general
+    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
+             ","  'cpm/hydra-org-agenda/body)
+    :after (org org-agenda)
+    :config
+    (org-super-agenda-mode)
+    (setq org-super-agenda-groups
+          '((:name "Overdue"
+                   :deadline past)
+            (:name "Scheduled"
+                   :time-grid t)
+            (:name "Today"
+                   :scheduled today
+                   :deadline nil)
+            (:name "Due Today"
+                   :deadline today)
+            (:name "Upcoming"
+                   :deadline future
+                   :scheduled future)
+            (:name "Scheduled"
+                   :scheduled t)
+            )))
+  (defun cpm/jump-to-org-super-agenda ()
+    (interactive)
+    (org-agenda nil "A"))
+
+;;;; Hydra for Agenda
+  ;; Hydra for org agenda (graciously offered by Spacemacs)
+  (after! org-agenda
+    (org-super-agenda-mode)
+    (defhydra cpm/hydra-org-agenda (:color pink :hint none)
+      "
+Org agenda (_q_uit)
+
+^Clock^      ^Visit entry^              ^Date^             ^Other^
+^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
+_ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
+_co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
+_cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
+_cj_ jump    _o_   link                 _+_  do later      ^^
+^^           ^^                         _-_  do earlier    ^^
+^^           ^^                         ^^                 ^^
+^View^          ^Filter^                 ^Headline^         ^Toggle mode^
+^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
+_vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
+_vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
+_vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
+_vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
+_vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
+_vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
+_vp_ prev span  ^^                       ^^                 ^^
+_vr_ reset      ^^                       ^^                 ^^
+^^              ^^                       ^^                 ^^
+"
+      ;; Entry
+      ("hA" org-agenda-archive-default)
+      ("hk" org-agenda-kill)
+      ("hp" org-agenda-priority)
+      ("hr" org-agenda-refile)
+      ("h:" org-agenda-set-tags)
+      ("ht" org-agenda-todo)
+      ;; Visit entry
+      ("o"   link-hint-open-link :exit t)
+      ("<tab>" org-agenda-goto :exit t)
+      ("TAB" org-agenda-goto :exit t)
+      ("SPC" org-agenda-show-and-scroll-up)
+      ("RET" org-agenda-switch-to :exit t)
+      ;; Date
+      ("dt" org-agenda-date-prompt)
+      ("dd" org-agenda-deadline)
+      ("+" org-agenda-do-date-later)
+      ("-" org-agenda-do-date-earlier)
+      ("ds" org-agenda-schedule)
+      ;; View
+      ("vd" org-agenda-day-view)
+      ("vw" org-agenda-week-view)
+      ("vt" org-agenda-fortnight-view)
+      ("vm" org-agenda-month-view)
+      ("vy" org-agenda-year-view)
+      ("vn" org-agenda-later)
+      ("vp" org-agenda-earlier)
+      ("vr" org-agenda-reset-view)
+      ;; Toggle mode
+      ("ta" org-agenda-archives-mode)
+      ("tA" (org-agenda-archives-mode 'files))
+      ("tr" org-agenda-clockreport-mode)
+      ("tf" org-agenda-follow-mode)
+      ("tl" org-agenda-log-mode)
+      ("td" org-agenda-toggle-diary)
+      ;; Filter
+      ("fc" org-agenda-filter-by-category)
+      ("fx" org-agenda-filter-by-regexp)
+      ("ft" org-agenda-filter-by-tag)
+      ("fr" org-agenda-filter-by-tag-refine)
+      ("fh" org-agenda-filter-by-top-headline)
+      ("fd" org-agenda-filter-remove-all)
+      ;; Clock
+      ("cq" org-agenda-clock-cancel)
+      ("cj" org-agenda-clock-goto :exit t)
+      ("ci" org-agenda-clock-in :exit t)
+      ("co" org-agenda-clock-out)
+      ;; Other
+      ("q" nil :exit t)
+      ("gd" org-agenda-goto-date)
+      ("." org-agenda-goto-today)
+      ("gr" org-agenda-redo)))
+
+;;;; Agenda Custom Commands
+                                        ; https://orgmode.org/manual/Storing-searches.html#Storing-searches
+  (setq org-agenda-custom-commands
+        '(("x" agenda)
+          ("y" agenda*) ; or agenda entries planned this week/day with an hour specification like [h]h:mm
+          ("z" todo "TODO")
+          ("i" todo "INPROGRESS")
+          ("n" todo "NEXT")
+          ("r" todo "REVISE")
+          ("s" "Stuck Projects" (
+                                 (tags-todo "-CANCELED/!"
+                                            ((org-agenda-overriding-header "Stuck Projects")
+                                             (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+                                             (org-agenda-sorting-strategy
+                                              '(category-keep))))))
+          ("w" todo "WAITING")
+          ("A" "Super Agenda" (
+                               (agenda "" ((org-agenda-span 'day)))
+                               (alltodo "" ((org-agenda-overriding-header "")
+                                            (org-super-agenda-groups
+                                             '((:name "Priority"
+                                                      :priority>= "C")
+                                               (:name "Next to do"
+                                                      :todo "NEXT")
+                                               (:name "In Progress"
+                                                      :todo "DOING")
+                                               (:todo ("WAITING" "HOLD"))
+                                               (:todo "MAYBE")
+                                               (:name "Reading List"
+                                                      :todo "TOREAD")))))))
+          ("W" "Week's agenda and all TODOs"
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "High-priority unfinished tasks:")))
+            (agenda "" ((org-agenda-span 'week)))
+            (alltodo ""
+                     ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+                                                     (air-org-skip-subtree-if-priority ?A)
+                                                     (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "ALL normal priority tasks:"))))
+           ((org-agenda-compact-blocks nil)))))
+;;; Org Capture
+;;;; Capture Settings
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+  (setq org-capture-templates
+        ;; Note the ` and , to get concat to evaluate properly
+        `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
+           "* TODO %?\n %i")
+          ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "journal.org"))
+           "**** %<%H:%M>\n%?")
+          ("l" "A link, for reading later" entry (file ,(concat org-directory "links.org"))
+           "* %? :link: \n%(grab-mac-link 'safari 'org)")
+          ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
+           "* TODO %:description                         :email: \n[[message://%l][Email link]] \n%? ")
+          ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
+           "* %?")
+          ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
+           (file ,(concat org-directory "templates/weekly_review_template.org")))))
+
+  ;; Add date to captured items
+  (defun add-property-with-date-captured ()
+    "Add DATE_CAPTURED property to the current item."
+    (interactive)
+    (org-set-property "DATE_CAPTURED" (format-time-string "%F %A")))
+
+  (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
+
+;;;; Org Journal Capture
+  ;; Tell emacs what you're doing a few times a day. Depends on a
+  ;; [[/Users/roambot/bin/scripts/emacs_journal.sh][shell script]] run in the
+  ;; background. I got the idea from
+  ;; [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]].
+  ;; Hat tip to
+  ;; [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack
+  ;; overflow]] for help on hooks for the created frame.
+
+  (defun cpm/org-journal ()
+    (interactive) (org-capture nil "j"))
+
+  (defun cpm/what-are-you-doing-capture ()
+    (interactive)
+    (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
+    (select-frame-by-name "What are you doing?")
+    (cpm/org-journal)
+    (cpm/insert-weather))
+
+;;;; Alfred Capture Workflow
+  ;; Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.
+
+  (defun cpm/org-capture-link-frame ()
+    "Capture link from frontmost safari tab"
+    (interactive)
+    (org-capture nil "l"))
+  (defun cpm/make-org-capture-link-frame ()
+    "Create a new frame and run org-capture."
+    (interactive)
+    (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
+                  (top . 400) (left . 300)
+                  ))
+    (select-frame-by-name "alfred-capture")
+    (cpm/org-capture-link-frame))
+
+  (defun cpm/org-capture-frame ()
+    (interactive)
+    (org-capture nil "c"))
+  (defun cpm/make-orgcapture-frame ()
+    "Create a new frame and run org-capture."
+    (interactive)
+    (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
+                  (top . 400) (left . 300)
+                  ))
+    (select-frame-by-name "alfred-capture")
+    (cpm/org-capture-frame))
+
+;;;; Capture Advice
+  ;; Make capture the only window and close after refiling.
+  (defadvice org-capture
+      (after make-full-window-frame activate)
+    "Advise capture to be the only window when used as a popup"
+    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
+          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
+          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))))
+
+  (defadvice org-capture-finalize
+      (after delete-capture-frame activate)
+    "Advise capture-finalize to close the frame"
+    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
+          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
+          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
+          ))
+
+
 ;;; Org Archive
-;; Tell org where to archive completed tasks
-(setq org-archive-location (concat org-directory "/org-archive/archived.org::datetree/"))
-;; Also tell org how to archive all the done tasks (DONE or CANCELED) in a file.
-;; From [[https://changelog.complete.org/archives/9877-emacs-3-more-on-org-mode][here]] based on a stack overflow [[https://stackoverflow.com/a/27043756][answer]]
-(defun cpm/org-archive-done-tasks ()
-  (interactive)
-  (org-map-entries
-   (lambda ()
-     (org-archive-subtree)
-     (setq org-map-continue-from (outline-previous-heading)))
-   "/DONE" 'file)
-  (org-map-entries
-   (lambda ()
-     (org-archive-subtree)
-     (setq org-map-continue-from (outline-previous-heading)))
-   "/CANCELED" 'file))
+  ;; Tell org where to archive completed tasks
+  (setq org-archive-location (concat org-directory "/org-archive/archived.org::datetree/"))
+  ;; Also tell org how to archive all the done tasks (DONE or CANCELED) in a file.
+  ;; From [[https://changelog.complete.org/archives/9877-emacs-3-more-on-org-mode][here]] based on a stack overflow [[https://stackoverflow.com/a/27043756][answer]]
+  (defun cpm/org-archive-done-tasks ()
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (outline-previous-heading)))
+     "/DONE" 'file)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (outline-previous-heading)))
+     "/CANCELED" 'file))
 
 ;;; Org Refile
-;; Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
+  ;; Set refile settings.  I got a lot of help on this from [[https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html][Aaron Bieber's discussion]].
 
-;; With this set, you can trigger Refile with C-c C-w in any Org file and
-;; get a completing read of all headings up to three levels deep in all
-;; files in =org-agenda-files=. You can also refile to the top header in a
-;; document and create new parents.
-(setq org-refile-targets '((org-agenda-files :maxlevel . 8)
-                           ("/Users/roambot/.emacs.d/config.org" :maxlevel . 8)))
-(setq org-refile-use-outline-path 'file)
-(setq org-outline-path-complete-in-steps nil)
-(setq org-refile-allow-creating-parent-nodes 'confirm)
+  ;; With this set, you can trigger Refile with C-c C-w in any Org file and
+  ;; get a completing read of all headings up to three levels deep in all
+  ;; files in =org-agenda-files=. You can also refile to the top header in a
+  ;; document and create new parents.
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 8)
+                             ("/Users/roambot/.emacs.d/config.org" :maxlevel . 8)))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
 
 ;;; Open Files in Default Application
-;;Open files in their default applications (ms word being the prime example)
-(setq org-file-apps
-      '(("\\.docx\\'" . default)
-        ("\\.mm\\'" . default)
-        ("\\.x?html?\\'" . default)
-        ("\\.pdf\\'" . emacs)
-        (auto-mode . emacs)))
-(setq org-agenda-files '("~/Dropbox/org-files/"))
-(general-define-key "C-c a" #'org-agenda)
+  ;;Open files in their default applications (ms word being the prime example)
+  (setq org-file-apps
+        '(("\\.docx\\'" . default)
+          ("\\.mm\\'" . default)
+          ("\\.x?html?\\'" . default)
+          ("\\.pdf\\'" . emacs)
+          (auto-mode . emacs)))
+  (setq org-agenda-files '("~/Dropbox/org-files/"))
+  (general-define-key "C-c a" #'org-agenda)
 
 ;;; End Use-Package Config
-;; end use-package config settings
-)
+  ;; end use-package config settings
+  )
 ;;; Org Babel
 ;; Avoid `org-babel-do-load-languages' since it does an eager require.
 (use-package ob-python
@@ -266,371 +626,11 @@ Instead it's simpler to use bash."
 
 
 
-;;; Org Agenda
-;; Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
-;; sorting
-'(org-agenda-sorting-strategy
-  (quote
-   ((agenda scheduled-up deadline-up)
-    (todo scheduled-up deadline-up)
-    (tags priority-down category-keep)
-    (search category-keep))))
-
-;; Display properties
-(setq org-cycle-separator-lines 0
-      org-tags-column 72
-      org-agenda-tags-column org-tags-column
-      org-agenda-window-setup 'only-window
-      org-agenda-restore-windows-after-quit t
-      org-agenda-todo-ignore-scheduled nil
-      org-agenda-todo-ignore-deadlines nil
-      org-agenda-block-separator ""
-      ;; org-agenda-sticky t
-      org-agenda-span 'day)
-
- (with-eval-after-load 'org-agenda
-   (general-define-key :keymaps 'org-agenda-mode-map
-                       "j" 'org-agenda-next-item
-                       "k" 'org-agenda-previous-item))
-
-;; automatically refresh the agenda after adding a task
-(defun cpm/org-agenda-refresh ()
-(interactive)
-(when (get-buffer "*Org Agenda*")
-    (with-current-buffer "*Org Agenda*"
-        (org-agenda-redo t)
-        (message "[org agenda] refreshed!"))))
-(add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
-
-;; show all todos
-(defun cpm/jump-to-org-agenda-all-todos ()
-  "open agenda with all unscheduled/non-deadline todos"
-  (interactive)
-  (org-agenda nil "z"))
-
-;; jump to week agenda
-(defun cpm/jump-to-week-agenda ()
-  "open custom week agenda"
-  (interactive)
-  (org-agenda nil "W"))
-
-;; from stack overflow https://stackoverflow.com/a/22900459/6277148
-;; note that the formatting is nicer that just using '%b'
-(setq org-agenda-prefix-format
- '((agenda . " %i %-12:c%?-12t% s")
-  (timeline . "  % s")
-  (todo .
-   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
-  (tags .
-   " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
-  (search . " %i %-12:c")))
-
-;;;; Agenda Navigation
-;; Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html][Aaron Bieber]]
-(defun air-org-agenda-next-header ()
-  "Jump to the next header in an agenda series."
-  (interactive)
-  (air--org-agenda-goto-header))
-
-(defun air-org-agenda-previous-header ()
-  "Jump to the previous header in an agenda series."
-  (interactive)
-  (air--org-agenda-goto-header t))
-
-(defun air--org-agenda-goto-header (&optional backwards)
-  "Find the next agenda series header forwards or BACKWARDS."
-  (let ((pos (save-excursion
-               (goto-char (if backwards
-                              (line-beginning-position)
-                            (line-end-position)))
-               (let* ((find-func (if backwards
-                                     'previous-single-property-change
-                                   'next-single-property-change))
-                      (end-func (if backwards
-                                    'max
-                                  'min))
-                      (all-pos-raw (list (funcall find-func (point) 'org-agenda-structural-header)
-                                         (funcall find-func (point) 'org-agenda-date-header)
-                                         (funcall find-func (point) 'org-super-agenda-header)))
-                      (all-pos (cl-remove-if-not 'numberp all-pos-raw))
-                      (prop-pos (if all-pos (apply end-func all-pos) nil)))
-                 prop-pos))))
-    (if pos (goto-char pos))
-    (if backwards (goto-char (line-beginning-position)))))
-
-(with-eval-after-load 'org-agenda
-(general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
-  "J" 'air-org-agenda-next-header
-  "K" 'air-org-agenda-previous-header))
-
-(defun air-org-skip-subtree-if-habit ()
-  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-    (if (string= (org-entry-get nil "STYLE") "habit")
-        subtree-end
-      nil)))
-
-(defun air-org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
-
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
-
-;;;; Org Super-Agenda
-;; [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
-
-(use-package org-super-agenda
- ;; :pin manual ;; throws errors for some reason when I update
- :general
- (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
- ","  'cpm/hydra-org-agenda/body)
- :after (org org-agenda)
- :config
- (org-super-agenda-mode)
- (setq org-super-agenda-groups
-   '((:name "Overdue"
-      :deadline past)
-     (:name "Scheduled"
-      :time-grid t)
-     (:name "Today"
-      :scheduled today
-      :deadline nil)
-     (:name "Due Today"
-      :deadline today)
-     (:name "Upcoming"
-      :deadline future
-      :scheduled future)
-     (:name "Scheduled"
-      :scheduled t)
-      )))
-(defun cpm/jump-to-org-super-agenda ()
-(interactive)
-(org-agenda nil "A"))
-
-;;;; Hydra for Agenda
-;; Hydra for org agenda (graciously offered by Spacemacs)
-(after! org-agenda
-(org-super-agenda-mode)
-(defhydra cpm/hydra-org-agenda (:color pink :hint none)
-  "
-Org agenda (_q_uit)
-
-^Clock^      ^Visit entry^              ^Date^             ^Other^
-^-----^----  ^-----------^------------  ^----^-----------  ^-----^---------
-_ci_ in      _SPC_ in other window      _ds_ schedule      _gr_ reload
-_co_ out     _TAB_ & go to location     _dd_ set deadline  _._  go to today
-_cq_ cancel  _RET_ & del other windows  _dt_ timestamp     _gd_ go to date
-_cj_ jump    _o_   link                 _+_  do later      ^^
-^^           ^^                         _-_  do earlier    ^^
-^^           ^^                         ^^                 ^^
-^View^          ^Filter^                 ^Headline^         ^Toggle mode^
-^----^--------  ^------^---------------  ^--------^-------  ^-----------^----
-_vd_ day        _ft_ by tag              _ht_ set status    _tf_ follow
-_vw_ week       _fr_ refine by tag       _hk_ kill          _tl_ log
-_vt_ fortnight  _fc_ by category         _hr_ refile        _ta_ archive trees
-_vm_ month      _fh_ by top headline     _hA_ archive       _tA_ archive files
-_vy_ year       _fx_ by regexp           _h:_ set tags      _tr_ clock report
-_vn_ next span  _fd_ delete all filters  _hp_ set priority  _td_ diaries
-_vp_ prev span  ^^                       ^^                 ^^
-_vr_ reset      ^^                       ^^                 ^^
-^^              ^^                       ^^                 ^^
-"
-  ;; Entry
-  ("hA" org-agenda-archive-default)
-  ("hk" org-agenda-kill)
-  ("hp" org-agenda-priority)
-  ("hr" org-agenda-refile)
-  ("h:" org-agenda-set-tags)
-  ("ht" org-agenda-todo)
-  ;; Visit entry
-  ("o"   link-hint-open-link :exit t)
-  ("<tab>" org-agenda-goto :exit t)
-  ("TAB" org-agenda-goto :exit t)
-  ("SPC" org-agenda-show-and-scroll-up)
-  ("RET" org-agenda-switch-to :exit t)
-  ;; Date
-  ("dt" org-agenda-date-prompt)
-  ("dd" org-agenda-deadline)
-  ("+" org-agenda-do-date-later)
-  ("-" org-agenda-do-date-earlier)
-  ("ds" org-agenda-schedule)
-  ;; View
-  ("vd" org-agenda-day-view)
-  ("vw" org-agenda-week-view)
-  ("vt" org-agenda-fortnight-view)
-  ("vm" org-agenda-month-view)
-  ("vy" org-agenda-year-view)
-  ("vn" org-agenda-later)
-  ("vp" org-agenda-earlier)
-  ("vr" org-agenda-reset-view)
-  ;; Toggle mode
-  ("ta" org-agenda-archives-mode)
-  ("tA" (org-agenda-archives-mode 'files))
-  ("tr" org-agenda-clockreport-mode)
-  ("tf" org-agenda-follow-mode)
-  ("tl" org-agenda-log-mode)
-  ("td" org-agenda-toggle-diary)
-  ;; Filter
-  ("fc" org-agenda-filter-by-category)
-  ("fx" org-agenda-filter-by-regexp)
-  ("ft" org-agenda-filter-by-tag)
-  ("fr" org-agenda-filter-by-tag-refine)
-  ("fh" org-agenda-filter-by-top-headline)
-  ("fd" org-agenda-filter-remove-all)
-  ;; Clock
-  ("cq" org-agenda-clock-cancel)
-  ("cj" org-agenda-clock-goto :exit t)
-  ("ci" org-agenda-clock-in :exit t)
-  ("co" org-agenda-clock-out)
-  ;; Other
-  ("q" nil :exit t)
-  ("gd" org-agenda-goto-date)
-  ("." org-agenda-goto-today)
-  ("gr" org-agenda-redo)))
-
-;;;; Agenda Custom Commands
-; https://orgmode.org/manual/Storing-searches.html#Storing-searches
-(setq org-agenda-custom-commands
-      '(("x" agenda)
-        ("y" agenda*) ; or agenda entries planned this week/day with an hour specification like [h]h:mm
-        ("z" todo "TODO")
-        ("i" todo "INPROGRESS")
-        ("n" todo "NEXT")
-        ("r" todo "REVISE")
-        ("s" "Stuck Projects" (
-                               (tags-todo "-CANCELED/!"
-                                          ((org-agenda-overriding-header "Stuck Projects")
-                                           (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                                           (org-agenda-sorting-strategy
-                                            '(category-keep))))))
-        ("w" todo "WAITING")
-        ("A" "Super Agenda" (
-                             (agenda "" ((org-agenda-span 'day)))
-                             (alltodo "" ((org-agenda-overriding-header "")
-                             (org-super-agenda-groups
-                               '((:name "Priority"
-                                  :priority>= "C")
-                                 (:name "Next to do"
-                                  :todo "NEXT")
-                                 (:name "In Progress"
-                                  :todo "DOING")
-                                 (:todo ("WAITING" "HOLD"))
-                                 (:todo "MAYBE")
-                                 (:name "Reading List"
-                                  :todo "TOREAD")))))))
-        ("W" "Week's agenda and all TODOs"
-         ((tags "PRIORITY=\"A\""
-                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
-          (agenda "" ((org-agenda-span 'week)))
-          (alltodo ""
-                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
-                                                   (air-org-skip-subtree-if-priority ?A)
-                                                   (org-agenda-skip-if nil '(scheduled deadline))))
-                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
-         ((org-agenda-compact-blocks nil)))))
-;;; Org Capture
-;;;; Capture Settings
-(general-define-key "C-c c" 'org-capture)
-(add-hook 'org-capture-mode-hook 'evil-insert-state)
-(setq org-capture-templates
-      '(("p" "Projects" entry (file "~/Dropbox/org-files/projects.org")
-         "* %? \n  %i")
-        ("c" "Capture" entry (file "~/Dropbox/org-files/inbox.org")
-         "* TODO %?\n %i")
-        ("j" "Journal" entry (file+olp+datetree "~/Dropbox/org-files/journal.org")
-         "**** %<%H:%M>\n%?")
-        ("l" "A link, for reading later" entry (file "~/Dropbox/org-files/links.org")
-          "* %? :link: \n%(grab-mac-link 'safari 'org)")
-        ("m" "Mail-Task" entry (file "~/Dropbox/org-files/inbox.org")
-         "* TODO %:description                         :email: \n[[message://%l][Email link]] \n%? ")
-        ("r" "Reference" entry (file "~/Dropbox/org-files/reference.org")
-        "* %?")
-        ("w" "Review: Weekly Review" entry (file+datetree "~/Dropbox/org-files/reviews.org")
-        (file "~/Dropbox/org-files/templates/weekly_review_template.org"))))
-
-  ;; Add date to captured items
-  (defun add-property-with-date-captured ()
-    "Add DATE_CAPTURED property to the current item."
-    (interactive)
-    (org-set-property "DATE_CAPTURED" (format-time-string "%F %A")))
-
-  (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
-
-;;;; Org Journal Capture
-;; Tell emacs what you're doing a few times a day. Depends on a
-;; [[/Users/roambot/bin/scripts/emacs_journal.sh][shell script]] run in the
-;; background. I got the idea from
-;; [[http://www.diegoberrocal.com/blog/2015/08/19/org-protocol/][Diego Berrocal]].
-;; Hat tip to
-;; [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][stack
-;; overflow]] for help on hooks for the created frame.
-
-(defun cpm/org-journal ()
-  (interactive) (org-capture nil "j"))
-
-(defun cpm/what-are-you-doing-capture ()
-  (interactive)
-  (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
-  (select-frame-by-name "What are you doing?")
-  (cpm/org-journal)
-  (cpm/insert-weather))
-
-;;;; Alfred Capture Workflow
-;; Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.
-
-(defun cpm/org-capture-link-frame ()
- "Capture link from frontmost safari tab"
-  (interactive)
-  (org-capture nil "l"))
-(defun cpm/make-org-capture-link-frame ()
-  "Create a new frame and run org-capture."
-  (interactive)
-  (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
-                (top . 400) (left . 300)
-                ))
-  (select-frame-by-name "alfred-capture")
-  (cpm/org-capture-link-frame))
-
-(defun cpm/org-capture-frame ()
-  (interactive)
-  (org-capture nil "c"))
-(defun cpm/make-orgcapture-frame ()
-  "Create a new frame and run org-capture."
-  (interactive)
-  (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
-                (top . 400) (left . 300)
-                ))
-  (select-frame-by-name "alfred-capture")
-  (cpm/org-capture-frame))
-
-;;;; Capture Advice
-;; Make capture the only window and close after refiling.
-(defadvice org-capture
-  (after make-full-window-frame activate)
-  "Advise capture to be the only window when used as a popup"
-  (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
-        ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
-        ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))))
-
- (defadvice org-capture-finalize
-   (after delete-capture-frame activate)
-    "Advise capture-finalize to close the frame"
-    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
-          ))
-
 ;;; Org Bullets
 (use-package org-bullets
- :hook (org-mode . org-bullets-mode)
- :config
- (setq org-bullets-bullet-list '("⚫")))
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("⚫")))
 
 ;; Asterisks and dashes for bullet lists are fine, but actual circular bullets are better
 ;; via http://www.howardism.org/Technical/Emacs/orgmode-wordprocessor.html
@@ -1134,39 +1134,39 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 (defun cpm/goto-inbox.org ()
   "goto org-inbox"
   (interactive)
-  (find-file "~/Dropbox/org-files/inbox.org"))
+  (find-file (concat org-directory "inbox.org")))
 (defun cpm/goto-todo.org ()
   "goto org-todo"
   (interactive)
-  (find-file "~/Dropbox/org-files/todo.org"))
+  (find-file (concat org-directory "todo.org")))
 (defun cpm/goto-articles.org ()
   "goto org-articles"
   (interactive)
-  (find-file "~/Dropbox/org-files/articles.org"))
+  (find-file (concat org-directory "articles.org")))
 (defun cpm/goto-classes.org ()
   "goto org-classes"
   (interactive)
-  (find-file "~/Dropbox/org-files/teaching.org"))
+  (find-file (concat org-directory "teaching.org")))
 (defun cpm/goto-reference.org ()
   "goto org reference notes"
   (interactive)
-  (find-file "~/Dropbox/org-files/reference.org"))
+  (find-file (concat org-directory "reference.org")))
 (defun cpm/goto-someday.org ()
   "goto org-someday"
   (interactive)
-  (find-file "~/Dropbox/org-files/someday.org"))
+  (find-file (concat org-directory "someday.org")))
 (defun cpm/goto-links.org ()
   "goto org-links"
   (interactive)
-  (find-file "~/Dropbox/org-files/links.org"))
+  (find-file (concat org-directory "links.org")))
 (defun cpm/goto-reading.org ()
   "goto reading list"
   (interactive)
-  (find-file "~/Dropbox/org-files/reading.org"))
+  (find-file (concat org-directory "reading.org")))
 (defun cpm/goto-writing.org ()
   "goto writing list"
   (interactive)
-  (find-file "~/Dropbox/org-files/writing.org"))
+  (find-file (concat org-directory "writing.org")))
 
 
 ;;;; Export Headings as Seperate Files

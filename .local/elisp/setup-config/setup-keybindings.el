@@ -630,8 +630,8 @@
            (evil-org-mode . evil-org-set-key-theme))
     :config
     (require 'evil-org-agenda)
-    (evil-org-agenda-set-keys)
-    (evil-org-set-key-theme '(textobjects insert navigation additional shift)))
+    (setq evil-org-key-theme '(navigation insert textobjects additional shift)))
+
 
 
   (general-define-key
@@ -691,14 +691,17 @@
    "C-k" #'org-agenda-previous-item
    "C-n" #'org-agenda-next-item
    "C-p" #'org-agenda-previous-item)
+
   (general-define-key :states '(normal) :keymaps 'org-mode-map
                       "RET" 'org-open-at-point     ;; Open with return in evil
                       "p"   'org-yank ;; better pasting behavior
                       "s-J" 'crux-top-join-line)
+
   ;;   normal, insert, visual shortcuts
   (general-define-key :states '(normal insert visual) :keymaps 'org-mode-map
                       "M-q" #'cpm/fill-or-unfill
                       "C-t" #'transpose-chars)
+
   ;;   ;; normal & insert state shortcuts.
   (general-define-key :states '(normal insert) :keymaps 'org-mode-map
                       ;; easily emphasize text
