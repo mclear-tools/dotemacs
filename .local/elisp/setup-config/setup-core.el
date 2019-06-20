@@ -253,7 +253,7 @@
   :defer 1
   :config
   (setq auto-revert-interval .5)
-  (global-auto-revert-mode 1)
+  (global-auto-revert-mode)
   (setq auto-revert-verbose nil ; Shut up, please!
         revert-without-query '(".*") ;; disable revert query
         ;; Revert Dired buffers, too
