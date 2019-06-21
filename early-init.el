@@ -4,6 +4,7 @@
 ;; and https://lists.gnu.org/archive/html/emacs-devel/2017-10/msg00372.html
 ;; for more information
 
+
 ;;; Startup
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -23,19 +24,19 @@
      (float-time (time-since time))))
 
 ;; Set garbage collection threshold to ludicrous levels.
-(setq gc-cons-threshold #x400000000
+(setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6)
 
-;; Post-init set garbage collection threshold to slightly less ludicrous 1GB.
+;; Post-init set garbage collection threshold to less ludicrous levels.
 (add-hook 'after-init-hook
           `(lambda ()
-             (setq gc-cons-threshold #x40000000
-                   gc-cons-percentage 0.6)
+             (setq gc-cons-threshold 80000
+                   gc-cons-percentage 0.1)
              (garbage-collect)) t)
 
 ;; When idle for 10sec run the GC no matter what.
 (defvar k-gc-timer
-  (run-with-idle-timer 10 t
+  (run-with-idle-timer 5 t
                        (lambda ()
                          (message "Garbage Collector has run for %.06fsec"
                                   (k-time (garbage-collect))))))
@@ -105,13 +106,22 @@
     "Where personal elisp packages and scripts are stored.")
 
   (defvar cpm-setup-dir (concat cpm-elisp-dir "setup-config/")
-    "Where the setup-init files are stored.")
+    "Where the setup-init files are stored."))
+
+;;;; System Variables
+(defconst sys/macp
+  (eq system-type 'darwin)
+  "Are we running on a Mac system?")
+
+(defconst sys/mac-x-p
+  (and (display-graphic-p) sys/macp)
+  "Are we running under X on a Mac system?")
 
 ;;;; Path Settings
 ;; Directory paths
 (dolist (dir (list cpm-local-dir cpm-etc-dir cpm-cache-dir cpm-elisp-dir cpm-setup-dir))
   (unless (file-directory-p dir)
-(make-directory dir t))))
+    (make-directory dir t)))
 
 ;; Exec path -- Emacs won't know where to load things without this
 (defvar cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
@@ -166,6 +176,7 @@
 
 (setq use-package-always-defer t
       use-package-verbose t
+      use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
 
   (require 'package)
@@ -202,7 +213,9 @@
         paradox-automatically-star nil))
 
 ;;;; Quelpa
-;; Get emacs packages from [[https://github.com/quelpa/quelpa#installation][anywhere]] and use with [[https://github.com/quelpa/quelpa-use-package][use-package]]
+;; Get emacs packages from anywhere:
+;; https://github.com/quelpa/quelpa#installation and use with use-package:
+;; https://github.com/quelpa/quelpa-use-package
 
 (use-package quelpa
   :ensure t

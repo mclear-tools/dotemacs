@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "virtualenvwrapper" "20190223.1919" "a featureful virtualenv tool for Emacs" '((dash "1.5.0") (s "1.6.1")) :commit "c3da41a3995c98dae2c751688655ea0cbe72493b" :keywords '("python" "virtualenv" "virtualenvwrapper") :authors '(("James J Porter" . "porterjamesj@gmail.com")) :maintainer '("James J Porter" . "porterjamesj@gmail.com") :url "http://github.com/porterjamesj/virtualenvwrapper.el")

@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "company-bibtex" "20171105.644" "Company completion for bibtex keys" '((company "0.9.0") (cl-lib "0.5") (parsebib "1.0")) :commit "da67faf3a6faba8e7f1b222dedfc5521b02c7655" :keywords '("company-mode" "bibtex") :authors '(("GB Gardner" . "gbgar@users.noreply.github.com")) :maintainer '("GB Gardner" . "gbgar@users.noreply.github.com") :url "https://github.com/gbgar/company-bibtex")

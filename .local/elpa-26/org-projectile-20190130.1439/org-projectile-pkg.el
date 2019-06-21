@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "org-projectile" "20190130.1439" "Repository todo management for org-mode" '((projectile "0.11.0") (dash "2.10.0") (emacs "24") (s "1.9.0") (org-category-capture "0.0.0")) :commit "0291ef425c96d02d634fc7e199146d7c3da0455b" :keywords '("org-mode" "projectile" "todo" "tools" "outlines") :authors '(("Ivan Malison" . "IvanMalison@gmail.com")) :maintainer '("Ivan Malison" . "IvanMalison@gmail.com") :url "https://github.com/IvanMalison/org-projectile")
