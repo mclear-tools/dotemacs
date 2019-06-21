@@ -236,6 +236,7 @@
   (setq quelpa-use-package-inhibit-loading-quelpa t)
   (quelpa-use-package-activate-advice))
 
+
 ;;; Personal Information
 ;; Give emacs some personal info
 (setq user-full-name "Colin McLear"

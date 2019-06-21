@@ -2,7 +2,8 @@
 
 (with-eval-after-load 'evil
 (use-package evil-collection
-  :ensure t
+  :ensure nil
+  :disabled t
   :after evil
   :defer 1
   :config

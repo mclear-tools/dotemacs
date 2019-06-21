@@ -323,7 +323,7 @@
   :config
   (typo-global-mode))
 
-;;; Notes / Deft / Zettel
+;;; FIXME Notes / Deft / Zettel
 (use-package deft
   :ensure t
   :commands (deft deft-open-file-other-window big-notes zd-new-file zd-deft-new-search deft-new-file-named)
