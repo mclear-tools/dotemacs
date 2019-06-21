@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "general" "20190420.1440" "Convenience wrappers for keybindings." '((emacs "24.4") (cl-lib "0.5")) :commit "356654668ee4f77aa330398c54b62fb33345fdff" :keywords '("vim" "evil" "leader" "keybindings" "keys") :authors '(("Fox Kiester" . "noct@openmailbox.org")) :maintainer '("Fox Kiester" . "noct@openmailbox.org") :url "https://github.com/noctuid/general.el")
