@@ -179,25 +179,25 @@
       use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
 
-  (require 'package)
+(require 'package)
 
-  (unless (assoc-default "melpa" package-archives)
-    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
-  (unless (assoc-default "gnu" package-archives)
-    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t))
-  (unless (assoc-default "org" package-archives)
-    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
-  ;; https://github.com/emacs-china/emacswiki-elpa
-  (unless (assoc-default "emacswiki" package-archives)
-    (add-to-list 'package-archives '("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/") t))
+(unless (assoc-default "melpa" package-archives)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+(unless (assoc-default "gnu" package-archives)
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t))
+(unless (assoc-default "org" package-archives)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+;; https://github.com/emacs-china/emacswiki-elpa
+(unless (assoc-default "emacswiki" package-archives)
+  (add-to-list 'package-archives '("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/") t))
 
 
-  (package-initialize)
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (require 'use-package)
-  (setq use-package-always-ensure t)
+(package-initialize)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 ;;;; Paradox Package Management
 ;; Better interface for package management https://github.com/Malabarba/paradox
@@ -206,7 +206,7 @@
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
   (setq paradox-execute-asynchronously nil
-         ;; Show all possible counts
+        ;; Show all possible counts
         paradox-display-download-count t
         paradox-display-star-count t
         ;; Don't star automatically
@@ -235,7 +235,6 @@
   ;; advice for maybe installing with quelpa
   (setq quelpa-use-package-inhibit-loading-quelpa t)
   (quelpa-use-package-activate-advice))
-
 
 ;;; Personal Information
 ;; Give emacs some personal info
