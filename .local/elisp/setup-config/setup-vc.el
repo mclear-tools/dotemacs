@@ -11,7 +11,7 @@
    magit-diff
    magit-log
    magit-status)
-  :hook ((git-commit-mode . turn-on-flyspell)
+  :hook (;;(git-commit-mode . turn-on-flyspell)
          (evil-magit-init . magit-mode))
   :init
   (setq vc-follow-symlinks t)
