@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "lv" "20181110.1740" "Other echo area" 'nil :commit "acb69859f3dde8d6924587f39997320256bdd85d" :authors '(("Oleh Krehel")) :maintainer '("Oleh Krehel"))
+(define-package "lv" "20181110.1740" "Other echo area" 'nil :commit "82ff12666e08485c6b8f0e346878c4e0b16c992d" :authors '(("Oleh Krehel")) :maintainer '("Oleh Krehel"))

@@ -35,9 +35,11 @@ to use your own preferred setup:
   ;; Replace \"S\" with other keys to invoke the dired-quick-sort hydra.
   (define-key dired-mode-map \"S\" 'hydra-dired-quick-sort/body)
   ;; Automatically use the sorting defined here to sort.
-  (add-hook 'dired-mode-hook 'dired-quick-sort)" nil nil)
+  (add-hook 'dired-mode-hook 'dired-quick-sort)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-quick-sort" '("dired-quick-sort-" "hydra-dired-quick-sort")))
+\(fn)" nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-quick-sort" '("hydra-dired-quick-sort" "dired-quick-sort-")))
 
 ;;;***
 
