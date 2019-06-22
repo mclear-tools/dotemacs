@@ -626,11 +626,13 @@
 ;;; Org Keybindings
   (use-package evil-org
     :ensure t
+    :after org
     :hook ((org-mode . evil-org-mode)
            (evil-org-mode . evil-org-set-key-theme))
     :config
     (require 'evil-org-agenda)
-    (setq evil-org-key-theme '(navigation insert textobjects additional shift)))
+    (setq evil-org-key-theme '(navigation insert textobjects additional shift))
+    (evil-org-agenda-set-keys))
 
 
 
