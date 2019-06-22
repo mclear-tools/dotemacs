@@ -114,14 +114,11 @@
 ;; Better terminal function---way faster than ansi-term
 (use-package vterm
   :ensure t
-  :defer 1
+  :commands (vterm vterm-other-window)
   :config
   ;; set colors -- this is best with dark solarized right now
   (setq ansi-color-names-vector
-        ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
-  (unless (require 'vterm-module nil t)
-    (vterm-module-compile)
-    (require 'vterm-module)))
+        ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"]))
 
 ;; directory tracking
 (defun vterm--rename-buffer-as-title (title)
