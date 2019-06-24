@@ -200,10 +200,28 @@
   ("C-h C-l" #'find-library)
   :commands (helpful-function helpful-callable helpful-key helpful-variable helpful-at-point))
 
+(advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
+
+(defun cpm/describe-package--add-melpa-link (pkg)
+  (let* ((desc (if (package-desc-p pkg)
+                   pkg
+                 (cadr (assq pkg package-archive-contents))))
+         (name (if desc (package-desc-name desc) pkg))
+         (archive (if desc (package-desc-archive desc)))
+         (melpa-link (format "https://melpa.org/#/%s" name)))
+    (when (equal archive "melpa")
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward "Summary:" nil t)
+          (forward-line 1)
+          (package--print-help-section "MELPA")
+          (help-insert-xref-button melpa-link 'help-url melpa-link)
+          (insert "\n"))))))
+
 ;;;; Server
 (use-package server
-   :ensure nil
-   :hook (after-init . server-mode))
+  :ensure nil
+  :hook (after-init . server-mode))
 
 ;;;; Outshine Outline Navigation
 (use-package outshine
