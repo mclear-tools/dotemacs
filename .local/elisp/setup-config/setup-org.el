@@ -794,15 +794,19 @@ Instead it's simpler to use bash."
   (cpm/goto-projects.org)
   (org-narrow-to-subtree)
   (org-columns))
-  ;;set defaults to nothing
-  (setq org-stuck-projects (quote ("" nil nil "")))
+;;set defaults to nothing
+(setq org-stuck-projects (quote ("" nil nil "")))
 
 ;;;; Stuck Projects
 ;; I'm following [[http://doc.norang.ca/org-mode.html#Projects][Bert Hansen's]] lead on this
-(defun cpm/list-stuck-projects ()
+(defun cpm/list-stuck-projects-in-buffer ()
   (interactive)
   (bh/skip-non-stuck-projects)
-  (org-agenda nil "#" 'subtree))
+  (org-agenda nil "s" 'subtree))
+
+(defun cpm/list-all-stuck-projects ()
+  (interactive)
+  (org-agenda nil "s"))
 
 ;;;;; Helper Functions
 (defun bh/is-project-p ()
