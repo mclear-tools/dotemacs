@@ -116,6 +116,8 @@
   :ensure t
   :commands (vterm vterm-other-window)
   :config
+  (add-to-list 'load-path (concat cpm-local-dir "elpa/"))
+  (require 'vterm)
   ;; set colors -- this is best with dark solarized right now
   (setq ansi-color-names-vector
         ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"]))
