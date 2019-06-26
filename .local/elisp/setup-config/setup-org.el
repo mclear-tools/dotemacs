@@ -9,11 +9,12 @@
   :mode (("\\.org$" . org-mode))
   :ensure org-plus-contrib
   :general ("C-c c" 'org-capture)
-  :config
+  :init
 ;;; Org Settings
 ;;;; Org Directories
   (setq-default org-directory "~/Dropbox/org-files/")
   (setq-default org-default-notes-file (concat org-directory "inbox.org"))
+  :config
 ;;;; Org Config Settings
   (setq org-stuck-projects (quote ("" nil nil "")))
   (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
@@ -646,14 +647,14 @@ Instead it's simpler to use bash."
 
 
 ;; Other bullet patterns
- ;; (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "" "✸")))
- ;; (setq org-bullets-bullet-list '("◉" "⚫")))
+;; (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "" "✸")))
+;; (setq org-bullets-bullet-list '("◉" "⚫")))
 
- ;; Other bullets
- ;; "●" "◉" "→"
- ;; ("◉" "◎" "⚫" "○" "►" "◇")
- ;;  "∙" "∶" "∵" "∷" "⸭" "∺" )))
- ;; (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
+;; Other bullets
+;; "●" "◉" "→"
+;; ("◉" "◎" "⚫" "○" "►" "◇")
+;;  "∙" "∶" "∵" "∷" "⸭" "∺" )))
+;; (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
 
 ;;; Org Prettify Source Blocks
 ;; Make source blocks look better. Courtesy of
@@ -747,18 +748,262 @@ Instead it's simpler to use bash."
   (define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
   (define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all))
 
+;;; Org Functions
+;;;; Org Fill Functions
+;;  Functions to calculate apt offsets and call regular org fill stuff. There's a
+;;  useful
+;;  [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack
+;;  overflow thread]] on this.
+
+(defun calc-offset-on-org-level ()
+  "Calculate offset (in chars) on current level in org mode file."
+  (* (or (org-current-level) 0) org-indent-indentation-per-level))
+
+(defun my-org-fill-paragraph (&optional JUSTIFY)
+  "Calculate apt fill-column value and fill paragraph."
+  (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
+    (org-fill-paragraph JUSTIFY)))
+
+(defun my-org-auto-fill-function ()
+  "Calculate apt fill-column value and do auto-fill"
+  (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
+    (org-auto-fill-function)))
+
+(defun my-org-mode-hook ()
+  (setq fill-paragraph-function   'my-org-fill-paragraph
+        normal-auto-fill-function 'my-org-auto-fill-function))
+
+;; (add-hook 'org-load-hook 'my-org-mode-hook)
+;; (add-hook 'org-mode-hook 'my-org-mode-hook)
+
+;;;; Narrow & Advance/Retreat
+;; Functions to advance forwards or backwards through narrowed tree
+(defun cpm/org-advance ()
+  (interactive)
+  (when (buffer-narrowed-p)
+    (beginning-of-buffer)
+    (widen)
+    (org-forward-heading-same-level 1))
+  (org-narrow-to-subtree))
+
+(defun cpm/org-retreat ()
+  (interactive)
+  (when (buffer-narrowed-p)
+    (beginning-of-buffer)
+    (widen)
+    (org-backward-heading-same-level 1))
+  (org-narrow-to-subtree))
+
+;;;; Goto Org Files
+(defun cpm/goto-org-files ()
+  "goto org-files directory"
+  (interactive)
+  (helm-find-files-1 org-directory))
+(defun cpm/goto-inbox.org ()
+  "goto org-inbox"
+  (interactive)
+  (find-file (concat org-directory "inbox.org")))
+(defun cpm/goto-todo.org ()
+  "goto org-todo"
+  (interactive)
+  (find-file (concat org-directory "todo.org")))
+(defun cpm/goto-articles.org ()
+  "goto org-articles"
+  (interactive)
+  (find-file (concat org-directory "articles.org")))
+(defun cpm/goto-classes.org ()
+  "goto org-classes"
+  (interactive)
+  (find-file (concat org-directory "teaching.org")))
+(defun cpm/goto-reference.org ()
+  "goto org reference notes"
+  (interactive)
+  (find-file (concat org-directory "reference.org")))
+(defun cpm/goto-someday.org ()
+  "goto org-someday"
+  (interactive)
+  (find-file (concat org-directory "someday.org")))
+(defun cpm/goto-links.org ()
+  "goto org-links"
+  (interactive)
+  (find-file (concat org-directory "links.org")))
+(defun cpm/goto-reading.org ()
+  "goto reading list"
+  (interactive)
+  (find-file (concat org-directory "reading.org")))
+(defun cpm/goto-writing.org ()
+  "goto writing list"
+  (interactive)
+  (find-file (concat org-directory "writing.org")))
+
+
+;;;; Export Headings as Seperate Files
+;; export headlines to separate files
+;; http://emacs.stackexchange.com/questions/2259/how-to-export-top-level-headings-of-org-mode-buffer-to-separate-files
+(defun cpm/org-export-headlines-to-pdf ()
+  "Export all subtrees that are *not* tagged with :noexport: to
+separate files.
+
+Subtrees that do not have the :EXPORT_FILE_NAME: property set
+are exported to a filename derived from the headline text."
+  (interactive)
+  (save-buffer)
+  (let ((modifiedp (buffer-modified-p)))
+    (save-excursion
+      (goto-char (point-min))
+      (goto-char (re-search-forward "^*"))
+      (set-mark (line-beginning-position))
+      (goto-char (point-max))
+      (org-map-entries
+       (lambda ()
+         (let ((export-file (org-entry-get (point) "EXPORT_FILE_NAME")))
+           (unless export-file
+             (org-set-property
+              "EXPORT_FILE_NAME"
+              (replace-regexp-in-string " " "_" (nth 4 (org-heading-components)))))
+           (deactivate-mark)
+           (org-pandoc-export-to-latex-pdf nil t)
+           (unless export-file (org-delete-property "EXPORT_FILE_NAME"))
+           (set-buffer-modified-p modifiedp)))
+       "-noexport" 'region-start-level))))
+
+;;;; Org demote/promote region
+(defun endless/demote-everything (number beg end)
+  "Add a NUMBER of * to all headlines between BEG and END.
+Interactively, NUMBER is the prefix argument and BEG and END are
+the region boundaries."
+  (interactive "p\nr")
+  (save-excursion
+    (save-restriction
+      (save-match-data
+        (widen)
+        (narrow-to-region beg end)
+        (goto-char (point-min))
+        (let ((string (make-string number ?*)))
+          (while (search-forward-regexp "^\\*" nil t)
+            (insert string)))))))
+
+;;;; Org Hide Property Drawers
+;; From [[https://www.reddit.com/r/emacs/comments/9htd0r/how_to_completely_hide_the_properties_drawer_in/e6fehiw][Reddit]]
+
+(defun org-toggle-properties ()
+  ;; toggle visibility of properties in current header if it exists
+  (save-excursion
+    (when (not (org-at-heading-p))
+      (org-previous-visible-heading 1))
+    (when (org-header-property-p)
+      (let* ((a (re-search-forward "\n\\:" nil t)))
+        (if (outline-invisible-p (point))
+            (outline-show-entry)
+          (org-cycle-hide-drawers 'all))))))
+
+;;;; Org Return DWIM
+(defun unpackaged/org-element-descendant-of (type element)
+  "Return non-nil if ELEMENT is a descendant of TYPE.
+TYPE should be an element type, like `item' or `paragraph'.
+ELEMENT should be a list like that returned by `org-element-context'."
+  (when-let* ((parent (org-element-property :parent element)))
+    (or (eq type (car parent))
+        (unpackaged/org-element-descendant-of type parent))))
+
+;;;###autoload
+(defun unpackaged/org-return-dwim (&optional default)
+  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
+
+On headings, move point to position after entry content.  In
+lists, insert a new item or end the list, with checkbox if
+appropriate.  In tables, insert a new row or end the table."
+  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+  (interactive "P")
+  (if default
+      (org-return)
+    (cond
+     ;; Act depending on context around point.
+
+     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
+     ;; followed.
+
+     ;; ((eq 'link (car (org-element-context)))
+     ;;  ;; Link: Open it.
+     ;;  (org-open-at-point-global))
+
+     ((org-at-heading-p)
+      ;; Heading: Move to position after entry content.
+      ;; NOTE: This is probably the most interesting feature of this function.
+      (let ((heading-start (org-entry-beginning-position)))
+        (goto-char (org-entry-end-position))
+        (cond ((and (org-at-heading-p)
+                    (= heading-start (org-entry-beginning-position)))
+               ;; Entry ends on its heading; add newline after
+               (end-of-line)
+               (insert "\n\n"))
+              (t
+               ;; Entry ends after its heading; back up
+               (forward-line -1)
+               (end-of-line)
+               (when (org-at-heading-p)
+                 ;; At the same heading
+                 (forward-line)
+                 (insert "\n")
+                 (forward-line -1))
+               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
+                 (insert "\n"))
+               (forward-line -1)))))
+
+     ((org-at-item-checkbox-p)
+      ;; Checkbox: Insert new item with checkbox.
+      (org-insert-todo-heading nil))
+
+     ((org-in-item-p)
+      ;; Plain list.  Yes, this gets a little complicated...
+      (let ((context (org-element-context)))
+        (if (or (eq 'plain-list (car context))  ; First item in list
+                (and (eq 'item (car context))
+                     (not (eq (org-element-property :contents-begin context)
+                              (org-element-property :contents-end context))))
+                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
+            ;; Non-empty item: Add new item.
+            (org-insert-item)
+          ;; Empty item: Close the list.
+          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
+          (delete-region (line-beginning-position) (line-end-position))
+          (insert "\n"))))
+
+     ((when (fboundp 'org-inlinetask-in-task-p)
+        (org-inlinetask-in-task-p))
+      ;; Inline task: Don't insert a new heading.
+      (org-return))
+
+     ((org-at-table-p)
+      (cond ((save-excursion
+               (beginning-of-line)
+               ;; See `org-table-next-field'.
+               (cl-loop with end = (line-end-position)
+                        for cell = (org-element-table-cell-parser)
+                        always (equal (org-element-property :contents-begin cell)
+                                      (org-element-property :contents-end cell))
+                        while (re-search-forward "|" end t)))
+             ;; Empty row: end the table.
+             (delete-region (line-beginning-position) (line-end-position))
+             (org-return))
+            (t
+             ;; Non-empty row: call `org-return'.
+             (org-return))))
+     (t
+      ;; All other cases: call `org-return'.
+      (org-return)))))
 ;;; Org-Reveal
 (use-package ox-reveal
-:commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
-:after ox
-:demand t
-:load-path (lambda () (concat cpm-elisp-dir "ox-reveal"))
-:config
-(setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
-      org-reveal-theme "moon"
-      org-reveal-default-frag-style "roll-in"
-      org-reveal-hlevel 2
-      ))
+  :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
+  :after ox
+  :demand t
+  :load-path (lambda () (concat cpm-elisp-dir "ox-reveal"))
+  :config
+  (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
+        org-reveal-theme "moon"
+        org-reveal-default-frag-style "roll-in"
+        org-reveal-hlevel 2
+        ))
 
 (defun cpm/narrowed-subtree-to-html ()
   "export narrowed tree to html"
@@ -767,7 +1012,7 @@ Instead it's simpler to use bash."
   (org-narrow-to-subtree))
 
 (fset 'cpm/reveal-to-html-open
- "\C-c\C-e\C-sRB")
+      "\C-c\C-e\C-sRB")
 
 ;;; Org GTD
 ;;;; GTD Project Functions
@@ -1085,250 +1330,6 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   :init
   (setq org-randomnote-candidates '("~/Dropbox/org-files/todo.org")))
 
-;;; Org Functions
-;;;; Org Fill Functions
-;;  Functions to calculate apt offsets and call regular org fill stuff. There's a
-;;  useful
-;;  [[http://stackoverflow.com/questions/14351154/org-mode-outline-level-specific-fill-column-values][stack
-;;  overflow thread]] on this.
-
-(defun calc-offset-on-org-level ()
-  "Calculate offset (in chars) on current level in org mode file."
-  (* (or (org-current-level) 0) org-indent-indentation-per-level))
-
-(defun my-org-fill-paragraph (&optional JUSTIFY)
-  "Calculate apt fill-column value and fill paragraph."
-  (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
-    (org-fill-paragraph JUSTIFY)))
-
-(defun my-org-auto-fill-function ()
-  "Calculate apt fill-column value and do auto-fill"
-  (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
-    (org-auto-fill-function)))
-
-(defun my-org-mode-hook ()
-  (setq fill-paragraph-function   'my-org-fill-paragraph
-        normal-auto-fill-function 'my-org-auto-fill-function))
-
-;; (add-hook 'org-load-hook 'my-org-mode-hook)
-;; (add-hook 'org-mode-hook 'my-org-mode-hook)
-
-;;;; Narrow & Advance/Retreat
-;; Functions to advance forwards or backwards through narrowed tree
-(defun cpm/org-advance ()
-  (interactive)
-  (when (buffer-narrowed-p)
-    (beginning-of-buffer)
-    (widen)
-    (org-forward-heading-same-level 1))
-  (org-narrow-to-subtree))
-
-(defun cpm/org-retreat ()
-  (interactive)
-  (when (buffer-narrowed-p)
-    (beginning-of-buffer)
-    (widen)
-    (org-backward-heading-same-level 1))
-  (org-narrow-to-subtree))
-
-;;;; Goto Org Files
-(defun cpm/goto-org-files ()
-  "goto org-files directory"
-  (interactive)
-  (helm-find-files-1 org-directory))
-(defun cpm/goto-inbox.org ()
-  "goto org-inbox"
-  (interactive)
-  (find-file (concat org-directory "inbox.org")))
-(defun cpm/goto-todo.org ()
-  "goto org-todo"
-  (interactive)
-  (find-file (concat org-directory "todo.org")))
-(defun cpm/goto-articles.org ()
-  "goto org-articles"
-  (interactive)
-  (find-file (concat org-directory "articles.org")))
-(defun cpm/goto-classes.org ()
-  "goto org-classes"
-  (interactive)
-  (find-file (concat org-directory "teaching.org")))
-(defun cpm/goto-reference.org ()
-  "goto org reference notes"
-  (interactive)
-  (find-file (concat org-directory "reference.org")))
-(defun cpm/goto-someday.org ()
-  "goto org-someday"
-  (interactive)
-  (find-file (concat org-directory "someday.org")))
-(defun cpm/goto-links.org ()
-  "goto org-links"
-  (interactive)
-  (find-file (concat org-directory "links.org")))
-(defun cpm/goto-reading.org ()
-  "goto reading list"
-  (interactive)
-  (find-file (concat org-directory "reading.org")))
-(defun cpm/goto-writing.org ()
-  "goto writing list"
-  (interactive)
-  (find-file (concat org-directory "writing.org")))
-
-
-;;;; Export Headings as Seperate Files
-;; export headlines to separate files
-;; http://emacs.stackexchange.com/questions/2259/how-to-export-top-level-headings-of-org-mode-buffer-to-separate-files
-(defun cpm/org-export-headlines-to-pdf ()
-  "Export all subtrees that are *not* tagged with :noexport: to
-separate files.
-
-Subtrees that do not have the :EXPORT_FILE_NAME: property set
-are exported to a filename derived from the headline text."
-  (interactive)
-  (save-buffer)
-  (let ((modifiedp (buffer-modified-p)))
-    (save-excursion
-      (goto-char (point-min))
-      (goto-char (re-search-forward "^*"))
-      (set-mark (line-beginning-position))
-      (goto-char (point-max))
-      (org-map-entries
-       (lambda ()
-         (let ((export-file (org-entry-get (point) "EXPORT_FILE_NAME")))
-           (unless export-file
-             (org-set-property
-              "EXPORT_FILE_NAME"
-              (replace-regexp-in-string " " "_" (nth 4 (org-heading-components)))))
-           (deactivate-mark)
-           (org-pandoc-export-to-latex-pdf nil t)
-           (unless export-file (org-delete-property "EXPORT_FILE_NAME"))
-           (set-buffer-modified-p modifiedp)))
-       "-noexport" 'region-start-level))))
-
-;;;; Org demote/promote region
-(defun endless/demote-everything (number beg end)
-  "Add a NUMBER of * to all headlines between BEG and END.
-Interactively, NUMBER is the prefix argument and BEG and END are
-the region boundaries."
-  (interactive "p\nr")
-  (save-excursion
-    (save-restriction
-      (save-match-data
-        (widen)
-        (narrow-to-region beg end)
-        (goto-char (point-min))
-        (let ((string (make-string number ?*)))
-          (while (search-forward-regexp "^\\*" nil t)
-            (insert string)))))))
-
-;;;; Org Hide Property Drawers
-;; From [[https://www.reddit.com/r/emacs/comments/9htd0r/how_to_completely_hide_the_properties_drawer_in/e6fehiw][Reddit]]
-
-(defun org-toggle-properties ()
-  ;; toggle visibility of properties in current header if it exists
-  (save-excursion
-    (when (not (org-at-heading-p))
-      (org-previous-visible-heading 1))
-    (when (org-header-property-p)
-      (let* ((a (re-search-forward "\n\\:" nil t)))
-        (if (outline-invisible-p (point))
-            (outline-show-entry)
-          (org-cycle-hide-drawers 'all))))))
-
-;;;; Org Return DWIM
-(defun unpackaged/org-element-descendant-of (type element)
-  "Return non-nil if ELEMENT is a descendant of TYPE.
-TYPE should be an element type, like `item' or `paragraph'.
-ELEMENT should be a list like that returned by `org-element-context'."
-  (when-let* ((parent (org-element-property :parent element)))
-    (or (eq type (car parent))
-        (unpackaged/org-element-descendant-of type parent))))
-
-;;;###autoload
-(defun unpackaged/org-return-dwim (&optional default)
-  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
-
-On headings, move point to position after entry content.  In
-lists, insert a new item or end the list, with checkbox if
-appropriate.  In tables, insert a new row or end the table."
-  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-  (interactive "P")
-  (if default
-      (org-return)
-    (cond
-     ;; Act depending on context around point.
-
-     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
-     ;; followed.
-
-     ;; ((eq 'link (car (org-element-context)))
-     ;;  ;; Link: Open it.
-     ;;  (org-open-at-point-global))
-
-     ((org-at-heading-p)
-      ;; Heading: Move to position after entry content.
-      ;; NOTE: This is probably the most interesting feature of this function.
-      (let ((heading-start (org-entry-beginning-position)))
-        (goto-char (org-entry-end-position))
-        (cond ((and (org-at-heading-p)
-                    (= heading-start (org-entry-beginning-position)))
-               ;; Entry ends on its heading; add newline after
-               (end-of-line)
-               (insert "\n\n"))
-              (t
-               ;; Entry ends after its heading; back up
-               (forward-line -1)
-               (end-of-line)
-               (when (org-at-heading-p)
-                 ;; At the same heading
-                 (forward-line)
-                 (insert "\n")
-                 (forward-line -1))
-               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
-                 (insert "\n"))
-               (forward-line -1)))))
-
-     ((org-at-item-checkbox-p)
-      ;; Checkbox: Insert new item with checkbox.
-      (org-insert-todo-heading nil))
-
-     ((org-in-item-p)
-      ;; Plain list.  Yes, this gets a little complicated...
-      (let ((context (org-element-context)))
-        (if (or (eq 'plain-list (car context))  ; First item in list
-                (and (eq 'item (car context))
-                     (not (eq (org-element-property :contents-begin context)
-                              (org-element-property :contents-end context))))
-                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
-            ;; Non-empty item: Add new item.
-            (org-insert-item)
-          ;; Empty item: Close the list.
-          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
-          (delete-region (line-beginning-position) (line-end-position))
-          (insert "\n"))))
-
-     ((when (fboundp 'org-inlinetask-in-task-p)
-        (org-inlinetask-in-task-p))
-      ;; Inline task: Don't insert a new heading.
-      (org-return))
-
-     ((org-at-table-p)
-      (cond ((save-excursion
-               (beginning-of-line)
-               ;; See `org-table-next-field'.
-               (cl-loop with end = (line-end-position)
-                        for cell = (org-element-table-cell-parser)
-                        always (equal (org-element-property :contents-begin cell)
-                                      (org-element-property :contents-end cell))
-                        while (re-search-forward "|" end t)))
-             ;; Empty row: end the table.
-             (delete-region (line-beginning-position) (line-end-position))
-             (org-return))
-            (t
-             ;; Non-empty row: call `org-return'.
-             (org-return))))
-     (t
-      ;; All other cases: call `org-return'.
-      (org-return)))))
 ;;; Org Rifle
 ;; Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 (use-package helm-org-rifle
