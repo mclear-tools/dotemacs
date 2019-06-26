@@ -24,25 +24,27 @@
   "Create a new frame with a new empty buffer & turn on persp-mode."
   (interactive)
   (nameframe-make-frame "untitled"))
-  ;; (let ((buffer (generate-new-buffer "untitled")))
-  ;;   (set-buffer-major-mode buffer)
-  ;;   (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
+;; (let ((buffer (generate-new-buffer "untitled")))
+;;   (set-buffer-major-mode buffer)
+;;   (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
 
-  (put 'erase-buffer 'disabled nil)
-  (put 'downcase-region 'disabled nil)
-  (put 'upcase-region 'disabled nil)
-  (put 'narrow-to-region 'disabled nil)
-  (put 'dired-find-alternate-file 'disabled nil)
-  (defun cpm/call-emacs ()
-    (interactive)
-    (start-process "Emacs" nil
-                   (executable-find "/usr/local/bin/emacs")))
-                   ;; (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
-  ;; http://stackoverflow.com/a/10216338/4869
-  (defun cpm/copy-whole-buffer-to-clipboard ()
-    "Copy entire buffer to clipboard"
-    (interactive)
-    (clipboard-kill-ring-save (point-min) (point-max)))
+(put 'erase-buffer 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+
+(defun cpm/call-emacs ()
+  (interactive)
+  (start-process "Emacs" nil
+                 ;; (executable-find "/usr/local/bin/emacs")))
+                 (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
+
+;; http://stackoverflow.com/a/10216338/4869
+(defun cpm/copy-whole-buffer-to-clipboard ()
+  "Copy entire buffer to clipboard"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
 
 ;;;; Byte Compile Files
 ;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
