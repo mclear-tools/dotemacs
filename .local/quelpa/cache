@@ -1,1 +1,1 @@
-((frame-workflow :fetcher github :repo "akirak/frame-workflow"))
+((centaur-tabs :fetcher github :repo "ema2159/centaur-tabs") (frame-workflow :fetcher github :repo "akirak/frame-workflow"))
