@@ -72,5 +72,13 @@
                    helm-source-info-eintr
                    helm-source-info-cl)))
 
+;;;; Helm-markers
+(use-package helm-evil-markers
+  :ensure t
+  :after (evil helm)
+  :demand t
+  :config
+  ;; enable helm-evil-markers
+  (helm-evil-markers-toggle))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-helm-packages)
