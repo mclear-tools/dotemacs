@@ -206,7 +206,7 @@
   :commands (paradox-list-packages paradox-upgrade-packages)
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
-  (setq paradox-execute-asynchronously nil
+  (setq paradox-execute-asynchronously t
         ;; Show all possible counts
         paradox-display-download-count t
         paradox-display-star-count t
