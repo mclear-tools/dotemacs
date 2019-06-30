@@ -231,8 +231,17 @@
 
 (use-package quelpa-use-package
   :ensure t
-  :defer 1
+  :defer t
   :config
   ;; advice for maybe installing with quelpa
   (setq quelpa-use-package-inhibit-loading-quelpa t)
   (quelpa-use-package-activate-advice))
+
+;;;; Git-Use-Package
+;; this is a nice and simple quelpa alternative
+(use-package use-package-git
+  :ensure nil
+  :demand t
+  :load-path cpm-elisp-dir
+  :config
+  (setq use-package-git-user-dir cpm-elisp-dir))
