@@ -30,3 +30,5 @@ transient*
 /.local/temp/etc/recentf
 /.local/elpa-26/elpa/
 /.local/quelpa/*
+/.local/elisp/setup-config/*init.el
+*.archive.el
