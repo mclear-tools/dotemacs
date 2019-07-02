@@ -116,11 +116,16 @@
 ;;;; Save History
 (use-package    savehist-mode
   :ensure nil
+  :disabled t
   :defer 1
   :config
   (setq savehist-file (concat cpm-cache-dir "savehist"))
   (setq savehist-save-minibuffer-history t)
-  (savehist-mode))
+  (setq history-length 100)
+  (put 'minibuffer-history 'history-length 50)
+  (put 'evil-ex-history 'history-length 50)
+  (put 'kill-ring 'history-length 25)
+  (savehist-mode 1))
 
 ;;;; Desktop
 (when (file-exists-p custom-file)
