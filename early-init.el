@@ -14,7 +14,7 @@
 (defvar cpm--file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
-;; Garbage collection
+;;;; Garbage collection
 ;; from http://akrl.sdf.org NOTE: Keep an eye on this -- I may go back to old settings if there are too many pauses
 (defmacro k-time (&rest body)
   "Measure and return the time it takes evaluating BODY."
@@ -39,6 +39,7 @@
                        (lambda ()
                          (message "Garbage Collector has run for %.06fsec"
                                   (k-time (garbage-collect))))))
+
 ;;;; Clean View
 ;; Disable start-up screen
 (setq-default inhibit-startup-screen t)
