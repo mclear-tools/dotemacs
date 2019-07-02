@@ -49,4 +49,5 @@
  '(imenu-list-entry-face-0 ((t (:inherit imenu-list-entry-face :foreground "#269bd2"))))
  '(imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
  '(imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
- '(imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
+ '(imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900"))))
+ '(line-number-current-line ((t (:inherit line-number :foreground "goldenrod1")))))
