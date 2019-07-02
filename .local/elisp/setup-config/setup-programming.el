@@ -32,9 +32,9 @@
 ;; minor mode providing highlighting of identifiers based on their names. Each
 ;; identifier gets a color based on a hash of its name.
 (use-package rainbow-identifiers
-  :commands rainbow-identifiers-mode
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
+  :commands rainbow-identifiers-mode)
+
+
 
 ;;; Colors
 ;; https://github.com/emacsmirror/rainbow-mode Colorize color names in buffers
