@@ -234,11 +234,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 (global-set-key [escape] 'evil-exit-emacs-state))
-  (defun cpm/eval-buffer-until-error ()
+
+(defun cpm/eval-buffer-until-error ()
   "Evaluate emacs buffer until error occured."
   (interactive)
   (goto-char (point-min))
   (while t (eval (read (current-buffer)))))
+
+;;;; Fill or Unfill
 (defun cpm/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   (interactive)
