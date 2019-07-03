@@ -1,16 +1,43 @@
 ;;; OSX Settings
 ;;;; Clipboad
-(use-package simple-clip
+(use-package simpleclip
   :ensure t
-  :git "https://github.com/rolandwalker/simpleclip.git"
+  :disabled t
   :defer 1
   :config
   (simpleclip-mode 1))
 
+(setq select-enable-clipboard t)
+;; Saving whatever’s in the current (system) clipboard before
+;; replacing it with the Emacs’ text.
+(setq save-interprogram-paste-before-kill t)
+;; Copy/Paste functions
+;; https://github.com/dakrone/eos/blob/master/eos-core.org#mac-osx
+(defun copy-from-osx ()
+  "Handle copy/paste intelligently on osx."
+  (let ((pbpaste (purecopy "/usr/bin/pbpaste")))
+    (if (and (eq system-type 'darwin)
+             (file-exists-p pbpaste))
+        (let ((tramp-mode nil)
+              (default-directory "~"))
+          (shell-command-to-string pbpaste)))))
+
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "/usr/bin/pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+(setq interprogram-cut-function 'paste-to-osx
+      interprogram-paste-function 'copy-from-osx)
+
+;; Fix for non-ascii characters
+;; see https://gist.github.com/the-kenny/267162#gistcomment-2883522
+(setenv "LANG" "en_US.UTF-8")
+
 ;;;; General Settings
 
-(setq IS-LINUX (eq system-type 'gnu/linux)
-      IS-MAC (eq system-type 'darwin))
+ (setq IS-LINUX (eq system-type 'gnu/linux)
+       IS-MAC (eq system-type 'darwin))
 (when IS-MAC
   ;; make fonts look better with anti-aliasing
   (setq mac-allow-anti-aliasing t)
