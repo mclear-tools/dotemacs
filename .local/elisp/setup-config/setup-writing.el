@@ -23,14 +23,14 @@
   ;;           "--ignore=3")))
 
 (use-package flyspell
- :config
- (setq flyspell-abbrev-p t
-       flyspell-use-global-abbrev-table-p t
-       flyspell-issue-message-flag nil
-       flyspell-issue-welcome-flag nil)
- :hook ((markdown-mode . flyspell-mode)
-        (org-mode . flyspell-mode)
-        (prog-mode . flyspell-prog-mode)))
+  :config
+  (setq flyspell-abbrev-p t
+        flyspell-use-global-abbrev-table-p t
+        flyspell-issue-message-flag nil
+        flyspell-issue-welcome-flag nil)
+  :hook ((markdown-mode . flyspell-mode)
+         (org-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode)))
 
 (use-package flyspell-correct-ivy
   :general
