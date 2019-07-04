@@ -146,10 +146,23 @@
          (eshell-mode . goto-address-mode)
          (shell-mode . goto-address-mode))
   :bind (:map goto-address-highlight-keymap
-              ("<RET>" . goto-address-at-point)
-              ("M-<RET>" . newline))
+          ("<RET>" . goto-address-at-point)
+          ("M-<RET>" . newline))
   :commands (goto-address-prog-mode
              goto-address-mode))
+
+;;; Frog-Jump-Avy
+;; FIXME: fix loading with perspective
+(use-package frog-jump-buffer
+  :ensure t
+  :commands frog-jump-buffer
+  :general
+  ("C-c b" 'frog-jump-buffer)
+  :config
+  (dolist (regexp '("TAGS" "^\\*Compile-log" "-debug\\*$" "^\\:" "errors\\*$" "^\\*Backtrace" "-ls\\*$"
+                    "stderr\\*$" "^\\*Flymake" "^\\*vc" "^\\*Warnings" "^\\*eldoc" "\\^*Shell Command"))
+    (push regexp frog-jump-buffer-ignore-buffers))
+  (setq frog-jump-buffer-max-buffers 15))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
