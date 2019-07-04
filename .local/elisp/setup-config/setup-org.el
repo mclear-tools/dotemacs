@@ -1340,9 +1340,10 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 (use-package org-download
   :commands (org-download-yank org-download-screenshot org-download-image)
   :config
-   (setq org-download-method 'directory)
-         org-download-image-dir "~/Dropbox/org-files/org-pictures"
-         org-download-image-latex-width 500)
+  (setq org-download-method 'directory
+        org-download-image-dir "~/Dropbox/org-files/org-pictures"
+        org-download-image-latex-width 500
+        setq org-download-timestamp "-%Y-%m-%d"))
 
 ;;; Org Pomodoro
 ;; Helps with time tracking
