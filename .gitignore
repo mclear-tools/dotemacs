@@ -33,3 +33,5 @@ transient*
 /.local/elisp/setup-config/*init.el
 *.archive.el
 /.local/elpa-27/
+/.local/elpa/vterm-*/build
+/.local/elpa/vterm-*/vterm-module.so
