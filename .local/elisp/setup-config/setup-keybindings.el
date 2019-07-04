@@ -52,6 +52,7 @@
    "be" 'erase-buffer
    ;; "bf" 'cpm/browse-file-directory
    "bf" 'reveal-in-osx-finder
+   "bg" 'frog-jump-buffer
    "bj" 'cpm/jump-in-buffer
    "bk" 'evil-delete-buffer
    "bK" 'crux-kill-other-buffers

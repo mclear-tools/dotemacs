@@ -80,5 +80,18 @@
   :config
   ;; enable helm-evil-markers
   (helm-evil-markers-toggle))
+
+;;;; Helm-preview
+;; Preview files selected in helm
+(use-package helm-file-preview
+  :ensure t
+  :after helm
+  :demand t
+  :config
+  ;; turn off to have preview no matter what
+  (setq helm-file-preview-only-when-line-numbers t)
+  ;; set to nil to leave file open
+  (setq helm-file-preview-preview-only t)
+  (helm-file-preview-mode t))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-helm-packages)
