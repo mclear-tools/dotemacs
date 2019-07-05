@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "pfuture" "20190505.1006" "a simple wrapper around asynchronous processes" '((emacs "25.2")) :stars '(#("22" 0 2 (font-lock-face paradox-star-face)) #("29K" 0 3 (value 29505 font-lock-face paradox-download-face))) :commit "263227534e8bb98aedce18698c34db9fd4d6500b" :authors '(("Alexander Miller" . "alexanderm@web.de")) :maintainer '("Alexander Miller" . "alexanderm@web.de") :url "https://github.com/Alexander-Miller/pfuture")
