@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.local/temp/cache/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "/Users/roambot/.emacs.d/.local/temp/cache/bookmarks")
  '(git-commit-summary-max-length 50)
  '(markdown-toc-header-toc-end "<!-- toc end -->")
  '(markdown-toc-header-toc-start "<!-- toc start -->")
