@@ -271,6 +271,7 @@
          (make-directory remember-data-dir t)))
 
 (use-package restart-emacs :commands restart-emacs)
+(setq confirm-kill-processes nil) ; don't object when quitting
 
 (use-package autorevert
   :ensure nil
