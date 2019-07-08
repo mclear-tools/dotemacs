@@ -105,22 +105,23 @@
   :init
   ;; markdown hooks
   (add-hook 'markdown-mode-hook
-        '(lambda ()
-        (turn-on-flyspell) (auto-fill-mode) (centered-cursor-mode) (git-gutter-mode 1)   (hl-todo-mode)))
+            '(lambda ()
+               (turn-on-flyspell) (auto-fill-mode) (centered-cursor-mode) (git-gutter-mode 1)   (hl-todo-mode)))
   (setq markdown-command
-    (concat
-     "/usr/local/bin/pandoc"
-     " --from=markdown --to=html"
-     " --standalone --mathjax --highlight-style=pygments"
-     " --css=/Users/roambot/.pandoc/pandoc.css"
-     " --quiet"
-     " --number-sections"
-     " --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua"
-     " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
-     " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
-     " --metadata=reference-section-title:'References & Further Reading'"
-     " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"
-     ))
+        (concat
+         "/usr/local/bin/pandoc"
+         " --from=markdown --to=html"
+         " --standalone --mathjax --highlight-style=pygments"
+         " --css=/Users/roambot/.pandoc/pandoc.css"
+         " --quiet"
+         " --number-sections"
+         " --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua"
+         " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
+         " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
+         " --metadata=reference-section-title:'References & Further Reading'"
+         " --filter pandoc-citeproc"
+         ;; " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"
+         ))
 
   (setq markdown-enable-math nil
         markdown-enable-wiki-links t
@@ -129,9 +130,9 @@
         markdown-footnote-location 'immediately
         markdown-unordered-list-item-prefix "-   "
         markdown-use-pandoc-style-yaml-metadata t)
-   :config
-   ;; remove strikout comment face
-   (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil))
+  :config
+  ;; remove strikout comment face
+  (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil))
 
 ;; macro: delete backslashes in paragraph to cleanup markdown conversion
 (fset 'cpm/md-delete-backslash
@@ -394,10 +395,82 @@
   :config
   (setq zd-id-format "%Y-%m%d-%H%M")
   (setq zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{2\\}")
+  (setq zd-tag-regex "[#][a-z-]+")
   (setq zd-link-indicator "")
-  (setq zd-title-prefix "title: "))
+  (setq zd-title-prefix "title: ")
 
+  ;; modify functions for workfolow
 
+  ;; add brackets for wikilink treatment
+  (defun zd-list-entry-file-link (zdFile)
+    "Insert ZDFILE as list entry."
+    (insert " - " (concat zd-link-indicator "[["(file-name-base zdFile)"]]") "\n"))
+
+  (defun zd-insert-list-links-missing (zdSrch)
+    "Insert a list of links to all deft files with a search string ZDSRCH.
+In contrast to `zd-insert-list-links' only include links not yet present
+in the current file.
+Can only be called from a file in the zetteldeft directory."
+    (interactive (list (read-string "search string: ")))
+    (zd--check)
+    (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
+      (setq zdCurrentIDs (zd-extract-links (buffer-file-name)))
+                                        ; filter IDs from search results
+      (dolist (zdFile (zd-get-file-list zdSrch))
+        (push (zd-lift-id zdFile) zdFoundIDs))
+                                        ; create new list with unique ids
+      (dolist (zdID zdFoundIDs)
+        (unless (member zdID zdCurrentIDs)
+          (push zdID zdFinalIDs)))
+                                        ; remove the ID of the current buffer from said list
+      (setq zdThisID (zd-lift-id (file-name-base (buffer-file-name))))
+      (setq zdFinalIDs (delete zdThisID zdFinalIDs))
+                                        ; finally find full title for each ID and insert it
+      (if zdFinalIDs
+          (dolist (zdID zdFinalIDs)
+            (setq zdID (zd-id-to-full-title zdID))
+            (insert " - " (concat zd-link-indicator "[["zdID"]]" "\n")))
+                                        ; unless the list is empty, then insert a message
+        (insert (format zd-list-links-missing-message zdSrch)))))
+
+  ;; fix search functions
+  (defun zd-avy-tag-search ()
+    "Call on avy to jump and search tags indicated with #."
+    (interactive)
+    (save-excursion
+      (avy-jump zd-tag-regex)
+      (zd-search-at-point)))
+
+  (defun zd-avy-link-search ()
+    "Call on avy to jump and search link ids indicated with [[.
+Opens immediately if there is only one result."
+    (interactive)
+    (save-excursion
+      (avy-goto-char-2 ?\[?\[)
+      (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
+
+  (defun zd-avy-file-search (&optional otherWindow)
+    "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
+Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
+    (interactive)
+    (save-excursion
+      (avy-goto-char-2 ?\[?\[)
+      (forward-char)
+      (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
+
+  (defun zd-avy-file-search-ace-window ()
+    "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
+When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
+    (interactive)
+    (require 'ace-window)
+    (save-excursion
+      (avy-goto-char ?\[?\[)
+      (let ((ID (zd-lift-id (zd-get-thing-at-point))))
+        (select-window (aw-select "Select window..."))
+        (zd-search-filename ID))))
+  )
+
+;; use dired to navigate notes
 (defun cpm/zettel-dired ()
   (interactive)
   (find-file "~/Dropbox/Notes/zettel")
