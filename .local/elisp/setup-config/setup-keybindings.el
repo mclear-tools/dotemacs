@@ -90,6 +90,7 @@
    "Cc" 'goto-custom.el
    "Cd" 'goto-dotfiles.org
    "CD" 'goto-emacs-dir
+   "CE" 'goto-cpm-elisp-dir
    "Ce" 'goto-early-init.el
    "Cf" 'cpm/find-files-setup-config-directory
    "Ck" 'cpm/compile-dotemacs
@@ -622,6 +623,7 @@
    "zS" '(zd-search-at-point :wk "search at point")
    "zt" '(zd-avy-tag-search :wk "avy tag search")
    "zT" '(zd-tag-buffer :wk "tag list")
+   "z RET" '(zd-follow-link :wk "follow link at point")
    )
 
 ;;; Org Keybindings

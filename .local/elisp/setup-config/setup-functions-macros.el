@@ -104,6 +104,9 @@
   "Open dotfiles.org file"
   (interactive)
   (find-file "~/.emacs.d"))
+(defun goto-cpm-elisp-dir ()
+  (interactive)
+  (find-file cpm-elisp-dir))
 (defun goto-org-files ()
   "Open directory with org files"
   (interactive)
@@ -433,67 +436,73 @@ is already narrowed."
 
 
 ;;;; Clipboard Transforms Using Pandoc
-  (defun cpm/org-to-markdown ()
-    "convert clipboard contents from org to markdown and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc --atx-headers -f org -t markdown"))
-    (yank))
+(defun cpm/org-to-markdown ()
+  "convert clipboard contents from org to markdown and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc --atx-headers -f org -t markdown"))
+  (yank))
 
-  (defun cpm/markdown-to-org ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc -f markdown -t org"))
-    (yank))
+(defun cpm/markdown-to-org ()
+  "convert clipboard contents from markdown to org and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f markdown -t org"))
+  (yank))
 
-  (defun cpm/tex-to-org ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t org"))
-    (yank))
+(defun cpm/tex-to-org ()
+  "convert clipboard contents from markdown to org and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t org"))
+  (yank))
 
-  (defun cpm/org-to-tex ()
-   "convert clipboard contents from org to tex and paste"
-   (interactive)
-   (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t latex"))
-   (yank))
+(defun cpm/org-to-tex ()
+  "convert clipboard contents from org to tex and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t latex"))
+  (yank))
 
-  (defun cpm/tex-to-markdown ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t markdown --atx-headers"))
-    (yank))
+(defun cpm/tex-to-markdown ()
+  "convert clipboard contents from markdown to org and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t markdown --atx-headers"))
+  (yank))
 
-  (defun cpm/markdown-to-tex ()
-    "convert clipboard contents from markdown to org and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc -f markdown -t latex"))
-    (yank))
+(defun cpm/markdown-to-tex ()
+  "convert clipboard contents from markdown to org and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f markdown -t latex"))
+  (yank))
 
-  (defun cpm/cite-to-org ()
-    "convert clipboard contents from markdown to org with citations and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
-    (yank))
+(defun cpm/cite-to-org ()
+  "convert clipboard contents from markdown to org with citations and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/Master.bib -s -t markdown-native_divs-raw_html-citations | pandoc -f markdown -t org"))
+  (yank))
 
-  (defun cpm/cite-to-markdown ()
-    "convert clipboard contents to markdown with citations and paste"
-    (interactive)
-    (kill-new (shell-command-to-string "pbpaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
-    (yank))
+(defun cpm/cite-to-markdown ()
+  "convert clipboard contents to markdown with citations and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
+  (yank))
+
+(defun cpm/bibtex-to-yaml-reference ()
+  "convert clipboard bibtex contents to yaml and paste"
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc-citeproc -y -f bibtex | pbcopy"))
+  (yank))
 
 
 ;;;; Helm Projectile
-  (defun cpm/helm-projectile-find-file-other-window ()
-   "Find a file in a project and open in a vertical split"
-   (interactive)
-   (cpm/split-window-right-and-focus)
-   (helm-projectile-find-file))
+(defun cpm/helm-projectile-find-file-other-window ()
+  "Find a file in a project and open in a vertical split"
+  (interactive)
+  (cpm/split-window-right-and-focus)
+  (helm-projectile-find-file))
 
 ;;;; List Helm Search Buffers
-  (defun cpm/helm-list-search-buffers ()
-    "get list of helm search buffers"
-    (interactive)
-    (helm-resume 1))
+(defun cpm/helm-list-search-buffers ()
+  "get list of helm search buffers"
+  (interactive)
+  (helm-resume 1))
 
 ;;;; Open directory in Finder
 (defun cpm/browse-file-directory ()
