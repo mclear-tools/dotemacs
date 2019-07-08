@@ -150,9 +150,10 @@
 ;; we're setting =package-enable-at-startup= to nil so that packages will not
 ;; automatically be loaded for us since =use-package= will be handling that.
 (setq package-enable-at-startup nil)
-(if (version< emacs-version "27.0")
-    (setq package-user-dir (concat cpm-local-dir "elpa/"))
-  (setq package-user-dir (concat cpm-local-dir "elpa-27/")))
+;; (if (version< emacs-version "27.0")
+;;     (setq package-user-dir (concat cpm-local-dir "elpa/"))
+;;   (setq package-user-dir (concat cpm-local-dir "elpa-27/")))
+(setq package-user-dir (concat cpm-local-dir "elpa/"))
 (setq load-prefer-newer t
       package--init-file-ensured t)
 
