@@ -165,19 +165,22 @@
 
 
 ;;;; Date & Time
-(defun insert-date ()
+(defun cpm/insert-date ()
   (interactive)
   (format-date "%A, %B %d %Y"))
 
-(defun insert-date-and-time ()
+(defun cpm/insert-date-and-time ()
   (interactive)
   (format-date "%m-%d-%Y %H:%M:%S"))
 
-(setq
-  time-stamp-active t          ; do enable time-stamps
-  time-stamp-line-limit -10     ; check first 10 buffer lines for Time-stamp:
-  time-stamp-format "Last modified on %04y-%02m%02d-%02H:%02M:%02S") ; date format
-(add-hook 'write-file-hooks 'time-stamp) ; update when saving
+(defun cpm/time-stamp ()
+  (interactive)
+  (insert (concat  "Time-stamp: <"(format-time-string "%04y-%02m%02d-%02H:%02M:%02S")">")))
+
+(setq time-stamp-active t          ; do enable time-stamps
+      time-stamp-line-limit -10     ; check last 10 buffer lines for Time-stamp:
+      time-stamp-format "Last modified on %04y-%02m%02d-%02H:%02M:%02S") ; date format
+(add-hook 'before-save-hook 'time-stamp) ; update when saving
 (defun format-date (format)
 (let ((system-time-locale "en_US.UTF-8"))
   (insert (format-time-string format))))
