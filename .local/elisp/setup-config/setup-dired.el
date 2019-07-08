@@ -103,7 +103,8 @@
             :states '(normal)
             "j" #'peep-dired-next-file
             "k" #'peep-dired-prev-file
-            "TAB" #'cpm/peep-dired-open)
+            "RET" #'cpm/peep-dired-open
+            "TAB" #'other-window)
   :config
   (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
