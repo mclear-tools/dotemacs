@@ -12,8 +12,10 @@
   :init
 ;;; Org Settings
 ;;;; Org Directories
-  (setq-default org-directory "~/Dropbox/org-files/")
+  (setq-default org-directory "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org-files/")
   (setq-default org-default-notes-file (concat org-directory "inbox.org"))
+  (setq-default org-agenda-files (list org-directory))
+
   :config
 ;;;; Org Config Settings
   (setq org-stuck-projects (quote ("" nil nil "")))
@@ -470,9 +472,9 @@ _vr_ reset      ^^                       ^^                 ^^
   (defadvice org-capture-finalize
       (after delete-capture-frame activate)
     "Advise capture-finalize to close the frame"
-    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
+    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame frame force))
+          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame frame force))
+          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame frame force))
           ))
 
 
@@ -515,7 +517,6 @@ _vr_ reset      ^^                       ^^                 ^^
           ("\\.x?html?\\'" . default)
           ("\\.pdf\\'" . emacs)
           (auto-mode . emacs)))
-  (setq org-agenda-files '("~/Dropbox/org-files/"))
   (general-define-key "C-c a" #'org-agenda)
 
 ;;; End Use-Package Config
@@ -992,6 +993,12 @@ appropriate.  In tables, insert a new row or end the table."
      (t
       ;; All other cases: call `org-return'.
       (org-return)))))
+
+;;;; Org Create Check Box From List Item
+;; A useful macro for converting list items to checkboxes
+(fset 'cpm/org-create-checkbox-from-list-item
+      [?  ?# ?\M-x ?o ?r ?g ?- tab ?c ?h ?e ?c ?k tab tab backspace backspace ?k ?b tab tab backspace backspace backspace backspace backspace backspace backspace backspace backspace ?t ?o ?g ?g ?l ?e ?- ?c ?h tab return ?\M-x ?o ?r ?g ?- ?n ?e ?x ?t ?- ?l tab backspace backspace backspace backspace ?i ?t tab return])
+
 ;;; Org-Reveal
 (use-package ox-reveal
   :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
@@ -1018,20 +1025,16 @@ appropriate.  In tables, insert a new row or end the table."
 ;;;; GTD Project Functions
 (defun cpm/org-goto-todo ()
   (interactive)
-  (find-file "~/Dropbox/org-files/todo.org")
+  (find-file (concat org-directory "todo.org"))
   (widen)
   (beginning-of-buffer))
 
 (defun cpm/org-goto-inbox ()
   (interactive)
-  (find-file "~/Dropbox/org-files/inbox.org")
+  (find-file (concat org-directory "inbox.org"))
   (widen)
   (beginning-of-buffer)
   (beginning-of-line))
-
-(defun cpm/goto-projects.org ()
-  (interactive)
-  (find-file "~/Dropbox/org-files/projects.org"))
 
 ;; TODO: this isn't working
 (defun cpm/project-overview ()
@@ -1309,26 +1312,25 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       next-headline)))
 
 ;;;; GTD Areas
+;; TODO: need to rethink this
 (defun cpm/go-to-areas ()
-    (interactive)
-    (find-file "~/Dropbox/org-files/todo.org")
-    (widen)
-    (beginning-of-buffer)
-    (re-search-forward "* Areas")
-    (beginning-of-line))
+  (interactive)
+  (find-file (concat org-directory "todo.org"))
+  (widen)
+  (beginning-of-buffer)
+  (re-search-forward "* Areas")
+  (beginning-of-line))
 
 (defun cpm/areas-overview ()
-    (interactive)
-    (go-to-areas)
-    (org-narrow-to-subtree)
-    (org-columns))
+  (interactive)
+  (go-to-areas)
+  (org-narrow-to-subtree)
+  (org-columns))
 
 ;;;; Random Notes
-;; FIXME: Need to broaden the list of candidates...
+;; FIXME: Need to fix the list of candidates...
 (use-package org-randomnote
-  :commands (org-randomnote org-randomnote--go-to-random-header org-randomnote--get-random-file org-randomnote--get-random-subtree)
-  :init
-  (setq org-randomnote-candidates '("~/Dropbox/org-files/todo.org")))
+  :commands (org-randomnote org-randomnote--go-to-random-header org-randomnote--get-random-file org-randomnote--get-random-subtree))
 
 ;;; Org Rifle
 ;; Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
@@ -1341,7 +1343,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   :commands (org-download-yank org-download-screenshot org-download-image)
   :config
   (setq org-download-method 'directory
-        org-download-image-dir "~/Dropbox/org-files/org-pictures"
+        org-download-image-dir (concat org-directory "org-pictures/")
         org-download-image-latex-width 500
         setq org-download-timestamp "-%Y-%m-%d"))
 
