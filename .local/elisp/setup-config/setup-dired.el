@@ -62,8 +62,9 @@
   :ensure nil
   :after dired
   :demand t
-  :init (setq-default dired-omit-mode t)
+  :init (setq-default dired-omit-mode nil)
   :config
+  (setq dired-omit-verbose nil)
   (add-to-list 'dired-omit-extensions ".DS_Store"))
 
 (use-package dired-aux
