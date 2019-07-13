@@ -5,6 +5,7 @@
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
+(when (version< emacs-version "27.0")
 ;;; Startup
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -232,6 +233,8 @@
   :load-path cpm-elisp-dir
   :config
   (setq use-package-git-user-dir cpm-elisp-dir))
+
+)
 
 ;;; Personal Information
 ;; Give emacs some personal info
