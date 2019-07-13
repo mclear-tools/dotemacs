@@ -56,6 +56,7 @@
    "bj" 'cpm/jump-in-buffer
    "bk" 'evil-delete-buffer
    "bK" 'crux-kill-other-buffers
+   "bm" 'helm-evil-markers
    "bn" 'evil-buffer-new
    "bN" 'cpm/new-buffer-new-frame
    "br" 'revert-buffer
@@ -463,6 +464,7 @@
    "uAi" #'cpm/goto-inbox.org
    "uAl" #'cpm/goto-links.org
    "uAr" #'cpm/goto-reference.org
+   "uAR" #'cpm/goto-referee-reports.org
    "uAp" #'cpm/goto-projects.org
    "uAs" #'cpm/goto-someday.org
    "uAt" #'cpm/goto-todo.org
@@ -535,6 +537,7 @@
    "wm" 'delete-other-windows
    "wr" 'cpm/rotate-windows
    "wR" 'cpm/rotate-windows-backward
+   "wt" 'tear-off-window
    "wu" 'winner-undo
    "wU" 'winner-redo
    "wv" 'cpm/split-window-right-and-focus
