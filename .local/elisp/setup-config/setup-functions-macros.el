@@ -555,14 +555,15 @@ argument takes the kindows rotate backwards."
   (rotate-windows (* -1 count)))
 (defun cpm/helm-files-do-ag (&optional dir)
   "Search in files with `ag' using a default input."
-    (interactive)
-    (helm-do-ag dir))
+  (interactive)
+  (helm-do-ag dir))
 
+;;;; Make Window  a Frame
 ;;;; Helm Search Directory
 (defun cpm/helm-files-search-current-directory ()
   "search in files with `ag' in current buffer's directory"
-    (interactive)
-    (helm-do-ag (file-name-directory buffer-file-name)))
+  (interactive)
+  (helm-do-ag (file-name-directory buffer-file-name)))
   ;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
   (defun cpm/show-and-copy-buffer-filename ()
     "Show the full path to the current file in the minibuffer."
