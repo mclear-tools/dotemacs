@@ -3,6 +3,10 @@
 ;;  much more pleasant to use than the standard git interface on the command line.
 ;;  I've set up some easy keybindings to access magit and related packages.
 
+;;; VC
+;;disable emacs vc for git; just use magit!
+(setq vc-handled-backends (delq 'Git vc-handled-backends))
+
 ;;; Magit
 (use-package magit
   :commands
