@@ -20,6 +20,9 @@
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
   :config
   (setq magit-refresh-verbose t)
+  ;; don't automatically present diff on commit
+  ;; type C-c C-d to show the diff when needed
+  (remove-hook 'server-switch-hook 'magit-commit-diff)
   ;; make magit go fullscreen
   ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-diff-refine-hunk t)
