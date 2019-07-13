@@ -1,0 +1,3 @@
+[submodule ".local/elisp/gcmh"]
+	path = .local/elisp/gcmh
+	url = https://gitlab.com/koral/gcmh.git
