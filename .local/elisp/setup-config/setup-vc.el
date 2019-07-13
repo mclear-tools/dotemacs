@@ -19,6 +19,7 @@
   ;; magit-auto-revert-mode" when loading Magit.
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
   :config
+  (setq magit-refresh-verbose t)
   ;; make magit go fullscreen
   ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-diff-refine-hunk t)
