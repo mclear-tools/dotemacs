@@ -50,6 +50,10 @@ codepoints starting from codepoint-start."
   :defer 2)
 
 
-
-
+;;;; Named Servers
+;; from https://www.reddit.com/r/emacs/comments/9ih3fo/frameoriented_workflow/e6lkfpa?utm_source=share&utm_medium=web2x
+;; set different server names for multiple processes
+;; (setq server-name "org")
+;; (setq server-name "dashboard")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
