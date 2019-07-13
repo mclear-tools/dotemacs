@@ -53,7 +53,7 @@
 
 ;;;; Org State Settings
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "DOING(g)" "NEXT(n)" "|" "DONE(d)")
+        '((sequence "TODO(t)" "DOING(g)" "NEXT(n)" "WAITING(w@/!)" "MAYBE(m)" "SOMEDAY(s)" "|" "DONE(d)")
           (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELED(c@/!)")))
 ;;;; Org Priority Settings
   (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
@@ -402,7 +402,9 @@ _vr_ reset      ^^                       ^^                 ^^
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
           ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
-           (file ,(concat org-directory "templates/weekly_review_template.org")))))
+           (file ,(concat org-directory "templates/weekly_review_template.org")))
+          ("R" "Referee report" entry (file+datetree ,(concat org-directory "referee-reports.org"))
+           (file ,(concat org-directory "templates/referee-report-template.org")))))
 
   ;; Add date to captured items
   (defun add-property-with-date-captured ()
@@ -472,9 +474,9 @@ _vr_ reset      ^^                       ^^                 ^^
   (defadvice org-capture-finalize
       (after delete-capture-frame activate)
     "Advise capture-finalize to close the frame"
-    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame frame force))
-          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame frame force))
-          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame frame force))
+    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
+          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
+          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
           ))
 
 
@@ -816,6 +818,10 @@ Instead it's simpler to use bash."
   "goto org-classes"
   (interactive)
   (find-file (concat org-directory "teaching.org")))
+(defun cpm/goto-referee-reports.org ()
+  "goto org referee reports"
+  (interactive)
+  (find-file (concat org-directory "referee-reports.org")))
 (defun cpm/goto-reference.org ()
   "goto org reference notes"
   (interactive)
@@ -840,7 +846,37 @@ Instead it's simpler to use bash."
 
 ;;;; Export Headings as Seperate Files
 ;; export headlines to separate files
+;; http://pragmaticemacs.com/emacs/export-org-mode-headlines-to-separate-files/ ; see also:
 ;; http://emacs.stackexchange.com/questions/2259/how-to-export-top-level-headings-of-org-mode-buffer-to-separate-files
+
+(defun cpm/org-export-headlines-to-docx ()
+  "Export all subtrees that are *not* tagged with :noexport: to
+separate files.
+
+Subtrees ;TODO: hat do not have the :EXPORT_FILE_NAME: property set
+are exported to a filename derived from the headline text."
+  (interactive)
+  (save-buffer)
+  (let ((modifiedp (buffer-modified-p)))
+    (save-excursion
+      (goto-char (point-min))
+      (goto-char (re-search-forward "^*"))
+      (set-mark (line-beginning-position))
+      (goto-char (point-max))
+      (org-map-entries
+       (lambda ()
+         (let ((export-file (org-entry-get (point) "EXPORT_FILE_NAME")))
+           (unless export-file
+             (org-set-property
+              "EXPORT_FILE_NAME"
+              (replace-regexp-in-string " " "_" (nth 4 (org-heading-components)))))
+           (deactivate-mark)
+           (org-pandoc-export-to-docx nil t)
+           (unless export-file (org-delete-property "EXPORT_FILE_NAME"))
+           (set-buffer-modified-p modifiedp)))
+       "-noexport" 'region-start-level)))
+  (shell-command-to-string "open ~/Dropbox/Work/Comments/Referee-Reports/ref-report.docx"))
+
 (defun cpm/org-export-headlines-to-pdf ()
   "Export all subtrees that are *not* tagged with :noexport: to
 separate files.
