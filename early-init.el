@@ -15,30 +15,14 @@
 (setq file-name-handler-alist nil)
 
 ;;;; Garbage collection
-;; from http://akrl.sdf.org NOTE: Keep an eye on this -- I may go back to old settings if there are too many pauses
-(defmacro k-time (&rest body)
-  "Measure and return the time it takes evaluating BODY."
-  `(let ((time (current-time)))
-     ,@body
-     (float-time (time-since time))))
-
-;; Set garbage collection threshold to ludicrous levels.
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.6)
-
-;; Post-init set garbage collection threshold to less ludicrous levels.
-(add-hook 'after-init-hook
-          `(lambda ()
-             (setq gc-cons-threshold 80000
-                   gc-cons-percentage 0.1)
-             (garbage-collect)) t)
-
-;; When idle for 10sec run the GC no matter what.
-(defvar k-gc-timer
-  (run-with-idle-timer 5 t
-                       (lambda ()
-                         (message "Garbage Collector has run for %.06fsec"
-                                  (k-time (garbage-collect))))))
+;; see http://akrl.sdf.org NOTE: Keep an eye on this -- I may go back to old settings if there are too many pauses
+;; from https://gitlab.com/koral/gcmh
+(setq garbage-collection-messages t)
+(add-to-list 'load-path "~/.emacs.d/.local/elisp/gcmh/")
+(require 'gcmh)
+(gcmh-mode 1)
+(setq gcmh-idle-delay 10
+      gcmh-verbose t)
 
 ;;;; Clean View
 ;; Disable start-up screen
@@ -149,6 +133,9 @@
 ;; we're setting =package-enable-at-startup= to nil so that packages will not
 ;; automatically be loaded for us since =use-package= will be handling that.
 (setq package-enable-at-startup nil)
+;; (if (version< emacs-version "27.0")
+;;     (setq package-user-dir (concat cpm-local-dir "elpa/"))
+;;   (setq package-user-dir (concat cpm-local-dir "elpa-27/")))
 (setq package-user-dir (concat cpm-local-dir "elpa/"))
 (setq load-prefer-newer t
       package--init-file-ensured t)
@@ -205,7 +192,7 @@
   :commands (paradox-list-packages paradox-upgrade-packages)
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
-  (setq paradox-execute-asynchronously t
+  (setq paradox-execute-asynchronously nil
         ;; Show all possible counts
         paradox-display-download-count t
         paradox-display-star-count t
@@ -244,3 +231,4 @@
   :load-path cpm-elisp-dir
   :config
   (setq use-package-git-user-dir cpm-elisp-dir))
+
