@@ -1,3 +1,6 @@
 [submodule ".local/elisp/gcmh"]
 	path = .local/elisp/gcmh
 	url = https://gitlab.com/koral/gcmh.git
+[submodule ".local/elisp/vterm"]
+	path = .local/elisp/vterm
+	url = https://github.com/akermu/emacs-libvterm.git
