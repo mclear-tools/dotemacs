@@ -114,6 +114,7 @@
 ;; Better terminal function---way faster than ansi-term
 (use-package vterm
   :ensure t
+  :git "https://github.com/akermu/emacs-libvterm.git"
   :commands (vterm vterm-other-window)
   :custom (vterm-install t)
   :config
