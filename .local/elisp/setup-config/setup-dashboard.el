@@ -27,6 +27,10 @@
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
   :config
+  ;; set in own workspace
+  (with-eval-after-load 'eyebrowse
+    (eyebrowse-switch-to-window-config-1)
+    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Dashboard"))
   ;; banner & header
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png")
         dashboard-banner-logo-title "Sapere aude"
@@ -79,19 +83,19 @@
    list-size
    "p"
    `(lambda (&rest ignore)
-        (let ((buffer (generate-new-buffer "untitled")))
-  (set-buffer-major-mode buffer)
-  (display-buffer buffer '(display-buffer-pop-up-frame . nil)))
-  (crux-create-scratch-buffer)
-  (projectile-switch-project-by-name ,el)
-  (setq frame-title-format
-    '(""
-      "%b"
-      (:eval
-       (let ((project-name (projectile-project-name)))
-         (unless (string= "-" project-name)
-           (format " in [%s]" project-name)))))))
-(abbreviate-file-name el)))
+      (eyebrowse-create-window-config)
+      (projectile-switch-project-by-name ,el)
+      (setq frame-title-format
+            '(""
+              "%b"
+              (:eval
+               (let ((project-name (projectile-project-name)))
+                 (unless (string= "-" project-name)
+                   (format " in [%s]" project-name))))))
+      (let ((project-name (projectile-project-name)))
+        (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name))
+      (magit-status))
+   (abbreviate-file-name el)))
 
 ;; functions to call dashboard when it kas been killed or not loaded
 (defun cpm/dashboard ()
