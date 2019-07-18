@@ -74,8 +74,8 @@
       (if (member 'solarized-dark custom-enabled-themes)
           (custom-theme-set-faces
            'solarized-dark
-           ;; make bg darker for higher contrast
-           '(default ((t (:background "#002833" :foreground "#839496"))))
+           ;; make bg darker for higher contrast & foreground slightly lighter
+           '(default ((t (:background "#002833" :foreground "#8f9ea0"))))
            ;; matching fringe
            '(fringe ((t (:background     "#002833" :foreground "#586e75"))))
            ;; fix modeline underline
