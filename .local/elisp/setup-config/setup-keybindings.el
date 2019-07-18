@@ -335,7 +335,8 @@
    "pG"  'projectile-regenerate-tags
    "pI"  'projectile-invalidate-cache
    "pk"  'projectile-kill-buffers
-   "po" #'cpm/open-project-and-frame
+   "po"  #'cpm/open-project-and-workspace
+   ;; "po" #'cpm/open-project-and-frame
    ;; "pl"  'desktop+-load
    ;; "po"  'projectile-multi-occur
    "pp"  'helm-projectile-switch-project
@@ -343,23 +344,24 @@
    ;; "pp"  'helm-persp-projectile-switch-project
    "pr"  'helm-projectile-recentf
    "pR"  'projectile-replace
-   "pS"  'persp-switch
-   "ps"  '(:ignore t :which-key "Frames")
-   "pss"  'nameframe-switch-frame
-   "ps1" #'cpm/load-phil101
-   "ps2" #'cpm/load-phil232
-   "ps5" #'cpm/load-phil105
-   "ps8" #'cpm/load-phil871
-   "psa" #'cpm/load-kant-apperception-substance
-   "psb" #'(:ignore t :which-key "Books")
-   "psba" #'cpm/load-kant-agency-book
-   "psbr" #'cpm/load-kant-rationality-book
-   "psc" #'cpm/load-emacs-config
-   "psf" #'cpm/load-kant-free-thought
-   "psr" #'cpm/load-kant-reflection
-   "pst" #'cpm/load-org-agenda-todo
-   "psw" #'cpm/load-website
-   "psz" #'cpm/load-zettelkasten
+   "ps" 'helm-projectile-switch-project
+   ;; "pS"  'persp-switch
+   ;; "ps"  '(:ignore t :which-key "Frames")
+   ;; "pss"  'nameframe-switch-frame
+   ;; "ps1" #'cpm/load-phil101
+   ;; "ps2" #'cpm/load-phil232
+   ;; "ps5" #'cpm/load-phil105
+   ;; "ps8" #'cpm/load-phil871
+   ;; "psa" #'cpm/load-kant-apperception-substance
+   ;; "psb" #'(:ignore t :which-key "Books")
+   ;; "psba" #'cpm/load-kant-agency-book
+   ;; "psbr" #'cpm/load-kant-rationality-book
+   ;; "psc" #'cpm/load-emacs-config
+   ;; "psf" #'cpm/load-kant-free-thought
+   ;; "psr" #'cpm/load-kant-reflection
+   ;; "pst" #'cpm/load-org-agenda-todo
+   ;; "psw" #'cpm/load-website
+   ;; "psz" #'cpm/load-zettelkasten
    "pt"  #'org-projectile-helm-template-or-project
    "pT"  'projectile-find-test-file
    "pv"  'hydra-persp/body

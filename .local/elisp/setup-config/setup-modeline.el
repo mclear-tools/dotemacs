@@ -93,7 +93,7 @@
   ;; Mode lines
   ;;
   (doom-modeline-def-modeline 'cpm/my-doom-mode-line
-                              '(workspace-number window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
+                              '(window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
                               '(misc-info input-method buffer-encoding process checker buffer-position " "))
 
   (defun setup-custom-doom-modeline ()
