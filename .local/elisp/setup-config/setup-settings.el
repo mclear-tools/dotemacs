@@ -1,5 +1,5 @@
-;;; Emacs Core
-;;;; Settings
+;;; Settings
+;;;; General Settings
 
 ;;;;; Custom File Location
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -325,4 +325,4 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'setup-core)
+(provide 'setup-settings)
