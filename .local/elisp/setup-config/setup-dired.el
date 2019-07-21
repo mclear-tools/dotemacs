@@ -55,7 +55,25 @@
 
 ;; Colourful dired
 (use-package diredfl
-  :init (diredfl-global-mode 1))
+  :init (diredfl-global-mode 1)
+  :custom-face
+  (diredfl-compressed-file-name ((t (:foreground "#00629D"))))
+  (diredfl-compressed-file-suffix ((t (:foreground "#839496"))))
+  (diredfl-date-time ((t (:foreground "#9EA0E5"))))
+  (diredfl-deletion ((t (:background "Red" :foreground "Yellow"))))
+  (diredfl-dir-heading ((t (:background "#69B7F0" :foreground "#002b36"))))
+  (diredfl-dir-name ((t (:foreground "#69B7F0"))))
+  (diredfl-dir-priv ((t (:foreground "#268bd2"))))
+  (diredfl-exec-priv ((t (:foreground "#990A1b"))))
+  (diredfl-file-name ((t (:foreground "#2aa198"))))
+  (diredfl-file-suffix ((t (:foreground "#839496"))))
+  (diredfl-flag-mark-line ((t (:background "#dc322f"))))
+  (diredfl-no-priv ((t (:foreground "#b58900"))))
+  (diredfl-number ((t (:foreground "#DEB542"))))
+  (diredfl-rare-priv ((t (:background "#cb4b16" :foreground "#B4C342"))))
+  (diredfl-read-priv ((t (:foreground "#F2804F"))))
+  (diredfl-tagged-autofile-name ((t (:foreground "#328C0411328"))))
+  (diredfl-write-priv ((t (:foreground "#8b2C02")))))
 
 ;; dired extras
 (use-package dired-x
