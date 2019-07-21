@@ -104,7 +104,8 @@
 (let ((buffer "*dashboard*"))
   (when (not (get-buffer buffer))
     (dashboard-insert-startupify-lists))
-  (switch-to-buffer buffer)))
+  (switch-to-buffer buffer))
+(delete-other-windows))
 
 (defun goto-dashboard ()
   "goto the dashboard"
