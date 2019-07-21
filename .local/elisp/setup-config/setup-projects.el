@@ -67,8 +67,8 @@
   :commands (eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
   :general
   (:states '(insert normal motion emacs) :keymaps 'override
-           "s-1" 'eyebrowse-switch-to-window-config-1
-           "s-2" 'cpm/open-agenda-in-workspace
+           "s-1" 'cpm/open-agenda-in-workspace
+           "s-2" 'eyebrowse-switch-to-window-config-2
            "s-3" 'eyebrowse-switch-to-window-config-3
            "s-4" 'eyebrowse-switch-to-window-config-4
            "s-5" 'eyebrowse-switch-to-window-config-5
