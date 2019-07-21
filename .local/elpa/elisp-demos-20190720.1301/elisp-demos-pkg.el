@@ -1,4 +1,4 @@
-(define-package "elisp-demos" "20190712.1745" "Elisp API Demos"
+(define-package "elisp-demos" "20190720.1301" "Elisp API Demos"
   '((emacs "24.4"))
   :keywords
   '("lisp" "docs")
