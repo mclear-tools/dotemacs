@@ -63,36 +63,35 @@
 ;;  We're going to define a number of directories that are used throughout this
 ;;  configuration to store different types of files.
 
-(eval-and-compile
-  (defvar cpm-emacs-dir (expand-file-name user-emacs-directory)
-    "The path to the emacs.d directory.")
+(defvar cpm-emacs-dir (expand-file-name user-emacs-directory)
+  "The path to the emacs.d directory.")
 
-  (defvar cpm-local-dir (concat cpm-emacs-dir ".local/")
-    "Root directory for local Emacs files. Use this as permanent
+(defvar cpm-local-dir (concat cpm-emacs-dir ".local/")
+  "Root directory for local Emacs files. Use this as permanent
   storage for files that are safe to share across systems (if
   this config is symlinked across several computers).")
 
-  (defvar cpm-temp-dir (concat cpm-local-dir "temp/")
-    "Directory for non-essential file storage. Used by
+(defvar cpm-temp-dir (concat cpm-local-dir "temp/")
+  "Directory for non-essential file storage. Used by
   `cpm-etc-dir' and `cpm-cache-dir'.")
 
-  (defvar cpm-etc-dir (concat cpm-temp-dir "etc/")
-    "Directory for non-volatile storage. These are not deleted or
+(defvar cpm-etc-dir (concat cpm-temp-dir "etc/")
+  "Directory for non-volatile storage. These are not deleted or
   tampered with by emacs functions. Use this for dependencies
   like servers or config files that are stable (i.e. it should be
   unlikely that you need to delete them if something goes
   wrong).")
 
-  (defvar cpm-cache-dir (concat cpm-temp-dir "cache/")
-    "Directory for volatile storage. Use this for transient files
+(defvar cpm-cache-dir (concat cpm-temp-dir "cache/")
+  "Directory for volatile storage. Use this for transient files
   that are generated on the fly like caches and temporary files.
   Anything that may need to be cleared if there are problems.")
 
-  (defvar cpm-elisp-dir (concat cpm-local-dir "elisp/")
-    "Where personal elisp packages and scripts are stored.")
+(defvar cpm-elisp-dir (concat cpm-local-dir "elisp/")
+  "Where personal elisp packages and scripts are stored.")
 
-  (defvar cpm-setup-dir (concat cpm-elisp-dir "setup-config/")
-    "Where the setup-init files are stored."))
+(defvar cpm-setup-dir (concat cpm-elisp-dir "setup-config/")
+  "Where the setup-init files are stored.")
 
 ;;;; System Variables
 (defconst sys/macp
@@ -247,11 +246,11 @@
 (require 'setup-keybindings)
 (require 'setup-evil)
 (require 'setup-evil-packages)
+(require 'setup-settings)
 (require 'setup-dired)
 (require 'setup-helm)
 (require 'setup-helm-packages)
 (require 'setup-ivy)
-(require 'setup-core)
 
 ;;;; Other Modules
 (require 'setup-ui)
