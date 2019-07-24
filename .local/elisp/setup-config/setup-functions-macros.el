@@ -21,12 +21,11 @@
    "/DONE" 'agenda))
 
 (defun cpm/new-buffer-new-frame ()
-  "Create a new frame with a new empty buffer & turn on persp-mode."
+  "Create a new frame with a new empty buffer."
   (interactive)
-  (nameframe-make-frame "untitled"))
-;; (let ((buffer (generate-new-buffer "untitled")))
-;;   (set-buffer-major-mode buffer)
-;;   (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
+  (let ((buffer (generate-new-buffer "untitled")))
+    (set-buffer-major-mode buffer)
+    (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
 
 (put 'erase-buffer 'disabled nil)
 (put 'downcase-region 'disabled nil)
