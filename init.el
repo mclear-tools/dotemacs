@@ -17,14 +17,33 @@
 (setq file-name-handler-alist nil)
 
 ;;;; Garbage collection
-;; see http://akrl.sdf.org NOTE: Keep an eye on this -- I may go back to old settings if there are too many pauses
-;; from https://gitlab.com/koral/gcmh
+;; see http://akrl.sdf.org
+;; https://gitlab.com/koral/gcmh
+;; NOTE: The system linked above generates too many GC pauses so I'm using my own mixed setup
 (setq garbage-collection-messages t)
-(add-to-list 'load-path "~/.emacs.d/.local/elisp/gcmh/")
-(require 'gcmh)
-(gcmh-mode 1)
-(setq gcmh-idle-delay 10
-      gcmh-verbose t)
+(defun cpm/config-setup-hook ()
+  (setq gc-cons-threshold most-positive-fixnum
+        gc-cons-percentage 0.8))
+
+(defun cpm/config-exit-hook ()
+  (setq gc-cons-threshold 80000
+        gc-cons-percentage 0.1))
+
+(add-hook 'before-init-hook #'cpm/config-setup-hook)
+(add-hook 'after-init-hook  #'cpm/config-exit-hook)
+
+(defmacro k-time (&rest body)
+  "Measure and return the time it takes evaluating BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (float-time (time-since time))))
+
+;; When idle for 15sec run the GC no matter what.
+(defvar k-gc-timer
+  (run-with-idle-timer 10 t
+                       (lambda ()
+                         (message "Garbage Collector has run for %.06fsec"
+                                  (k-time (garbage-collect))))))
 
 ;;;; Clean View
 ;; Disable start-up screen
