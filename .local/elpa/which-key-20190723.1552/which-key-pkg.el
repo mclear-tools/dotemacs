@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "which-key" "20190723.1552" "Display available keybindings in popup" '((emacs "24.4")) :stars '(#("731" 0 3 (font-lock-face paradox-star-face)) #("411K" 0 4 (value 411434 font-lock-face paradox-download-face))) :commit "da2e093e916bf9ae7512c104512b92eca8fb224e" :authors '(("Justin Burkett" . "justin@burkett.cc")) :maintainer '("Justin Burkett" . "justin@burkett.cc") :url "https://github.com/justbur/emacs-which-key")
