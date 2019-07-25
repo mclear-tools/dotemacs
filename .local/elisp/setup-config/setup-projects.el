@@ -19,31 +19,112 @@
   (setq projectile-git-submodule-command nil)
   (projectile-global-mode))
 
+(use-package helm-projectile
+  :ensure t
+  :defer 1
+  :config
+  ;; see https://github.com/bbatsov/persp-projectile/issues/23#issuecomment-463625961
+  (define-key projectile-mode-map [remap projectile-find-other-file] #'helm-projectile-find-other-file)
+  (define-key projectile-mode-map [remap projectile-find-file] #'helm-projectile-find-file)
+  (define-key projectile-mode-map [remap projectile-find-file-in-known-projects] #'helm-projectile-find-file-in-known-projects)
+  (define-key projectile-mode-map [remap projectile-find-file-dwim] #'helm-projectile-find-file-dwim)
+  (define-key projectile-mode-map [remap projectile-find-dir] #'helm-projectile-find-dir)
+  (define-key projectile-mode-map [remap projectile-recentf] #'helm-projectile-recentf)
+  (define-key projectile-mode-map [remap projectile-switch-to-buffer] #'helm-projectile-switch-to-buffer)
+  (define-key projectile-mode-map [remap projectile-grep] #'helm-projectile-grep)
+  (define-key projectile-mode-map [remap projectile-ack] #'helm-projectile-ack)
+  (define-key projectile-mode-map [remap projectile-ag] #'helm-projectile-ag)
+  (define-key projectile-mode-map [remap projectile-ripgrep] #'helm-projectile-rg)
+  (define-key projectile-mode-map [remap projectile-browse-dirty-projects] #'helm-projectile-browse-dirty-projects)
+  (helm-projectile-commander-bindings))
+
+;;; Eyebrowse
+(use-package eyebrowse
+  :commands (eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
+  :general
+  (:states '(insert normal motion emacs) :keymaps 'override
+           "s-1" 'cpm/open-agenda-in-workspace)
+  :config
+  (setq eyebrowse-new-workspace 'dired-jump
+        eyebrowse-mode-line-style 'hide
+        eyebrowse-wrap-around t
+        eyebrowse-switch-back-and-forth t)
+  (eyebrowse-mode t))
+
+;;; Perspectives
+;; I use this to isolate buffers in the different eyebrowse workspaces
+(use-package perspective
+  :ensure t
+  :defer 1
+  :commands (persp-mode persp-switch persp-next persp-prev persp-add-buffer persp-rename persp-kill)
+  :general
+  (:states '(insert normal motion emacs) :keymaps 'override
+           "s-p" 'persp-switch
+           "s-]" 'persp-next
+           "s-[" 'persp-prev)
+  :config
+  (setq persp-show-modestring nil)
+  (persp-mode 1)
+  (add-hook 'persp-switch-hook 'cpm/eyebrowse-persp-switch))
+
+(use-package persp-projectile
+  :ensure t
+  :after perspective)
+
 ;;; Project Functions
-;; Single frame project functions
+
+;;;; Switch Eyebrowse after Change of Perspective
+(defun cpm/eyebrowse-persp-switch ()
+  "set eyebrowse when switching perspectives"
+  (interactive)
+  (let* ((persp-name (persp-curr))
+         (eyebrowse-switch-to-window-config persp-name))))
+
+
+;;;; Open agenda as Workspace
 (defun cpm/open-agenda-in-workspace ()
+  "open agenda in its own workspace"
   (interactive)
   (eyebrowse-mode)
   (eyebrowse-switch-to-window-config-1)
+  (persp-switch "agenda")
+  (require 'org-super-agenda)
   (cpm/jump-to-org-super-agenda)
-  (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Org-agenda"))
+  (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "agenda")
+  (persp-add-buffer "*dashboard*")
+  (persp-kill "main"))
 
+;;;; Open New Project in Workspace
 (defun cpm/open-project-and-workspace ()
+  "open a new project as its own workspace -- i.e. in its own perspective and eyebrowse slot"
   (interactive)
   (eyebrowse-create-window-config)
+  ;; create a temp scratch buffer for persp switch
+  ;; see https://github.com/bbatsov/helm-projectile/issues/4#issuecomment-280949497
+  (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
+                      (random-string ""))
+                  (dotimes (i 6 random-string)
+                    (setq random-string
+                          (concat
+                           random-string
+                           (char-to-string (elt temp-charset (random (length temp-charset)))))))))
   (helm-projectile-switch-project)
   (setq frame-title-format
-    '(""
-      "%b"
-      (:eval
-       (let ((project-name (projectile-project-name)))
-         (unless (string= "-" project-name)
-           (format " in [%s]" project-name))))))
+        '(""
+          "%b"
+          (:eval
+           (let ((project-name (projectile-project-name)))
+             (unless (string= "-" project-name)
+               (format " in [%s]" project-name))))))
   (let ((project-name (projectile-project-name)))
-  (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name))
+    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name)
+    (persp-rename project-name)
+    (persp-kill "main")
+    (kill-matching-buffers "\*scratch\*" nil t)
+    (persp-add-buffer (generate-new-buffer (concat "*scratch* " "("project-name")"))))
   (magit-status))
 
-;; Some useful functions for opening projects in new frames
+;;;; Open a Project in a New Frame
 (defun cpm/open-project-and-frame ()
   (interactive)
   (let ((buffer (generate-new-buffer "untitled")))
@@ -61,52 +142,6 @@
                (format " in [%s]" project-name))))))
   (split-window-right)
   (magit-status))
-
-;;; Eyebrowse
-(use-package eyebrowse
-  :commands (eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
-  :general
-  (:states '(insert normal motion emacs) :keymaps 'override
-           "s-1" 'cpm/open-agenda-in-workspace
-           "s-2" 'eyebrowse-switch-to-window-config-2
-           "s-3" 'eyebrowse-switch-to-window-config-3
-           "s-4" 'eyebrowse-switch-to-window-config-4
-           "s-5" 'eyebrowse-switch-to-window-config-5
-           "s-p" 'eyebrowse-switch-to-window-config
-           "s-]" 'eyebrowse-next-window-config
-           "s-[" 'eyebrowse-last-window-config)
-  :config
-  (setq eyebrowse-new-workspace 'dired-jump
-        eyebrowse-mode-line-style 'hide
-        eyebrowse-wrap-around t
-        eyebrowse-switch-back-and-forth t)
-
-  ;; Define a tabedit command (a la Vim) to create new tabs with
-  ;; optional file name or directory name. When no filename is passed on
-  ;; it calls the default eyebrowse function.
-  (evil-define-command cpm/eyebrowse-create-window-config-with-file (file)
-    :repeat nil
-    (interactive "<f>")
-    (if (and file (f-exists? file))
-        (progn
-          (eyebrowse-create-window-config)
-          (find-file file))
-      (eyebrowse-create-window-config)))
-
-  (evil-ex-define-cmd "tabc[lose]" 'eyebrowse-close-window-config)
-  (evil-ex-define-cmd "tabe[dit]"  'cpm/eyebrowse-create-window-config-with-file)
-  (evil-ex-define-cmd "tabfirst"   'eyebrowse-switch-to-window-config-0)
-  (evil-ex-define-cmd "tablast"    'eyebrowse-last-window-config)
-  (evil-ex-define-cmd "tabn"       'eyebrowse-next-window-config)
-  (evil-ex-define-cmd "tabp"       'eyebrowse-prev-window-config)
-  (evil-ex-define-cmd "tabs"       'eyebrowse-switch-to-window-config)
-
-  ;; This one doesn't exist in Vim, but it's useful if you'd like to use
-  ;; tabs like Tmux, where it's very common to rename tabs.
-  (evil-ex-define-cmd "tabr[ename]" 'eyebrowse-rename-window-config)
-
-  (eyebrowse-setup-evil-keys)
-  (eyebrowse-mode t))
 
 ;;; Bookmarks
 (use-package bookmark

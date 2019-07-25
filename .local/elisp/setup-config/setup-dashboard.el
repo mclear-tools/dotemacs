@@ -1,36 +1,32 @@
-;;; Dashboard 
+;;; Dashboard
 ;; dashboard dependency
 (use-package page-break-lines
   :defer t
   :diminish ""
   :config
   (set-fontset-font "fontset-default"
-                  (cons page-break-lines-char page-break-lines-char)
-                  (face-attribute 'default :family)))
+                    (cons page-break-lines-char page-break-lines-char)
+                    (face-attribute 'default :family)))
 
 (use-package dashboard
   :demand t
   :if (< (length command-line-args) 2)
   :general
   (:states '(normal motion emacs)
-   :keymaps 'dashboard-mode-map
-      "TAB" 'widget-forward
-      "C-i" 'widget-forward
-      "<backtab>" 'widget-backward
-      "RET" 'widget-button-press
-      "<down-mouse-1>" 'widget-button-click
-      "g" #'dashboard-insert-startupify-lists
-      "a" (dashboard-insert-shortcut "a" "Agenda for today:")
-      "r" (dashboard-insert-shortcut "r" "Recent Files:")
-      "m" (dashboard-insert-shortcut "m" "Bookmarks:")
-      "p" (dashboard-insert-shortcut "p" "Projects:"))
+           :keymaps 'dashboard-mode-map
+           "TAB" 'widget-forward
+           "C-i" 'widget-forward
+           "<backtab>" 'widget-backward
+           "RET" 'widget-button-press
+           "<down-mouse-1>" 'widget-button-click
+           "g" #'dashboard-insert-startupify-lists
+           "a" (dashboard-insert-shortcut "a" "Agenda for today:")
+           "r" (dashboard-insert-shortcut "r" "Recent Files:")
+           "m" (dashboard-insert-shortcut "m" "Bookmarks:")
+           "p" (dashboard-insert-shortcut "p" "Projects:"))
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
   :config
-  ;; set in own workspace
-  (with-eval-after-load 'eyebrowse
-    (eyebrowse-switch-to-window-config-1)
-    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Dashboard"))
   ;; banner & header
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png")
         dashboard-banner-logo-title "Sapere aude"
@@ -84,7 +80,15 @@
    "p"
    `(lambda (&rest ignore)
       (eyebrowse-create-window-config)
+      (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
+                          (random-string ""))
+                      (dotimes (i 6 random-string)
+                        (setq random-string
+                              (concat
+                               random-string
+                               (char-to-string (elt temp-charset (random (length temp-charset)))))))))
       (projectile-switch-project-by-name ,el)
+      ;; (helm-projectile-switch-project ,el)
       (setq frame-title-format
             '(""
               "%b"
@@ -93,7 +97,11 @@
                  (unless (string= "-" project-name)
                    (format " in [%s]" project-name))))))
       (let ((project-name (projectile-project-name)))
-        (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name))
+        (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name)
+        (persp-rename project-name)
+        (persp-kill "main")
+        (kill-matching-buffers "\*scratch\*" nil t)
+        (persp-add-buffer (generate-new-buffer (concat "*scratch* " "("project-name")"))))
       (magit-status))
    (abbreviate-file-name el)))
 

@@ -1,66 +1,66 @@
 ;;;; Helm
 (use-package helm
- :defer 2
- :general
- ("M-x"   'helm-M-x)
- ("C-h i" 'helm-info)
- ;; helm vim-bindings in buffer
- (:keymaps 'helm-map
-  "C-z"   'helm-select-action ; list actions using C-z
-  "C-j"   'helm-next-line
-  "C-k"   'helm-previous-line
-  "C-h"   'helm-next-source
-  "C-l"   'helm-previous-source
-  "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
-  "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
-  "C-S-h" 'describe-key)
- :commands (helm-find-files-1 helm-mini helm-M-x helm-find-files helm-find)
- :config
- (progn
-   ;; Use helm to provide :ls, unless ibuffer is used
-   (evil-ex-define-cmd "buffers" 'helm-buffers-list)
-   (set-face-attribute 'helm-source-header nil
-   :height 180)
-   (setq helm-locate-fuzzy-match nil
-         helm-locate-command "mdfind -interpret -name %s %s")
-   (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
-         helm-apropos-fuzzy-match t
-         helm-buffers-fuzzy-matching t
-         helm-imenu-fuzzy-match t
-         helm-recentf-fuzzy-match t
-         helm-adaptive-mode 1 ; learn from selections
-         helm-prevent-escaping-from-minibuffer t
-         helm-bookmark-show-location t
-         helm-ff-file-name-history-use-recentf t
-         helm-find-files-sort-directories t
-         helm-display-header-line nil
-         helm-move-to-line-cycle-in-source t
-         helm-always-two-windows t
-         helm-split-window-in-side-p nil
-         ;; helm-split-window-default-side 'other
-         helm-echo-input-in-header-line t
-         helm-occur-auto-update-on-resume 'noask)
-   (setq helm-boring-buffer-regexp-list
-         (quote
-          ("\\Minibuf.+\\*"
-           "\\` "
-           "\\*.+\\*"
-           )))
-   (setq helm-white-buffer-regexp-list
-         (quote
-          ("\\*magit:"
-           "\\*eshell"
-           "\\*scratch*"
-           "\\*ansi-term"
-           "\\*Pandoc Output*"
-           "\\*compilation*"
-           "\\*dashboard*"
-           )))
-   (helm-autoresize-mode 1)
-   (setq helm-autoresize-max-height 40)
-   (setq helm-autoresize-min-height 35))
-   ;; (define-key helm-map (kbd "C-a") (kbd "RET"))
-   (helm-mode 1))
+  :defer 1
+  :general
+  ("M-x"   'helm-M-x)
+  ("C-h i" 'helm-info)
+  ;; helm vim-bindings in buffer
+  (:keymaps 'helm-map
+            "C-z"   'helm-select-action ; list actions using C-z
+            "C-j"   'helm-next-line
+            "C-k"   'helm-previous-line
+            "C-h"   'helm-next-source
+            "C-l"   'helm-previous-source
+            "TAB"   'helm-execute-persistent-action ; rebind tab to do persistent action
+            "C-i"   'helm-execute-persistent-action ; make TAB works in terminal
+            "C-S-h" 'describe-key)
+  :commands (helm-find-files-1 helm-mini helm-M-x helm-find-files helm-find)
+  :config
+  (progn
+    ;; Use helm to provide :ls, unless ibuffer is used
+    (evil-ex-define-cmd "buffers" 'helm-buffers-list)
+    (set-face-attribute 'helm-source-header nil
+                        :height 180)
+    (setq helm-locate-fuzzy-match nil
+          helm-locate-command "mdfind -interpret -name %s %s")
+    (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm
+          helm-apropos-fuzzy-match t
+          helm-buffers-fuzzy-matching t
+          helm-imenu-fuzzy-match t
+          helm-recentf-fuzzy-match t
+          helm-adaptive-mode 1 ; learn from selections
+          helm-prevent-escaping-from-minibuffer t
+          helm-bookmark-show-location t
+          helm-ff-file-name-history-use-recentf t
+          helm-find-files-sort-directories t
+          helm-display-header-line nil
+          helm-move-to-line-cycle-in-source t
+          helm-always-two-windows t
+          helm-split-window-in-side-p nil
+          ;; helm-split-window-default-side 'other
+          helm-echo-input-in-header-line t
+          helm-occur-auto-update-on-resume 'noask)
+    (setq helm-boring-buffer-regexp-list
+          (quote
+           ("\\Minibuf.+\\*"
+            "\\` "
+            "\\*.+\\*"
+            )))
+    (setq helm-white-buffer-regexp-list
+          (quote
+           ("\\*magit:"
+            "\\*eshell"
+            "\\*scratch*"
+            "\\*ansi-term"
+            "\\*Pandoc Output*"
+            "\\*compilation*"
+            "\\*dashboard*"
+            )))
+    (helm-autoresize-mode 1)
+    (setq helm-autoresize-max-height 40)
+    (setq helm-autoresize-min-height 35))
+  ;; (define-key helm-map (kbd "C-a") (kbd "RET"))
+  (helm-mode 1))
 
   (defvar my-helm-bottom-buffers nil
     "List of bottom buffers before helm session.

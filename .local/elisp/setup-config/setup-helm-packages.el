@@ -39,27 +39,14 @@
   (setq helm-input-idle-delay 0.05)
   (setq helm-ff-file-name-history-use-recentf t)
   (setq helm-boring-file-regexp-list
-  '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
-    "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+        '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "~$"
+          "\\.so$" "\\.a$" "\\.elc$" "\\.fas$" "\\.fasl$" "\\.pyc$" "\\.pyo$")))
+
 (use-package helm-themes
   :commands helm-themes)
 
 (defadvice helm-themes--load-theme (after helm-themes--load-theme-after activate) (require 'powerline) (powerline-reset))
-  ;; (ad-unadvise 'helm-themes--load-theme)
-
-(use-package helm-projectile
- :commands (helm-projectile-switch-to-buffer
-            helm-projectile-find-dir
-            helm-projectile-dired-find-dir
-            helm-projectile-recentf
-            helm-projectile-find-file
-            helm-projectile-grep
-            helm-projectile
-            helm-projectile-switch-project)
- :init
- (setq projectile-switch-project-action 'helm-projectile)
- :config
- (helm-projectile-on))
+;; (ad-unadvise 'helm-themes--load-theme)
 
 ;;;; Search info manuals with helm
 ;;   Search the Emacs, Emacs Lisp, and Emacs Common Lisp manuals, all at the same time

@@ -260,6 +260,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (:name "Scheduled"
                    :scheduled t)
             )))
+
   (defun cpm/jump-to-org-super-agenda ()
     (interactive)
     (org-agenda nil "A"))
