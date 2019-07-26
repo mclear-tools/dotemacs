@@ -1,13 +1,27 @@
-This is my emacs configuration file. I use emacs for all my academic work. The
-configuration tends in that direction. It also uses [[http://www.vim.org][vim]] keybindings. I used vim (or
-[[https://neovim.io][neovim]]) previously. I think vim's modal editing is the best way to use a text-editor.
-If you like vim bindings but don't tend to want to think about configuring emacs, I
-strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way of managing your configuration.
-For a more traditional emacs feel there are also the configurations of [[https://github.com/purcell/emacs.d][purcell]] and
-[[https://github.com/bbatsov/prelude][batsov (prelude)]] and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally sane setup you might also look at
-some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. This file is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of
-Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl Voit's]] config. Some other
-good emacs starter kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's
-[[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
+This is my emacs configuration file. It is updated regularly. I use emacs for all my
+academic work. The configuration tends in that direction. It also uses [[http://www.vim.org][vim]]
+keybindings. I used vim (or [[https://neovim.io][neovim]]) previously. I think vim's modal editing is the
+best way to use a text-editor. If you like vim bindings but don't tend to want to
+think about configuring emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way
+of managing your configuration. For a more traditional emacs feel there are also the
+configurations of [[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]] and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally sane
+setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. This file is also influenced by
+the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl
+Voit's]] config. Some other good emacs starter kits to look at include John Kitchen's
+[[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
+This config is based on a series of "modules" loaded in the [[file:init.el][init.el]] file. Please see
+that file and the various config "helper" functions for navigation. Note that I also
+have an [[file:early-init.el][early-init]] file for use with emacs 27. 
 
+General features of this emacs setup include:
+
+1. Comprehensive [[file:setup-config/setup-keybindings.el][keybindings]] using spacebar as my leader key
+2. [[file:setup-config/setup-evil.el][Evil mode]]
+3. Sensible [[file:setup-config/setup-settings.el][defaults]]
+4. [[file:setup-config/setup-dired.el][Dired]] with good colors and evil keybindings
+5. Completion with [[file:setup-config/setup-helm.el][helm]] and [[file:setup-config/setup-ivy.el][ivy]] (helm-centric though)
+6. Custom [[file:setup-config/setup-theme.el][solarized]] theme (mac-centric with toggles for dark/light mode)
+7. A nice [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
+8. Extensive [[file:setup-config/setup-osx.el][OSX integration]]
+9. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/nex3/perspective-el][perspectives]]
