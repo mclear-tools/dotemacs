@@ -1,7 +1,7 @@
 This is my emacs configuration file. It is updated regularly. I use emacs for all my
 academic work. The configuration tends in that direction. It also uses [[http://www.vim.org][vim]]
 keybindings. I used vim (or [[https://neovim.io][neovim]]) previously. I think vim's modal editing is the
-best way to use a text-editor. If you like vim bindings but don't tend to want to
+[[https://www.colinmclear.net/posts/texteditor/][best way]] to use a [[https://en.wikipedia.org/wiki/Text_editor][text-editor]]. If you like vim bindings but don't tend to want to
 think about configuring emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way
 of managing your configuration. For a more traditional emacs feel there are also the
 configurations of [[https://github.com/purcell/emacs.d][purcell]] and [[https://github.com/bbatsov/prelude][batsov (prelude)]] and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally sane
