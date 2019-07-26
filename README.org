@@ -25,3 +25,5 @@ General features of this emacs setup include:
 7. A nice [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
 8. Extensive [[file:setup-config/setup-osx.el][OSX integration]]
 9. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/nex3/perspective-el][perspectives]]
+10. A nice [[file:setup-config/setup-dashboard.el][dashboard]] homescreen
+11. A [[file:setup-config/setup-writing.el][writing-centric]] config with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/EFLS/zetteldeft][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
