@@ -211,6 +211,7 @@
 
 (advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
 
+;; Add melpa link to describe package info
 (defun cpm/describe-package--add-melpa-link (pkg)
   (let* ((desc (if (package-desc-p pkg)
                    pkg
