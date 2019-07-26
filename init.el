@@ -109,7 +109,7 @@
 (defvar cpm-elisp-dir (concat cpm-local-dir "elisp/")
   "Where personal elisp packages and scripts are stored.")
 
-(defvar cpm-setup-dir (concat cpm-elisp-dir "setup-config/")
+(defvar cpm-setup-dir (concat user-emacs-directory "setup-config/")
   "Where the setup-init files are stored.")
 
 ;;;; System Variables

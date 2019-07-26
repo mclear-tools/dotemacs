@@ -1,0 +1,13 @@
+This is my emacs configuration file. I use emacs for all my academic work. The
+configuration tends in that direction. It also uses [[http://www.vim.org][vim]] keybindings. I used vim (or
+[[https://neovim.io][neovim]]) previously. I think vim's modal editing is the best way to use a text-editor.
+If you like vim bindings but don't tend to want to think about configuring emacs, I
+strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way of managing your configuration.
+For a more traditional emacs feel there are also the configurations of [[https://github.com/purcell/emacs.d][purcell]] and
+[[https://github.com/bbatsov/prelude][batsov (prelude)]] and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally sane setup you might also look at
+some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. This file is also influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of
+Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl Voit's]] config. Some other
+good emacs starter kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's
+[[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
+
+
