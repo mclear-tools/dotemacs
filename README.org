@@ -10,8 +10,8 @@ the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of Bryan Gilbert
 Voit's]] config. Some other good emacs starter kits to look at include John Kitchen's
 [[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
-This config is based on a series of "modules" loaded in the [[file:init.el][init.el]] file. Please see
-that file and the various config "helper" functions for navigation. Note that I also
+This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
+that file and the various config "[[file:init.el::;;;%20Config%20Helper%20Functions][helper]]" functions for navigation. Note that I also
 have an [[file:early-init.el][early-init]] file for use with emacs 27. 
 
 General features of this emacs setup include:
