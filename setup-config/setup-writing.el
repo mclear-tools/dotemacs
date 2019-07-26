@@ -205,23 +205,22 @@
 ;;; Interleave (Notes)
 (use-package interleave
   :commands interleave)
-  (use-package lorem-ipsum
-    :commands (Lorem-ipsum-insert-sentences Lorem-ipsum-insert-list Lorem-ipsum-insert-paragraphs)
-    :config
-    (lorem-ipsum-use-default-bindings)
-    )
+(use-package lorem-ipsum
+  :commands (Lorem-ipsum-insert-sentences Lorem-ipsum-insert-list Lorem-ipsum-insert-paragraphs)
+  :config
+  (lorem-ipsum-use-default-bindings)
+  )
 
 ;;; Palimpsest (make archive)
-  (use-package palimpsest
-    :defer t
-    :diminish palimpsest-mode
-    :hook ((markdown-mode-hook . palimpsest-mode)
-           (org-mode-hook . palimpsest-mode))
-    :config
-    (setq palimpsest-trash-file-suffix ".archive"))
+(use-package palimpsest
+  :diminish palimpsest-mode
+  :hook ((markdown-mode-hook . palimpsest-mode)
+         (org-mode-hook . palimpsest-mode))
+  :config
+  (setq palimpsest-trash-file-suffix ".archive"))
 
 ;;; Latex Packages
-  ;; Basic settings
+;; Basic settings
 (use-package auctex
   :mode (("\\.tex\\'" . latex-mode)
          ("\\.latex\\'" . latex-mode))
