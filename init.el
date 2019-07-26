@@ -5,7 +5,6 @@
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
-(when (version< emacs-version "27.0")
 ;;; Startup
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -152,11 +151,12 @@
 ;;;; Package Initialization Settings
 ;; we're setting =package-enable-at-startup= to nil so that packages will not
 ;; automatically be loaded for us since =use-package= will be handling that.
-(setq package-enable-at-startup nil)
+
 (setq package-user-dir (concat cpm-local-dir "elpa/"))
 (setq load-prefer-newer t
       package--init-file-ensured t)
-
+(when (version< emacs-version "27.0")
+  (setq package-enable-at-startup nil))
 (unless (file-directory-p package-user-dir)
   (make-directory package-user-dir t))
 
@@ -248,8 +248,6 @@
   :load-path cpm-elisp-dir
   :config
   (setq use-package-git-user-dir cpm-elisp-dir))
-
-)
 
 ;;; Personal Information
 ;; Give emacs some personal info
