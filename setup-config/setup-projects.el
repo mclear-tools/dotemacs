@@ -43,7 +43,8 @@
   :commands (eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
   :general
   (:states '(insert normal motion emacs) :keymaps 'override
-           "s-1" 'cpm/open-agenda-in-workspace)
+           "s-1" 'cpm/open-agenda-in-workspace
+           "s-2" 'cpm/open-emacsd-in-workspace)
   :config
   (setq eyebrowse-new-workspace 'dired-jump
         eyebrowse-mode-line-style 'hide
@@ -93,6 +94,18 @@
   (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "agenda")
   (persp-add-buffer "*dashboard*")
   (persp-kill "main"))
+
+;;;; Open emacs.d in workspace
+(defun cpm/open-emacsd-in-workspace ()
+  "open emacsd in workspace"
+  (interactive)
+  (eyebrowse-mode)
+  (eyebrowse-switch-to-window-config-1)
+  (persp-switch "emacs.d")
+  (crux-find-user-init-file)
+  (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "emacs.d")
+  (persp-kill "main")
+  (magit-status))
 
 ;;;; Open New Project in Workspace
 (defun cpm/open-project-and-workspace ()
