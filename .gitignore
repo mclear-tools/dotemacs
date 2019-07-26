@@ -35,3 +35,5 @@ transient*
 /.local/elpa-27/
 /.local/elpa/vterm-*/build
 /.local/elpa/vterm-*/vterm-module.so
+/custom.el
+/.local/elisp/spacemacs-persp-extra
