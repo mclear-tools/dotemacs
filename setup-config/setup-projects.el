@@ -89,6 +89,13 @@
   (eyebrowse-mode)
   (eyebrowse-switch-to-window-config-1)
   (persp-switch "agenda")
+  (setq frame-title-format
+        '(""
+          "%b"
+          (:eval
+           (let ((project-name (projectile-project-name)))
+             (unless (string= "-" project-name)
+               (format " in [%s]" project-name))))))
   (require 'org-super-agenda)
   (cpm/jump-to-org-super-agenda)
   (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "agenda")
@@ -102,6 +109,13 @@
   (eyebrowse-mode)
   (eyebrowse-switch-to-window-config-1)
   (persp-switch "emacs.d")
+  (setq frame-title-format
+        '(""
+          "%b"
+          (:eval
+           (let ((project-name (projectile-project-name)))
+             (unless (string= "-" project-name)
+               (format " in [%s]" project-name))))))
   (crux-find-user-init-file)
   (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "emacs.d")
   (persp-kill "main")
