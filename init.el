@@ -22,7 +22,7 @@
 (setq garbage-collection-messages t)
 (defun cpm/config-setup-hook ()
   (setq gc-cons-threshold most-positive-fixnum
-        gc-cons-percentage 0.8))
+        gc-cons-percentage 0.6))
 
 (defun cpm/config-exit-hook ()
   (setq gc-cons-threshold 80000
@@ -39,7 +39,7 @@
 
 ;; When idle for 15sec run the GC no matter what.
 (defvar k-gc-timer
-  (run-with-idle-timer 10 t
+  (run-with-idle-timer 15 t
                        (lambda ()
                          (message "Garbage Collector has run for %.06fsec"
                                   (k-time (garbage-collect))))))
@@ -210,6 +210,7 @@
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
   (setq paradox-execute-asynchronously nil
+        paradox-github-token t
         ;; Show all possible counts
         paradox-display-download-count t
         paradox-display-star-count t
