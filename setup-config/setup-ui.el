@@ -34,39 +34,43 @@
 (setq-default line-spacing 0.10)
 
 ;;; Frames
+;;;; Frame formatting
 (setq frame-title-format "\n")
 ;; (setq frame-title-format '('nil))
-    ;; (setq-default frame-title-format
-    ;;           '((buffer-file-name "%f" "%b")))
-(if (display-graphic-p)
-  (progn
-  ;; start frame of emacs maximized
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; (setq frame-title-format
+;;       '((buffer-file-name "%f" "%b")))
 
-  ;; new frames
-  (setq default-frame-alist
+(if (display-graphic-p)
+    (progn
+      ;; start frame of emacs maximized
+      (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+      ;; new frames
+      (setq default-frame-alist
             '(
               (top . 25)
               (left . 275)
               (width . 106) ;; chars
               (height . 60) ;; lines
               ))))
-(use-package ns-auto-titlebar
-  :config
-  (when (eq system-type 'darwin) (ns-auto-titlebar-mode)))
 
-;; https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus.rb#L98
-;; https://github.com/d12frosted/homebrew-emacs-plus/issues/55
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Properties-in-Mode.html#Properties-in-Mode
+;;;; Frame titlebar
+;; Theme transparent titlebar
 (when (memq window-system '(mac ns))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+
+;; Fix titlebar titling colors
+;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
+(use-package ns-auto-titlebar
+  :if (eq system-type 'darwin)
+  :init (ns-auto-titlebar-mode))
+
 ;; no border title
 ;; (setq default-frame-alist '((undecorated . t)))
- (when (not (display-graphic-p))
-   (menu-bar-mode -1))
 
+;;;; No frame scroll bars
 (defun cpm/disable-scroll-bars (frame)
+  "Disable scroll bars on new frames"
   (modify-frame-parameters frame
                            '((vertical-scroll-bars . nil)
                              (horizontal-scroll-bars . nil))))
