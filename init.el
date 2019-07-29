@@ -17,20 +17,17 @@
 (setq file-name-handler-alist nil)
 
 ;;;; Garbage collection
+;; Adjust garbage collection thresholds during startup, and thereafter
 ;; see http://akrl.sdf.org
 ;; https://gitlab.com/koral/gcmh
 ;; NOTE: The system linked above generates too many GC pauses so I'm using my own mixed setup
-(setq garbage-collection-messages t)
-(defun cpm/config-setup-hook ()
-  (setq gc-cons-threshold most-positive-fixnum
-        gc-cons-percentage 0.6))
+;; https://github.com/purcell/emacs.d/blob/3b1302f2ce3ef2f69641176358a38fd88e89e664/init.el#L24
 
-(defun cpm/config-exit-hook ()
-  (setq gc-cons-threshold 80000
-        gc-cons-percentage 0.1))
-
-(add-hook 'before-init-hook #'cpm/config-setup-hook)
-(add-hook 'after-init-hook  #'cpm/config-exit-hook)
+(let ((normal-gc-cons-threshold (* 20 1024 1024))
+      (init-gc-cons-threshold (* 128 1024 1024)))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 (defmacro k-time (&rest body)
   "Measure and return the time it takes evaluating BODY."
