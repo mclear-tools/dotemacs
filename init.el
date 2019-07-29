@@ -5,6 +5,7 @@
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
+
 ;;; Startup
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -43,6 +44,10 @@
                        (lambda ()
                          (message "Garbage Collector has run for %.06fsec"
                                   (k-time (garbage-collect))))))
+
+;;;; Check Errors
+;; Produce backtraces when errors occur
+(setq debug-on-error t)
 
 ;;;; Clean View
 ;; Disable start-up screen

@@ -11,8 +11,10 @@ Voit's]] config. Some other good emacs starter kits to look at include John Kitc
 [[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
 This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
-that file and the various config "[[file:init.el::;;;%20Config%20Helper%20Functions][helper]]" functions for navigation. Note that I also
-have an [[file:early-init.el][early-init]] file for use with emacs 27. 
+that file and the various config "[[file:init.el::;;;%20Config%20Helper%20Functions][helper]]" functions for navigation. The modules are
+organized thematically rather than package by package (e.g. the [[file:setup-config/setup-writing.el][writing module]]
+contains the config for spelling and markdown mode). Note that I also have an
+[[file:early-init.el][early-init]] file for use with emacs 27.
 
 General features of this emacs setup include:
 
