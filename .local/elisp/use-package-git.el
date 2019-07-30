@@ -54,6 +54,13 @@
 
 ;; It requires git 1.7.2.3 or higher.
 
+;; * TODO Generate package description
+;; * TODO Generate autoloads file
+;; * TODO :command keyword to support `org' make
+;; * TODO Add the directory of :files to `load-path'
+;; * TODO Install Info manual
+;; * TODO Install regular manual?
+
 ;;; Code:
 
 (require 'use-package-ensure)
@@ -84,9 +91,9 @@ package via git.")
          (default-directory (if (file-name-absolute-p dir)
                                 dir
                               (expand-file-name dir use-package-git-user-dir))))
-    (dolist (file (seq-mapcat #'file-expand-wildcards
-                              (plist-get config :files)))
-      (save-window-excursion (byte-compile-file file t)))))
+    (dolist (file (seq-mapcat #'file-expand-wildcards (plist-get config :files)))
+      (unless (string-prefix-p "." file)
+        (save-window-excursion (byte-compile-file file t))))))
 
 (defun use-package-git-upgrade-package (package)
   "Upgrade PACKAGE.
@@ -99,9 +106,9 @@ PACKAGE is a string, symbol, or config Plist."
           nil t nil use-package-git--upgrade-package-history)))
   (when (stringp package) (setq package (intern package)))
   (when (symbolp package) (setq package (alist-get package use-package-git--packages)))
-  (let ((dir (plist-get package :dir)))
+  (let ((dir (expand-file-name (plist-get package :dir) use-package-git-user-dir)))
     (when (or (= 0 (length (shell-command-to-string
-                            (format "git -C %s status --porcelain" dir))))
+                            (format "git -C '%s' status --porcelain" dir))))
               (while (pcase (downcase
                              (read-key (concat
                                         "The package `"
@@ -114,13 +121,14 @@ PACKAGE is a string, symbol, or config Plist."
                                         "[S]kip repo and continue\n"
                                         "[A]bort\n"
                                         "? ")))
-                       (?r (= 0 (shell-command "git -C %s reset HEAD --hard")))
+                       (?r (= 0 (shell-command
+                                 (format "git -C '%s' reset HEAD --hard" dir))))
                        (?s nil)
                        (?a (user-error "Aborted package upgrade"))
                        (_ t))))
-      (shell-command (format "git -C %s fetch" dir) "*use-package-git*")
+      (shell-command (format "git -C '%s' fetch" dir) "*use-package-git*")
       (shell-command
-       (format "git -C %s checkout %s" dir (or (plist-get package :ref) "master"))
+       (format "git -C '%s' checkout '%s'" dir (or (plist-get package :ref) "master"))
        "*use-package-git*")
       (use-package-git--byte-compile-package package))))
 
@@ -176,18 +184,18 @@ list of one."
        ((stringp config)
         (list :name name
               :uri config
-              :dir (expand-file-name (symbol-name name) use-package-git-user-dir)
+              :dir (file-name-base config)
               :files '("*.el")))
        ((and (listp config) (stringp (plist-get config :uri)))
-        (let (c config)
+        (let ((c config))
           (setq c (plist-put c :name (or (plist-get c :name) name)))
           (setq c (plist-put c :dir (or (plist-get c :dir)
-                                        (symbol-name name))))
-          (setq c (plist-put c :files (or (let ((d (plist-get c :files)))
-                                            (cond
-                                             ((stringp d) (list d))
-                                             ((listp d) d)
-                                             ((not d) '("*.el")))))))
+                                        (file-name-base (plist-get c :uri)))))
+          (setq c (plist-put c :files (let ((d (plist-get c :files)))
+                                        (cond
+                                         ((stringp d) (list d))
+                                         ((listp d) d)
+                                         ((not d) '("*.el"))))))
           c))
        (t
         (use-package-error
