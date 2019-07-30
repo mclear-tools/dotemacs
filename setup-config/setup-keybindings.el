@@ -150,6 +150,7 @@
    "#" 'universal-argument
    "`" 'beacon-blink
    "'" 'shell-pop
+   "\\" 'vterm-toggle-cd
    "." 'quick-commit
    ";" 'evil-commentary-line
    "[" 'cpm/previous-user-buffer
@@ -446,6 +447,7 @@
    "tS" 'ispell-buffer
    "tt" 'toggle-dark-light-theme
    "tT" 'helm-themes
+   "tv" 'vterm-toggle-cd
    "tw" 'writeroom-mode
    "tz" 'zone
    ;; "tt" 'counsel-load-theme

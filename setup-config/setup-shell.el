@@ -17,10 +17,10 @@
 ;;; Completion Buffer
 ;; Remove completion buffer when done
 (add-hook 'minibuffer-exit-hook
-'(lambda ()
-         (let ((buffer "*Completions*"))
-           (and (get-buffer buffer)
-            (kill-buffer buffer)))))
+          '(lambda ()
+             (let ((buffer "*Completions*"))
+               (and (get-buffer buffer)
+                    (kill-buffer buffer)))))
 
 ;;; Terminal
 ;;;; Settings
@@ -74,16 +74,16 @@
        "C-j" 'term-send-down)
 
 (general-define-key :states '(insert) :keymaps 'term-raw-map
-       "C-c C-d" 'term-send-eof
-       "C-c C-z" 'term-stop-subjob
-       "<tab>"   'term-send-tab
-       "s-v"     'term-paste
-       "C-k"     'term-send-up
-       "C-j"     'term-send-down)
+                    "C-c C-d" 'term-send-eof
+                    "C-c C-z" 'term-stop-subjob
+                    "<tab>"   'term-send-tab
+                    "s-v"     'term-paste
+                    "C-k"     'term-send-up
+                    "C-j"     'term-send-down)
 
 
 ;;;; Pop up Shell
-;;  A popup shell
+;;  A popup shell used with eshell
 (use-package shell-pop
   :commands shell-pop
   :init
@@ -99,8 +99,7 @@
                               (when (string-match "\\(finished\\|exited\\)" change)
                                 (kill-buffer (when (buffer-live-p (process-buffer proc)))
                                              (delete-window))))))
-    (add-hook 'shell-pop-out-hook 'kill-this-buffer)
-    (add-hook 'vterm-mode-hook (lambda () (linum-mode -1) (cpm/term-handle-close)))))
+    (add-hook 'shell-pop-out-hook 'kill-this-buffer)))
 
 ;;;; Shell Colors
 ;; Add customizable 256 color support: https://github.com/dieggsy/eterm-256color  to term and ansiterm
@@ -120,7 +119,11 @@
   :config
   ;; set colors -- this is best with dark solarized right now
   (setq ansi-color-names-vector
-        ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"]))
+        ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (setq-local evil-insert-state-cursor '("chartreuse3" box))
+              (evil-insert-state))))
 
 ;; directory tracking
 (defun vterm--rename-buffer-as-title (title)
@@ -128,6 +131,25 @@
     (cd-absolute dir)
     (rename-buffer (format "term %s" title) t)))
 (add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
+
+;; vterm toggle
+(use-package vterm-toggle
+  :ensure t
+  :git "https://github.com/jixiuf/vterm-toggle.git"
+  :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  ;; toggle window in bottom side
+  (add-to-list 'display-buffer-alist
+               '("^v?term.*"
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 ;;(display-buffer-reuse-window display-buffer-in-direction)
+                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                 ;;(direction . bottom)
+                 ;;(dedicated . t) ;dedicated is supported in emacs27
+                 (reusable-frames . visible)
+                 (window-height . 0.3))))
+
 
 ;;; Virtualenvwrapper
 (use-package virtualenvwrapper

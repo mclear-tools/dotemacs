@@ -4,3 +4,9 @@
 [submodule ".local/elisp/vterm"]
 	path = .local/elisp/vterm
 	url = https://github.com/akermu/emacs-libvterm.git
+[submodule ".local/elisp/vterm-toggle"]
+	path = .local/elisp/vterm-toggle
+	url = https://github.com/jixiuf/vterm-toggle.git
+[submodule ".local/elisp/emacs-libvterm"]
+	path = .local/elisp/emacs-libvterm
+	url = https://github.com/akermu/emacs-libvterm.git
