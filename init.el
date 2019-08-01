@@ -155,10 +155,13 @@
 ;; automatically be loaded for us since =use-package= will be handling that.
 
 (setq package-user-dir (concat cpm-local-dir "elpa/"))
-(setq load-prefer-newer t
+(setq load-prefer-newer t ;; use newer packages
+      ;; Ask package.el to not add (package-initialize) to .emacs
       package--init-file-ensured t)
+;; don't set if emacs 27
 (when (version< emacs-version "27.0")
   (setq package-enable-at-startup nil))
+;; make the package directory
 (unless (file-directory-p package-user-dir)
   (make-directory package-user-dir t))
 
@@ -185,25 +188,44 @@
       use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
 
-(require 'package)
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ;; https://github.com/emacs-china/emacswiki-elpa
+                         ("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/")
+                         ))
 
-(unless (assoc-default "melpa" package-archives)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
-(unless (assoc-default "gnu" package-archives)
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t))
-(unless (assoc-default "org" package-archives)
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
-;; https://github.com/emacs-china/emacswiki-elpa
-(unless (assoc-default "emacswiki" package-archives)
-  (add-to-list 'package-archives '("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/") t))
+;;;;
 
+;; See https://github.com/nilcons/emacs-use-package-fast#the-missing-utility-steal-load-path-from-packageel
+(eval-and-compile
+  (setq use-package-verbose (not (bound-and-true-p byte-compile-current-file))))
+;; Add the macro generated list of package.el loadpaths to load-path.
+(mapc #'(lambda (add) (add-to-list 'load-path add))
+      (eval-when-compile
+        ;; (require 'package)
+        (package-initialize)
+        ;; Install use-package if not installed yet.
+        (unless (package-installed-p 'use-package)
+          (package-refresh-contents)
+          (package-install 'use-package))
+        ;; (require 'use-package)
+        (setq use-package-always-ensure t)
+        (let ((package-user-dir-real (file-truename package-user-dir)))
+          ;; The reverse is necessary, because outside we mapc
+          ;; add-to-list element-by-element, which reverses.
+          (nreverse (apply #'nconc
+                           ;; Only keep package.el provided loadpaths.
+                           (mapcar #'(lambda (path)
+                                       (if (string-prefix-p package-user-dir-real path)
+                                           (list path)
+                                         nil))
+                                   load-path))))))
 
-(package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(require 'use-package)
-(setq use-package-always-ensure t)
+(eval-when-compile
+  (require 'use-package))
+;;;;
+
 
 ;;;; Paradox Package Management
 ;; Better interface for package management https://github.com/Malabarba/paradox
