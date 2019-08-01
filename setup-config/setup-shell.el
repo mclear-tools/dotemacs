@@ -148,7 +148,7 @@
                  ;;(direction . bottom)
                  ;;(dedicated . t) ;dedicated is supported in emacs27
                  (reusable-frames . visible)
-                 (window-height . 0.3))))
+                 (window-height . 0.5))))
 
 
 ;;; Virtualenvwrapper
