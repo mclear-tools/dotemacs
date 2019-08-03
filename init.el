@@ -44,7 +44,7 @@
 
 ;;;; Check Errors
 ;; Produce backtraces when errors occur
-(setq debug-on-error t)
+(setq debug-on-error nil)
 
 ;;;; Clean View
 ;; Disable start-up screen

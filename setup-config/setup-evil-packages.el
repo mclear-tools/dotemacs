@@ -74,6 +74,7 @@
     (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
+    (setq undo-tree-enable-undo-in-region nil)
     ;; supposedly causes errors in undo read
     ;; see https://emacs.stackexchange.com/a/34214/11934
     (setq undo-tree-enable-undo-in-region nil)
