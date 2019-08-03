@@ -25,7 +25,7 @@ With ARG, act conditional on the raw value of ARG:
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "outorg" '("backward-line-comments" "forward-line-comments" "out" "skip-line-comment-or-ws")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "outorg" '("out" "backward-line-comments" "forward-line-comments" "skip-line-comment-or-ws")))
 
 ;;;***
 

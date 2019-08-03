@@ -14,7 +14,10 @@
 
 \(fn FUNCTION)" nil nil)
 
-(autoload 'elisp-demos-advice-helpful-update "elisp-demos" nil nil nil)
+(autoload 'elisp-demos-advice-helpful-update "elisp-demos" "\
+
+
+\(fn)" nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "elisp-demos" '("elisp-demos-")))
 

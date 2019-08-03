@@ -1,2 +1,2 @@
-;;; Generated package description from /Users/roambot/.emacs.d/.local/elpa/outorg-20190720.2002/outorg.el  -*- no-byte-compile: t -*-
-(define-package "outorg" "20190720.2002" "Org-style comment editing" '((emacs "24.4")) :stars '(#("16" 0 2 (font-lock-face paradox-star-face)) #("6K" 0 2 (value 6804 font-lock-face paradox-download-face))) :commit "ef0f86f4b893b30be8bcf8b43a5ec357a6c70f07" :maintainer '("Adam Porter" . "adam@alphapapa.net") :url "https://github.com/alphapapa/outorg")
+;;; -*- no-byte-compile: t -*-
+(define-package "outorg" "20190720.2002" "Org-style comment editing" '((emacs "24.4")) :commit "ef0f86f4b893b30be8bcf8b43a5ec357a6c70f07" :maintainer '("Adam Porter" . "adam@alphapapa.net") :url "https://github.com/alphapapa/outorg")
