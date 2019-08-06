@@ -229,6 +229,7 @@
           (insert "\n"))))))
 
 ;;;; Server
+;; start server for emacsclient
 (use-package server
   :ensure nil
   :hook (after-init . server-mode))

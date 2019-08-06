@@ -115,6 +115,10 @@
   :ensure t
   :git "https://github.com/akermu/emacs-libvterm.git"
   :commands (vterm vterm-other-window)
+  :general
+  (:states '(normal insert)
+           ;; fix issue with fzf
+           "C-j" 'term-send-down)
   :custom (vterm-install t)
   :config
   ;; set colors -- this is best with dark solarized right now
