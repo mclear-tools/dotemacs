@@ -37,3 +37,4 @@ transient*
 /.local/elpa/vterm-*/vterm-module.so
 /custom.el
 /.local/elisp/spacemacs-persp-extra
+/.local/elisp/hercules.el/

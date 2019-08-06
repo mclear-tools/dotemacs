@@ -56,5 +56,11 @@ codepoints starting from codepoint-start."
 ;; (setq server-name "org")
 ;; (setq server-name "dashboard")
 
+;;;; Hercules
+(use-package hercules
+  :ensure t
+  :git "https://gitlab.com/jjzmajic/hercules.el.git"
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
