@@ -522,6 +522,14 @@ _vr_ reset      ^^                       ^^                 ^^
           (auto-mode . emacs)))
   (general-define-key "C-c a" #'org-agenda)
 
+  ;; Open bookends file links in bookends
+  (org-add-link-type
+   "bookends" 'cpm/follow-bookends-link)
+  (defun cpm/follow-bookends-link (path)
+    "run bookends link in org files"
+    (shell-command-to-string (concat "open bookends:" path)))
+
+
 ;;; End Use-Package Config
   ;; end use-package config settings
   )
