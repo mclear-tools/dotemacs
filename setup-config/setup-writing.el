@@ -214,8 +214,7 @@
 ;;; Palimpsest (make archive)
 (use-package palimpsest
   :diminish palimpsest-mode
-  :hook ((markdown-mode-hook . palimpsest-mode)
-         (org-mode-hook . palimpsest-mode))
+  :hook ((markdown-mode org-mode) . palimpsest-mode)
   :config
   (setq palimpsest-trash-file-suffix ".archive"))
 
