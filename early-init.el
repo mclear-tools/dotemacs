@@ -5,3 +5,5 @@
 ;; for more information
 
 (setq package-enable-at-startup nil)
+(setq package-quickstart t)
+(setq package-quickstart-file "~/.emacs.d/.local/temp/cache/package-quickstart.el")
