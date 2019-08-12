@@ -200,7 +200,15 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t))
+
+;;;; Benchmark Init
+(use-package benchmark-init
+  :ensure t
+  ;; :demand t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'emacs-startup-hook 'benchmark-init/deactivate))
 
 ;;;; Paradox Package Management
 ;; Better interface for package management https://github.com/Malabarba/paradox
@@ -248,6 +256,26 @@
   :load-path cpm-elisp-dir
   :config
   (setq use-package-git-user-dir cpm-elisp-dir))
+
+;; needed for git-use-package
+(use-package use-package-ensure-system-package :demand t)
+
+;;;; El-Patch
+;; Package for helping advise other packages
+(use-package el-patch
+  :ensure t
+  :defer 1
+  :config
+  (setq el-patch-enable-use-package-integration t))
+
+;;;; Auto-compile
+;; Automatically byte-recompile changed elisp libraries
+(use-package auto-compile
+  :ensure t
+  :defer 1
+  :config
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
 
 ;;; Personal Information
 ;; Give emacs some personal info
