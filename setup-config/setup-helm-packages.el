@@ -1,5 +1,9 @@
 ;;; Helm  Packages
 
+(use-package helm-org
+  :ensure nil
+  :git "https://github.com/emacs-helm/helm-org.git")
+
 (use-package helm-ag
   :load-path "~/.emacs.d/.local/elisp/helm-ag/"
   :after helm

@@ -10,3 +10,6 @@
 [submodule ".local/elisp/emacs-libvterm"]
 	path = .local/elisp/emacs-libvterm
 	url = https://github.com/akermu/emacs-libvterm.git
+[submodule "y"]
+	path = .local/elisp/helm-org
+	url = https://github.com/emacs-helm/helm-org.git
