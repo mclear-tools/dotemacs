@@ -34,22 +34,19 @@
   ;; (my-evil-terminal-cursor-change)
 
   (use-package evil-surround
-    :after evil
     :commands (evil-surround-region evil-surround-change evil-surround-delete)
-    :hook ((latex-mode org-mode markdown-mode prog-mode) . evil-surround-mode)
     :general
     (:states '(visual)
-             "s" 'evil-surround-region
-             "S" 'evil-substitute))
-  ;; :config (global-evil-surround-mode 1))
-  ;; :init
-  ;; (global-evil-surround-mode 1))
+     "s" 'evil-surround-region
+     "S" 'evil-substitute)
+    :config (global-evil-surround-mode 1))
 
   (use-package evil-embrace
     :after evil-surround
     :demand t
     :init
-    (evil-embrace-enable-evil-surround-integration)
+    (after! evil-surround
+      (evil-embrace-enable-evil-surround-integration))
     :hook (org-mode . embrace-org-mode-hook)
     :config
     (setq evil-embrace-show-help-p nil)

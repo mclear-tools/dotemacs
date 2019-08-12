@@ -2,7 +2,7 @@
 
 ;;; New Org
 ;; remove references to older org in path
-(setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+(setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
@@ -142,8 +142,8 @@
 
   (with-eval-after-load 'org-agenda
     (general-define-key :keymaps 'org-agenda-mode-map
-                        "j" 'org-agenda-next-item
-                        "k" 'org-agenda-previous-item))
+      "j" 'org-agenda-next-item
+      "k" 'org-agenda-previous-item))
 
   ;; automatically refresh the agenda after adding a task
   (defun cpm/org-agenda-refresh ()
@@ -212,8 +212,8 @@
 
   (with-eval-after-load 'org-agenda
     (general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
-                        "J" 'air-org-agenda-next-header
-                        "K" 'air-org-agenda-previous-header))
+      "J" 'air-org-agenda-next-header
+      "K" 'air-org-agenda-previous-header))
 
   (defun air-org-skip-subtree-if-habit ()
     "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
@@ -238,27 +238,28 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
   (use-package org-super-agenda
     ;; :pin manual ;; throws errors for some reason when I update
+    :commands org-super-agenda-mode
     :general
     (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
-             ","  'cpm/hydra-org-agenda/body)
+     ","  'cpm/hydra-org-agenda/body)
     :after (org org-agenda)
     :config
     (org-super-agenda-mode)
     (setq org-super-agenda-groups
           '((:name "Overdue"
-                   :deadline past)
+             :deadline past)
             (:name "Scheduled"
-                   :time-grid t)
+             :time-grid t)
             (:name "Today"
-                   :scheduled today
-                   :deadline nil)
+             :scheduled today
+             :deadline nil)
             (:name "Due Today"
-                   :deadline today)
+             :deadline today)
             (:name "Upcoming"
-                   :deadline future
-                   :scheduled future)
+             :deadline future
+             :scheduled future)
             (:name "Scheduled"
-                   :scheduled t)
+             :scheduled t)
             )))
 
   (defun cpm/jump-to-org-super-agenda ()
@@ -367,15 +368,15 @@ _vr_ reset      ^^                       ^^                 ^^
                                (alltodo "" ((org-agenda-overriding-header "")
                                             (org-super-agenda-groups
                                              '((:name "Priority"
-                                                      :priority>= "C")
+                                                :priority>= "C")
                                                (:name "Next to do"
-                                                      :todo "NEXT")
+                                                :todo "NEXT")
                                                (:name "In Progress"
-                                                      :todo "DOING")
+                                                :todo "DOING")
                                                (:todo ("WAITING" "HOLD"))
                                                (:todo "MAYBE")
                                                (:name "Reading List"
-                                                      :todo "TOREAD")))))))
+                                                :todo "TOREAD")))))))
           ("W" "Week's agenda and all TODOs"
            ((tags "PRIORITY=\"A\""
                   ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
@@ -433,7 +434,7 @@ _vr_ reset      ^^                       ^^                 ^^
     (select-frame-by-name "What are you doing?")
     (cpm/org-journal)
     (cpm/insert-weather)
-    (end-of-buffer))
+    (goto-char (point-max)))
 
 ;;;; Alfred Capture Workflow
   ;; Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.
@@ -463,22 +464,35 @@ _vr_ reset      ^^                       ^^                 ^^
     (select-frame-by-name "alfred-capture")
     (cpm/org-capture-frame))
 
-;;;; Capture Advice
-  ;; Make capture the only window and close after refiling.
-  (defadvice org-capture
-      (after make-full-window-frame activate)
-    "Advise capture to be the only window when used as a popup"
+;;;; Capture Hooks
+  ;; ;; Make capture the only window and close after refiling.
+  (defun cpm/capture-single-window-frame ()
+    "make org capture the only window in the new frame"
     (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
           ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
           ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))))
-
-  (defadvice org-capture-finalize
-      (after delete-capture-frame activate)
-    "Advise capture-finalize to close the frame"
+  (defun cpm/delete-capture-frame ()
+    "kill frame after capture"
     (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
           ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
-          ))
+          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))))
+  (add-hook! 'org-capture-mode-hook #'cpm/capture-single-window-frame)
+  (add-hook! 'org-capture-after-finalize-hook #'cpm/delete-capture-frame)
+
+  ;; (defadvice org-capture
+  ;;     (after make-full-window-frame activate)
+  ;;   "Advise capture to be the only window when used as a popup"
+  ;;   (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
+  ;;         ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
+  ;;         ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))))
+
+  ;; (defadvice org-capture-finalize
+  ;;     (after org-capture-finalize activate)
+  ;;   "Advise capture-finalize to close the frame"
+  ;;   (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
+  ;;         ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
+  ;;         ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
+  ;;         ))
 
 
 ;;; Org Archive
@@ -754,11 +768,11 @@ Instead it's simpler to use bash."
 ;;; Org-Goto
 ;; Make counsel display org headings nicely.
 (with-eval-after-load 'org
-  (setq counsel-org-goto-display-style 'path)
-  (setq counsel-org-goto-separator " ➜ ")
-  (setq counsel-org-goto-face-style 'org)
-  (define-key org-mode-map (kbd "C-c C-j") 'counsel-org-goto)
-  (define-key org-mode-map (kbd "C-u C-c C-j") 'counsel-org-goto-all))
+  (setq counsel-outline-display-style 'path)
+  (setq counsel-outline-path-separator " ➜ ")
+  (setq counsel-outline-face-style 'org)
+  (general-define-key :keymaps 'org-mode-map "C-c C-j" #'counsel-org-goto)
+  (general-define-key :keymaps 'org-mode-map "C-u C-c C-j" #'counsel-org-goto-all))
 
 ;;; Org Functions
 ;;;; Org Fill Functions
@@ -793,7 +807,7 @@ Instead it's simpler to use bash."
 (defun cpm/org-advance ()
   (interactive)
   (when (buffer-narrowed-p)
-    (beginning-of-buffer)
+    (goto-char (point-min))
     (widen)
     (org-forward-heading-same-level 1))
   (org-narrow-to-subtree))
@@ -801,7 +815,7 @@ Instead it's simpler to use bash."
 (defun cpm/org-retreat ()
   (interactive)
   (when (buffer-narrowed-p)
-    (beginning-of-buffer)
+    (goto-char (point-min))
     (widen)
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
@@ -944,100 +958,53 @@ the region boundaries."
           (org-cycle-hide-drawers 'all))))))
 
 ;;;; Org Return DWIM
-(defun unpackaged/org-element-descendant-of (type element)
-  "Return non-nil if ELEMENT is a descendant of TYPE.
-TYPE should be an element type, like `item' or `paragraph'.
-ELEMENT should be a list like that returned by `org-element-context'."
-  (when-let* ((parent (org-element-property :parent element)))
-    (or (eq type (car parent))
-        (unpackaged/org-element-descendant-of type parent))))
-
-;;;###autoload
-(defun unpackaged/org-return-dwim (&optional default)
-  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
-
-On headings, move point to position after entry content.  In
-lists, insert a new item or end the list, with checkbox if
-appropriate.  In tables, insert a new row or end the table."
-  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+(defun cpm/org-return (&optional ignore)
+  "Add new list item, heading or table row with RET.
+A double return on an empty element deletes it. Use a prefix arg
+to get regular RET. "
+  ;; See https://gist.github.com/alphapapa/61c1015f7d1f0d446bc7fd652b7ec4fe and
+  ;; http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
   (interactive "P")
-  (if default
+  (if ignore
       (org-return)
-    (cond
-     ;; Act depending on context around point.
-
-     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
-     ;; followed.
-
-     ;; ((eq 'link (car (org-element-context)))
-     ;;  ;; Link: Open it.
-     ;;  (org-open-at-point-global))
-
-     ((org-at-heading-p)
-      ;; Heading: Move to position after entry content.
-      ;; NOTE: This is probably the most interesting feature of this function.
-      (let ((heading-start (org-entry-beginning-position)))
-        (goto-char (org-entry-end-position))
-        (cond ((and (org-at-heading-p)
-                    (= heading-start (org-entry-beginning-position)))
-               ;; Entry ends on its heading; add newline after
-               (end-of-line)
-               (insert "\n\n"))
-              (t
-               ;; Entry ends after its heading; back up
-               (forward-line -1)
-               (end-of-line)
-               (when (org-at-heading-p)
-                 ;; At the same heading
-                 (forward-line)
-                 (insert "\n")
-                 (forward-line -1))
-               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
-                 (insert "\n"))
-               (forward-line -1)))))
-
-     ((org-at-item-checkbox-p)
-      ;; Checkbox: Insert new item with checkbox.
-      (org-insert-todo-heading nil))
-
-     ((org-in-item-p)
-      ;; Plain list.  Yes, this gets a little complicated...
-      (let ((context (org-element-context)))
-        (if (or (eq 'plain-list (car context))  ; First item in list
-                (and (eq 'item (car context))
-                     (not (eq (org-element-property :contents-begin context)
-                              (org-element-property :contents-end context))))
-                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
-            ;; Non-empty item: Add new item.
-            (org-insert-item)
-          ;; Empty item: Close the list.
-          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
-          (delete-region (line-beginning-position) (line-end-position))
-          (insert "\n"))))
-
-     ((when (fboundp 'org-inlinetask-in-task-p)
-        (org-inlinetask-in-task-p))
-      ;; Inline task: Don't insert a new heading.
-      (org-return))
-
-     ((org-at-table-p)
-      (cond ((save-excursion
-               (beginning-of-line)
-               ;; See `org-table-next-field'.
-               (cl-loop with end = (line-end-position)
-                        for cell = (org-element-table-cell-parser)
-                        always (equal (org-element-property :contents-begin cell)
-                                      (org-element-property :contents-end cell))
-                        while (re-search-forward "|" end t)))
-             ;; Empty row: end the table.
+    (cond ((eq 'link (car (org-element-context)))
+           ;; Open links like usual
+           (org-open-at-point-global))
+          ((and (fboundp 'org-inlinetask-in-task-p) (org-inlinetask-in-task-p))
+           ;; It doesn't make sense to add headings in inline tasks. Thanks Anders
+           ;; Johansson!
+           (org-return))
+          ((org-at-item-checkbox-p)
+           ;; Add checkboxes
+           (org-insert-todo-heading nil))
+          ((and (org-in-item-p) (not (bolp)))
+           ;; Lists end with two blank lines, so we need to make sure we are also not
+           ;; at the beginning of a line to avoid a loop where a new entry gets
+           ;; created with only one blank line.
+           (if (org-element-property :contents-begin (org-element-context))
+               (org-insert-heading)
+             (beginning-of-line)
              (delete-region (line-beginning-position) (line-end-position))
-             (org-return))
-            (t
-             ;; Non-empty row: call `org-return'.
-             (org-return))))
-     (t
-      ;; All other cases: call `org-return'.
-      (org-return)))))
+             (org-return)))
+          ((org-at-heading-p)
+           (if (s-present? (org-element-property :title (org-element-context)))
+               (progn
+                 (org-end-of-meta-data)
+                 (org-insert-heading))
+             (beginning-of-line)
+             (delete-region (line-beginning-position) (line-end-position))))
+          ((org-at-table-p)
+           (if (--any? (string-empty-p it)
+                       (nth (- (org-table-current-dline) 1) (org-table-to-lisp)))
+               (org-return)
+             ;; Empty row
+             (beginning-of-line)
+             (delete-region (line-beginning-position) (line-end-position))
+             (org-return)))
+          (t
+           (org-return)))))
+
+(general-define-key :keymaps 'org-mode-map "RET" #'cpm/org-return)
 
 ;;;; Org Create Check Box From List Item
 ;; A useful macro for converting list items to checkboxes
@@ -1072,13 +1039,13 @@ appropriate.  In tables, insert a new row or end the table."
   (interactive)
   (find-file (concat org-directory "todo.org"))
   (widen)
-  (beginning-of-buffer))
+  (goto-char (point-min)))
 
 (defun cpm/org-goto-inbox ()
   (interactive)
   (find-file (concat org-directory "inbox.org"))
   (widen)
-  (beginning-of-buffer)
+  (goto-char (point-min))
   (beginning-of-line))
 
 ;; TODO: this isn't working
@@ -1191,7 +1158,7 @@ Callers of this function already widen the buffer view."
             (save-excursion
               (forward-line 1)
               (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags-at))
+                (unless (member "WAITING" (org-get-tags))
                   (setq has-next t))))
             (if has-next
                 nil
@@ -1210,7 +1177,7 @@ Callers of this function already widen the buffer view."
             (save-excursion
               (forward-line 1)
               (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags-at))
+                (unless (member "WAITING" (org-get-tags))
                   (setq has-next t))))
             (if has-next
                 next-headline
@@ -1267,7 +1234,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
        ((org-is-habit-p)
         next-headline)
        ((and bh/hide-scheduled-and-waiting-next-tasks
-             (member "WAITING" (org-get-tags-at)))
+             (member "WAITING" (org-get-tags)))
         next-headline)
        ((bh/is-project-p)
         next-headline)
@@ -1362,7 +1329,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (interactive)
   (find-file (concat org-directory "todo.org"))
   (widen)
-  (beginning-of-buffer)
+  (goto-char (point-min))
   (re-search-forward "* Areas")
   (beginning-of-line))
 
@@ -1390,7 +1357,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (setq org-download-method 'directory
         org-download-image-dir (concat org-directory "org-pictures/")
         org-download-image-latex-width 500
-        setq org-download-timestamp "-%Y-%m-%d"))
+        org-download-timestamp "%Y-%m-%d"))
 
 ;;; Org Pomodoro
 ;; Helps with time tracking

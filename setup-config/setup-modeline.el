@@ -27,7 +27,7 @@
 
 ;;;; Doom Modeline
 (use-package doom-modeline
-  :hook (after-init . doom-modeline-init)
+  :hook (after-init . doom-modeline-mode)
   :custom-face
   (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
   (doom-modeline-eyebrowse ((t (:inherit highlight))))
@@ -86,10 +86,10 @@
                         tag
                       (when num (int-to-string num)))))
           (concat
-           (propertize (format " %s " str) 'face (if (doom-modeline--active)
-                                                     '(:foreground "#2aa198")
-                                                   'doom-modeline-inactive-window-number))
-           (propertize (format "|" str) 'face '(:foreground "#586e75"))))
+           (propertize " %s " 'face (if (doom-modeline--active)
+                                        '(:foreground "#2aa198")
+                                      'doom-modeline-inactive-window-number))
+           (propertize "|" 'face '(:foreground "#586e75"))))
 
       ""))
 

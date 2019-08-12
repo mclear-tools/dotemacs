@@ -62,6 +62,7 @@
 ;; Fix titlebar titling colors
 ;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
 (use-package ns-auto-titlebar
+  :commands ns-auto-titlebar-mode
   :if (eq system-type 'darwin)
   :init (ns-auto-titlebar-mode))
 
@@ -82,7 +83,7 @@
 (global-set-key (kbd "s-0") 'text-scale-adjust)
 
 ;;; Line Numbers
-(use-package line-numbers
+(use-package display-line-numbers
   :ensure nil
   ;; :hook (markdown-mode prog-mode)
   :commands display-line-numbers-mode
@@ -91,12 +92,14 @@
 
 ;;; Highlight
 (use-package highlight-numbers
- :defer t
- :init
- (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+  :defer t
+  :commands highlight-numbers-mode
+  :init
+  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package hl-todo
   :defer t
+  :commands hl-todo-mode
   :init
   ;; (add-hook 'org-mode-hook #'hl-todo-mode)
   (add-hook 'prog-mode-hook #'hl-todo-mode)
@@ -111,6 +114,7 @@
 ;; icons for dired
 (use-package all-the-icons-dired
   :defer t
+  :commands all-the-icons-dired-mode
   :init
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 

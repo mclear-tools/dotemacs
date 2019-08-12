@@ -45,19 +45,13 @@
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max)))
 
-;;;; Byte Compile Files
-;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
-(defun cpm/byte-compile-init-dir ()
-  "Byte-compile all your dotfiles."
-  (interactive)
-  (byte-recompile-directory user-emacs-directory 0))
 
-  (defun cpm/copy-clipboard-to-whole-buffer ()
-    "Copy clipboard and replace buffer"
-    (interactive)
-    (delete-region (point-min) (point-max))
-    (clipboard-yank)
-    (deactivate-mark))
+(defun cpm/copy-clipboard-to-whole-buffer ()
+  "Copy clipboard and replace buffer"
+  (interactive)
+  (delete-region (point-min) (point-max))
+  (clipboard-yank)
+  (deactivate-mark))
 (defun cpm/tangle-commit-load ()
   (interactive)
   (save-excursion
@@ -86,10 +80,6 @@
   "Open config.org file"
   (interactive)
   (find-file "~/.emacs.d/config.org"))
-(defun cpm/compile-dotemacs ()
-  "Byte compile all files in the .emacs.d base directory"
-  (interactive)
-  (byte-recompile-directory cpm-emacs-dir 0 t))
 (defun load-config ()
   "Load config "
   (interactive)
@@ -190,31 +180,29 @@ Version 2016-06-19"
         (delete-file filename t)
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
-(defun cpm/delete-byte-compiled-files ()
-  (interactive)
-  (shell-command-to-string "trash ~/.emacs.d/*.elc"))
+
 (defun cpm/duplicate-file ()
   (interactive)
   (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 (copy).\\2"))
 
 (with-eval-after-load 'ediff
-(defhydra hydra-ediff (:color blue :hint nil)
-  "
+  (defhydra hydra-ediff (:color blue :hint nil)
+    "
 ^Buffers           Files           VC                     Ediff regions
 ----------------------------------------------------------------------
 _b_uffers           _f_iles (_=_)       _r_evisions              _l_inewise
 _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
                   _c_urrent file
 "
-  ("b" ediff-buffers)
-  ("B" ediff-buffers3)
-  ("=" ediff-files)
-  ("f" ediff-files)
-  ("F" ediff-files3)
-  ("c" ediff-current-file)
-  ("r" ediff-revision)
-  ("l" ediff-regions-linewise)
-  ("w" ediff-regions-wordwise)))
+    ("b" ediff-buffers)
+    ("B" ediff-buffers3)
+    ("=" ediff-files)
+    ("f" ediff-files)
+    ("F" ediff-files3)
+    ("c" ediff-current-file)
+    ("r" ediff-revision)
+    ("l" ediff-regions-linewise)
+    ("w" ediff-regions-wordwise)))
 ;; esc quits
 
 ;;;; Quit All the Things!
@@ -523,7 +511,7 @@ is already narrowed."
 Dedicated windows are left untouched. Giving a negative prefix
 argument takes the kindows rotate backwards."
   (interactive "p")
-  (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
+  (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
          (num-windows (length non-dedicated-windows))
          (i 0)
          (step (+ num-windows count)))

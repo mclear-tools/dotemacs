@@ -17,7 +17,7 @@
         projectile-files-cache-expire 60)
   :config
   (setq projectile-git-submodule-command nil)
-  (projectile-global-mode))
+  (projectile-mode))
 
 (use-package helm-projectile
   :ensure t
@@ -40,11 +40,7 @@
 
 ;;; Eyebrowse
 (use-package eyebrowse
-  :commands (eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
-  :general
-  (:states '(insert normal motion emacs) :keymaps 'override
-           "s-1" 'cpm/open-agenda-in-workspace
-           "s-2" 'cpm/open-emacsd-in-workspace)
+  :commands (eyebrowse-mode eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
   :config
   (setq eyebrowse-new-workspace 'dired-jump
         eyebrowse-mode-line-style 'hide
@@ -95,6 +91,10 @@
   (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "agenda")
   (persp-add-buffer "*dashboard*")
   (persp-kill "main"))
+(general-define-key
+ :states '(insert normal motion emacs)
+ :keymaps 'override
+ "s-1" 'cpm/open-agenda-in-workspace)
 
 ;;;; Open emacs.d in workspace
 (defun cpm/open-emacsd-in-workspace ()
@@ -110,10 +110,17 @@
            (let ((project-name (projectile-project-name)))
              (unless (string= "-" project-name)
                (format " in [%s]" project-name))))))
+  (require 'crux)
   (crux-find-user-init-file)
   (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "emacs.d")
   (persp-kill "main")
-  (magit-status))
+  (require 'magit)
+  (magit-status-setup-buffer))
+(general-define-key
+ :states '(insert normal motion emacs)
+ :keymaps 'override
+ "s-2" 'cpm/open-emacsd-in-workspace)
+
 
 ;;;; Open New Project in Workspace
 (defun cpm/open-project-and-workspace ()
@@ -143,7 +150,8 @@
     (persp-kill "main")
     (kill-matching-buffers "\*scratch\*" nil t)
     (persp-add-buffer (generate-new-buffer (concat "*scratch* " "("project-name")"))))
-  (magit-status))
+  (require 'magit)
+  (magit-status-setup-buffer))
 
 ;;;; Open a Project in a New Frame
 (defun cpm/open-project-and-frame ()
@@ -162,7 +170,8 @@
              (unless (string= "-" project-name)
                (format " in [%s]" project-name))))))
   (split-window-right)
-  (magit-status))
+  (require 'magit)
+  (magit-status-setup-buffer))
 
 ;;; Bookmarks
 (use-package bookmark

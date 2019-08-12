@@ -149,21 +149,30 @@
                         "gnutls-cli -p %p %h"
                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+;;;; Byte Compile Warnings
+;; Disable certain byte compiler warnings to cut down on the noise. This is a
+;; personal choice and can be removed if you would like to see any and all byte
+;; compiler warnings.
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
 
 ;;;; Package Initialization Settings
 ;; we're setting =package-enable-at-startup= to nil so that packages will not
 ;; automatically be loaded for us since =use-package= will be handling that.
 
-(setq package-user-dir (concat cpm-local-dir "elpa/"))
-(setq load-prefer-newer t ;; use newer packages
-      ;; Ask package.el to not add (package-initialize) to .emacs
-      package--init-file-ensured t)
-;; don't set if emacs 27
-(when (version< emacs-version "27.0")
-  (setq package-enable-at-startup nil))
-;; make the package directory
-(unless (file-directory-p package-user-dir)
-  (make-directory package-user-dir t))
+(eval-and-compile
+  (setq package-user-dir (concat cpm-local-dir "elpa/"))
+  (setq load-prefer-newer t ;; use newest version of file
+        ;; Ask package.el to not add (package-initialize) to .emacs
+        package--init-file-ensured t)
+  ;; don't set if emacs 27
+  (when (version< emacs-version "27.0")
+    (setq package-enable-at-startup nil))
+  ;; make the package directory
+  (unless (file-directory-p package-user-dir)
+    (make-directory package-user-dir t)))
 
 ;; We're going to set the load path ourselves so that we don't have to call
 ;; =package-initialize= at runtime and incur a large performance hit. This
@@ -188,6 +197,7 @@
       use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
 
+(eval-when-compile
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
@@ -320,6 +330,7 @@
 
 ;;; Config Helper Functions
 
+;;;; Config Navigation
 ;; Function to navigate config files
 (defun cpm/find-files-setup-config-directory ()
   (interactive)
@@ -335,9 +346,24 @@
   (interactive)
   (load-file (concat user-emacs-directory "init.el")))
 
+;;;; Byte Compile Config Files
+;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
+(defun cpm/byte-compile-dotemacs ()
+  "Byte compile all files in the .emacs.d base directory"
+  (interactive)
+  (shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc")
+  (byte-recompile-directory user-emacs-directory 0 t))
+
+(defun cpm/delete-byte-compiled-files ()
+  "Delete byte-compiled files"
+  (interactive)
+  (shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc"))
+
+
+
 ;; reset file-name-handler-alist
 (add-hook 'emacs-startup-hook (lambda ()
-  (setq file-name-handler-alist cpm--file-name-handler-alist)))
+                                (setq file-name-handler-alist cpm--file-name-handler-alist)))
 
 ;; Startup time
 (message (format "Emacs ready in %.2f seconds with %d garbage collections."

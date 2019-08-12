@@ -3,9 +3,7 @@
 ;; string manipulation, list manipulation and backward compatibility
 ;; respectively. The git package is also a library.
 
-(use-package async
-  :defer 2
-  :config (async-bytecomp-package-mode 1))
+(use-package async   :defer 2)
 (use-package dash    :defer 2)
 (use-package s       :defer 2)
 (use-package f       :defer 2)

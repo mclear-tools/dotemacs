@@ -78,7 +78,11 @@
      `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
   (add-hook 'after-load-theme-hook 'customize-solarized-dark)
 
+;;;; Load Theme
+  (load-theme 'solarized-dark t))
+
 ;;;; Solarized Light
+(with-eval-after-load 'solarized-theme
   (defun customize-solarized-light ()
     "Customize solarized theme"
     (custom-theme-set-faces
@@ -121,9 +125,7 @@
      `(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
      `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
      `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
-  (add-hook 'after-load-theme-hook 'customize-solarized-light)
-  (load-theme 'solarized-dark t))
-
+  (add-hook 'after-load-theme-hook 'customize-solarized-light))
 
 
 ;;; Toggle Menubar

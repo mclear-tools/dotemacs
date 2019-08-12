@@ -13,19 +13,13 @@
   :if (< (length command-line-args) 2)
   :general
   (:states '(normal motion emacs)
-           :keymaps 'dashboard-mode-map
-           "TAB" 'widget-forward
-           "C-i" 'widget-forward
-           "<backtab>" 'widget-backward
-           "RET" 'widget-button-press
-           "<down-mouse-1>" 'widget-button-click
-           "g" #'dashboard-insert-startupify-lists
-           "a" (dashboard-insert-shortcut "a" "Agenda for today:")
-           "r" (dashboard-insert-shortcut "r" "Recent Files:")
-           "m" (dashboard-insert-shortcut "m" "Bookmarks:")
-           "p" (dashboard-insert-shortcut "p" "Projects:"))
-  :custom-face
-  (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
+   :keymaps 'dashboard-mode-map
+   "TAB" 'widget-forward
+   "C-i" 'widget-forward
+   "<backtab>" 'widget-backward
+   "RET" 'widget-button-press
+   "<down-mouse-1>" 'widget-button-click
+   "g" #'dashboard-insert-startupify-lists)
   :config
   ;; banner & header
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png")
@@ -53,7 +47,7 @@
   (when (file-exists-p banner)
     (let* ((title dashboard-banner-logo-title)
            (spec
-              (create-image banner))
+            (create-image banner))
            (size (image-size spec))
            (width (car size))
            (left-margin (max 0 (floor (- dashboard-banner-length width) 2))))

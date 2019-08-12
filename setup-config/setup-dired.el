@@ -7,11 +7,15 @@
   :commands (dired dired-jump dired-jump-other-window)
   :general
   (:keymaps 'dired-mode-map
-            :states '(normal motion)
-            "l" #'dired-find-alternate-file
-            "h" #'cpm/dired-updirectory
-            "q" #'quit-window)
+   :states '(normal motion)
+   "l" #'dired-find-alternate-file
+   "h" #'cpm/dired-updirectory
+   "q" #'quit-window)
   :config
+  ;; Function to move up a directory like in ranger
+  (defun cpm/dired-updirectory ()
+    (interactive)
+    (find-alternate-file ".."))
   (when sys/macp
     ;; Suppress the warning: `ls does not support --dired'.
     (setq dired-use-ls-dired nil)
@@ -42,19 +46,15 @@
 (autoload 'dired-async-mode "dired-async.el" nil t)
 (dired-async-mode 1)
 
-;; Function to move up a directory like in ranger
-(defun cpm/dired-updirectory ()
-  (interactive)
-  (find-alternate-file ".."))
-
 ;;narrow dired to match filter
 (use-package dired-narrow
   :ensure t
   :general (:keymaps 'dired-mode-map
-                     "/"  'dired-narrow))
+            "/"  'dired-narrow))
 
 ;; Colourful dired
 (use-package diredfl
+  :commands (diredfl-global-mode)
   :init (diredfl-global-mode 1)
   :custom-face
   (diredfl-compressed-file-name ((t (:foreground "#00629D"))))
@@ -116,26 +116,26 @@
   :commands (peep-dired)
   :general
   (:keymaps 'dired-mode-map
-            :states '(normal motion)
-            "p" #'peep-dired)
+   :states '(normal motion)
+   "p" #'peep-dired)
   (:keymaps 'peep-dired-mode-map
-            :states '(normal)
-            "j" #'peep-dired-next-file
-            "k" #'peep-dired-prev-file
-            "RET" #'cpm/peep-dired-open
-            "TAB" #'other-window)
+   :states '(normal)
+   "j" #'peep-dired-next-file
+   "k" #'peep-dired-prev-file
+   "RET" #'cpm/peep-dired-open
+   "TAB" #'other-window)
   :config
+  ;; helper function for opening files in full window
+  (defun cpm/peep-dired-open ()
+    "open files from peep-dired & clean-up"
+    (interactive)
+    (peep-dired-kill-buffers-without-window)
+    (dired-find-file)
+    (delete-other-windows))
   (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
         peep-dired-max-size 5242880))
 
-;; helper function for opening files in full window
-(defun cpm/peep-dired-open ()
-  "open files from peep-dired & clean-up"
-  (interactive)
-  (peep-dired-kill-buffers-without-window)
-  (dired-find-file)
-  (delete-other-windows))
 
 
 ;;;;   Dired Ranger
@@ -145,10 +145,10 @@
 (use-package dired-ranger
   :after dired
   :general (:keymaps 'dired-mode-map
-                     :states '(normal motion)
-                     "s-c"  'dired-ranger-copy
-                     "s-m"  'dired-ranger-move
-                     "s-v"  'dired-ranger-paste))
+            :states '(normal motion)
+            "s-c"  'dired-ranger-copy
+            "s-m"  'dired-ranger-move
+            "s-v"  'dired-ranger-paste))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-dired)

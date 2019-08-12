@@ -88,18 +88,18 @@
   :commands shell-pop
   :init
   (setq shell-pop-term-shell "/usr/local/bin/zsh")
-  (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
+  (setq shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell)))))
   ;; (setq shell-pop-shell-type '("vterm" "*vterm*" (lambda nil (vterm))))
-  :config
-  (defun cpm/term-handle-close ()
-    "Close current term buffer when `exit' from term buffer."
-    (when (ignore-errors (get-buffer-process (current-buffer)))
-      (set-process-sentinel (get-buffer-process (current-buffer))
-                            (lambda (proc change)
-                              (when (string-match "\\(finished\\|exited\\)" change)
-                                (kill-buffer (when (buffer-live-p (process-buffer proc)))
-                                             (delete-window))))))
-    (add-hook 'shell-pop-out-hook 'kill-this-buffer)))
+  ;; :config
+  ;; (defun cpm/term-handle-close ()
+  ;;   "Close current term buffer when `exit' from term buffer."
+  ;;   (when (ignore-errors (get-buffer-process (current-buffer)))
+  ;;     (set-process-sentinel (get-buffer-process (current-buffer))
+  ;;                           (lambda (proc change)
+  ;;                             (when (string-match "\\(finished\\|exited\\)" change)
+  ;;                               (kill-buffer (when (buffer-live-p (process-buffer proc)))
+  ;;                                            (delete-window))))))
+  ;; (add-hook 'shell-pop-out-hook 'kill-this-buffer)))
 
 ;;;; Shell Colors
 ;; Add customizable 256 color support: https://github.com/dieggsy/eterm-256color  to term and ansiterm
@@ -161,18 +161,13 @@
   :config
   (venv-initialize-interactive-shells) ;; if you want interactive shell support
   (venv-initialize-eshell) ;; if you want eshell support
+  (setq venv-project-home
+        (expand-file-name (or (getenv "PROJECT_HOME") "~/Dropbox/Work/projects/")))
   (setq venv-location "~/bin/virtualenvs")
-  (setq venv-project-home "~/Dropbox/Work/projects/")
-  (add-hook 'venv-postactivate-hook (lambda () (workon-venv))))
-
-(defcustom venv-project-home
-  (expand-file-name (or (getenv "PROJECT_HOME") "~/Dropbox/Work/projects/"))
-    "The location(s) of your virtualenv projects."
-    :group 'virtualenvwrapper)
-
-(defun workon-venv ()
-  "change directory to project in eshell"
-  (eshell/cd (concat venv-project-home venv-current-name)))
+  (add-hook 'venv-postactivate-hook (lambda () (workon-venv)))
+  (defun workon-venv ()
+    "change directory to project in eshell"
+    (eshell/cd (concat venv-project-home venv-current-name))))
 
 ;;; Tramp
 ;; An easy way to ssh
@@ -363,9 +358,9 @@
 
 ;;;; Eshell Magit
 (defun eshell/magit ()
-"Function to open magit-status for the current directory"
+  "Function to open magit-status for the current directory"
   (interactive)
-  (magit-status default-directory)
+  (magit-status-setup-buffer default-directory)
   nil)
 
 ;;;; Eshell Fringe Status

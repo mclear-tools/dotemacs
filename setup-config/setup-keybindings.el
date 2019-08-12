@@ -94,7 +94,7 @@
    "CE" 'goto-cpm-elisp-dir
    "Ce" 'goto-early-init.el
    "Cf" 'cpm/find-files-setup-config-directory
-   "Ck" 'cpm/compile-dotemacs
+   "Ck" 'cpm/byte-compile-dotemacs
    "CK" 'cpm/delete-byte-compiled-files
    "Cl" 'load-config
    "Ci" 'goto-init.el
@@ -657,7 +657,7 @@
    "SPC" #'org-toggle-checkbox
    "."   #'org-cycle-agenda-files
    "/"   #'org-sparse-tree
-   "="   #'org-align-all-tags
+   "="   #'org-align-tags
    "?"   #'org-tags-view
    ":"   #'org-set-tags
    "a"   #'super-jump-to-org-agenda
@@ -705,24 +705,24 @@
    "C-p" #'org-agenda-previous-item)
 
   (general-define-key :states '(normal) :keymaps 'org-mode-map
-                      "RET" 'org-open-at-point     ;; Open with return in evil
-                      "p"   'org-yank ;; better pasting behavior
-                      "s-J" 'crux-top-join-line)
+    "RET" 'org-open-at-point     ;; Open with return in evil
+    "p"   'org-yank ;; better pasting behavior
+    "s-J" 'crux-top-join-line)
 
   ;;   normal, insert, visual shortcuts
   (general-define-key :states '(normal insert visual) :keymaps 'org-mode-map
-                      "M-q" #'cpm/fill-or-unfill
-                      "C-t" #'transpose-chars)
+    "M-q" #'cpm/fill-or-unfill
+    "C-t" #'transpose-chars)
 
   ;;   ;; normal & insert state shortcuts.
   (general-define-key :states '(normal insert) :keymaps 'org-mode-map
-                      ;; easily emphasize text
-                      ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-                      "s-b" (lambda () (interactive) (org-emphasize ?\*))
-                      "s-i" (lambda () (interactive) (org-emphasize ?\/))
-                      "s-l" (lambda () (interactive) (org-emphasize ?\=))
-                      ;; better pasting behavior in org-mode
-                      "s-v" 'org-yank)
+    ;; easily emphasize text
+    ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+    "s-b" (lambda () (interactive) (org-emphasize ?\*))
+    "s-i" (lambda () (interactive) (org-emphasize ?\/))
+    "s-l" (lambda () (interactive) (org-emphasize ?\=))
+    ;; better pasting behavior in org-mode
+    "s-v" 'org-yank)
 
 
   ;; end evil keybindings

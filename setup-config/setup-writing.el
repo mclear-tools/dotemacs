@@ -204,7 +204,7 @@
 
 ;;; Interleave (Notes)
 (use-package interleave
-  :commands interleave)
+  :commands interleave-mode)
 (use-package lorem-ipsum
   :commands (Lorem-ipsum-insert-sentences Lorem-ipsum-insert-list Lorem-ipsum-insert-paragraphs)
   :config
@@ -391,6 +391,11 @@
   ;; :defer 1
   :commands (zd-deft-new-search zd-new-file zd-new-file-and-link cpm/zettel-dired)
   :config
+  ;; use dired to navigate notes
+  (defun cpm/zettel-dired ()
+    (interactive)
+    (find-file "~/Dropbox/Notes/zettel")
+    (peep-dired))
   (setq zd-id-format "%Y-%m%d-%H%M")
   (setq zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{2\\}")
   (setq zd-tag-regex "[#][a-z-]+")
@@ -468,11 +473,6 @@ When there is only one search result, as there should be, open that file in a wi
         (zd-search-filename ID))))
   )
 
-;; use dired to navigate notes
-(defun cpm/zettel-dired ()
-  (interactive)
-  (find-file "~/Dropbox/Notes/zettel")
-  (peep-dired))
 
 
 

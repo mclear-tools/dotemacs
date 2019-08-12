@@ -44,7 +44,7 @@
     (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
           treemacs-file-event-delay           5000
           treemacs-follow-after-init          t
-          treemacs-follow-recenter-distance   0.1
+          treemacs-recenter-distance   0.1
           treemacs-goto-tag-strategy          'refetch-index
           treemacs-indentation                2
           treemacs-indentation-string         " "
