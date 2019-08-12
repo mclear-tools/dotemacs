@@ -49,15 +49,15 @@
   :commands (windmove-up windmove-down windmove-left windmove-right)
   :config
   (defun cpm/split-window-right-and-focus ()
-  "Split the window horizontally and focus the new window."
-  (interactive)
-  (split-window-right)
-  (windmove-right))
+    "Split the window horizontally and focus the new window."
+    (interactive)
+    (split-window-right)
+    (windmove-right))
   (defun cpm/split-window-below-and-focus ()
-  "Split the window vertically and focus the new window."
-  (interactive)
-  (split-window-below)
-  (windmove-down))
+    "Split the window vertically and focus the new window."
+    (interactive)
+    (split-window-below)
+    (windmove-down))
   ;; add edit mode keybindings
   (global-set-key (kbd "<H-up>")     'windmove-up)
   (global-set-key (kbd "<H-down>")   'windmove-down)
@@ -66,22 +66,24 @@
 
 ;;; Window Sizing
 ;; Automatic resizing of Emacs windows to the golden ratio
-;; https://github.com/roman/golden-ratio.el
+;; FIXME: currently disabled due to poor interaction with eyebrowse
+;; https://github.com/roman/golden-ratio.el/issues/72
 (use-package golden-ratio
-  :load-path "~/.emacs.d/.local/elisp/golden-ratio.el/"
+  :disabled
+  :git "https://github.com/roman/golden-ratio.el.git"
   :ensure nil
   ;; :after (:any perspective helm nameframe projectile)
   ;; :demand t
-  :defer 3
+  :defer 2
   :config
   (setq golden-ratio-exclude-buffer-names '("*Ilist*" "*Deft*"))
   (setq golden-ratio-exclude-buffer-regexp '("Ilist"))
   (setq golden-ratio-exclude-modes '("dired" "peep-dired"))
   ;; inhibit in helm windows
   (defun cpm--helm-alive-p ()
-  (if (boundp 'helm-alive-p)
-      (symbol-value 'helm-alive-p)))
-      (add-to-list 'golden-ratio-inhibit-functions 'cpm--helm-alive-p)
+    (if (boundp 'helm-alive-p)
+        (symbol-value 'helm-alive-p)))
+  (add-to-list 'golden-ratio-inhibit-functions 'cpm--helm-alive-p)
   ;;fix for ispell
   (defun cpm--ispell-alive-p ()
     (get-buffer ispell-choices-buffer))

@@ -13,3 +13,9 @@
 [submodule "y"]
 	path = .local/elisp/helm-org
 	url = https://github.com/emacs-helm/helm-org.git
+[submodule ".local/elisp/org-pdftools"]
+	path = .local/elisp/org-pdftools
+	url = https://github.com/fuxialexander/org-pdftools.git
+[submodule ".local/elisp/golden-ratio.el"]
+	path = .local/elisp/golden-ratio.el
+	url = https://github.com/roman/golden-ratio.el.git

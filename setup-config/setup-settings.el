@@ -114,13 +114,13 @@
 
 
 ;;;; Save History
-(use-package    savehist-mode
+(use-package savehist
   :ensure nil
   :defer 1
   :config
   (setq-default savehist-file (concat cpm-cache-dir "savehist"))
   (when (not (file-exists-p savehist-file))
-    (make-empty-file savehist-file))
+    (write-file savehist-file))
   (setq savehist-save-minibuffer-history t)
   (setq history-length 100)
   (put 'minibuffer-history 'history-length 50)
