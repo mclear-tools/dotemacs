@@ -26,7 +26,6 @@
 
 (use-package helm-swoop
   :commands (helm-swoop-without-pre-input helm-swoop-back-to-last-point helm-multi-swoop helm-multi-swoop-all)
-  :load-path "~/.emacs.d/.local/elisp/helm-swoop/"
   :config
   (setq helm-swoop-use-fuzzy-match t)
   (setq helm-swoop-split-with-multiple-windows t))
