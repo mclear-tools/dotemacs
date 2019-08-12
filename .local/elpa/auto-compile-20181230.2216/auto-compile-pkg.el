@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "auto-compile" "20181230.2216" "automatically compile Emacs Lisp libraries" '((emacs "25.1") (packed "3.0.0")) :commit "f043133f37fe6d707fa03a1ec4ba619da24c2f35" :keywords '("compile" "convenience" "lisp") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/emacscollective/auto-compile")

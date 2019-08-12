@@ -2069,8 +2069,8 @@ Create and checkout a new BRANCH from STASH.
 
 (autoload 'magit-stash-branch-here "magit-stash" "\
 Create and checkout a new BRANCH and apply STASH.
-The branch is created using `magit-branch', using the current
-branch or `HEAD' as the string-point.
+The branch is created using `magit-branch-and-checkout', using the
+current branch or `HEAD' as the start-point.
 
 \(fn STASH BRANCH)" t nil)
 
