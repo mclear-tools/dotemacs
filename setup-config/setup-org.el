@@ -958,6 +958,7 @@ the region boundaries."
           (org-cycle-hide-drawers 'all))))))
 
 ;;;; Org Return DWIM
+;; https://gist.github.com/alphapapa/61c1015f7d1f0d446bc7fd652b7ec4fe
 (defun cpm/org-return (&optional ignore)
   "Add new list item, heading or table row with RET.
 A double return on an empty element deletes it. Use a prefix arg

@@ -18,19 +18,21 @@
 
 ;;; Historian history keeper
 (use-package historian
-  :defer 5
+  :defer 2
   :load-path "~/.emacs.d/.local/elisp/historian"
   :config
   (setq historian-save-file (concat cpm-cache-dir ".historian"))
+  (when (not (file-exists-p historian-save-file))
+    (write-file (concat cpm-cache-dir ".historian")))
   (historian-mode 1))
-  (use-package saveplace
-    :init
-    (save-place-mode 1)
-    :config
-    (setq save-place-file (concat cpm-cache-dir "saved-places")
-    ;; (setq save-place-forget-unreadable-files nil)
-  ))
 
+(use-package saveplace
+  :init
+  (save-place-mode 1)
+  :config
+  (setq save-place-file (concat cpm-cache-dir "saved-places")
+        ;; (setq save-place-forget-unreadable-files nil)
+        ))
 
 ;;; Treemacs
 (use-package treemacs

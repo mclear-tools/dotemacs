@@ -22,7 +22,8 @@
   :config
   (progn
     ;; Use helm to provide :ls, unless ibuffer is used
-    (evil-ex-define-cmd "buffers" 'helm-buffers-list)
+    (with-eval-after-load 'evil
+      (evil-ex-define-cmd "buffers" 'helm-buffers-list))
     (set-face-attribute 'helm-source-header nil
                         :height 180)
     (setq helm-locate-fuzzy-match nil

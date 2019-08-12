@@ -360,6 +360,7 @@
 (defun eshell/magit ()
   "Function to open magit-status for the current directory"
   (interactive)
+  (require 'magit)
   (magit-status-setup-buffer default-directory)
   nil)
 
