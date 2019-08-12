@@ -16,23 +16,13 @@
   (imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
   (imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
 
-;;; Historian history keeper
-(use-package historian
-  :defer 2
-  :load-path "~/.emacs.d/.local/elisp/historian"
-  :config
-  (setq historian-save-file (concat cpm-cache-dir ".historian"))
-  (when (not (file-exists-p historian-save-file))
-    (write-file (concat cpm-cache-dir ".historian")))
-  (historian-mode 1))
-
+;;; Save place
 (use-package saveplace
   :init
   (save-place-mode 1)
   :config
-  (setq save-place-file (concat cpm-cache-dir "saved-places")
-        ;; (setq save-place-forget-unreadable-files nil)
-        ))
+  (setq save-place-file (concat cpm-cache-dir "saved-places"))
+  (setq save-place-forget-unreadable-files nil))
 
 ;;; Treemacs
 (use-package treemacs
