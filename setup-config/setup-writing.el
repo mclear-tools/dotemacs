@@ -328,13 +328,13 @@
   :commands (deft deft-open-file-other-window big-notes deft-new-file-named)
   :general
   (:keymaps 'deft-mode-map :states '(normal motion)
-            "o" 'cpm/deft-open
-            "p" 'cpm/deft-open-preview)
+   "o" 'cpm/deft-open
+   "p" 'cpm/deft-open-preview)
   (:keymaps 'deft-mode-map :states '(insert)
-            "C-j" 'evil-next-line
-            "C-k" 'evil-previous-line
-            "C-o" 'cpm/deft-open
-            "C-p" 'cpm/deft-open-preview)
+   "C-j" 'evil-next-line
+   "C-k" 'evil-previous-line
+   "C-o" 'cpm/deft-open
+   "C-p" 'cpm/deft-open-preview)
   :config
   (add-to-list 'evil-insert-state-modes 'deft-mode)
   ;; basic settings for use with zettel
@@ -384,13 +384,14 @@
     (deft-open-file-other-window)))
 
 ;;; Zetteldeft
-(use-package zetteldeft
-  :ensure t
-  :load-path cpm-elisp-dir
-  :git "https://github.com/EFLS/zetteldeft.git"
-  ;; :defer 1
-  :commands (zd-deft-new-search zd-new-file zd-new-file-and-link cpm/zettel-dired)
-  :config
+;; https://github.com/EFLS/zetteldeft.git
+(eval-when-compile
+  (quelpa
+   '(zetteldeft :fetcher github :repo "EFLS/zetteldeft")))
+  (use-package zetteldeft
+    :ensure t
+    :commands (zd-deft-new-search zd-new-file zd-new-file-and-link cpm/zettel-dired)
+    :config
   ;; use dired to navigate notes
   (defun cpm/zettel-dired ()
     (interactive)

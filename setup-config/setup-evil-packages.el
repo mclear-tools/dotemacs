@@ -5,6 +5,7 @@
     :ensure t
     :after evil
     :defer 1
+    :custom (evil-collection-company-use-tng nil)
     :config
     (evil-collection-init))
   ;; (evil-collection-init 'calendar)

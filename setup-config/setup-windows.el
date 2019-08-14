@@ -68,9 +68,13 @@
 ;; Automatic resizing of Emacs windows to the golden ratio
 ;; FIXME: currently disabled due to poor interaction with eyebrowse
 ;; https://github.com/roman/golden-ratio.el/issues/72
+(eval-when-compile
+  (quelpa
+   '(golden-ratio
+     :fetcher github :repo "roman/golden-ratio.el")))
+
 (use-package golden-ratio
   :disabled
-  :git "https://github.com/roman/golden-ratio.el.git"
   :ensure nil
   ;; :after (:any perspective helm nameframe projectile)
   ;; :demand t
@@ -118,10 +122,10 @@
 ;; Winner mode is a built-in package for restoring window configurations
 ;; https://www.emacswiki.org/emacs/WinnerMode
 (use-package winner
- :ensure nil
- :commands (winner-undo winner-redo winner-mode)
- :config
- (winner-mode 1))
+  :ensure nil
+  :commands (winner-undo winner-redo winner-mode)
+  :config
+  (winner-mode 1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

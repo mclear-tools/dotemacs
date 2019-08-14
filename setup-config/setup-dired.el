@@ -114,6 +114,7 @@
 (use-package peep-dired
   :ensure t
   :commands (peep-dired)
+  :functions (peep-dired-kill-buffers-without-window)
   :general
   (:keymaps 'dired-mode-map
    :states '(normal motion)

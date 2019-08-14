@@ -10,6 +10,9 @@
 (use-package subr-x  :defer 2 :ensure nil)
 ; lots of packages depend on these libraries
 (use-package cl-lib  :demand t :ensure nil)
-(use-package cl      :demand t :ensure nil)
+;; get rid of compile warnings
+;;https://stackoverflow.com/a/5020049/6277148
+(eval-when-compile
+  (use-package cl      :demand t :ensure nil))
 
 (provide 'setup-libraries)

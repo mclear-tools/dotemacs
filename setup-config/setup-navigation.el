@@ -24,13 +24,14 @@
   (setq save-place-file (concat cpm-cache-dir "saved-places"))
   (setq save-place-forget-unreadable-files nil))
 
-;;; Treemacs
+;; ;;; Treemacs
 (use-package treemacs
   :ensure t
   :commands treemacs
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :general
+  (:states '(normal insert motion emacs)
+   :keymaps 'winum-keymap
+   "M-0" #'treemacs-select-window)
   :config
   (progn
     (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
@@ -63,14 +64,14 @@
        (treemacs-git-mode 'extended))
       (`(t . _)
        (treemacs-git-mode 'simple)))))
-  ;; :bind
-  ;; (:map global-map
-  ;;       ("M-0"       . treemacs-select-window)
-  ;;       ("C-x t 1"   . treemacs-delete-other-windows)
-  ;;       ("C-x t t"   . treemacs)
-  ;;       ("C-x t B"   . treemacs-bookmark)
-  ;;       ("C-x t C-t" . treemacs-find-file)
-  ;;       ("C-x t M-t" . treemacs-find-tag)))
+;; :bind
+;; (:map global-map
+;;       ("M-0"       . treemacs-select-window)
+;;       ("C-x t 1"   . treemacs-delete-other-windows)
+;;       ("C-x t t"   . treemacs)
+;;       ("C-x t B"   . treemacs-bookmark)
+;;       ("C-x t C-t" . treemacs-find-file)
+;;       ("C-x t M-t" . treemacs-find-tag)))
 
 (use-package treemacs-evil
   :after treemacs evil
@@ -80,7 +81,7 @@
   :after treemacs projectile
   :ensure t)
 
-;;; Centered Cursor
+;; ;;; Centered Cursor
 (use-package centered-cursor-mode
   :diminish centered-cursor-mode
   :hook ((prog-mode markdown-mode org-mode) . centered-cursor-mode)
@@ -95,23 +96,23 @@
                                  scroll-bar-toolkit-scroll
                                  evil-mouse-drag-region))))
 
-;;; Hydra
+;; ;;; Hydra
 (use-package hydra :defer 1)
 
-  ;; hydra for TODOs
-  (with-eval-after-load 'hydra
+;; hydra for TODOs
+(with-eval-after-load 'hydra
   (defhydra cpm/hydra-todo
-             (:pre
-              (hl-todo-mode 1)
-              :post
-              (hl-todo-mode -1))
-  "Todo"
-  ("n" hl-todo-next "Next")
-  ("p" hl-todo-previous "Previous")
-  ("o" hl-todo-occur "Occur")
-  ("q" nil "Quit" :color blue :exit t)))
+    (:pre
+     (hl-todo-mode 1)
+     :post
+     (hl-todo-mode -1))
+    "Todo"
+    ("n" hl-todo-next "Next")
+    ("p" hl-todo-previous "Previous")
+    ("o" hl-todo-occur "Occur")
+    ("q" nil "Quit" :color blue :exit t)))
 
-;;; Recent files
+;; ;;; Recent files
 (use-package recentf
   :ensure nil
   :commands (helm-recentf)
@@ -126,26 +127,28 @@
         recentf-max-saved-items 300
         recentf-max-menu-items 10))
 
-;;; Goto Address
-;; This package allows you to click or hit a key sequence while on a
-;; URL or e-mail address, and either load the URL into a browser of
-;; your choice using the browse-url package, or if it's an e-mail
-;; address, to send an e-mail to that address.
+;; ;;; Goto Address
+;; ;; This package allows you to click or hit a key sequence while on a
+;; ;; URL or e-mail address, and either load the URL into a browser of
+;; ;; your choice using the browse-url package, or if it's an e-mail
+;; ;; address, to send an e-mail to that address.
 (use-package goto-addr
   :ensure nil
   :hook ((compilation-mode . goto-address-mode)
          (prog-mode . goto-address-prog-mode)
          (eshell-mode . goto-address-mode)
          (shell-mode . goto-address-mode))
-  :bind (:map goto-address-highlight-keymap
-          ("<RET>" . goto-address-at-point)
-          ("M-<RET>" . newline))
+  :general (:states '(normal insert emacs motion)
+            :keymaps 'goto-address-highlight-keymap
+            "<RET>"  'goto-address-at-point
+            "M-<RET>" 'newline)
   :commands (goto-address-prog-mode
              goto-address-mode))
 
 ;;; Frog-Jump-Avy
 ;; FIXME: fix loading with perspective
 (use-package frog-jump-buffer
+  :disabled
   :ensure t
   :commands frog-jump-buffer
   :general

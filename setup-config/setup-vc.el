@@ -23,6 +23,7 @@
   ;; magit-auto-revert-mode" when loading Magit.
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
   :config
+  (setq magit-log-margin '(t "%Y-%m-%d.%H:%M:%S "  magit-log-margin-width nil 18))
   (setq magit-refresh-verbose t)
   ;; don't automatically present diff on commit
   ;; type C-c C-d to show the diff when needed

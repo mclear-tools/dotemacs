@@ -111,14 +111,16 @@
 
 ;;;; Vterm
 ;; Better terminal function---way faster than ansi-term
+(eval-when-compile
+  (quelpa '(vterm :fetcher github :repo "akermu/emacs-libvterm"
+                  :files (:defaults "*.c" "*.h" "CMakeLists.txt"))))
 (use-package vterm
-  :ensure t
-  :git "https://github.com/akermu/emacs-libvterm.git"
+  :ensure nil
   :commands (vterm vterm-other-window)
   :general
   (:states '(normal insert)
-           ;; fix issue with fzf
-           "C-j" 'term-send-down)
+   ;; fix issue with fzf
+   "C-j" 'term-send-down)
   :custom (vterm-install t)
   :config
   ;; set colors -- this is best with dark solarized right now
@@ -137,9 +139,10 @@
 (add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
 
 ;; vterm toggle
+(eval-when-compile
+  (quelpa '(vterm-toggle :fetcher github :repo "jixiuf/vterm-toggle")))
 (use-package vterm-toggle
-  :ensure t
-  :git "https://github.com/jixiuf/vterm-toggle.git"
+  :ensure nil
   :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
   :config
   (setq vterm-toggle-fullscreen-p nil)

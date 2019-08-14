@@ -1,8 +1,11 @@
 ;;; Helm  Packages
 
 (use-package helm-org
-  :ensure nil
-  :git "https://github.com/emacs-helm/helm-org.git")
+  :ensure t
+  :commands (helm-org-agenda-files-headings
+             helm-org-in-buffer-headings
+             helm-org-parent-headings
+             helm-org-capture-templates))
 
 (use-package helm-ag
   :load-path "~/.emacs.d/.local/elisp/helm-ag/"

@@ -230,10 +230,15 @@
                                     (blink-cursor-mode -1)
                                     (beacon-mode -1)))))
 
+;; (eval-when-compile
+;;   (quelpa
+;;    '(org-pdftools :fetcher github :repo "fuxialexander/org-pdftools"))
+;;   )
+
 (use-package org-pdftools
   :disabled
+  :ensure nil
   :commands (org-pdftools-open)
-  :git "https://github.com/fuxialexander/org-pdftools.git"
   :after pdf-tools
   :init
   (add-to-list 'org-file-apps

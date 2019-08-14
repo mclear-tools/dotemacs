@@ -135,10 +135,11 @@
 
 ;;; Tabs
 ;; FIXME ;; cool but needs to mature
+(eval-when-compile
+  (quelpa '(centaur-tabs :fetcher github :repo "ema2159/centaur-tabs")))
 (use-package centaur-tabs
   :disabled t
   :defer .5
-  :quelpa (centaur-tabs :fetcher github :repo "ema2159/centaur-tabs")
   :hook
   (dashboard-mode . centaur-tabs-local-mode)
   (term-mode . centaur-tabs-local-mode)

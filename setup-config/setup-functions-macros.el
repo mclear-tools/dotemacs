@@ -83,7 +83,7 @@
 (defun load-config ()
   "Load config "
   (interactive)
-  (cpm/tangle-emacs-config)
+  ;; (cpm/tangle-emacs-config)
   (load-file "~/.emacs.d/init.el"))
 (defun goto-dotfiles.org ()
   "Open dotfiles.org file"
@@ -539,7 +539,7 @@ argument takes the kindows rotate backwards."
 (defun cpm/rotate-windows-backward (count)
   "Rotate your windows backward."
   (interactive "p")
-  (rotate-windows (* -1 count)))
+  (cpm/rotate-windows (* -1 count)))
 (defun cpm/helm-files-do-ag (&optional dir)
   "Search in files with `ag' using a default input."
   (interactive)
@@ -636,29 +636,29 @@ Return 'left, 'right, 'both or nil."
 (ace-swap-window)
 (aw-flip-window)
 )
-  (defun switch-to-previous-buffer ()
-    (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1)))
-  (defun cpm/tangle-and-load-config ()
-    (interactive)
-    (my-tangle-config-org "~/.emacs.d/config.org" "~/.emacs.d/config.el")
-    (load-file "~/.emacs.d/config.el"))
+(defun switch-to-previous-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+(defun cpm/tangle-and-load-config ()
+  (interactive)
+  ;; (my-tangle-config-org "~/.emacs.d/config.org" "~/.emacs.d/config.el")
+  (load-file "~/.emacs.d/config.el"))
 
 
 ;; transpose hydra
 (with-eval-after-load 'hydra
- (general-define-key "C-c t"
-    (defhydra hydra-transpose (:color red)
-    "Transpose"
-     ("c" transpose-chars "characters")
-     ("w" transpose-words "words")
-     ("o" org-transpose-words "Org mode words")
-     ("l" transpose-lines "lines")
-     ("s" transpose-sentences "sentences")
-     ("e" org-transpose-elements "Org mode elements")
-     ("p" transpose-paragraphs "paragraphs")
-     ("t" org-table-transpose-table-at-point "Org mode table")
-     ("q" nil "cancel" :color blue))))
+  (general-define-key "C-c t"
+                      (defhydra hydra-transpose (:color red)
+                        "Transpose"
+                        ("c" transpose-chars "characters")
+                        ("w" transpose-words "words")
+                        ("o" org-transpose-words "Org mode words")
+                        ("l" transpose-lines "lines")
+                        ("s" transpose-sentences "sentences")
+                        ("e" org-transpose-element "Org mode elements")
+                        ("p" transpose-paragraphs "paragraphs")
+                        ("t" org-table-transpose-table-at-point "Org mode table")
+                        ("q" nil "cancel" :color blue))))
 
 (defun cpm/toggle-window-split ()
   (interactive)

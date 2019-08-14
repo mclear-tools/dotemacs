@@ -1,13 +1,20 @@
 ;; Themes
 ;; I use solarized except in terminal, where Gruvbox seems to work better
 
+;;; Gruvbox Theme
+(use-package gruvbox-theme
+  :if (not (display-graphic-p))
+  :demand t
+  :config
+  (load-theme 'gruvbox t))
+
 ;;; Solarized Theme
 (use-package solarized-theme
   :ensure t
   :if (display-graphic-p)
   :demand t
-  :custom
-  (custom-enabled-themes (quote (solarized-dark solarized-light)))
+  ;; :custom
+  ;; (custom-enabled-themes (quote (solarized-dark solarized-light)))
   :init
 ;;;; Solarized Settings
   ;; don't make the fringe stand out from the background

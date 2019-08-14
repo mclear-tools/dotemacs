@@ -1,5 +1,4 @@
 ;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
-
 ;;; Commentary:
 ;; Base init file to load config. Use "outshine-cycle-buffer" (<Tab> and <S-Tab>
 ;; in org style) to navigate through sections, and "imenu" to locate individual
@@ -186,31 +185,32 @@
 ;;;; Use-Package Settings
 ;; I tell =use-package= to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
-;; only loaded later when they are explicitly used. But it can also
-;; [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][cause
-;; problems]]. I also put a lot of loading of packages off until up to 10
-;; secs of idle. The latter means package loading stays out of my way if I'm
-;; doing, e.g., a quick restart-and-check of something in emacs.
-
-(setq use-package-always-defer t
-      use-package-verbose t
-      use-package-minimum-reported-time 0.01
-      use-package-enable-imenu-support t)
+;; only loaded later when they are explicitly used. But it can also cause
+;; problems:
+;; https://github.com/jwiegley/use-package#loading-packages-in-sequence. I also
+;; put a lot of loading of packages off until after several seconds of idle. The
+;; latter means package loading stays out of my way if I'm doing, e.g., a quick
+;; restart-and-check of something in emacs.
 
 (eval-when-compile
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ;; https://github.com/emacs-china/emacswiki-elpa
-                         ("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/")
-                         ))
-(require 'package)
-(package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(require 'use-package)
-(setq use-package-always-ensure t))
+  (setq use-package-always-defer t
+        use-package-verbose t
+        use-package-minimum-reported-time 0.01
+        use-package-enable-imenu-support t
+        use-package-always-ensure t)
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ("org" . "https://orgmode.org/elpa/")
+                           ;; https://github.com/emacs-china/emacswiki-elpa
+                           ("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/")
+                           ))
+  (require 'package)
+  (package-initialize)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package))
 
 ;;;; Benchmark Init
 (use-package benchmark-init
@@ -238,37 +238,20 @@
 ;; Get emacs packages from anywhere:
 ;; https://github.com/quelpa/quelpa#installation and use with use-package:
 ;; https://github.com/quelpa/quelpa-use-package
+;; I don't use quelpa-use-package because it doesn't play well with byte-compilation
 
 (use-package quelpa
   :ensure t
-  :commands quelpa
+  :commands (quelpa quelpa-upgrade)
   :init
   ;; disable checking Melpa
   (setq quelpa-update-melpa-p nil)
   ;; don't use Melpa at all
   (setq quelpa-checkout-melpa-p nil)
   ;; quelpa dir settings
-  (setq quelpa-dir (concat cpm-local-dir "quelpa")))
-
-(use-package quelpa-use-package
-  :ensure t
-  :defer t
-  :config
-  ;; advice for maybe installing with quelpa
-  (setq quelpa-use-package-inhibit-loading-quelpa t)
-  (quelpa-use-package-activate-advice))
-
-;;;; Git-Use-Package
-;; this is a nice and simple quelpa alternative
-(use-package use-package-git
-  :ensure nil
-  :demand t
-  :load-path cpm-elisp-dir
-  :config
-  (setq use-package-git-user-dir cpm-elisp-dir))
-
-;; needed for git-use-package
-(use-package use-package-ensure-system-package :demand t)
+  (setq quelpa-dir (concat cpm-local-dir "quelpa"))
+  ;; make sure package-initialize has been called before calling quelpa
+  (advice-add 'quelpa-upgrade :before #'package-initialize))
 
 ;;;; El-Patch
 ;; Package for helping advise other packages
@@ -310,12 +293,11 @@
 ;;;; Other Modules
 (require 'setup-ui)
 (require 'setup-functions-macros)
-(require 'setup-completion)
 (require 'setup-modeline)
 (require 'setup-theme)
 (require 'setup-osx)
-(require 'setup-navigation)
 (require 'setup-windows)
+(require 'setup-navigation)
 (require 'setup-search)
 (require 'setup-vc)
 (require 'setup-shell)
@@ -325,6 +307,7 @@
 (require 'setup-programming)
 (require 'setup-pdf)
 (require 'setup-calendars)
+(require 'setup-completion)
 (require 'setup-dashboard)
 (require 'setup-testing)
 

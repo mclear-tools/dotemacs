@@ -469,7 +469,7 @@
    "uAl" #'cpm/goto-links.org
    "uAr" #'cpm/goto-reference.org
    "uAR" #'cpm/goto-referee-reports.org
-   "uAp" #'cpm/goto-projects.org
+   ;; "uAp" #'cpm/goto-projects.org
    "uAs" #'cpm/goto-someday.org
    "uAt" #'cpm/goto-todo.org
    "uAw" #'cpm/goto-writing.org
@@ -660,7 +660,7 @@
    "="   #'org-align-tags
    "?"   #'org-tags-view
    ":"   #'org-set-tags
-   "a"   #'super-jump-to-org-agenda
+   "a"   #'cpm/jump-to-org-super-agenda
    "A"   #'org-archive-subtree
    "b"   #'org-tree-to-indirect-buffer
    "B"   #'org-babel-tangle

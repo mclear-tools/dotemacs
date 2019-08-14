@@ -10,6 +10,8 @@
 
 (use-package dashboard
   :demand t
+  ;; use only with GUI emacs
+  :if (display-graphic-p)
   :if (< (length command-line-args) 2)
   :general
   (:states '(normal motion emacs)

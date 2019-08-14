@@ -5,9 +5,19 @@
   :custom-face
   ;; Nicer looking faces
   (company-tooltip-common
-    ((t (:inherit company-tooltip :weight bold :underline nil))))
+   ((t (:inherit company-tooltip :weight bold :underline nil))))
   (company-tooltip-common-selection
-    ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+   ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+  ;; ;; key bindings
+  :general
+  (:states '(normal insert emacs)
+   :keymaps 'company-mode-map
+   "C-/" 'company-search-candidates
+   "C-M-/" 'company-filter-candidates
+   "C-d" 'company-show-doc-buffer
+   "C-j" 'company-select-next
+   "C-k" 'company-select-previous
+   "C-l" 'company-complete-selection)
   :init
   (setq company-idle-delay 0.3
         company-minimum-prefix-length 3
@@ -15,18 +25,10 @@
         company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil)
   :config
-  (global-company-mode t)
   ;; Default backends
+  (add-to-list 'company-backends 'company-keywords)
   (add-to-list 'company-backends 'company-files)
-  ;; key bindings
-  (let ((map company-active-map))
-   (define-key map (kbd "TAB") 'company-complete-selection)
-   (define-key map (kbd "C-/") 'company-search-candidates)
-   (define-key map (kbd "C-M-/") 'company-filter-candidates)
-   (define-key map (kbd "C-d") 'company-show-doc-buffer)
-   (define-key map (kbd "C-j") 'company-select-next)
-   (define-key map (kbd "C-k") 'company-select-previous)
-   (define-key map (kbd "C-l") 'company-complete-selection)))
+  (global-company-mode))
 
 (use-package company-bibtex
   :ensure t
@@ -38,9 +40,7 @@
   (setq company-bibtex-org-citation-regex "-?@"))
 
 (use-package yasnippet
-  :hook ((prog-mode text-mode) . yas-minor-mode)
-  :commands (yas-expand yas-minor-mode)
-  :diminish (yas-minor-mode . " Ⓨ")
+  :defer 1
   :config
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
@@ -57,7 +57,8 @@
   ;; Adding yasnippet support to company
   (with-eval-after-load 'company-mode
   (add-to-list 'company-backends '(company-yasnippet)))
-  (yas-reload-all))
+  (yas-reload-all)
+  (yas-global-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-completion)

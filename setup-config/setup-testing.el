@@ -57,10 +57,12 @@ codepoints starting from codepoint-start."
 ;; (setq server-name "dashboard")
 
 ;;;; Hercules
+;; https://gitlab.com/jjzmajic/hercules.el.git
+(eval-when-compile
+  (quelpa
+   '(hercules :fetcher gitlab :repo "jjzmajic/hercules.el")))
 (use-package hercules
-  :ensure t
-  :git "https://gitlab.com/jjzmajic/hercules.el.git"
-  )
+  :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
