@@ -75,9 +75,9 @@
   ;; Set insert citekey with markdown citekeys for org-mode
   (setq bibtex-completion-format-citation-functions
         '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
-        (latex-mode    . bibtex-completion-format-citation-cite)
-        (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-        (default       . bibtex-completion-format-citation-default)))
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-default)))
   (setq bibtex-completion-display-formats
         '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
   ;; Set default action for helm-bibtex as inserting citation
@@ -86,8 +86,7 @@
   (setq bibtex-completion-pdf-symbol "⌘")
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
-  (setq bibtex-completion-notes-template-multiple-files
-        "---\ntitle: '${author} (${year}): ${title}'\nnocite: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n")
+  (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\nnocite: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
@@ -95,6 +94,14 @@
         ;; bibtex-completion-additional-search-fields '(keywords)
         bibtex-completion-notes-extension ".md"
         helm-bibtex-full-frame nil))
+
+;;; Org Ref
+(use-package org-ref
+  :ensure t
+  :commands (org-ref-get-bibtex-entry)
+  :config
+  (setq reftex-default-bibliography "~/Dropbox/Work/bibfile.bib")
+  (setq org-ref-default-bibliography "~/Dropbox/Work/bibfile.bib"))
 
 ;;; Markdown
 (use-package markdown-mode
@@ -136,7 +143,7 @@
 
 ;; macro: delete backslashes in paragraph to cleanup markdown conversion
 (fset 'cpm/md-delete-backslash
-   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\361\361f\\x" 0 "%d")) arg)))
+      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\361\361f\\x" 0 "%d")) arg)))
 
 ;;; Markdown TOC
 (use-package markdown-toc
@@ -368,7 +375,6 @@
     (setq deft-directory dir)
     (switch-to-buffer "*Deft*")
     (kill-this-buffer)
-    (require 'org)
     (deft))
   (defun big-notes ()
     "Goto main notes with deft"
