@@ -10,14 +10,14 @@
    ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
   ;; ;; key bindings
   :general
-  (:states '(normal insert emacs)
-   :keymaps 'company-mode-map
-   "C-/" 'company-search-candidates
-   "C-M-/" 'company-filter-candidates
-   "C-d" 'company-show-doc-buffer
-   "C-j" 'company-select-next
-   "C-k" 'company-select-previous
-   "C-l" 'company-complete-selection)
+  (:keymaps 'company-mode-map
+   "C-/"   #'company-search-candidates
+   "C-M-/" #'company-filter-candidates
+   "C-d"   #'company-show-doc-buffer
+   "C-j"   #'company-select-next
+   "C-k"   #'company-select-previous
+   "C-l"   #'company-complete-selection
+   "TAB"   #'company-complete-selection)
   :init
   (setq company-idle-delay 0.3
         company-minimum-prefix-length 3
