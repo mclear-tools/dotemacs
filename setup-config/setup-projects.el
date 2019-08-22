@@ -41,6 +41,8 @@
 ;;; Eyebrowse
 (use-package eyebrowse
   :commands (eyebrowse-mode eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
+  :init
+  (setq eyebrowse-keymap-prefix (kbd "C-c C-b"))
   :config
   (setq eyebrowse-new-workspace 'dired-jump
         eyebrowse-mode-line-style 'hide
@@ -101,7 +103,7 @@
   "open emacsd in workspace"
   (interactive)
   (eyebrowse-mode)
-  (eyebrowse-switch-to-window-config-1)
+  (eyebrowse-switch-to-window-config-2)
   (persp-switch "emacs.d")
   (setq frame-title-format
         '(""
