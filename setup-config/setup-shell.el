@@ -119,8 +119,15 @@
   :commands (vterm vterm-other-window)
   :general
   (:states '(normal insert)
+   :keymaps 'vterm-mode-map
    ;; fix issue with fzf
-   "C-j" 'term-send-down)
+   "C-j" #'term-send-down
+   "s-v" #'vterm-yank
+   "C-v" #'vterm-yank)
+  (:states '(normal)
+   :keymaps 'vterm-mode-map
+   "p" #'vterm-yank
+   "P" #'vterm-yank)
   :custom (vterm-install t)
   :config
   ;; set colors -- this is best with dark solarized right now
