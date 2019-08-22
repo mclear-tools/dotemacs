@@ -64,5 +64,12 @@ codepoints starting from codepoint-start."
 (use-package hercules
   :ensure t)
 
+;;;; Did You Mean
+;; https://gitlab.com/kisaragi-hiu/didyoumean.el/
+(eval-when-compile
+  (quelpa '(didyoumean :fetcher gitlab :repo "kisaragi-hiu/didyoumean.el")))
+(use-package didyoumean
+  :ensure nil
+  :defer 2)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
