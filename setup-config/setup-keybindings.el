@@ -45,7 +45,8 @@
    :non-normal-prefix "C-SPC"
 
    "b"  '(:ignore t :which-key "Buffers")
-   "bb" 'helm-mini
+   "bb" 'ivy-switch-buffer
+   ;; "bb" 'helm-mini
    "bc" 'cpm/copy-whole-buffer-to-clipboard
    "bD" 'kill-buffer-and-window
    "bd" 'cpm/kill-this-buffer
@@ -61,6 +62,7 @@
    "bN" 'cpm/new-buffer-new-frame
    "br" 'revert-buffer
    "bR" 'crux-rename-buffer-and-file
+   "bs" 'counsel-switch-buffer
    "bt" 'cpm/open-dir-in-iterm
    )
 
@@ -112,12 +114,16 @@
    :non-normal-prefix "C-SPC"
 
    "f"  '(:ignore t :which-key "Files")
-   "fb" 'helm-bookmarks
-   "ff" 'helm-find-files
-   "fl" 'helm-locate
+   "fb" 'counsel-bookmark
+   ;; "fb" 'helm-bookmarks
+   "ff" 'counsel-find-file
+   ;; "ff" 'helm-find-files
+   "fl" 'counsel-locate
+   ;; "fl" 'helm-locate
    "fo" 'crux-open-with
    "fs" 'save-buffer
-   "fr" 'helm-recentf
+   "fr" 'counsel-recentf
+   ;; "fr" 'helm-recentf
    "fy" 'cpm/show-and-copy-buffer-filename
    )
 
@@ -128,10 +134,13 @@
    :prefix "SPC"
    :non-normal-prefix "C-SPC"
 
-   "A" 'helm-apropos
+   "A" 'counsel-apropos
+   ;; "A" 'helm-apropos
    "B" #'cpm/dashboard
-   "?" 'helm-descbinds
-   "<SPC>" 'helm-M-x
+   "?" 'counsel-descbinds
+   ;; "?" 'helm-descbinds
+   "<SPC>" 'counsel-M-x
+   ;; "<SPC>" 'helm-M-x
    ;; "d" #'deer
    "d" #'dired-jump
    "D" #'dired-jump-other-window
@@ -140,8 +149,10 @@
    "e" 'server-edit
    "G" 'general-describe-keybindings
    "j" 'avy-goto-char
-   "k" 'helm-show-kill-ring
-   "l" 'helm-resume
+   "k" 'counsel-yank-pop
+   ;; "k" 'helm-show-kill-ring
+   "l" 'ivy-resume
+   ;; "l" 'helm-resume
    ;; "N" 'research-notes
    "n" 'big-notes
    "r" 'cpm/resume-last-jump
@@ -297,7 +308,7 @@
   ;; override evil insert for kill line
   (general-define-key :states '(insert) "C-k" 'kill-line)
 
-;;;;; Package Keybindings
+;;; Package Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -310,7 +321,7 @@
    "Pc" 'finder-commentary
    )
 
-;;;;; Project Keybindings
+;;; Project Keybindings
   (global-set-key (kbd "C-h C-c") 'finder-commentary)
   (general-define-key
    :states '(normal visual emacs motion)
@@ -322,16 +333,16 @@
    "p!"  'projectile-run-shell-command-in-root
    "p&"  'projectile-run-async-shell-command-in-root
    "pa"  'projectile-toggle-between-implementation-and-test
-   "pb"  'helm-projectile-switch-to-buffer
+   "pb"  'counsel-projectile-switch-to-buffer
    "pc"  'projectile-compile-project
    "pC"  'desktop+-create
-   "pd"  'helm-projectile-find-dir
+   "pd"  'counsel-projectile-find-dir
    "pD"  'cpm/hydra-desktop
    ;; "pD"  'projectile-dired
-   "pf"  'helm-projectile-find-file
-   "pF"  #'cpm/helm-projectile-find-file-other-window
+   "pf"  'counsel-projectile-find-file
+   "pF"  #'cpm/counsel-projectile-find-file-other-window
    "pg"  'cpm/goto-projects
-   "ph"  'helm-projectile
+   "ph"  'counsel-projectile
    "pJ"  'bmkp-desktop-jump
    "pG"  'projectile-regenerate-tags
    "pI"  'projectile-invalidate-cache
@@ -340,12 +351,12 @@
    ;; "po" #'cpm/open-project-and-frame
    ;; "pl"  'desktop+-load
    ;; "po"  'projectile-multi-occur
-   "pp"  'helm-projectile-switch-project
+   "pp"  'counsel-projectile-switch-project
    "pP"  'projectile-persp-switch-project
-   ;; "pp"  'helm-persp-projectile-switch-project
-   "pr"  'helm-projectile-recentf
+   ;; "pp"  'counsel-persp-projectile-switch-project
+   "pr"  'counsel-projectile-recentf
    "pR"  'projectile-replace
-   "ps" 'helm-projectile-switch-project
+   "ps" 'counsel-projectile-switch-project
    ;; "pS"  'persp-switch
    ;; "ps"  '(:ignore t :which-key "Frames")
    ;; "pss"  'nameframe-switch-frame
@@ -363,14 +374,14 @@
    ;; "pst" #'cpm/load-org-agenda-todo
    ;; "psw" #'cpm/load-website
    ;; "psz" #'cpm/load-zettelkasten
-   "pt"  #'org-projectile-helm-template-or-project
+   ;; "pt"  #'org-projectile-helm-template-or-project
    "pT"  'projectile-find-test-file
    "pv"  'hydra-persp/body
    "pV"  'projectile-vc
    "py"  'projectile-find-tag
    )
 
-;;;;; Quit Keybindings
+;;; Quit Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -383,7 +394,7 @@
    "qr" 'restart-emacs
    )
 
-;;;;; Search Keybindings
+;;; Search Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -394,23 +405,26 @@
    "sa" 'helm-org-rifle-agenda-files
    "sd" 'cpm/helm-files-search-current-directory ; search current buffer's directory
    "sD" 'cpm/helm-files-do-ag ; search with directory input
-   "sb" 'helm-ag-buffers
+   "sb" 'counsel-ag
+   ;; "sb" 'helm-ag-buffers
    "sf" 'helm-do-ag-this-file
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'helm-show-kill-ring
    "sl" 'cpm/helm-list-search-buffers
-   "so" 'helm-occur
+   "so" 'ivy-occur
+   ;; "so" 'helm-occur
    "sp" 'helm-ag-project-root
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
+   "ss" 'swiper
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
-   "ss" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
+   "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
    "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
    "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
    "/"  'cpm/helm-files-search-current-directory   ;; search in directory with word prompt
    )
 
-;;;;; Toggle Keybindings
+;;; Toggle Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -453,7 +467,7 @@
    ;; "tt" 'counsel-load-theme
    )
 
-;;;;; User Keybindings
+;;; User Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -497,10 +511,10 @@
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "uW" 'osx-dictionary-search-input
-   "ux" 'helm-bibtex
+   "ux" 'ivy-bibtex
    )
 
-;;;;; Version Control (Git) Keybindings
+;;; Version Control (Git) Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -519,7 +533,7 @@
    "gs" 'magit-status
    )
 
-;;;;; Window Keybindings
+;;; Window Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -551,7 +565,7 @@
    "w_" 'cpm/split-window-below-and-focus
    )
 
-;;;;; WIki Keybindings
+;;; Wiki Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -607,7 +621,7 @@
   ;;   "Wt" 'org-wiki-header
   ;; )
 
-;;;;; Zettel Keybindings (Notes)
+;;; Zettel Keybindings (Notes)
   (general-define-key
    :prefix "SPC"
    :non-normal-prefix "C-SPC"

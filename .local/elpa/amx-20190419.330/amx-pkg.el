@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "amx" "20190419.330" "Alternative M-x with extra features." '((emacs "24.4") (s "0")) :commit "b46e77d8ef9d1edf225e67055001f7e85048f842" :keywords '("convenience" "usability") :authors '(("Ryan C. Thompson" . "rct@thompsonclan.org") ("Cornelius Mika" . "cornelius.mika@gmail.com")) :maintainer '("Ryan C. Thompson" . "rct@thompsonclan.org") :url "http://github.com/DarwinAwardWinner/amx/")

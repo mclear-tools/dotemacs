@@ -68,10 +68,16 @@
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
 
-;;; Helm Bibtex
-(use-package helm-bibtex
-  :commands helm-bibtex
+;;; Ivy/Helm Bibtex
+(use-package ivy-bibtex
+  :commands ivy-bibtex
   :config
+  ;; ivy-bibtex requires ivy's `ivy--regex-ignore-order` regex builder, which
+  ;; ignores the order of regexp tokens when searching for matching candidates.
+  ;; Add something like this to your init file:
+  (setq ivy-re-builders-alist
+        '((ivy-bibtex . ivy--regex-ignore-order)
+          (t . ivy--regex-plus)))
   ;; Set insert citekey with markdown citekeys for org-mode
   (setq bibtex-completion-format-citation-functions
         '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
@@ -81,8 +87,8 @@
   (setq bibtex-completion-display-formats
         '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
   ;; Set default action for helm-bibtex as inserting citation
-  (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
-  (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
+  ;; (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
+  ;; (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
   (setq bibtex-completion-pdf-symbol "⌘")
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")

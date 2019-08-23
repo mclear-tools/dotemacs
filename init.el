@@ -212,6 +212,7 @@
     (package-install 'use-package))
   (require 'use-package))
 
+
 ;;;; Benchmark Init
 (use-package benchmark-init
   :ensure t
@@ -286,9 +287,9 @@
 (require 'setup-evil-packages)
 (require 'setup-settings)
 (require 'setup-dired)
-(require 'setup-helm)
-(require 'setup-helm-packages)
 (require 'setup-ivy)
+(require 'setup-helm)
+;; (require 'setup-helm-packages)
 
 ;;;; Other Modules
 (require 'setup-ui)
@@ -317,12 +318,14 @@
 ;; Function to navigate config files
 (defun cpm/find-files-setup-config-directory ()
   (interactive)
-  (helm-find-files-1 cpm-setup-dir))
+  (counsel-find-file cpm-setup-dir))
+  ;; (helm-find-files-1 cpm-setup-dir))
 
 ;; Function to search config files
 (defun cpm/search-setup-config-files ()
   (interactive)
-  (helm-do-ag cpm-setup-dir))
+  (counsel-ag nil cpm-setup-dir))
+  ;; (helm-do-ag cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()

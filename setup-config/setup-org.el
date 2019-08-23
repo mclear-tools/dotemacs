@@ -1348,7 +1348,10 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;;; Org Rifle
 ;; Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
 (use-package helm-org-rifle
-  :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory))
+  :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory)
+  :config
+  ;; fix helm taking over various functions after being activated
+  (add-hook 'helm-org-rifle-after-command-hook (lambda () (helm-mode -1))))
 
 ;;; Org-Download
 ;; Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]].

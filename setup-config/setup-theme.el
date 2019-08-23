@@ -46,14 +46,19 @@
     "Customize solarized theme"
     (custom-theme-set-faces
      'solarized-dark
+
      ;; make bg darker for higher contrast & foreground slightly lighter
      `(default ((t (:foreground "#8f9ea0" :background "#002833"))))
+
      ;; matching fringe
      `(fringe ((t (:background     "#002833" :foreground "#586e75"))))
+
      ;; fix modeline underline
      `(mode-line ((t (:background "#073642" :foreground "#839496" :box (:line-width 1 :color "#002833" :style unspecified) :overline "#002833" :underline "#002833"))))
+
      ;; terminal
      `(term ((t (:background "#002833" :foreground "#839496"))))
+
      ;; org faces
      `(org-block ((t (:foreground "#2E8B57"))))
      `(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
@@ -66,19 +71,33 @@
      `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
      `(org-agenda-date ((t (:background "#002833" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
      `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#002833" :inverse-video t :box nil :overline nil :weight bold))))
+
      ;; markdown faces
      `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
      `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
      `(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
      `(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+
+     ;; ivy faces
+     `(ivy-confirm-face ((t (:foreground "#859900"))))
+     `(ivy-current-match ((t (:weight bold :foreground "goldenrod1" :background "#073642" :underline nil))))
+     `(ivy-match-required-face ((t (:foreground "#dc322f"))))
+     `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
+     `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
+     `(ivy-remote ((t (:foreground "#268bd2"))))
+
      ;; helm faces
      `(helm-selection ((t (:background "#073642" :foreground "goldenrod1" :underline nil))))
      `(helm-match ((t (:foreground "#b58900"))))
+
      ;; line number highlighting
      `(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
      ;; '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
      `(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
      ;; '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
+
      ;; battery faces
      `(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
      `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
@@ -115,6 +134,16 @@
      `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
      `(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
      `(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+
+     ;; ivy faces
+     `(ivy-confirm-face ((t (:foreground "#859900"))))
+     `(ivy-current-match ((t (:weight bold :foreground "#268bd2" :background "#eee8d5" :underline nil))))
+     `(ivy-match-required-face ((t (:foreground "#dc322f"))))
+     `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
+     `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
+     `(ivy-remote ((t (:foreground "#268bd2"))))
 
      ;; helm faces
      `(helm-selection ((t (:background "#eee8d5" :foreground "#268bd2" :underline nil :weight bold))))

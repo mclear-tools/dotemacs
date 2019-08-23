@@ -261,13 +261,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (interactive)
   (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
 (global-set-key (kbd "C-c e") 'cpm/insert-seconds-epoch)
+
+;;;; Jump in Buffer
 (defun cpm/jump-in-buffer ()
   (interactive)
-    (cond
-     ((eq major-mode 'org-mode)
-      (call-interactively 'counsel-org-goto))
-     (t
-      (call-interactively 'helm-semantic-or-imenu))))
+  (cond
+   ((eq major-mode 'org-mode)
+    (call-interactively 'counsel-org-goto))
+   (t
+    (call-interactively 'counsel-semantic-or-imenu))))
 
 ;;;; Resume
 ;; resume last jump

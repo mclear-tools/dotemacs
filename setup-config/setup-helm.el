@@ -1,12 +1,12 @@
 ;;;; Helm
 (use-package helm
   :ensure t
-  :defer 1
+  :defer
   :init
-  ;; fix errors on byte compile
+  ;; ;; fix errors on byte compile
   (require 'helm-config)
   :general
-  ("M-x"   'helm-M-x)
+  ;; ("M-x"   'helm-M-x)
   ("C-h i" 'helm-info)
   ;; helm vim-bindings in buffer
   (:keymaps 'helm-map

@@ -6,7 +6,6 @@
 (use-package projectile
   :ensure t
   ;; :load-path (lambda () (concat cpm-elisp-dir "projectile-2.0.0"))
-  :defer 1
   :init
   ;; save projectile-known-projects-file in cache folder
   (setq projectile-known-projects-file
@@ -20,8 +19,8 @@
   (projectile-mode))
 
 (use-package helm-projectile
+  :disabled
   :ensure t
-  :defer 1
   :config
   ;; see https://github.com/bbatsov/persp-projectile/issues/23#issuecomment-463625961
   (define-key projectile-mode-map [remap projectile-find-other-file] #'helm-projectile-find-other-file)
@@ -138,7 +137,7 @@
                           (concat
                            random-string
                            (char-to-string (elt temp-charset (random (length temp-charset)))))))))
-  (helm-projectile-switch-project)
+  (counsel-projectile-switch-project)
   (setq frame-title-format
         '(""
           "%b"
@@ -162,7 +161,7 @@
     (set-buffer-major-mode buffer)
     (display-buffer buffer '(display-buffer-pop-up-frame . nil)))
   (crux-create-scratch-buffer)
-  (helm-projectile-switch-project)
+  (counsel-projectile-switch-project)
   (toggle-frame-maximized)
   (setq frame-title-format
         '(""
