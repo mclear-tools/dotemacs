@@ -122,7 +122,7 @@
 (global-set-key (kbd "H-w") 'formatted-copy)
 
 ;;;; CRUX
-(use-package crux :defer 10)
+(use-package crux :defer 1)
 
 ;;;; Useful Buffers
 (defun cpm/user-buffer-q ()

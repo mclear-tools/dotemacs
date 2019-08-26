@@ -75,9 +75,9 @@
       ""))
 
   ;; workspace number faces & formatting
-  (doom-modeline-def-segment workspace-number
-    "The current workspace name or number. Requires `eyebrowse-mode' to be
-  enabled."
+  (doom-modeline-def-segment workspace-name
+    "The current workspace name or number.
+  Requires `eyebrowse-mode' to be enabled."
     (if (and (bound-and-true-p eyebrowse-mode)
              (< 1 (length (eyebrowse--get 'window-configs))))
         (let* ((num (eyebrowse--get 'current-slot))
@@ -85,19 +85,19 @@
                (str (if (and tag (< 0 (length tag)))
                         tag
                       (when num (int-to-string num)))))
+          (assq-delete-all 'eyebrowse-mode mode-line-misc-info)
           (concat
-           (propertize " %s " 'face (if (doom-modeline--active)
-                                        '(:foreground "#2aa198")
-                                      'doom-modeline-inactive-window-number))
-           (propertize "|" 'face '(:foreground "#586e75"))))
-
-      ""))
+           (propertize (format " %s " str) 'face
+                       (if (doom-modeline--active)
+                           '(:foreground "#2aa198")
+                         'mode-line-inactive))
+           (propertize "|" 'face '(:foreground "#586e75"))))))
 
   ;;
   ;; Mode lines
   ;;
   (doom-modeline-def-modeline 'cpm/my-doom-mode-line
-    '(window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
+    '(workspace-name window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
     '(misc-info input-method buffer-encoding process checker buffer-position " "))
 
   (defun setup-custom-doom-modeline ()

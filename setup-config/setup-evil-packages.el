@@ -35,6 +35,7 @@
   ;; (my-evil-terminal-cursor-change)
 
   (use-package evil-surround
+    :defer 1
     :commands (evil-surround-region evil-surround-change evil-surround-delete)
     :general
     (:states '(visual)
@@ -45,11 +46,10 @@
   (use-package evil-embrace
     :after evil-surround
     :demand t
-    :init
-    (after! evil-surround
-      (evil-embrace-enable-evil-surround-integration))
-    :hook (org-mode . embrace-org-mode-hook)
+    :hook ((markdown org) . embrace-org-mode-hook)
     :config
+    (with-eval-after-load 'evil-surround
+      (evil-embrace-enable-evil-surround-integration))
     (setq evil-embrace-show-help-p nil)
     ;; (add-hook 'org-mode-hook 'embrace-org-mode-hook)
     (defun embrace-markdown-mode-hook ()
