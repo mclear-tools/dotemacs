@@ -1,11 +1,14 @@
-;; Project Management
-;; This project workflow primarily uses a single frame with
-;; different workspaces, made possible by projectile and eyebrowse.
+;; Project Management This project workflow primarily uses a single frame with
+;; different workspaces, made possible by projectile, persp-mode, and eyebrowse.
+;; Workflow is: open a project (see `cpm/open-project-and-workspace`) and use as many
+;; workspaces (via eyebrowse) as you need in that project See also
+;; https://raw.githubusercontent.com/seagle0128/.emacs.d/master/lisp/init-persp.el
+;; and https://github.com/yanghaoxie/emacs.d#workspaces
 
 ;;; Projectile
 (use-package projectile
   :ensure t
-  ;; :load-path (lambda () (concat cpm-elisp-dir "projectile-2.0.0"))
+  :hook (after-init . projectile-mode)
   :init
   ;; save projectile-known-projects-file in cache folder
   (setq projectile-known-projects-file
@@ -15,83 +18,183 @@
   (setq projectile-enable-caching t
         projectile-files-cache-expire 60)
   :config
-  (setq projectile-git-submodule-command nil)
-  (projectile-mode))
+  ;; Use the faster searcher to handle project files: ripgrep `rg'.
+  (when (and (not (executable-find "fd"))
+             (executable-find "rg"))
+    (setq projectile-generic-command
+          (let ((rg-cmd ""))
+            (dolist (dir projectile-globally-ignored-directories)
+              (setq rg-cmd (format "%s --glob '!%s'" rg-cmd dir)))
+            (concat "rg -0 --files --color=never --hidden" rg-cmd))))
+  (setq projectile-git-submodule-command nil))
 
-(use-package helm-projectile
-  :disabled
-  :ensure t
-  :config
-  ;; see https://github.com/bbatsov/persp-projectile/issues/23#issuecomment-463625961
-  (define-key projectile-mode-map [remap projectile-find-other-file] #'helm-projectile-find-other-file)
-  (define-key projectile-mode-map [remap projectile-find-file] #'helm-projectile-find-file)
-  (define-key projectile-mode-map [remap projectile-find-file-in-known-projects] #'helm-projectile-find-file-in-known-projects)
-  (define-key projectile-mode-map [remap projectile-find-file-dwim] #'helm-projectile-find-file-dwim)
-  (define-key projectile-mode-map [remap projectile-find-dir] #'helm-projectile-find-dir)
-  (define-key projectile-mode-map [remap projectile-recentf] #'helm-projectile-recentf)
-  (define-key projectile-mode-map [remap projectile-switch-to-buffer] #'helm-projectile-switch-to-buffer)
-  (define-key projectile-mode-map [remap projectile-grep] #'helm-projectile-grep)
-  (define-key projectile-mode-map [remap projectile-ack] #'helm-projectile-ack)
-  (define-key projectile-mode-map [remap projectile-ag] #'helm-projectile-ag)
-  (define-key projectile-mode-map [remap projectile-ripgrep] #'helm-projectile-rg)
-  (define-key projectile-mode-map [remap projectile-browse-dirty-projects] #'helm-projectile-browse-dirty-projects)
-  (helm-projectile-commander-bindings))
 
 ;;; Eyebrowse
 (use-package eyebrowse
-  :commands (eyebrowse-mode eyebrowse-create-window-config eyebrowse-switch-to-window-config-1 eyebrowse-switch-to-window-config-2)
-  :init
-  (setq eyebrowse-keymap-prefix (kbd "C-c C-b"))
+  :hook (after-init . eyebrowse-mode)
+  :general
+  (:keymaps 'override
+   :states '(normal visual motion)
+   "gt" 'eyebrowse-next-window-config
+   "gT" 'eyebrowse-prev-window-config
+   "gc" 'eyebrowse-create-window-config
+   "gd" 'eyebrowse-close-window-config
+   "gl" 'eyebrowse-last-window-config
+   "g0" 'eyebrowse-switch-to-window-config-0
+   "g1" 'eyebrowse-switch-to-window-config-1
+   "g2" 'eyebrowse-switch-to-window-config-2
+   "g3" 'eyebrowse-switch-to-window-config-3
+   "g4" 'eyebrowse-switch-to-window-config-4
+   "g5" 'eyebrowse-switch-to-window-config-5
+   "g6" 'eyebrowse-switch-to-window-config-6
+   "g7" 'eyebrowse-switch-to-window-config-7
+   "g8" 'eyebrowse-switch-to-window-config-8
+   "g9" 'eyebrowse-switch-to-window-config-9)
+  (my/leader-keys
+    "w." 'hydra-eyebrowse/body
+    "ww" 'eyebrowse-switch-to-window-config
+    "wr" 'eyebrowse-rename-window-config)
   :config
   (setq eyebrowse-new-workspace 'dired-jump
         eyebrowse-mode-line-style 'hide
         eyebrowse-wrap-around t
         eyebrowse-switch-back-and-forth t)
-  (eyebrowse-mode t))
+  (custom-set-faces '(eyebrowse-mode-line-active ((nil))))
+  (eyebrowse-mode))
+
+(defhydra hydra-eyebrowse (:hint nil)
+  "
+ Go to^^^^^^                         Actions^^
+ [_0_.._9_]^^     nth/new workspace  [_d_] close current workspace
+ [_C-0_.._C-9_]^^ nth/new workspace
+ [_<tab>_]^^^^    last workspace     [_q_] quit
+ [_c_/_C_]^^      create workspace
+ [_n_/_C-l_]^^    next workspace
+ [_N_/_p_/_C-h_]  prev workspace
+ [_w_]^^^^        workspace w/helm/ivy\n"
+  ("0" eyebrowse-switch-to-window-config-0 :exit t)
+  ("1" eyebrowse-switch-to-window-config-1 :exit t)
+  ("2" eyebrowse-switch-to-window-config-2 :exit t)
+  ("3" eyebrowse-switch-to-window-config-3 :exit t)
+  ("4" eyebrowse-switch-to-window-config-4 :exit t)
+  ("5" eyebrowse-switch-to-window-config-5 :exit t)
+  ("6" eyebrowse-switch-to-window-config-6 :exit t)
+  ("7" eyebrowse-switch-to-window-config-7 :exit t)
+  ("8" eyebrowse-switch-to-window-config-8 :exit t)
+  ("9" eyebrowse-switch-to-window-config-9 :exit t)
+  ("C-0" eyebrowse-switch-to-window-config-0)
+  ("C-1" eyebrowse-switch-to-window-config-1)
+  ("C-2" eyebrowse-switch-to-window-config-2)
+  ("C-3" eyebrowse-switch-to-window-config-3)
+  ("C-4" eyebrowse-switch-to-window-config-4)
+  ("C-5" eyebrowse-switch-to-window-config-5)
+  ("C-6" eyebrowse-switch-to-window-config-6)
+  ("C-7" eyebrowse-switch-to-window-config-7)
+  ("C-8" eyebrowse-switch-to-window-config-8)
+  ("C-9" eyebrowse-switch-to-window-config-9)
+  ("<tab>" eyebrowse-last-window-config)
+  ("<return>" nil :exit t)
+  ("TAB" eyebrowse-last-window-config)
+  ("RET" nil :exit t)
+  ("c" eyebrowse-create-window-config :exit t)
+  ("C" eyebrowse-create-window-config)
+  ("C-h" eyebrowse-prev-window-config)
+  ("C-l" eyebrowse-next-window-config)
+  ("d" eyebrowse-close-window-config)
+  ;; ("l" hydra-persp/body :exit t)
+  ("n" eyebrowse-next-window-config)
+  ("N" eyebrowse-prev-window-config)
+  ("p" eyebrowse-prev-window-config)
+  ;; ("R" spacemacs/workspaces-ts-rename :exit t)
+  ("w" eyebrowse-switch-to-window-config :exit t)
+  ("q" nil))
+
 
 ;;; Perspectives
-;; I use this to isolate buffers in the different eyebrowse workspaces
-(use-package perspective
-  :ensure t
-  :defer 1
-  :commands (persp-mode persp-switch persp-next persp-prev persp-add-buffer persp-rename persp-kill)
+(use-package persp-mode
+  :hook (after-init . persp-mode)
   :general
-  (:states '(insert normal motion emacs) :keymaps 'override
-           "s-p" 'persp-switch
-           "s-]" 'persp-next
-           "s-[" 'persp-prev)
+  (:states '(insert normal motion emacs)
+   :keymaps 'override
+   "s-p" 'persp-switch
+   "s-]" 'persp-next
+   "s-[" 'persp-prev)
   :config
-  (setq persp-show-modestring nil)
-  (persp-mode 1)
-  (add-hook 'persp-switch-hook 'cpm/eyebrowse-persp-switch))
+  (setq persp-reset-windows-on-nil-window-conf t
+        persp-set-last-persp-for-new-frames nil
+        persp-auto-resume-time -1
+        persp-add-buffer-on-after-change-major-mode nil
+        persp-nil-name "default"
+        persp-autokill-buffer-on-remove t
+        persp-save-dir (expand-file-name "persp-confs/" cpm-cache-dir)
+        persp-common-buffer-filter-functions
+        (list #'(lambda (b)
+                  "Ignore temporary buffers."
+                  (or (string-prefix-p " " (buffer-name b))
+                      (and (string-prefix-p "*" (buffer-name b))
+                           (not (string-equal "*scratch*" (buffer-name b))))
+                      (string-prefix-p "magit" (buffer-name b))
+                      (string-prefix-p "Pfuture-Callback" (buffer-name b))
+                      (eq (buffer-local-value 'major-mode b) 'nov-mode)
+                      (eq (buffer-local-value 'major-mode b) 'vterm-mode)))))
 
-(use-package persp-projectile
+  ;; fix for (void-function make-persp-internal) error
+  ;; NOTE: Redefine `persp-add-new' to address.
+  ;; Issue: Unable to create/handle persp-mode
+  ;; https://github.com/Bad-ptr/persp-mode.el/issues/96
+  ;; https://github.com/Bad-ptr/persp-mode-projectile-bridge.el/issues/4
+  ;; https://emacs-china.org/t/topic/6416/7
+  (defun* persp-add-new (name &optional (phash *persp-hash*))
+    "Create a new perspective with the given `NAME'. Add it to `PHASH'.
+   Return the created perspective."
+    (interactive "sA name for the new perspective: ")
+    (if (and name (not (equal "" name)))
+        (destructuring-bind (e . p)
+            (persp-by-name-and-exists name phash)
+          (if e p
+            (setq p (if (equal persp-nil-name name)
+                        nil (make-persp :name name)))
+            (persp-add p phash)
+            (run-hook-with-args 'persp-created-functions p phash)
+            p))
+      (message "[persp-mode] Error: Can't create a perspective with empty name.")
+      nil))
+
+  ;; Integrate Ivy
+  ;; https://gist.github.com/Bad-ptr/1aca1ec54c3bdb2ee80996eb2b68ad2d#file-persp-ivy-el
+  (with-eval-after-load 'ivy
+    (add-to-list 'ivy-ignore-buffers
+                 #'(lambda (b)
+                     (when persp-mode
+                       (let ((persp (get-current-persp)))
+                         (if persp
+                             (not (persp-contain-buffer-p b persp))
+                           nil)))))))
+
+(use-package persp-mode-projectile-bridge
   :ensure t
-  :after perspective)
+  :after (persp-mode projectile-mode)
+  :hook (persp-mode . persp-mode-projectile-bridge-mode)
+  :functions (persp-add-new
+              persp-add-buffer
+              set-persp-parameter)
+  :commands (persp-mode-projectile-bridge-find-perspectives-for-all-buffers
+             persp-mode-projectile-bridge-kill-perspectives
+             persp-mode-projectile-bridge-add-new-persp
+             projectile-project-buffers))
+
 
 ;;; Project Functions
-
-;;;; Switch Eyebrowse after Change of Perspective
-(defun cpm/eyebrowse-persp-switch ()
-  "set eyebrowse when switching perspectives"
-  (interactive)
-  (let* ((persp-name (persp-curr))
-         (eyebrowse-switch-to-window-config persp-name))))
-
-
-;;;; Open agenda as Workspace
+;;;; Open agenda as perspective
 (defun cpm/open-agenda-in-workspace ()
-  "open agenda in its own workspace"
+  "open agenda in its own perspective"
   (interactive)
-  (eyebrowse-mode)
-  (eyebrowse-switch-to-window-config-1)
   (persp-switch "agenda")
   (setq frame-title-format '("" "%b"))
   (require 'org-super-agenda)
   (cpm/jump-to-org-super-agenda)
-  (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "agenda")
-  (persp-add-buffer "*dashboard*")
-  (persp-kill "main"))
+  (persp-add-buffer "*Org Agenda*"))
+
 (general-define-key
  :states '(insert normal motion emacs)
  :keymaps 'override
@@ -99,10 +202,8 @@
 
 ;;;; Open emacs.d in workspace
 (defun cpm/open-emacsd-in-workspace ()
-  "open emacsd in workspace"
+  "open emacsd in its own perspective"
   (interactive)
-  (eyebrowse-mode)
-  (eyebrowse-switch-to-window-config-2)
   (persp-switch "emacs.d")
   (setq frame-title-format
         '(""
@@ -113,30 +214,19 @@
                (format " in [%s]" project-name))))))
   (require 'crux)
   (crux-find-user-init-file)
-  (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "emacs.d")
-  (persp-kill "main")
   (require 'magit)
   (magit-status-setup-buffer))
+
 (general-define-key
  :states '(insert normal motion emacs)
  :keymaps 'override
  "s-2" 'cpm/open-emacsd-in-workspace)
 
-
 ;;;; Open New Project in Workspace
 (defun cpm/open-project-and-workspace ()
-  "open a new project as its own workspace -- i.e. in its own perspective and eyebrowse slot"
+  "open a new project as its own perspective"
   (interactive)
-  (eyebrowse-create-window-config)
-  ;; create a temp scratch buffer for persp switch
-  ;; see https://github.com/bbatsov/helm-projectile/issues/4#issuecomment-280949497
-  (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
-                      (random-string ""))
-                  (dotimes (i 6 random-string)
-                    (setq random-string
-                          (concat
-                           random-string
-                           (char-to-string (elt temp-charset (random (length temp-charset)))))))))
+  (persp-switch "new-persp")
   (counsel-projectile-switch-project)
   (setq frame-title-format
         '(""
@@ -145,34 +235,9 @@
            (let ((project-name (projectile-project-name)))
              (unless (string= "-" project-name)
                (format " in [%s]" project-name))))))
-  (let ((project-name (projectile-project-name)))
-    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name)
-    (persp-rename project-name)
-    (persp-kill "main")
-    (kill-matching-buffers "\*scratch\*" nil t)
-    (persp-add-buffer (generate-new-buffer (concat "*scratch* " "("project-name")"))))
   (require 'magit)
-  (magit-status-setup-buffer))
-
-;;;; Open a Project in a New Frame
-(defun cpm/open-project-and-frame ()
-  (interactive)
-  (let ((buffer (generate-new-buffer "untitled")))
-    (set-buffer-major-mode buffer)
-    (display-buffer buffer '(display-buffer-pop-up-frame . nil)))
-  (crux-create-scratch-buffer)
-  (counsel-projectile-switch-project)
-  (toggle-frame-maximized)
-  (setq frame-title-format
-        '(""
-          "%b"
-          (:eval
-           (let ((project-name (projectile-project-name)))
-             (unless (string= "-" project-name)
-               (format " in [%s]" project-name))))))
-  (split-window-right)
-  (require 'magit)
-  (magit-status-setup-buffer))
+  (magit-status-setup-buffer)
+  (persp-rename (projectile-project-name)))
 
 ;;; Bookmarks
 (use-package bookmark
@@ -185,17 +250,8 @@
   :config
   (setq bmkp-last-as-first-bookmark-file (concat cpm-cache-dir "bookmarks")))
 
-;;; Org and Projectile
-(use-package org-projectile
-  :ensure t
-  :defer 3
-  :config
-  (setq org-projectile-projects-file "~/Dropbox/org-files/projects.org"))
 
- (use-package org-projectile-helm
-  :ensure t
-  :after org-projectile)
-
+;;; End Projects.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-projects)
