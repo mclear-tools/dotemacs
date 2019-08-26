@@ -1,15 +1,12 @@
 ;;;; Ivy
 (use-package ivy
-  :diminish ivy-mode
   :general
   (:keymaps 'ivy-minibuffer-map
    "C-j" 'ivy-next-line
-   "C-k" 'ivy-previous-line)
+   "C-k" 'ivy-previous-line
+   "C-<SPC>" 'cpm/ivy-toggle-mark)
   :defines (projectile-completion-system
             magit-completing-read-function)
-  :functions (my-ivy-fly-time-travel
-              my-swiper-toggle-counsel-rg
-              my-swiper-toggle-rg-dwim)
   :commands (ivy--format-function-generic
              ivy--add-face)
   :hook ((after-init . ivy-mode))
@@ -21,7 +18,13 @@
         ivy-count-format "(%d/%d) "
         ivy-on-del-error-function nil
         ivy-initial-inputs-alist nil ; No regexp by default
-        ))
+        )
+  (defun cpm/ivy-toggle-mark ()
+    "Toggle mark for current candidate and move forwards."
+    (interactive)
+    (if (ivy--marked-p)
+        (ivy-unmark)
+      (ivy-mark))))
 
 ;;;; Ivy-rich
 ;; More friendly display transformer for Ivy
@@ -139,10 +142,7 @@
                (all-the-icons-octicon "file-directory" :height 0.9 :v-adjust -0.05))
               (t (all-the-icons-icon-for-file (file-name-nondirectory filename) :height 0.9 :v-adjust -0.05)))))
     (advice-add #'ivy-rich-bookmark-type :override #'my-ivy-rich-bookmark-type))
-  :hook ((ivy-mode . ivy-rich-mode)
-         (ivy-rich-mode . (lambda ()
-                            (setq ivy-virtual-abbreviate
-                                  (or (and ivy-rich-mode 'abbreviate) 'name)))))
+  :hook (ivy-mode . ivy-rich-mode)
   :init
   ;; For better performance
   (setq ivy-rich-parse-remote-buffer nil)
@@ -321,8 +321,8 @@
            :delimiter "\t")
           counsel-projectile-switch-to-buffer
           (:columns
-           ((ivy-rich-dir-icon)
-            (counsel-projectile-find-dir-transformer))
+           ((ivy-rich-file-icon)
+            (counsel-projectile-find-file-transformer))
            :delimiter "\t")
           treemacs-projectile
           (:columns
@@ -330,9 +330,8 @@
             (ivy-rich-candidate))
            :delimiter "\t")))
   (setq ivy-rich-path-style 'abbrev
-        ivy-virtual-abbreviate 'full)
-  :config
-  (ivy-rich-mode 1))
+        ivy-virtual-abbreviate 'full))
+
 
 
 
@@ -366,15 +365,16 @@
     (setq magit-completing-read-function 'ivy-completing-read)))
 
 
-;; (use-package counsel-projectile
-;;   :ensure t
-;;   :commands (counsel-projectile
-;;              counsel-projectile-switch-project
-;;              counsel-projectile-find-file
-;;              counsel-projectile-find-file-dwim
-;;              counsel-projectile-find-dir
-;;              counsel-projectile-switch-to-buffer
-;;              counsel-projectile-bookmark))
+(use-package counsel-projectile
+  :ensure t
+  :commands (counsel-projectile
+             counsel-projectile-switch-project
+             counsel-projectile-find-file
+             counsel-projectile-find-file-dwim
+             counsel-projectile-find-dir
+             counsel-projectile-switch-to-buffer
+             counsel-projectile-bookmark))
+
 
 ;;;; Mcfly Search
 ;; Pre-fill search keywords
@@ -467,14 +467,17 @@
 ;;;; Supporting Packages
 ;; Enhance M-x
 (use-package amx
-  :init (setq amx-history-length 20))
+  :config
+  (setq amx-history-length 20)
+  (setq amx-save-file (concat cpm-cache-dir "amx-items")))
 
 ;; Better sorting and filtering
 (use-package prescient
   :commands prescient-persist-mode
-  :init
+  :config
   (setq prescient-filter-method '(literal regexp initialism fuzzy))
-  (prescient-persist-mode 1))
+  (prescient-persist-mode 1)
+  (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el")))
 
 (use-package ivy-prescient
   :commands (ivy-prescient-mode ivy-prescient-re-builder)
@@ -483,7 +486,8 @@
   (defun ivy-prescient-non-fuzzy (str)
     (let ((prescient-filter-method '(literal regexp)))
       (ivy-prescient-re-builder str)))
-  :init
+  :hook (ivy-mode . ivy-prescient-mode)
+  :config
   (setq ivy-prescient-retain-classic-highlighting t
         ivy-re-builders-alist '((counsel-ag . ivy-prescient-non-fuzzy)
                                 (counsel-rg . ivy-prescient-non-fuzzy)
@@ -493,8 +497,9 @@
                                 (swiper . ivy-prescient-non-fuzzy)
                                 (swiper-isearch . ivy-prescient-non-fuzzy)
                                 (swiper-all . ivy-prescient-non-fuzzy)
-                                (t . ivy-prescient-re-builder)))
-  (ivy-prescient-mode 1))
+                                (t . ivy-prescient-re-builder))))
+
+
 
 ;; Additional key bindings for Ivy
 (use-package ivy-hydra
@@ -502,11 +507,14 @@
             "M-o"  'ivy-dispatching-done-hydra))
 
 ;; Ivy integration for Projectile
-(use-package counsel-projectile
-  :commands (counsel-projectile-mode)
-  :init
-  (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))
-  (counsel-projectile-mode 1))
+;; (use-package counsel-projectile
+;;   :commands (counsel-projectile-mode)
+;;   :init
+;;   (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))
+;;   (counsel-projectile-mode 1)
+;;   :config
+;;   (setq projectile-known-projects-file
+;;         (concat cpm-cache-dir "projectile-bookmarks.eld")))
 
 ;; Integrate yasnippet
 (use-package ivy-yasnippet

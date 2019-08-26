@@ -2,18 +2,24 @@
 ;;; General
 (use-package general
   :demand t
-  :config (general-override-mode))
+  :config
+  (general-create-definer my/leader-keys
+	:states '(normal visual motion emacs insert)
+	:keymaps 'override
+	:prefix "SPC"
+	:non-normal-prefix "M-SPC")
+  (general-override-mode))
 
 ;;; Which Key
- (use-package which-key
-   :after general
-   :demand t
-   :diminish ""
-   :config
-   (setq which-key-special-keys nil)
-   ;; Set the time delay (in seconds) for the which-key popup to appear.
-   (setq which-key-idle-delay .3)
-   (which-key-mode))
+(use-package which-key
+  :after general
+  :demand t
+  :diminish ""
+  :config
+  (setq which-key-special-keys nil)
+  ;; Set the time delay (in seconds) for the which-key popup to appear.
+  (setq which-key-idle-delay .3)
+  (which-key-mode))
 
 
 ;;; Namespaced Keybindings
@@ -411,7 +417,7 @@
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'helm-show-kill-ring
    "sl" 'cpm/helm-list-search-buffers
-   "so" 'ivy-occur
+   "so" 'swiper
    ;; "so" 'helm-occur
    "sp" 'helm-ag-project-root
    "sr" #'vr/query-replace
@@ -651,10 +657,12 @@
   (use-package evil-org
     :ensure t
     :after org
-    :hook ((org-mode . evil-org-mode)
-           (evil-org-mode . evil-org-set-key-theme))
+    :hook (org-mode . evil-org-mode)
     :config
     (require 'evil-org-agenda)
+    ;; write as sep hook so byte compile doesn't complain
+    (add-hook 'evil-org-mode-hook
+              (lambda () (evil-org-set-key-theme)))
     (setq evil-org-key-theme '(navigation insert textobjects additional shift))
     (evil-org-agenda-set-keys))
 
