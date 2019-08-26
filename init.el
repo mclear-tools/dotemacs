@@ -134,9 +134,6 @@
 (setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
 (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
 
-;; Path to init setup files
-(eval-when-compile
-  (push cpm-setup-dir load-path))
 
 ;;;; Security
 ;; Properly verify outgoing ssl connections.
@@ -174,15 +171,18 @@
   (unless (file-directory-p package-user-dir)
     (make-directory package-user-dir t)))
 
+;;;; Load Path
 ;; We're going to set the load path ourselves so that we don't have to call
 ;; =package-initialize= at runtime and incur a large performance hit. This
 ;; load-path will actually be faster than the one created by
 ;; =package-initialize= because it appends the elpa packages to the end of the
 ;; load path. Otherwise any time a builtin package was required it would have to
 ;; search all of third party paths first.
-(setq load-path (eval-when-compile (append load-path (directory-files package-user-dir t "^[^.]" t))))
+(eval-and-compile
+  (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t)))
+  (push cpm-setup-dir load-path))
 
-;;;; Use-Package Settings
+;;; Use-Package Settings
 ;; I tell =use-package= to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
 ;; only loaded later when they are explicitly used. But it can also cause
@@ -200,7 +200,7 @@
         use-package-always-ensure t)
 
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ;; ("gnu" . "https://elpa.gnu.org/packages/")
                            ("org" . "https://orgmode.org/elpa/")
                            ;; https://github.com/emacs-china/emacswiki-elpa
                            ("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/")
@@ -310,6 +310,7 @@
 (require 'setup-calendars)
 (require 'setup-completion)
 (require 'setup-dashboard)
+(require 'setup-posframe)
 (require 'setup-testing)
 
 ;;; Config Helper Functions
