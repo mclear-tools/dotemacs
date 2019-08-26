@@ -27,13 +27,14 @@ Some highlights of this emacs setup include:
 3. [[file:setup-config/setup-evil.el][Evil mode]]
 4. Sensible [[file:setup-config/setup-settings.el][defaults]]
 5. [[file:setup-config/setup-dired.el][Dired]] with good colors and evil keybindings
-6. Completion with [[file:setup-config/setup-helm.el][helm]] and [[file:setup-config/setup-ivy.el][ivy]] (helm-centric though)
-7. Custom [[file:setup-config/setup-theme.el][solarized]] theme (mac-centric with toggles for dark/light mode)
-8. A nice [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
-9. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
-10. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/nex3/perspective-el][perspectives]]
-11. A nice [[file:setup-config/setup-dashboard.el][dashboard]] homescreen
-12. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/EFLS/zetteldeft][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
+6. Completion with [[file:setup-config/setup-helm.el][helm]] and [[file:setup-config/setup-ivy.el][ivy/counsel]] (ivy is emphasized over helm)
+7. Use of [[file:setup-config/setup-posframe.el][posframe]] for most completion windows
+8. Custom [[file:setup-config/setup-theme.el][solarized]] theme (mac-centric with toggles for dark/light mode)
+9. A nice [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
+10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
+11. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/nex3/perspective-el][perspectives]]
+12. A nice [[file:setup-config/setup-dashboard.el][dashboard]] homescreen
+13. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/EFLS/zetteldeft][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
 
     
 For more information please take a look at the individual [[file:setup-config/][configuration files]]. 
