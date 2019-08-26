@@ -51,7 +51,7 @@
      `(default ((t (:foreground "#8f9ea0" :background "#002833"))))
 
      ;; matching fringe
-     `(fringe ((t (:background     "#002833" :foreground "#586e75"))))
+     `(fringe ((t (:background "#002833" :foreground "#586e75"))))
 
      ;; fix modeline underline
      `(mode-line ((t (:background "#073642" :foreground "#839496" :box (:line-width 1 :color "#002833" :style unspecified) :overline "#002833" :underline "#002833"))))
@@ -80,13 +80,17 @@
 
      ;; ivy faces
      `(ivy-confirm-face ((t (:foreground "#859900"))))
-     `(ivy-current-match ((t (:weight bold :foreground "goldenrod1" :background "#073642" :underline nil))))
+     `(ivy-current-match ((t (:weight bold :foreground "goldenrod1" :background "#1f4a54" :underline nil))))
      `(ivy-match-required-face ((t (:foreground "#dc322f"))))
      `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
      `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
      `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
      `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
      `(ivy-remote ((t (:foreground "#268bd2"))))
+
+     `(hydra-posframe-face ((t (:background "#073642"))))
+     `(ivy-posframe ((t (:background "#073642"))))
+     `(which-key-posframe ((t (:background "#073642"))))
 
      ;; helm faces
      `(helm-selection ((t (:background "#073642" :foreground "goldenrod1" :underline nil))))
@@ -137,13 +141,18 @@
 
      ;; ivy faces
      `(ivy-confirm-face ((t (:foreground "#859900"))))
-     `(ivy-current-match ((t (:weight bold :foreground "#268bd2" :background "#eee8d5" :underline nil))))
+     `(ivy-current-match ((t (:weight bold :foreground "#268bd2" :background "#fdf6e3" :underline nil))))
      `(ivy-match-required-face ((t (:foreground "#dc322f"))))
      `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
      `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
      `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
      `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
      `(ivy-remote ((t (:foreground "#268bd2"))))
+
+     ;; posframe
+     `(hydra-posframe-face ((t (:background "#eee8d5"))))
+     `(ivy-posframe ((t (:background "#eee8d5"))))
+     `(which-key-posframe ((t (:background "#eee8d5"))))
 
      ;; helm faces
      `(helm-selection ((t (:background "#eee8d5" :foreground "#268bd2" :underline nil :weight bold))))
@@ -238,5 +247,6 @@
 ;; (provide 'packages-appearance)
 
 
+;;; End setup-theme.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-theme)

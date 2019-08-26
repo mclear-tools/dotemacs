@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "which-key-posframe" "20190427.1103" "Using posframe to show which-key" '((emacs "26.0") (posframe "0.4.3") (which-key "3.3.2")) :commit "e7f28608c7fc9507e407c6b840dff09062df533a" :keywords '("convenience" "bindings" "tooltip") :authors '(("Yanghao Xie")) :maintainer '("Yanghao Xie" . "yhaoxie@gmail.com") :url "https://github.com/yanghaoxie/which-key-posframe")
