@@ -32,7 +32,7 @@ Some highlights of this emacs setup include:
 8. Custom [[file:setup-config/setup-theme.el][solarized]] theme (mac-centric with toggles for dark/light mode)
 9. A nice [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
 10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
-11. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/nex3/perspective-el][perspectives]]
+11. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/Bad-ptr/persp-mode.el][perspectives]]
 12. A nice [[file:setup-config/setup-dashboard.el][dashboard]] homescreen
 13. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/EFLS/zetteldeft][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
 
