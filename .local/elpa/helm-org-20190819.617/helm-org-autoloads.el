@@ -9,6 +9,8 @@
 ;;;### (autoloads nil "helm-org" "helm-org.el" (0 0 0 0))
 ;;; Generated autoloads from helm-org.el
 
+(require 'helm-easymenu)
+
 (easy-menu-add-item nil '("Tools" "Helm") '("Org" ["Org headlines in org agenda files" helm-org-agenda-files-headings t] ["Org headlines in buffer" helm-org-in-buffer-headings t]) "Elpa")
 
 (autoload 'helm-org-agenda-files-headings "helm-org" "\
