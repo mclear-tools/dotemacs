@@ -1,6 +1,7 @@
 ;;; PDF Management
 ;;;; Doc-View Mode
 (use-package doc-view
+  :disabled
   :config
   (fset 'doc-prev "\C-xo\C-x[\C-xo")
   (fset 'doc-next "\C-xo\C-x]\C-xo")
@@ -135,7 +136,6 @@
 ;;;; PDF-Tools
 ;; good but often problematic pdf reader and annotator
 (use-package pdf-tools
-  :disabled t
   :mode (("\\.pdf$" . pdf-view-mode))
   :commands (pdf-view-mode)
   :config
