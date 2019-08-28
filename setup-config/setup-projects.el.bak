@@ -3,6 +3,7 @@
 ;; different workspaces, made possible by projectile and eyebrowse.
 ;; See also https://raw.githubusercontent.com/seagle0128/.emacs.d/master/lisp/init-persp.el
 
+
 ;;; Projectile
 (use-package projectile
   :ensure t
@@ -134,10 +135,11 @@
               (persp-mode-projectile-bridge-kill-perspectives))))))
 
 ;;; Project Functions
+;;;; Eyebrowse & Perspectives
 ;; courtesy of spacemacs
-;; Eyebrowse - allow perspective-local workspaces --------------------------
+;; Eyebrowse - allow perspective-local eyebrowse workspaces --------------------------
 
-(defun spacemacs/load-eyebrowse-for-perspective (&optional frame)
+(defun cpm/load-eyebrowse-for-perspective (&optional frame)
   "Load an eyebrowse workspace according to a perspective's parameters.
  FRAME's perspective is the perspective that is considered, defaulting to
  the current frame's perspective.
@@ -154,21 +156,21 @@
           (eyebrowse--load-window-config current-slot))
       (eyebrowse--set 'window-configs nil frame)
       (eyebrowse-init frame)
-      (spacemacs/save-eyebrowse-for-perspective frame))))
+      (cpm/save-eyebrowse-for-perspective frame))))
 
-(defun spacemacs/update-eyebrowse-for-perspective (_new-persp-name)
+(defun cpm/update-eyebrowse-for-perspective (_new-persp-name name)
   "Update and save current frame's eyebrowse workspace to its perspective.
  Parameter _NEW-PERSP-NAME is ignored, and exists only for compatibility with
  `persp-before-switch-functions'."
   (eyebrowse--update-window-config-element
    (eyebrowse--current-window-config (eyebrowse--get 'current-slot)
                                      (eyebrowse--get 'current-tag)))
-  (spacemacs/save-eyebrowse-for-perspective))
+  (cpm/save-eyebrowse-for-perspective))
 
-(defun spacemacs/save-eyebrowse-for-perspective (&optional frame)
+(defun cpm/save-eyebrowse-for-perspective (&optional frame)
   "Save FRAME's eyebrowse workspace to FRAME's perspective.
  FRAME defaults to the current frame."
-  (let ((persp (get-frame-persp frame)))
+  (let ((persp (get-current-persp    frame)))
     (set-persp-parameter
      'eyebrowse-window-configs (eyebrowse--get 'window-configs frame) persp)
     (set-persp-parameter
@@ -176,10 +178,11 @@
     (set-persp-parameter
      'eyebrowse-last-slot (eyebrowse--get 'last-slot frame) persp)))
 
-(defun spacemacs-layouts/post-init-eyebrowse ()
-  (add-hook 'persp-before-switch-functions #'spacemacs/update-eyebrowse-for-perspective)
-  (add-hook 'eyebrowse-post-window-switch-hook #'spacemacs/save-eyebrowse-for-perspective)
-  (add-hook 'persp-activated-hook #'spacemacs/load-eyebrowse-for-perspective))
+(defun cpm-layouts/post-init-eyebrowse ()
+  (add-hook 'persp-before-switch-functions #'cpm/update-eyebrowse-for-perspective)
+  (add-hook 'eyebrowse-post-window-switch-hook #'cpm/save-eyebrowse-for-perspective)
+  (add-hook 'persp-activated-functions #'cpm/load-eyebrowse-for-perspective))
+
 
 ;;; Old Project Functions
 ;; ;;;; Switch Eyebrowse after Change of Perspective
@@ -269,6 +272,121 @@
   (split-window-right)
   (require 'magit)
   (magit-status-setup-buffer))
+
+;;; Spacemacs Layouts
+;; https://github.com/yanghaoxie/emacs.d#workspaces
+(use-package spacemacs-persp-extra
+  :ensure nil
+  :after (:all persp-mode eyebrowse)
+  :demand t
+  :load-path (lambda () (concat cpm-elisp-dir "spacemacs-persp-extra/"))
+  :commands (spacemacs/update-eyebrowse-for-perspective
+             spacemacs/save-eyebrowse-for-perspective
+             spacemacs/load-eyebrowse-for-perspective
+             spacemacs/load-eyebrowse-for-perspective)
+  :general
+  (:keymaps 'override
+   :states '(normal visual motion)
+   "g M-0" 'spacemacs/persp-switch-to-0
+   "g M-1" 'spacemacs/persp-switch-to-1
+   "g M-2" 'spacemacs/persp-switch-to-2
+   "g M-3" 'spacemacs/persp-switch-to-3
+   "g M-4" 'spacemacs/persp-switch-to-4
+   "g M-5" 'spacemacs/persp-switch-to-5
+   "g M-6" 'spacemacs/persp-switch-to-6
+   "g M-7" 'spacemacs/persp-switch-to-7
+   "g M-8" 'spacemacs/persp-switch-to-8
+   "g M-9" 'spacemacs/persp-switch-to-9
+   "g M-l" 'spacemacs/jump-to-last-layout
+   "g M-c" 'spacemacs/layouts-ts-close)
+  (my/leader-keys
+    "l" 'hydra-persp/body)
+  :init
+  (add-hook 'persp-before-switch-functions
+            #'spacemacs/update-eyebrowse-for-perspective)
+  (add-hook 'eyebrowse-post-window-switch-hook
+            #'spacemacs/save-eyebrowse-for-perspective)
+  (add-hook 'persp-activated-functions
+            #'spacemacs/load-eyebrowse-for-perspective)
+  (add-hook 'persp-before-save-state-to-file-functions
+            #'spacemacs/update-eyebrowse-for-perspective)
+  (add-hook 'persp-after-load-state-functions
+            #'spacemacs/load-eyebrowse-after-loading-layout)
+  (setq dotspacemacs-auto-generate-layout-names t
+        dotspacemacs-default-layout-name "default")
+  :config
+  (defadvice persp-activate (before spacemacs//save-toggle-layout activate)
+    (setq spacemacs--last-selected-layout persp-last-persp-name))
+  (add-hook 'persp-mode-hook 'spacemacs//layout-autosave)
+  (add-hook 'persp-created-functions
+            #'spacemacs//add-project-buffers-to-persp)
+  (advice-add 'persp-load-state-from-file :before 'spacemacs//layout-wait-for-modeline))
+(defhydra hydra-persp (:hint nil)
+  "
+ Go to^^^^^^                                  Actions^^
+ [_0_.._9_]^^     nth/new layout              [_a_]^^   add buffer
+ [_C-0_.._C-9_]^^ nth/new layout              [_A_]^^   add all from layout
+ [_<tab>_]^^^^    last layout                 [_d_]^^   close current layout
+ [_b_]^^^^        buffer in layout            [_D_]^^   close other layout
+ [_h_]^^^^        default layout              [_L_]^^   load layouts from file
+ [_l_]^^^^        layout w/helm/ivy           [_r_]^^   remove current buffer
+ [_n_/_C-l_]^^    next layout                 [_R_]^^   rename current layout
+ [_N_/_p_/_C-h_]  prev layout                 [_s_/_S_] save all layouts/save by names
+ [_o_]^^^^        custom layout               [_t_]^^   show a buffer without adding it to current layout
+ [_w_]^^^^        workspaces transient state  [_x_]^^   kill current w/buffers
+ ^^^^^^                                       [_X_]^^   kill other w/buffers
+ ^^^^^^                                       [_<_/_>_] move layout left/right
+ ^^^^^^                                       "
+  ("1" spacemacs/persp-switch-to-1 :exit t)
+  ("2" spacemacs/persp-switch-to-2 :exit t)
+  ("3" spacemacs/persp-switch-to-3 :exit t)
+  ("4" spacemacs/persp-switch-to-4 :exit t)
+  ("5" spacemacs/persp-switch-to-5 :exit t)
+  ("6" spacemacs/persp-switch-to-6 :exit t)
+  ("7" spacemacs/persp-switch-to-7 :exit t)
+  ("8" spacemacs/persp-switch-to-8 :exit t)
+  ("9" spacemacs/persp-switch-to-9 :exit t)
+  ("0" spacemacs/persp-switch-to-0 :exit t)
+  ("C-1" spacemacs/persp-switch-to-1)
+  ("C-2" spacemacs/persp-switch-to-2)
+  ("C-3" spacemacs/persp-switch-to-3)
+  ("C-4" spacemacs/persp-switch-to-4)
+  ("C-5" spacemacs/persp-switch-to-5)
+  ("C-6" spacemacs/persp-switch-to-6)
+  ("C-7" spacemacs/persp-switch-to-7)
+  ("C-8" spacemacs/persp-switch-to-8)
+  ("C-9" spacemacs/persp-switch-to-9)
+  ("C-0" spacemacs/persp-switch-to-0)
+  ("<tab>" spacemacs/jump-to-last-layout)
+  ("<return>" nil :exit t)
+  ("TAB" spacemacs/jump-to-last-layout)
+  ("RET" nil :exit t)
+  ("C-h" persp-prev)
+  ("C-l" persp-next)
+  ("<" spacemacs/move-current-persp-left)
+  (">" spacemacs/move-current-persp-right)
+  ("a" persp-add-buffer :exit t)
+  ("A" persp-import-buffers :exit t)
+  ("b" spacemacs/persp-buffers :exit t)
+  ("d" spacemacs/layouts-ts-close)
+  ("D" spacemacs/layouts-ts-close-other :exit t)
+  ("h" spacemacs/layout-goto-default :exit t)
+  ("L" persp-load-state-from-file :exit t)
+  ("l" persp-switch :exit t)
+  ("n" persp-next)
+  ("N" persp-prev)
+  ("o" spacemacs/select-custom-layout :exit t)
+  ("p" persp-prev)
+  ("r" persp-remove-buffer :exit t)
+  ("R" spacemacs/layouts-ts-rename :exit t)
+  ("s" persp-save-state-to-file :exit t)
+  ("S" persp-save-to-file-by-names :exit t)
+  ("t" persp-temporarily-display-buffer :exit t)
+  ("w" hydra-eyebrowse/body :exit t)
+  ("x" spacemacs/layouts-ts-kill)
+  ("X" spacemacs/layouts-ts-kill-other :exit t)
+  ("q" nil))
+
 
 ;;; Bookmarks
 (use-package bookmark

@@ -55,7 +55,7 @@
     "ww" 'eyebrowse-switch-to-window-config
     "wr" 'eyebrowse-rename-window-config)
   :config
-  (setq eyebrowse-new-workspace 'dired-jump
+  (setq eyebrowse-new-workspace t
         eyebrowse-mode-line-style 'hide
         eyebrowse-wrap-around t
         eyebrowse-switch-back-and-forth t)
@@ -105,7 +105,7 @@
   ("n" eyebrowse-next-window-config)
   ("N" eyebrowse-prev-window-config)
   ("p" eyebrowse-prev-window-config)
-  ;; ("R" spacemacs/workspaces-ts-rename :exit t)
+  ("r" eyebrowse-rename-window-config)
   ("w" eyebrowse-switch-to-window-config :exit t)
   ("q" nil))
 
@@ -169,7 +169,15 @@
                        (let ((persp (get-current-persp)))
                          (if persp
                              (not (persp-contain-buffer-p b persp))
-                           nil)))))))
+                           nil)))))
+
+    (setq ivy-sort-functions-alist
+          (append ivy-sort-functions-alist
+                  '((persp-kill-buffer   . nil)
+                    (persp-remove-buffer . nil)
+                    (persp-add-buffer    . nil)
+                    (persp-switch        . nil)
+                    (persp-window-switch . nil))))))
 
 (use-package persp-mode-projectile-bridge
   :ensure t
@@ -183,16 +191,17 @@
              persp-mode-projectile-bridge-add-new-persp
              projectile-project-buffers))
 
-
 ;;; Project Functions
 ;;;; Open agenda as perspective
 (defun cpm/open-agenda-in-workspace ()
   "open agenda in its own perspective"
   (interactive)
+  (eyebrowse-switch-to-window-config-1)
   (persp-switch "agenda")
   (setq frame-title-format '("" "%b"))
   (require 'org-super-agenda)
   (cpm/jump-to-org-super-agenda)
+  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Agenda")
   (persp-add-buffer "*Org Agenda*"))
 
 (general-define-key
@@ -204,6 +213,7 @@
 (defun cpm/open-emacsd-in-workspace ()
   "open emacsd in its own perspective"
   (interactive)
+  (eyebrowse-switch-to-window-config-1)
   (persp-switch "emacs.d")
   (setq frame-title-format
         '(""
@@ -214,6 +224,7 @@
                (format " in [%s]" project-name))))))
   (require 'crux)
   (crux-find-user-init-file)
+  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Emacs.d")
   (require 'magit)
   (magit-status-setup-buffer))
 
@@ -226,6 +237,7 @@
 (defun cpm/open-project-and-workspace ()
   "open a new project as its own perspective"
   (interactive)
+  (eyebrowse-switch-to-window-config-1)
   (persp-switch "new-persp")
   (counsel-projectile-switch-project)
   (setq frame-title-format
@@ -235,9 +247,61 @@
            (let ((project-name (projectile-project-name)))
              (unless (string= "-" project-name)
                (format " in [%s]" project-name))))))
+  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
   (require 'magit)
   (magit-status-setup-buffer)
   (persp-rename (projectile-project-name)))
+
+;;;; Eyebrowse & Perspectives
+;; courtesy of Spacemacs
+;; Eyebrowse - allow perspective-local eyebrowse workspaces --------------------------
+;; See https://github.com/syl20bnr/spacemacs/issues/3733
+;; and https://github.com/syl20bnr/spacemacs/pull/5874
+
+(defun cpm/load-eyebrowse-for-perspective (type &optional frame)
+  "Load an eyebrowse workspace according to a perspective's parameters.
+ FRAME's perspective is the perspective that is considered, defaulting to
+ the current frame's perspective.
+ If the perspective doesn't have a workspace, create one."
+  (when (eq type 'frame)
+    (let* ((persp (get-current-persp frame))
+           (window-configs (persp-parameter 'eyebrowse-window-configs persp))
+           (current-slot (persp-parameter 'eyebrowse-current-slot persp))
+           (last-slot (persp-parameter 'eyebrowse-last-slot persp)))
+      (if window-configs
+          (progn
+            (eyebrowse--set 'window-configs window-configs frame)
+            (eyebrowse--set 'current-slot current-slot frame)
+            (eyebrowse--set 'last-slot last-slot frame)
+            (eyebrowse--load-window-config current-slot))
+        (eyebrowse--set 'window-configs nil frame)
+        (eyebrowse-init frame)
+        (cpm/save-eyebrowse-for-perspective frame)))))
+
+(defun cpm/update-eyebrowse-for-perspective (_new-persp-name _frame)
+  "Update and save current frame's eyebrowse workspace to its perspective.
+ Parameter _NEW-PERSP-NAME is ignored, and exists only for compatibility with
+ `persp-before-switch-functions'."
+  (eyebrowse--update-window-config-element
+   (eyebrowse--current-window-config (eyebrowse--get 'current-slot)
+                                     (eyebrowse--get 'current-tag)))
+  (cpm/save-eyebrowse-for-perspective))
+
+(defun cpm/save-eyebrowse-for-perspective (&optional frame)
+  "Save FRAME's eyebrowse workspace to FRAME's perspective.
+ FRAME defaults to the current frame."
+  (let ((persp (get-current-persp frame)))
+    (set-persp-parameter
+     'eyebrowse-window-configs (eyebrowse--get 'window-configs frame) persp)
+    (set-persp-parameter
+     'eyebrowse-current-slot (eyebrowse--get 'current-slot frame) persp)
+    (set-persp-parameter
+     'eyebrowse-last-slot (eyebrowse--get 'last-slot frame) persp)))
+
+(add-hook 'persp-before-switch-functions #'cpm/update-eyebrowse-for-perspective)
+(add-hook 'eyebrowse-post-window-switch-hook #'cpm/save-eyebrowse-for-perspective)
+(add-hook 'persp-activated-functions #'cpm/load-eyebrowse-for-perspective)
+
 
 ;;; Bookmarks
 (use-package bookmark
