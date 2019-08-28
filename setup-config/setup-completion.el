@@ -1,7 +1,8 @@
 ;;; Completion
 (use-package company
   :ensure t
-  :defer 1
+  :after evil
+  :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
   :custom-face
   ;; Nicer looking faces
   (company-tooltip-common
@@ -10,14 +11,13 @@
    ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
   ;; ;; key bindings
   :general
-  (:keymaps 'company-mode-map
+  (:keymaps 'company-active-map
    "C-/"   #'company-search-candidates
    "C-M-/" #'company-filter-candidates
    "C-d"   #'company-show-doc-buffer
    "C-j"   #'company-select-next
    "C-k"   #'company-select-previous
-   "C-l"   #'company-complete-selection
-   "TAB"   #'company-complete-selection)
+   "C-l"   #'company-complete-selection)
   :init
   (setq company-idle-delay 0.3
         company-minimum-prefix-length 3
@@ -27,8 +27,8 @@
   :config
   ;; Default backends
   (add-to-list 'company-backends 'company-keywords)
-  (add-to-list 'company-backends 'company-files)
-  (global-company-mode))
+  (add-to-list 'company-backends 'company-files))
+
 
 (use-package company-bibtex
   :ensure t
