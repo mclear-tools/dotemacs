@@ -11,6 +11,12 @@
              ivy--add-face)
   :hook ((after-init . ivy-mode))
   :config
+  ;; fixes for use with help/helpful
+  ;; https://github.com/Wilfred/helpful/issues/218#issue-476517687
+  (ivy-set-actions
+   'counsel-M-x
+   `(("d" counsel--find-symbol "definition")
+     ("h" ,(lambda (x) (helpful-callable (intern x))) "help")))
   (setq enable-recursive-minibuffers t) ; Allow commands in minibuffers
   (setq ivy-use-selectable-prompt t
         ivy-use-virtual-buffers t    ; Enable bookmarks and recentf
@@ -28,6 +34,7 @@
 
 ;;;; Ivy-rich
 ;; More friendly display transformer for Ivy
+;; FIXME: ivy-rich doesn't load properly for everything
 (use-package ivy-rich
   :defines (all-the-icons-icon-alist
             all-the-icons-dir-icon-alist
@@ -200,18 +207,6 @@
            :predicate
            (lambda (cand) (get-buffer cand))
            :delimiter "\t")
-          persp-switch-to-buffer
-          (:columns
-           ((ivy-rich-buffer-icon)
-            (ivy-rich-candidate (:width 30))
-            (ivy-rich-switch-buffer-size (:width 7))
-            (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-            (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-            (ivy-rich-switch-buffer-project (:width 15 :face success))
-            (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
-           :predicate
-           (lambda (cand) (get-buffer cand))
-           :delimiter "\t")
           counsel-M-x
           (:columns
            ((ivy-rich-function-icon)
@@ -324,13 +319,34 @@
            ((ivy-rich-file-icon)
             (counsel-projectile-find-file-transformer))
            :delimiter "\t")
+          persp-switch
+          (:columns
+           ((ivy-rich-buffer-icon)
+            (counsel-projectile-find-file-transformer)
+            (ivy-rich-candidate (:width 30)))
+           :predicate
+           (lambda (cand) (get-buffer cand))
+           :delimiter "\t")
+          persp-switch-to-buffer
+          (:columns
+           ((ivy-rich-buffer-icon)
+            (ivy-rich-candidate (:width 30))
+            (ivy-rich-switch-buffer-size (:width 7))
+            (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+            (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+            (ivy-rich-switch-buffer-project (:width 15 :face success))
+            (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+           :predicate
+           (lambda (cand) (get-buffer cand))
+           :delimiter "\t")
           treemacs-projectile
           (:columns
            ((ivy-rich-file-icon)
             (ivy-rich-candidate))
            :delimiter "\t")))
   (setq ivy-rich-path-style 'abbrev
-        ivy-virtual-abbreviate 'full))
+        ivy-virtual-abbreviate 'full)
+  :config (ivy-rich-mode 1))
 
 
 
@@ -346,6 +362,8 @@
   (:keymaps 'counsel-mode-map
    "C-j" #'ivy-next-line
    "C-k" #'ivy-previous-line)
+  ("C-h l" #'counsel-find-library
+   "C-h C-l" #'view-lossage)
   :init
   ;; Use faster search tool: ripgrep (rg)
   (when (executable-find "rg")
@@ -353,6 +371,7 @@
   (setq counsel-find-file-at-point t
         counsel-yank-pop-separator "\n────────\n")
   :config
+  (setq counsel-find-file-ignore-regexp "\\.elc\\'")
   (setq counsel-locate-cmd 'counsel-locate-cmd-mdfind)
   (setq counsel-describe-function-function #'helpful-callable)
   (setq counsel-describe-variable-function #'helpful-variable)
@@ -440,28 +459,43 @@
   :config
   ;; Improve search experience of `swiper'
   ;; @see https://emacs-china.org/t/swiper-swiper-isearch/9007/12
-  ;; (defun my-swiper-toggle-counsel-rg ()
-  ;;   "Toggle `counsel-rg' with current swiper input."
-  ;;   (interactive)
-  ;;   (let ((text (replace-regexp-in-string
-  ;;                "\n" ""
-  ;;                (replace-regexp-in-string
-  ;;                 "\\\\_<" ""
-  ;;                 (replace-regexp-in-string
-  ;;                  "\\\\_>" ""
-  ;;                  (replace-regexp-in-string "^.*Swiper: " ""
-  ;;                                            (thing-at-point 'line t)))))))
-  ;;     (ivy-quit-and-run
-  ;;       (counsel-rg text default-directory))))
-  ;; (general-def "<C-return>" #'my-swiper-toggle-counsel-rg swiper-map)
+  (defun my-swiper-toggle-counsel-rg ()
+    "Toggle `counsel-rg' with current swiper input."
+    (interactive)
+    (let ((text (replace-regexp-in-string
+                 "\n" ""
+                 (replace-regexp-in-string
+                  "\\\\_<" ""
+                  (replace-regexp-in-string
+                   "\\\\_>" ""
+                   (replace-regexp-in-string "^.*Swiper: " ""
+                                             (thing-at-point 'line t)))))))
+      (ivy-quit-and-run
+        (counsel-rg text default-directory))))
+  (general-def "<C-return>" #'my-swiper-toggle-counsel-rg :keymaps 'swiper-map)
 
-  ;; (with-eval-after-load 'rg
-  ;;   (defun my-swiper-toggle-rg-dwim ()
-  ;;     "Toggle `rg-dwim' with current swiper input."
-  ;;     (interactive)
-  ;;     (ivy-quit-and-run (rg-dwim default-directory)))
-  ;;   (general-def "<M-return>" #'my-swiper-toggle-rg-dwim swiper-map)
-  ;;   (general-def "<M-return>" #'my-swiper-toggle-rg-dwim ivy-minibuffer-map))
+  (with-eval-after-load 'rg
+    (defun my-swiper-toggle-rg-dwim ()
+      "Toggle `rg-dwim' with current swiper input."
+      (interactive)
+      (ivy-quit-and-run (rg-dwim default-directory)))
+    (general-def "<M-return>" #'my-swiper-toggle-rg-dwim :keymaps 'swiper-map)
+    (general-def "<M-return>" #'my-swiper-toggle-rg-dwim :keymaps: 'ivy-minibuffer-map))
+
+  ;; better search for long lines
+  ;; see  https://karl-voit.at/2016/04/09/chosing-emacs-search-method/
+  (defun cpm/swiper ()
+    (interactive)
+    (if (and (buffer-file-name)
+             (not (ignore-errors
+                    (file-remote-p (buffer-file-name))))
+             (if (eq major-mode 'org-mode)
+                 (> (buffer-size) 60000)
+               (> (buffer-size) 300000)))
+        (progn
+          (save-buffer)
+          (counsel-grep))
+      (swiper--ivy (swiper--candidates))))
   )
 
 ;;;; Supporting Packages

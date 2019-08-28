@@ -18,9 +18,8 @@
   :config
   (setq which-key-special-keys nil)
   ;; Set the time delay (in seconds) for the which-key popup to appear.
-  (setq which-key-idle-delay .3)
+  (setq which-key-idle-delay .6)
   (which-key-mode))
-
 
 ;;; Namespaced Keybindings
 ;; set keybindings for use with evil
@@ -417,12 +416,12 @@
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'helm-show-kill-ring
    "sl" 'cpm/helm-list-search-buffers
-   "so" 'swiper
+   "so" #'cpm/swiper
    ;; "so" 'helm-occur
    "sp" 'helm-ag-project-root
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
-   "ss" 'swiper
+   "ss" #'cpm/swiper
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
    "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
