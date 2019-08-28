@@ -91,9 +91,10 @@
      `(hydra-posframe-face ((t (:background "#073642"))))
      `(ivy-posframe ((t (:background "#073642"))))
      `(which-key-posframe ((t (:background "#073642"))))
+     `(helm-posframe-face ((t (:background "#073642"))))
 
      ;; helm faces
-     `(helm-selection ((t (:background "#073642" :foreground "goldenrod1" :underline nil))))
+     `(helm-selection ((t (:background "#1f4a54" :foreground "goldenrod1" :underline nil))))
      `(helm-match ((t (:foreground "#b58900"))))
 
      ;; line number highlighting
@@ -153,9 +154,11 @@
      `(hydra-posframe-face ((t (:background "#eee8d5"))))
      `(ivy-posframe ((t (:background "#eee8d5"))))
      `(which-key-posframe ((t (:background "#eee8d5"))))
+     `(helm-posframe ((t (:background "#eee8d5"))))
+
 
      ;; helm faces
-     `(helm-selection ((t (:background "#eee8d5" :foreground "#268bd2" :underline nil :weight bold))))
+     `(helm-selection ((t (:background "#fdf6e3" :foreground "#268bd2" :underline nil :weight bold))))
      `(helm-match ((t (:foreground "#cb4b16" :weight bold))))
 
      ;; '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
