@@ -38,7 +38,10 @@
         doom-modeline-buffer-file-name-style 'truncate-upto-project
         doom-modeline-major-mode-color-icon t
         doom-modeline-enable-word-count t
-        doom-modeline-persp-name nil
+        doom-modeline-persp-name t
+        doom-modeline-buffer-encoding nil
+        doom-modeline-persp-name-icon t
+        find-file-visit-truename t
         doom-modeline-minor-modes nil)
 
   ;; Change the evil tag
@@ -94,35 +97,16 @@
            (propertize "|" 'face '(:foreground "#586e75"))))))
 
   ;;
-  ;; Mode lines
+  ;; Mode line setup
   ;;
   (doom-modeline-def-modeline 'cpm/my-doom-mode-line
     '(workspace-name window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
-    '(misc-info input-method buffer-encoding process checker buffer-position " "))
+    '(misc-info persp-name input-method buffer-encoding process checker buffer-position " "))
 
   (defun setup-custom-doom-modeline ()
     (doom-modeline-set-modeline 'cpm/my-doom-mode-line 'default))
 
   (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline)
-  ;; (doom-modeline-def-modeline 'main
-  ;;                             '(workspace-number window-number bar evil-state matches " " buffer-info vcs)
-  ;;                             '(process buffer-position " " selection-info))
-
-  ;; (doom-modeline-def-modeline 'minimal
-  ;;                             '(bar matches " " buffer-info)
-  ;;                             '(media-info major-mode))
-
-  ;; (doom-modeline-def-modeline 'special
-  ;;                             '(window-number bar evil-state matches " " buffer-info-simple)
-  ;;                             '(process))
-
-  ;; (doom-modeline-def-modeline 'project
-  ;;                             '(window-number bar buffer-default-directory buffer-position " " selection-info)
-  ;;                             '())
-
-  ;; (doom-modeline-def-modeline 'media
-  ;;                             '(window-number bar " %b  ")
-  ;;                             '(media-info))
 
   (defface doom-modeline-active-window-number
     '((t (:inherit warning)))
