@@ -115,11 +115,7 @@
   :mode (("\\.markdown\\'" . markdown-mode)
          ("\\.md\\'"       . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
-  :init
-  ;; markdown hooks
-  (add-hook 'markdown-mode-hook
-            '(lambda ()
-               (turn-on-flyspell) (auto-fill-mode) (centered-cursor-mode) (git-gutter-mode 1)   (hl-todo-mode)))
+  :config
   (setq markdown-command
         (concat
          "/usr/local/bin/pandoc"
@@ -143,7 +139,10 @@
         markdown-footnote-location 'immediately
         markdown-unordered-list-item-prefix "-   "
         markdown-use-pandoc-style-yaml-metadata t)
-  :config
+  ;; markdown hooks
+  (add-hook 'markdown-mode-hook
+            '(lambda ()
+               (turn-on-flyspell) (auto-fill-mode) (centered-cursor-mode 1) (git-gutter-mode 1)   (hl-todo-mode)))
   ;; remove strikout comment face
   (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil))
 

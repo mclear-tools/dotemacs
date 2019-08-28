@@ -3,6 +3,8 @@
 
 ;;;;; Custom File Location
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;;;;; Text settings
 ;; Make sure your text files end in a newline
@@ -129,8 +131,10 @@
   (savehist-mode 1))
 
 ;;;; Desktop
-(when (file-exists-p custom-file)
-  (load custom-file))
+(use-package desktop
+  :ensure nil
+  :defer 1
+  :config
   (setq desktop-dirname             (concat cpm-cache-dir "desktops")
         desktop-base-file-name      "emacs.desktop"
         desktop-base-lock-name      "lock"
@@ -139,16 +143,14 @@
         desktop-files-not-to-save   (concat "^$" ".*magit$")
         desktop-restore-eager 4
         desktop-load-locked-desktop t)
-
-(when (not (file-exists-p desktop-dirname))
-(make-directory desktop-dirname t))
-(setq desktop-buffers-not-to-save
+  (when (not (file-exists-p desktop-dirname))
+    (make-directory desktop-dirname t))
+  (setq desktop-buffers-not-to-save
         (concat "\\("
                 "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
                 "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-            "\\)$"))
-
-(desktop-save-mode 0)
+                "\\)$"))
+  (desktop-save-mode 0))
 
 (defun cpm/my-desktop ()
   "Load the desktop and enable autosaving"
@@ -182,32 +184,36 @@
       time-stamp-format "Last modified on %04y-%02m%02d-%02H:%02M:%02S") ; date format
 (add-hook 'before-save-hook 'time-stamp) ; update when saving
 (defun format-date (format)
-(let ((system-time-locale "en_US.UTF-8"))
-  (insert (format-time-string format))))
+  (let ((system-time-locale "en_US.UTF-8"))
+    (insert (format-time-string format))))
 
 ;;;; Universal Argument
 (general-define-key "M-u" 'universal-argument)
 
 ;;;; Pop-up Windows
+;; disable for use of posframe
 (use-package shackle
-    :after helm
-    :demand t
-    :config
-    ;; make helm pop-ups behave
-    (setq helm-display-function #'pop-to-buffer)
-    (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
-    (shackle-mode 1))
+  :disabled
+  :hook (helm-mode . shackle)
+  :config
+  ;; make helm pop-ups behave
+  (setq helm-display-function #'pop-to-buffer)
+  (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :ratio 0.46)))
+  (shackle-mode 1))
 
 ;;;; Information
 (use-package helpful
-  :config (evil-set-initial-state 'helpful-mode 'motion)
+  :config
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'helpful-mode 'motion))
+  :hook (ivy-mode . helpful-mode)
   :general
-  ("C-h f" #'helpful-callable)
+  ("C-h f" #'counsel-describe-function)
   ("C-h k" #'helpful-key)
-  ("C-h v" #'helpful-variable)
+  ("C-h v" #'counsel-describe-variable)
   ("C-c C-." #'helpful-at-point)
-  ("C-h C-l" #'find-library)
-  :commands (helpful-function helpful-callable helpful-key helpful-variable helpful-at-point))
+  ("C-h C-l" #'counsel-find-library))
+
 
 (advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
 

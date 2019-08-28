@@ -138,7 +138,7 @@
 (eval-when-compile
   (quelpa '(centaur-tabs :fetcher github :repo "ema2159/centaur-tabs")))
 (use-package centaur-tabs
-  :disabled t
+  :disabled
   :defer .5
   :hook
   (dashboard-mode . centaur-tabs-local-mode)

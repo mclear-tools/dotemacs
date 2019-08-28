@@ -233,11 +233,11 @@
 ;;;; Eshell helm
 ;; helm support
 (add-hook 'eshell-mode-hook
-     (lambda ()
-       (eshell-cmpl-initialize)
-       (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-       (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
-       (cpm/setup-eshell)))
+          (lambda ()
+            (eshell-cmpl-initialize)
+            (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+            (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
+            (cpm/setup-eshell)))
 
     (when (not (functionp 'eshell/rgrep))
       (defun eshell/rgrep (&rest args)
