@@ -104,10 +104,13 @@ Argument BUFFER."
    buffer
    :position (point)
    :poshandler helm-posframe-poshandler
-   :width (or helm-posframe-width (+ (window-width) 2))
+   :width (or helm-posframe-width (+ (frame-width) 2))
    :height (or helm-posframe-height helm-display-buffer-height)
    :min-height 10
    :min-width 50
+   ;; fix for colors
+   :background-color (face-attribute 'ivy-posframe :background nil t)
+   :foreground-color (face-attribute 'ivy-posframe :foreground nil t)
    :font helm-posframe-font
    :override-parameters helm-posframe-parameters
    :respect-header-line t))
