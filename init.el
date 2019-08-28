@@ -4,7 +4,6 @@
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
-
 ;;; Startup
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -183,22 +182,22 @@
   (push cpm-setup-dir load-path))
 
 ;;; Use-Package Settings
-;; I tell =use-package= to always defer loading packages unless explicitly told
+;; I tell use-package to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
 ;; only loaded later when they are explicitly used. But it can also cause
 ;; problems:
 ;; https://github.com/jwiegley/use-package#loading-packages-in-sequence. I also
-;; put a lot of loading of packages off until after several seconds of idle. The
+;; put a lot of loading of packages off until after some number of seconds of idle. The
 ;; latter means package loading stays out of my way if I'm doing, e.g., a quick
 ;; restart-and-check of something in emacs.
 
-(eval-when-compile
-  (setq use-package-always-defer t
-        use-package-verbose t
-        use-package-minimum-reported-time 0.01
-        use-package-enable-imenu-support t
-        use-package-always-ensure t)
+(setq use-package-always-defer t
+      use-package-verbose t
+      use-package-minimum-reported-time 0.01
+      use-package-enable-imenu-support t
+      use-package-always-ensure t)
 
+(eval-when-compile
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                            ;; ("gnu" . "https://elpa.gnu.org/packages/")
                            ("org" . "https://orgmode.org/elpa/")
@@ -289,7 +288,7 @@
 (require 'setup-dired)
 (require 'setup-ivy)
 (require 'setup-helm)
-;; (require 'setup-helm-packages)
+(require 'setup-helm-packages)
 
 ;;;; Other Modules
 (require 'setup-ui)
@@ -326,7 +325,7 @@
 (defun cpm/search-setup-config-files ()
   (interactive)
   (counsel-ag nil cpm-setup-dir))
-  ;; (helm-do-ag cpm-setup-dir))
+;; (helm-do-ag cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()

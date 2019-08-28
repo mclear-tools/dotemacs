@@ -65,7 +65,7 @@
     (setq helm-autoresize-max-height 40)
     (setq helm-autoresize-min-height 35))
   ;; (define-key helm-map (kbd "C-a") (kbd "RET"))
-  (helm-mode 1))
+  )
 
 (defvar my-helm-bottom-buffers nil
   "List of bottom buffers before helm session.
