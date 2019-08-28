@@ -1009,8 +1009,9 @@ to get regular RET. "
 
 ;;;; Org Create Check Box From List Item
 ;; A useful macro for converting list items to checkboxes
-(fset 'cpm/org-create-checkbox-from-list-item
-      [?  ?# ?\M-x ?o ?r ?g ?- tab ?c ?h ?e ?c ?k tab tab backspace backspace ?k ?b tab tab backspace backspace backspace backspace backspace backspace backspace backspace backspace ?t ?o ?g ?g ?l ?e ?- ?c ?h tab return ?\M-x ?o ?r ?g ?- ?n ?e ?x ?t ?- ?l tab backspace backspace backspace backspace ?i ?t tab return])
+(fset 'cpm/org-checkbox-from-list
+      [?a ?  ?\[ ?  ?\] escape ?\M-x return])
+
 
 ;;; Org-Reveal
 (use-package ox-reveal
