@@ -679,7 +679,7 @@ Instead it's simpler to use bash."
 ;; Other bullets
 ;; "●" "◉" "→"
 ;; ("◉" "◎" "⚫" "○" "►" "◇")
-;;  "∙" "∶" "∵" "∷" "⸭" "∺" )))
+;; ("∙" "∶" "∵"  "∷" "⸭" "∺" )))
 ;; (setq org-bullets-bullet-list '("❂" "⁑" "⁂" "❖" "✮" "✱" "✵")))
 
 ;;; Org Prettify Source Blocks

@@ -621,6 +621,7 @@ Return 'left, 'right, 'both or nil."
  #'set-point-before-yanking-if-in-text-mode)
 ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00975.html
 
+;;;; Sticky Buffer
 (defvar sticky-buffer-previous-header-line-format)
 (define-minor-mode sticky-buffer-mode
   "Make the current window always display this buffer."
@@ -632,22 +633,22 @@ Return 'left, 'right, 'both or nil."
         (set-window-dedicated-p (selected-window) sticky-buffer-mode))
     (set-window-dedicated-p (selected-window) sticky-buffer-mode)
     (setq header-line-format sticky-buffer-previous-header-line-format)))
+
+;;;; Exchange Windows
 (defun cpm/window-exchange ()
-"Swap buffer windows and leave focus in original window"
-(interactive)
-(ace-swap-window)
-(aw-flip-window)
-)
+  "Swap buffer windows and leave focus in original window"
+  (interactive)
+  (ace-swap-window)
+  (aw-flip-window))
+
+;;;; Switch previous buffer
+
 (defun switch-to-previous-buffer ()
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-(defun cpm/tangle-and-load-config ()
-  (interactive)
-  ;; (my-tangle-config-org "~/.emacs.d/config.org" "~/.emacs.d/config.el")
-  (load-file "~/.emacs.d/config.el"))
 
 
-;; transpose hydra
+;;;; Transpose hydra
 (with-eval-after-load 'hydra
   (general-define-key "C-c t"
                       (defhydra hydra-transpose (:color red)
@@ -662,40 +663,43 @@ Return 'left, 'right, 'both or nil."
                         ("t" org-table-transpose-table-at-point "Org mode table")
                         ("q" nil "cancel" :color blue))))
 
+;;;; Split Windows
 (defun cpm/toggle-window-split ()
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-         (next-win-buffer (window-buffer (next-window)))
-         (this-win-edges (window-edges (selected-window)))
-         (next-win-edges (window-edges (next-window)))
-         (this-win-2nd (not (and (<= (car this-win-edges)
-                     (car next-win-edges))
-                     (<= (cadr this-win-edges)
-                     (cadr next-win-edges)))))
-         (splitter
-          (if (= (car this-win-edges)
-             (car (window-edges (next-window))))
-          'split-window-horizontally
-        'split-window-vertically)))
-    (delete-other-windows)
-    (let ((first-win (selected-window)))
-      (funcall splitter)
-      (if this-win-2nd (other-window 1))
-      (set-window-buffer (selected-window) this-win-buffer)
-      (set-window-buffer (next-window) next-win-buffer)
-      (select-window first-win)
-      (if this-win-2nd (other-window 1))))))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 
+;;;; Toggle markup
 (defun cpm/toggle-display-markup ()
   "single toggle to display markup either in org or markdown"
   (interactive)
-    (if (eq major-mode 'org-mode)
-        (org-toggle-link-display)
-        (if markdown-hide-markup
+  (if (eq major-mode 'org-mode)
+      (org-toggle-link-display)
+    (if markdown-hide-markup
         (markdown-toggle-markup-hiding 0)
-        (markdown-toggle-markup-hiding))))
+      (markdown-toggle-markup-hiding))))
 
+;;;; Search TODOs
 (defun cpm/search-file-todo-markers ()
   "Search file for any TODO markers as specified in hl-todo-keyword-faces. Note that this uses the word boundary \\b to avoid matching these within other words, but this means that non-word keywords such as ???, which is in the list by default, will not be matched."
   (interactive)
@@ -709,15 +713,16 @@ Return 'left, 'right, 'both or nil."
 
 (defun cpm/search-todo-markers ()
   "Search directory for any TODO markers as specified in hl-todo-keyword-faces. Note that this uses the word boundary \\b to avoid matching these within other words, but this means that non-word keywords such as ???, which is in the list by default,will not be matched."
-    (interactive)
-    (require 'projectile)
-    (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
-           (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
-                                     grouped))
-           (bounded (concat "\\b" unescaped "\\b"))
-           (helm-follow-mode-persistent t))
-      (helm-do-ag (projectile-project-root) nil bounded)))
+  (interactive)
+  (require 'projectile)
+  (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
+         (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
+                                   grouped))
+         (bounded (concat "\\b" unescaped "\\b"))
+         (helm-follow-mode-persistent t))
+    (helm-do-ag (projectile-project-root) nil bounded)))
 
+;;;; Wrap in Yaml block
 (defun cpm/yaml-wrap ()
   "wrap region in --- for yaml block"
   (interactive)
@@ -727,6 +732,13 @@ Return 'left, 'right, 'both or nil."
     (insert "---" "\n")
     (goto-char start)
     (insert "---" "\n")))
+
+
+;;;; Counsel search given directory
+(defun cpm/counsel-search-in-input-dir ()
+  "Grep for a string in the input directory using counsel"
+  (interactive)
+  (let ((current-prefix-arg '(4))) (call-interactively #'counsel-rg)))
 
 ;;; Doom Functions & Macros
 (defmacro after! (feature &rest forms)
@@ -740,71 +752,71 @@ compilation."
          #'progn
        #'with-no-warnings)
     (with-eval-after-load ',feature ,@forms)))
- (eval-and-compile
-   (defun cmacs-enlist (exp)
-     "Return EXP wrapped in a list, or as-is if already a list."
-     (if (listp exp) exp (list exp)))
+(eval-and-compile
+  (defun cmacs-enlist (exp)
+    "Return EXP wrapped in a list, or as-is if already a list."
+    (if (listp exp) exp (list exp)))
 
-   (defun doom-unquote (exp)
-     "Return EXP unquoted."
-     (while (memq (car-safe exp) '(quote function))
-       (setq exp (cadr exp)))
-     exp)
+  (defun doom-unquote (exp)
+    "Return EXP unquoted."
+    (while (memq (car-safe exp) '(quote function))
+      (setq exp (cadr exp)))
+    exp)
 
-   (defvar cmacs-evil-state-alist
-     '((?n . normal)
-       (?v . visual)
-       (?i . insert)
-       (?e . emacs)
-       (?o . operator)
-       (?m . motion)
-       (?r . replace))
-     "A list of cons cells that map a letter to a evil state symbol.")
+  (defvar cmacs-evil-state-alist
+    '((?n . normal)
+      (?v . visual)
+      (?i . insert)
+      (?e . emacs)
+      (?o . operator)
+      (?m . motion)
+      (?r . replace))
+    "A list of cons cells that map a letter to a evil state symbol.")
 
-   ;; Register keywords for proper indentation (see `map!')
-   (put ':after        'lisp-indent-function 'defun)
-   (put ':desc         'lisp-indent-function 'defun)
-   (put ':leader       'lisp-indent-function 'defun)
-   (put ':local        'lisp-indent-function 'defun)
-   (put ':localleader  'lisp-indent-function 'defun)
-   (put ':map          'lisp-indent-function 'defun)
-   (put ':map*         'lisp-indent-function 'defun)
-   (put ':mode         'lisp-indent-function 'defun)
-   (put ':prefix       'lisp-indent-function 'defun)
-   (put ':textobj      'lisp-indent-function 'defun)
-   (put ':unless       'lisp-indent-function 'defun)
-   (put ':when         'lisp-indent-function 'defun)
+  ;; Register keywords for proper indentation (see `map!')
+  (put ':after        'lisp-indent-function 'defun)
+  (put ':desc         'lisp-indent-function 'defun)
+  (put ':leader       'lisp-indent-function 'defun)
+  (put ':local        'lisp-indent-function 'defun)
+  (put ':localleader  'lisp-indent-function 'defun)
+  (put ':map          'lisp-indent-function 'defun)
+  (put ':map*         'lisp-indent-function 'defun)
+  (put ':mode         'lisp-indent-function 'defun)
+  (put ':prefix       'lisp-indent-function 'defun)
+  (put ':textobj      'lisp-indent-function 'defun)
+  (put ':unless       'lisp-indent-function 'defun)
+  (put ':when         'lisp-indent-function 'defun)
 
- ;; specials
-   (defvar cmacs--keymaps nil)
-   (defvar cmacs--prefix  nil)
-   (defvar cmacs--defer   nil)
-   (defvar cmacs--local   nil)
+  ;; specials
+  (defvar cmacs--keymaps nil)
+  (defvar cmacs--prefix  nil)
+  (defvar cmacs--defer   nil)
+  (defvar cmacs--local   nil)
 
- (defun cmacs--keybind-register (key desc &optional modes)
-   "Register a description for KEY with `which-key' in MODES.
+  (defun cmacs--keybind-register (key desc &optional modes)
+    "Register a description for KEY with `which-key' in MODES.
 
    KEYS should be a string in kbd format.
    DESC should be a string describing what KEY does.
    MODES should be a list of major mode symbols."
-   (if modes
-       (dolist (mode modes)
-         (which-key-add-major-mode-key-based-replacements mode key desc))
-     (which-key-add-key-based-replacements key desc)))
+    (if modes
+        (dolist (mode modes)
+          (which-key-add-major-mode-key-based-replacements mode key desc))
+      (which-key-add-key-based-replacements key desc)))
 
- (defun cmacs--keyword-to-states (keyword)
-   "Convert a KEYWORD into a list of evil state symbols.
+  (defun cmacs--keyword-to-states (keyword)
+    "Convert a KEYWORD into a list of evil state symbols.
 
  For example, :nvi will map to (list 'normal 'visual 'insert). See
  `cmacs-evil-state-alist' to customize this."
-   (cl-loop for l across (substring (symbol-name keyword) 1)
-            if (cdr (assq l cmacs-evil-state-alist))
-              collect it
-            else
-              do (error "not a valid state: %s" l)))
+    (cl-loop for l across (substring (symbol-name keyword) 1)
+             if (cdr (assq l cmacs-evil-state-alist))
+             collect it
+             else
+             do (error "not a valid state: %s" l)))
 
- (defmacro map! (&rest rest)
-   "A nightmare of a key-binding macro that will use `evil-define-key*',
+  (defmacro map! (&rest rest)
+    "A nightmare of a key-binding macro that will use `evil-define-key*',
  `define-key', `local-set-key' and `global-set-key' depending on context and
  plist key flags (and whether evil is loaded or not). It was designed to make
  binding multiple keys more concise, like in vim.
@@ -852,50 +864,50 @@ compilation."
            (:when IS-MAC
             :n \"M-s\" 'some-fn
             :i \"M-o\" (lambda (interactive) (message \"Hi\"))))"
-   (let ((cmacs--keymaps cmacs--keymaps)
-         (cmacs--prefix  cmacs--prefix)
-         (cmacs--defer   cmacs--defer)
-         (cmacs--local   cmacs--local)
-         key def states forms desc modes)
-     (while rest
-       (setq key (pop rest))
-       (cond
-    ;; it's a sub expr
-    ((listp key)
-         (push (macroexpand `(map! ,@key)) forms))
+    (let ((cmacs--keymaps cmacs--keymaps)
+          (cmacs--prefix  cmacs--prefix)
+          (cmacs--defer   cmacs--defer)
+          (cmacs--local   cmacs--local)
+          key def states forms desc modes)
+      (while rest
+        (setq key (pop rest))
+        (cond
+         ;; it's a sub expr
+         ((listp key)
+          (push (macroexpand `(map! ,@key)) forms))
 
-    ;; it's a flag
-    ((keywordp key)
-         (cond ((eq key :leader)
-        (push 'cmacs-leader-key rest)
-        (setq key :prefix
-                      desc "<leader>"))
-               ((eq key :localleader)
-        (push 'cmacs-localleader-key rest)
-        (setq key :prefix
-                      desc "<localleader>")))
-         (pcase key
-           (:when    (push `(if ,(pop rest)       ,(macroexpand `(map! ,@rest))) forms) (setq rest '()))
-           (:unless  (push `(if (not ,(pop rest)) ,(macroexpand `(map! ,@rest))) forms) (setq rest '()))
-           (:after   (push `(after! ,(pop rest)   ,(macroexpand `(map! ,@rest))) forms) (setq rest '()))
-           (:desc    (setq desc (pop rest)))
-           (:map*    (setq cmacs--defer t) (push :map rest))
-           (:map
+         ;; it's a flag
+         ((keywordp key)
+          (cond ((eq key :leader)
+                 (push 'cmacs-leader-key rest)
+                 (setq key :prefix
+                       desc "<leader>"))
+                ((eq key :localleader)
+                 (push 'cmacs-localleader-key rest)
+                 (setq key :prefix
+                       desc "<localleader>")))
+          (pcase key
+            (:when    (push `(if ,(pop rest)       ,(macroexpand `(map! ,@rest))) forms) (setq rest '()))
+            (:unless  (push `(if (not ,(pop rest)) ,(macroexpand `(map! ,@rest))) forms) (setq rest '()))
+            (:after   (push `(after! ,(pop rest)   ,(macroexpand `(map! ,@rest))) forms) (setq rest '()))
+            (:desc    (setq desc (pop rest)))
+            (:map*    (setq cmacs--defer t) (push :map rest))
+            (:map
              (setq cmacs--keymaps (cmacs-enlist (pop rest))))
-           (:mode
+            (:mode
              (setq modes (cmacs-enlist (pop rest)))
              (unless cmacs--keymaps
                (setq cmacs--keymaps
                      (cl-loop for m in modes
                               collect (intern (format "%s-map" (symbol-name m)))))))
-           (:textobj
+            (:textobj
              (let* ((key (pop rest))
                     (inner (pop rest))
                     (outer (pop rest)))
                (push (macroexpand `(map! (:map evil-inner-text-objects-map ,key ,inner)
                                          (:map evil-outer-text-objects-map ,key ,outer)))
                      forms)))
-           (:prefix
+            (:prefix
              (let ((def (pop rest)))
                (setq cmacs--prefix `(vconcat ,cmacs--prefix (kbd ,def)))
                (when desc
@@ -903,95 +915,95 @@ compilation."
                                                  ,desc ',modes)
                        forms)
                  (setq desc nil))))
-           (:local
-            (setq cmacs--local t))
-           (_ ; might be a state cmacs--prefix
-            (setq states (cmacs--keyword-to-states key)))))
+            (:local
+             (setq cmacs--local t))
+            (_ ; might be a state cmacs--prefix
+             (setq states (cmacs--keyword-to-states key)))))
 
-    ;; It's a key-def pair
-    ((or (stringp key)
-             (characterp key)
-             (vectorp key)
-             (symbolp key))
-         (unwind-protect
-             (catch 'skip
-               (when (symbolp key)
-                 (setq key `(kbd ,key)))
-               (when (stringp key)
-                 (setq key (kbd key)))
-               (when cmacs--prefix
-                 (setq key (append cmacs--prefix (list key))))
-               (unless (> (length rest) 0)
-                 (user-error "map! has no definition for %s key" key))
-               (setq def (pop rest))
-               (when desc
-                 (push `(cmacs--keybind-register ,(key-description (eval key))
-                                               ,desc ',modes)
-                       forms))
-               (cond ((and cmacs--local cmacs--keymaps)
-                      (push `(lwarn 'cmacs-map :warning
-                                    "Can't local bind '%s' key to a keymap; skipped"
-                                    ,key)
-                            forms)
-                      (throw 'skip 'local))
-                     ((and cmacs--keymaps states)
-                      (dolist (keymap cmacs--keymaps)
-            (push `(,(if cmacs--defer 'evil-define-key 'evil-define-key*)
-                ',states ,keymap ,key ,def)
-                              forms)))
-                     (states
-                      (dolist (state states)
-            (push `(define-key
-                                 ,(intern (format "evil-%s-state-%smap" state (if cmacs--local "local-" "")))
-                                 ,key ,def)
-                              forms)))
-                     (cmacs--keymaps
-                      (dolist (keymap cmacs--keymaps)
-            (push `(define-key ,keymap ,key ,def) forms)))
-                     (t
-                      (push `(,(if cmacs--local 'local-set-key 'global-set-key) ,key ,def)
-                            forms))))
-           (setq states '()
-                 cmacs--local nil
-                 desc nil)))
+         ;; It's a key-def pair
+         ((or (stringp key)
+              (characterp key)
+              (vectorp key)
+              (symbolp key))
+          (unwind-protect
+              (catch 'skip
+                (when (symbolp key)
+                  (setq key `(kbd ,key)))
+                (when (stringp key)
+                  (setq key (kbd key)))
+                (when cmacs--prefix
+                  (setq key (append cmacs--prefix (list key))))
+                (unless (> (length rest) 0)
+                  (user-error "map! has no definition for %s key" key))
+                (setq def (pop rest))
+                (when desc
+                  (push `(cmacs--keybind-register ,(key-description (eval key))
+                                                  ,desc ',modes)
+                        forms))
+                (cond ((and cmacs--local cmacs--keymaps)
+                       (push `(lwarn 'cmacs-map :warning
+                                     "Can't local bind '%s' key to a keymap; skipped"
+                                     ,key)
+                             forms)
+                       (throw 'skip 'local))
+                      ((and cmacs--keymaps states)
+                       (dolist (keymap cmacs--keymaps)
+                         (push `(,(if cmacs--defer 'evil-define-key 'evil-define-key*)
+                                 ',states ,keymap ,key ,def)
+                               forms)))
+                      (states
+                       (dolist (state states)
+                         (push `(define-key
+                                  ,(intern (format "evil-%s-state-%smap" state (if cmacs--local "local-" "")))
+                                  ,key ,def)
+                               forms)))
+                      (cmacs--keymaps
+                       (dolist (keymap cmacs--keymaps)
+                         (push `(define-key ,keymap ,key ,def) forms)))
+                      (t
+                       (push `(,(if cmacs--local 'local-set-key 'global-set-key) ,key ,def)
+                             forms))))
+            (setq states '()
+                  cmacs--local nil
+                  desc nil)))
 
-    (t (user-error "Invalid key %s" key))))
-     `(progn ,@(nreverse forms)))))
- (eval-and-compile
-   (defun cmacs--resolve-hook-forms (hooks)
-     (cl-loop with quoted-p = (eq (car-safe hooks) 'quote)
-              for hook in (cmacs-enlist (doom-unquote hooks))
-              if (eq (car-safe hook) 'quote)
-               collect (cadr hook)
-              else if quoted-p
-               collect hook
-              else collect (intern (format "%s-hook" (symbol-name hook)))))
+         (t (user-error "Invalid key %s" key))))
+      `(progn ,@(nreverse forms)))))
+(eval-and-compile
+  (defun cmacs--resolve-hook-forms (hooks)
+    (cl-loop with quoted-p = (eq (car-safe hooks) 'quote)
+             for hook in (cmacs-enlist (doom-unquote hooks))
+             if (eq (car-safe hook) 'quote)
+             collect (cadr hook)
+             else if quoted-p
+             collect hook
+             else collect (intern (format "%s-hook" (symbol-name hook)))))
 
-   (defvar cmacs--transient-counter 0)
-   (defmacro add-transient-hook! (hook &rest forms)
-     "Attaches transient forms to a HOOK.
+  (defvar cmacs--transient-counter 0)
+  (defmacro add-transient-hook! (hook &rest forms)
+    "Attaches transient forms to a HOOK.
 
    HOOK can be a quoted hook or a sharp-quoted function (which will be advised).
 
    These forms will be evaluated once when that function/hook is first invoked,
    then it detaches itself."
-     (declare (indent 1))
-     (let ((append (eq (car forms) :after))
-           (fn (intern (format "cmacs-transient-hook-%s" (cl-incf cmacs--transient-counter)))))
-       `(when ,hook
-          (fset ',fn
-        (lambda (&rest _)
-                  ,@forms
-                  (cond ((functionp ,hook) (advice-remove ,hook #',fn))
-            ((symbolp ,hook)   (remove-hook ,hook #',fn)))
-                  (unintern ',fn nil)))
-          (cond ((functionp ,hook)
-                 (advice-add ,hook ,(if append :after :before) #',fn))
-        ((symbolp ,hook)
-                 (add-hook ,hook #',fn ,append)))))))
+    (declare (indent 1))
+    (let ((append (eq (car forms) :after))
+          (fn (intern (format "cmacs-transient-hook-%s" (cl-incf cmacs--transient-counter)))))
+      `(when ,hook
+         (fset ',fn
+               (lambda (&rest _)
+                 ,@forms
+                 (cond ((functionp ,hook) (advice-remove ,hook #',fn))
+                       ((symbolp ,hook)   (remove-hook ,hook #',fn)))
+                 (unintern ',fn nil)))
+         (cond ((functionp ,hook)
+                (advice-add ,hook ,(if append :after :before) #',fn))
+               ((symbolp ,hook)
+                (add-hook ,hook #',fn ,append)))))))
 
- (defmacro add-hook! (&rest args)
-   "A convenience macro for `add-hook'. Takes, in order:
+(defmacro add-hook! (&rest args)
+  "A convenience macro for `add-hook'. Takes, in order:
 
    1. Optional properties :local and/or :append, which will make the hook
       buffer-local or append to the list of hooks (respectively),
@@ -1012,86 +1024,86 @@ compilation."
 
  Body forms can access the hook's arguments through the let-bound variable
  `args'."
-   (declare (indent defun) (debug t))
-   (let ((hook-fn 'add-hook)
-         append-p local-p)
-     (while (keywordp (car args))
-       (pcase (pop args)
-         (:append (setq append-p t))
-         (:local  (setq local-p t))
-         (:remove (setq hook-fn 'remove-hook))))
-     (let ((hooks (cmacs--resolve-hook-forms (pop args)))
-           (funcs
-            (let ((val (car args)))
-              (if (memq (car-safe val) '(quote function))
-                  (if (cdr-safe (cadr val))
-                      (cadr val)
-                    (list (cadr val)))
-        (list args))))
-           forms)
-       (dolist (fn funcs)
-         (setq fn (if (symbolp fn)
-                      `(function ,fn)
-                    `(lambda (&rest _) ,@args)))
-         (dolist (hook hooks)
-           (push (cond ((eq hook-fn 'remove-hook)
-            `(remove-hook ',hook ,fn ,local-p))
-                       (t
-            `(add-hook ',hook ,fn ,append-p ,local-p)))
-                 forms)))
-       `(progn ,@(nreverse forms)))))
+  (declare (indent defun) (debug t))
+  (let ((hook-fn 'add-hook)
+        append-p local-p)
+    (while (keywordp (car args))
+      (pcase (pop args)
+        (:append (setq append-p t))
+        (:local  (setq local-p t))
+        (:remove (setq hook-fn 'remove-hook))))
+    (let ((hooks (cmacs--resolve-hook-forms (pop args)))
+          (funcs
+           (let ((val (car args)))
+             (if (memq (car-safe val) '(quote function))
+                 (if (cdr-safe (cadr val))
+                     (cadr val)
+                   (list (cadr val)))
+               (list args))))
+          forms)
+      (dolist (fn funcs)
+        (setq fn (if (symbolp fn)
+                     `(function ,fn)
+                   `(lambda (&rest _) ,@args)))
+        (dolist (hook hooks)
+          (push (cond ((eq hook-fn 'remove-hook)
+                       `(remove-hook ',hook ,fn ,local-p))
+                      (t
+                       `(add-hook ',hook ,fn ,append-p ,local-p)))
+                forms)))
+      `(progn ,@(nreverse forms)))))
 
- (defmacro remove-hook! (&rest args)
-   "Convenience macro for `remove-hook'. Takes the same arguments as
+(defmacro remove-hook! (&rest args)
+  "Convenience macro for `remove-hook'. Takes the same arguments as
  `add-hook!'."
-   `(add-hook! :remove ,@args))
- (defmacro quiet! (&rest forms)
-   "Run FORMS without making any noise."
-   `(if nil
-    (progn ,@forms)
-      (fset 'doom--old-write-region-fn (symbol-function 'write-region))
-      (cl-letf ((standard-output (lambda (&rest _)))
-        ((symbol-function 'load-file) (lambda (file) (load file nil t)))
-        ((symbol-function 'message) (lambda (&rest _)))
-        ((symbol-function 'write-region)
-                 (lambda (start end filename &optional append visit lockname mustbenew)
-                   (unless visit (setq visit 'no-message))
-                   (doom--old-write-region-fn
-                    start end filename append visit lockname mustbenew)))
-        (inhibit-message t)
-        (save-silently t))
-    ,@forms)))
- (defvar doom-memoized-table (make-hash-table :test 'equal :size 10)
-   "A lookup table containing memoized functions. The keys are argument lists,
+  `(add-hook! :remove ,@args))
+(defmacro quiet! (&rest forms)
+  "Run FORMS without making any noise."
+  `(if nil
+       (progn ,@forms)
+     (fset 'doom--old-write-region-fn (symbol-function 'write-region))
+     (cl-letf ((standard-output (lambda (&rest _)))
+               ((symbol-function 'load-file) (lambda (file) (load file nil t)))
+               ((symbol-function 'message) (lambda (&rest _)))
+               ((symbol-function 'write-region)
+                (lambda (start end filename &optional append visit lockname mustbenew)
+                  (unless visit (setq visit 'no-message))
+                  (doom--old-write-region-fn
+                   start end filename append visit lockname mustbenew)))
+               (inhibit-message t)
+               (save-silently t))
+       ,@forms)))
+(defvar doom-memoized-table (make-hash-table :test 'equal :size 10)
+  "A lookup table containing memoized functions. The keys are argument lists,
  and the value is the function's return value.")
 
- (defun doom-memoize (name)
-   "Memoizes an existing function. NAME is a symbol."
-   (let ((func (symbol-function name)))
-     (put name 'function-documentation
-          (concat (documentation func) " (memoized)"))
-     (fset name
-           `(lambda (&rest args)
-              (let ((key (cons ',name args)))
-        (or (gethash key doom-memoized-table)
-                    (puthash key (apply ',func args)
-                             doom-memoized-table)))))))
+(defun doom-memoize (name)
+  "Memoizes an existing function. NAME is a symbol."
+  (let ((func (symbol-function name)))
+    (put name 'function-documentation
+         (concat (documentation func) " (memoized)"))
+    (fset name
+          `(lambda (&rest args)
+             (let ((key (cons ',name args)))
+               (or (gethash key doom-memoized-table)
+                   (puthash key (apply ',func args)
+                            doom-memoized-table)))))))
 
- (defmacro def-memoized! (name arglist &rest body)
-   "Create a memoize'd function. NAME, ARGLIST, DOCSTRING and BODY
+(defmacro def-memoized! (name arglist &rest body)
+  "Create a memoize'd function. NAME, ARGLIST, DOCSTRING and BODY
  have the same meaning as in `defun'."
-   (declare (indent defun) (doc-string 3))
-   `(,(if (bound-and-true-p byte-compile-current-file)
-          'with-no-warnings
-    'progn)
-      (defun ,name ,arglist ,@body)
-      (doom-memoize ',name)))
+  (declare (indent defun) (doc-string 3))
+  `(,(if (bound-and-true-p byte-compile-current-file)
+         'with-no-warnings
+       'progn)
+    (defun ,name ,arglist ,@body)
+    (doom-memoize ',name)))
 
 
- (defmacro λ! (&rest body)
-   "A shortcut for inline interactive lambdas."
-   (declare (doc-string 1))
-   `(lambda () (interactive) ,@body))
+(defmacro λ! (&rest body)
+  "A shortcut for inline interactive lambdas."
+  (declare (doc-string 1))
+  `(lambda () (interactive) ,@body))
 
 
 (defmacro find-file-in! (path &optional project-p)
@@ -1103,43 +1115,43 @@ compilation."
               (command-remapping 'projectile-find-file)
             (command-remapping 'find-file))))))
 
- (defun doom-quit-p (&optional prompt)
-   "Return t if this session should be killed. Prompts the user for
+(defun doom-quit-p (&optional prompt)
+  "Return t if this session should be killed. Prompts the user for
  confirmation."
- (or (yes-or-no-p (format "››› %s" (or prompt "Quit Emacs?")))
-     (ignore (message "Aborted"))))
- (setq confirm-kill-emacs nil)
- (add-hook 'kill-emacs-query-functions #'doom-quit-p)
- (defvar +doom-quit-messages
-   '(;; from Doom 1
-     "Let's beat it -- This is turning into a bloodbath!"
-     "I wouldn't leave if I were you. DOS is much worse."
-     "Ya know, next time you come in here I'm gonna toast ya."
-     "Go ahead and leave. See if I care."
-     "Are you sure you want to quit this great editor?"
-     ;; Custom
-     "Emacs! Emacs!! Emacs!!!"
-     "The King is dead, long live the King!"
-     "Like you have somewhere better to be..."
-     "Don't worry, I won't tell everyone you're a failure"
-     "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"
-     "(setq nothing t everything 'permitted)"
-     "Emacs will remember that."
-     "Emacs, Emacs never changes."
-     "Hey! Hey, M-x listen!"
-     "Okay, look. We've both said a lot of things you're going to regret..."
-     "You are *not* prepared!")
-   "A list of quit messages, picked randomly by `+doom-quit'. Taken from
+  (or (yes-or-no-p (format "››› %s" (or prompt "Quit Emacs?")))
+      (ignore (message "Aborted"))))
+(setq confirm-kill-emacs nil)
+(add-hook 'kill-emacs-query-functions #'doom-quit-p)
+(defvar +doom-quit-messages
+  '(;; from Doom 1
+    "Let's beat it -- This is turning into a bloodbath!"
+    "I wouldn't leave if I were you. DOS is much worse."
+    "Ya know, next time you come in here I'm gonna toast ya."
+    "Go ahead and leave. See if I care."
+    "Are you sure you want to quit this great editor?"
+    ;; Custom
+    "Emacs! Emacs!! Emacs!!!"
+    "The King is dead, long live the King!"
+    "Like you have somewhere better to be..."
+    "Don't worry, I won't tell everyone you're a failure"
+    "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"
+    "(setq nothing t everything 'permitted)"
+    "Emacs will remember that."
+    "Emacs, Emacs never changes."
+    "Hey! Hey, M-x listen!"
+    "Okay, look. We've both said a lot of things you're going to regret..."
+    "You are *not* prepared!")
+  "A list of quit messages, picked randomly by `+doom-quit'. Taken from
  http://doom.wikia.com/wiki/Quit_messages and elsewhere.")
 
- (defun +doom|quit (&rest _)
-   (doom-quit-p
-    (format "%s  Quit?"
-            (nth (random (length +doom-quit-messages))
-                 +doom-quit-messages))))
+(defun +doom|quit (&rest _)
+  (doom-quit-p
+   (format "%s  Quit?"
+           (nth (random (length +doom-quit-messages))
+                +doom-quit-messages))))
 
- (remove-hook 'kill-emacs-query-functions #'doom-quit-p)
- (add-hook 'kill-emacs-query-functions #'+doom|quit)
+(remove-hook 'kill-emacs-query-functions #'doom-quit-p)
+(add-hook 'kill-emacs-query-functions #'+doom|quit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-functions-macros)
