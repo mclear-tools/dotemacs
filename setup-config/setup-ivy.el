@@ -384,16 +384,6 @@
     (setq magit-completing-read-function 'ivy-completing-read)))
 
 
-(use-package counsel-projectile
-  :ensure t
-  :commands (counsel-projectile
-             counsel-projectile-switch-project
-             counsel-projectile-find-file
-             counsel-projectile-find-file-dwim
-             counsel-projectile-find-dir
-             counsel-projectile-switch-to-buffer
-             counsel-projectile-bookmark))
-
 
 ;;;; Mcfly Search
 ;; Pre-fill search keywords
@@ -501,6 +491,8 @@
 ;;;; Supporting Packages
 ;; Enhance M-x
 (use-package amx
+  :hook (ivy-mode . amx-mode)
+  :commands amx-mode
   :config
   (setq amx-history-length 20)
   (setq amx-save-file (concat cpm-cache-dir "amx-items")))
@@ -534,21 +526,28 @@
                                 (t . ivy-prescient-re-builder))))
 
 
-
 ;; Additional key bindings for Ivy
 (use-package ivy-hydra
   :general (:keymaps 'ivy-minibuffer-map
             "M-o"  'ivy-dispatching-done-hydra))
 
-;; Ivy integration for Projectile
-;; (use-package counsel-projectile
-;;   :commands (counsel-projectile-mode)
-;;   :init
-;;   (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))
-;;   (counsel-projectile-mode 1)
-;;   :config
-;;   (setq projectile-known-projects-file
-;;         (concat cpm-cache-dir "projectile-bookmarks.eld")))
+;; Counsel integration for Projectile
+(use-package counsel-projectile
+  :hook (projectile . counsel-projectile-mode)
+  :commands (counsel-projectile-mode
+             counsel-projectile
+             counsel-projectile-switch-project
+             counsel-projectile-find-file
+             counsel-projectile-find-file-dwim
+             counsel-projectile-find-dir
+             counsel-projectile-switch-to-buffer
+             counsel-projectile-bookmark)
+  :init
+  (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))
+  :config
+  (setq projectile-known-projects-file
+        (concat cpm-cache-dir "projectile-bookmarks.eld")))
+
 
 ;; Integrate yasnippet
 (use-package ivy-yasnippet
