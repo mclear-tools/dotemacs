@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "helm-swoop" "20190813.1611" "Efficiently hopping squeezed lines powered by helm interface" '((helm "3.2") (emacs "24.4")) :commit "c5ec1f3acfb07155273c2de021f3521e198e4a9d" :keywords '("helm" "swoop" "inner" "buffer" "search") :authors '(("Shingo Fukuyama - http://fukuyama.co")) :maintainer '("Shingo Fukuyama - http://fukuyama.co") :url "https://github.com/ShingoFukuyama/helm-swoop")

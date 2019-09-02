@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "hercules" "20190820.1712" "An auto-magical, which-key-based hydra banisher." '((emacs "24.4") (which-key "3.3.2")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "aace3409bc4d78fec3006b2906eb2ae99cadd9f4" :keywords '("convenience") :authors '(("Uros Perisic")) :maintainer '("Uros Perisic") :url "https://gitlab.com/jjzmajic/hercules")

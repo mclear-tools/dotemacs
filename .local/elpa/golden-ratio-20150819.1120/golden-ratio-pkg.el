@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "golden-ratio" "20150819.1120" "Automatic resizing of Emacs windows to the golden ratio" 'nil :stars '(#("420" 0 3 (font-lock-face paradox-star-face)) #("283K" 0 4 (value 283478 font-lock-face paradox-download-face))) :commit "72b028808b41d23fa3f7e8c0d23d2c475e7b46ae" :keywords '("window" "resizing") :authors '(("Roman Gonzalez" . "romanandreg@gmail.com")) :maintainer '("Roman Gonzalez" . "romanandreg@gmail.com"))
