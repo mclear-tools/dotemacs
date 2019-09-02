@@ -196,13 +196,14 @@
 (defun cpm/open-agenda-in-workspace ()
   "open agenda in its own perspective"
   (interactive)
-  (eyebrowse-switch-to-window-config-1)
-  (persp-switch "agenda")
-  (setq frame-title-format '("" "%b"))
-  (require 'org-super-agenda)
-  (cpm/jump-to-org-super-agenda)
-  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Agenda")
-  (persp-add-buffer "*Org Agenda*"))
+  (if (get-buffer "*Org Agenda*")
+      (persp-switch "agenda")
+    (eyebrowse-switch-to-window-config-1)
+    (persp-switch "agenda")
+    (setq frame-title-format '("" "%b"))
+    (require 'org-super-agenda)
+    (cpm/jump-to-org-super-agenda)
+    (persp-add-buffer "*Org Agenda*")))
 
 (general-define-key
  :states '(insert normal motion emacs)
@@ -213,20 +214,21 @@
 (defun cpm/open-emacsd-in-workspace ()
   "open emacsd in its own perspective"
   (interactive)
-  (eyebrowse-switch-to-window-config-1)
-  (persp-switch "emacs.d")
-  (setq frame-title-format
-        '(""
-          "%b"
-          (:eval
-           (let ((project-name (projectile-project-name)))
-             (unless (string= "-" project-name)
-               (format " in [%s]" project-name))))))
-  (require 'crux)
-  (crux-find-user-init-file)
-  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) "Emacs.d")
-  (require 'magit)
-  (magit-status-setup-buffer))
+  (if (get-buffer "init.el")
+      (persp-switch "emacs.d")
+    (eyebrowse-switch-to-window-config-1)
+    (persp-switch "emacs.d")
+    (setq frame-title-format
+          '(""
+            "%b"
+            (:eval
+             (let ((project-name (projectile-project-name)))
+               (unless (string= "-" project-name)
+                 (format " in [%s]" project-name))))))
+    (require 'crux)
+    (crux-find-user-init-file)
+    (require 'magit)
+    (magit-status-setup-buffer)))
 
 (general-define-key
  :states '(insert normal motion emacs)
