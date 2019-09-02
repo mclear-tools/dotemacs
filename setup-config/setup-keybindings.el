@@ -408,25 +408,26 @@
 
    "s" '(:ignore t :which-key "Search")
    "sa" 'helm-org-rifle-agenda-files
-   "sd" 'cpm/helm-files-search-current-directory ; search current buffer's directory
-   "sD" 'cpm/helm-files-do-ag ; search with directory input
-   "sb" 'counsel-ag
+   "sd" 'counsel-ag ; search current buffer's directory
+   "sD" #'cpm/counsel-search-in-input-dir ; search with directory input
+   "sb" 'swiper-all
    ;; "sb" 'helm-ag-buffers
    "sf" 'helm-do-ag-this-file
    "sj" 'cpm/forward-or-backward-sexp
-   "sk" 'helm-show-kill-ring
+   "sk" 'counsel-yank-pop
+   ;; "sk" 'helm-show-kill-ring
    "sl" 'cpm/helm-list-search-buffers
-   "so" #'cpm/swiper
+   ;; "sm" 'swiper-mc
+   "so" #'ivy-occur
    ;; "so" 'helm-occur
-   "sp" 'helm-ag-project-root
+   "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
-   "ss" #'cpm/swiper
+   "ss" #'cpm/swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
    "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
    "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
-   "/"  'cpm/helm-files-search-current-directory   ;; search in directory with word prompt
    )
 
 ;;; Toggle Keybindings
