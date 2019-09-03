@@ -106,6 +106,8 @@ Argument BUFFER."
    :poshandler helm-posframe-poshandler
    :width (or helm-posframe-width (+ (window-width) 2))
    :height (or helm-posframe-height helm-display-buffer-height)
+   :background-color (face-attribute 'ivy-posframe :background nil t)
+   :foreground-color (face-attribute 'ivy-posframe :foreground nil t)
    :min-height 10
    :min-width 50
    :font helm-posframe-font
