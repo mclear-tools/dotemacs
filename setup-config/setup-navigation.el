@@ -24,6 +24,11 @@
   (setq save-place-file (concat cpm-cache-dir "saved-places"))
   (setq save-place-forget-unreadable-files nil))
 
+;;; Go To Change
+(use-package goto-chg
+  :ensure t
+  :commands goto-last-change goto-last-change-reverse)
+
 ;; ;;; Treemacs
 (use-package treemacs
   :ensure t
