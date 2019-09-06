@@ -76,13 +76,7 @@
    "p"
    `(lambda (&rest ignore)
       (eyebrowse-create-window-config)
-      (persp-switch (let ((temp-charset "1234567890abcdefghijklmnopqrstuvwxyz")
-                          (random-string ""))
-                      (dotimes (i 6 random-string)
-                        (setq random-string
-                              (concat
-                               random-string
-                               (char-to-string (elt temp-charset (random (length temp-charset)))))))))
+      (persp-switch "new-persp")
       (projectile-switch-project-by-name ,el)
       ;; (helm-projectile-switch-project ,el)
       (setq frame-title-format
@@ -92,24 +86,20 @@
                (let ((project-name (projectile-project-name)))
                  (unless (string= "-" project-name)
                    (format " in [%s]" project-name))))))
-      (let ((project-name (projectile-project-name)))
-        (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) project-name)
-        (persp-rename project-name)
-        (persp-kill "main")
-        (kill-matching-buffers "\*scratch\*" nil t)
-        (persp-add-buffer (generate-new-buffer (concat "*scratch* " "("project-name")"))))
-      (magit-status))
+      (require 'magit)
+      (magit-status)
+      (persp-rename (projectile-project-name)))
    (abbreviate-file-name el)))
 
 ;; functions to call dashboard when it kas been killed or not loaded
 (defun cpm/dashboard ()
- "load dashboard and swith to buffer"
-(interactive)
-(let ((buffer "*dashboard*"))
-  (when (not (get-buffer buffer))
-    (dashboard-insert-startupify-lists))
-  (switch-to-buffer buffer))
-(delete-other-windows))
+  "load dashboard and swith to buffer"
+  (interactive)
+  (let ((buffer "*dashboard*"))
+    (when (not (get-buffer buffer))
+      (dashboard-insert-startupify-lists))
+    (switch-to-buffer buffer))
+  (delete-other-windows))
 
 (defun goto-dashboard ()
   "goto the dashboard"
