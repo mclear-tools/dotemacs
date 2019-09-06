@@ -63,7 +63,10 @@
     (load-file user-init-file)
     (delete-other-windows)))
 
-;;;; Goto Config Files
+;;;; Goto Files
+(defun cpm/goto-journal ()
+  (interactive)
+  (find-file (concat org-directory "journal.org")))
 (defun goto-early-init.el ()
   "Open early-init.el file"
   (interactive)
@@ -106,18 +109,19 @@
   (find-file "~/.pandoc/metadata.yml"))
 
 
+;;;; Formatted Copy
 (defun formatted-copy ()
-"Export region to HTML, and copy it to the clipboard."
-(interactive)
-(save-window-excursion
-  (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
-         (html (with-current-buffer buf (buffer-string))))
-    (with-current-buffer buf
-      (shell-command-on-region
-       (point-min)
-       (point-max)
-       "textutil -stdin -format html -convert rtf -stdout | pbcopy"))
-    (kill-buffer buf))))
+  "Export region to HTML, and copy it to the clipboard."
+  (interactive)
+  (save-window-excursion
+    (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           (html (with-current-buffer buf (buffer-string))))
+      (with-current-buffer buf
+        (shell-command-on-region
+         (point-min)
+         (point-max)
+         "textutil -stdin -format html -convert rtf -stdout | pbcopy"))
+      (kill-buffer buf))))
 
 (global-set-key (kbd "H-w") 'formatted-copy)
 
@@ -254,9 +258,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
-  (defun cpm/goto-journal ()
-    (interactive)
-    (find-file "/Users/Roambot/Dropbox/org-files/journal.org"))
+
+;;;; Insert seconds
 (defun cpm/insert-seconds-epoch ()
   (interactive)
   (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
@@ -313,12 +316,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;;;; Narrow/Widen
 (defun cpm/narrow-or-widen-dwim (p)
   "Widen if buffer is narrowed, narrow-dwim otherwise.
-Dwim means: region, org-src-block, org-subtree, or
-defun, whichever applies first. Narrowing to
-org-src-block actually calls `org-edit-src-code'.
+  Dwim means: region, org-src-block, org-subtree, or
+  defun, whichever applies first. Narrowing to
+  org-src-block actually calls `org-edit-src-code'.
 
-With prefix P, don't widen, just narrow even if buffer
-is already narrowed."
+  With prefix P, don't widen, just narrow even if buffer
+  is already narrowed."
   (interactive "P")
   (declare (interactive-only))
   (cond ((and (buffer-narrowed-p) (not p)) (widen))
@@ -510,8 +513,8 @@ is already narrowed."
 ;; from magnars modified by ffevotte for dedicated windows support
 (defun cpm/rotate-windows (count)
   "Rotate your windows.
-Dedicated windows are left untouched. Giving a negative prefix
-argument takes the kindows rotate backwards."
+  Dedicated windows are left untouched. Giving a negative prefix
+  argument takes the kindows rotate backwards."
   (interactive "p")
   (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
          (num-windows (length non-dedicated-windows))
@@ -573,7 +576,7 @@ argument takes the kindows rotate backwards."
   )
 (defun has-space-at-boundary-p (string)
   "Check whether STRING has any whitespace on the boundary.
-Return 'left, 'right, 'both or nil."
+  Return 'left, 'right, 'both or nil."
   (let ((result nil))
     (when (string-match-p "^[[:space:]]+" string)
       (setq result 'left))
@@ -585,7 +588,7 @@ Return 'left, 'right, 'both or nil."
 
 (defun is-there-space-around-point-p ()
   "Check whether there is whitespace around point.
-Return 'left, 'right, 'both or nil."
+  Return 'left, 'right, 'both or nil."
   (let ((result nil))
     (when (< (save-excursion
                (skip-chars-backward "[:space:]"))
@@ -743,7 +746,7 @@ Return 'left, 'right, 'both or nil."
 ;;; Doom Functions & Macros
 (defmacro after! (feature &rest forms)
   "A smart wrapper around `with-eval-after-load'. Supresses warnings during
-compilation."
+  compilation."
   (declare (indent defun) (debug t))
   `(,(if (or (not (bound-and-true-p byte-compile-current-file))
              (if (symbolp feature)
@@ -796,9 +799,9 @@ compilation."
   (defun cmacs--keybind-register (key desc &optional modes)
     "Register a description for KEY with `which-key' in MODES.
 
-   KEYS should be a string in kbd format.
-   DESC should be a string describing what KEY does.
-   MODES should be a list of major mode symbols."
+  KEYS should be a string in kbd format.
+  DESC should be a string describing what KEY does.
+  MODES should be a list of major mode symbols."
     (if modes
         (dolist (mode modes)
           (which-key-add-major-mode-key-based-replacements mode key desc))
@@ -807,8 +810,8 @@ compilation."
   (defun cmacs--keyword-to-states (keyword)
     "Convert a KEYWORD into a list of evil state symbols.
 
- For example, :nvi will map to (list 'normal 'visual 'insert). See
- `cmacs-evil-state-alist' to customize this."
+  For example, :nvi will map to (list 'normal 'visual 'insert). See
+  `cmacs-evil-state-alist' to customize this."
     (cl-loop for l across (substring (symbol-name keyword) 1)
              if (cdr (assq l cmacs-evil-state-alist))
              collect it
@@ -817,53 +820,53 @@ compilation."
 
   (defmacro map! (&rest rest)
     "A nightmare of a key-binding macro that will use `evil-define-key*',
- `define-key', `local-set-key' and `global-set-key' depending on context and
- plist key flags (and whether evil is loaded or not). It was designed to make
- binding multiple keys more concise, like in vim.
+  `define-key', `local-set-key' and `global-set-key' depending on context and
+  plist key flags (and whether evil is loaded or not). It was designed to make
+  binding multiple keys more concise, like in vim.
 
- If evil isn't loaded, it will ignore evil-specific bindings.
+  If evil isn't loaded, it will ignore evil-specific bindings.
 
- States
-     :n  normal
-     :v  visual
-     :i  insert
-     :e  emacs
-     :o  operator
-     :m  motion
-     :r  replace
+  States
+  :n  normal
+  :v  visual
+  :i  insert
+  :e  emacs
+  :o  operator
+  :m  motion
+  :r  replace
 
-     These can be combined (order doesn't matter), e.g. :nvi will apply to
-     normal, visual and insert mode. The state resets after the following
-     key=>def pair.
+  These can be combined (order doesn't matter), e.g. :nvi will apply to
+  normal, visual and insert mode. The state resets after the following
+  key=>def pair.
 
-     If states are omitted the keybind will be global.
+  If states are omitted the keybind will be global.
 
-     This can be customized with `cmacs-evil-state-alist'.
+  This can be customized with `cmacs-evil-state-alist'.
 
-     :textobj is a special state that takes a key and two commands, one for the
-     inner binding, another for the outer.
+  :textobj is a special state that takes a key and two commands, one for the
+  inner binding, another for the outer.
 
- Flags
-     (:mode [MODE(s)] [...])    inner keybinds are applied to major MODE(s)
-     (:map [KEYMAP(s)] [...])   inner keybinds are applied to KEYMAP(S)
-     (:map* [KEYMAP(s)] [...])  same as :map, but deferred
-     (:prefix [PREFIX] [...])   assign prefix to all inner keybindings
-     (:after [FEATURE] [...])   apply keybinds when [FEATURE] loads
-     (:local [...])             make bindings buffer local; incompatible with keymaps!
+  Flags
+  (:mode [MODE(s)] [...])    inner keybinds are applied to major MODE(s)
+  (:map [KEYMAP(s)] [...])   inner keybinds are applied to KEYMAP(S)
+  (:map* [KEYMAP(s)] [...])  same as :map, but deferred
+  (:prefix [PREFIX] [...])   assign prefix to all inner keybindings
+  (:after [FEATURE] [...])   apply keybinds when [FEATURE] loads
+  (:local [...])             make bindings buffer local; incompatible with keymaps!
 
- Conditional keybinds
-     (:when [CONDITION] [...])
-     (:unless [CONDITION] [...])
+  Conditional keybinds
+  (:when [CONDITION] [...])
+  (:unless [CONDITION] [...])
 
- Example
-     (map! :map magit-mode-map
-           :m \"C-r\" 'do-something           ; assign C-r in motion state
-           :nv \"q\" 'magit-mode-quit-window  ; assign to 'q' in normal and visual states
-           \"C-x C-r\" 'a-global-keybind
+  Example
+  (map! :map magit-mode-map
+        :m \"C-r\" 'do-something           ; assign C-r in motion state
+        :nv \"q\" 'magit-mode-quit-window  ; assign to 'q' in normal and visual states
+        \"C-x C-r\" 'a-global-keybind
 
-           (:when IS-MAC
-            :n \"M-s\" 'some-fn
-            :i \"M-o\" (lambda (interactive) (message \"Hi\"))))"
+        (:when IS-MAC
+         :n \"M-s\" 'some-fn
+         :i \"M-o\" (lambda (interactive) (message \"Hi\"))))"
     (let ((cmacs--keymaps cmacs--keymaps)
           (cmacs--prefix  cmacs--prefix)
           (cmacs--defer   cmacs--defer)
@@ -943,9 +946,9 @@ compilation."
                 (cond ((and cmacs--local cmacs--keymaps)
                        (push `(lwarn 'cmacs-map :warning
                                      "Can't local bind '%s' key to a keymap; skipped"
-                                     ,key)
-                             forms)
-                       (throw 'skip 'local))
+  ,key)
+        forms)
+  (throw 'skip 'local))
                       ((and cmacs--keymaps states)
                        (dolist (keymap cmacs--keymaps)
                          (push `(,(if cmacs--defer 'evil-define-key 'evil-define-key*)

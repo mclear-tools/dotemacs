@@ -340,31 +340,21 @@
    "pa"  'projectile-toggle-between-implementation-and-test
    "pb"  'counsel-projectile-switch-to-buffer
    "pc"  'projectile-compile-project
-   "pC"  'desktop+-create
    "pd"  'counsel-projectile-find-dir
-   "pD"  'cpm/hydra-desktop
-   ;; "pD"  'projectile-dired
+   "pD"  'projectile-dired
    "pf"  'counsel-projectile-find-file
    "pF"  #'cpm/counsel-projectile-find-file-other-window
    "pg"  'cpm/goto-projects
    "ph"  'counsel-projectile
-   "pJ"  'bmkp-desktop-jump
+   "pJ"  'counsel-bookmark
    "pG"  'projectile-regenerate-tags
    "pI"  'projectile-invalidate-cache
    "pk"  'projectile-kill-buffers
    "po"  #'cpm/open-project-and-workspace
-   ;; "po" #'cpm/open-project-and-frame
-   ;; "pl"  'desktop+-load
-   ;; "po"  'projectile-multi-occur
    "pp"  'counsel-projectile-switch-project
-   "pP"  'projectile-persp-switch-project
-   ;; "pp"  'counsel-persp-projectile-switch-project
-   "pr"  'counsel-projectile-recentf
+   "pr"  'counsel-recentf
    "pR"  'projectile-replace
-   "ps" 'counsel-projectile-switch-project
-   ;; "pS"  'persp-switch
-   ;; "ps"  '(:ignore t :which-key "Frames")
-   ;; "pss"  'nameframe-switch-frame
+   "ps"  #'counsel-projectile-rg
    ;; "ps1" #'cpm/load-phil101
    ;; "ps2" #'cpm/load-phil232
    ;; "ps5" #'cpm/load-phil105
@@ -381,7 +371,6 @@
    ;; "psz" #'cpm/load-zettelkasten
    ;; "pt"  #'org-projectile-helm-template-or-project
    "pT"  'projectile-find-test-file
-   "pv"  'hydra-persp/body
    "pV"  'projectile-vc
    "py"  'projectile-find-tag
    )
@@ -423,7 +412,7 @@
    "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
-   "ss" #'cpm/swiper ;; search with swiper in file
+   "ss" #'counsel-grep-or-swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
    "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
@@ -571,62 +560,6 @@
    "w_" 'cpm/split-window-below-and-focus
    )
 
-;;; Wiki Keybindings
-  (general-define-key
-   :states '(normal motion visual insert emacs)
-   :keymaps 'override
-   :prefix "SPC"
-   :non-normal-prefix "C-SPC"
-
-   "W" '(:ignore t :which-key "Wiki")
-   ;; Keys in visualize mode
-   "Wp" 'org-brain-add-parent
-   "WP" 'org-brain-remove-parent
-   "Wc" 'org-brain-add-child
-   "WC" 'org-brain-remove-child
-   "Wh" 'org-brain-new-child
-   "Wn" 'org-brain-pin
-   "Wt" 'org-brain-set-title
-   "Wj" 'forward-button
-   "Wk" 'backward-button
-   "Wo" 'org-brain-goto-current
-   "WO" 'org-brain-goto
-   "Wv" 'org-brain-visualize
-   "Wf" 'org-brain-add-friendship
-   "WF" 'org-brain-remove-friendship
-   "Wd" 'org-brain-delete-entry
-   "Wl" 'org-brain-add-resource
-   "Wa" 'org-brain-visualize-attach
-   "WA" 'org-brain-archive
-   "Wb" 'org-brain-visualize-back
-   "W\C-y" 'org-brain-visualize-paste-resource
-   "WT" 'org-brain-set-tags
-   "Wq" 'org-brain-visualize-quit
-   "Wr" 'org-brain-visualize-random
-   "WR" 'org-brain-visualize-wander
-   "Wm" 'org-brain-visualize-mind-map
-   "W+" 'org-brain-visualize-add-grandchild
-   "W-" 'org-brain-visualize-remove-grandchild
-   "Wz" 'org-brain-visualize-add-grandparent
-   "WZ" 'org-brain-visualize-remove-grandparent)
-
-
-  ;;   "Wc" 'org-wiki-close
-  ;;   "Wd" 'org-wiki-dired-all
-  ;;   "Wk" 'org-wiki-close
-  ;;   "Wh" 'org-wiki-helm
-  ;;   "WH" 'org-wiki-help
-  ;;   "WI" 'org-wiki-index
-  ;;   "Wi" 'org-wiki-insert
-  ;;   "Wl" 'org-wiki-link
-  ;;   "Wm" 'org-wiki-make-page
-  ;;   "Wv" 'org-wiki-server-toggle
-  ;;   "We" 'org-wiki-export-html
-  ;;   "Wp" 'org-wiki-panel
-  ;;   "Ws" 'org-wiki-search
-  ;;   "Wt" 'org-wiki-header
-  ;; )
-
 ;;; Zettel Keybindings (Notes)
   (general-define-key
    :prefix "SPC"
@@ -749,7 +682,8 @@
 
   ;; end evil keybindings
   )
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; End keybindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-keybindings)

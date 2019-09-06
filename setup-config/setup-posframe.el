@@ -73,8 +73,6 @@
   (setq which-key-posframe-border-width 15)
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-center))
 
-
-
 ;;; Hydra Posframe
 (use-package hydra-posframe
   :ensure t
