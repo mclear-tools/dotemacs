@@ -21,7 +21,7 @@
   (setq ivy-use-selectable-prompt t
         ivy-use-virtual-buffers t    ; Enable bookmarks and recentf
         ivy-height 10  ; Number of result lines to display
-        ivy-count-format "(%d/%d) "
+        ivy-count-format "(%d/%d) " ;; Display count displayed and total
         ivy-on-del-error-function nil
         ivy-initial-inputs-alist nil ; No regexp by default
         )
@@ -210,17 +210,17 @@
           counsel-M-x
           (:columns
            ((ivy-rich-function-icon)
-            (counsel-M-x-transformer (:width 50))
+            (counsel-M-x-transformer (:width 30))
             (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
           counsel-describe-function
           (:columns
            ((ivy-rich-function-icon)
-            (counsel-describe-function-transformer (:width 50))
+            (counsel-describe-function-transformer (:width 30))
             (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
           counsel-describe-variable
           (:columns
            ((ivy-rich-variable-icon)
-            (counsel-describe-variable-transformer (:width 50))
+            (counsel-describe-variable-transformer (:width 30))
             (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face))))
           counsel-apropos
           (:columns
@@ -376,6 +376,9 @@
   (setq counsel-describe-function-function #'helpful-callable)
   (setq counsel-describe-variable-function #'helpful-variable)
   (add-to-list 'ivy-format-functions-alist '(counsel-describe-face . counsel--faces-format-function))
+  ;; Add action to open file literally
+  (ivy-add-actions 'counsel-find-file
+                   `(("l" find-file-literally "Open literally")))
   ;; Integration with `projectile'
   (with-eval-after-load 'projectile
     (setq projectile-completion-system 'ivy))
