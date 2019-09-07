@@ -215,9 +215,9 @@ Lisp function does not specify a special indentation."
 ;;;; YAML
 (use-package yaml-mode
   :commands yaml-mode
+  :mode (("\\.yml$" . yaml-mode)
+         ("\\.yaml$" . yaml-mode))
   :config
-  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
   (add-hook 'yaml-mode-hook (lambda () (run-hooks 'prog-mode-hook))))
 
 ;;;; Plist
