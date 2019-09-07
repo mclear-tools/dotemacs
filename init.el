@@ -283,12 +283,10 @@
 (require 'setup-libraries)
 (require 'setup-keybindings)
 (require 'setup-evil)
-(require 'setup-evil-packages)
 (require 'setup-settings)
 (require 'setup-dired)
 (require 'setup-ivy)
 (require 'setup-helm)
-(require 'setup-helm-packages)
 
 ;;;; Other Modules
 (require 'setup-ui)
