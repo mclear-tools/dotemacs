@@ -50,6 +50,7 @@
    :non-normal-prefix "C-SPC"
 
    "b"  '(:ignore t :which-key "Buffers")
+   "ba" 'counsel-ibuffer
    "bb" 'ivy-switch-buffer
    ;; "bb" 'helm-mini
    "bc" 'cpm/copy-whole-buffer-to-clipboard
@@ -67,7 +68,7 @@
    "bN" 'cpm/new-buffer-new-frame
    "br" 'revert-buffer
    "bR" 'crux-rename-buffer-and-file
-   "bs" 'counsel-switch-buffer
+   "bs" 'counsel-switch-buffer-other-window
    "bt" 'cpm/open-dir-in-iterm
    )
 
@@ -350,7 +351,9 @@
    "pG"  'projectile-regenerate-tags
    "pI"  'projectile-invalidate-cache
    "pk"  'projectile-kill-buffers
-   "po"  #'cpm/open-project-and-workspace
+   "pn"  #'cpm/open-new-buffer-and-workspace
+   "pN"  #'cpm/create-new-project-and-workspace
+   "po"  #'cpm/open-existing-project-and-workspace
    "pp"  'counsel-projectile-switch-project
    "pr"  'counsel-recentf
    "pR"  'projectile-replace

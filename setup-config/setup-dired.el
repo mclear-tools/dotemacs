@@ -1,4 +1,4 @@
-;;;; Dired
+;;; Dired
 ;; I used to use ranger but it was buggy and I can get almost everything I want from
 ;; dired. See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer for
 ;; discussion of how to avoid creating lots of dired buffers.
@@ -19,7 +19,6 @@
   (when sys/macp
     ;; Suppress the warning: `ls does not support --dired'.
     (setq dired-use-ls-dired nil)
-
     (when (executable-find "gls")
       ;; Use GNU ls as `gls' from `coreutils' if available.
       (setq insert-directory-program "gls")))
@@ -28,7 +27,6 @@
             (and (not sys/macp) (executable-find "ls")))
     ;; Using `insert-directory-program'
     (setq ls-lisp-use-insert-directory-program t)
-
     ;; list directories first
     (setq dired-listing-switches "-laFGh1v --group-directories-first"))
 
@@ -137,8 +135,6 @@
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
         peep-dired-max-size 5242880))
 
-
-
 ;;;;   Dired Ranger
 ;; https://github.com/Fuco1/dired-hacks#dired-ranger
 ;; Very helpful way of copying/moving files
@@ -150,6 +146,8 @@
             "s-c"  'dired-ranger-copy
             "s-m"  'dired-ranger-move
             "s-v"  'dired-ranger-paste))
+
+;;; End Dired
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'setup-dired)

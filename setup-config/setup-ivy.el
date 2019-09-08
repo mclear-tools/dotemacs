@@ -24,6 +24,7 @@
         ivy-count-format "(%d/%d) " ;; Display count displayed and total
         ivy-on-del-error-function nil
         ivy-initial-inputs-alist nil ; No regexp by default
+        ivy-wrap t ; wrap candidates
         )
   (defun cpm/ivy-toggle-mark ()
     "Toggle mark for current candidate and move forwards."
@@ -31,6 +32,7 @@
     (if (ivy--marked-p)
         (ivy-unmark)
       (ivy-mark))))
+
 
 ;;;; Ivy-rich
 ;; More friendly display transformer for Ivy

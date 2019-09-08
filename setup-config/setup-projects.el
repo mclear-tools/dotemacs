@@ -1,8 +1,10 @@
 ;; Project Management This project workflow primarily uses a single frame with
 ;; different workspaces, made possible by projectile, persp-mode, and eyebrowse.
-;; Workflow is: open a project (see `cpm/open-project-and-workspace`) and use as many
-;; workspaces (via eyebrowse) as you need in that project See also
-;; https://raw.githubusercontent.com/seagle0128/.emacs.d/master/lisp/init-persp.el
+;; Workflow is: open a project (see `cpm/open-existing-project-and-workspace`) and
+;; use as many workspaces (via eyebrowse) as you need in that project. You can also
+;; create a new buffer in a new perspective using a dummy git project and create a
+;; new project entirely
+;; See also https://raw.githubusercontent.com/seagle0128/.emacs.d/master/lisp/init-persp.el
 ;; and https://github.com/yanghaoxie/emacs.d#workspaces
 
 ;;; Projectile
@@ -235,9 +237,32 @@
  :keymaps 'override
  "s-2" 'cpm/open-emacsd-in-workspace)
 
-;;;; Open New Project in Workspace
-(defun cpm/open-project-and-workspace ()
-  "open a new project as its own perspective"
+;;;; Open New Buffer in Workspace
+;; This function is a bit weird; It creates a new buffer in a new workspace with a
+;; dummy git project to give the isolation of buffers typical with a git project
+;; I'm sure there is a more elegant way to do this but I don't know how :)
+(defun cpm/open-new-buffer-and-workspace ()
+  "open an empty buffer in its own perspective"
+  (interactive)
+  (eyebrowse-switch-to-window-config-1)
+  (persp-switch "new-persp")
+  (let ((cpm-project-temp-dir "/tmp/temp-projects/"))
+    (progn
+      (when (not (file-exists-p cpm-project-temp-dir))
+        (make-directory cpm-project-temp-dir t))
+      (when (not (file-exists-p (concat cpm-project-temp-dir ".git/")))
+        (magit-init cpm-project-temp-dir))
+      (when (not (file-exists-p (concat cpm-project-temp-dir "temp")))
+        (with-temp-buffer (write-file (concat cpm-project-temp-dir "temp")))))
+    (setq default-directory cpm-project-temp-dir)
+    (find-file (concat cpm-project-temp-dir "temp"))
+    (persp-add-buffer "*scratch*")
+    (setq frame-title-format '("" "%b"))))
+
+
+;;;; Open Project in New Workspace
+(defun cpm/open-existing-project-and-workspace ()
+  "open a project as its own perspective"
   (interactive)
   (eyebrowse-switch-to-window-config-1)
   (persp-switch "new-persp")
@@ -253,6 +278,29 @@
   (require 'magit)
   (magit-status-setup-buffer)
   (persp-rename (projectile-project-name)))
+
+;;;; Open & Create New Project in New Workspace
+;; Create a new git project in its own perspective & workspace and create some useful
+;; files
+(defun cpm/create-new-project-and-workspace ()
+  "create & open a project as its own perspective"
+  (interactive)
+  (eyebrowse-switch-to-window-config-1)
+  (persp-switch "new-project")
+  (cpm/git-new-project)
+  (setq frame-title-format
+        '(""
+          "%b"
+          (:eval
+           (let ((project-name (projectile-project-name)))
+             (unless (string= "-" project-name)
+               (format " in [%s]" project-name))))))
+  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
+  (delete-other-windows)
+  (find-file ".gitignore")
+  (find-file "project-todo.org")
+  (magit-status-setup-buffer))
+
 
 ;;;; Eyebrowse & Perspectives
 ;; courtesy of Spacemacs
