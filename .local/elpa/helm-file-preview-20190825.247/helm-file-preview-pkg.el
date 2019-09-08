@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "helm-file-preview" "20190825.247" "Preview the current helm file selection." '((emacs "24.4") (helm "2.0")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "7b332fc3ceb730d054bac464b78e4d6e009ff432" :authors '(("Shen, Jen-Chieh" . "jcs090218@gmail.com")) :maintainer '("Shen, Jen-Chieh" . "jcs090218@gmail.com") :url "https://github.com/jcs090218/helm-file-preview")
