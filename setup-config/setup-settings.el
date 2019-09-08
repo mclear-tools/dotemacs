@@ -6,6 +6,13 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+;;;;; Private File
+;; where to store private or "secret" info
+(let ((private (expand-file-name "private.el" cpm-elisp-dir)))
+  (if (file-exists-p private)
+	  (load-file private)))
+
+
 ;;;;; Text settings
 ;; Make sure your text files end in a newline
 (setq require-final-newline t)

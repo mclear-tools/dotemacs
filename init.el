@@ -227,7 +227,7 @@
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
   (setq paradox-execute-asynchronously nil
-        paradox-github-token t
+        paradox-github-token nil
         ;; Show all possible counts
         paradox-display-download-count t
         paradox-display-star-count t

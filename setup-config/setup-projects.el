@@ -28,7 +28,8 @@
             (dolist (dir projectile-globally-ignored-directories)
               (setq rg-cmd (format "%s --glob '!%s'" rg-cmd dir)))
             (concat "rg -0 --files --color=never --hidden" rg-cmd))))
-  (setq projectile-git-submodule-command nil))
+  (setq projectile-git-submodule-command nil
+        projectile-current-project-on-switch 'move-to-end))
 
 
 ;;; Eyebrowse

@@ -39,3 +39,4 @@ transient*
 /.local/elisp/spacemacs-persp-extra
 /.local/elisp/hercules.el/
 .local/quelpa
+/.local/elisp/private.el
