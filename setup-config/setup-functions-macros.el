@@ -20,6 +20,10 @@
      (setq org-map-continue-from (outline-previous-heading)))
    "/DONE" 'agenda))
 
+;;;; Blank Buffer New Frame
+;; Make a blank buffer when opening a new frame. From
+;; https://stackoverflow.com/a/25792276.
+
 (defun cpm/new-buffer-new-frame ()
   "Create a new frame with a new empty buffer."
   (interactive)
@@ -27,11 +31,20 @@
     (set-buffer-major-mode buffer)
     (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
 
+;;;; Built-in Functions
+;; These are useful built-in functions, but you have to enable them
 (put 'erase-buffer 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+
+;; Not going to use these commands
+(put 'ns-print-buffer 'disabled t)
+(put 'suspend-frame 'disabled t)
+
+;;;; Call an emacs instance
+;; Call an emacs instance for testing
 
 (defun cpm/call-emacs ()
   (interactive)
@@ -39,12 +52,12 @@
                  ;; (executable-find "/usr/local/bin/emacs")))
                  (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
 
+;;;; Clipboard to/from Buffer
 ;; http://stackoverflow.com/a/10216338/4869
 (defun cpm/copy-whole-buffer-to-clipboard ()
   "Copy entire buffer to clipboard"
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max)))
-
 
 (defun cpm/copy-clipboard-to-whole-buffer ()
   "Copy clipboard and replace buffer"
@@ -52,16 +65,6 @@
   (delete-region (point-min) (point-max))
   (clipboard-yank)
   (deactivate-mark))
-(defun cpm/tangle-commit-load ()
-  (interactive)
-  (save-excursion
-    (widen)
-    (save-buffer)
-    (org-babel-tangle)
-    (magit-stage-modified)
-    (magit-commit-create)
-    (load-file user-init-file)
-    (delete-other-windows)))
 
 ;;;; Goto Files
 (defun cpm/goto-journal ()
@@ -170,7 +173,9 @@ Version 2016-06-19"
           (progn (previous-buffer)
                  (setq i (1+ i)))
         (progn (setq i 100))))))
-  ;; from magnars
+
+;;;; Delete Current File
+;; from magnars
 
 (defun cpm/delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
@@ -185,9 +190,14 @@ Version 2016-06-19"
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
+;;;; Duplicate file
+;; Duplicate a file in dired or deer
 (defun cpm/duplicate-file ()
   (interactive)
   (dired-do-copy-regexp "\\(.*\\)\\.\\(.*\\)" "\\1 (copy).\\2"))
+
+;;;; Ediff Hydra
+;; From the hydra wiki https://github.com/abo-abo/hydra/wiki/Emacs#ediff
 
 (with-eval-after-load 'ediff
   (defhydra hydra-ediff (:color blue :hint nil)
@@ -210,6 +220,10 @@ _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
 ;; esc quits
 
 ;;;; Quit All the Things!
+;; From a great vim migration guide by Juanjo Álvarez
+;; https://juanjoalvarez.net/en/detail/2014/sep/19/vim-emacsevil-chaotic-migration-guide/
+;; (original code from davvil) https://github.com/davvil/.emacs.d/blob/master/init.el
+
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
 In Delete Selection mode, if the mark is active, just deactivate it;
@@ -228,6 +242,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 (global-set-key [escape] 'evil-exit-emacs-state))
+
+;;;; Eval emacs buffer until error
 
 (defun cpm/eval-buffer-until-error ()
   "Evaluate emacs buffer until error occured."
@@ -278,11 +294,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; resume last jump
 (defun cpm/resume-last-jump ()
   (interactive)
-    (cond
-     ((eq major-mode 'org-mode)
-      (call-interactively 'ivy-resume))
-     (t
-      (call-interactively 'helm-resume))))
+  (cond
+   ((eq major-mode 'org-mode)
+    (call-interactively 'ivy-resume))
+   (t
+    (call-interactively 'helm-resume))))
+
+;;;; Jump to sexp
+
 (defun cpm/forward-or-backward-sexp (&optional arg)
   "Go to the matching parenthesis character if one is adjacent to point."
   (interactive "^p")
@@ -291,18 +310,32 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         ;; Now, try to succeed from inside of a bracket
         ((looking-at "\\s)") (forward-char) (backward-sexp arg))
         ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
-  (defun cpm/kill-this-buffer ()
-    (interactive)
-    (kill-buffer))
+
+;;;; Kill Current Buffer
+;; (kill-this-buffer) is unreliable when not invoked from the menubar. So here's a
+;; wrapper on (kill-buffer) to kill the current buffer. This is sometimes better
+;; than (evil-delete-buffer) since it keeps the window.
+
+(defun cpm/kill-this-buffer ()
+  (interactive)
+  (kill-buffer))
+
+;;;; Make Move
 (defun cpm/make-move ()
   "move files to project web directory"
-   (interactive)
-   (evil-ex "!make move"))
-  (defun make-parent-directory ()
-    "Make sure the directory of `buffer-file-name' exists."
-    (make-directory (file-name-directory buffer-file-name) t))
+  (interactive)
+  (evil-ex "!make move"))
 
-  (add-hook 'find-file-not-found-functions #'make-parent-directory)
+;;;; Make Parent Directory
+;;  Create a directory – or a hierarchy of them – while finding a file in a
+;;  nonexistent directory. From mbork
+;;  http://mbork.pl/2016-07-25_Making_directories_on_the_fly
+
+(defun make-parent-directory ()
+  "Make sure the directory of `buffer-file-name' exists."
+  (make-directory (file-name-directory buffer-file-name) t))
+
+(add-hook 'find-file-not-found-functions #'make-parent-directory)
 
 ;;;; Move File
 (defun cpm/move-file ()
@@ -364,11 +397,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                          iterm-app-path
                        iterm-brew-path)))
     (shell-command (concat "open -a " iterm-path " ."))))
-    (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
+(global-set-key (kbd "C-x t") 'open-dir-in-iterm)
 
-;; Not going to use these commands
-(put 'ns-print-buffer 'disabled t)
-(put 'suspend-frame 'disabled t)
 
 ;;;; Org Tree/Heading to New File
 (defun cpm/org-tree-to-new-file ()
@@ -376,8 +406,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Move an org subtree to a new file"
   (org-copy-subtree nil t)
   (find-file-other-window
-    (read-file-name "Move subtree to file:" "$HOME"))
-(org-paste-subtree))
+   (read-file-name "Move subtree to file:" "$HOME"))
+  (org-paste-subtree))
+
+;;;; Org Wrap in Block Template
+;; A helpful function I found for wrapping text in a block template.
+;; http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; function to wrap blocks of text in org templates                       ;;
 ;; e.g. latex or src etc                                                  ;;
@@ -505,11 +540,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (error "No `default-directory' to open")))
 
 ;;;; Send Reveal Slides to PDF
-  (defun cpm/reveal-to-pdf ()
-    "print reveal.js slides to pdf"
-    (interactive)
-    (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/phil105-classplan.html?print-pdf'")
-    (delete-windows-on "*Async Shell Command*" t))
+(defun cpm/reveal-to-pdf ()
+  "print reveal.js slides to pdf"
+  (interactive)
+  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/phil105-classplan.html?print-pdf'")
+  (delete-windows-on "*Async Shell Command*" t))
+
+;;;; Rotate Windows
 ;; from magnars modified by ffevotte for dedicated windows support
 (defun cpm/rotate-windows (count)
   "Rotate your windows.
@@ -540,11 +577,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                (set-window-start w2 s1)
                (setq i next-i)))))))
 
-;;;; Rotate Windows
 (defun cpm/rotate-windows-backward (count)
   "Rotate your windows backward."
   (interactive "p")
   (cpm/rotate-windows (* -1 count)))
+
+;;;; Helm Ag Directory Search
 (defun cpm/helm-files-do-ag (&optional dir)
   "Search in files with `ag' using a default input."
   (interactive)
@@ -556,24 +594,30 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "search in files with `ag' in current buffer's directory"
   (interactive)
   (helm-do-ag (file-name-directory buffer-file-name)))
-  ;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
-  (defun cpm/show-and-copy-buffer-filename ()
-    "Show the full path to the current file in the minibuffer."
-    (interactive)
-    (let ((file-name (buffer-file-name)))
-      (if file-name
-          (progn
-            (message file-name)
-            (kill-new file-name))
-        (error "Buffer not visiting a file"))))
+
+;;;; Show Filename of Buffer
+
+;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
+(defun cpm/show-and-copy-buffer-filename ()
+  "Show the full path to the current file in the minibuffer."
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (if file-name
+        (progn
+          (message file-name)
+          (kill-new file-name))
+      (error "Buffer not visiting a file"))))
 
 ;;;; Spelling Goto Next Error
 (defun cpm/flyspell-ispell-goto-next-error ()
   "Custom function to spell check next highlighted word"
   (interactive)
   (flyspell-goto-next-error)
-  (ispell-word)
-  )
+  (ispell-word))
+
+;;;; Smart Yanking
+;;Courtesy of Marcin Borkowski http://mbork.pl/2018-07-02_Smart_yanking
+
 (defun has-space-at-boundary-p (string)
   "Check whether STRING has any whitespace on the boundary.
   Return 'left, 'right, 'both or nil."
@@ -582,8 +626,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (setq result 'left))
     (when (string-match-p "[[:space:]]+$" string)
       (if (eq result 'left)
-      (setq result 'both)
-    (setq result 'right)))
+          (setq result 'both)
+        (setq result 'right)))
     result))
 
 (defun is-there-space-around-point-p ()
@@ -625,6 +669,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00975.html
 
 ;;;; Sticky Buffer
+;; Stick/Lock buffer to window, courtesy of ShingoFukuyama.
+;; https://gist.github.com/ShingoFukuyama/8797743
+
 (defvar sticky-buffer-previous-header-line-format)
 (define-minor-mode sticky-buffer-mode
   "Make the current window always display this buffer."
@@ -638,8 +685,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (setq header-line-format sticky-buffer-previous-header-line-format)))
 
 ;;;; Exchange Windows
-(defun cpm/window-exchange ()
-  "Swap buffer windows and leave focus in original window"
+;; Swap buffers in windows and leave the cursor in the original window. Courtesy of
+;; Mike Zamansky's video.
+;; http://cestlaz.github.io/posts/using-emacs-36-touch-of-elisp/#.WX5Wg0czpcx
+
+(defun cpm/window-exchange-buffer ()
+  "Swap buffer in windows and leave focus in original window"
   (interactive)
   (ace-swap-window)
   (aw-flip-window))
@@ -652,6 +703,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 
 ;;;; Transpose hydra
+;; From the hydra wiki https://github.com/abo-abo/hydra/wiki/Emacs#transpose
+
 (with-eval-after-load 'hydra
   (general-define-key "C-c t"
                       (defhydra hydra-transpose (:color red)
@@ -668,6 +721,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;;;; Split Windows
 (defun cpm/toggle-window-split ()
+  "Move from a horizontal to a vertical split and vice versa"
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
@@ -694,7 +748,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;;;; Toggle markup
 (defun cpm/toggle-display-markup ()
-  "single toggle to display markup either in org or markdown"
+  "Toggle the display of markup in markdown and org modes"
   (interactive)
   (if (eq major-mode 'org-mode)
       (org-toggle-link-display)
@@ -703,6 +757,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (markdown-toggle-markup-hiding))))
 
 ;;;; Search TODOs
+;; Make an equivalent of vim's quickfix buffer using helm-ag
+;; git:~/.emacs.d/config.org::master@{2018-02-18}::3795 and highlight-todo
+;; git:~/.emacs.d/config.org::master@{2018-02-18}::2947
+
 (defun cpm/search-file-todo-markers ()
   "Search file for any TODO markers as specified in hl-todo-keyword-faces. Note that this uses the word boundary \\b to avoid matching these within other words, but this means that non-word keywords such as ???, which is in the list by default, will not be matched."
   (interactive)
@@ -727,7 +785,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;;;; Wrap in Yaml block
 (defun cpm/yaml-wrap ()
-  "wrap region in --- for yaml block"
+  "wrap region in --- for a yaml block"
   (interactive)
   (let ((start (region-beginning))
         (end (region-end)))
@@ -744,6 +802,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (let ((current-prefix-arg '(4))) (call-interactively #'counsel-rg)))
 
 ;;; Doom Functions & Macros
+;; A set of fantastic macros written by hlissner
+;; https://github.com/hlissner
+;; There won't be much documentation around these because the comments for each macro
+;; does a great job explaining their function. For more information you can also look
+;; at the wiki https://github.com/hlissner/doom-emacs/wiki and the entry on macros in
+;; particular. https://github.com/hlissner/doom-emacs/wiki/Modules#macros
+
+;;;; After!
 (defmacro after! (feature &rest forms)
   "A smart wrapper around `with-eval-after-load'. Supresses warnings during
   compilation."
@@ -755,6 +821,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
          #'progn
        #'with-no-warnings)
     (with-eval-after-load ',feature ,@forms)))
+
+;;;; Map!
 (eval-and-compile
   (defun cmacs-enlist (exp)
     "Return EXP wrapped in a list, or as-is if already a list."
@@ -946,9 +1014,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                 (cond ((and cmacs--local cmacs--keymaps)
                        (push `(lwarn 'cmacs-map :warning
                                      "Can't local bind '%s' key to a keymap; skipped"
-  ,key)
-        forms)
-  (throw 'skip 'local))
+                                     ,key)
+                             forms)
+                       (throw 'skip 'local))
                       ((and cmacs--keymaps states)
                        (dolist (keymap cmacs--keymaps)
                          (push `(,(if cmacs--defer 'evil-define-key 'evil-define-key*)
@@ -972,6 +1040,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
          (t (user-error "Invalid key %s" key))))
       `(progn ,@(nreverse forms)))))
+
+;;;; Add-hook!
+;;  A macro that makes adding hooks easy
+
 (eval-and-compile
   (defun cmacs--resolve-hook-forms (hooks)
     (cl-loop with quoted-p = (eq (car-safe hooks) 'quote)
@@ -1060,6 +1132,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Convenience macro for `remove-hook'. Takes the same arguments as
  `add-hook!'."
   `(add-hook! :remove ,@args))
+
+;;;; Quiet!
+;; A simple macro that prevents code from making any noise
+
 (defmacro quiet! (&rest forms)
   "Run FORMS without making any noise."
   `(if nil
@@ -1076,6 +1152,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                (inhibit-message t)
                (save-silently t))
        ,@forms)))
+
+;;;; Def-memoized!
+;;  Creates a memoized function
+
 (defvar doom-memoized-table (make-hash-table :test 'equal :size 10)
   "A lookup table containing memoized functions. The keys are argument lists,
  and the value is the function's return value.")
@@ -1103,12 +1183,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (doom-memoize ',name)))
 
 
+;;;; Lambda!
 (defmacro λ! (&rest body)
   "A shortcut for inline interactive lambdas."
   (declare (doc-string 1))
   `(lambda () (interactive) ,@body))
 
 
+;;;; Other Macros
 (defmacro find-file-in! (path &optional project-p)
   "Returns an interactive function for searching files"
   `(lambda () (interactive)
@@ -1118,6 +1200,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (command-remapping 'projectile-find-file)
             (command-remapping 'find-file))))))
 
+;;;; Quit Function
 (defun doom-quit-p (&optional prompt)
   "Return t if this session should be killed. Prompts the user for
  confirmation."
@@ -1156,5 +1239,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (remove-hook 'kill-emacs-query-functions #'doom-quit-p)
 (add-hook 'kill-emacs-query-functions #'+doom|quit)
 
+;;; End Funtions-Macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-functions-macros)

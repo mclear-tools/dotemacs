@@ -558,7 +558,7 @@
    "wU" 'winner-redo
    "wv" 'cpm/split-window-right-and-focus
    "wV" 'evil-window-vsplit
-   "wx" 'cpm/window-exchange
+   "wx" 'cpm/window-exchange-buffer
    "w-" 'evil-window-split
    "w_" 'cpm/split-window-below-and-focus
    )
