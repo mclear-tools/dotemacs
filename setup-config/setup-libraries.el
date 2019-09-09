@@ -1,7 +1,8 @@
 ;;; Useful Libraries
-;; [[https://github.com/jwiegley/emacs-async][async]], [[https://github.com/magnars/s.el][s]], [[https://github.com/magnars/dash.el][dash]], and [[http://elpa.gnu.org/packages/cl-lib.html][cl-lib]] are libraries for asynchronous processing,
-;; string manipulation, list manipulation and backward compatibility
-;; respectively. The git package is also a library.
+;; https://github.com/jwiegley/emacs-async, https://github.com/magnars/s.el,
+;; https://github.com/magnars/dash.el http://elpa.gnu.org/packages/cl-lib.html are
+;; libraries for asynchronous processing string manipulation, list manipulation and
+;; backward compatibility respectively. The git package is also a library.
 
 (use-package async   :defer 2)
 (use-package dash    :defer 2)
