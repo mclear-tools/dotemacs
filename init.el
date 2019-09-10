@@ -170,6 +170,8 @@
   (unless (file-directory-p package-user-dir)
     (make-directory package-user-dir t)))
 
+(add-hook 'after-init-hook 'package-initialize)
+
 ;;;; Load Path
 ;; We're going to set the load path ourselves so that we don't have to call
 ;; =package-initialize= at runtime and incur a large performance hit. This
@@ -267,6 +269,9 @@
   :ensure t
   :defer 1
   :config
+  (setq auto-compile-display-buffer nil)
+  (setq auto-compile-mode-line-counter t)
+  (setq auto-compile-update-autoloads t)
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
@@ -322,7 +327,7 @@
 ;; Function to search config files
 (defun cpm/search-setup-config-files ()
   (interactive)
-  (counsel-ag nil cpm-setup-dir))
+  (counsel-rg nil cpm-setup-dir))
 ;; (helm-do-ag cpm-setup-dir))
 
 ;; Load init file
@@ -351,5 +356,5 @@
 
 ;; Startup time
 (message (format "Emacs ready in %.2f seconds with %d garbage collections."
-                (float-time
-                 (time-subtract after-init-time before-init-time)) gcs-done))
+                 (float-time
+                  (time-subtract after-init-time before-init-time)) gcs-done))
