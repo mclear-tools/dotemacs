@@ -67,6 +67,9 @@
   (deactivate-mark))
 
 ;;;; Goto Files
+(defun cpm/goto-private ()
+  (interactive)
+  (find-file (concat cpm-elisp-dir "private.el")))
 (defun cpm/goto-journal ()
   (interactive)
   (find-file (concat org-directory "journal.org")))

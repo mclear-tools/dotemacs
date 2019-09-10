@@ -400,15 +400,17 @@
 
    "s" '(:ignore t :which-key "Search")
    "sa" 'helm-org-rifle-agenda-files
-   "sd" 'counsel-ag ; search current buffer's directory
+   "sd" 'counsel-rg ; search current buffer's directory
    "sD" #'cpm/counsel-search-in-input-dir ; search with directory input
    "sb" 'swiper-all
    ;; "sb" 'helm-ag-buffers
-   "sf" 'helm-do-ag-this-file
+   ;; "sf" 'helm-do-ag-this-file
+   "sf" 'swiper
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'counsel-yank-pop
+   "sl" 'ivy-resume
    ;; "sk" 'helm-show-kill-ring
-   "sl" 'cpm/helm-list-search-buffers
+   ;; "sl" 'cpm/helm-list-search-buffers
    ;; "sm" 'swiper-mc
    "so" #'ivy-occur
    ;; "so" 'helm-occur

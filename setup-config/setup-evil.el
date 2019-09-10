@@ -99,6 +99,9 @@
   (evil-commentary-mode))
 
 ;;; Evil Undo
+;; there are problems but there doesn't seem to be a workaround
+;; https://github.com/emacs-evil/evil/issues/1074 and
+;; http://ergoemacs.org/emacs/emacs_best_redo_mode.html
 (use-package undo-tree
   :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
   :init

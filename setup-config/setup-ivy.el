@@ -369,7 +369,8 @@
   :init
   ;; Use faster search tool: ripgrep (rg)
   (when (executable-find "rg")
-    (setq counsel-grep-base-command "rg -S --no-heading --line-number --color never '%s' %s"))
+    (setq counsel-grep-base-command "rg -S -M 120 -L -i --line-number --no-heading --color never %s %s")
+    (setq counsel-rg-base-command "rg -S -M 120 -L -i --with-filename --no-heading --line-number --color never %s"))
   (setq counsel-find-file-at-point t
         counsel-yank-pop-separator "\n────────\n")
   :config
