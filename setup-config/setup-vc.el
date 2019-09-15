@@ -163,6 +163,25 @@
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
+;;; Diff Files with Vdiff
+(use-package vdiff
+  :ensure t
+  :general
+  (:states 'normal
+   :keymaps 'vdiff-mode-map
+   ",d" 'vdiff-mode-prefix-map)
+  :config
+  (evil-collection-init 'vdiff))
 
+(use-package vdiff-magit
+  :defer t
+  :init
+  (with-eval-after-load 'magit
+    (define-key magit-mode-map "e" #'vdiff-magit-dwim)
+    (define-key magit-mode-map "E" #'vdiff-magit)
+    (transient-suffix-put 'magit-dispatch "e" :description "vdiff (dwim)")
+    (transient-suffix-put 'magit-dispatch "e" :command 'vdiff-magit-dwim)
+    (transient-suffix-put 'magit-dispatch "E" :description "vdiff")
+    (transient-suffix-put 'magit-dispatch "E" :command 'vdiff-magit)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-vc)
