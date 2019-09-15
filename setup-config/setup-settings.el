@@ -210,17 +210,16 @@
 
 ;;;; Information
 (use-package helpful
+  :ensure t
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'helpful-mode 'motion))
-  :hook (ivy-mode . helpful-mode)
   :general
   ("C-h f" #'counsel-describe-function)
   ("C-h k" #'helpful-key)
   ("C-h v" #'counsel-describe-variable)
   ("C-c C-." #'helpful-at-point)
   ("C-h C-l" #'counsel-find-library))
-
 
 (advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
 
