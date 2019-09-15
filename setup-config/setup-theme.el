@@ -119,7 +119,9 @@
     (custom-theme-set-faces
      'solarized-light
      ;; increase text contrast
-     `(default ((t (:background "#fdf6e3" :foreground "#727e80"))))
+     ;; `(default ((t (:background "#fdf6e3" :foreground "#727e80"))))
+     `(default ((t (:background "#fdf6e3" :foreground "#667173"))))
+
      ;; fix modeline underline
      `(mode-line ((t (:background "#eee8d5" :foreground "#657b83" :box (:line-width 1 :color "#fdf6e3" :style unspecified) :overline "#fdf6e3" :underline "#fdf6e3"))))
      ;; org faces
