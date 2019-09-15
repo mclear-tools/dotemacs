@@ -486,6 +486,7 @@
    ;; "uAp" #'cpm/goto-projects.org
    "uAs" #'cpm/goto-someday.org
    "uAt" #'cpm/goto-todo.org
+   "uAT" #'cpm/goto-teaching.org
    "uAw" #'cpm/goto-writing.org
    "ua"  '(:ignore t :which-key "Agenda")
    "uaa" 'cpm/jump-to-org-super-agenda

@@ -865,6 +865,10 @@ Instead it's simpler to use bash."
   "goto writing list"
   (interactive)
   (find-file (concat org-directory "writing.org")))
+(defun cpm/goto-teaching.org ()
+  "goto teaching file"
+  (interactive)
+  (find-file (concat org-directory "teaching.org")))
 
 
 ;;;; Export Headings as Seperate Files
@@ -1005,7 +1009,7 @@ to get regular RET. "
           (t
            (org-return)))))
 
-(general-define-key :keymaps 'org-mode-map "RET" #'cpm/org-return)
+;; (general-define-key :keymaps 'org-mode-map "RET" #'cpm/org-return)
 
 ;;;; Org Create Check Box From List Item
 ;; A useful macro for converting list items to checkboxes
