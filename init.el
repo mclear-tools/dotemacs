@@ -170,7 +170,6 @@
   (unless (file-directory-p package-user-dir)
     (make-directory package-user-dir t)))
 
-(add-hook 'after-init-hook 'package-initialize)
 
 ;;;; Load Path
 ;; We're going to set the load path ourselves so that we don't have to call
@@ -213,6 +212,8 @@
     (package-install 'use-package))
   (require 'use-package))
 
+;; initialize packages after evil has loaded
+(add-hook 'evil-after-load-hook 'package-initialize)
 
 ;;;; Benchmark Init
 (use-package benchmark-init
