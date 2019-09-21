@@ -22,7 +22,8 @@ contains the config for spelling and markdown mode). Note that while I have an
 
 Some highlights of this emacs setup include:
 
-1. Quick start up -- byte-compiled means roughly 1 sec (this may vary with your system)
+1. Short start up time -- when byte-compiled starts in roughly 1 sec (this may vary
+   with your system)
 2. Comprehensive [[file:setup-config/setup-keybindings.el][keybindings]] using [[https://github.com/noctuid/general.el][general.el]] and spacebar as my leader key
 3. [[file:setup-config/setup-evil.el][Evil mode]]
 4. Sensible [[file:setup-config/setup-settings.el][defaults]]
