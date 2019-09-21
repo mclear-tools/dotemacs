@@ -86,6 +86,8 @@
           (default       . bibtex-completion-format-citation-default)))
   (setq bibtex-completion-display-formats
         '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
+  ;; Set default action for ivy-bibtex to edit notes file
+  (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
   ;; Set default action for helm-bibtex as inserting citation
   ;; (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
   ;; (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)

@@ -126,7 +126,7 @@
   (setq persp-reset-windows-on-nil-window-conf t
         persp-set-last-persp-for-new-frames nil
         persp-auto-resume-time -1
-        persp-add-buffer-on-after-change-major-mode nil
+        persp-add-buffer-on-after-change-major-mode t
         persp-nil-name "default"
         persp-autokill-buffer-on-remove t
         persp-save-dir (expand-file-name "persp-confs/" cpm-cache-dir)
