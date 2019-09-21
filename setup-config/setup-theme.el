@@ -71,6 +71,7 @@
      `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
      `(org-agenda-date ((t (:background "#002833" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
      `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#002833" :inverse-video t :box nil :overline nil :weight bold))))
+     `(org-tag ((t (:inherit font-lock-comment-face :weight bold :height 0.9))))
 
      ;; markdown faces
      `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
@@ -136,6 +137,8 @@
      `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
      `(org-agenda-date ((t (:background "#fdf6e3" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
      `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#fdf6e3" :inverse-video t :box nil :overline nil :weight bold))))
+     `(org-tag ((t (:inherit font-lock-comment-face :weight bold :height 0.9))))
+
      ;; markdown faces
      `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
      `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))

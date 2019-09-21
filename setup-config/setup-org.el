@@ -85,6 +85,7 @@
                         ("@home" . ?h)))
   (setq org-fast-tag-selection-single-key nil)
 
+
 ;;;; Org Entities
   (setq org-entities-user
         '(("nec" "\Box" nil "◻" "" "" "◻")
@@ -130,7 +131,7 @@
 
   ;; Display properties
   (setq org-cycle-separator-lines 0
-        org-tags-column 72
+        org-tags-column 0
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'only-window
         org-agenda-restore-windows-after-quit t
