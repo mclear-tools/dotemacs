@@ -14,7 +14,7 @@ kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][sci
 [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
 This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
-that file and the various config "[[file:init.el::;;;%20Config%20Helper%20Functions][helper]]" functions for navigation. The modules are
+that file and the various config "[[https://github.com/mclear-tools/dotemacs/blob/68afacee3354565a431178b6dd8508f28f20f96c/init.el#L319][helper]]" functions for navigation. The modules are
 organized thematically rather than package by package (e.g. the [[file:setup-config/setup-writing.el][writing module]]
 contains the config for spelling and markdown mode). Note that while I have an
 [[file:early-init.el][early-init]] file for use with emacs 27, the configuration is tested to work with emacs
@@ -31,7 +31,7 @@ Some highlights of this emacs setup include:
 6. Completion with [[file:setup-config/setup-helm.el][helm]] and [[file:setup-config/setup-ivy.el][ivy/counsel]] (ivy is emphasized over helm)
 7. Use of [[file:setup-config/setup-posframe.el][posframe]] for most completion windows
 8. Custom [[file:setup-config/setup-theme.el][solarized]] theme (mac-centric with toggles for dark/light mode)
-9. A nice [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
+9. An attractive [[file:setup-config/setup-modeline.el][modeline]] (based on [[https://github.com/seagle0128/doom-modeline][Doom modeline]])
 10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
 11. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/Bad-ptr/persp-mode.el][perspectives]]
 12. A nice [[file:setup-config/setup-dashboard.el][dashboard]] homescreen
