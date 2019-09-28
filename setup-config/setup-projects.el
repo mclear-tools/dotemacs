@@ -200,7 +200,9 @@
   "open agenda in its own perspective"
   (interactive)
   (if (get-buffer "*Org Agenda*")
-      (persp-switch "agenda")
+      (progn
+        (persp-switch "agenda")
+        (switch-to-buffer "*Org Agenda*"))
     (eyebrowse-switch-to-window-config-1)
     (persp-switch "agenda")
     (setq frame-title-format '("" "%b"))
