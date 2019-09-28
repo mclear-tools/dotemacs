@@ -235,7 +235,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         nil)))
 
 ;;;; Org Super-Agenda
-  ;; [[https://github.com/alphapapa/org-super-agenda][Supercharge]] org-agenda. Settings courtesy of [[https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking][alphapapa]].
+  ;; Supercharge org-agenda: https://github.com/alphapapa/org-super-agenda
+  ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking
 
   (use-package org-super-agenda
     ;; :pin manual ;; throws errors for some reason when I update
@@ -246,6 +247,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     :after (org org-agenda)
     :config
     (org-super-agenda-mode)
+    (setq org-super-agenda-date-format "%A, %e %b")
     (setq org-super-agenda-groups
           '((:name "Overdue"
              :deadline past)
@@ -257,10 +259,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (:name "Due Today"
              :deadline today)
             (:name "Upcoming"
-             :deadline future
-             :scheduled future)
-            (:name "Scheduled"
-             :scheduled t)
+             ;; :deadline future
+             ;; :scheduled future
+             :auto-ts t)
+            ;; (:name "Scheduled"
+            ;;  :scheduled t)
             )))
 
   (defun cpm/jump-to-org-super-agenda ()
@@ -366,7 +369,7 @@ _vr_ reset      ^^                       ^^                 ^^
           ("w" todo "WAITING")
           ("A" "Super Agenda" (
                                (agenda "" ((org-agenda-span 'day)))
-                               (alltodo "" ((org-agenda-overriding-header "")
+                               (alltodo "" ((org-agenda-overriding-header nil)
                                             (org-super-agenda-groups
                                              '((:name "Priority"
                                                 :priority>= "C")
@@ -1378,8 +1381,9 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
     (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 
 ;;; Org Indirect Buffer
+(setq org-indirect-buffer-display 'current-window)
 ;; Some advice to automatically switch to a new indirect buffer upon creation
-(defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
+;; (defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
 
 ;;; Org Numbers Overlay
 ;; [[https://github.com/larkery/emacs/blob/master/site-lisp/org-numbers-overlay.el][This]] is a useful minor-mode to number org-mode headings. It came up in
