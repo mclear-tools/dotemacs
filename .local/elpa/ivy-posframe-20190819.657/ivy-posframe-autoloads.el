@@ -29,7 +29,7 @@ Display ivy via posframe.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ivy-posframe" '("ivy-posframe-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ivy-posframe" '(#("ivy-posframe-" 0 13 (face font-lock-function-name-face fontified t)))))
 
 ;;;***
 

@@ -10,6 +10,21 @@
 ;;;;;;  0))
 ;;; Generated autoloads from hydra-posframe.el
 
+(defvar hydra-posframe-mode nil "\
+Non-nil if Hydra-Posframe mode is enabled.
+See the `hydra-posframe-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `hydra-posframe-mode'.")
+
+(custom-autoload 'hydra-posframe-mode "hydra-posframe" nil)
+
+(autoload 'hydra-posframe-mode "hydra-posframe" "\
+Display hydra via posframe.
+
+\(fn &optional ARG)" t nil)
+
 (autoload 'hydra-posframe-enable "hydra-posframe" "\
 Enable hydra-posframe.
 

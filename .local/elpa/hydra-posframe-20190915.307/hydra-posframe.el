@@ -4,7 +4,7 @@
 
 ;; Author: Aya Igarashi <ladiclexxx@gmail.com>
 ;; URL: https://github.com/Ladicle/hydra-posframe
-;; Package-Version: 20190713.520
+;; Package-Version: 20190915.307
 ;; Keywords: convenience, languages, tools
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "26.1") (hydra "0.14.0") (posframe "0.4.3"))
@@ -89,12 +89,30 @@ Only `background` is used in this face."
                           (frame-parent current-frame))))
 
 ;;;###autoload
+(define-minor-mode hydra-posframe-mode
+  "Display hydra via posframe."
+  :init-value nil
+  :global t
+  :require 'hydra-posframe
+  :group 'hydra-posframe
+  (let ((hydra-posframe-list (list 'hydra-posframe
+                                   #'hydra-posframe-show-window
+                                   #'hydra-posframe-hide-window)))
+    (if hydra-posframe-mode
+        (progn
+          (add-to-list 'hydra-hint-display-alist hydra-posframe-list)
+          (setq hydra-hint-display-type 'hydra-posframe))
+      (progn
+        (setq hydra-hint-display-alist
+              (delete hydra-posframe-list hydra-hint-display-alist))
+        (setq hydra-hint-display-type 'lv)))))
+
+;;;###autoload
 (defun hydra-posframe-enable ()
   "Enable hydra-posframe."
   (interactive)
-  (require 'hydra)
-  (add-to-list 'hydra-hint-display-alist (list 'hydra-posframe #'hydra-posframe-show-window #'hydra-posframe-hide-window))
-  (setq hydra-hint-display-type 'hydra-posframe))
+  (hydra-posframe-mode 1)
+  (message "hydra-posframe: suggest use `hydra-posframe-mode` instead."))
 
 (provide 'hydra-posframe)
 ;;; hydra-posframe.el ends here

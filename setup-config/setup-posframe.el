@@ -54,18 +54,17 @@
    :min-width (round (* (frame-width) 0.72))))
 
 ;;; Company Posframe
- (eval-when-compile
-   (quelpa
-    '(company-posframe :fetcher github :repo "tumashu/company-posframe")))
- (use-package company-posframe
-   :ensure nil
-   :disabled
-   :if (and (window-system) (version<= "26.1" emacs-version))
-   :hook (company-mode . company-posframe-mode))
+(eval-when-compile
+  (quelpa
+   '(company-posframe :fetcher github :repo "tumashu/company-posframe")))
+(use-package company-posframe
+  :ensure nil
+  :disabled
+  :if (and (window-system) (version<= "26.1" emacs-version))
+  :hook (company-mode . company-posframe-mode))
 
 
 ;;; Which-Key Posframe
-
 (use-package which-key-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
@@ -74,8 +73,13 @@
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-center))
 
 ;;; Hydra Posframe
+;; doesn't work well with ivy hydras
+(eval-when-compile
+  (quelpa
+   '(hydra-posframe :fetcher github :repo "Ladicle/hydra-posframe")))
 (use-package hydra-posframe
-  :ensure t
+  :disabled
+  :ensure nil
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . hydra-posframe-enable)
   :config
