@@ -180,6 +180,26 @@
    "H-s" 'evil-numbers/inc-at-pt
    "H-a" 'evil-numbers/dec-at-pt))
 
+;;; Evil Owl (Markers)
+(use-package evil-owl
+  :ensure t
+  :after evil
+  :general
+  (:keymaps 'evil-owl-popup-map
+   "C-j" #'evil-owl-scroll-popup-down
+   "C-k" #'evil-owl-scroll-popup-up)
+  :config
+  (setq evil-owl-display-method 'posframe
+        evil-owl-extra-posframe-args '(:width 50 :height 20 :internal-border-width 10 :background-color "#073642")
+        evil-owl-max-string-length 50)
+  (setq evil-owl-header-format      "%s"
+        evil-owl-register-format    " %r: %s"
+        evil-owl-local-mark-format  " %m: %s"
+        evil-owl-global-mark-format " %m: %b %s"
+        evil-owl-separator          "\n"
+        evil-owl-idle-delay 0.25)
+  (evil-owl-mode))
+
 ;;; End Evil-Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

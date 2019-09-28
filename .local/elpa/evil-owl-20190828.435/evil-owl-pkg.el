@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "evil-owl" "20190828.435" "Preview evil registers and marks before using them" '((emacs "25.1") (evil "1.2.13")) :commit "24c5f43df375194386344e69bc720ea3986c9510" :keywords '("emulations" "evil" "visual") :authors '(("Daniel Phan" . "daniel.phan36@gmail.com")) :maintainer '("Daniel Phan" . "daniel.phan36@gmail.com") :url "https://github.com/mamapanda/evil-owl")
