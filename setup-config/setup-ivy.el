@@ -533,6 +533,7 @@
 
 
 ;; Additional key bindings for Ivy
+;; doesn't work well with posframe
 (use-package ivy-hydra
   :general (:keymaps 'ivy-minibuffer-map
             "M-o"  'ivy-dispatching-done-hydra))

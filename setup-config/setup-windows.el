@@ -1,4 +1,4 @@
-;; Windows
+;; Windows (and Buffers...)
 
 ;;; Window Movement
 ;; Move to other window
@@ -127,6 +127,8 @@
   :config
   (winner-mode 1))
 
+;;; Windows & Buffers
+(setq switch-to-buffer-preserve-window-point 'already-displayed)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-windows)
