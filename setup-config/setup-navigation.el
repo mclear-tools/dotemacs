@@ -123,12 +123,16 @@
   :commands (helm-recentf)
   :hook (after-init . recentf-mode)
   :config
-  (setq recentf-save-file (concat cpm-etc-dir "recentf"))
+  (setq recentf-save-file (concat cpm-cache-dir "recentf"))
   ;; remove agenda files from list.
-  (setq recentf-exclude '("projects.org"
+  (setq recentf-exclude '("writing.org"
                           "inbox.org"
+                          "todo.org"
+                          "teaching.org"
                           "someday.org"
-                          "bookmark")
+                          "bookmark"
+                          "elpa"
+                          "cache")
         recentf-max-saved-items 300
         recentf-max-menu-items 10))
 
