@@ -45,144 +45,144 @@
   (defun customize-solarized-dark ()
     "Customize solarized theme"
     ;; see https://emacs.stackexchange.com/a/52804/11934
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-faces
-       'solarized-dark
+    ;; (let ((custom--inhibit-theme-enable nil))
+    (custom-theme-set-faces
+     'solarized-dark
 
-       ;; make bg darker for higher contrast & foreground slightly lighter
-       `(default ((t (:foreground "#8f9ea0" :background "#002833"))))
+     ;; make bg darker for higher contrast & foreground slightly lighter
+     `(default ((t (:foreground "#8f9ea0" :background "#002833"))))
 
-       ;; matching fringe
-       `(fringe ((t (:background "#002833" :foreground "#586e75"))))
+     ;; matching fringe
+     `(fringe ((t (:background "#002833" :foreground "#586e75"))))
 
-       ;; fix modeline underline
-       `(mode-line ((t (:background "#073642" :foreground "#839496" :box (:line-width 1 :color "#002833" :style unspecified) :overline "#002833" :underline "#002833"))))
+     ;; fix modeline underline
+     `(mode-line ((t (:background "#073642" :foreground "#839496" :box (:line-width 1 :color "#002833" :style unspecified) :overline "#002833" :underline "#002833"))))
 
-       ;; terminal
-       `(term ((t (:background "#002833" :foreground "#839496"))))
+     ;; terminal
+     `(term ((t (:background "#002833" :foreground "#839496"))))
 
-       ;; org faces
-       `(org-block ((t (:foreground "#2E8B57"))))
-       `(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
-       `(org-block-end-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
-       `(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.5))))
-       `(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.3))))
-       `(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
-       `(org-level-4 ((t (:inherit variable-pitch :foreground "#6c71c4" :height 1.15))))
-       `(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
-       `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
-       `(org-agenda-date ((t (:background "#002833" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
-       `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#002833" :inverse-video t :box nil :overline nil :weight bold))))
-       `(org-tag ((t (:inherit font-lock-comment-face :weight bold :height 0.9))))
+     ;; org faces
+     `(org-block ((t (:foreground "#2E8B57"))))
+     `(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+     `(org-block-end-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+     `(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.5))))
+     `(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.3))))
+     `(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+     `(org-level-4 ((t (:inherit variable-pitch :foreground "#6c71c4" :height 1.15))))
+     `(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
+     `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
+     `(org-agenda-date ((t (:background "#002833" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
+     `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#002833" :inverse-video t :box nil :overline nil :weight bold))))
+     `(org-tag ((t (:inherit font-lock-comment-face :weight bold :height 0.9))))
 
-       ;; markdown faces
-       `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
-       `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
-       `(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
-       `(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+     ;; markdown faces
+     `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
+     `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
+     `(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
+     `(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
 
-       ;; ivy faces
-       `(ivy-confirm-face ((t (:foreground "#859900"))))
-       `(ivy-current-match ((t (:weight bold :foreground "goldenrod1" :background "#1f4a54" :underline nil))))
-       `(ivy-match-required-face ((t (:foreground "#dc322f"))))
-       `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
-       `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
-       `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
-       `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
-       `(ivy-remote ((t (:foreground "#268bd2"))))
+     ;; ivy faces
+     `(ivy-confirm-face ((t (:foreground "#859900"))))
+     `(ivy-current-match ((t (:weight bold :foreground "goldenrod1" :background "#1f4a54" :underline nil))))
+     `(ivy-match-required-face ((t (:foreground "#dc322f"))))
+     `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
+     `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
+     `(ivy-remote ((t (:foreground "#268bd2"))))
 
-       ;; posframe faces
-       `(hydra-posframe-face ((t (:background "#073642"))))
-       `(ivy-posframe ((t (:background "#073642"))))
-       `(which-key-posframe ((t (:background "#073642"))))
-       `(helm-posframe-face ((t (:background "#073642"))))
+     ;; posframe faces
+     `(hydra-posframe-face ((t (:background "#073642"))))
+     `(ivy-posframe ((t (:background "#073642"))))
+     `(which-key-posframe ((t (:background "#073642"))))
+     `(helm-posframe-face ((t (:background "#073642"))))
 
-       ;; helm faces
-       `(helm-selection ((t (:background "#1f4a54" :foreground "goldenrod1" :underline nil))))
-       `(helm-match ((t (:foreground "#b58900"))))
+     ;; helm faces
+     `(helm-selection ((t (:background "#1f4a54" :foreground "goldenrod1" :underline nil))))
+     `(helm-match ((t (:foreground "#b58900"))))
 
-       ;; line number highlighting
-       `(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
-       ;; '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
-       `(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
-       ;; '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
+     ;; line number highlighting
+     `(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
+     ;; '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
+     `(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+     ;; '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
 
-       ;; battery faces
-       `(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
-       `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
-       `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold)))))))
+     ;; battery faces
+     `(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
+     `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
+     `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
   (add-hook 'after-load-theme-hook 'customize-solarized-dark)
 
 ;;;; Load Theme
   (load-theme 'solarized-dark t))
 
 ;;;; Solarized Light
-  (with-eval-after-load 'solarized-theme
-    (defun customize-solarized-light ()
-      "Customize solarized theme"
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-faces
-       'solarized-light
-       ;; increase text contrast
-       ;; `(default ((t (:background "#fdf6e3" :foreground "#727e80"))))
-       `(default ((t (:background "#fdf6e3" :foreground "#667173"))))
+(with-eval-after-load 'solarized-theme
+  (defun customize-solarized-light ()
+    "Customize solarized theme"
+    ;; (let ((custom--inhibit-theme-enable nil))
+    (custom-theme-set-faces
+     'solarized-light
+     ;; increase text contrast
+     ;; `(default ((t (:background "#fdf6e3" :foreground "#727e80"))))
+     `(default ((t (:background "#fdf6e3" :foreground "#667173"))))
 
-       ;; fix modeline underline
-       `(mode-line ((t (:background "#eee8d5" :foreground "#657b83" :box (:line-width 1 :color "#fdf6e3" :style unspecified) :overline "#fdf6e3" :underline "#fdf6e3"))))
-       ;; org faces
-       `(org-block ((t (:foreground "#2E8B57"))))
-       `(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
-       `(org-block-end-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
-       `(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
-       `(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
-       `(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
-       `(org-level-4 ((t (:inherit variable-pitch :foreground "#6c71c4" :height 1.15))))
-       `(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
-       `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
-       `(org-agenda-date ((t (:background "#fdf6e3" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
-       `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#fdf6e3" :inverse-video t :box nil :overline nil :weight bold))))
-       `(org-tag ((t (:inherit font-lock-comment-face :weight bold :height 0.9))))
+     ;; fix modeline underline
+     `(mode-line ((t (:background "#eee8d5" :foreground "#657b83" :box (:line-width 1 :color "#fdf6e3" :style unspecified) :overline "#fdf6e3" :underline "#fdf6e3"))))
+     ;; org faces
+     `(org-block ((t (:foreground "#2E8B57"))))
+     `(org-block-begin-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+     `(org-block-end-line ((t (:foreground "#74a8a4" :weight bold :slant normal))))
+     `(org-level-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.3))))
+     `(org-level-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.2))))
+     `(org-level-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.15))))
+     `(org-level-4 ((t (:inherit variable-pitch :foreground "#6c71c4" :height 1.15))))
+     `(org-level-8 ((t (:inherit variable-pitch :foreground "#9e1e86" :height 1.1))))
+     `(org-quote ((t (:inherit org-block :slant normal :weight normal))))
+     `(org-agenda-date ((t (:background "#fdf6e3" :foreground "dark cyan" :inverse-video nil :box (:line-width 5 :color "#002833") :overline nil :underline t :slant normal :weight normal :height 1.5 :family "Avenir Next"))))
+     `(org-agenda-date-today ((t (:inherit org-agenda-date :background "#268bd2" :foreground "#fdf6e3" :inverse-video t :box nil :overline nil :weight bold))))
+     `(org-tag ((t (:inherit font-lock-comment-face :weight bold :height 0.9))))
 
-       ;; markdown faces
-       `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
-       `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
-       `(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
-       `(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
+     ;; markdown faces
+     `(markdown-comment-face ((t (:weight normal :slant italic :strike-through nil))))
+     `(markdown-header-face-1 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.75))))
+     `(markdown-header-face-2 ((t (:inherit variable-pitch :foreground "medium sea green" :height 1.45))))
+     `(markdown-header-face-3 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.2))))
 
-       ;; ivy faces
-       `(ivy-confirm-face ((t (:foreground "#859900"))))
-       `(ivy-current-match ((t (:weight bold :foreground "#268bd2" :background "#fdf6e3" :underline nil))))
-       `(ivy-match-required-face ((t (:foreground "#dc322f"))))
-       `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
-       `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
-       `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
-       `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
-       `(ivy-remote ((t (:foreground "#268bd2"))))
+     ;; ivy faces
+     `(ivy-confirm-face ((t (:foreground "#859900"))))
+     `(ivy-current-match ((t (:weight bold :foreground "#268bd2" :background "#fdf6e3" :underline nil))))
+     `(ivy-match-required-face ((t (:foreground "#dc322f"))))
+     `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
+     `(ivy-minibuffer-match-face-2 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
+     `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
+     `(ivy-remote ((t (:foreground "#268bd2"))))
 
-       ;; posframe faces
-       `(hydra-posframe-face ((t (:background "#eee8d5"))))
-       `(ivy-posframe ((t (:background "#eee8d5"))))
-       `(which-key-posframe ((t (:background "#eee8d5"))))
-       `(helm-posframe ((t (:background "#eee8d5"))))
+     ;; posframe faces
+     `(hydra-posframe-face ((t (:background "#eee8d5"))))
+     `(ivy-posframe ((t (:background "#eee8d5"))))
+     `(which-key-posframe ((t (:background "#eee8d5"))))
+     `(helm-posframe ((t (:background "#eee8d5"))))
 
 
-       ;; helm faces
-       `(helm-selection ((t (:background "#fdf6e3" :foreground "#268bd2" :underline nil :weight bold))))
-       `(helm-match ((t (:foreground "#cb4b16" :weight bold))))
+     ;; helm faces
+     `(helm-selection ((t (:background "#fdf6e3" :foreground "#268bd2" :underline nil :weight bold))))
+     `(helm-match ((t (:foreground "#cb4b16" :weight bold))))
 
-       ;; '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
-       ;; line size
-       `(set-face-attribute 'linum nil :inherit 'fixed-pitch)
-       ;; line highlighting
-       `(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
-       ;; '(nlinum-hl-face ((t (:inherit default :foreground "#002b36"))))
-       `(line-number-current-line ((t (:inherit default :foreground "#002b36"))))
-       ;; '(nlinum-current-line ((t (:inherit default :foreground "#002b36"))))
-       ;; battery faces
-       `(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
-       `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
-       `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
-    (add-hook 'after-load-theme-hook 'customize-solarized-light)))
+     ;; '(helm-selection ((t (:foreground "#f7f438" :background "#64b5ea" :underline nil :weight bold))))
+     ;; line size
+     `(set-face-attribute 'linum nil :inherit 'fixed-pitch)
+     ;; line highlighting
+     `(linum-highlight-face ((t (:inherit default :foreground "#002b36"))))
+     ;; '(nlinum-hl-face ((t (:inherit default :foreground "#002b36"))))
+     `(line-number-current-line ((t (:inherit default :foreground "#002b36"))))
+     ;; '(nlinum-current-line ((t (:inherit default :foreground "#002b36"))))
+     ;; battery faces
+     `(fancy-battery-charging ((t (:foreground "dark blue" :weight bold))))
+     `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
+     `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
+  (add-hook 'after-load-theme-hook 'customize-solarized-light))
 
 
 ;;; Toggle Menubar

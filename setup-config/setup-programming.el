@@ -162,6 +162,7 @@ Lisp function does not specify a special indentation."
               (goto-char (+ 2 (elt state 1)))
               (current-column)))
            (t $else)))))))
+
 ;;;; Haskell
 (use-package haskell-mode
   :commands haskell-mode)

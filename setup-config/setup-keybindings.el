@@ -186,7 +186,8 @@
    "Mm"  'compile
    "MM"  'multi-compile-run
    "Me"  'compile-goto-error
-   "Mk"  'kill-compilation
+   "Mk"  'cpm/compile-next-makefile
+   "MK"  'kill-compilation
    "Mr"  'recompile
    "Mv"  'cpm/make-move
    )
@@ -477,7 +478,7 @@
    "u"  '(:ignore t :which-key "User")
    "uA" '(:ignore t :which-key "Agenda Files")
    "uAa" #'cpm/goto-reading.org
-   "uAc" #'cpm/goto-classes.org
+   "uAc" #'cpm/goto-conferences.org
    "uAf" #'cpm/goto-org-files
    "uAi" #'cpm/goto-inbox.org
    "uAl" #'cpm/goto-links.org

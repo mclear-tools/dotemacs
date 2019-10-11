@@ -602,7 +602,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
 (defun cpm/show-and-copy-buffer-filename ()
-  "Show the full path to the current file in the minibuffer."
+  "Show the full path to the current file in the minibuffer and copy to clipboard."
   (interactive)
   (let ((file-name (buffer-file-name)))
     (if file-name

@@ -7,10 +7,13 @@
   :config
   (simpleclip-mode 1))
 
+;; Integrate with MacOS clipboard
 (setq select-enable-clipboard t)
+
 ;; Saving whatever’s in the current (system) clipboard before
 ;; replacing it with the Emacs’ text.
 (setq save-interprogram-paste-before-kill t)
+
 ;; Copy/Paste functions
 ;; https://github.com/dakrone/eos/blob/master/eos-core.org#mac-osx
 (defun copy-from-osx ()

@@ -841,10 +841,10 @@ Instead it's simpler to use bash."
   "goto org-articles"
   (interactive)
   (find-file (concat org-directory "articles.org")))
-(defun cpm/goto-classes.org ()
-  "goto org-classes"
+(defun cpm/goto-conferences.org ()
+  "goto org-conferences"
   (interactive)
-  (find-file (concat org-directory "teaching.org")))
+  (find-file (concat org-directory "conferences.org")))
 (defun cpm/goto-referee-reports.org ()
   "goto org referee reports"
   (interactive)

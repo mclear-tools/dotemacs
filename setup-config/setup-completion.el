@@ -34,6 +34,9 @@
   :ensure t
   :after company
   :demand t
+  :general
+  (:states 'insert
+   "<C-tab>" #'company-bibtex)
   :config
   (add-to-list 'company-backends 'company-bibtex)
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
