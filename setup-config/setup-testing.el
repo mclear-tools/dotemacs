@@ -107,5 +107,23 @@ codepoints starting from codepoint-start."
          (compile-command (concat "cd " default-directory " && "
                                   compile-command)))
     (compile compile-command)))
+
+;;;; Writegood Mode
+(use-package writegood-mode
+  :ensure t
+  :hook (markdown-mode . writegood-mode)
+  :config
+  (setq cpm/weasel-words
+        '("actually"
+          "basically"
+          "easily"
+          "easy"
+          "specifically"
+          "simple"
+          "simply"))
+  (setq writegood-weasel-words
+        (-concat writegood-weasel-words cpm/weasel-words)))
+
+;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
