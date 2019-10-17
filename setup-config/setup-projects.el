@@ -53,10 +53,10 @@
    "g7" 'eyebrowse-switch-to-window-config-7
    "g8" 'eyebrowse-switch-to-window-config-8
    "g9" 'eyebrowse-switch-to-window-config-9)
-  (my/leader-keys
-    "w." 'hydra-eyebrowse/body
-    "ww" 'eyebrowse-switch-to-window-config
-    "wr" 'eyebrowse-rename-window-config)
+  (cpm/leader-keys
+   "w." 'hydra-eyebrowse/body
+   "ww" 'eyebrowse-switch-to-window-config
+   "wr" 'eyebrowse-rename-window-config)
   :config
   (setq eyebrowse-new-workspace t
         eyebrowse-mode-line-style 'hide

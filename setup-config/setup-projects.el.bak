@@ -299,8 +299,8 @@
    "g M-9" 'spacemacs/persp-switch-to-9
    "g M-l" 'spacemacs/jump-to-last-layout
    "g M-c" 'spacemacs/layouts-ts-close)
-  (my/leader-keys
-    "l" 'hydra-persp/body)
+  (cpm/leader-keys
+   "l" 'hydra-persp/body)
   :init
   (add-hook 'persp-before-switch-functions
             #'spacemacs/update-eyebrowse-for-perspective)

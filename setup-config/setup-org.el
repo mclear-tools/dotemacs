@@ -8,7 +8,8 @@
 (use-package org
   :mode (("\\.org$" . org-mode))
   :ensure org-plus-contrib
-  :general ("C-c c" 'org-capture)
+  :general (cpm/leader-keys
+            "uc" 'org-capture)
   :init
 ;;; Org Settings
 ;;;; Org Directories

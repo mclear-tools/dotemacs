@@ -3,7 +3,7 @@
 (use-package general
   :demand t
   :config
-  (general-create-definer my/leader-keys
+  (general-create-definer cpm/leader-keys
 	:states '(normal visual motion emacs insert)
 	:keymaps 'override
 	:prefix "SPC"
@@ -493,7 +493,7 @@
    "uaa" 'cpm/jump-to-org-super-agenda
    "uaw" 'cpm/jump-to-week-agenda
    "um" 'cpm/org-to-markdown
-   "uc" 'cpm/pandoc-convert-to-pdf
+   ;; "uc" 'cpm/pandoc-convert-to-pdf
    "uC" 'cpm/pandoc-command-line-convert-to-pdf
    "ug" 'org-mac-grab-link
    "ui" 'cpm/org-goto-inbox
