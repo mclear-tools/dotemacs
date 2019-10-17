@@ -227,10 +227,11 @@
 ;; Better interface for package management https://github.com/Malabarba/paradox
 (use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
+  :init
+  (setq paradox-github-token nil)
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
   (setq paradox-execute-asynchronously nil
-        paradox-github-token nil
         ;; Show all possible counts
         paradox-display-download-count t
         paradox-display-star-count t

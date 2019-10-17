@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "posframe" "20191013.756" "Pop a posframe (just a frame) at point" '((emacs "26")) :stars '(#("74" 0 2 (font-lock-face paradox-star-face)) #("6K" 0 2 (value 6371 font-lock-face paradox-download-face))) :commit "d75dc1547a6a1cc2b385c736880eee77d7981aec" :keywords '("tooltip") :authors '(("Feng Shu" . "tumashu@163.com")) :maintainer '("Feng Shu" . "tumashu@163.com") :url "https://github.com/tumashu/posframe")

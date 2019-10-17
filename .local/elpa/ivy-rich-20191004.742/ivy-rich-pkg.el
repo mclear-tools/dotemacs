@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "ivy-rich" "20191004.742" "More friendly display transformer for ivy." '((emacs "24.4") (ivy "0.8.0")) :stars '(#("135" 0 3 (font-lock-face paradox-star-face)) #("12K" 0 3 (value 12218 font-lock-face paradox-download-face))) :commit "0c6aa7c016d381d3b3a5f49576e613e57315f6f8" :keywords '("ivy") :authors '(("Yevgnen Koh" . "wherejoystarts@gmail.com")) :maintainer '("Yevgnen Koh" . "wherejoystarts@gmail.com"))
