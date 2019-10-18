@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20191016.1831
+;; Package-Version: 20191017.1812
 ;; Version: 0.13.0
 ;; Package-Requires: ((emacs "24.5") (swiper "0.13.0"))
 ;; Keywords: convenience, matching, tools
@@ -1317,7 +1317,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
     (define-key map (kbd "C-x C-d") 'counsel-cd)
     map))
 
-(defvar counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -I -e \"%s\""
+(defvar counsel-git-grep-cmd-default "git --no-pager grep -n --no-color -i -I -e \"%s\""
   "Initial command for `counsel-git-grep'.")
 
 (defvar counsel-git-grep-cmd nil
@@ -2802,7 +2802,9 @@ NEEDLE is the search string."
             (regex (counsel--grep-regex search-term))
             (switches (concat (car command-args)
                               (counsel--ag-extra-switches regex)
-                              (and (ivy--case-fold-p string) " -i "))))
+                              (if (ivy--case-fold-p string)
+                                  " -i "
+                                " -s "))))
        (counsel--async-command (counsel--format-ag-command
                                 switches
                                 (shell-quote-argument regex)))
@@ -6102,19 +6104,42 @@ Additional actions:\\<ivy-minibuffer-map>
             :action #'counsel-M-x-action
             :caller 'counsel-major))
 
-;;* `counsel-google'
+;;* `counsel-search'
 (declare-function request "ext:request")
-(defun counsel-google-function (input)
-  "Create a request to Google with INPUT.
+
+(defcustom counsel-search-engine 'ddg
+  "The search engine choice in `counsel-search-engines-alist'."
+  :type '(choice
+          (const ddg)
+          (const google)))
+
+(defcustom counsel-search-engines-alist
+  '((google
+     "http://suggestqueries.google.com/complete/search"
+     "https://www.google.com/search?q="
+     counsel--search-request-data-google)
+    (ddg
+     "https://duckduckgo.com/ac/"
+     "https://duckduckgo.com/html/?q="
+     counsel--search-request-data-ddg))
+  "Search engine parameters for `counsel-search'."
+  :type '(list))
+
+(defun counsel--search-request-data-google (data)
+  (mapcar #'identity (aref data 1)))
+
+(defun counsel--search-request-data-ddg (data)
+  (mapcar #'cdar data))
+
+(defun counsel-search-function (input)
+  "Create a request to a search engine with INPUT.
 Return 0 tells `ivy--exhibit' not to update the minibuffer.
 We update it in the callback with `ivy-update-candidates'."
   (or
    (ivy-more-chars)
-   (progn
-     (require 'request)
-     (require 'json)
+   (let ((engine (cdr (assoc counsel-search-engine counsel-search-engines-alist))))
      (request
-      "http://suggestqueries.google.com/complete/search"
+      (nth 0 engine)
       :type "GET"
       :params (list
                (cons "client" "firefox")
@@ -6123,17 +6148,28 @@ We update it in the callback with `ivy-update-candidates'."
       :success (cl-function
                 (lambda (&key data &allow-other-keys)
                   (ivy-update-candidates
-                   (mapcar #'identity (aref data 1))))))
+                   (funcall (nth 2 engine) data)))))
      0)))
 
-(defun counsel-google ()
-  "Ivy interface for Google."
+(defun counsel-search-action (x)
+  "Search for X."
+  (browse-url
+   (concat
+    (nth 2 (assoc counsel-search-engine counsel-search-engines-alist))
+    x)))
+
+(defun counsel-search ()
+  "Ivy interface for dynamically querying a search engine."
   (interactive)
-  (ivy-read "search: " #'counsel-google-function
-            :action (lambda (x)
-                      (browse-url (concat "https://www.google.com/search?q=" x)))
+  (require 'request)
+  (require 'json)
+  (ivy-read "search: " #'counsel-search-function
+            :action #'counsel-search-action
             :dynamic-collection t
-            :caller 'counsel-google))
+            :caller 'counsel-search))
+
+(define-obsolete-function-alias 'counsel-google
+    'counsel-search "<2019-10-17 Thu>")
 
 ;;* `counsel-mode'
 (defvar counsel-mode-map

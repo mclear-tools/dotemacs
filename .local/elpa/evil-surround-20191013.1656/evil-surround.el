@@ -11,7 +11,7 @@
 ;; Current Maintainer: ninrod (github.com/ninrod)
 ;; Created: July 23 2011
 ;; Version: 1.0.3
-;; Package-Version: 20190403.418
+;; Package-Version: 20191013.1656
 ;; Package-Requires: ((evil "1.2.12"))
 ;; Mailing list: <implementations-list at lists.ourproject.org>
 ;;      Subscribe: http://tinyurl.com/implementations-list
@@ -135,7 +135,7 @@ Each item is of the form (OPERATOR . OPERATION)."
     (cons (format "%s(" (or fname ""))
           ")")))
 
-(defconst evil-surround-tag-name-re "\\([0-9a-z-]+\\)"
+(defconst evil-surround-tag-name-re "\\([0-9a-zA-Z\.-]+\\)"
   "Regexp matching an XML tag name.")
 
 (defun evil-surround-tag-p (string)
