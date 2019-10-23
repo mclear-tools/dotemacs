@@ -8,10 +8,12 @@
   :ensure nil)
 
 ;;; Helm posframe
+;; FIXME: helm-posframe forces minimize window
 (eval-when-compile
   (quelpa
    '(helm-posframe :fetcher github :repo "tumashu/helm-posframe")))
 (use-package helm-posframe
+  :disabled
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . helm-posframe-enable)
   :init

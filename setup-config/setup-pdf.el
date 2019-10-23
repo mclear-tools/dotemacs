@@ -228,7 +228,9 @@
                                     (bms/pdf-midnite-colour-schemes)
                                         ; fixes blinking pdf in evil
                                     (blink-cursor-mode -1)
-                                    (beacon-mode -1)))))
+                                    (beacon-mode -1))))
+  ;;;Hidpi
+  (setq pdf-view-use-scaling t))
 
 ;; (eval-when-compile
 ;;   (quelpa
