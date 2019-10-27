@@ -2,6 +2,7 @@
 (use-package ivy
   :general
   (:keymaps 'ivy-minibuffer-map
+   "M-o" 'ivy-dispatching-done-hydra
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line
    "C-<SPC>" 'cpm/ivy-toggle-mark)
@@ -532,11 +533,6 @@
                                 (t . ivy-prescient-re-builder))))
 
 
-;; Additional key bindings for Ivy
-;; doesn't work well with posframe
-(use-package ivy-hydra
-  :general (:keymaps 'ivy-minibuffer-map
-            "M-o"  'ivy-dispatching-done-hydra))
 
 ;; Counsel integration for Projectile
 (use-package counsel-projectile

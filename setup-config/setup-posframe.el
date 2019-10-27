@@ -42,6 +42,7 @@
                              (internal-border-width . 12)))
   (ivy-posframe-display-functions-alist
    '((swiper          . ivy-posframe-display-at-frame-top-center)
+     (swiper-isearch  . ivy-posframe-display-at-frame-top-center)
      (complete-symbol . ivy-posframe-display-at-point)
      (counsel-M-x     . ivy-posframe-display-at-frame-center)
      (t               . ivy-posframe-display-at-frame-center)))

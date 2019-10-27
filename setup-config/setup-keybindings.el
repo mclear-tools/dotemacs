@@ -418,7 +418,8 @@
    "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
-   "ss" #'counsel-grep-or-swiper ;; search with swiper in file
+   "ss" 'swiper-isearch
+   ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
    "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag

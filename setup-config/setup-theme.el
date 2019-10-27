@@ -90,6 +90,12 @@
      `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
      `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
      `(ivy-remote ((t (:foreground "#268bd2"))))
+     `(swiper-line-face ((t (:weight bold :background "#1f4a54" :underline nil))))
+     `(swiper-match-face-1 ((t (:foreground "#8f9ea0"))))
+     `(swiper-match-face-2 ((t (:foreground "goldenrod1"))))
+     `(swiper-match-face-3 ((t (:foreground "goldenrod1"))))
+     `(swiper-match-face-4 ((t (:foreground "goldenrod1"))))
+
 
      ;; posframe faces
      `(hydra-posframe-face ((t (:background "#073642"))))
@@ -158,6 +164,12 @@
      `(ivy-minibuffer-match-face-3 ((t (:foreground "goldenrod1"))))
      `(ivy-minibuffer-match-face-4 ((t (:foreground "goldenrod1"))))
      `(ivy-remote ((t (:foreground "#268bd2"))))
+     `(swiper-line-face ((t (:weight bold :background "#fdf6e3" :underline nil))))
+     `(swiper-match-face-1 ((t (:foreground "#8f9ea0"))))
+     `(swiper-match-face-2 ((t (:foreground "goldenrod1"))))
+     `(swiper-match-face-3 ((t (:foreground "goldenrod1"))))
+     `(swiper-match-face-4 ((t (:foreground "goldenrod1"))))
+
 
      ;; posframe faces
      `(hydra-posframe-face ((t (:background "#eee8d5"))))
