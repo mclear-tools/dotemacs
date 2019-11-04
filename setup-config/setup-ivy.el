@@ -2,7 +2,7 @@
 (use-package ivy
   :general
   (:keymaps 'ivy-minibuffer-map
-   "M-o" 'ivy-dispatching-done-hydra
+   "M-o" 'ivy-dispatching-done
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line
    "C-<SPC>" 'cpm/ivy-toggle-mark)
