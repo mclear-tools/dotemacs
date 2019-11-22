@@ -85,7 +85,7 @@
           (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
           (default       . bibtex-completion-format-citation-default)))
   (setq bibtex-completion-display-formats
-        '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
+        '((t . "${author:16} ${title:36} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
   ;; Set default action for ivy-bibtex to edit notes file
   (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
   ;; Set default action for helm-bibtex as inserting citation
@@ -98,7 +98,7 @@
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
-        bibtex-completion-notes-path "~/Dropbox/Notes/zettel/reading-notes"
+        bibtex-completion-notes-path "~/Dropbox/Notes/reading-notes"
         ;; bibtex-completion-additional-search-fields '(keywords)
         bibtex-completion-notes-extension ".md"
         helm-bibtex-full-frame nil))

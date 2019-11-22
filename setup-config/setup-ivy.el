@@ -1,7 +1,7 @@
 ;;;; Ivy
 (use-package ivy
   :general
-  (:keymaps 'ivy-minibuffer-map
+  (:keymaps 'ivy-mode-map
    "M-o" 'ivy-dispatching-done
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line
