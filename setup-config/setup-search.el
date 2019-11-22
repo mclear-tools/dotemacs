@@ -44,21 +44,31 @@
                    (vc-hg-root file-path))
                   file-path))))))))
 
+;;;; Deadgrep
 (use-package deadgrep
   :ensure t
   :general
   (:states '(normal motion visual insert emacs)
-  :keymaps 'override
-  :prefix "SPC"
-  :non-normal-prefix "C-SPC"
-  "sg" #'deadgrep)
-  (:states '(normal motion visal)
-   :keymaps 'deadgrep-mode-map
-   "j" #'deadgrep-forward
-   "k" #'deadgrep-backward
-   "l" #'deadgrep-visit-result))
+   :keymaps 'override
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
+   "sg" #'deadgrep))
+  ;; (:states '(normal motion visal)
+  ;;  :keymaps 'deadgrep-mode-map
 
+  ;;  "j" #'deadgrep-forward
+  ;;  "k" #'deadgrep-backward
+  ;;  "l" #'deadgrep-visit-result))
+
+;;;; Ripgrep
 (use-package rg :commands rg)
+
+;;;; Search Notes
+(defvar cpm-notes-dir "~/Dropbox/Notes")
+(defun cpm/search-all-notes ()
+  (interactive)
+  (cd cpm-notes-dir)
+  (call-interactively #'deadgrep))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

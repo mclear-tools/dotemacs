@@ -410,6 +410,7 @@
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'counsel-yank-pop
    "sl" 'ivy-resume
+   "sn" #'cpm/search-all-notes
    ;; "sk" 'helm-show-kill-ring
    ;; "sl" 'cpm/helm-list-search-buffers
    ;; "sm" 'swiper-mc
