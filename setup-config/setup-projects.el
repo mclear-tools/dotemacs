@@ -128,7 +128,10 @@
         persp-auto-resume-time -1
         persp-add-buffer-on-after-change-major-mode t
         persp-nil-name "default"
-        persp-autokill-buffer-on-remove t
+        persp-kill-foreign-buffer-behaviour t
+        persp-remove-buffers-from-nil-persp-behaviour nil
+        persp-autokill-persp-when-removed-last-buffer t
+        persp-autokill-buffer-on-remove 'kill-weak
         persp-save-dir (expand-file-name "persp-confs/" cpm-cache-dir)
         persp-common-buffer-filter-functions
         (list #'(lambda (b)
