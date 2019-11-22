@@ -44,8 +44,8 @@
     (kbd "<S-return>") 'deadgrep-visit-result-other-window
     "go" 'deadgrep-visit-result-other-window
     "gr" 'deadgrep-restart
-    (kbd "C-j") 'deadgrep-forward
-    (kbd "C-k") 'deadgrep-backward
+    (kbd "C-j") 'deadgrep-forward-match
+    (kbd "C-k") 'deadgrep-backward-match
     (kbd "TAB") 'deadgrep-toggle-file-results
 
     "i" 'deadgrep-edit-mode

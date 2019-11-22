@@ -71,6 +71,19 @@ instead of the modes in `evil-collection-mode-list'.
 
 ;;;***
 
+;;;### (autoloads nil "modes/deadgrep/evil-collection-deadgrep" "modes/deadgrep/evil-collection-deadgrep.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from modes/deadgrep/evil-collection-deadgrep.el
+
+(autoload 'evil-collection-deadgrep-setup "modes/deadgrep/evil-collection-deadgrep" "\
+Set up `evil' bindings for deadgrep..
+
+\(fn)" nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modes/deadgrep/evil-collection-deadgrep" '(#("evil-collection-deadgrep-maps" 0 29 (face font-lock-variable-name-face fontified t)))))
+
+;;;***
+
 ;;;### (autoloads nil nil ("evil-collection-pkg.el") (0 0 0 0))
 
 ;;;***
