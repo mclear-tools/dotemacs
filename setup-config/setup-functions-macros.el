@@ -409,7 +409,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Move an org subtree to a new file"
   (org-copy-subtree nil t)
   (find-file-other-window
-   (read-file-name "Move subtree to file:" "$HOME"))
+   (read-file-name "Move subtree to file:" ))
   (org-paste-subtree))
 
 ;;;; Org Wrap in Block Template
