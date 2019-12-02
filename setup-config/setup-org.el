@@ -9,7 +9,7 @@
   :mode (("\\.org$" . org-mode))
   :ensure org-plus-contrib
   :general (cpm/leader-keys
-            "uc" 'org-capture)
+             "uc" 'org-capture)
   :init
 ;;; Org Settings
 ;;;; Org Directories
@@ -537,7 +537,7 @@ _vr_ reset      ^^                       ^^                 ^^
         '(("\\.docx\\'" . default)
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
-          ("\\.pdf\\'" . emacs)
+          ("\\.pdf\\'" . default)
           (auto-mode . emacs)))
   (general-define-key "C-c a" #'org-agenda)
 

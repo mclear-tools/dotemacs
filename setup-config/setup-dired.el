@@ -38,7 +38,9 @@
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
   ;; allow editing file permissions
-  (setq wdired-allow-to-change-permissions t))
+  (setq wdired-allow-to-change-permissions t)
+  ;; open PDF files in external viewer
+  (setq dired-guess-shell-alist-user '(("\.pdf$" . default))))
 
 ;; Async dired
 (autoload 'dired-async-mode "dired-async.el" nil t)
