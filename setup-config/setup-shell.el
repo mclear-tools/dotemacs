@@ -74,17 +74,19 @@
        "C-j" 'term-send-down)
 
 (general-define-key :states '(insert) :keymaps 'term-raw-map
-                    "C-c C-d" 'term-send-eof
-                    "C-c C-z" 'term-stop-subjob
-                    "<tab>"   'term-send-tab
-                    "s-v"     'term-paste
-                    "C-k"     'term-send-up
-                    "C-j"     'term-send-down)
+  "C-c C-d" 'term-send-eof
+  "C-c C-z" 'term-stop-subjob
+  "<tab>"   'term-send-tab
+  "s-v"     'term-paste
+  "C-k"     'term-send-up
+  "C-j"     'term-send-down)
 
 
 ;;;; Pop up Shell
 ;;  A popup shell used with eshell
+;; currently disabled in favor of vterm-toggle
 (use-package shell-pop
+  :disabled
   :commands shell-pop
   :init
   (setq shell-pop-term-shell "/usr/local/bin/zsh")
@@ -104,6 +106,7 @@
 ;;;; Shell Colors
 ;; Add customizable 256 color support: https://github.com/dieggsy/eterm-256color  to term and ansiterm
 (use-package eterm-256color
+  :disabled
   :ensure t
   :hook
   (term-mode-hook . eterm-256color-mode)
@@ -133,6 +136,7 @@
   ;; set colors -- this is best with dark solarized right now
   (setq ansi-color-names-vector
         ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
+  (setq vterm-term-environment-variable "xterm-256color")
   (add-hook 'vterm-mode-hook
             (lambda ()
               (setq-local evil-insert-state-cursor '("chartreuse3" box))

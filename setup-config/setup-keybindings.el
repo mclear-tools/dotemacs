@@ -166,7 +166,7 @@
    ;; "W" 'woman
    "#" 'universal-argument
    "`" 'beacon-blink
-   "'" 'shell-pop
+   ;; "'" 'shell-pop
    "\\" 'vterm-toggle-cd
    "." 'quick-commit
    ";" 'evil-commentary-line
