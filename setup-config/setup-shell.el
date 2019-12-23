@@ -11,7 +11,13 @@
                            (lambda ()
                              (select-window (get-buffer-window (get-buffer-create "*compilation*")))
                              (switch-to-buffer nil)
-                             (delete-window)))
+                             (if (one-window-p t 0)
+                                 (delete-window)
+                               (other-window 1))))
+              ;; (if (one-window-p t 0)
+              ;;     (delete-window)
+              ;;   (cpm/previous-user-buffer))
+              ;; (other-window 1)))
               (message "No Compilation Errors!")))))
 
 ;;; Completion Buffer
@@ -350,7 +356,9 @@
 ;; Useful for switching between multiple instances of eshell
 ;; https://github.com/DamienCassou/shell-switcher
 ;; But you can configure for any shell that you use.
+;; disabled for now since i'm primarily using vterm
 (use-package shell-switcher
+  :disabled
   :general
   ("C-'"  'shell-switcher-switch-buffer-other-window)
   :config
