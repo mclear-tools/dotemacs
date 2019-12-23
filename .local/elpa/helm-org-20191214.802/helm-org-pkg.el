@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "helm-org" "20191214.802" "Helm for org headlines and keywords completion" '((helm "3.3") (emacs "24.4")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "b9a1167b0716a22a69670f4c35e0ac59d2e0b220" :authors '(("Thierry Volpiatto" . "thierry.volpiatto@gmail.com")) :maintainer '("Thierry Volpiatto" . "thierry.volpiatto@gmail.com") :url "https://github.com/emacs-helm/helm-org")

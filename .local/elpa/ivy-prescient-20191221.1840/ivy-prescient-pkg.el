@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "ivy-prescient" "20191221.1840" "prescient.el + Ivy" '((emacs "25.1") (prescient "4.0") (ivy "0.11.0")) :stars '(#("112" 0 3 (font-lock-face paradox-star-face)) #("963" 0 3 (value 963 font-lock-face paradox-download-face))) :commit "6fca09c7098e19fd16e57f3180f78d83a1475ada" :keywords '("extensions") :authors '(("Radon Rosborough" . "radon.neon@gmail.com")) :maintainer '("Radon Rosborough" . "radon.neon@gmail.com") :url "https://github.com/raxod502/prescient.el")
