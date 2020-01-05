@@ -103,6 +103,7 @@
 ;; https://github.com/emacs-evil/evil/issues/1074 and
 ;; http://ergoemacs.org/emacs/emacs_best_redo_mode.html
 (use-package undo-tree
+  :disabled
   :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
   :init
   (setq undo-tree-visualizer-timestamps t)
@@ -116,9 +117,19 @@
     (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
     (unless (file-directory-p undo-dir)
       (make-directory undo-dir t)))
-  (setq undo-tree-auto-save-history nil)
-  :config
-  (global-undo-tree-mode))
+  (setq undo-tree-auto-save-history nil))
+;; :config
+;; (global-undo-tree-mode))
+
+;; trying another undo package
+(use-package undo-fu
+  :general
+  (:states '(normal)
+   "u" 'undo-fu-only-undo
+   "\C-r" 'undo-fu-onlu-redo)
+  (:states '(normal insert motion emacs)
+   "s-z" 'undo-fu-only-undo
+   "s-Z" 'undo-fu-only-redo))
 
 
 ;;; Evil Multi-Cursor
