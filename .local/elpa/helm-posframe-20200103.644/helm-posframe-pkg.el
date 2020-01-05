@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "helm-posframe" "20200103.644" "Using posframe to show helm window" '((emacs "26.0") (posframe "0.1.0") (helm "0.1")) :stars '(#("6" 0 1 (font-lock-face paradox-star-face)) #("126" 0 3 (value 126 font-lock-face paradox-download-face))) :commit "f9b41d6ef3471506528fc7edfeb784c050d87db0" :keywords '("abbrev" "convenience" "matching" "helm") :authors '(("Feng Shu")) :maintainer '("Feng Shu" . "tumashu@163.com") :url "https://github.com/tumashu/helm-posframe")

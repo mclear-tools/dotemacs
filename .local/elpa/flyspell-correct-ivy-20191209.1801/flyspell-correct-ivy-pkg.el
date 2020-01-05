@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "flyspell-correct-ivy" "20191209.1801" "Correcting words with flyspell via ivy interface" '((flyspell-correct "0.5.0") (ivy "0.8.0")) :stars '(#("72" 0 2 (font-lock-face paradox-star-face)) #("28K" 0 3 (value 28324 font-lock-face paradox-download-face))) :commit "4c32d3ccea82f8625362cadcef0fbccc953e4f47" :authors '(("Boris Buliga" . "boris@d12frosted.io")) :maintainer '("Boris Buliga" . "boris@d12frosted.io") :url "https://github.com/d12frosted/flyspell-correct")
