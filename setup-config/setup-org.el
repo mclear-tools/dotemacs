@@ -405,7 +405,7 @@ _vr_ reset      ^^                       ^^                 ^^
           ("l" "A link, for reading later" entry (file ,(concat org-directory "links.org"))
            "* %? :link: \n%(grab-mac-link 'safari 'org)")
           ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-           "* TODO %:description                         :email: \n[[message://%l][Email link]] \n%? ")
+           "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
           ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
