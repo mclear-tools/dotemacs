@@ -103,8 +103,7 @@
 ;; https://github.com/emacs-evil/evil/issues/1074 and
 ;; http://ergoemacs.org/emacs/emacs_best_redo_mode.html
 (use-package undo-tree
-  :disabled
-  :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
+  ;; :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
   :init
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-diff t)
@@ -117,11 +116,12 @@
     (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
     (unless (file-directory-p undo-dir)
       (make-directory undo-dir t)))
-  (setq undo-tree-auto-save-history nil))
-;; :config
-;; (global-undo-tree-mode))
+  (setq undo-tree-auto-save-history nil)
+  :config
+  (global-undo-tree-mode nil))
 
 ;; trying another undo package
+;; https://gitlab.com/ideasman42/emacs-undo-fu
 (use-package undo-fu
   :general
   (:states '(normal)
