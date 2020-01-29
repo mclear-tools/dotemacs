@@ -198,25 +198,26 @@
              projectile-project-buffers))
 
 ;;; Project Functions
-;;;; Open agenda as perspective
+;;;; Open agenda as workspace
 (defun cpm/open-agenda-in-workspace ()
   "open agenda in its own perspective"
   (interactive)
   (if (get-buffer "*Org Agenda*")
       (progn
         (persp-switch "agenda")
-        (switch-to-buffer "*Org Agenda*"))
-    (eyebrowse-switch-to-window-config-1)
-    (persp-switch "agenda")
+        (switch-to-buffer "*Org Agenda*")
+        (delete-other-windows)
+        (eyebrowse-switch-to-window-config-1)
+        (persp-switch "agenda"))
     (setq frame-title-format '("" "%b"))
     (require 'org-super-agenda)
     (cpm/jump-to-org-super-agenda)
     (persp-add-buffer "*Org Agenda*")))
 
-(general-define-key
- :states '(insert normal motion emacs)
- :keymaps 'override
- "s-1" 'cpm/open-agenda-in-workspace)
+  (general-define-key
+   :states '(insert normal motion emacs)
+   :keymaps 'override
+   "s-1" 'cpm/open-agenda-in-workspace)
 
 ;;;; Open emacs.d in workspace
 (defun cpm/open-emacsd-in-workspace ()

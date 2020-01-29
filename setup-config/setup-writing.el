@@ -343,14 +343,16 @@
   :general
   (:keymaps 'deft-mode-map :states '(normal motion)
    "o" 'cpm/deft-open
-   "p" 'cpm/deft-open-preview)
+   "p" 'cpm/deft-open-preview
+   "q" 'kill-this-buffer)
   (:keymaps 'deft-mode-map :states '(insert)
    "C-j" 'evil-next-line
    "C-k" 'evil-previous-line
    "C-o" 'cpm/deft-open
    "C-p" 'cpm/deft-open-preview)
   :config
-  (add-to-list 'evil-insert-state-modes 'deft-mode)
+  (with-eval-after-load 'evil
+    (add-to-list 'evil-insert-state-modes 'deft-mode))
   ;; basic settings for use with zettel
   (setq deft-directory (concat (getenv "HOME") "/Dropbox/notes/zettel/")
         deft-recursive t
@@ -398,94 +400,93 @@
 
 ;;; Zetteldeft
 ;; https://github.com/EFLS/zetteldeft.git
-(eval-when-compile
-  (quelpa
-   '(zetteldeft :fetcher github :repo "EFLS/zetteldeft")))
-  (use-package zetteldeft
-    :ensure t
-    :commands (zd-deft-new-search zd-new-file zd-new-file-and-link cpm/zettel-dired)
-    :config
-  ;; use dired to navigate notes
+(use-package zetteldeft
+  :ensure t
+  :demand deft
+  :commands (zetteldeft-deft-new-search zetteldeft-new-file zetteldeft-new-file-and-link cpm/zettel-dired)
+  :config
+  ;; use dired to navigate zettel
   (defun cpm/zettel-dired ()
     (interactive)
     (find-file "~/Dropbox/Notes/zettel")
     (peep-dired))
-  (setq zd-id-format "%Y-%m%d-%H%M")
-  (setq zd-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{2\\}")
-  (setq zd-tag-regex "[#][a-z-]+")
-  (setq zd-link-indicator "")
-  (setq zd-title-prefix "title: ")
+  (setq deft-directory (concat (getenv "HOME") "/Dropbox/notes/zettel/"))
+  (setq zetteldeft-id-format "%Y-%m%d-%H%M")
+  (setq zetteldeft-id-regex "[0-9]\\{4\\}\\(-[0-9]\\{2,\\}\\)\\{2\\}")
+  (setq zetteldeft-tag-regex "[#][a-z-]+")
+  (setq zetteldeft-link-indicator "")
+  (setq zetteldeft-title-prefix "title: "))
 
-  ;; modify functions for workfolow
+;;   ;; modify functions for workflow
 
-  ;; add brackets for wikilink treatment
-  (defun zd-list-entry-file-link (zdFile)
-    "Insert ZDFILE as list entry."
-    (insert " - " (concat zd-link-indicator "[["(file-name-base zdFile)"]]") "\n"))
+;;   ;; add brackets for wikilink treatment
+;;   (defun zetteldeft--list-entry-file-link (zdFile)
+;;     "Insert ZDFILE as list entry."
+;;     (insert " - " (concat zetteldeft-link-indicator "[["(file-name-base zdFile)"]]") "\n"))
 
-  (defun zd-insert-list-links-missing (zdSrch)
-    "Insert a list of links to all deft files with a search string ZDSRCH.
-In contrast to `zd-insert-list-links' only include links not yet present
-in the current file.
-Can only be called from a file in the zetteldeft directory."
-    (interactive (list (read-string "search string: ")))
-    (zd--check)
-    (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
-      (setq zdCurrentIDs (zd-extract-links (buffer-file-name)))
-                                        ; filter IDs from search results
-      (dolist (zdFile (zd-get-file-list zdSrch))
-        (push (zd-lift-id zdFile) zdFoundIDs))
-                                        ; create new list with unique ids
-      (dolist (zdID zdFoundIDs)
-        (unless (member zdID zdCurrentIDs)
-          (push zdID zdFinalIDs)))
-                                        ; remove the ID of the current buffer from said list
-      (setq zdThisID (zd-lift-id (file-name-base (buffer-file-name))))
-      (setq zdFinalIDs (delete zdThisID zdFinalIDs))
-                                        ; finally find full title for each ID and insert it
-      (if zdFinalIDs
-          (dolist (zdID zdFinalIDs)
-            (setq zdID (zd-id-to-full-title zdID))
-            (insert " - " (concat zd-link-indicator "[["zdID"]]" "\n")))
-                                        ; unless the list is empty, then insert a message
-        (insert (format zd-list-links-missing-message zdSrch)))))
+;;   (defun zetteldeft-insert-list-links-missing (zdSrch)
+;;     "Insert a list of links to all deft files with a search string ZDSRCH.
+;; In contrast to `zd-insert-list-links' only include links not yet present
+;; in the current file.
+;; Can only be called from a file in the zetteldeft directory."
+;;     (interactive (list (read-string "search string: ")))
+;;     (zetteldeft--check)
+;;     (let (zdThisID zdCurrentIDs zdFoundIDs zdFinalIDs)
+;;       (setq zdCurrentIDs (zetteldeft--extract-links (buffer-file-name)))
+;;                                         ; filter IDs from search results
+;;       (dolist (zdFile (zd-get-file-list zdSrch))
+;;         (push (zd-lift-id zdFile) zdFoundIDs))
+;;                                         ; create new list with unique ids
+;;       (dolist (zdID zdFoundIDs)
+;;         (unless (member zdID zdCurrentIDs)
+;;           (push zdID zdFinalIDs)))
+;;                                         ; remove the ID of the current buffer from said list
+;;       (setq zdThisID (zd-lift-id (file-name-base (buffer-file-name))))
+;;       (setq zdFinalIDs (delete zdThisID zdFinalIDs))
+;;                                         ; finally find full title for each ID and insert it
+;;       (if zdFinalIDs
+;;           (dolist (zdID zdFinalIDs)
+;;             (setq zdID (zd-id-to-full-title zdID))
+;;             (insert " - " (concat zd-link-indicator "[["zdID"]]" "\n")))
+;;                                         ; unless the list is empty, then insert a message
+;;         (insert (format zd-list-links-missing-message zdSrch)))))
 
-  ;; fix search functions
-  (defun zd-avy-tag-search ()
-    "Call on avy to jump and search tags indicated with #."
-    (interactive)
-    (save-excursion
-      (avy-jump zd-tag-regex)
-      (zd-search-at-point)))
+;;   ;; fix search functions
+;;   (defun zd-avy-tag-search ()
+;;     "Call on avy to jump and search tags indicated with #."
+;;     (interactive)
+;;     (save-excursion
+;;       (avy-jump zd-tag-regex)
+;;       (zd-search-at-point)))
 
-  (defun zd-avy-link-search ()
-    "Call on avy to jump and search link ids indicated with [[.
-Opens immediately if there is only one result."
-    (interactive)
-    (save-excursion
-      (avy-goto-char-2 ?\[?\[)
-      (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
+;;   (defun zd-avy-link-search ()
+;;     "Call on avy to jump and search link ids indicated with [[.
+;; Opens immediately if there is only one result."
+;;     (interactive)
+;;     (save-excursion
+;;       (avy-goto-char-2 ?\[?\[)
+;;       (zd-search-global (zd-lift-id (zd-get-thing-at-point)))))
 
-  (defun zd-avy-file-search (&optional otherWindow)
-    "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
-Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
-    (interactive)
-    (save-excursion
-      (avy-goto-char-2 ?\[?\[)
-      (forward-char)
-      (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
+;;   (defun zd-avy-file-search (&optional otherWindow)
+;;     "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
+;; Open that file (when it is the only search result, and in another window if OTHERWINDOW)."
+;;     (interactive)
+;;     (save-excursion
+;;       (avy-goto-char-2 ?\[?\[)
+;;       (forward-char)
+;;       (zd-search-filename (zd-lift-id (zd-get-thing-at-point)) otherWindow)))
 
-  (defun zd-avy-file-search-ace-window ()
-    "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
-When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
-    (interactive)
-    (require 'ace-window)
-    (save-excursion
-      (avy-goto-char ?\[?\[)
-      (let ((ID (zd-lift-id (zd-get-thing-at-point))))
-        (select-window (aw-select "Select window..."))
-        (zd-search-filename ID))))
-  )
+;;   (defun zd-avy-file-search-ace-window ()
+;;     "Call on avy to jump to link ids indicated with [[ and use it to search for filenames.
+;; When there is only one search result, as there should be, open that file in a window selected through `ace-window'."
+;;     (interactive)
+;;     (require 'ace-window)
+;;     (save-excursion
+;;       (avy-goto-char ?\[?\[)
+;;       (let ((ID (zd-lift-id (zd-get-thing-at-point))))
+;;         (select-window (aw-select "Select window..."))
+;;         (zd-search-filename ID))))
+;;   )
 
 
 
