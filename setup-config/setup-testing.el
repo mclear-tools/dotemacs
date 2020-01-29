@@ -124,6 +124,15 @@ codepoints starting from codepoint-start."
   (setq writegood-weasel-words
         (-concat writegood-weasel-words cpm/weasel-words)))
 
+;;;; Add Colors to Info Mode
+(eval-when-compile
+  (quelpa
+   '(info-colors :fetcher github :repo "ubolonton/info-colors")))
+ (use-package info-colors
+   :ensure nil
+   :config
+   (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
