@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "org-download" "20200127.1023" "Image drag-and-drop for Org-mode." '((emacs "24.3") (async "1.2")) :stars '(#("323" 0 3 (font-lock-face paradox-star-face)) #("135K" 0 4 (value 135782 font-lock-face paradox-download-face))) :commit "70401884e9780e64dfd313d8af52d643d1798aee" :keywords '("multimedia" "images" "screenshots" "download") :authors '(("Oleh Krehel")) :maintainer '("Oleh Krehel") :url "https://github.com/abo-abo/org-download")
