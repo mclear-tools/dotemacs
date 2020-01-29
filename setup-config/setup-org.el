@@ -405,7 +405,9 @@ _vr_ reset      ^^                       ^^                 ^^
           ("l" "A link, for reading later" entry (file ,(concat org-directory "links.org"))
            "* %? :link: \n%(grab-mac-link 'safari 'org)")
           ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-           "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
+           "* TODO %? :email: \n%(grab-mac-link 'mail 'org))")
+          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
+          ;;  "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
           ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
@@ -468,6 +470,19 @@ _vr_ reset      ^^                       ^^                 ^^
                   ))
     (select-frame-by-name "alfred-capture")
     (cpm/org-capture-frame))
+
+  (defun cpm/org-capture-mail-frame ()
+    (interactive)
+    (org-capture nil "m"))
+  (defun cpm/make-orgcapture-frame ()
+    "Create a new frame and run org-capture."
+    (interactive)
+    (make-frame '((name . "Email Capture") (width . 90) (height . 20)
+                  (top . 400) (left . 300)
+                  ))
+    (select-frame-by-name "Email Capture")
+    (cpm/org-capture-mail-frame))
+
 
 ;;;; Capture Hooks
   ;; ;; Make capture the only window and close after refiling.
