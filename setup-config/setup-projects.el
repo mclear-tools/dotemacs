@@ -209,6 +209,7 @@
         (delete-other-windows)
         (eyebrowse-switch-to-window-config-1)
         (persp-switch "agenda"))
+    (persp-switch "agenda")
     (setq frame-title-format '("" "%b"))
     (require 'org-super-agenda)
     (cpm/jump-to-org-super-agenda)

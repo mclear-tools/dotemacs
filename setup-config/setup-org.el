@@ -46,6 +46,24 @@
                 imenu-auto-rescan t)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
+  ;; show markup on cursor
+  ;; https://www.reddit.com/r/orgmode/comments/43uuck/temporarily_show_emphasis_markers_when_the_cursor
+  (defun cpm/org-show-emphasis-markers-at-point ()
+    (save-match-data
+      (if (and (org-in-regexp org-emph-re 2)
+               (>= (point) (match-beginning 3))
+               (<= (point) (match-end 4))
+               (member (match-string 3) (mapcar 'car org-emphasis-alist)))
+          (with-silent-modifications
+            (remove-text-properties
+             (match-beginning 3) (match-beginning 5)
+             '(invisible org-link)))
+        (apply 'font-lock-flush (list (match-beginning 3) (match-beginning 5))))))
+
+  (add-hook 'post-command-hook
+            'cpm/org-show-emphasis-markers-at-point nil t)
+
+
 ;;;; Org Modules
   (setq org-modules (quote (org-info org-tempo org-protocol org-habit org-mac-link)))
 
