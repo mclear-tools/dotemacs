@@ -128,10 +128,18 @@ codepoints starting from codepoint-start."
 (eval-when-compile
   (quelpa
    '(info-colors :fetcher github :repo "ubolonton/info-colors")))
- (use-package info-colors
-   :ensure nil
-   :config
-   (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+(use-package info-colors
+  :ensure nil
+  :config
+  (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+
+;;;; Make Temp Buffer
+(defun cpm/tmp-buffer()
+  "Make a temporary buffer and switch to it"
+  (interactive)
+  (switch-to-buffer (get-buffer-create (concat "tmp-" (format-time-string "%m.%dT%H.%M.%S"))))
+  (delete-other-windows))
+
 
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
