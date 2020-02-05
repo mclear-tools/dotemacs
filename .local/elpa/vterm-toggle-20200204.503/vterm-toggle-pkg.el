@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "vterm-toggle" "20200204.503" "Toggles between the vterm buffer and other buffers." '((emacs "25.1") (vterm "0.0.1")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "04ea42d762ad146527e16cad6bf86c93442db41a" :keywords '("vterm" "terminals") :authors '((nil . "jixiuf  jixiuf@qq.com")) :maintainer '(nil . "jixiuf  jixiuf@qq.com") :url "https://github.com/jixiuf/vterm-toggle")
