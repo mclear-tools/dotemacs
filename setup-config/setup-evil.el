@@ -102,23 +102,28 @@
 ;; there are problems but there doesn't seem to be a workaround
 ;; https://github.com/emacs-evil/evil/issues/1074 and
 ;; http://ergoemacs.org/emacs/emacs_best_redo_mode.html
+;; So disable undo-tree; have to do this manually b/c it is automatically loaded by evil
 (use-package undo-tree
-  ;; :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
-  :init
-  (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t)
-  (setq undo-tree-enable-undo-in-region nil)
-  ;; supposedly causes errors in undo read
-  ;; see https://emacs.stackexchange.com/a/34214/11934
-  (setq undo-tree-enable-undo-in-region nil)
-  ;; stop littering - set undo directory
-  (let ((undo-dir (concat cpm-cache-dir "undo")))
-    (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
-    (unless (file-directory-p undo-dir)
-      (make-directory undo-dir t)))
-  (setq undo-tree-auto-save-history nil)
   :config
-  (global-undo-tree-mode nil))
+  (global-undo-tree-mode -1))
+
+;; (use-package undo-tree
+;;   ;; :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
+;;   :init
+;;   (setq undo-tree-visualizer-timestamps t)
+;;   (setq undo-tree-visualizer-diff t)
+;;   (setq undo-tree-enable-undo-in-region nil)
+;;   ;; supposedly causes errors in undo read
+;;   ;; see https://emacs.stackexchange.com/a/34214/11934
+;;   (setq undo-tree-enable-undo-in-region nil)
+;;   ;; stop littering - set undo directory
+;;   (let ((undo-dir (concat cpm-cache-dir "undo")))
+;;     (setq undo-tree-history-directory-alist `(("." . ,undo-dir)))
+;;     (unless (file-directory-p undo-dir)
+;;       (make-directory undo-dir t)))
+;;   (setq undo-tree-auto-save-history nil)
+;;   :config
+;;   (global-undo-tree-mode -1))
 
 ;; trying another undo package
 ;; https://gitlab.com/ideasman42/emacs-undo-fu
@@ -130,6 +135,16 @@
   (:states '(normal insert motion emacs)
    "s-z" 'undo-fu-only-undo
    "s-Z" 'undo-fu-only-redo))
+
+;; persistent undo across sessions
+(use-package undo-fu-session
+  :after evil
+  :config
+  (setq undo-fu-session-file-limit 50)
+  (setq undo-fu-session-directory (concat cpm-cache-dir "undo-fu-session"))
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+(with-eval-after-load 'undo
+  (global-undo-fu-session-mode))
 
 
 ;;; Evil Multi-Cursor
