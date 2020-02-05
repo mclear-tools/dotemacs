@@ -520,6 +520,24 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (kill-new (shell-command-to-string "pbpaste | pandoc-citeproc -y -f bibtex | pbcopy"))
   (yank))
 
+(defun cpm/org-to-mail-rtf ()
+  "copy buffer, convert clipboard contents from org to rtf, and send to mail message"
+  (interactive)
+  (cpm/copy-whole-buffer-to-clipboard)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -s -f org -t rtf"))
+  (kill-buffer)
+  (delete-frame)
+  (do-applescript "if application \"Mail\" is running then
+                   tell application \"Mail\"
+                   activate
+                   delay 0.35
+                   tell application \"System Events\"
+                   keystroke \"v\" using {command down}
+                   end tell
+                   end tell
+                   end if"))
+
+
 
 ;;;; Helm Projectile
 (defun cpm/helm-projectile-find-file-other-window ()
@@ -1017,8 +1035,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                 (cond ((and cmacs--local cmacs--keymaps)
                        (push `(lwarn 'cmacs-map :warning
                                      "Can't local bind '%s' key to a keymap; skipped"
-                                     ,key)
-                             forms)
+  ,key)
+  forms)
                        (throw 'skip 'local))
                       ((and cmacs--keymaps states)
                        (dolist (keymap cmacs--keymaps)

@@ -152,7 +152,8 @@
    "D" #'dired-jump-other-window
    ;; "D" #'cpm/deer-split-window
    "E" 'cpm/call-emacs
-   "e" 'server-edit
+   ;; "e" 'server-edit
+   "e" 'cpm/org-to-mail-rtf
    "G" 'general-describe-keybindings
    "j" 'avy-goto-char
    "k" 'counsel-yank-pop

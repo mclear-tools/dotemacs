@@ -405,7 +405,7 @@ _vr_ reset      ^^                       ^^                 ^^
           ("l" "A link, for reading later" entry (file ,(concat org-directory "links.org"))
            "* %? :link: \n%(grab-mac-link 'safari 'org)")
           ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-           "* TODO %? :email: \n%(grab-mac-link 'mail 'org))")
+           "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
           ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
           ;;  "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
@@ -474,7 +474,7 @@ _vr_ reset      ^^                       ^^                 ^^
   (defun cpm/org-capture-mail-frame ()
     (interactive)
     (org-capture nil "m"))
-  (defun cpm/make-orgcapture-frame ()
+  (defun cpm/make-org-capture-mail-frame ()
     "Create a new frame and run org-capture."
     (interactive)
     (make-frame '((name . "Email Capture") (width . 90) (height . 20)
@@ -482,6 +482,14 @@ _vr_ reset      ^^                       ^^                 ^^
                   ))
     (select-frame-by-name "Email Capture")
     (cpm/org-capture-mail-frame))
+
+  ;; deal with email link
+  (defun org-mac-message-open (message-id)
+    "Visit the message with MESSAGE-ID.
+This will use the command `open' with the message URL."
+    (start-process (concat "open message:" message-id) nil
+                   "open" (concat "message://" (substring message-id 2) "")))
+
 
 
 ;;;; Capture Hooks
