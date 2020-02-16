@@ -50,6 +50,7 @@
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 (setq initial-scratch-message "")
+(setq frame-inhibit-implied-resize t)
 
 ;; UI - Disable visual cruft
 (unless (eq window-system 'ns)
