@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "amx" "20200101.1701" "Alternative M-x with extra features." '((emacs "24.4") (s "0")) :stars '(#("56" 0 2 (font-lock-face paradox-star-face)) #("6K" 0 2 (value 6262 font-lock-face paradox-download-face))) :commit "3af93ca066aa42dd1342f1ee0ab0d02360075613" :keywords '("convenience" "usability") :authors '(("Ryan C. Thompson" . "rct@thompsonclan.org") ("Cornelius Mika" . "cornelius.mika@gmail.com")) :maintainer '("Ryan C. Thompson" . "rct@thompsonclan.org") :url "http://github.com/DarwinAwardWinner/amx/")

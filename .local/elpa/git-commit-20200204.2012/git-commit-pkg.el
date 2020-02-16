@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "git-commit" "20200204.2012" "Edit Git commit messages" '((emacs "25.1") (dash "20180910") (transient "20190812") (with-editor "20181103")) :stars '(#("3932" 0 4 (font-lock-face paradox-star-face)) #("471K" 0 4 (value 471043 font-lock-face paradox-download-face))) :commit "bdd2b09e48541ac770b7d16f66d5997b971623f5" :keywords '("git" "tools" "vc") :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/magit/magit")

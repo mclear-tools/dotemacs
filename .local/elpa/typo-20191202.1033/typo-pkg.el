@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "typo" "20191202.1033" "Minor mode for typographic editing" 'nil :stars '(#("68" 0 2 (font-lock-face paradox-star-face)) #("6K" 0 2 (value 6137 font-lock-face paradox-download-face))) :commit "54a9dbcfb24a146fd14232e927109eec59b50171" :keywords '("convenience" "wp") :authors '(("Jorgen Schaefer" . "forcer@forcix.cx")) :maintainer '("Jorgen Schaefer" . "forcer@forcix.cx") :url "https://github.com/jorgenschaefer/typoel")
