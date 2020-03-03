@@ -266,6 +266,9 @@
   :config
   (setq el-patch-enable-use-package-integration t))
 
+(eval-when-compile
+  (require 'el-patch))
+
 ;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
 (use-package auto-compile
