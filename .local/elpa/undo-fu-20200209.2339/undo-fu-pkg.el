@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "undo-fu" "20200209.2339" "Undo helper with redo" '((emacs "24.3")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "d81063c96dcdd410be01428e5967786e0d7c6414" :authors '(("Campbell Barton" . "ideasman42@gmail.com")) :maintainer '("Campbell Barton" . "ideasman42@gmail.com") :url "https://gitlab.com/ideasman42/emacs-undo-fu")

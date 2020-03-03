@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "evil-multiedit" "20200103.1006" "multiple cursors for evil-mode" '((emacs "24.4") (evil "1.2.12") (iedit "0.9") (cl-lib "0.5")) :stars '(#("111" 0 3 (font-lock-face paradox-star-face)) #("14K" 0 3 (value 14240 font-lock-face paradox-download-face))) :commit "c3d43b1a65c193755dae2c41ce5c072c4c01b35d" :keywords '("multiple cursors" "editing" "iedit") :authors '(("Henrik Lissner <http://github/hlissner>")) :maintainer '("Henrik Lissner" . "henrik@lissner.net") :url "https://github.com/hlissner/evil-multiedit")

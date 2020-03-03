@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "undo-fu-session" "20200221.1152" "Persistent undo, available between sessions" '((emacs "24.1")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "35d4cf3771d905d647a35df050abfd9015833aad" :keywords '("convenience") :authors '(("Campbell Barton" . "ideasman42@gmail.com")) :maintainer '("Campbell Barton" . "ideasman42@gmail.com") :url "https://gitlab.com/ideasman42/emacs-undo-fu-session")
