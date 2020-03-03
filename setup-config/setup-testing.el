@@ -140,6 +140,31 @@ codepoints starting from codepoint-start."
   (switch-to-buffer (get-buffer-create (concat "tmp-" (format-time-string "%m.%dT%H.%M.%S"))))
   (delete-other-windows))
 
+;;;; Org Roam
+(eval-when-compile
+  (quelpa
+   '(org-roam :fetcher github :repo "jethrokuan/org-roam")))
+
+(use-package org-roam
+  :ensure nil
+  :after org
+  :hook
+  ((org-mode . org-roam-mode)
+   (after-init . org-roam--build-cache-async) ;; optional!
+   )
+  :custom
+  (org-roam-directory "~/Dropbox/Notes")
+  :general
+  (:states '(normal motion) 
+   (cpm/leader-keys 
+  "R l"  #'org-roam
+  "R t"  #'org-roam-today
+  "R f"  #'org-roam-find-file
+  "R i"  #'org-roam-insert
+  "R g"  #'org-roam-show-graph)))
+
+
+
 
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
