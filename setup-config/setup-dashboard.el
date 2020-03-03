@@ -30,11 +30,12 @@
         dashboard-center-content t)
   ;; footer
   (setq dashboard-set-footer t
-        dashboard-footer "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"
         dashboard-footer-icon (all-the-icons-fileicon "emacs"
                                                       :height 1
                                                       :v-adjust -0.15
                                                       :face 'font-lock-string-face))
+  (setq dashboard-footer-messages
+        '("Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"))
   ;; add icons
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t)
