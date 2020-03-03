@@ -520,6 +520,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (kill-new (shell-command-to-string "pbpaste | pandoc-citeproc -y -f bibtex | pbcopy"))
   (yank))
 
+(defun cpm/org-to-rtf ()
+  (interactive)
+  (kill-new (shell-command-to-string "pbpaste | pandoc -s -f org -t rtf | pbcopy")))
+
 (defun cpm/org-to-mail-rtf ()
   "copy buffer, convert clipboard contents from org to rtf, and send to mail message"
   (interactive)
