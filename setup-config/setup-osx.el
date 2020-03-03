@@ -49,7 +49,7 @@
   (setq trash-directory "~/.Trash")
 
   ;; Make new frames when opening a new file with Emacs unless on scratch buffer
-  (setq ns-pop-up-frames 1)
+  (setq ns-pop-up-frames nil)
 
   ;; fullscreen (disable for non-space full screen)
   (setq ns-use-native-fullscreen nil)
@@ -95,5 +95,14 @@
 (use-package grab-mac-link
   :ensure t
   :defer 1)
+
+(with-eval-after-load 'org-mac-link
+  (defun org-mac-message-open (message-id)
+    "Visit the message with MESSAGE-ID.
+This will use the command `open' with the message URL."
+    (start-process (concat "open message:" message-id) nil
+                   "open" (concat "message://" (substring message-id 2) ""))))
+
+
 
 (provide 'setup-osx)

@@ -501,12 +501,6 @@ _vr_ reset      ^^                       ^^                 ^^
     (select-frame-by-name "Email Capture")
     (cpm/org-capture-mail-frame))
 
-  ;; deal with email link
-  (defun org-mac-message-open (message-id)
-    "Visit the message with MESSAGE-ID.
-This will use the command `open' with the message URL."
-    (start-process (concat "open message:" message-id) nil
-                   "open" (concat "message://" (substring message-id 2) "")))
 
 
 
