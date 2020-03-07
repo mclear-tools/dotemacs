@@ -3,7 +3,7 @@
 ;; Author: Vegard Øye <vegard_oye at hotmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 
-;; Version: 1.14.0
+;; Version: 1.13.0
 
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -561,8 +561,7 @@ The default behavior is to yank the whole line, like Vim."
   :group 'evil
   :type 'boolean
   :initialize #'evil-custom-initialize-pending-reset
-  :set #'(lambda (sym value)
-           (set-default sym value)
+  :set #'(lambda (_sym value)
            (evil-add-command-properties
             'evil-yank-line
             :motion (if value
@@ -577,9 +576,7 @@ large accessible in insert state."
   :group 'evil
   :type 'boolean
   :initialize #'evil-custom-initialize-pending-reset
-  :set #'(lambda (sym value)
-           (set-default sym value)
-           (evil-update-insert-state-bindings sym value)))
+  :set #'evil-update-insert-state-bindings)
 
 (defcustom evil-echo-state t
   "Whether to signal the current state in the echo area."
@@ -907,8 +904,7 @@ should be overridden. If STATE is nil, all states are
 overridden."
   :type '(alist :key-type symbol :value-type symbol)
   :group 'evil
-  :set #'(lambda (var values)
-           (set-default var values)
+  :set #'(lambda (_var values)
            (evil-set-custom-state-maps 'evil-overriding-maps
                                        'evil-pending-overriding-maps
                                        'override-state
@@ -927,8 +923,7 @@ should be intercepted. If STATE is nil, all states are
 intercepted."
   :type '(alist :key-type symbol :value-type symbol)
   :group 'evil
-  :set #'(lambda (var values)
-           (set-default var values)
+  :set #'(lambda (_var values)
            (evil-set-custom-state-maps 'evil-intercept-maps
                                        'evil-pending-intercept-maps
                                        'intercept-state
@@ -1937,7 +1932,7 @@ Otherwise the previous command is assumed as substitute.")
                       (buffer-substring (point-min)
                                         (line-end-position))))
           ;; no repo, use plain version
-          "1.14.0"))))
+          "1.13.0"))))
   "The current version of Evil")
 
 (defcustom evil-want-integration t

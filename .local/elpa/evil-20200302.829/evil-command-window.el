@@ -2,7 +2,7 @@
 ;; Author: Emanuel Evans <emanuel.evans at gmail.com>
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 
-;; Version: 1.14.0
+;; Version: 1.13.0
 
 ;;
 ;; This file is NOT part of GNU Emacs.
@@ -87,7 +87,7 @@ it will be used as the function to execute instead of
         (config (current-window-configuration)))
     (evil-ex-teardown)
     (select-window (minibuffer-selected-window) t)
-    (evil-command-window-ex current (apply-partially 'evil-ex-command-window-execute config))))
+    (evil-ex-command-window current (apply-partially 'evil-ex-command-window-execute config))))
 
 (defun evil-ex-search-command-window ()
   "Start command window with search history and current minibuffer content."
