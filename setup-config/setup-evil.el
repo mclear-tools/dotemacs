@@ -83,7 +83,7 @@
   (with-eval-after-load 'evil-surround
     (evil-embrace-enable-evil-surround-integration))
   (setq evil-embrace-show-help-p nil)
-  ;; (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+  (add-hook 'org-mode-hook 'embrace-org-mode-hook)
   (defun embrace-markdown-mode-hook ()
     (dolist (lst '((?* "*" . "*")
                    (?\ "\\" . "\\")
