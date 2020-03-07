@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "visual-fill-column" "20200303.2318" "fill-column for visual-line-mode" '((emacs "24.3")) :stars '(#("110" 0 3 (font-lock-face paradox-star-face)) #("58K" 0 3 (value 58091 font-lock-face paradox-download-face))) :commit "a19fbe8bcfab678516ffcaa84b516527a0ce45cf" :authors '(("Joost Kremers" . "joostkremers@fastmail.fm")) :maintainer '("Joost Kremers" . "joostkremers@fastmail.fm") :url "https://github.com/joostkremers/visual-fill-column")

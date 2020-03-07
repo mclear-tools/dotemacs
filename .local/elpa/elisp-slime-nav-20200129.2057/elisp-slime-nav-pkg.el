@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "elisp-slime-nav" "20200129.2057" "Make M-. and M-, work in elisp like they do in slime" '((cl-lib "0.2")) :stars '(#("119" 0 3 (font-lock-face paradox-star-face)) #("358K" 0 4 (value 358789 font-lock-face paradox-download-face))) :commit "fea3bedf6383fea8370a9484a5610759c25055f9" :keywords '("navigation" "slime" "elisp" "emacs-lisp") :authors '(("Steve Purcell" . "steve@sanityinc.com")) :maintainer '("Steve Purcell" . "steve@sanityinc.com") :url "https://github.com/purcell/elisp-slime-nav")
