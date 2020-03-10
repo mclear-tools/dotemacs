@@ -245,6 +245,29 @@
  :keymaps 'override
  "s-2" 'cpm/open-emacsd-in-workspace)
 
+;;;; Open Notes in workspace
+(defun cpm/open-notes-in-workspace ()
+  "open notes dir in its own perspective"
+  (interactive)
+  (if (get-buffer "*Deft*")
+      (persp-switch "Notes")
+    (eyebrowse-switch-to-window-config-3)
+    (persp-switch "Notes")
+    (setq frame-title-format
+          '(""
+            "%b"
+            (:eval
+             (let ((project-name (projectile-project-name)))
+               (unless (string= "-" project-name)
+                 (format " in [%s]" project-name))))))
+    (big-notes))
+  (persp-add-buffer "*Deft*"))
+
+(general-define-key
+ :states '(insert normal motion emacs)
+ :keymaps 'override
+ "s-3" 'cpm/open-notes-in-workspace)
+
 ;;;; Open New Buffer in Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
 ;; dummy git project to give the isolation of buffers typical with a git project
