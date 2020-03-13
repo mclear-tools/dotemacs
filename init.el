@@ -156,8 +156,8 @@
 (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
 
 ;;;; Package Initialization Settings
-;; we're setting =package-enable-at-startup= to nil so that packages will not
-;; automatically be loaded for us since =use-package= will be handling that.
+;; we're setting `package-enable-at-startup` to nil so that packages will not
+;; automatically be loaded for us since use-package will be handling that.
 
 (eval-and-compile
   (setq package-user-dir (concat cpm-local-dir "elpa/"))
@@ -174,9 +174,9 @@
 
 ;;;; Load Path
 ;; We're going to set the load path ourselves so that we don't have to call
-;; =package-initialize= at runtime and incur a large performance hit. This
+;; `package-initialize` at runtime and incur a large performance hit. This
 ;; load-path will actually be faster than the one created by
-;; =package-initialize= because it appends the elpa packages to the end of the
+;; `package-initialize` because it appends the elpa packages to the end of the
 ;; load path. Otherwise any time a builtin package was required it would have to
 ;; search all of third party paths first.
 (eval-and-compile
@@ -215,10 +215,13 @@
 
 ;; initialize packages after evil has loaded
 (add-hook 'evil-after-load-hook 'package-initialize)
+;; refresh package list after load
+(with-eval-after-load 'evil (package-refresh-contents 'async))
 
 ;;;; Benchmark Init
 (use-package benchmark-init
   :ensure t
+  ;; demand when using
   ;; :demand t
   :config
   ;; To disable collection of benchmark data after init is done.
@@ -256,7 +259,8 @@
   ;; quelpa dir settings
   (setq quelpa-dir (concat cpm-local-dir "quelpa"))
   ;; make sure package-initialize has been called before calling quelpa
-  (advice-add 'quelpa-upgrade :before #'package-initialize))
+  ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
+  )
 
 ;;;; El-Patch
 ;; Package for helping advise other packages
@@ -326,18 +330,21 @@
 ;;;; Config Navigation
 ;; Function to navigate config files
 (defun cpm/find-files-setup-config-directory ()
+  "use counsel to find setup files"
   (interactive)
   (counsel-find-file cpm-setup-dir))
   ;; (helm-find-files-1 cpm-setup-dir))
 
 ;; Function to search config files
 (defun cpm/search-setup-config-files ()
+  "use counsel rg to search all config files"
   (interactive)
   (counsel-rg nil cpm-setup-dir))
 ;; (helm-do-ag cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()
+  "load the base init file"
   (interactive)
   (load-file (concat user-emacs-directory "init.el")))
 
@@ -353,7 +360,6 @@
   "Delete byte-compiled files"
   (interactive)
   (shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc"))
-
 
 
 ;; reset file-name-handler-alist
