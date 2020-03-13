@@ -570,32 +570,6 @@
    "w_" 'cpm/split-window-below-and-focus
    )
 
-;;; Zettel Keybindings (Notes)
-  (general-define-key
-   :prefix "SPC"
-   :non-normal-prefix "C-SPC"
-   :states '(normal visual insert motion emacs)
-   :keymaps 'override
-   "z"  '(nil :wk "Zettelkasten")
-   "zc" '(zetteldeft-search-current-id :wk "search current id")
-   "zd" '(cpm/zettel-dired :wk "zettel dired view")
-   "zf" '(zetteldeft-avy-file-search :wk "avy file search")
-   "zF" '(zetteldeft-avy-file-search-ace-window :wk "avy file other window")
-   "zI" '(zetteldeft-find-file-id-insert :wk "insert id")
-   "zi" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
-   "zl" '(zetteldeft-avy-link-search :wk "avy link search")
-   "zn" '(zetteldeft-new-file :wk "new file")
-   "zN" '(zetteldeft-new-file-and-link :wk "new file & link")
-   "zo" '(zetteldeft-find-file :wk "find file")
-   "zr" '(zetteldeft-file-rename :wk "rename")
-   "zR" '(deft-refresh :wk "refresh")
-   "zs" '(zetteldeft-deft-new-search :wk "new search")
-   "zS" '(zetteldeft-search-at-point :wk "search at point")
-   "zt" '(zetteldeft-avy-tag-search :wk "avy tag search")
-   "zT" '(zetteldeft-tag-buffer :wk "tag list")
-   "z RET" '(zetteldeft-follow-link :wk "follow link at point")
-   )
-
 ;;; Org Keybindings
   (use-package evil-org
     :ensure t
