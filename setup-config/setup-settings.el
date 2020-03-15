@@ -277,15 +277,24 @@
   :config
   (setq esup-depth 0))
 
+;;;; Long Lines
+;; Emacs has problems with reading files with long lines. This package helps with that
+;; https://www.emacswiki.org/emacs?action=browse;oldid=OverLongLineMode;id=SoLong
+(eval-when-compile
+  (quelpa '(so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)))
+(use-package so-long
+  :defer 1
+  :config (global-so-long-mode 1))
+
 ;;;; Miscellaneous
 (use-package remember
- :ensure nil
- :commands (remember remember-notes)
- :config
- (setq remember-data-dir (concat cpm-cache-dir "remember")
-       remember-data-file (concat cpm-cache-dir "remember/notes"))
- (unless (file-directory-p remember-data-dir)
-         (make-directory remember-data-dir t)))
+  :ensure nil
+  :commands (remember remember-notes)
+  :config
+  (setq remember-data-dir (concat cpm-cache-dir "remember")
+        remember-data-file (concat cpm-cache-dir "remember/notes"))
+  (unless (file-directory-p remember-data-dir)
+    (make-directory remember-data-dir t)))
 
 (use-package restart-emacs :commands restart-emacs)
 (setq confirm-kill-processes nil) ; don't object when quitting
