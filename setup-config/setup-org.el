@@ -19,6 +19,7 @@
 
   :config
 ;;;; Org Config Settings
+  (add-hook 'org-mode-hook #'visual-line-mode)
   (setq org-stuck-projects (quote ("" nil nil "")))
   (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
@@ -65,7 +66,7 @@
 
 
 ;;;; Org Modules
-  (setq org-modules (quote (org-info org-tempo org-protocol org-habit org-mac-link)))
+  (setq org-modules (quote (org-tempo org-protocol org-habit org-mac-link)))
 
 ;;;; Org ID
   (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
@@ -670,13 +671,18 @@ Instead it's simpler to use bash."
 (use-package org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-headline-bullets-list '("◉" "⁑" "⁂" "❖" "✮" "✱"))
+  (setq org-superstar-headline-bullets-list '("⚫" "⁑" "⁂" "❖" "✮" "✱" "⚫" "✸"))
   (setq org-superstar-prettify-item-bullets t)
   ;; see https://unicode-table.com/en/25C9/ for ideas
   (setq org-superstar-item-bullet-alist
-        '((?* . ?◦)
-          (?+ . ?•)
-          (?- . ?◉))))
+        '((?* . ?○)
+          (?+ . ?◉)
+          (?- . ?⚫))))
+
+;; Demote sequence for list bullets
+(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+;; Increase sub-item indentation
+(setq org-list-indent-offset 1)
 
 ;;; Org Prettify Source Blocks
 ;; Make source blocks look better. Courtesy of
@@ -1380,6 +1386,34 @@ Don't mark when at certain Org objects."
                  gb/er/mark-org-inside-pairs
                  gb/er/mark-org-outside-pairs))))
 
+;;;; Org link Syntax
+(defun org-update-link-syntax (&optional no-query)
+  "Update syntax for links in current buffer.
+Query before replacing a link, unless optional argument NO-QUERY
+is non-nil."
+  (interactive "P")
+  (org-with-point-at 1
+    (let ((case-fold-search t))
+      (while (re-search-forward "\\[\\[[^]]*?%\\(?:2[05]\\|5[BD]\\)" nil t)
+        (let ((object (save-match-data (org-element-context))))
+          (when (and (eq 'link (org-element-type object))
+                     (= (match-beginning 0)
+                        (org-element-property :begin object)))
+            (goto-char (org-element-property :end object))
+            (let* ((uri-start (+ 2 (match-beginning 0)))
+                   (uri-end (save-excursion
+                              (goto-char uri-start)
+                              (re-search-forward "\\][][]" nil t)
+                              (match-beginning 0)))
+                   (uri (buffer-substring-no-properties uri-start uri-end)))
+              (when (or no-query
+                        (y-or-n-p
+                         (format "Possibly obsolete URI syntax: %S.  Fix? "
+                                 uri)))
+                (setf (buffer-substring uri-start uri-end)
+                      (org-link-escape (org-link-decode uri)))))))))))
+
+
 ;;; Org-Reveal
 (use-package ox-reveal
   :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
@@ -2040,7 +2074,8 @@ Don't mark when at certain Org objects."
      "R N"  #'org-roam--new-file-named))
   :config
   ;;;; Org Roam Formatting
-  (setq org-roam-file-format "%Y-%m%d-%H%M")
+  (setq org-roam-date-filename-format "%Y-%m%d-%H%M")
+  (setq org-roam-date-title-format "%Y-%m%d-%H%M")
 
   ;;;; Org Roam backlink settings for export
   ;; see https://org-roam.readthedocs.io/en/latest/org_export/
@@ -2069,12 +2104,12 @@ Don't mark when at certain Org objects."
            :head "#+SETUPFILE:./hugo_setup.org
 #+HUGO_SECTION: zettels
 #+HUGO_SLUG: ${slug}
-#+TITLE: ${title}\n"
+#+TITLE: %<%Y-%m%d-%H%M>-${title}\n"
            :unnarrowed t)
           ("p" "private" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "private-${slug}"
-           :head "#+TITLE: ${title}\n"
+           :head "#+TITLE: %<%Y-%m%d-%H%M>-${title}\n"
            :unnarrowed t)))
   (setq org-roam-ref-capture-templates
         '(("r" "ref" plain (function org-roam--capture-get-point)
