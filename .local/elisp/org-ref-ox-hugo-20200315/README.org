@@ -1,0 +1,27 @@
+* Org-ref-ox-hugo
+
+Some overrides for [[https://github.com/jkitchin/org-ref][org-ref]] to play nice with [[https://github.com/kaushalmodi/ox-hugo][ox-hugo]]. For an example,
+you can take a look [[https://braindump.jethro.dev/posts/neural_ode/#bibliography][here]].
+
+You'll need to require the elisp provided, and specify the
+citation formats you want for the ~md~ key. Here's mine:
+
+#+begin_src emacs-lisp
+  (add-to-list 'org-ref-formatted-citation-formats
+               '("md"
+                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
+                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
+                 (nil . "${author}, *${title}* (${year}).")))
+#+end_src
+** Caveats
+
+This breaks pandoc markdown export functionality in org-ref.
+
+Contributions/fixes welcome.
