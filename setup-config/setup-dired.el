@@ -95,14 +95,17 @@
   :ensure t
   :general
   (:keymaps 'dired-mode-map
-            :states '(normal motion)
-            "s" #'hydra-dired-quick-sort/body))
+   :states '(normal motion)
+   "s" #'hydra-dired-quick-sort/body))
 
 ;;;;  Dired Plus
 ;; I used this mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
+(eval-when-compile
+  (quelpa
+   '(dired+ :fetcher wiki)))
 (use-package dired+
-  :disabled t
-  :ensure t
+  ;; :disabled t
+  :ensure nil
   :defer 2
   :init
   (setq font-lock-maximum-decoration nil)
