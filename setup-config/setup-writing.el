@@ -94,22 +94,47 @@
   (setq bibtex-completion-pdf-symbol "⌘")
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
-  (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\nnocite: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
+  ;; (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\noised: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: Notes on: ${author-or-editor} (${year}): ${title}\n#+KEY: ${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n[[pdfview:${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE \n#+END_SRC")
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
-        bibtex-completion-notes-path "~/Dropbox/Notes/reading-notes"
+        ;; bibtex-completion-notes-path "~/Dropbox/Notes/reading-notes"
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/org"
         ;; bibtex-completion-additional-search-fields '(keywords)
-        bibtex-completion-notes-extension ".md"
+        bibtex-completion-notes-extension ".org"
         helm-bibtex-full-frame nil))
 
 ;;; Org Ref
 (use-package org-ref
   :ensure t
-  :commands (org-ref-get-bibtex-entry)
+  ;; :commands (org-ref org-ref-get-bibtex-entry)
+  :after org
+  :demand t
   :config
+  (setq org-ref-completion-library 'org-ref-ivy-cite)
   (setq reftex-default-bibliography "~/Dropbox/Work/bibfile.bib")
   (setq org-ref-default-bibliography "~/Dropbox/Work/bibfile.bib"))
+
+(use-package org-ref-ox-hugo
+  :ensure nil
+  :load-path "~/.emacs.d/.local/elisp/org-ref-ox-hugo-20200315/"
+  :after org-ref
+  :demand t
+  :config
+  (add-to-list 'org-ref-formatted-citation-formats
+               '("md"
+                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
+                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
+                 (nil . "${author}, *${title}* (${year})."))))
+
 
 ;;; Markdown
 (use-package markdown-mode
