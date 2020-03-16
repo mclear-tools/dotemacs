@@ -95,7 +95,7 @@
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
   ;; (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\noised: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
-  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: Notes on: ${author-or-editor} (${year}): ${title}\n#+KEY: ${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n[[pdfview:${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE \n#+END_SRC")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+KEY: ${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n[[pdfview:${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE \n#+END_SRC")
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
@@ -379,12 +379,12 @@
   (with-eval-after-load 'evil
     (add-to-list 'evil-insert-state-modes 'deft-mode))
   ;; basic settings for use with zettel
-  (setq deft-directory (concat (getenv "HOME") "/Dropbox/notes/zettel/")
+  (setq deft-directory (concat (getenv "HOME") "/Dropbox/work/projects/notebook/org")
         deft-recursive t
         deft-use-filename-as-title t
         deft-separator " "
-        deft-extensions '("md" "txt" "org")
-        deft-default-extension "md")
+        deft-extensions '("org" "txt" "md")
+        deft-default-extension "org")
   ;; file renaming rules
   (setq deft-file-naming-rules
         '((noslash . "-")
@@ -413,9 +413,9 @@
   (defun big-notes ()
     "Goto main notes with deft"
     (interactive)
-    (any-deft "~/Dropbox/Notes")
+    (any-deft "~/Dropbox/Work/projects/notebook/org")
     (kill-this-buffer)
-    (any-deft "~/Dropbox/Notes"))
+    (any-deft "~/Dropbox/Work/projects/notebook/org"))
   (defun cpm/deft-open ()
     (interactive)
     (deft-open-file-other-window t))
