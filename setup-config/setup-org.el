@@ -2077,6 +2077,24 @@ is non-nil."
   (setq org-roam-date-filename-format "%Y-%m%d-%H%M")
   (setq org-roam-date-title-format "%Y-%m%d-%H%M")
 
+  ;; fix org roam title conversion
+  (defun org-roam--title-to-slug (title)
+    "Convert TITLE to a filename-suitable slug."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (replace (title pair)
+                        (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("__*" . "-")  ;; remove sequential underscores
+                      ("^_" . "")  ;; remove starting underscore
+                      ("_$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'replace (strip-nonspacing-marks title) pairs)))
+        (s-downcase slug))))
+
+
   ;;;; Org Roam backlink settings for export
   ;; see https://org-roam.readthedocs.io/en/latest/org_export/
   (defun my/org-roam--backlinks-list (file)
@@ -2102,7 +2120,7 @@ is non-nil."
            "%?"
            :file-name "%<%Y-%m%d-%H%M>-${slug}"
            :head "#+SETUPFILE:./hugo_setup.org
-#+HUGO_SECTION: zettels
+#+HUGO_SECTION: zettel
 #+HUGO_SLUG: ${slug}
 #+TITLE: %<%Y-%m%d-%H%M>-${title}\n"
            :unnarrowed t)
