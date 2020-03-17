@@ -104,7 +104,7 @@
   (quelpa
    '(dired+ :fetcher wiki)))
 (use-package dired+
-  ;; :disabled t
+  :disabled t
   :ensure nil
   :defer 2
   :init
