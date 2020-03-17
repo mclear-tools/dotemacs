@@ -140,6 +140,14 @@ codepoints starting from codepoint-start."
   (switch-to-buffer (get-buffer-create (concat "tmp-" (format-time-string "%m.%dT%H.%M.%S"))))
   (delete-other-windows))
 
+;;;; Batch Export Files with Org-Hugo
+(defun cpm/ox-hugo-for-batch-export-files ()
+  "use this emacs in batch mode to export files from org to md"
+  (interactive)
+  (require 'org)
+  (require 'ox-hugo)
+  (org-hugo-export-wim-to-md))
+
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
