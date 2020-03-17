@@ -260,7 +260,7 @@
              (let ((project-name (projectile-project-name)))
                (unless (string= "-" project-name)
                  (format " in [%s]" project-name))))))
-    (big-notes))
+    (cpm/notebook))
   (persp-add-buffer "*Deft*"))
 
 (general-define-key

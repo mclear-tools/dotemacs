@@ -364,7 +364,7 @@
 ;;; Notes / Deft
 (use-package deft
   :ensure t
-  :commands (deft deft-open-file-other-window big-notes deft-new-file-named)
+  :commands (deft deft-open-file-other-window cpm/notebook deft-new-file-named)
   :general
   (:keymaps 'deft-mode-map :states '(normal motion)
    "o" 'cpm/deft-open
@@ -410,7 +410,7 @@
     (switch-to-buffer "*Deft*")
     (kill-this-buffer)
     (deft))
-  (defun big-notes ()
+  (defun cpm/notebook ()
     "Goto main notes with deft"
     (interactive)
     (any-deft "~/Dropbox/Work/projects/notebook/org")

@@ -161,7 +161,7 @@
    "l" 'ivy-resume
    ;; "l" 'helm-resume
    ;; "N" 'research-notes
-   "n" 'big-notes
+   "n" 'cpm/notebook
    "r" 'cpm/resume-last-jump
    "S" 'hydra-spelling/body
    ;; "W" 'woman
