@@ -262,6 +262,14 @@
   ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
   )
 
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
+(quelpa-use-package-activate-advice)
+
+
 ;;;; El-Patch
 ;; Package for helping advise other packages
 (use-package el-patch
