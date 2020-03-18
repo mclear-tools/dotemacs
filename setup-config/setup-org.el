@@ -415,13 +415,17 @@ _vr_ reset      ^^                       ^^                 ^^
 ;;; Org Capture
 ;;;; Capture Settings
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
+  (general-define-key
+   :states '(insert normal motion emacs)
+   :keymaps 'override
+   "C-c c" #'org-capture)
   (setq org-capture-templates
         ;; Note the ` and , to get concat to evaluate properly
         `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
            "* TODO %?\n %i")
           ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "journal.org"))
            "**** %<%H:%M>\n%?")
-          ("l" "A link, for reading later" entry (file ,(concat org-directory "links.org"))
+          ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
            "* %? :link: \n%(grab-mac-link 'safari 'org)")
           ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
            "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
@@ -671,13 +675,13 @@ Instead it's simpler to use bash."
 (use-package org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-headline-bullets-list '("⚫" "⁑" "⁂" "❖" "✮" "✱" "⚫" "✸"))
+  (setq org-superstar-headline-bullets-list '("⚫" "◉" "⁂" "❖" "✮" "✱" "⚫" "✸"))
   (setq org-superstar-prettify-item-bullets t)
   ;; see https://unicode-table.com/en/25C9/ for ideas
   (setq org-superstar-item-bullet-alist
         '((?* . ?○)
           (?+ . ?◉)
-          (?- . ?⚫))))
+          (?- . ?●))))
 
 ;; Demote sequence for list bullets
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
@@ -826,7 +830,7 @@ Instead it's simpler to use bash."
 (defun cpm/goto-org-files ()
   "goto org-files directory"
   (interactive)
-  (helm-find-files-1 org-directory))
+  (counsel-find-file org-directory))
 (defun cpm/goto-inbox.org ()
   "goto org-inbox"
   (interactive)
@@ -835,10 +839,6 @@ Instead it's simpler to use bash."
   "goto org-todo"
   (interactive)
   (find-file (concat org-directory "todo.org")))
-(defun cpm/goto-articles.org ()
-  "goto org-articles"
-  (interactive)
-  (find-file (concat org-directory "articles.org")))
 (defun cpm/goto-conferences.org ()
   "goto org-conferences"
   (interactive)
@@ -855,10 +855,6 @@ Instead it's simpler to use bash."
   "goto org-someday"
   (interactive)
   (find-file (concat org-directory "someday.org")))
-(defun cpm/goto-links.org ()
-  "goto org-links"
-  (interactive)
-  (find-file (concat org-directory "links.org")))
 (defun cpm/goto-reading.org ()
   "goto reading list"
   (interactive)
@@ -2161,6 +2157,7 @@ is non-nil."
   :commands (org-insert-dtp-link org-dtp-store-link)
   :ensure nil
   :load-path cpm-elisp-dir)
+
 
 ;;; Provide
 (provide 'setup-org)

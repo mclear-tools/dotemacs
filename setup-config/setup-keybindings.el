@@ -484,7 +484,6 @@
    "uAc" #'cpm/goto-conferences.org
    "uAf" #'cpm/goto-org-files
    "uAi" #'cpm/goto-inbox.org
-   "uAl" #'cpm/goto-links.org
    "uAr" #'cpm/goto-reference.org
    "uAR" #'cpm/goto-referee-reports.org
    ;; "uAp" #'cpm/goto-projects.org
@@ -505,7 +504,6 @@
    "uo" 'cpm/markdown-to-org
    "up" 'run-pandoc
    "uP" 'cpm/pandoc-pdf-open
-   "ur" 'remember-notes
    "us" 'sb-expand-current-file
    "uS" 'just-one-space
    ;; "ut" 'cpm/org-goto-todo
