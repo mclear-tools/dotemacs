@@ -72,6 +72,11 @@
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
   :config
+  (setq posframe-arghandler #'cpm/posframe-arghandler)
+  ;; see https://github.com/yanghaoxie/which-key-posframe/issues/5#issuecomment-527528759
+  (defun cpm/posframe-arghandler (buffer-or-name arg-name value)
+    (let ((info '(:width (round (* (frame-width) 0.72)) :height 75)))
+      (or (plist-get info arg-name) value)))
   (setq which-key-posframe-border-width 15)
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-center))
 
