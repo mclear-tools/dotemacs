@@ -433,6 +433,8 @@ _vr_ reset      ^^                       ^^                 ^^
           ;;  "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
+          ("M" "UNL Merit Review" entry (file ,(concat org-directory "merit-reviews.org"))
+           (file ,(concat org-directory "templates/merit-review-template.org")))
           ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
            (file ,(concat org-directory "templates/weekly_review_template.org")))
           ("R" "Referee report" entry (file+datetree ,(concat org-directory "referee-reports.org"))
