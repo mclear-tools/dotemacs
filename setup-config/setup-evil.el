@@ -50,6 +50,10 @@
     (setq evil-echo-state nil)
     ;; don't move cursor back when exiting insert state
     (setq evil-move-cursor-back nil)
+    ;; move by visual lines
+    (setq evil-respect-visual-line-mode t)
+    ;; Use counsel to provide :ls
+    (evil-ex-define-cmd "buffers" 'counsel-ibuffer)
     ;; evil everywhere
     (evil-mode 1)))
 

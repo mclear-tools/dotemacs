@@ -21,9 +21,6 @@
   :commands (helm-mode helm-find-files-1 helm-mini helm-M-x helm-find-files helm-find)
   :config
   (progn
-    ;; Use helm to provide :ls, unless ibuffer is used
-    (with-eval-after-load 'evil
-      (evil-ex-define-cmd "buffers" 'helm-buffers-list))
     (set-face-attribute 'helm-source-header nil
                         :height 180)
     (setq helm-locate-fuzzy-match nil
