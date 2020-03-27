@@ -125,6 +125,7 @@
                   :files (:defaults "*.c" "*.h" "CMakeLists.txt"))))
 (use-package vterm
   :ensure nil
+  :demand evil-collection
   :commands (vterm vterm-other-window)
   :general
   (:states '(normal insert)
