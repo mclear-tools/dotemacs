@@ -267,5 +267,17 @@ Lisp function does not specify a special indentation."
                 highlight-indent-guides-auto-enabled t))
 
 
+;;; Linting/Error Checking
+(use-package flycheck
+  :ensure t
+  :defer 2
+  :init
+  (setq global-flycheck-mode 1)
+  :config
+  (setq-default flycheck-emacs-lisp-initialize-packages t
+                flycheck-highlighting-mode 'symbols
+                flycheck-check-syntax-automatically '(idle-change)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-programming)
