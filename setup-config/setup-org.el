@@ -198,6 +198,14 @@
                 " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
           (search . " %i %-12:c")))
 
+;;;; Agenda Toggle
+  (defun cpm/toggle-org-agenda-file-set ()
+    (interactive)
+    (if (equal org-agenda-files (list org-directory))
+        (setq org-agenda-files (list "~/Dropbox/Work/projects/notebook/org/"))
+      (setq org-agenda-files (list org-directory)))
+    (message "Using %s" org-agenda-files))
+
 ;;;; Agenda Navigation
   ;; Courtesy of [[https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html][Aaron Bieber]]
   (defun air-org-agenda-next-header ()
