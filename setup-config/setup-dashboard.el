@@ -13,15 +13,15 @@
   ;; use only with GUI emacs
   :if (display-graphic-p)
   :if (< (length command-line-args) 2)
-  :general
-  (:states '(normal motion emacs)
-   :keymaps 'dashboard-mode-map
-   "TAB" 'widget-forward
-   "C-i" 'widget-forward
-   "<backtab>" 'widget-backward
-   "RET" 'widget-button-press
-   "<down-mouse-1>" 'widget-button-click
-   "g" #'dashboard-insert-startupify-lists)
+  ;; :general
+  ;; (:states '(normal motion emacs)
+  ;;  :keymaps 'dashboard-mode-map
+  ;;  "TAB" 'widget-forward
+  ;;  "C-i" 'widget-forward
+  ;;  "<backtab>" 'widget-backward
+  ;;  "RET" 'widget-button-press
+  ;;  "<down-mouse-1>" 'widget-button-click
+  ;;  "g" #'dashboard-insert-startupify-lists)
   :config
   ;; banner & header
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png")
