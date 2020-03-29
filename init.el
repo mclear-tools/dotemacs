@@ -262,12 +262,12 @@
   ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
   )
 
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-(quelpa-use-package-activate-advice)
+;; (quelpa
+;;  '(quelpa-use-package
+;;    :fetcher git
+;;    :url "https://github.com/quelpa/quelpa-use-package.git"))
+;; (require 'quelpa-use-package)
+;; (quelpa-use-package-activate-advice)
 
 
 ;;;; El-Patch
@@ -378,3 +378,4 @@
 (message (format "Emacs ready in %.2f seconds with %d garbage collections."
                  (float-time
                   (time-subtract after-init-time before-init-time)) gcs-done))
+(put 'narrow-to-page 'disabled nil)
