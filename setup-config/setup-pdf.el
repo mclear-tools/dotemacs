@@ -240,15 +240,26 @@
                                     (linum-mode -1)
                                     (beacon-mode -1)))))
 
+;;;; PDF Notetaking Tools
 (use-package org-pdftools
-  :disabled
+  :ensure t
+  :after org
+  :demand t
+  :config (setq org-pdftools-root-dir "~/Dropbox/Work/projects/notebook/org"
+                org-pdftools-search-string-separator "??")
+  (with-eval-after-load 'org
+    (org-link-set-parameters "pdftools"
+                             :follow #'org-pdftools-open
+                             :complete #'org-pdftools-complete-link
+                             :store #'org-pdftools-store-link
+                             :export #'org-pdftools-export)
+    (add-hook 'org-store-link-functions 'org-pdftools-store-link)))
+
+(use-package org-noter
+  :ensure t)
+(use-package org-noter-pdftools
   :ensure nil
-  :commands (org-pdftools-open)
-  :after pdf-tools
-  :init
-  (add-to-list 'org-file-apps
-               '("\\.pdf\\'" . (lambda (file link)
-                                 (org-pdfview-open link)))))
+  :after (org-noter))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-pdf)
