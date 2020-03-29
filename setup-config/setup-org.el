@@ -836,6 +836,18 @@ Instead it's simpler to use bash."
     (org-backward-heading-same-level 1))
   (org-narrow-to-subtree))
 
+;;;; Clone and Narrow
+(defun cpm/clone-buffer-and-narrow ()
+  "Clone buffer and narrow org tree"
+  (interactive)
+  (let ((buf (clone-indirect-buffer-other-window nil nil)))
+    (with-current-buffer buf
+      (cond ((derived-mode-p 'org-mode)
+             (org-narrow-to-element))
+            ((derived-mode-p 'markdown-mode)
+             (markdown-narrow-to-subtree))))
+    (switch-to-buffer-other-window buf)))
+
 ;;;; Goto Org Files
 (defun cpm/goto-org-files ()
   "goto org-files directory"

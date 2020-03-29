@@ -210,7 +210,7 @@
    "c"  '(:ignore t :which-key "command")
    "h"  '(:ignore t :which-key "insert")
    "i"  '(:ignore t :which-key "lists")
-   "x"  '(:ignore t :which-key "text")
+   "t"  '(:ignore t :which-key "text")
 
    ;; Movement
    "{"   'markdown-backward-paragraph
@@ -225,6 +225,7 @@
 
    ;; Buffer-wide commands
    "c]"  'markdown-complete-buffer
+   "cb"  'cpm/clone-buffer-and-narrow
    "cc"  'multi-compile-run
    "cm"  'markdown-other-window
    "cn"  'markdown-cleanup-list-numbers
@@ -266,14 +267,15 @@
    "li"  'markdown-insert-list-item
 
    ;; region manipulation
-   "xb"  'markdown-insert-bold
-   "xi"  'markdown-insert-italic
-   "xc"  'markdown-insert-code
-   "xC"  'markdown-insert-gfm-code-block
-   "xq"  'markdown-insert-blockquote
-   "xQ"  'markdown-blockquote-region
-   "xp"  'markdown-insert-pre
-   "xP"  'markdown-pre-region
+   "tb"  'markdown-insert-bold
+   "ti"  'markdown-insert-italic
+   "tc"  'markdown-insert-code
+   "tC"  'markdown-insert-gfm-code-block
+   "tq"  'markdown-insert-blockquote
+   "tQ"  'markdown-blockquote-region
+   "tp"  'markdown-insert-pre
+   "tP"  'markdown-pre-region
+   "tn"  'cpm/narrow-or-widen-dwim
 
    ;; Following and Jumping
    "N"   'markdown-next-link
