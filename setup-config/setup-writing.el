@@ -95,7 +95,7 @@
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
   ;; (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\noised: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
-  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+KEY: ${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n[[pdfview:${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE \n#+END_SRC")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- bibkey :: cite:${=key=}\n- tags :: \n\n[[pdfview:${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE \n#+END_SRC")
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
