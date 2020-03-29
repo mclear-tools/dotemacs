@@ -244,6 +244,7 @@
 ;; start server for emacsclient
 (use-package server
   :ensure nil
+  :if window-system
   :hook (after-init . server-mode))
 
 ;;;; Outshine Outline Navigation
