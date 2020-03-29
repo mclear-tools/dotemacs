@@ -2074,9 +2074,7 @@ is non-nil."
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org
   :hook
-  (;; (org-mode . org-roam-mode)
-   (after-init . org-roam--build-cache-async) ;; optional!
-   )
+  (org-mode . org-roam-mode)
   :custom
   (org-roam-directory "~/Dropbox/Work/projects/notebook/org/")
   ;;;; Org Roam Keybindings
@@ -2134,29 +2132,21 @@ is non-nil."
   ;;;; Org Roam Templating
   ;; see https://org-roam.readthedocs.io/en/latest/templating/
   (setq org-roam-capture-templates
-        '(("d" "default" plain (function org-roam--capture-get-point)
+        '(("d" "default" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "%<%Y-%m%d-%H%M>-${slug}"
-           :head "#+SETUPFILE:./hugo_setup.org
-#+HUGO_SECTION: zettel
-#+HUGO_SLUG: ${slug}
-#+TITLE: %<%Y-%m%d-%H%M>-${title}\n"
+           :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: zettel\n#+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
            :unnarrowed t)
-          ("p" "private" plain (function org-roam--capture-get-point)
+          ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private-${slug}"
-           :head "#+TITLE: %<%Y-%m%d-%H%M>-${title}\n"
+           :head "#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
            :unnarrowed t)))
   (setq org-roam-ref-capture-templates
-        '(("r" "ref" plain (function org-roam--capture-get-point)
+        '(("r" "ref" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "websites/${slug}"
-           :head "#+SETUPFILE:./hugo_setup.org
-#+HUGO_SECTION: Weblinks
-#+ROAM_KEY: ${ref}
-#+HUGO_SLUG: ${slug}
-#+TITLE: ${title}
-- source :: ${ref}"
+           :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: Weblinks\n#+ROAM_KEY: ${ref}\n #+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>\n\n- source :: ${ref}"
            :unnarrowed t))))
 
 

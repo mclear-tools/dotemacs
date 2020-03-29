@@ -40,11 +40,49 @@ Otherwise, behave as if called interactively.
 
 ;;;***
 
+;;;### (autoloads nil "org-roam-capture" "org-roam-capture.el" (0
+;;;;;;  0 0 0))
+;;; Generated autoloads from org-roam-capture.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-capture" '("org-roam-")))
+
+;;;***
+
+;;;### (autoloads nil "org-roam-completion" "org-roam-completion.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from org-roam-completion.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-completion" '("org-roam-completion-")))
+
+;;;***
+
+;;;### (autoloads nil "org-roam-db" "org-roam-db.el" (0 0 0 0))
+;;; Generated autoloads from org-roam-db.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-db" '("org-roam-")))
+
+;;;***
+
+;;;### (autoloads nil "org-roam-graph" "org-roam-graph.el" (0 0 0
+;;;;;;  0))
+;;; Generated autoloads from org-roam-graph.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-graph" '("org-roam-")))
+
+;;;***
+
+;;;### (autoloads nil "org-roam-macs" "org-roam-macs.el" (0 0 0 0))
+;;; Generated autoloads from org-roam-macs.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-macs" '("org-roam--with-temp-buffer")))
+
+;;;***
+
 ;;;### (autoloads nil "org-roam-protocol" "org-roam-protocol.el"
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from org-roam-protocol.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-protocol" '("org-roam-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-roam-protocol" '("org-roam-protocol-open-")))
 
 ;;;***
 
