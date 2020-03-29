@@ -136,9 +136,18 @@
 ;;;; PDF-Tools
 ;; good but often problematic pdf reader and annotator
 (use-package pdf-tools
+  ;; :disabled
   :mode (("\\.pdf$" . pdf-view-mode))
   :commands (pdf-view-mode)
   :config
+  ;; initialise
+  (pdf-tools-install)
+  ;; open pdfs scaled to fit page
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; automatically annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+  ;; HiDPI
+  (setq pdf-view-use-scaling t)
   (progn
     (pdf-tools-install)
     (evil-set-initial-state 'pdf-view-mode 'normal)
@@ -228,14 +237,8 @@
                                     (bms/pdf-midnite-colour-schemes)
                                         ; fixes blinking pdf in evil
                                     (blink-cursor-mode -1)
-                                    (beacon-mode -1))))
-  ;;;Hidpi
-  (setq pdf-view-use-scaling t))
-
-;; (eval-when-compile
-;;   (quelpa
-;;    '(org-pdftools :fetcher github :repo "fuxialexander/org-pdftools"))
-;;   )
+                                    (linum-mode -1)
+                                    (beacon-mode -1)))))
 
 (use-package org-pdftools
   :disabled
