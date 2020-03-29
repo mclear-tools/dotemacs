@@ -76,7 +76,7 @@
         '((sequence "TODO(t)" "DOING(g)" "NEXT(n)" "WAITING(w@/!)" "MAYBE(m)" "SOMEDAY(s)" "|" "DONE(d)")
           (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELED(c@/!)")))
 ;;;; Org Priority Settings
-  (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
+  (setq org-priority-faces '((?A . (:foreground "red"))
                              (?B . (:foreground "orange"))
                              (?C . (:foreground "DarkGoldenrod2"))
                              (?D . (:forefround "green"))))
