@@ -2150,6 +2150,11 @@ is non-nil."
            :unnarrowed t))))
 
 
+;;; Company Org Roam
+(use-package company-org-roam
+  :config
+  (push 'company-org-roam company-backends))
+
 ;;; Org Miscellaneous Packages
 
 (use-package htmlize :commands (htmlize-buffer))
