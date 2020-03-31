@@ -226,7 +226,6 @@
   (interactive)
   (if (get-buffer "init.el")
       (persp-switch "emacs.d")
-    (eyebrowse-switch-to-window-config-1)
     (persp-switch "emacs.d")
     (setq frame-title-format
           '(""
@@ -251,7 +250,6 @@
   (interactive)
   (if (get-buffer "*Deft*")
       (persp-switch "Notes")
-    (eyebrowse-switch-to-window-config-3)
     (persp-switch "Notes")
     (setq frame-title-format
           '(""
@@ -295,7 +293,6 @@
 (defun cpm/open-existing-project-and-workspace ()
   "open a project as its own perspective"
   (interactive)
-  (eyebrowse-switch-to-window-config-1)
   (persp-switch "new-persp")
   (counsel-projectile-switch-project)
   (setq frame-title-format
@@ -316,7 +313,7 @@
 (defun cpm/create-new-project-and-workspace ()
   "create & open a project as its own perspective"
   (interactive)
-  (eyebrowse-switch-to-window-config-1)
+  ;; (eyebrowse-switch-to-window-config-1)
   (persp-switch "new-project")
   (cpm/git-new-project)
   (setq frame-title-format
