@@ -120,12 +120,11 @@
 
 ;;;; Vterm
 ;; Better terminal function---way faster than ansi-term
-(eval-when-compile
-  (quelpa '(vterm :fetcher github :repo "akermu/emacs-libvterm"
-                  :files (:defaults "*.c" "*.h" "CMakeLists.txt"))))
+;; (eval-when-compile
+;;   (quelpa '(vterm :fetcher github :repo "akermu/emacs-libvterm"
+;;                   :files (:defaults "*.c" "*.h" "CMakeLists.txt"))))
 (use-package vterm
-  :ensure nil
-  :demand evil-collection
+  :ensure t
   :commands (vterm vterm-other-window)
   :general
   (:states '(normal insert)
@@ -157,10 +156,10 @@
 (add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
 
 ;; vterm toggle
-(eval-when-compile
-  (quelpa '(vterm-toggle :fetcher github :repo "jixiuf/vterm-toggle")))
+;; (eval-when-compile
+;;   (quelpa '(vterm-toggle :fetcher github :repo "jixiuf/vterm-toggle")))
 (use-package vterm-toggle
-  :ensure nil
+  :ensure t
   :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
   :config
   (setq vterm-toggle-fullscreen-p nil)
