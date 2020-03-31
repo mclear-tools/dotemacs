@@ -588,9 +588,8 @@ _vr_ reset      ^^                       ^^                 ^^
         '(("\\.docx\\'" . default)
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
-          ("\\.pdf\\'" . default)
+          ("\\.pdf\\'" . emacs)
           (auto-mode . emacs)))
-  (general-define-key "C-c a" #'org-agenda)
 
   ;; Open bookends file links in bookends
   (org-add-link-type

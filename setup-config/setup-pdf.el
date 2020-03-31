@@ -241,25 +241,55 @@
                                     (beacon-mode -1)))))
 
 ;;;; PDF Notetaking Tools
-(use-package org-pdftools
-  :ensure t
-  :after org
-  :demand t
-  :config (setq org-pdftools-root-dir "~/Dropbox/Work/projects/notebook/org"
-                org-pdftools-search-string-separator "??")
-  (with-eval-after-load 'org
-    (org-link-set-parameters "pdftools"
-                             :follow #'org-pdftools-open
-                             :complete #'org-pdftools-complete-link
-                             :store #'org-pdftools-store-link
-                             :export #'org-pdftools-export)
-    (add-hook 'org-store-link-functions 'org-pdftools-store-link)))
+(defvar user-pdf-dir
+  "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library")
 
 (use-package org-noter
-  :ensure t)
+  :ensure t
+  :after org
+  :commands (org-noter)
+  :config
+  (setq org-noter-auto-save-last-location t
+        org-noter-insert-selected-text-inside-note t
+        org-noter-insert-note-no-questions t
+        org-noter-kill-frame-at-session-end t
+        org-noter-default-notes-file-names '("noter-notes.org")
+        org-noter-notes-search-path '("~/Dropbox/Work/projects/notebook/org")))
+
+;; Couldn't get either of these working
+(use-package org-pdfview
+  :disabled
+  :ensure t
+  :config
+  (org-link-set-parameters "pdfview"
+                           :follow #'org-pdfview-open
+                           :export #'org-pdfview-export
+                           :complete #'org-pdfview-complete-link
+                           :store #'org-pdfview-store-link)
+  (add-to-list 'org-file-apps '("\\.pdf\\'" . (lambda (file link) (org-pdfview-open link))))
+  (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . (lambda (file link) (org-pdfview-open link)))))
+
+;; I can't seem to get this to work...
+(use-package org-pdftools
+  :disabled
+  :after org
+  :demand t
+  :init (setq org-pdftools-search-string-separator "??")
+  :config
+  (setq org-pdftools-root-dir user-pdf-dir)
+  (org-link-set-parameters "pdftools"
+                           :follow #'org-pdftools-open
+                           :complete #'org-pdftools-complete-link
+                           :store #'org-pdftools-store-link
+                           :export #'org-pdftools-export)
+  (add-hook 'org-store-link-functions 'org-pdftools-store-link))
+
 (use-package org-noter-pdftools
+  :disabled
   :ensure nil
   :after (org-noter))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-pdf)
