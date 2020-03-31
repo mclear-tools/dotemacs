@@ -161,6 +161,7 @@
         ;; org-agenda-sticky t
         org-agenda-span 'day)
 
+  (general-define-key "C-c a" #'org-agenda)
   (with-eval-after-load 'org-agenda
     (general-define-key :keymaps 'org-agenda-mode-map
       "j" 'org-agenda-next-item
@@ -599,8 +600,8 @@ _vr_ reset      ^^                       ^^                 ^^
     (shell-command-to-string (concat "open bookends:" path)))
 
 
-;;; End Use-Package Config
-  ;; end use-package config settings
+;;; End Org Use-Package Config
+  ;; end org use-package config settings
   )
 ;;; Org Babel
 ;; org babel source block settings
@@ -2081,13 +2082,14 @@ is non-nil."
   :general
   (:states '(normal motion)
    (cpm/leader-keys
-     "R l"  #'org-roam
-     "R t"  #'org-roam-today
-     "R f"  #'org-roam-find-file
-     "R i"  #'org-roam-insert
-     "R g"  #'org-roam-show-graph
-     "R n"  #'org-roam-new-file
-     "R N"  #'org-roam--new-file-named))
+     "z"    #'(:ignore t :which-key "Zettelkasten")
+     "z l"  #'org-roam
+     "z t"  #'org-roam-today
+     "z f"  #'org-roam-find-file
+     "z i"  #'org-roam-insert
+     "z g"  #'org-roam-show-graph
+     "z n"  #'org-roam-new-file
+     "z N"  #'org-roam--new-file-named))
   :config
   ;;;; Org Roam Formatting
   (setq org-roam-date-filename-format "%Y-%m%d-%H%M")

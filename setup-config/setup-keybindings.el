@@ -601,7 +601,7 @@
    ":"   #'org-set-tags
    "a"   #'cpm/jump-to-org-super-agenda
    "A"   #'org-archive-subtree
-   "b"   #'org-tree-to-indirect-buffer
+   "b"   #'cpm/clone-buffer-and-narrow
    "B"   #'org-babel-tangle
    "c"   #'org-capture
    "d"   #'org-time-stamp
