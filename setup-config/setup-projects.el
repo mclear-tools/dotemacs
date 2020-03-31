@@ -205,15 +205,15 @@
   (if (get-buffer "*Org Agenda*")
       (progn
         (persp-switch "agenda")
+        ;; (eyebrowse-switch-to-window-config-1)
         (switch-to-buffer "*Org Agenda*")
-        (delete-other-windows)
-        (eyebrowse-switch-to-window-config-1)
-        (persp-switch "agenda"))
-    (persp-switch "agenda")
-    (setq frame-title-format '("" "%b"))
-    (require 'org-super-agenda)
-    (cpm/jump-to-org-super-agenda)
-    (persp-add-buffer "*Org Agenda*")))
+        (delete-other-windows))
+    (progn
+      (persp-switch "agenda")
+      (setq frame-title-format '("" "%b"))
+      (require 'org-super-agenda)
+      (cpm/jump-to-org-super-agenda)
+      (persp-add-buffer "*Org Agenda*"))))
 
   (general-define-key
    :states '(insert normal motion emacs)
