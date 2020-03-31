@@ -62,9 +62,8 @@
   :ensure t
   :after evil
   :hook (evil-after-load-hook . evil-collection-init)
-  :custom (evil-collection-company-use-tng nil)
-  :init
-  (evil-collection-init))
+  :custom
+  (evil-collection-company-use-tng nil))
 
 ;;; Evil Indent
 (use-package evil-indent-textobject :commands (evil-indent))
