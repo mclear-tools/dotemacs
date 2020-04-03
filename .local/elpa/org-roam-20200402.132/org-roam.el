@@ -73,9 +73,13 @@ All Org files, at any level of nesting, is considered part of the Org-roam."
   "Position of `org-roam' buffer.
 Valid values are
  * left,
- * right."
+ * right,
+ * top,
+ * bottom."
   :type '(choice (const left)
-                 (const right))
+                 (const right)
+                 (const top)
+                 (const bottom))
   :group 'org-roam)
 
 (defcustom org-roam-link-title-format "%s"
@@ -86,7 +90,15 @@ Formatter may be a function that takes title as its only argument."
           (function :tag "Custom function"))
   :group 'org-roam)
 
-(defcustom org-roam-buffer-width 0.33 "Width of `org-roam' buffer."
+(defcustom org-roam-buffer-width 0.33
+  "Width of `org-roam' buffer.
+Has an effect if and only if `org-roam-buffer-position' is `left' or `right'."
+  :type 'number
+  :group 'org-roam)
+
+(defcustom org-roam-buffer-height 0.27
+  "Height of `org-roam' buffer.
+Has an effect if and only if `org-roam-buffer-position' is `top' or `bottom'."
   :type 'number
   :group 'org-roam)
 
@@ -487,15 +499,17 @@ This uses the templates defined at `org-roam-capture-templates'."
   (interactive)
   (org-roam--file-for-time (current-time)))
 
-(defun org-roam-tomorrow ()
-  "Create and find the file for tomorrow."
-  (interactive)
-  (org-roam--file-for-time (time-add 86400 (current-time))))
+(defun org-roam-tomorrow (n)
+  "Create and find the file for tomorrow.
+With numeric argument N, use N days in the future."
+  (interactive "p")
+  (org-roam--file-for-time (time-add (* n 86400) (current-time))))
 
-(defun org-roam-yesterday ()
-  "Create and find the file for yesterday."
-  (interactive)
-  (org-roam--file-for-time (time-add -86400 (current-time))))
+(defun org-roam-yesterday (n)
+  "Create and find the file for yesterday.
+With numeric argument N, use N days in the past."
+  (interactive "p")
+  (org-roam-tomorrow (- n)))
 
 (defun org-roam-date ()
   "Create the file for any date using the calendar."
@@ -628,7 +642,6 @@ This function hooks into `org-open-at-point' via `org-open-at-point-functions'."
                         (insert (propertize
                                  (s-trim (s-replace "\n" " "
                                                     (plist-get props :content)))
-                                 'font-lock-face 'org-roam-backlink
                                  'help-echo "mouse-1: visit backlinked note"
                                  'file-from file-from
                                  'file-from-point (plist-get props :point)))
@@ -672,16 +685,37 @@ Valid states are 'visible, 'exists and 'none."
        ((< (window-width) w)
         (enlarge-window-horizontally (- w (window-width))))))))
 
-(defun org-roam--setup-buffer ()
-  "Setup the `org-roam' buffer at the `org-roam-buffer-position'."
-  (let ((window (get-buffer-window)))
+(defun org-roam--set-height (height)
+  "Set the height of `org-roam-buffer' to `HEIGHT'."
+  (unless (one-window-p)
+    (let ((window-size-fixed)
+          (h (max height window-min-height)))
+      (cond
+       ((> (window-height) h)
+        (shrink-window  (- (window-height) h)))
+       ((< (window-height) h)
+        (enlarge-window (- h (window-height))))))))
+
+(defun org-roam--set-up-buffer ()
+  "Set up the `org-roam' buffer at the `org-roam-buffer-position'."
+  (let ((window (get-buffer-window))
+        (position
+         (if (member org-roam-buffer-position '(right left top bottom))
+             org-roam-buffer-position
+           (let ((text-quoting-style 'grave))
+             (lwarn '(org-roam) :error
+                    "Invalid org-roam-buffer-position: %s. Defaulting to \\='right"
+                    org-roam-buffer-position))
+           'right)))
     (-> (get-buffer-create org-roam-buffer)
         (display-buffer-in-side-window
-         `((side . ,org-roam-buffer-position)))
+         `((side . ,position)))
         (select-window))
-    (org-roam--set-width
-     (round (* (frame-width)
-               org-roam-buffer-width)))
+    (pcase position
+      ((or 'right 'left)
+       (org-roam--set-width  (round (* (frame-width)  org-roam-buffer-width))))
+      ((or 'top  'bottom)
+       (org-roam--set-height (round (* (frame-height) org-roam-buffer-height)))))
     (select-window window)))
 
 (defun org-roam ()
@@ -690,8 +724,8 @@ Valid states are 'visible, 'exists and 'none."
   (setq org-roam-last-window (get-buffer-window))
   (pcase (org-roam--current-visibility)
     ('visible (delete-window (get-buffer-window org-roam-buffer)))
-    ('exists (org-roam--setup-buffer))
-    ('none (org-roam--setup-buffer))))
+    ('exists (org-roam--set-up-buffer))
+    ('none (org-roam--set-up-buffer))))
 
 ;;; The global minor org-roam-mode
 (defvar org-roam-mode-map
