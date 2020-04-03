@@ -26,7 +26,7 @@
 (defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
 (defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
 (defvar cpm-ligatures t)
-(defvar cpm-vari-font (font-spec :family "Avenir"))
+(defvar cpm-vari-font (font-spec :family "Avenir Next"))
 (defvar cpm-unicode-font (font-spec :family "Symbola"))
 (set-face-attribute 'default nil :font cpm-font2)
 (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
