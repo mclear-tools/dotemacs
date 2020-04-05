@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "el-patch" "20200402.1500" "Future-proof your Elisp" '((emacs "25")) :stars '(#("110" 0 3 (font-lock-face paradox-star-face)) #("556" 0 3 (value 556 font-lock-face paradox-download-face))) :commit "278a27477a4d7032fe06bb56ab01701cb10df808" :keywords '("extensions") :authors '(("Radon Rosborough" . "radon.neon@gmail.com")) :maintainer '("Radon Rosborough" . "radon.neon@gmail.com") :url "https://github.com/raxod502/el-patch")
