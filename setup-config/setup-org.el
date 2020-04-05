@@ -2151,8 +2151,10 @@ is non-nil."
            :unnarrowed t))))
 
 
-;;; Company Org Roam
+;;;; Company Org Roam
 (use-package company-org-roam
+  :after company
+  :demand t
   :config
   (push 'company-org-roam company-backends))
 

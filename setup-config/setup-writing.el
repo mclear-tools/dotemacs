@@ -108,13 +108,18 @@
 ;;; Org Ref
 (use-package org-ref
   :ensure t
-  ;; :commands (org-ref org-ref-get-bibtex-entry)
+  :commands (org-ref org-ref-get-bibtex-entry)
   :after org
   :demand t
-  :config
+  :init
+  (setq reftex-default-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
   (setq org-ref-completion-library 'org-ref-ivy-cite)
-  (setq reftex-default-bibliography "~/Dropbox/Work/bibfile.bib")
-  (setq org-ref-default-bibliography "~/Dropbox/Work/bibfile.bib"))
+  (setq org-ref-default-bibliography '("~/Dropbox/Work/bibfile.bib")
+        org-ref-pdf-directory (concat (getenv "HOME") "/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library/")
+        org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/org")
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/org"
+        org-ref-notes-function 'org-ref-notes-function-many-files))
+
 
 (use-package org-ref-ox-hugo
   :ensure nil
