@@ -54,54 +54,54 @@
         evil-operator-state-tag (propertize " 🅞" ))
 
   (doom-modeline-def-segment evil-state
-    "The current evil state. Requires `evil-mode' to be enabled."
-    (when (bound-and-true-p evil-local-mode)
-      (let ((tag (evil-state-property evil-state :tag t)))
-        (propertize tag 'face
-                    (if (doom-modeline--active)
-                        (cond ((eq tag evil-normal-state-tag)   '(:foreground "DarkGoldenrod2" :height 1.25))
-                              ((eq tag evil-emacs-state-tag)    '(:foreground "SkyBlue2" :height 1.25))
-                              ((eq tag evil-insert-state-tag)   '(:foreground "chartreuse3" :height 1.25))
-                              ((eq tag evil-motion-state-tag)   '(:foreground "plum3" :height 1.25))
-                              ((eq tag evil-replace-state-tag)  '(:foreground "red" :height 1.25))
-                              ((eq tag evil-visual-state-tag)   '(:foreground "gray" :height 1.25))
-                              ((eq tag evil-operator-state-tag) '(:foreground "red" :height 1.25))))))))
+                             "The current evil state. Requires `evil-mode' to be enabled."
+                             (when (bound-and-true-p evil-local-mode)
+                               (let ((tag (evil-state-property evil-state :tag t)))
+                                 (propertize tag 'face
+                                             (if (doom-modeline--active)
+                                                 (cond ((eq tag evil-normal-state-tag)   '(:foreground "DarkGoldenrod2" :height 1.25))
+                                                       ((eq tag evil-emacs-state-tag)    '(:foreground "SkyBlue2" :height 1.25))
+                                                       ((eq tag evil-insert-state-tag)   '(:foreground "chartreuse3" :height 1.25))
+                                                       ((eq tag evil-motion-state-tag)   '(:foreground "plum3" :height 1.25))
+                                                       ((eq tag evil-replace-state-tag)  '(:foreground "red" :height 1.25))
+                                                       ((eq tag evil-visual-state-tag)   '(:foreground "gray" :height 1.25))
+                                                       ((eq tag evil-operator-state-tag) '(:foreground "red" :height 1.25))))))))
 
 
   ;; window number faces & formatting
   (doom-modeline-def-segment window-number
-    (if (bound-and-true-p window-numbering-mode)
-        (propertize (format " %s " (window-numbering-get-number-string))
-                    'face (if (doom-modeline--active)
-                              'doom-modeline-active-window-number
-                            'doom-modeline-inactive-window-number))
-      ""))
+                             (if (bound-and-true-p window-numbering-mode)
+                                 (propertize (format " %s " (window-numbering-get-number-string))
+                                             'face (if (doom-modeline--active)
+                                                       'doom-modeline-active-window-number
+                                                     'doom-modeline-inactive-window-number))
+                               ""))
 
   ;; workspace number faces & formatting
   (doom-modeline-def-segment workspace-name
-    "The current workspace name or number.
+                             "The current workspace name or number.
   Requires `eyebrowse-mode' to be enabled."
-    (if (and (bound-and-true-p eyebrowse-mode)
-             (< 1 (length (eyebrowse--get 'window-configs))))
-        (let* ((num (eyebrowse--get 'current-slot))
-               (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
-               (str (if (and tag (< 0 (length tag)))
-                        tag
-                      (when num (int-to-string num)))))
-          (assq-delete-all 'eyebrowse-mode mode-line-misc-info)
-          (concat
-           (propertize (format " %s " str) 'face
-                       (if (doom-modeline--active)
-                           '(:foreground "#2aa198")
-                         'mode-line-inactive))
-           (propertize "|" 'face '(:foreground "#586e75"))))))
+                             (if (and (bound-and-true-p eyebrowse-mode)
+                                      (< 1 (length (eyebrowse--get 'window-configs))))
+                                 (let* ((num (eyebrowse--get 'current-slot))
+                                        (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
+                                        (str (if (and tag (< 0 (length tag)))
+                                                 tag
+                                               (when num (int-to-string num)))))
+                                   (assq-delete-all 'eyebrowse-mode mode-line-misc-info)
+                                   (concat
+                                    (propertize (format " %s " str) 'face
+                                                (if (doom-modeline--active)
+                                                    '(:foreground "#2aa198")
+                                                  'mode-line-inactive))
+                                    (propertize "|" 'face '(:foreground "#586e75"))))))
 
   ;;
   ;; Mode line setup
   ;;
   (doom-modeline-def-modeline 'cpm/my-doom-mode-line
-    '(workspace-name window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
-    '(misc-info persp-name input-method buffer-encoding process checker buffer-position " "))
+                              '(workspace-name window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
+                              '(misc-info persp-name input-method buffer-encoding process checker buffer-position " "))
 
   (defun setup-custom-doom-modeline ()
     (doom-modeline-set-modeline 'cpm/my-doom-mode-line 'default))

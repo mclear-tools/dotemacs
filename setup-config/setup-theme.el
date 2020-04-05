@@ -8,6 +8,26 @@
   :config
   (load-theme 'gruvbox t))
 
+;;; Doom Themes
+(use-package doom-themes
+  :ensure t
+  :disabled
+  :if (display-graphic-p)
+  :no-require t
+  :init
+  (setq doom-theme 'doom-solarized-dark)
+  :config
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;; (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
 ;;; Solarized Theme
 (use-package solarized-theme
   :ensure t
