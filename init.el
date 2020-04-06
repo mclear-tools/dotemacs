@@ -379,3 +379,7 @@
                  (float-time
                   (time-subtract after-init-time before-init-time)) gcs-done))
 (put 'narrow-to-page 'disabled nil)
+
+;; demand some packages in daemon mode
+(if (daemonp)
+    (require 'org))

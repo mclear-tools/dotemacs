@@ -244,8 +244,19 @@
 ;; start server for emacsclient
 (use-package server
   :ensure nil
-  :if window-system
-  :hook (after-init . server-mode))
+  :config
+  (if (and (fboundp 'server-running-p)
+           (not (server-running-p)))
+      (server-start)))
+
+(defun cpm/kill-all-emacsen ()
+  (interactive)
+  (progn
+    (shell-command-to-string "emacsclient -e '(kill-emacs)'")
+    (save-buffers-kill-emacs)))
+
+;; :if window-system
+;; :hook (after-init . server-mode))
 
 ;;;; Outshine Outline Navigation
 (use-package outshine
