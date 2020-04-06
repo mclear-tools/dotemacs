@@ -61,7 +61,8 @@
 (use-package evil-collection
   :ensure t
   :after evil
-  :hook (evil-after-load-hook . evil-collection-init)
+  :init
+  (evil-collection-init)
   :custom
   (evil-collection-company-use-tng nil))
 
