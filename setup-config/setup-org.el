@@ -478,78 +478,34 @@ _vr_ reset      ^^                       ^^                 ^^
     (goto-char (point-max)))
 
 ;;;; Alfred Capture Workflow
-  ;; Help alfred and org-capture play nice. Courtesy of [[http://orgmode.org/worg/org-contrib/alfred-org-capture.html][worg]] with some slight modifications.
+  ;; Help alfred and org-capture play nice.
+  ;; Courtesy of http://orgmode.org/worg/org-contrib/alfred-org-capture.html with some slight modifications.
+  ;; Current functions also from https://github.com/Isimoro/org-global-capture.el/blob/master/org-global-capture.el
 
-  (defun cpm/org-capture-link-frame ()
-    "Capture link from frontmost safari tab"
-    (interactive)
-    (org-capture nil "l"))
-  (defun cpm/make-org-capture-link-frame ()
-    "Create a new frame and run org-capture."
-    (interactive)
-    (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
-                  (top . 400) (left . 300)
-                  ))
-    (select-frame-by-name "alfred-capture")
-    (cpm/org-capture-link-frame))
+  (defadvice org-switch-to-buffer-other-window
+      (after supress-window-splitting activate)
+    "Delete the extra window if we're in a capture frame"
+    (if (equal "capture" (frame-parameter nil 'name))
+        (delete-other-windows)))
 
-  (defun cpm/org-capture-frame ()
-    (interactive)
-    (org-capture nil "c"))
-  (defun cpm/make-orgcapture-frame ()
-    "Create a new frame and run org-capture."
-    (interactive)
-    (make-frame '((name . "alfred-capture") (width . 90) (height . 20)
-                  (top . 400) (left . 300)
-                  ))
-    (select-frame-by-name "alfred-capture")
-    (cpm/org-capture-frame))
+  (defadvice org-capture-finalize
+      (after delete-capture-frame activate)
+    "Advise capture-finalize to close the frame"
+    (when (and (equal "capture" (frame-parameter nil 'name))
+               (not (eq this-command 'org-capture-refile)))
+      (delete-frame)))
 
-  (defun cpm/org-capture-mail-frame ()
-    (interactive)
-    (org-capture nil "m"))
-  (defun cpm/make-org-capture-mail-frame ()
-    "Create a new frame and run org-capture."
-    (interactive)
-    (make-frame '((name . "Email Capture") (width . 90) (height . 20)
-                  (top . 400) (left . 300)
-                  ))
-    (select-frame-by-name "Email Capture")
-    (cpm/org-capture-mail-frame))
+  (defadvice org-capture-refile
+      (after delete-capture-frame activate)
+    "Advise org-refile to close the frame"
+    (when (equal "capture" (frame-parameter nil 'name))
+      (delete-frame)))
 
-
-
-
-;;;; Capture Hooks
-  ;; ;; Make capture the only window and close after refiling.
-  (defun cpm/capture-single-window-frame ()
-    "make org capture the only window in the new frame"
-    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
-          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
-          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))))
-  (defun cpm/delete-capture-frame ()
-    "kill frame after capture"
-    (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
-          ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))))
-  (add-hook! 'org-capture-mode-hook #'cpm/capture-single-window-frame)
-  (add-hook! 'org-capture-after-finalize-hook #'cpm/delete-capture-frame)
-
-  ;; (defadvice org-capture
-  ;;     (after make-full-window-frame activate)
-  ;;   "Advise capture to be the only window when used as a popup"
-  ;;   (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-other-windows))
-  ;;         ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-other-windows))
-  ;;         ((equal "Email Capture" (frame-parameter nil 'name)) (delete-other-windows))))
-
-  ;; (defadvice org-capture-finalize
-  ;;     (after org-capture-finalize activate)
-  ;;   "Advise capture-finalize to close the frame"
-  ;;   (cond ((equal "What are you doing?" (frame-parameter nil 'name)) (delete-frame))
-  ;;         ((equal "alfred-capture" (frame-parameter nil 'name)) (delete-frame))
-  ;;         ((equal "Email Capture" (frame-parameter nil 'name)) (delete-frame))
-  ;;         ))
-
+  (defun cpm/activate-capture-frame ()
+    "run org-capture in capture frame"
+    (select-frame-by-name "capture")
+    (switch-to-buffer (get-buffer-create "*scratch*"))
+    (org-capture))
 
 ;;; Org Archive
   ;; Tell org where to archive completed tasks
