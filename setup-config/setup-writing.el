@@ -95,7 +95,8 @@
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
   ;; (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\noised: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
-  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- bibkey :: cite:${=key=}\n- tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n\n[[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE \n#+END_SRC")
+  ;; (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+HUGO_CUSTOM_FRONT_MATTER: nocite: \'(@${=key=})\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags:: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE #+END_SRC")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
@@ -104,6 +105,10 @@
         ;; bibtex-completion-additional-search-fields '(keywords)
         bibtex-completion-notes-extension ".org"
         helm-bibtex-full-frame nil))
+
+;;;; bibtex macro
+(fset 'bibtex-src
+      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("{dt@" 0 "%d")) arg)))
 
 ;;; Org Ref
 (use-package org-ref
@@ -118,15 +123,19 @@
         org-ref-pdf-directory (concat (getenv "HOME") "/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library/")
         org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/org")
         bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/org"
-        org-ref-notes-function 'org-ref-notes-function-many-files))
+        org-ref-notes-function 'org-ref-notes-function-many-files)
+  :config
+  (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
+  (setq doi-utils-download-pdf nil))
 
 
 (use-package org-ref-ox-hugo
+  :disabled
   :ensure nil
   :load-path "~/.emacs.d/.local/elisp/org-ref-ox-hugo-20200315/"
   :after org-ref
   :demand t
-  :config
+  :init
   (add-to-list 'org-ref-formatted-citation-formats
                '("md"
                  ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
