@@ -563,6 +563,7 @@ _vr_ reset      ^^                       ^^                 ^^
 (setq org-src-fontify-natively t
       org-src-window-setup 'other-window
       org-src-tab-acts-natively nil
+      org-confirm-babel-evaluate nil
       org-src-strip-leading-and-trailing-blank-lines t)
 
 ;; Avoid `org-babel-do-load-languages' since it does an eager require.

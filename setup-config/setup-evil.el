@@ -37,7 +37,7 @@
     (setq evil-motion-state-cursor  '("plum3" box))
     (setq evil-operator-state-cursor '("red" hollow))
     ;; (setq evil-visual-state-tag "VISUAL")
-                                        ;use insert in commits automatically
+    ;; use insert in commits automatically
     (add-hook 'git-commit-mode-hook 'evil-insert-state)
     (evil-set-initial-state 'dashboard-mode 'motion)
     (evil-set-initial-state 'messages-buffer-mode 'motion)

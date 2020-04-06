@@ -119,7 +119,7 @@
 
 ;; Save all buffers after idle time or exit from insert state
 (run-with-idle-timer 5 t (lambda () (save-some-buffers t)))
-(add-hook 'evil-insert-state-exit-hook 'full-auto-save)
+;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
 
 
 ;;;; Save History
