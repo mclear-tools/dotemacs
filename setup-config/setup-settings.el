@@ -252,7 +252,7 @@
 (defun cpm/kill-all-emacsen ()
   (interactive)
   (progn
-    (shell-command-to-string "emacsclient -e '(kill-emacs)'")
+    (shell-command-to-string "brew services stop emacs-head")
     (save-buffers-kill-emacs)))
 
 ;; :if window-system

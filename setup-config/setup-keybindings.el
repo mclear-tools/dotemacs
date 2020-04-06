@@ -390,8 +390,9 @@
    :non-normal-prefix "C-SPC"
 
    "q"  '(:ignore t :which-key "Quit")
-   "qq" 'cpm/save-desktop-save-buffers-kill-emacs
-   "qQ" 'evil-quit-all
+   ;; "qq" 'cpm/save-desktop-save-buffers-kill-emacs
+   "qq" 'evil-quit-all
+   "qQ" 'cpm/kill-all-emacsen
    "qr" 'restart-emacs
    )
 
