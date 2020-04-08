@@ -1,5 +1,0 @@
-/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/rebuild_cache.dir
-/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/edit_cache.dir
-/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/libvterm.dir
-/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/run.dir
-/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/vterm-module.dir

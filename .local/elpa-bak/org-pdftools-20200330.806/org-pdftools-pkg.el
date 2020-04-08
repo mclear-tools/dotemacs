@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "org-pdftools" "20200330.806" "Support for links to documents in pdfview mode" '((emacs "26.1") (org "9.3.6") (pdf-tools "0.8") (org-noter "1.4.1")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "2f9b1c3ef103897aafb308522466d60126ca38a9" :keywords '("convenience") :authors '(("Alexander Fu Xi" . "fuxialexander@gmail.com")) :maintainer '("Alexander Fu Xi" . "fuxialexnader@gmail.com") :url "https://github.com/fuxialexander/org-pdftools")
