@@ -201,11 +201,7 @@
 
 (eval-when-compile
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ;; ("gnu" . "https://elpa.gnu.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ;; https://github.com/emacs-china/emacswiki-elpa
-                           ("emacswiki" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/emacswiki/")
-                           ))
+                           ("org" . "https://orgmode.org/elpa/")))
   (require 'package)
   (package-initialize)
   (unless (package-installed-p 'use-package)
