@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/libvterm"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/libvterm.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/CMakeFiles/libvterm-complete.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-install.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-mkdir.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-download.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-update.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-patch.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-configure.rule"
+		},
+		{
+			"file" : "/Users/roambot/.emacs.d/.local/elpa/vterm-20200327.1447/build/libvterm-prefix/src/libvterm-stamp/libvterm-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"libvterm"
+		],
+		"name" : "libvterm"
+	}
+}

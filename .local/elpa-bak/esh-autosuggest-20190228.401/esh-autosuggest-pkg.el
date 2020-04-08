@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "esh-autosuggest" "20190228.401" "History autosuggestions for eshell" '((emacs "24.4") (company "0.9.4")) :commit "972094808d231a86dc6e43862191167b1997d840" :keywords '("completion" "company" "matching" "convenience" "abbrev") :authors '(("Diego A. Mundo" . "diegoamundo@gmail.com")) :maintainer '("Diego A. Mundo" . "diegoamundo@gmail.com") :url "http://github.com/dieggsy/esh-autosuggest")

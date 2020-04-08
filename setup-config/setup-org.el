@@ -2027,6 +2027,7 @@ is non-nil."
    '(org-roam :fetcher github :repo "jethrokuan/org-roam")))
 
 (use-package org-roam
+  :disabled
   :ensure nil
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org

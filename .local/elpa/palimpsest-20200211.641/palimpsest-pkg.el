@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "palimpsest" "20200211.641" "Various deletion strategies when editing" 'nil :stars '(#("25" 0 2 (font-lock-face paradox-star-face)) #("994" 0 3 (value 994 font-lock-face paradox-download-face))) :commit "389ec5b4c5067fa903c543b7fe1d804f30b6ced5" :authors '(("Daniel Szmulewicz" . "daniel.szmulewicz@gmail.com")) :maintainer '("Daniel Szmulewicz" . "daniel.szmulewicz@gmail.com"))
+(define-package "palimpsest" "20200211.641" "Various deletion strategies when editing" 'nil :commit "389ec5b4c5067fa903c543b7fe1d804f30b6ced5" :authors '(("Daniel Szmulewicz" . "daniel.szmulewicz@gmail.com")) :maintainer '("Daniel Szmulewicz" . "daniel.szmulewicz@gmail.com"))

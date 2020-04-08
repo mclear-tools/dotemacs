@@ -1,0 +1,3 @@
+repository='https://github.com/neovim/libvterm.git'
+module=''
+tag='origin'
