@@ -36,7 +36,7 @@
   :general
   (:states '(normal insert emacs) :keymaps 'flyspell-mode-map
    "C-;" 'flyspell-auto-correct-previous-word
-   "C-:" 'flyspell-correct-word-generic))
+   "C-:" 'flyspell-correct-wrapper))
 
 (with-eval-after-load 'hydra
   (defhydra hydra-spelling (:color blue)
@@ -49,13 +49,13 @@
   ^^                  _f_ check           _m_ mode
   ^^                  ^^                  ^^
   "
-  ("q" nil)
-  ("<" flyspell-correct-previous :color pink)
-  (">" flyspell-correct-next :color pink)
-  ("c" ispell)
-  ("d" ispell-change-dictionary)
-  ("f" flyspell-buffer :color pink)
-  ("m" flyspell-mode)))
+    ("q" nil)
+    ("<" flyspell-correct-previous :color pink)
+    (">" flyspell-correct-next :color pink)
+    ("c" ispell)
+    ("d" ispell-change-dictionary)
+    ("f" flyspell-buffer :color pink)
+    ("m" flyspell-mode)))
 
 ;;; Abbrev
 (use-package abbrev
