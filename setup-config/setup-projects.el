@@ -207,6 +207,7 @@
         (persp-switch "agenda")
         ;; (eyebrowse-switch-to-window-config-1)
         (switch-to-buffer "*Org Agenda*")
+        (org-agenda-redo)
         (delete-other-windows))
     (progn
       (persp-switch "agenda")
@@ -215,10 +216,10 @@
       (cpm/jump-to-org-super-agenda)
       (persp-add-buffer "*Org Agenda*"))))
 
-  (general-define-key
-   :states '(insert normal motion emacs)
-   :keymaps 'override
-   "s-1" 'cpm/open-agenda-in-workspace)
+(general-define-key
+ :states '(insert normal motion emacs)
+ :keymaps 'override
+ "s-1" 'cpm/open-agenda-in-workspace)
 
 ;;;; Open emacs.d in workspace
 (defun cpm/open-emacsd-in-workspace ()

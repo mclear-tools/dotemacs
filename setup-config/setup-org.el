@@ -168,11 +168,13 @@
       "k" 'org-agenda-previous-item))
 
   ;; automatically refresh the agenda after adding a task
+  ;; FIXME: this is throwing errors about recentering window
+  ;; probably caused by `(recenter-window-line)` in `(org-agenda-redo)` function
   (defun cpm/org-agenda-refresh ()
     (interactive)
     (when (get-buffer "*Org Agenda*")
       (with-current-buffer "*Org Agenda*"
-        (org-agenda-redo t)
+        (org-agenda-redo)
         (message "[org agenda] refreshed!"))))
   (add-hook 'org-capture-after-finalize-hook 'cpm/org-agenda-refresh)
 
@@ -2027,7 +2029,6 @@ is non-nil."
    '(org-roam :fetcher github :repo "jethrokuan/org-roam")))
 
 (use-package org-roam
-  :disabled
   :ensure nil
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org

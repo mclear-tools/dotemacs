@@ -1309,7 +1309,7 @@ to override `appt-message-warning-time'.
 
 \(fn &optional REFRESH FILTER &rest ARGS)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-agenda" '("org-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-agenda" '(#("org-" 0 4 (face font-lock-function-name-face)))))
 
 ;;;***
 
