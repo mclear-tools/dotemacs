@@ -391,6 +391,7 @@
 
    "q"  '(:ignore t :which-key "Quit")
    ;; "qq" 'cpm/save-desktop-save-buffers-kill-emacs
+   "qd" 'cpm/kill-emacs-capture-daemon
    "qq" 'evil-quit-all
    "qQ" 'cpm/kill-all-emacsen
    "qr" 'restart-emacs
@@ -423,7 +424,8 @@
    "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
-   "ss" 'swiper-isearch
+   "ss" #'swiper
+   ;; "ss" 'swiper-isearch
    ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
@@ -467,11 +469,11 @@
    "ts" 'flyspell-mode
    "tS" 'ispell-buffer
    "tt" 'toggle-dark-light-theme
-   "tT" 'helm-themes
+   "tT" 'counsel-load-theme
+   ;; "tT" 'helm-themes
    "tv" 'vterm-toggle-cd
    "tw" 'writeroom-mode
    "tz" 'zone
-   ;; "tt" 'counsel-load-theme
    )
 
 ;;; User Keybindings
