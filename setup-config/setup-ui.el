@@ -25,13 +25,14 @@
 (defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
 (defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
 (defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
+(defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
 (defvar cpm-ligatures t)
 (defvar cpm-vari-font (font-spec :family "Avenir Next"))
 (defvar cpm-unicode-font (font-spec :family "Symbola"))
-(set-face-attribute 'default nil :font cpm-font1)
+(set-face-attribute 'default nil :font cpm-font2)
 (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
 (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
-(setq-default line-spacing 0.15)
+(setq-default line-spacing 0.10)
 
 ;;; Frames
 ;;;; Frame formatting
