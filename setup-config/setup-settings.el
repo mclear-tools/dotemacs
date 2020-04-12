@@ -118,7 +118,7 @@
 (add-hook 'auto-save-hook 'full-auto-save)
 
 ;; Save all buffers after idle time or exit from insert state
-(run-with-idle-timer 5 t (lambda () (save-some-buffers t)))
+(run-with-idle-timer 5 t (lambda () (full-auto-save)))
 ;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
 
 
@@ -247,16 +247,23 @@
   :if window-system
   :hook (after-init . server-mode))
 
-  ;; :config
-  ;; (if (and (fboundp 'server-running-p)
-  ;;          (not (server-running-p)))
-  ;;     (server-start)))
+;; have this function available for server
+(defun cpm/activate-capture-frame ()
+  "run org-capture in capture frame"
+  (require 'org)
+  (select-frame-by-name "capture")
+  (switch-to-buffer (get-buffer-create "*scratch*"))
+  (org-capture))
 
 (defun cpm/kill-all-emacsen ()
   (interactive)
   (progn
     (save-buffers-kill-emacs)
     (shell-command-to-string "pkill -i emacs")))
+
+(defun cpm/kill-emacs-capture-daemon ()
+  (interactive)
+  (shell-command-to-string "pkill -f /Applications/Emacs.app/Contents/MacOS/emacs"))
 
 ;;;; Outshine Outline Navigation
 (use-package outshine
