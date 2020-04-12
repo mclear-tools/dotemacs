@@ -471,13 +471,14 @@ _vr_ reset      ^^                       ^^                 ^^
   (defun cpm/org-journal ()
     (interactive) (org-capture nil "j"))
 
-  (defun cpm/what-are-you-doing-capture ()
-    (interactive)
-    (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
-    (select-frame-by-name "What are you doing?")
-    (cpm/org-journal)
-    (cpm/insert-weather)
-    (goto-char (point-max)))
+  ;; (defun cpm/what-are-you-doing-capture ()
+  ;;   (interactive)
+  ;;   (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
+  ;;   (select-frame-by-name "What are you doing?")
+  ;;   (cpm/org-journal)
+  ;;   (delete-other-windows)
+  ;;   (cpm/insert-weather)
+  ;;   (goto-char (point-max)))
 
 ;;;; Alfred Capture Workflow
   ;; Help alfred and org-capture play nice.
@@ -503,11 +504,11 @@ _vr_ reset      ^^                       ^^                 ^^
     (when (equal "capture" (frame-parameter nil 'name))
       (delete-frame)))
 
-  (defun cpm/activate-capture-frame ()
-    "run org-capture in capture frame"
-    (select-frame-by-name "capture")
-    (switch-to-buffer (get-buffer-create "*scratch*"))
-    (org-capture))
+  ;; (defun cpm/activate-capture-frame ()
+  ;;   "run org-capture in capture frame"
+  ;;   (select-frame-by-name "capture")
+  ;;   (switch-to-buffer (get-buffer-create "*scratch*"))
+  ;;   (org-capture))
 
 ;;; Org Archive
   ;; Tell org where to archive completed tasks

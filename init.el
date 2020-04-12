@@ -306,6 +306,7 @@
 (require 'setup-dired)
 (require 'setup-ivy)
 (require 'setup-helm)
+(require 'setup-server)
 
 ;;;; Other Modules
 (require 'setup-ui)

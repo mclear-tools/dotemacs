@@ -240,31 +240,6 @@
           (help-insert-xref-button melpa-link 'help-url melpa-link)
           (insert "\n"))))))
 
-;;;; Server
-;; start server for emacsclient
-(use-package server
-  :ensure nil
-  :if window-system
-  :hook (after-init . server-mode))
-
-;; have this function available for server
-(defun cpm/activate-capture-frame ()
-  "run org-capture in capture frame"
-  (require 'org)
-  (select-frame-by-name "capture")
-  (switch-to-buffer (get-buffer-create "*scratch*"))
-  (org-capture))
-
-(defun cpm/kill-all-emacsen ()
-  (interactive)
-  (progn
-    (save-buffers-kill-emacs)
-    (shell-command-to-string "pkill -i emacs")))
-
-(defun cpm/kill-emacs-capture-daemon ()
-  (interactive)
-  (shell-command-to-string "pkill -f /Applications/Emacs.app/Contents/MacOS/emacs"))
-
 ;;;; Outshine Outline Navigation
 (use-package outshine
   :ensure t
