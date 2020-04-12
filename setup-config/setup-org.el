@@ -2079,17 +2079,19 @@ is non-nil."
          (concat acc (format "- [[file:%s][%s]]\n"
                              (file-relative-name (car it) org-roam-directory)
                              (org-roam--get-title-or-slug (car it))))
-         "" (org-roam-sql [:select [file-from] :from file-links :where (= file-to $s1)] file))
+         "" (org-roam-sql [:select [from] :from links :where (= to $s1) :and (= from $s2)] file "roam"))
       ""))
+
   (defun my/org-export-preprocessor (backend)
     (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
       (unless (string= links "")
         (save-excursion
           (goto-char (point-max))
           (insert (concat "\n* Backlinks\n") links)))))
+
   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
-  ;;;; Org Roam Templating
+   ;;;; Org Roam Templating
   ;; see https://org-roam.readthedocs.io/en/latest/templating/
   (setq org-roam-capture-templates
         '(("d" "default" plain (function org-roam-capture--get-point)
