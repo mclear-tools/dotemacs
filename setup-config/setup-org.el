@@ -1986,6 +1986,16 @@ is non-nil."
 (use-package ox-hugo :after ox)
 ;; (use-package ox-hugo-auto-export :ensure nil :after ox-hugo)
 
+;;;; Batch Export Files with Org-Hugo
+;; mark files and then batch export them with this command
+(define-key dired-mode-map (kbd "C-+")
+  (lambda()
+    (interactive)
+    (diredp-do-apply/eval 'org-hugo-export-wim-to-md '(4))))
+
+
+
+
 ;;;; Export Top Level Trees
 ;; From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
 (defun cpm/org-map-entries (org-file in-tags func)
