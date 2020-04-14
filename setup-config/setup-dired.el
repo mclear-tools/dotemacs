@@ -2,6 +2,8 @@
 ;; I used to use ranger but it was buggy and I can get almost everything I want from
 ;; dired. See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer for
 ;; discussion of how to avoid creating lots of dired buffers.
+
+;;;; Dired Settings
 (use-package dired
   :ensure nil
   :commands (dired dired-jump dired-jump-other-window)
@@ -42,53 +44,15 @@
   ;; open PDF files in external viewer
   (setq dired-guess-shell-alist-user '(("\.pdf$" . default))))
 
-;; Async dired
+;;;; Async Dired
 (autoload 'dired-async-mode "dired-async.el" nil t)
 (dired-async-mode 1)
 
-;;narrow dired to match filter
+;;;; Narrow Dired to Match Filter
 (use-package dired-narrow
   :ensure t
   :general (:keymaps 'dired-mode-map
             "/"  'dired-narrow))
-
-;; Colourful dired
-(use-package diredfl
-  :commands (diredfl-global-mode)
-  :init (diredfl-global-mode 1)
-  :custom-face
-  (diredfl-compressed-file-name ((t (:foreground "#00629D"))))
-  (diredfl-compressed-file-suffix ((t (:foreground "#839496"))))
-  (diredfl-date-time ((t (:foreground "#9EA0E5"))))
-  (diredfl-deletion ((t (:background "Red" :foreground "Yellow"))))
-  (diredfl-dir-heading ((t (:background "#69B7F0" :foreground "#002b36"))))
-  (diredfl-dir-name ((t (:foreground "#69B7F0"))))
-  (diredfl-dir-priv ((t (:foreground "#268bd2"))))
-  (diredfl-exec-priv ((t (:foreground "#990A1b"))))
-  (diredfl-file-name ((t (:foreground "#2aa198"))))
-  (diredfl-file-suffix ((t (:foreground "#839496"))))
-  (diredfl-flag-mark-line ((t (:background "#dc322f"))))
-  (diredfl-no-priv ((t (:foreground "#b58900"))))
-  (diredfl-number ((t (:foreground "#DEB542"))))
-  (diredfl-rare-priv ((t (:background "#cb4b16" :foreground "#B4C342"))))
-  (diredfl-read-priv ((t (:foreground "#F2804F"))))
-  (diredfl-tagged-autofile-name ((t (:foreground "#328C0411328"))))
-  (diredfl-write-priv ((t (:foreground "#8b2C02")))))
-
-;; dired extras
-(use-package dired-x
-  :ensure nil
-  :after dired
-  :demand t
-  :init (setq-default dired-omit-mode nil)
-  :config
-  (setq dired-omit-verbose nil)
-  (add-to-list 'dired-omit-extensions ".DS_Store"))
-
-(use-package dired-aux
-  :ensure nil
-  :after dired
-  :demand t)
 
 ;;;; Dired Sort
 (use-package dired-quick-sort
@@ -98,22 +62,41 @@
    :states '(normal motion)
    "s" #'hydra-dired-quick-sort/body))
 
-;;;;  Dired Plus
-;; I used this mainly for getting rid of unnecesary dired buffers, but I think I have that solved independently now
+;;;; Dired Plus
 (eval-when-compile
   (quelpa
    '(dired+ :fetcher wiki)))
 (use-package dired+
-  :disabled t
+  :after dired
+  :demand t
   :ensure nil
-  :defer 2
+  :hook (dired-mode . dired-omit-mode)
   :init
-  (setq font-lock-maximum-decoration nil)
-  (setq dired-omit-files-regexp "^\\.?#\\|^\\.$\\|^\\.\\.$")
+  (setq font-lock-maximum-decoration t)
+  (setq diredp-omit-files-regexp "\\.?#\\|^\\.$\\|^\\.\\.")
   (setq diredp-hide-details-initially-flag nil)
-  (setq diredp-toggle-find-file-reuse-dir 1))
+  (setq diredp-toggle-find-file-reuse-dir 1)
+  :custom-face
+  (diredp-compressed-file-name ((t (:foreground "#00629D"))))
+  (diredp-compressed-file-suffix ((t (:foreground "#839496"))))
+  (diredp-date-time ((t (:foreground "#9EA0E5"))))
+  (diredp-deletion ((t (:background "Red" :foreground "Yellow"))))
+  (diredp-dir-heading ((t (:background "#69B7F0" :foreground "#002b36"))))
+  (diredp-dir-name ((t (:foreground "#69B7F0"))))
+  (diredp-dir-priv ((t (:foreground "#268bd2"))))
+  (diredp-exec-priv ((t (:foreground "#990A1b"))))
+  (diredp-file-name ((t (:foreground "#2aa198"))))
+  (diredp-file-suffix ((t (:foreground "#839496"))))
+  (diredp-flag-mark-line ((t (:foreground "#dc322f"))))
+  (diredp-no-priv ((t (:foreground "#b58900"))))
+  (diredp-number ((t (:foreground "#DEB542"))))
+  (diredp-rare-priv ((t (:background "#cb4b16" :foreground "#B4C342"))))
+  (diredp-read-priv ((t (:foreground "#F2804F"))))
+  (diredp-tagged-autofile-name ((t (:foreground "#328C04113"))))
+  (diredp-write-priv ((t (:foreground "#8b2C02")))))
 
-;;;;  Peep Dired
+
+;;;; Peep Dired
 (use-package peep-dired
   :ensure t
   :commands (peep-dired)
@@ -140,7 +123,7 @@
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
         peep-dired-max-size 5242880))
 
-;;;;   Dired Ranger
+;;;; Dired Ranger
 ;; https://github.com/Fuco1/dired-hacks#dired-ranger
 ;; Very helpful way of copying/moving files
 ;; Note that to move first you need to copy the file and then go to the target directory and move
