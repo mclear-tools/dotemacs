@@ -108,7 +108,8 @@
 ;; http://ergoemacs.org/emacs/emacs_best_redo_mode.html
 ;; So disable undo-tree; have to do this manually b/c it is automatically loaded by evil
 (use-package undo-tree
-  :config
+  :after evil
+  :init
   (global-undo-tree-mode -1))
 
 ;; (use-package undo-tree
@@ -135,14 +136,15 @@
   :general
   (:states '(normal)
    "u" 'undo-fu-only-undo
-   "\C-r" 'undo-fu-onlu-redo)
+   "\C-r" 'undo-fu-only-redo)
   (:states '(normal insert motion emacs)
    "s-z" 'undo-fu-only-undo
    "s-Z" 'undo-fu-only-redo))
 
 ;; persistent undo across sessions
 (use-package undo-fu-session
-  :after evil
+  :after undo-fu
+  :demand t
   :config
   (setq undo-fu-session-file-limit 50)
   (setq undo-fu-session-directory (concat cpm-cache-dir "undo-fu-session"))
