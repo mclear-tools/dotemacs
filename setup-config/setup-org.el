@@ -535,8 +535,8 @@ _vr_ reset      ^^                       ^^                 ^^
   ;; get a completing read of all headings up to three levels deep in all
   ;; files in =org-agenda-files=. You can also refile to the top header in a
   ;; document and create new parents.
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 8)
-                             ("/Users/roambot/.emacs.d/config.org" :maxlevel . 8)))
+  (setq org-refile-targets '((nil :maxlevel . 9)
+                             (org-agenda-files :maxlevel . 8)))
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
@@ -798,7 +798,7 @@ Instead it's simpler to use bash."
 
 ;;;; Clone and Narrow
 (defun cpm/clone-buffer-and-narrow ()
-  "Clone buffer and narrow org tree"
+  "Clone buffer and narrow outline tree"
   (interactive)
   (let ((buf (clone-indirect-buffer-other-window nil nil)))
     (with-current-buffer buf
