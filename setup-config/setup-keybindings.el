@@ -60,7 +60,8 @@
    ;; "bf" 'cpm/browse-file-directory
    "bf" 'reveal-in-osx-finder
    "bg" 'frog-jump-buffer
-   "bj" 'cpm/jump-in-buffer
+   ;; "bj" 'cpm/jump-in-buffer
+   "bj" #'counsel-outline
    "bk" 'evil-delete-buffer
    "bK" 'crux-kill-other-buffers
    "bm" 'helm-evil-markers
