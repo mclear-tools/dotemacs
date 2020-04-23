@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "org-superstar" "20200401.2306" "Prettify headings and plain lists in Org mode" '((org "9.1.9") (emacs "26.1")) :commit "4659cfc120ecefc4841f48bb8ea516eedafe8100" :keywords '("faces" "outlines") :authors '(("D. Williams" . "d.williams@posteo.net")) :maintainer '("D. Williams" . "d.williams@posteo.net") :url "https://github.com/integral-dw/org-superstar-mode")
