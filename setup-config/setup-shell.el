@@ -13,7 +13,9 @@
                              (switch-to-buffer nil)
                              (if (one-window-p t 0)
                                  (delete-window)
-                               (other-window 1))))
+                               (progn
+                                 (delete-window)
+                                 (other-window 1)))))
               ;; (if (one-window-p t 0)
               ;;     (delete-window)
               ;;   (cpm/previous-user-buffer))
