@@ -7,7 +7,7 @@
 	:states '(normal visual motion emacs insert)
 	:keymaps 'override
 	:prefix "SPC"
-	:non-normal-prefix "M-SPC")
+	:non-normal-prefix "C-SPC")
   (general-override-mode))
 
 ;;; Which Key
