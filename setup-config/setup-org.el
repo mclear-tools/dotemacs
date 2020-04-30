@@ -2052,7 +2052,7 @@ is non-nil."
   (org-roam-directory "~/Dropbox/Work/projects/notebook/org/")
   ;;;; Org Roam Keybindings
   :general
-  (:states '(normal motion)
+  (:states '(normal motion insert)
    (cpm/leader-keys
      "z"    #'(:ignore t :which-key "Zettelkasten")
      "z l"  #'org-roam
@@ -2109,10 +2109,10 @@ is non-nil."
   ;; see https://org-roam.readthedocs.io/en/latest/templating/
   (setq org-roam-capture-templates
         '(("d" "default" plain (function org-roam-capture--get-point)
-           "%?"
            :file-name "%<%Y-%m%d-%H%M>-${slug}"
            :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: zettel\n#+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
-           :unnarrowed t)
+           :unnarrowed t
+           :immediate-finish t)
           ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private-${slug}"
@@ -2124,7 +2124,6 @@ is non-nil."
            :file-name "websites/${slug}"
            :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: Weblinks\n#+ROAM_KEY: ${ref}\n #+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>\n\n- source :: ${ref}"
            :unnarrowed t))))
-
 
 ;;;; Company Org Roam
 (use-package company-org-roam
