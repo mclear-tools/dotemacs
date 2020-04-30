@@ -274,7 +274,7 @@
 (defun cpm/open-new-buffer-and-workspace ()
   "open an empty buffer in its own perspective"
   (interactive)
-  (eyebrowse-switch-to-window-config-1)
+  (eyebrowse-switch-to-window-config-0)
   (persp-switch "new-persp")
   (let ((cpm-project-temp-dir "/tmp/temp-projects/"))
     (progn
