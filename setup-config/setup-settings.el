@@ -24,9 +24,10 @@
 ;; big files
 (setq large-file-warning-threshold 100000000)
 
-;; pretty symbols
-(setq prettify-symbols-unprettify-at-point t)
+;; Pretty symbols
 (global-prettify-symbols-mode +1)
+;; Show markup at point
+(setq prettify-symbols-unprettify-at-point t)
 
 ;; Single space between sentences is more widespread than double
 (setq-default sentence-end-double-space nil)
