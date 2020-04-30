@@ -17,8 +17,8 @@
   (setq-default org-default-notes-file (concat org-directory "inbox.org"))
   (setq-default org-agenda-files (list org-directory))
 
-  :config
 ;;;; Org Config Settings
+  :config
   (add-hook 'org-mode-hook #'visual-line-mode)
   (setq org-stuck-projects (quote ("" nil nil "")))
   (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
@@ -46,23 +46,6 @@
                 org-imenu-depth 8
                 imenu-auto-rescan t)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
-
-  ;; show markup on cursor
-  ;; https://www.reddit.com/r/orgmode/comments/43uuck/temporarily_show_emphasis_markers_when_the_cursor
-  (defun cpm/org-show-emphasis-markers-at-point ()
-    (save-match-data
-      (if (and (org-in-regexp org-emph-re 2)
-               (>= (point) (match-beginning 3))
-               (<= (point) (match-end 4))
-               (member (match-string 3) (mapcar 'car org-emphasis-alist)))
-          (with-silent-modifications
-            (remove-text-properties
-             (match-beginning 3) (match-beginning 5)
-             '(invisible org-link)))
-        (apply 'font-lock-flush (list (match-beginning 3) (match-beginning 5))))))
-
-  (add-hook 'post-command-hook
-            'cpm/org-show-emphasis-markers-at-point nil t)
 
 
 ;;;; Org Modules
@@ -739,6 +722,26 @@ Instead it's simpler to use bash."
     (turn-on-prettify-symbols-mode)
     (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
   (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
+
+;;; FIXME Org Show Markup/Pretty Entities
+;; show markup at point
+;; Doesn't seem to work reliably
+;; https://www.reddit.com/r/orgmode/comments/43uuck/temporarily_show_emphasis_markers_when_the_cursor
+(defun cpm/org-show-emphasis-markers-at-point ()
+  (save-match-data
+    (if (and (org-in-regexp org-emph-re 2)
+             (>= (point) (match-beginning 3))
+             (<= (point) (match-end 4))
+             (member (match-string 3) (mapcar 'car org-emphasis-alist)))
+        (with-silent-modifications
+          (remove-text-properties
+           (match-beginning 3) (match-beginning 5)
+           '(invisible org-link)))
+      (apply 'font-lock-flush (list (match-beginning 3) (match-beginning 5))))))
+
+(add-hook 'post-command-hook
+          'cpm/org-show-emphasis-markers-at-point nil t)
+
 
 
 ;;; Org-Goto
