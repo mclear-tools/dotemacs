@@ -52,6 +52,8 @@
     (setq evil-move-cursor-back nil)
     ;; move by visual lines
     (setq evil-respect-visual-line-mode t)
+    ;; allow evil-char move across lines
+    (setq evil-cross-lines t)
     ;; Use counsel to provide :ls
     (evil-ex-define-cmd "buffers" 'counsel-ibuffer)
     ;; evil everywhere
