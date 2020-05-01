@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "ivy-bibtex" "20200429.1606" "A bibliography manager based on Ivy" '((bibtex-completion "1.0.0") (swiper "0.7.0") (cl-lib "0.5")) :stars '(#("202" 0 3 (font-lock-face paradox-star-face)) #("13K" 0 3 (value 13152 font-lock-face paradox-download-face))) :commit "6a884fe8ae939447849e76abf48d1bdf6a9bdcbb" :authors '(("Justin Burkett" . "justin@burkett.cc")) :maintainer '("Titus von der Malsburg" . "malsburg@posteo.de") :url "https://github.com/tmalsburg/helm-bibtex")
