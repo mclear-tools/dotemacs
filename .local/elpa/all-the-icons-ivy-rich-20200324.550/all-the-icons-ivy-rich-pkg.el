@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "all-the-icons-ivy-rich" "20200324.550" "Better experience with icons for ivy" '((emacs "24.5") (ivy-rich "0.1.0") (all-the-icons "2.2.0")) :commit "a9a4389c1930a5a071857b4d450eaecb21f4d6b9" :keywords '("convenience" "icons" "ivy") :authors '(("Vincent Zhang" . "seagle0128@gmail.com")) :maintainer '("Vincent Zhang" . "seagle0128@gmail.com") :url "https://github.com/seagle0128/all-the-icons-ivy-rich")

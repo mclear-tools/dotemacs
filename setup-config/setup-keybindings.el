@@ -425,8 +425,8 @@
    "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
-   "ss" #'swiper
-   ;; "ss" 'swiper-isearch
+   ;; "ss" #'swiper
+   "ss" 'swiper-isearch
    ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
