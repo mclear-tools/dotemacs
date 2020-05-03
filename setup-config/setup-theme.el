@@ -153,16 +153,16 @@
    `(ivy-confirm-face ((t (:foreground "#859900"))))
    `(ivy-current-match ((t (:weight bold :foreground "#268bd2" :background "#fdf6e3" :underline nil))))
    `(ivy-match-required-face ((t (:foreground "#dc322f"))))
-   `(ivy-minibuffer-match-face-1 ((t (:foreground "#8f9ea0"))))
-   `(ivy-minibuffer-match-face-2 ((t (:foreground "DarkOrange1"))))
-   `(ivy-minibuffer-match-face-3 ((t (:foreground "DarkOrange1"))))
-   `(ivy-minibuffer-match-face-4 ((t (:foreground "DarkOrange1"))))
+   `(ivy-minibuffer-match-face-1 ((t (:foreground "#64b5ea"))))
+   `(ivy-minibuffer-match-face-2 ((t (:foreground "#64b5ea"))))
+   `(ivy-minibuffer-match-face-3 ((t (:foreground "#64b5ea"))))
+   `(ivy-minibuffer-match-face-4 ((t (:foreground "#64b5ea"))))
    `(ivy-remote ((t (:foreground "#268bd2"))))
    `(swiper-line-face ((t (:weight bold :background "#fdf6e3" :underline nil))))
-   `(swiper-match-face-1 ((t (:foreground "#8f9ea0"))))
-   `(swiper-match-face-2 ((t (:foreground "DarkOrange1"))))
-   `(swiper-match-face-3 ((t (:foreground "DarkOrange1"))))
-   `(swiper-match-face-4 ((t (:foreground "DarkOrange1"))))
+   `(swiper-match-face-1 ((t (:foreground "#64b5ea"))))
+   `(swiper-match-face-2 ((t (:foreground "#64b5ea"))))
+   `(swiper-match-face-3 ((t (:foreground "#64b5ea"))))
+   `(swiper-match-face-4 ((t (:foreground "#64b5ea"))))
 
    ;; posframe faces
    `(hydra-posframe-face ((t (:background "#eee8d5"))))
@@ -214,56 +214,72 @@
            (cpm/solarized-light)
            (force-mode-line-update))))
 
+;;; Night Timer
+;; Got the idea from https://github.com/hmatheisen/theme-switcher
+(defvar day-hour 08
+  "The hour when the theme goes from dark to light in the morning.
+Default is 8am.
+example : (setq morning-hour 07) for 7am")
+
+(defvar night-hour 18
+  "The hour when the theme goes from light to dark in the evening.
+Default is 5pm.
+example : (setq evening-hour 18) for 6pm")
+
+(let ((now (string-to-number (format-time-string "%H"))))
+  (if (and (>= now day-hour) (< now night-hour))
+      (cpm/solarized-light)
+    (cpm/solarized-dark)))
+
 ;;; Packaging Themes
 
-;; (defvar packages-appearance '(doom-themes
-;;                               nord-theme
-;;                               solarized-theme
-;;                               zenburn-theme
-;;                               molokai-theme
-;;                               darktooth-theme
-;;                               gotham-theme
-;;                               ample-theme
-;;                               material-theme
-;;                               leuven-theme
-;;                               spacemacs-theme
-;;                               gruvbox-theme
-;;                               forest-blue-theme
-;;                               flatland-theme
-;;                               afternoon-theme
-;;                               cyberpunk-theme
-;;                               darkmine-theme
-;;                               tao-theme
-;;                               darkokai-theme
-;;                               jazz-theme
-;;                               suscolors-theme
-;;                               omtose-phellack-theme
-;;                               atom-one-dark-theme
-;;                               nubox
-;;                               color-theme-sanityinc-tomorrow
-;;                               alect-themes
-;;                               kaolin-themes
-;;                               srcery-theme)
-;;   "A list of themes to ensure are installed at launch.")
+           ;; (defvar packages-appearance '(doom-themes
+           ;;                               nord-theme
+           ;;                               solarized-theme
+           ;;                               zenburn-theme
+           ;;                               molokai-theme
+           ;;                               darktooth-theme
+           ;;                               gotham-theme
+           ;;                               ample-theme
+           ;;                               material-theme
+           ;;                               leuven-theme
+           ;;                               spacemacs-theme
+           ;;                               gruvbox-theme
+           ;;                               forest-blue-theme
+           ;;                               flatland-theme
+           ;;                               afternoon-theme
+           ;;                               cyberpunk-theme
+           ;;                               darkmine-theme
+           ;;                               tao-theme
+           ;;                               darkokai-theme
+           ;;                               jazz-theme
+           ;;                               suscolors-theme
+           ;;                               omtose-phellack-theme
+           ;;                               atom-one-dark-theme
+           ;;                               nubox
+           ;;                               color-theme-sanityinc-tomorrow
+           ;;                               alect-themes
+           ;;                               kaolin-themes
+           ;;                               srcery-theme)
+           ;;   "A list of themes to ensure are installed at launch.")
 
-;; (defun appearance-packages-installed-p ()
-;;   (loop for p in packages-appearance
-;;         when (not (package-installed-p p)) do (return nil)
-;;         finally (return t)))
+           ;; (defun appearance-packages-installed-p ()
+           ;;   (loop for p in packages-appearance
+           ;;         when (not (package-installed-p p)) do (return nil)
+           ;;         finally (return t)))
 
-;; (unless (appearance-packages-installed-p)
-;;   ;; check for new packages (package versions)
-;;   (message "%s" "Emacs is now refreshing its package themes...")
-;;   (package-refresh-contents)
-;;   (message "%s" " done.")
-;;   ;; install the missing packages
-;;   (dolist (p packages-appearance)
-;;     (when (not (package-installed-p p))
-;;       (package-install p))))
+           ;; (unless (appearance-packages-installed-p)
+           ;;   ;; check for new packages (package versions)
+           ;;   (message "%s" "Emacs is now refreshing its package themes...")
+           ;;   (package-refresh-contents)
+           ;;   (message "%s" " done.")
+           ;;   ;; install the missing packages
+           ;;   (dolist (p packages-appearance)
+           ;;     (when (not (package-installed-p p))
+           ;;       (package-install p))))
 
-;; (provide 'packages-appearance)
-
+           ;; (provide 'packages-appearance)
 
 ;;; End setup-theme.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'setup-theme)
+           (provide 'setup-theme)
