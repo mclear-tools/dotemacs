@@ -281,6 +281,13 @@
   :defer 1
   :config (global-so-long-mode 1))
 
+;;;; Highlight Lines
+;; Highlight lines. You can toggle this off
+(use-package hl-line-mode
+  :ensure nil
+  :hook
+  (prog-mode markdown-mode org-mode))
+
 ;;;; Miscellaneous
 (use-package remember
   :ensure nil
