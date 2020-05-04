@@ -46,7 +46,8 @@
 
 ;;;; Async Dired
 (autoload 'dired-async-mode "dired-async.el" nil t)
-(dired-async-mode 1)
+(with-eval-after-load 'dired-mode
+  (dired-async-mode 1))
 
 ;;;; Narrow Dired to Match Filter
 (use-package dired-narrow
@@ -67,10 +68,10 @@
   (quelpa
    '(dired+ :fetcher wiki)))
 (use-package dired+
-  :after dired
-  :demand t
   :ensure nil
-  :hook (dired-mode . dired-omit-mode)
+  :after dired
+  :hook ((dired-mode . diredp--set-up-font-locking)
+         (dired-mode . dired-omit-mode))
   :init
   (setq font-lock-maximum-decoration t)
   (setq diredp-omit-files-regexp "\\.?#\\|^\\.$\\|^\\.\\.")
