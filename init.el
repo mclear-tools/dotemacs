@@ -201,7 +201,8 @@
 
 (eval-when-compile
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")))
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("gnu" . "http://elpa.gnu.org/packages/")))
   (require 'package)
   (package-initialize)
   (unless (package-installed-p 'use-package)
