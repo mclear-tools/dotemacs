@@ -8,11 +8,12 @@
 
                                         ; calendars you want to download
                                         ; each item links to a remote iCal calendar
-(setq calendars
-      `(("work" . ,cal-work)
-        ("gcal" . ,cal-gcal)
-        ("family" . ,cal-family)
-        ))
+(when (file-directory-p (concat cpm-local-dir "diary-files/"))
+  (setq calendars
+        `(("work" . ,cal-work)
+          ("gcal" . ,cal-gcal)
+          ("family" . ,cal-family)
+          )))
 
 (defun cpm--getcal (url file)
   "Download ics file and add it to file"
