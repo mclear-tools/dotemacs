@@ -120,6 +120,7 @@
   (interactive)
   (mapc #'disable-theme custom-enabled-themes) ; clear any existing themes
   (load-theme 'solarized-light t)
+  ;; for issues with emacs 27 see https://emacs.stackexchange.com/a/52804/11934
   ;; (let ((custom--inhibit-theme-enable nil))
   (custom-theme-set-faces
    'solarized-light
@@ -217,14 +218,10 @@
 ;;; Night Timer
 ;; Got the idea from https://github.com/hmatheisen/theme-switcher
 (defvar day-hour 08
-  "The hour when the theme goes from dark to light in the morning.
-Default is 8am.
-example : (setq morning-hour 07) for 7am")
+  "The hour when the theme goes from dark to light in the morning. Default is 8am. ")
 
 (defvar night-hour 18
-  "The hour when the theme goes from light to dark in the evening.
-Default is 5pm.
-example : (setq evening-hour 18) for 6pm")
+  "The hour when the theme goes from light to dark in the evening. Default is 6pm.")
 
 (let ((now (string-to-number (format-time-string "%H"))))
   (if (and (>= now day-hour) (< now night-hour))
