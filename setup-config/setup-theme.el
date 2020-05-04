@@ -229,7 +229,10 @@ example : (setq evening-hour 18) for 6pm")
 (let ((now (string-to-number (format-time-string "%H"))))
   (if (and (>= now day-hour) (< now night-hour))
       (cpm/solarized-light)
-    (cpm/solarized-dark)))
+    (progn
+      (setq active-theme 'solarized-dark)
+      (cpm/osx-menubar-theme-dark)
+      (cpm/solarized-dark))))
 
 ;;; Packaging Themes
 
