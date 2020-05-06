@@ -128,6 +128,10 @@
   (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
   (setq doi-utils-download-pdf nil))
 
+;; workaround for bibtex timer issue described here:
+;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2018-01/msg00472.html
+(cancel-function-timers 'bibtex-parse-buffers-stealthily)
+
 
 (use-package org-ref-ox-hugo
   :disabled
