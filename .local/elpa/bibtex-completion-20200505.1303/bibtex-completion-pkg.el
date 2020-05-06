@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "bibtex-completion" "20200505.1303" "A BibTeX backend for completion frameworks" '((parsebib "1.0") (s "1.9.0") (dash "2.6.0") (f "0.16.2") (cl-lib "0.5") (biblio "0.2") (emacs "26.1")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "c0d6508cd09f5804f3848b822c015d28a10a505f" :authors '(("Titus von der Malsburg" . "malsburg@posteo.de") ("Justin Burkett" . "justin@burkett.cc")) :maintainer '("Titus von der Malsburg" . "malsburg@posteo.de") :url "https://github.com/tmalsburg/helm-bibtex")

@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "web-mode" "20200424.1153" "major mode for editing web templates" '((emacs "23.1")) :stars '(#("1256" 0 4 (font-lock-face paradox-star-face)) #("363K" 0 4 (value 363962 font-lock-face paradox-download-face))) :commit "6774c596a9b3988989d3bc96b6194e6f0df1d1b6" :keywords '("languages") :authors '(("François-Xavier Bois <fxbois AT Google Mail Service>")) :maintainer '("François-Xavier Bois") :url "http://web-mode.org")

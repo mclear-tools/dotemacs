@@ -1,0 +1,575 @@
+2019-09-14  Tino Calancha  <tino.calancha@gmail.com>
+
+	Support Gited buffers over a tramp connection
+
+	Bump version to 0.6.0.
+	* packages/gited/gited.el (gited-git-command): Use process-file.
+
+	(gited-async-operation): Use start-file-process-shell-command.
+
+	(gited-git-command-on-region): Handle Gited buffers from tramp
+	connections.
+
+2019-09-14  Tino Calancha  <tino.calancha@gmail.com>
+
+	Reduce complexity of gited--fill-branch-alist
+
+	Bump version to 0.5.7.
+	* packages/gited/gited.el (gited--get-mark-for-entry)
+	(gited--format-time, gited--get-branch-info): New functions extracted
+	from `gited--fill-branch-alist'
+
+	(gited--fill-branch-alist): Use them.
+
+2019-09-14  Tino Calancha  <tino.calancha@gmail.com>
+
+	Make code more compact by using pcase-dolist
+
+	* packages/gited/gited.el (gited-tabulated-list-entries)
+	(gited-get-last-commit-time)
+	(gited-mark-branches-containing-regexp): Use pcase-dolist
+
+2019-09-07  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited: Add test for the last fixed bug
+
+	* packages/gited/gited-tests.el
+	(gited-output-buffer-default-directory-test): New test.
+
+2019-09-05  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited: Set default-directory to gited-toplevel-dir in output buffers
+
+	This fixes 'gited--output-buffer: Set default-directory to
+	`gited-toplevel-dir'
+	(b2de434c77168ebfefe6ea364f401533e6da349b).
+
+	* packages/gited/gited.el (gited--output-buffer): Use local binding
+	toplevel-dir.
+
+2019-09-05  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited--output-buffer: Set default-directory to `gited-toplevel-dir'
+
+	This helps `diff-goto-source' and `diff-apply-hunk' to find the target
+	file.
+
+	* packages/gited/gited.el (gited--output-buffer): Set default-directory
+	to `gited-toplevel-dir' in this buffer.
+
+2019-08-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el: Bump version to 0.5.4
+
+	This change should happen at commit
+	'Separate versions from file names with --'
+	(1a927685dcb546c27b0e119dc33bccd55147e56a), but the file header Version
+	wasn't updated.
+
+2019-07-30  Tino Calancha  <tino.calancha@gmail.com>
+
+	* .travis.yml: Add recipes to test for Emacs 25.3 and Emacs 26.2
+
+2019-07-30  Tino Calancha  <tino.calancha@gmail.com>
+
+	Separate versions from file names with --
+
+	Bump version to v0.5.4
+	* packages/gited/gited.el (gited-diff): Add separator (--) after
+	versions.
+
+	* packages/gited/gited-tests.el (gited-diff-test): Add test.
+
+2019-07-30  Tino Calancha  <tino.calancha@gmail.com>
+
+	Avoid side-effects in a couple of functions
+
+	Fixes a long-standing issue. See Emacs Prince analysis of the Bug and
+	John Wick's fix here: https://youtu.be/nVLeQoBeNL8
+
+	* packages/gited/gited.el (gited--handle-new-or-delete-files)
+	(gited-add-patched-files): Avoid unsafe `nconc' usage, i.e. quoted
+	constant list as a non-last argument.
+
+	* packages/gited/gited-tests.el (gited-test-add-patch-bug): Add test. 
+	Clean previous tests by adding helper some functions/variables.
+
+2018-05-20  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-ci.el: Fix copyright stuff
+
+	* elpa/packages/gited/gited-ci.el: Fix FSF copyright assignment. Add
+	some text in the comentary section. Move the copyright section above the
+	comentary.
+	(gited-show-trunk-ci-status): Fix docstring.
+	* gited.el: Bump version to 0.5.3.
+
+2018-05-19  Tino Calancha  <tino.calancha@gmail.com>
+
+	Add missing file gited-ci.el
+
+	* packages/gited/gited-ci.el: New file.
+	* packages/gited/Makefile: Load gited-ci as well.
+	* packages/gited/gited.el: Bump version to 0.5.2.
+	* packages/gited/gited-ci-tests.el (gited-ci-load): New test.
+
+2018-05-18  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* gited/gited.el: Don't require `gited-ci`, which isn't found.
+
+2018-05-15  Tino Calancha  <tino.calancha@gmail.com>
+
+	* packages/gited/gited.el: Bump version to v5.0.1
+
+2018-05-15  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited.el: Merge branch 'show-trunk-ci-status'
+
+2018-05-15  Tino Calancha  <tino.calancha@gmail.com>
+
+	Skip tests when Git is not available
+
+	* packages/gited/gited-tests.el (gited-test2): New test
+
+2018-04-10  Tino Calancha  <tino.calancha@gmail.com>
+
+	* packages/gited/gited.el (gited-pull): Delete unused variable
+
+2018-04-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-pull fetches all remote branches
+
+	`gited-pull' was pulling just `gited-current-branch'; most of the time
+	you want to fetch from other remote branches as well.
+
+	For instance, suppose your development branch, DEV and next release
+	branch, NEXTREL, live in separated directories; if you want to backport
+	a DEV fix into the next release branch, then you need the reference for
+	the fix exists in the Git repository at NEXTREL.
+
+	Update file header.  Bump version to v0.4.3.
+	* packages/gited/gited.el (gited-change-current-remote-rep): Add doc
+	string.
+	(gited-toggle-current-remote-rep): Alias to
+	gited-change-current-remote-rep.
+
+	(gited-pull): Fetch from all remote branches, not just the current 
+	branch.
+
+2018-04-03  Tino Calancha  <tino.calancha@gmail.com>
+
+	Fix gited-push bug from previous commit
+
+	Bump version to 0.4.2.
+	* packages/gited/gited.el (gited-push): Drop hardcoded master from cmd;
+	instead we call `gited-current-branch'.
+
+2018-03-26  Tino Calancha  <tino.calancha@gmail.com>
+
+	Handle multi remote repositories
+
+	It's common to have a local repository linked to more than one remote
+	repository.  In such case we must specify the remote repo. from which we
+	want to fetch or push into.
+
+	This commit adds a new variable `gited-current-remote-rep' to store the
+	current remote repository; we pull/push from/into that repository.  It
+	also adds a new command
+	`gited-change-current-remote-rep' to update this variable.
+
+	Update file header.  Bump version to 0.4.1.
+	* packages/gited/gited.el (gited-current-remote-rep): New variable.
+	(gited-toplevel-dir): When listing local branches display the current
+	remote repository in the header line.
+	(gited--update-header-line): New defun.
+	(gited-git-command-on-region): Move isolated ending parens to previous
+	line.
+	(gited-pull, gited-push): Pull/push from/into the current remote rep.
+	(gited-mode-map): Bind `gited-change-current-remote-rep' to '*r'.
+
+2018-01-21  tino calancha  <tino.calancha@gmail.com>
+
+	Do not assume that 'git rev-parse 1' exits with status != 0
+
+	For some repositories `git rev-parse 1' might returns success, with the
+	reference pointing to something different that HEAD~1. In that case,
+	`gited-show-commit' fails to show commit HEAD~1. If we reject those
+	references, then `gited-show-commit' is forced to include the branch
+	name. Bump version to 0.3.4.
+	* packages/gited/gited.el (gited--valid-ref-p): Explicitely reject when
+	STR is just a digit, like "0", "1", "2", etc.
+
+2017-08-13  Tino Calancha  <tino.calancha@gmail.com>
+
+	Add function to return the repository trunk branch
+
+	Bump version to 0.3.3.
+	* packages/gited/gited.el (gited-one-trunk-repository,
+	gited-trunk-branch): New variables.
+	(gited-trunk-branches): Set gited-trunk-branch if not yet.  When there
+	are > 1 trunk candidates prompt user for the right one.
+	(gited--get-unmerged-branches, gited--get-merged-branches)
+	(gited--check-unmerged-marked-branches, gited-sync-with-trunk): Call
+	`gited-trunk-branch' function to solve the trunk branch.
+
+2017-08-13  Tino Calancha  <tino.calancha@gmail.com>
+
+	Use match-string-no-properties
+
+	* packages/gited/gited.el (gited-remote-tags)
+	(gited--sync-with-trunk-target-name)
+	(gited-log-last-n-commits, gited-status)
+	(gited-trunk-branches, gited--list-files): Use
+	`match-string-no-properties'.
+
+2017-07-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	* packages/gited/gited.el (gited-stash-branch): Update Gited buffer on
+	success
+
+2017-07-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited-tests.el (gited-test1): Use gited--last-commit-title.
+
+2017-07-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-amend-commit: New comand
+
+	Add command to amend last commit message, date or author name. Bump
+	version to 0.3.1.
+	* gited.el (gited-commit-title): Delete function.
+	(gited--extract-from-commit, gited-last-commit-msg)
+	(gited-last-commit-author, gited-last-commit-date): New defuns.
+	(gited-last-commit-title, gited-edit-commit): Use
+	gited--extract-from-commit.
+	(gited-amend-commit): New command.
+
+2017-07-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-git-checkout): Avoid harmless warning.
+
+2017-07-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-tag-add): Fix docstring.
+
+2017-07-05  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-git-checkout: New function
+
+	In Emacs versions < 25 `gited-git-checkout' has 2 optional arguments:
+	EDITABLE and REV.  In Emacs versions >= 25 this function has just REV as
+	optional argument. Bumo version to 0.3.
+	* gited.el (gited-git-checkout): New defun. Replace all calls to
+	`vc-git-checkout' with calls to it.
+
+2017-07-02  Tino Calancha  <tino.calancha@gmail.com>
+
+	; * gited.el: Update file header.
+
+2017-07-02  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-do-sync-with-trunk): Go to branch before
+	`gited-sync-with-trunk'.
+
+2017-07-02  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-checkout-branch: Set right faces for marked branches
+
+	* gited.el (gited--fontify-current-row-1): Renamed from
+	gited--fontify-current-row.
+	(gited--fontify-current-row): Renamed from
+	gited-fontify-marked-branch-name.
+	(gited-checkout-branch): Use `gited--fontify-current-row' to handle the
+	case when the branch is marked.
+
+2017-07-01  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-do-sync-with-trunk): Fix typo in docstring.
+
+2017-07-01  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-do-sync-with-trunk): Add docstring.  Update file
+	header.
+
+2017-07-01  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-do-sync-with-trunk: New command
+
+	* gited.el (gited-do-sync-with-trunk): New command.  Bind it to 'T'.
+	(gited--sync-with-trunk-target-name): New defun extracted from
+	`gited-sync-with-trunk'.
+	(gited--sync-with-trunk-target-name): Use it.
+	(gited-sync-with-trunk): Idem.	Signal error if BRANCH-TARGET already
+	exits. Update docstring.
+
+2017-07-01  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-update): Preserve marks in Gited buffer.
+
+2017-07-01  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-mark-remembered): Insert the marker and fontify the
+	row.
+
+2017-07-01  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-goto-branch): Return point on success.
+
+2017-06-26  Tino Calancha  <tino.calancha@gmail.com>
+
+	; * packages/gited/gited.el: Update file header.
+
+2017-06-25  Tino Calancha  <tino.calancha@gmail.com>
+
+	Use remote branches on marking commands if listing remotes
+
+	* gited.el (gited--get-branches-from-command): Use remote branches when 
+	gited-ref-kind equals "remote".
+
+2017-06-25  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-hide-details-mode): Update gited-verbose when toggle
+	the mode.
+
+2017-06-25  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el: Bump version to 0.2.3.
+
+2017-06-25  Tino Calancha  <tino.calancha@gmail.com>
+
+	Use proper name for the branch column according with gited-ref-kind
+
+	* gited.el (gited--col-branch-name): New defun.
+	(gited--list-format-init, gited-hide-details-update-invisibility-spec): 
+	Use different name for the branch column according with the value of
+	gited-ref-kind.
+
+2017-06-25  Tino Calancha  <tino.calancha@gmail.com>
+
+	* screenshots/gited-tags-screenshot.png: Update screenshot.
+
+2017-06-25  Tino Calancha  <tino.calancha@gmail.com>
+
+	Show example screenshots
+
+	* screenshots/gited-tags-screenshot.png: New file.
+	* screenshots/gited-remote-branches-verbose-screenshot.png: New file.
+	* README.md: Show two screenshot examples.
+
+2017-06-10  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-list: Add autoload cookie
+
+	Add simple usage example in comentary section. Bump version to 0.2.2.
+	* gited.el (gited-list): Add autoload cookie.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	Add missing docstrings for several commands
+
+	Update file header.  Bump version to 0.2.1
+	* gited.el (gited-finish-commit-edit, gited-revert-commit)
+	(gited-fetch-remote-tags): Add docstring.
+	(gited-move-to-branchname)
+	(gited-move-to-end-of-branchname, gited-move-to-author)
+	(gited-move-to-end-of-author, gited-move-to-date)
+	(gited-move-to-end-of-date): Same.  NOOP when there is no a table entry
+	at point.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited--fill-branch-alist): Silence harmless warning.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-list-branches): Update docstring.  Make alias to
+	`gited-list'.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-tag-add): Fix docstring.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	Add commands to add/delete tags
+
+	* gited.el (gited-set-object-upstream): Rename from 
+	gited-set-branch-upstream.  Handle tags as well.
+	(gited-internal-do-deletions): Handle tags.
+	(gited-remote-tags): New defun.
+	(gited-tag-add, gited-tag-delete, gited-remote-tag-delete)
+	(gited-fetch-remote-tags, gited-mark-local-tags): New commands. Bind
+	them to '* t a', '* t d', '* t D', '* t f' and '% l', respectively.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-mode-map): Use prefix '* s' for all stash commands.
+
+2017-06-09  Tino Calancha  <tino.calancha@gmail.com>
+
+	Update documentation
+
+	* gited.el: Add Bugs/TODO section and URL header.  Update comentary
+	section.
+	* README.md: Add simple example.
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-set-branch-upstream): Output buffer must be editable.
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-goto-branch): Check first that BRANCH is shown.
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	Use taggerdate/taggername when listing tags
+
+	* gited.el (gited-list-refs-format-command): Don't hardcode
+	authordate/authorname.
+	(gited--list-refs-format): New defun.
+	(gited--fill-branch-alist): Use it.
+	(gited-list-branches): Don't prune remote branches when `gited-ref-kind' 
+	is \"tags\".
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-move-to-branchname): NOOP when gited-branch-alist is
+	nil.
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited--fill-branch-alist): Fix typo in progress reporter.
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-remote-repository-p): Don't include origin in regexp.
+
+2017-06-08  Tino Calancha  <tino.calancha@gmail.com>
+
+	Prune deleted remote branches
+
+	Add user option to control whether if deleted remote branches must be
+	removed.
+	* gited.el (gited--last-remote-prune): New variable.
+	(gited-prune-remotes): New user option.
+	(gited-remote-prune): New defun.
+	(gited-list-branches): Call `gited-remote-prune' according with
+	`gited-prune-remotes' when we are not listing local branches.
+
+2017-06-07  Tino Calancha  <tino.calancha@gmail.com>
+
+	Prefer user-error on errors with origin in the user
+
+	* gited.el (gited--list-files): Fix docstring.
+	(gited--check-unmerged-marked-branches)
+	(gited-async-operation)
+	(gited-hide-details-mode)
+	(gited-update)
+	(gited-rename-branch)
+	(gited-delete-branch)
+	(gited-visit-branch-sources)
+	(gited-checkout-branch)
+	(gited--handle-new-or-delete-files)
+	(gited-commit)
+	(gited-finish-commit-edit)
+	(gited--case-ref-kind)
+	(gited-set-branch-upstream)
+	(gited-origin)
+	(gited-extract-patches)
+	(gited-sync-with-trunk)
+	(gited--bisect-executable-p)
+	(gited-bisect)
+	(gited-stash-pop)
+	(gited-branch-clear)
+	(gited-next-marked-branch)
+	(gited-get-element-in-row)
+	(gited--fill-branch-alist)
+	(gited-kill-line)
+	(gited-mark)
+	(gited-list-branches)
+	(gited-mode): Use `user-error' when the error has its origin in the
+	user. Use `message' instead of error if the user cancels an operation 
+	when asked for confirmation.
+
+2017-06-07  Tino Calancha  <tino.calancha@gmail.com>
+
+	Simplify code using gited-branch-exists-p
+
+	* gited.el (gited-list-branches): Use gited-branch-exists-p.
+	* gited-tests.el (gited-test1): Test `gited-mark-branches-by-date'.
+
+2017-06-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-mark-branches-by-date: Provide defaults to HH:MM:SS.
+
+	This avoid `encode-time' signals an error if one of HH, MM or SS is 
+	missing.
+	* gited.el (gited-mark-branches-by-date): Default MM:MM:SS to 00:00:00.
+
+2017-06-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-mark-branches-by-date: Use less verbose default
+
+	* gited.el (gited-mark-branches-by-date): Format default date with ISO
+	8601, i.e. %F.
+
+2017-06-06  Tino Calancha  <tino.calancha@gmail.com>
+
+	Don't ask deletion confirmation when gited-expert is non-nil
+
+	* gited.el (gited-internal-do-deletions): Don't ask confirmation if
+	gited-expert is non-nil.
+	(gited-do-delete): Honor `gited-delete-unmerged-branches' option.
+
+2017-06-05  Tino Calancha  <tino.calancha@gmail.com>
+
+	Mark branches by last commit time
+
+	Add command to mark all branches whose last commit time was after
+	MIN-TIME.
+	* gited.el (gited-mark-branches-by-date): New command; bind it to '% t'.
+
+2017-06-05  Tino Calancha  <tino.calancha@gmail.com>
+
+	* gited.el (gited-mark-branches-regexp): Fix docstring.
+
+2017-06-04  Tino Calancha  <tino.calancha@gmail.com>
+
+	Fix sort of columns when gited-hide-details-mode is enabled
+
+	When gited-hide-details-mode is enabled, and we want to sort by another
+	column, disable gited-hide-details-mode and enable it after all columns
+	have being printed out.
+	* gited.el (gited--advice-sort-by-column): New defun.  Use it to advice
+	`tabulated-list-col-sort'.
+	(gited-list-branches): Use gited-branch-exists-p.
+	* .travis.yml: Gited requires Emacs version >= 24.4.
+
+2017-06-04  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-update: Don't overwrite `tabulated-list-sort-key'
+
+	* gited.el (gited-mode): Initialize `tabulated-list-sort-key' only when 
+	is nil.
+
+2017-06-02  Tino Calancha  <tino.calancha@gmail.com>
+
+	gited-list-branches: Move to current branch only when it's shown
+
+	* gited.el (gited-list-branches): Move point to `gited-current-branch' 
+	only when it's shown in the gited buffer.
+
+2017-06-02  Tino Calancha  <tino.calancha@gmail.com>
+
+	Default to beginning of epoch when no commit time info
+
+	Default to '1970-01-01 00:00' (a string) when commit time is not
+	available. This fixes gited-list-branches when pattern is "tags".
+	* gited.el (gited--fill-branch-alist): Commit time in
+	`gited-branch-alist' must be an string.
+
+2017-06-02  Tino Calancha  <tino.calancha@gmail.com>
+
+	Add new library gited.el
+
