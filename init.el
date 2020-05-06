@@ -260,43 +260,30 @@
      "ZZ" 'quit-window)))
 
 ;;;; Quelpa
-  ;; Get emacs packages from anywhere:
-  ;; https://github.com/quelpa/quelpa#installation and use with use-package:
-  ;; https://github.com/quelpa/quelpa-use-package
-  ;; I don't use quelpa-use-package because it doesn't play well with byte-compilation
+;; Get emacs packages from anywhere:
+;; https://github.com/quelpa/quelpa#installation and use with use-package:
+;; https://github.com/quelpa/quelpa-use-package
 
-  (use-package quelpa
-    :ensure t
-    :commands (quelpa quelpa-upgrade)
-    :init
-    ;; disable checking Melpa
-    (setq quelpa-update-melpa-p nil)
-    ;; don't use Melpa at all
-    (setq quelpa-checkout-melpa-p nil)
-    ;; quelpa dir settings
-    (setq quelpa-dir (concat cpm-local-dir "quelpa"))
-    ;; make sure package-initialize has been called before calling quelpa
-    ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
-    )
-
-;; (quelpa
-;;  '(quelpa-use-package
-;;    :fetcher git
-;;    :url "https://github.com/quelpa/quelpa-use-package.git"))
-;; (require 'quelpa-use-package)
-;; (quelpa-use-package-activate-advice)
-
-
-;;;; El-Patch
-;; Package for helping advise other packages
-(use-package el-patch
+(use-package quelpa
   :ensure t
-  :defer 1
-  :config
-  (setq el-patch-enable-use-package-integration t))
+  :commands (quelpa quelpa-upgrade)
+  :init
+  ;; disable checking Melpa
+  (setq quelpa-update-melpa-p nil)
+  ;; don't use Melpa at all
+  (setq quelpa-checkout-melpa-p nil)
+  ;; quelpa dir settings
+  (setq quelpa-dir (concat cpm-local-dir "quelpa"))
+  ;; make sure package-initialize has been called before calling quelpa
+  ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
+  )
 
-(eval-when-compile
-  (require 'el-patch))
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
+(quelpa-use-package-activate-advice)
 
 ;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
