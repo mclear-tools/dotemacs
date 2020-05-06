@@ -105,7 +105,7 @@
 (setq auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
-      auto-save-visited-mode nil
+      auto-save-visited-mode t
       delete-auto-save-files t
       create-lockfiles nil)
 
@@ -118,8 +118,9 @@
           (basic-save-buffer)))))
 (add-hook 'auto-save-hook 'full-auto-save)
 
-;; Save all buffers after idle time or exit from insert state
+;; Save all buffers after idle time
 (run-with-idle-timer 5 t (lambda () (full-auto-save)))
+;; Save on exit from insert state
 ;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
 
 
