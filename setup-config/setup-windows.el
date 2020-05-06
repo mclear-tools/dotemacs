@@ -46,7 +46,16 @@
   (global-unset-key (kbd (format "M-%d" n))))
 
 (use-package windmove
+  :ensure nil
   :commands (windmove-up windmove-down windmove-left windmove-right)
+  :general
+  (:states '(normal motion insert)
+   (cpm/leader-keys
+     "w"   #'(:ignore t :which-key "Windows")
+     "w l" #'windmove-right
+     "w h" #'windmove-left
+     "w j" #'windmove-down
+     "w k" #'windmove-up))
   :config
   (defun cpm/split-window-right-and-focus ()
     "Split the window horizontally and focus the new window."
@@ -57,12 +66,7 @@
     "Split the window vertically and focus the new window."
     (interactive)
     (split-window-below)
-    (windmove-down))
-  ;; add edit mode keybindings
-  (global-set-key (kbd "<H-up>")     'windmove-up)
-  (global-set-key (kbd "<H-down>")   'windmove-down)
-  (global-set-key (kbd "<H-left>")   'windmove-left)
-  (global-set-key (kbd "<H-right>")  'windmove-right))
+    (windmove-down)))
 
 ;;; Window Sizing
 ;; Automatic resizing of Emacs windows to the golden ratio
