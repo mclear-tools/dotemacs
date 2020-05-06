@@ -44,6 +44,7 @@
     (evil-set-initial-state 'magit-log-edit-mode 'insert)
     (evil-set-initial-state 'org-agenda-mode 'motion)
     (evil-set-initial-state 'org-export-dispatch 'motion)
+    (evil-set-initial-state 'paradox-menu-mode 'motion)
     ;; evil-normal-state is preferred, so revert when idle
     (run-with-idle-timer 60 t 'evil-normal-state)
     ;; don't echo evil state

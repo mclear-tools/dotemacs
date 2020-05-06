@@ -237,27 +237,47 @@
         paradox-display-download-count t
         paradox-display-star-count t
         ;; Don't star automatically
-        paradox-automatically-star nil))
+        paradox-automatically-star nil)
+  (with-eval-after-load 'general
+    (general-define-key
+     :states '(normal motion emacs)
+     :keymaps 'paradox-menu-mode-map
+     "i" 'package-menu-mark-install
+     "d" 'package-menu-mark-delete
+     "f" 'hydra-paradox-filter/body
+     "gr" 'package-menu-refresh
+     "J" 'paradox-next-describe
+     "K" 'paradox-previous-describe
+     "l" 'paradox-menu-view-commit-list
+     "U" 'package-menu-mark-upgrades
+     ;; undo
+     "u" 'package-menu-mark-unmark
+     ;; execute
+     "x" 'package-menu-execute
+     ;; quit
+     "q" 'quit-window ;; FIXME: Can macros make sense here?
+     "ZQ" 'evil-quit
+     "ZZ" 'quit-window)))
 
 ;;;; Quelpa
-;; Get emacs packages from anywhere:
-;; https://github.com/quelpa/quelpa#installation and use with use-package:
-;; https://github.com/quelpa/quelpa-use-package
-;; I don't use quelpa-use-package because it doesn't play well with byte-compilation
+  ;; Get emacs packages from anywhere:
+  ;; https://github.com/quelpa/quelpa#installation and use with use-package:
+  ;; https://github.com/quelpa/quelpa-use-package
+  ;; I don't use quelpa-use-package because it doesn't play well with byte-compilation
 
-(use-package quelpa
-  :ensure t
-  :commands (quelpa quelpa-upgrade)
-  :init
-  ;; disable checking Melpa
-  (setq quelpa-update-melpa-p nil)
-  ;; don't use Melpa at all
-  (setq quelpa-checkout-melpa-p nil)
-  ;; quelpa dir settings
-  (setq quelpa-dir (concat cpm-local-dir "quelpa"))
-  ;; make sure package-initialize has been called before calling quelpa
-  ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
-  )
+  (use-package quelpa
+    :ensure t
+    :commands (quelpa quelpa-upgrade)
+    :init
+    ;; disable checking Melpa
+    (setq quelpa-update-melpa-p nil)
+    ;; don't use Melpa at all
+    (setq quelpa-checkout-melpa-p nil)
+    ;; quelpa dir settings
+    (setq quelpa-dir (concat cpm-local-dir "quelpa"))
+    ;; make sure package-initialize has been called before calling quelpa
+    ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
+    )
 
 ;; (quelpa
 ;;  '(quelpa-use-package
