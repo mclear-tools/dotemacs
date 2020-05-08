@@ -14,7 +14,8 @@ kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][sci
 [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
 This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
-that file and the various config "[[https://github.com/mclear-tools/dotemacs/blob/68afacee3354565a431178b6dd8508f28f20f96c/init.el#L319][helper]]" functions for navigation. The modules are
+that file and the various config
+"[[https://github.com/mclear-tools/dotemacs/blob/0d01e6ba684291bab877145acc35081a6b7d1c45/init.el#L334][helper]]" functions for navigation. The modules are
 organized thematically rather than package by package (e.g. the [[file:setup-config/setup-writing.el][writing module]]
 contains the config for spelling and markdown mode). Note that while I have an
 [[file:early-init.el][early-init]] file for use with emacs 27, the configuration is tested to work with emacs
@@ -35,7 +36,7 @@ Some highlights of this emacs setup include:
 10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
 11. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/Bad-ptr/persp-mode.el][perspectives]]
 12. A nice [[file:setup-config/setup-dashboard.el][dashboard]] homescreen
-13. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/EFLS/zetteldeft][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
+13. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/jethrokuan/org-roam][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
 
     
 For more information please take a look at the individual [[file:setup-config/][configuration files]]. 
