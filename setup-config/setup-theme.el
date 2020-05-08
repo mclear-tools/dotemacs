@@ -10,6 +10,7 @@
   (load-theme 'gruvbox t))
 
 ;;; Solarized Theme
+;;;; Solarized Package Settings
 (use-package solarized-theme
   :ensure t
   :if (display-graphic-p)
@@ -34,8 +35,8 @@
   :config
   (load-theme 'solarized-light t))
 
-;;; Customized Solarized Faces
-;;;; Solarized Dark
+;;;; Customized Solarized Faces
+;;;;;   Solarized Dark
 (defun cpm/solarized-dark ()
   "My customized solarized dark theme"
   ;; for issues with emacs 27 see https://emacs.stackexchange.com/a/52804/11934
@@ -114,7 +115,7 @@
    `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
    `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
 
-;;;; Solarized Light
+;;;;;   Solarized Light
 (defun cpm/solarized-light ()
   "My customized solarized-light theme"
   (interactive)
@@ -188,8 +189,16 @@
    `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
    `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
 
-;;; Load Custom Theme
+;;;; Load Custom Solarized Theme
 (cpm/solarized-light)
+
+;;; Disable All Custom Themes
+(defun cpm/disable-all-themes ()
+  "disable all active themes."
+  (interactive)
+  (dolist (i custom-enabled-themes)
+    (disable-theme i)))
+
 ;;; Toggle Menubar
 (defun cpm/osx-toggle-menubar-theme ()
   (interactive)
@@ -217,6 +226,7 @@
 
 ;;; Night Timer
 ;; Got the idea from https://github.com/hmatheisen/theme-switcher
+;; When emacs is launched in the evening automatically load the dark theme
 (defvar day-hour 08
   "The hour when the theme goes from dark to light in the morning. Default is 8am. ")
 
@@ -232,7 +242,7 @@
       (cpm/solarized-dark))))
 
 ;;; Packaging Themes
-
+;; I don't really use any other themes so I've disabled this
            ;; (defvar packages-appearance '(doom-themes
            ;;                               nord-theme
            ;;                               solarized-theme
@@ -282,4 +292,4 @@
 
 ;;; End setup-theme.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           (provide 'setup-theme)
+(provide 'setup-theme)
