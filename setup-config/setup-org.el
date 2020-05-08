@@ -493,6 +493,75 @@ _vr_ reset      ^^                       ^^                 ^^
   ;;   (switch-to-buffer (get-buffer-create "*scratch*"))
   ;;   (org-capture))
 
+;;;; Fix Org Capture Recentering Window problem
+  (eval-after-load "org-agenda"
+    '(defun org-agenda-redo (&optional all)
+      "Rebuild possibly ALL agenda view(s) in the current buffer."
+      (interactive "P")
+      (let* ((p (or (and (looking-at "\\'") (1- (point))) (point)))
+             (cpa (unless (eq all t) current-prefix-arg))
+             (org-agenda-doing-sticky-redo org-agenda-sticky)
+             (org-agenda-sticky nil)
+             (org-agenda-buffer-name (or org-agenda-this-buffer-name
+                                         org-agenda-buffer-name))
+             (org-agenda-keep-modes t)
+             (tag-filter org-agenda-tag-filter)
+             (tag-preset (get 'org-agenda-tag-filter :preset-filter))
+             (top-hl-filter org-agenda-top-headline-filter)
+             (cat-filter org-agenda-category-filter)
+             (cat-preset (get 'org-agenda-category-filter :preset-filter))
+             (re-filter org-agenda-regexp-filter)
+             (re-preset (get 'org-agenda-regexp-filter :preset-filter))
+             (effort-filter org-agenda-effort-filter)
+             (effort-preset (get 'org-agenda-effort-filter :preset-filter))
+             (org-agenda-tag-filter-while-redo (or tag-filter tag-preset))
+             (cols org-agenda-columns-active)
+             (line (org-current-line))
+             (window-line (- line (org-current-line (window-start))))
+             (lprops (get 'org-agenda-redo-command 'org-lprops))
+             (redo-cmd (get-text-property p 'org-redo-cmd))
+             (last-args (get-text-property p 'org-last-args))
+             (org-agenda-overriding-cmd (get-text-property p 'org-series-cmd))
+             (org-agenda-overriding-cmd-arguments
+              (unless (eq all t)
+                (cond ((listp last-args)
+                       (cons (or cpa (car last-args)) (cdr last-args)))
+                      ((stringp last-args)
+                       last-args))))
+             (series-redo-cmd (get-text-property p 'org-series-redo-cmd)))
+        (put 'org-agenda-tag-filter :preset-filter nil)
+        (put 'org-agenda-category-filter :preset-filter nil)
+        (put 'org-agenda-regexp-filter :preset-filter nil)
+        (put 'org-agenda-effort-filter :preset-filter nil)
+        (and cols (org-columns-quit))
+        (message "Rebuilding agenda buffer...")
+        (if series-redo-cmd
+            (eval series-redo-cmd)
+          (org-let lprops redo-cmd))
+        (setq org-agenda-undo-list nil
+              org-agenda-pending-undo-list nil
+              org-agenda-tag-filter tag-filter
+              org-agenda-category-filter cat-filter
+              org-agenda-regexp-filter re-filter
+              org-agenda-effort-filter effort-filter
+              org-agenda-top-headline-filter top-hl-filter)
+        (message "Rebuilding agenda buffer...done")
+        (put 'org-agenda-tag-filter :preset-filter tag-preset)
+        (put 'org-agenda-category-filter :preset-filter cat-preset)
+        (put 'org-agenda-regexp-filter :preset-filter re-preset)
+        (put 'org-agenda-effort-filter :preset-filter effort-preset)
+        (let ((tag (or tag-filter tag-preset))
+              (cat (or cat-filter cat-preset))
+              (effort (or effort-filter effort-preset))
+              (re (or re-filter re-preset)))
+          (when tag (org-agenda-filter-apply tag 'tag t))
+          (when cat (org-agenda-filter-apply cat 'category))
+          (when effort (org-agenda-filter-apply effort 'effort))
+          (when re  (org-agenda-filter-apply re 'regexp)))
+        (and top-hl-filter (org-agenda-filter-top-headline-apply top-hl-filter))
+        (and cols (called-interactively-p 'any) (org-agenda-columns))
+        (org-goto-line line))))
+
 ;;; Org Archive
   ;; Tell org where to archive completed tasks
   (setq org-archive-location (concat org-directory "/org-archive/archived.org::datetree/"))
@@ -539,7 +608,6 @@ _vr_ reset      ^^                       ^^                 ^^
   (defun cpm/follow-bookends-link (path)
     "run bookends link in org files"
     (shell-command-to-string (concat "open bookends:" path)))
-
 
 ;;; End Org Use-Package Config
   ;; end org use-package config settings
