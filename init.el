@@ -273,17 +273,7 @@
   ;; don't use Melpa at all
   (setq quelpa-checkout-melpa-p nil)
   ;; quelpa dir settings
-  (setq quelpa-dir (concat cpm-local-dir "quelpa"))
-  ;; make sure package-initialize has been called before calling quelpa
-  ;; (advice-add 'quelpa-upgrade :before #'package-initialize)
-  )
-
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-(quelpa-use-package-activate-advice)
+  (setq quelpa-dir (concat cpm-local-dir "quelpa")))
 
 ;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
