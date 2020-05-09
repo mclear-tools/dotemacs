@@ -1,6 +1,6 @@
 ;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
 ;;; Commentary:
-;; Base init file to load config. Use "outshine-cycle-buffer" (<Tab> and <S-Tab>
+;; Base init file to load config. Use "bicycle-cycle" (<Tab> and <S-Tab>
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
@@ -350,6 +350,42 @@
   "load the base init file"
   (interactive)
   (load-file (concat user-emacs-directory "init.el")))
+
+;;;; Outline Navigation
+;; Packages to help with navigating
+;; I used to use outshine.el but it was overkill -- these packages are much smaller/simpler
+
+(use-package outline
+  :ensure nil
+  :hook (prog-mode . outline-minor-mode))
+
+(use-package bicycle
+  :ensure t
+  :after outline
+  :demand t
+  :general
+  (:keymaps 'outline-minor-mode-map :states '(normal motion)
+    "<tab>" 'bicycle-cycle
+    "S-<tab>" 'bicycle-cycle-global)
+  (:keymaps 'outline-minor-mode-map :states '(normal motion)
+    "gh" 'outline-up-heading
+    "gj" 'outline-forward-same-level
+    "gk" 'outline-backward-same-level
+    "gl" 'outline-next-visible-heading
+    "gu" 'outline-previous-visible-heading
+    "M-j"   'outline-move-subtree-down
+    "M-k"   'outline-move-subtree-up
+    "M-h"   'outline-promote
+    "M-l"   'outline-demote))
+
+;; Make outline faces look better
+(use-package outline-minor-faces
+  :ensure t
+  :after outline
+  :demand t
+  :config (add-hook 'outline-minor-mode-hook
+                    'outline-minor-faces-add-font-lock-keywords))
+
 
 ;;;; Byte Compile Config Files
 ;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/

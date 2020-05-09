@@ -242,31 +242,6 @@
           (help-insert-xref-button melpa-link 'help-url melpa-link)
           (insert "\n"))))))
 
-;;;; Outshine Outline Navigation
-(use-package outshine
-  :ensure t
-  ;; Easier navigation for source files, especially this one.
-  :general
-  (:keymaps 'outline-minor-mode-map :states '(normal motion)
-   "<tab>" 'outshine-cycle
-   "M-<tab>" 'outshine-cycle-buffer)
-  (:keymaps 'outline-minor-mode-map :states '(normal motion)
-   "gh" 'outline-up-heading
-   "gj" 'outline-forward-same-level
-   "gk" 'outline-backward-same-level
-   "gl" 'outline-next-visible-heading
-   "gu" 'outline-previous-visible-heading
-   "M-RET" 'outshine-insert-heading
-   "M-j"   'outline-move-subtree-down
-   "M-k"   'outline-move-subtree-up
-   "M-h"   'outline-promote
-   "M-l"   'outline-demote)
-  :config
-  (setq outshine-use-speed-commands t
-        outshine-cycle-emulate-tab 'white
-        outshine-startup-folded-p nil)
-  :hook (prog-mode . outshine-mode))
-
 ;;;; Emacs Profiling
 (use-package esup
   :ensure t
