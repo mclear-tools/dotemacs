@@ -56,13 +56,6 @@ codepoints starting from codepoint-start."
 ;; (setq server-name "org")
 ;; (setq server-name "dashboard")
 
-;;;; Hercules
-;; https://gitlab.com/jjzmajic/hercules.el.git
-(eval-when-compile
-  (quelpa
-   '(hercules :fetcher gitlab :repo "jjzmajic/hercules.el")))
-(use-package hercules
-  :ensure t)
 
 ;;;; Did You Mean
 ;; https://gitlab.com/kisaragi-hiu/didyoumean.el/

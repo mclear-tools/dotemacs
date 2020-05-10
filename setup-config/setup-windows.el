@@ -50,12 +50,12 @@
   :commands (windmove-up windmove-down windmove-left windmove-right)
   :general
   (:states '(normal motion insert)
-   (cpm/leader-keys
-     "w"   #'(:ignore t :which-key "Windows")
-     "w l" #'windmove-right
-     "w h" #'windmove-left
-     "w j" #'windmove-down
-     "w k" #'windmove-up))
+           (cpm/leader-keys
+             "w"   #'(:ignore t :which-key "Windows")
+             "w l" #'windmove-right
+             "w h" #'windmove-left
+             "w j" #'windmove-down
+             "w k" #'windmove-up))
   :config
   (defun cpm/split-window-right-and-focus ()
     "Split the window horizontally and focus the new window."
@@ -68,59 +68,6 @@
     (split-window-below)
     (windmove-down)))
 
-;;; Window Sizing
-;; Automatic resizing of Emacs windows to the golden ratio
-;; FIXME: currently disabled due to poor interaction with eyebrowse
-;; https://github.com/roman/golden-ratio.el/issues/72
-(eval-when-compile
-  (quelpa
-   '(golden-ratio
-     :fetcher github :repo "roman/golden-ratio.el")))
-
-(use-package golden-ratio
-  :disabled
-  :ensure nil
-  ;; :after (:any perspective helm nameframe projectile)
-  ;; :demand t
-  :defer 2
-  :config
-  (setq golden-ratio-exclude-buffer-names '("*Ilist*" "*Deft*"))
-  (setq golden-ratio-exclude-buffer-regexp '("Ilist"))
-  (setq golden-ratio-exclude-modes '("dired" "peep-dired"))
-  ;; inhibit in helm windows
-  (defun cpm--helm-alive-p ()
-    (if (boundp 'helm-alive-p)
-        (symbol-value 'helm-alive-p)))
-  (add-to-list 'golden-ratio-inhibit-functions 'cpm--helm-alive-p)
-  ;;fix for ispell
-  (defun cpm--ispell-alive-p ()
-    (get-buffer ispell-choices-buffer))
-  (add-to-list 'golden-ratio-inhibit-functions 'cpm--ispell-alive-p)
-  ;; use golden ratio for the following
-  (setq golden-ratio-extra-commands
-        (append golden-ratio-extra-commands
-                '(evil-window-left
-                  evil-window-right
-                  evil-window-up
-                  evil-window-down
-                  buf-move-left
-                  buf-move-right
-                  buf-move-up
-                  buf-move-down
-                  window-number-select
-                  select-window
-                  select-window-1
-                  select-window-2
-                  select-window-3
-                  select-window-4
-                  select-window-5
-                  select-window-6
-                  select-window-7
-                  select-window-8
-                  select-window-9
-                  previous-multiframe-window
-                  magit-status)))
-  (golden-ratio-mode 1))
 
 ;;; Window Restore
 ;; Winner mode is a built-in package for restoring window configurations

@@ -134,39 +134,6 @@
   (setq emojify-emojis-dir (concat cpm-etc-dir "emojis")))
 
 
-;;; Tabs
-;; FIXME ;; cool but needs to mature
-(eval-when-compile
-  (quelpa '(centaur-tabs :fetcher github :repo "ema2159/centaur-tabs")))
-(use-package centaur-tabs
-  :disabled
-  :defer .5
-  :hook
-  (dashboard-mode . centaur-tabs-local-mode)
-  (term-mode . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (dired-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  (magit-log-mode . centaur-tabs-local-mode)
-  (magit-diff-mode . centaur-tabs-local-mode)
-  (magit-status-mode . centaur-tabs-local-mode)
-  (magit-process-mode . centaur-tabs-local-mode)
-  (magit-stashes-mode . centaur-tabs-local-mode)
-  (helpful-mode . centaur-tabs-local-mode)
-  (help-mode . centaur-tabs-local-mode)
-  (fundamental-mode . centaur-tabs-local-mode)
-  (lisp-interaction-mode . centaur-tabs-local-mode)
-  :config
-  (centaur-tabs-mode t)
-  (setq centaur-tabs-background-color (face-background 'default))
-  (setq centaur-tabs-style "bar")
-  (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-set-bar t)
-  (setq centaur-tabs-set-modified-marker t)
-  (centaur-tabs-inherit-tabbar-faces)
-  :bind
-  ("s-[" . centaur-tabs-backward)
-  ("s-]" . centaur-tabs-forward))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
