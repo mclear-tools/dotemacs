@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "helm-evil-markers" "20200506.715" "Show evil markers with helm" '((emacs "25.1") (helm "2.0.0") (evil "1.2.10")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "0245f0c268e0eaec85df51ab2deba7ac961f6770" :keywords '("extensions") :authors '(("Bill Xue")) :maintainer '("Bill Xue") :url "https://github.com/xueeinstein/helm-evil-markers")
