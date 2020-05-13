@@ -1,4 +1,5 @@
-;;; PDF Management
+;; PDF Management
+
 ;;;; Doc-View Mode
 (use-package doc-view
   :disabled
@@ -147,7 +148,8 @@
   ;; automatically annotate highlights
   (setq pdf-annot-activate-created-annotations t)
   ;; HiDPI
-  (setq pdf-view-use-scaling t)
+  (setq pdf-view-use-scaling t
+        pdf-view-use-imagemagick nil)
   (progn
     (pdf-tools-install)
     (evil-set-initial-state 'pdf-view-mode 'normal)
@@ -229,7 +231,10 @@
           (bms/pdf-no-filter)
         (bms/pdf-midnite-original)))
 
-    ;; midnite mode hook
+    ;; tex hook
+    ;; see https://github.com/politza/pdf-tools#auto-revert
+    (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+    ;; other hooks
     (add-hook 'pdf-view-mode-hook (lambda ()
                                         ; automatically turns on midnight-mode for pdfs
                                     (pdf-view-midnight-minor-mode)
@@ -238,6 +243,8 @@
                                         ; fixes blinking pdf in evil
                                     (blink-cursor-mode -1)
                                     (linum-mode -1)
+                                    (line-number-mode -1)
+                                    (auto-revert-mode -1)
                                     (beacon-mode -1)))))
 
 ;;;; PDF Notetaking Tools
