@@ -32,7 +32,7 @@ See `bibtex-completion-notes-mode' for more information on Bibtex-Completion-Not
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bibtex-completion" '("bibtex-completion-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bibtex-completion" '(#("bibtex-completion-" 0 18 (ws-butler-chg chg fontified t face font-lock-function-name-face)))))
 
 ;;;***
 

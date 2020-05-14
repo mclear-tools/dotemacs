@@ -4,7 +4,6 @@
 ;;         Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
 ;; URL: https://github.com/tmalsburg/helm-bibtex
-;; Package-Version: 20200508.945
 ;; Version: 1.0.0
 ;; Package-Requires: ((parsebib "1.0") (s "1.9.0") (dash "2.6.0") (f "0.16.2") (cl-lib "0.5") (biblio "0.2") (emacs "26.1"))
 
@@ -1142,13 +1141,27 @@ Return DEFAULT if FIELD is not present in ENTRY."
   ;; Virtual fields:
   (pcase field
     ("author-or-editor"
-     (if-let ((value (bibtex-completion-get-value "author" entry)))
-         (bibtex-completion-apa-format-authors value)
-       (bibtex-completion-apa-format-editors
-        (bibtex-completion-get-value "editor" entry))))
+     ;; Avoid if-let and when-let because they're not working reliably
+     ;; in all versions of Emacs that we currently support:
+     (let ((value (bibtex-completion-get-value "author" entry)))
+       (if value
+           (bibtex-completion-apa-format-authors value)
+         (bibtex-completion-apa-format-editors
+          (bibtex-completion-get-value "editor" entry)))))
+    ("author-or-editor-abbrev"
+     (let* ((value (bibtex-completion-get-value "author" entry)))
+       (if value
+           (bibtex-completion-apa-format-authors-abbrev value)
+         (bibtex-completion-apa-format-editors-abbrev
+          (bibtex-completion-get-value "editor" entry)))))
     ("author-abbrev"
-     (when-let ((value (bibtex-completion-get-value "author" entry)))
-       (bibtex-completion-apa-format-authors-abbrev value)))
+     (let ((value (bibtex-completion-get-value "author" entry)))
+       (when value
+         (bibtex-completion-apa-format-authors-abbrev value))))
+    ("editor-abbrev"
+     (let ((value (bibtex-completion-get-value "editor" entry)))
+       (when value
+         (bibtex-completion-apa-format-editors-abbrev value))))
     (_
      ;; Real fields:
      (let ((value (bibtex-completion-get-value field entry)))
@@ -1185,93 +1198,81 @@ Return DEFAULT if FIELD is not present in ENTRY."
              (_ value))
          "")))))
 
-(defun bibtex-completion-apa-format-authors (value)
-  "Format author list in VALUE in APA style."
+(defun bibtex-completion-apa-format-authors (value &optional abbrev)
+  "Format author list in VALUE in APA style.
+When ABBREV is non-nil, format in abbreviated APA style instead."
   (cl-loop for a in (s-split " and " value t)
            if (s-index-of "{" a)
-             collect
-             (replace-regexp-in-string "[{}]" "" a)
-             into authors
+           collect
+           (replace-regexp-in-string "[{}]" "" a)
+           into authors
            else if (s-index-of "," a)
-             collect
-             (let ((p (s-split " *, *" a t)))
-               (concat
-                (car p) ", "
-                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
-                                  (s-split " " (cadr p))))))
-             into authors
+           collect
+           (let ((p (s-split " *, *" a t)))
+             (concat
+              (car p) ", "
+              (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
+                                (s-split " " (cadr p))))))
+           into authors
            else
-             collect
-             (let ((p (s-split " " a t)))
-               (concat
-                (-last-item p) ", "
-                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
-                                  (-butlast p)))))
-             into authors
+           collect
+           (let ((p (s-split " " a t)))
+             (concat
+              (-last-item p) ", "
+              (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
+                                (-butlast p)))))
+           into authors
            finally return
-             (let ((l (length authors)))
-               (cond
-                 ((= l 1) (car authors))
-                 ((< l 8) (concat (s-join ", " (-butlast authors))
-                                  ", & " (-last-item authors)))
-                 (t (concat (s-join ", " (-slice authors 0 7)) ", …"))))))
+           (let ((l (length authors)))
+             (cond
+              ((= l 1) (car authors))
+              ((and abbrev (= l 2))
+               (concat (s-join " & " authors)))
+              (abbrev
+               (format "%s et al." (car authors)))
+              ((< l 8) (concat (s-join ", " (-butlast authors))
+                               ", & " (-last-item authors)))
+              (t (concat (s-join ", " (-slice authors 0 7)) ", …"))))))
 
 (defun bibtex-completion-apa-format-authors-abbrev (value)
   "Format author list in VALUE in abbreviated APA style."
-  (cl-loop for a in (s-split " and " value t)
-           if (s-index-of "{" a)
-             collect
-             (replace-regexp-in-string "[{}]" "" a)
-             into authors
-           else if (s-index-of "," a)
-             collect
-             (let ((p (s-split " *, *" a t)))
-               (concat
-                (car p) ", "
-                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
-                                  (s-split " " (cadr p))))))
-             into authors
-           else
-             collect
-             (let ((p (s-split " " a t)))
-               (concat
-                (-last-item p) ", "
-                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
-                                  (-butlast p)))))
-             into authors
-           finally return
-             (let ((l (length authors)))
-               (cond
-                 ((= l 1) (car authors))
-                 ((= l 2) (concat (s-join " & " authors)))
-                 (t (format "%s et al." (car authors)))))))
+  (bibtex-completion-apa-format-authors value t))
 
-(defun bibtex-completion-apa-format-editors (value)
-  "Format editors in VALUE in APA style."
+(defun bibtex-completion-apa-format-editors (value &optional abbrev)
+  "Format editors in VALUE in APA style.
+When ABBREV is non-nil, format in abbreviated APA style instead."
   (cl-loop for a in (s-split " and " value t)
            if (s-index-of "," a)
-             collect
-             (let ((p (s-split " *, *" a t)))
-               (concat
-                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
-                                  (s-split " " (cadr p))))
-                " " (car p)))
-             into authors
+           collect
+           (let ((p (s-split " *, *" a t)))
+             (concat
+              (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
+                                (s-split " " (cadr p))))
+              " " (car p)))
+           into editors
            else
-             collect
-             (let ((p (s-split " " a t)))
-               (concat
-                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
-                                  (-butlast p)))
-                " " (-last-item p)))
-             into authors
+           collect
+           (let ((p (s-split " " a t)))
+             (concat
+              (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
+                                (-butlast p)))
+              " " (-last-item p)))
+           into editors
            finally return
-             (let ((l (length authors)))
-               (cond
-                 ((= l 1) (car authors))
-                 ((< l 8) (concat (s-join ", " (-butlast authors))
-                                  ", & " (-last-item authors)))
-                 (t (concat (s-join ", " authors) ", ..."))))))
+           (let ((l (length editors)))
+             (cond
+              ((= l 1) (car editors))
+              ((and abbrev (= l 2))
+               (concat (s-join " & " editors)))
+              (abbrev
+               (format "%s et al." (car editors)))
+              ((< l 8) (concat (s-join ", " (-butlast editors))
+                               ", & " (-last-item editors)))
+              (t (concat (s-join ", " (-slice editors 0 7)) ", …"))))))
+
+(defun bibtex-completion-apa-format-editors-abbrev (value)
+  "Format editor list in VALUE in abbreviated APA style."
+  (bibtex-completion-apa-format-editors value t))
 
 (defun bibtex-completion-get-value (field entry &optional default)
   "Return the value for FIELD in ENTRY or DEFAULT if the value is not defined.
