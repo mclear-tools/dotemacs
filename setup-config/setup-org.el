@@ -2108,7 +2108,7 @@ is non-nil."
 ;; see https://org-roam.readthedocs.io/en/latest/
 (eval-when-compile
   (quelpa
-   '(org-roam :fetcher github :repo "jethrokuan/org-roam")))
+   '(org-roam :fetcher github :repo "org-roam/org-roam")))
 
 (use-package org-roam
   :ensure nil

@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "yaml-mode" "20200510.824" "Major mode for editing YAML files" '((emacs "24.1")) :stars '(#("308" 0 3 (font-lock-face paradox-star-face)) #("246K" 0 4 (value 246163 font-lock-face paradox-download-face))) :commit "e1aed40ff245e21193ce7dcf6a3845d57985cbae" :keywords '("data" "yaml") :authors '(("Yoshiki Kurihara" . "clouder@gmail.com") ("Marshall T. Vandegrift" . "llasram@gmail.com")) :maintainer '("Vasilij Schneidermann" . "mail@vasilij.de"))

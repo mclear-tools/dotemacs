@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "helm-org-rifle" "20190809.1831" "Rifle through your Org files" '((emacs "24.4") (dash "2.12") (f "0.18.1") (helm "1.9.4") (s "1.10.0")) :commit "abc14bb85427a6585aa354894eaef6926881d585" :keywords '("hypermedia" "outlines") :authors '(("Adam Porter" . "adam@alphapapa.net")) :maintainer '("Adam Porter" . "adam@alphapapa.net") :url "http://github.com/alphapapa/helm-org-rifle")

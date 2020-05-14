@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "helm-swoop" "20200511.1010" "Efficiently hopping squeezed lines powered by helm interface" '((emacs "24.4") (helm "3.2")) :stars '(#("542" 0 3 (font-lock-face paradox-star-face)) #("316K" 0 4 (value 316383 font-lock-face paradox-download-face))) :commit "fec156d78bd9a2e2d8bc60f860334b14d245afa8" :keywords '("convenience" "helm" "swoop" "inner" "buffer" "search") :authors '(("Shingo Fukuyama - http://fukuyama.co")) :maintainer '("Shingo Fukuyama - http://fukuyama.co") :url "https://github.com/emacsorphanage/helm-swoop")
