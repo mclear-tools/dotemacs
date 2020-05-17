@@ -14,28 +14,41 @@
   :defer 1
   :config
   (defun window-numbering-install-mode-line (&optional position)
-  "Do nothing, the display is handled by the powerline.")
+    "Do nothing, the display is handled by the powerline.")
   (setq window-numbering-auto-assign-0-to-minibuffer nil)
 
   (window-numbering-mode 1)
 
-;; make sure neotree is always 0
-(defun spacemacs//window-numbering-assign ()
-  "Custom number assignment for neotree."
-   (when (and (boundp 'neo-buffer-name)
-              (string= (buffer-name) neo-buffer-name)
-              ;; in case there are two neotree windows. Example: when
-              ;; invoking a transient state from neotree window, the new
-              ;; window will show neotree briefly before displaying the TS,
-              ;; causing an error message. the error is eliminated by
-              ;; assigning 0 only to the top-left window
-              (eq (selected-window) (window-at 0 0)))
-     0))
+  ;; make sure imenu list is always 0
+  (defun cpm/window-numbering-assign ()
+    "Custom number assignment for imenu-list"
+    (when (and (boundp 'imenu-list-buffer-name)
+               (string= (buffer-name) imenu-list-buffer-name)
+               ;; in case there are two neotree windows. Example: when
+               ;; invoking a transient state from neotree window, the new
+               ;; window will show neotree briefly before displaying the TS,
+               ;; causing an error message. the error is eliminated by
+               ;; assigning 0 only to the top-left window
+               (eq (selected-window) (window-at 0 0)))
+      0))
 
- ;; using lambda to work-around a bug in window-numbering, see
- ;; https://github.com/nschum/window-numbering.el/issues/10
- (setq window-numbering-assign-func
-       (lambda () (spacemacs//window-numbering-assign))))
+  ;; ;; make sure neotree is always 0
+  ;; (defun spacemacs//window-numbering-assign ()
+  ;;   "Custom number assignment for neotree."
+  ;;   (when (and (boundp 'neo-buffer-name)
+  ;;              (string= (buffer-name) neo-buffer-name)
+  ;;              ;; in case there are two neotree windows. Example: when
+  ;;              ;; invoking a transient state from neotree window, the new
+  ;;              ;; window will show neotree briefly before displaying the TS,
+  ;;              ;; causing an error message. the error is eliminated by
+  ;;              ;; assigning 0 only to the top-left window
+  ;;              (eq (selected-window) (window-at 0 0)))
+  ;;     0))
+
+  ;; using lambda to work-around a bug in window-numbering, see
+  ;; https://github.com/nschum/window-numbering.el/issues/10
+  (setq window-numbering-assign-func
+        (lambda () (cpm/window-numbering-assign))))
 
 ;; Unset window keys
 ;; A nice tip from Pragmatic emacs
