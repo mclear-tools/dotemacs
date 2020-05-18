@@ -21,7 +21,7 @@
   (setq enable-recursive-minibuffers t) ; Allow commands in minibuffers
   (setq ivy-use-selectable-prompt t
         ivy-use-virtual-buffers t    ; Enable bookmarks and recentf
-        ivy-height 10  ; Number of result lines to display
+        ivy-height 15  ; Number of result lines to display
         ivy-count-format "(%d/%d) " ;; Display count displayed and total
         ivy-on-del-error-function nil
         ivy-initial-inputs-alist nil ; No regexp by default
@@ -41,7 +41,8 @@
   :hook (after-init . ivy-rich-mode)
   :init
   ;; For better performance
-  (setq ivy-rich-parse-remote-buffer nil))
+  (setq ivy-rich-parse-remote-buffer nil)
+  (setq ivy-rich-path-style 'abbrev))
 
 ;; Better experience with icons
 ;; Enable it before`ivy-rich-mode' for better performance
