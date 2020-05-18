@@ -83,6 +83,12 @@
 ;;
 ;; [1]: https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L12-L94
 ;; [2]: http://emacs.stackexchange.com/q/10230/12534
+;; Package for helping advise other packages
+(use-package el-patch
+  :ensure t
+  :defer 1
+  :config
+  (setq el-patch-enable-use-package-integration t))
 (with-eval-after-load 'el-patch
   (el-patch-defun lisp-indent-function (indent-point state)
     "This function is the normal value of the variable `lisp-indent-function'.
