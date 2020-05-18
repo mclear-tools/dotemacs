@@ -6,7 +6,7 @@
 ;;         Marshall T. Vandegrift <llasram@gmail.com>
 ;; Maintainer: Vasilij Schneidermann <mail@vasilij.de>
 ;; Package-Requires: ((emacs "24.1"))
-;; Package-Version: 20200512.2141
+;; Package-Version: 20200518.914
 ;; Keywords: data yaml
 ;; Version: 0.0.14
 
@@ -152,7 +152,7 @@ that key is pressed to begin a block literal."
   "Regexp indicating the beginning of a scalar context.")
 
 (defconst yaml-nested-map-re
-  (concat ".*: *\\(?:&.*\\|{ *\\|" yaml-tag-re " *\\)?$")
+  (concat "[^#]*: *\\(?:&.*\\|{ *\\|" yaml-tag-re " *\\)?$")
   "Regexp matching a line beginning a YAML nested structure.")
 
 (defconst yaml-block-literal-base-re " *[>|][-+0-9]* *\\(?:\n\\|\\'\\)"

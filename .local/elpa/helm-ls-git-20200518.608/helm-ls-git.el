@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 ~ 2015 Thierry Volpiatto <thierry.volpiatto@gmail.com>
 
 ;; Package-Requires: ((helm "1.7.8"))
-;; Package-Version: 20191127.510
+;; Package-Version: 20200518.608
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ Valid values are symbol 'absolute or 'relative (default)."
 (defcustom helm-ls-git-status-command 'vc-dir
   "Favorite git-status command for emacs.
 
-If you want to use magit use `magit-status-internal' and not
+If you want to use magit use `magit-status-setup-buffer' and not
 `magit-status' which is working only interactively."
   :group 'helm-ls-git
   :type 'symbol)

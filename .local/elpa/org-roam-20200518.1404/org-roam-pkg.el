@@ -1,4 +1,4 @@
-(define-package "org-roam" "20200517.1551" "Roam Research replica with Org-mode"
+(define-package "org-roam" "20200518.1404" "Roam Research replica with Org-mode"
   '((emacs "26.1")
     (dash "2.13")
     (f "0.17.2")

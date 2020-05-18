@@ -1,4 +1,4 @@
-(define-package "ox-hugo" "20200501.1317" "Hugo Markdown Back-End for Org Export Engine"
+(define-package "ox-hugo" "20200518.1521" "Hugo Markdown Back-End for Org Export Engine"
   '((emacs "24.4")
     (org "9.0"))
   :keywords
