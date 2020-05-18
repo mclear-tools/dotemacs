@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20200512.1130
+;; Package-Version: 20200518.1447
 ;; Version: 0.13.0
 ;; Package-Requires: ((emacs "24.5") (swiper "0.13.0"))
 ;; Keywords: convenience, matching, tools
@@ -139,6 +139,34 @@ To skip the `executable-find' check, start the string with a space."
     (ivy-add-prompt-count
      (replace-regexp-in-string          ; Insert dir before any trailing colon.
       "\\(?:: ?\\)?\\'" dir (ivy-state-prompt ivy-last) t t))))
+
+(defalias 'counsel--flatten
+  ;; Added in Emacs 27.1
+  (if (fboundp 'flatten-tree)
+      #'flatten-tree
+    (lambda (tree)
+      (let (elems)
+        (while (consp tree)
+          (let ((elem (pop tree)))
+            (while (consp elem)
+              (push (cdr elem) tree)
+              (setq elem (car elem)))
+            (if elem (push elem elems))))
+        (if tree (push tree elems))
+        (nreverse elems))))
+  "Compatibility shim for `flatten-tree'.")
+
+(defun counsel--format (formatter &rest args)
+  "Like `format' but FORMATTER can be a list.
+When FORMATTER is a list, only `%s' is replaced with ARGS.
+
+Return a list or string depending on input."
+  (cond
+   ((listp formatter)
+    (counsel--flatten (mapcar
+                       (lambda (it) (if (equal it "%s") (pop args) it))
+                       formatter)))
+   (t (apply #'format formatter args))))
 
 ;;* Async Utility
 (defvar counsel--async-time nil
@@ -2968,10 +2996,16 @@ Return pair of corresponding strings (SWITCHES . SEARCH-TERM)."
   "Construct a complete `counsel-ag-command' as a string.
 EXTRA-ARGS is a string of the additional arguments.
 NEEDLE is the search string."
-  (format counsel-ag-command
-          (if (string-match " \\(--\\) " extra-args)
-              (replace-match needle t t extra-args 1)
-            (concat extra-args " " needle))))
+  (counsel--format counsel-ag-command
+                   (if (listp counsel-ag-command)
+                       (if (string-match " \\(--\\) " extra-args)
+                           (counsel--format
+                            (split-string (replace-match "%s" t t extra-args 1))
+                            needle)
+                         (nconc (split-string extra-args) needle))
+                     (if (string-match " \\(--\\) " extra-args)
+                         (replace-match needle t t extra-args 1)
+                       (concat extra-args " " needle)))))
 
 (defun counsel--grep-regex (str)
   (counsel--elisp-to-pcre
@@ -3002,7 +3036,9 @@ NEEDLE is the search string."
                                 " -s "))))
        (counsel--async-command (counsel--format-ag-command
                                 switches
-                                (shell-quote-argument regex)))
+                                (funcall (if (listp counsel-ag-command) #'identity
+                                           #'shell-quote-argument)
+                                         regex)))
        nil))))
 
 ;;;###autoload
@@ -3018,31 +3054,31 @@ CALLER is passed to `ivy-read'."
   (setq counsel-ag-command counsel-ag-base-command)
   (setq counsel--regex-look-around counsel--grep-tool-look-around)
   (counsel-require-program counsel-ag-command)
-  (when current-prefix-arg
-    (setq initial-directory
-          (or initial-directory
-              (counsel-read-directory-name (concat
-                                            (car (split-string counsel-ag-command))
-                                            " in directory: "))))
-    (setq extra-ag-args
-          (or extra-ag-args
-              (read-from-minibuffer (format
-                                     "%s args: "
-                                     (car (split-string counsel-ag-command)))))))
-  (setq counsel-ag-command (counsel--format-ag-command (or extra-ag-args "") "%s"))
-  (let ((default-directory (or initial-directory
-                               (counsel--git-root)
-                               default-directory)))
-    (ivy-read (or ag-prompt
-                  (concat (car (split-string counsel-ag-command)) ": "))
-              #'counsel-ag-function
-              :initial-input initial-input
-              :dynamic-collection t
-              :keymap counsel-ag-map
-              :history 'counsel-git-grep-history
-              :action #'counsel-git-grep-action
-              :require-match t
-              :caller (or caller 'counsel-ag))))
+  (let ((prog-name (car (if (listp counsel-ag-command) counsel-ag-command
+                          (split-string counsel-ag-command)))))
+    (when current-prefix-arg
+      (setq initial-directory
+            (or initial-directory
+                (counsel-read-directory-name (concat
+                                              prog-name
+                                              " in directory: "))))
+      (setq extra-ag-args
+            (or extra-ag-args
+                (read-from-minibuffer (format "%s args: " prog-name)))))
+    (setq counsel-ag-command (counsel--format-ag-command (or extra-ag-args "") "%s"))
+    (let ((default-directory (or initial-directory
+                                 (counsel--git-root)
+                                 default-directory)))
+      (ivy-read (or ag-prompt
+                    (concat prog-name ": "))
+                #'counsel-ag-function
+                :initial-input initial-input
+                :dynamic-collection t
+                :keymap counsel-ag-map
+                :history 'counsel-git-grep-history
+                :action #'counsel-git-grep-action
+                :require-match t
+                :caller (or caller 'counsel-ag)))))
 
 (ivy-configure 'counsel-ag
   :occur #'counsel-ag-occur
@@ -3080,10 +3116,10 @@ Works for `counsel-git-grep', `counsel-ag', etc."
 
 (defun counsel--grep-smart-case-flag ()
   (if (ivy--case-fold-p ivy-text)
-      " -i "
+      "-i"
     (if (string-match-p "\\`pt" counsel-ag-base-command)
-        " -S "
-      " -s ")))
+        "-S"
+      "-s")))
 
 (defun counsel-grep-like-occur (cmd-template)
   (unless (eq major-mode 'ivy-occur-grep-mode)
@@ -3097,14 +3133,24 @@ Works for `counsel-git-grep', `counsel-ag', etc."
               (funcall cmd-template ivy-text)
             (let* ((command-args (counsel--split-command-args ivy-text))
                    (regex (counsel--grep-regex (cdr command-args)))
-                   (switches (concat (car command-args)
-                                     (counsel--ag-extra-switches regex)
-                                     (counsel--grep-smart-case-flag))))
-              (format cmd-template
-                      (concat
-                       switches
-                       (shell-quote-argument regex))))))
-         (cands (counsel--split-string (shell-command-to-string cmd))))
+                   (all-args (append
+                              (when (car command-args)
+                                (split-string (car command-args)))
+                              (counsel--ag-extra-switches regex)
+                              (list
+                               (counsel--grep-smart-case-flag)
+                               regex))))
+              (if (stringp cmd-template)
+                  (counsel--format
+                   cmd-template
+                   (mapconcat #'shell-quote-argument all-args " "))
+                (cl-mapcan
+                 (lambda (x) (if (string= x "%s") all-args (list x)))
+                 (copy-sequence cmd-template))))))
+         (cands (counsel--split-string
+                 (if (stringp cmd-template)
+                     (shell-command-to-string cmd)
+                   (counsel--call cmd)))))
     (swiper--occur-insert-lines (mapcar #'counsel--normalize-grep-match cands))))
 
 (defun counsel-ag-occur (&optional _cands)
@@ -3158,30 +3204,29 @@ This uses `counsel-ag' with `counsel-ack-base-command' replacing
 
 ;;** `counsel-rg'
 (defcustom counsel-rg-base-command
-  (if (memq system-type '(ms-dos windows-nt))
-      "rg -M 240 --with-filename --no-heading --line-number --color never %s --path-separator / ."
-    "rg -M 240 --with-filename --no-heading --line-number --color never %s")
+  (split-string
+   (if (memq system-type '(ms-dos windows-nt))
+       "rg -M 240 --with-filename --no-heading --line-number --color never %s --path-separator / ."
+     "rg -M 240 --with-filename --no-heading --line-number --color never %s"))
   "Alternative to `counsel-ag-base-command' using ripgrep.
 
 Note: don't use single quotes for the regex."
-  :type 'string)
+  :type '(choice
+          (repeat :tag "List to be used in `process-file'." string)
+          (string :tag "String to be used in `shell-command-to-string'.")))
 
 (defun counsel--rg-targets ()
   "Return a list of files to operate on, based on `dired-mode' marks."
-  (if (eq major-mode 'dired-mode)
-      (let ((files
-             (dired-get-marked-files 'no-dir nil nil t)))
-        (if (and (null (cdr files))
-                 (not (when (string-match-p "\\*ivy-occur" (buffer-name))
-                        (dired-toggle-marks)
-                        (setq files (dired-get-marked-files 'no-dir))
-                        (dired-toggle-marks)
-                        t)))
-            ""
-          (concat
-           " "
-           (mapconcat #'shell-quote-argument (delq t files) " "))))
-    ""))
+  (when (eq major-mode 'dired-mode)
+    (let ((files
+           (dired-get-marked-files 'no-dir nil nil t)))
+      (when (or (cdr files)
+                (when (string-match-p "\\*ivy-occur" (buffer-name))
+                  (dired-toggle-marks)
+                  (setq files (dired-get-marked-files 'no-dir))
+                  (dired-toggle-marks)
+                  t)))
+      (delq t files))))
 
 ;;;###autoload
 (defun counsel-rg (&optional initial-input initial-directory extra-rg-args rg-prompt)
@@ -3195,9 +3240,13 @@ Example input with inclusion and exclusion file patterns:
     require i -- -g*.el"
   (interactive)
   (let ((counsel-ag-base-command
-         (concat counsel-rg-base-command (counsel--rg-targets)))
+         (if (listp counsel-rg-base-command)
+             (append counsel-rg-base-command (counsel--rg-targets))
+           (concat counsel-rg-base-command " "
+                   (mapconcat #'shell-quote-argument (counsel--rg-targets) " "))))
         (counsel--grep-tool-look-around
-         (let ((rg (car (split-string counsel-rg-base-command)))
+         (let ((rg (car (if (listp counsel-rg-base-command) counsel-rg-base-command
+                          (split-string counsel-rg-base-command))))
                (switch "--pcre2"))
            (and (eq 0 (call-process rg nil nil nil switch "--pcre2-version"))
                 switch))))
@@ -3233,10 +3282,14 @@ substituted by the search regexp and file, respectively.  Neither
   (or
    (ivy-more-chars)
    (let* ((regex (counsel--grep-regex string))
-          (cmd (format counsel-grep-command (shell-quote-argument regex))))
+          (cmd (counsel--format
+                counsel-grep-command
+                (funcall (if (listp counsel-grep-command) #'identity
+                           #'shell-quote-argument)
+                         regex))))
      (counsel--async-command
       (if (ivy--case-fold-p regex)
-          (progn
+          (if (listp cmd) (nconc (list (car cmd) "-i") (cdr cmd))
             (string-match " " cmd)
             (replace-match " -i " nil nil cmd))
         cmd))
@@ -3305,10 +3358,11 @@ When non-nil, INITIAL-INPUT is the initial search pattern."
     (user-error "Current buffer is not visiting a file"))
   (counsel-require-program counsel-grep-base-command)
   (setq counsel-grep-command
-        (format counsel-grep-base-command
-                "%s" (shell-quote-argument
-                      (file-name-nondirectory
-                       buffer-file-name))))
+        (counsel--format counsel-grep-base-command "%s"
+                         (funcall (if (listp counsel-grep-base-command) #'identity
+                                    #'shell-quote-argument)
+                                  (file-name-nondirectory
+                                   buffer-file-name))))
   (let ((default-directory (file-name-directory buffer-file-name))
         (init-point (point))
         res)
