@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "company-posframe" "20200514.2116" "Use a posframe as company candidate menu" '((emacs "26.0") (company "0.9.0") (posframe "0.1.0")) :stars '(#("21" 0 2 (font-lock-face paradox-star-face)) #("649" 0 3 (value 649 font-lock-face paradox-download-face))) :commit "4e506d661ed9cd2e4cf16281f3a11009210e9c30" :keywords '("abbrev" "convenience" "matching") :authors '(("Clément Pit-Claudel, Feng Shu, Lars Andersen" . "expez@expez.com")) :maintainer '("Feng Shu" . "tumashu@163.com") :url "https://github.com/tumashu/company-posframe")
