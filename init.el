@@ -211,9 +211,11 @@
   (require 'use-package))
 
 ;; initialize packages after evil has loaded
-(add-hook 'evil-after-load-hook 'package-initialize)
-;; refresh package list after load
-(with-eval-after-load 'evil (package-refresh-contents 'async))
+(defun cpm/package-startup ()
+  (interactive)
+  (package-initialize)
+  (package-refresh-contents 'async))
+(add-hook 'after-init-hook 'cpm/package-startup)
 
 ;;;; Benchmark Init
 (use-package benchmark-init
