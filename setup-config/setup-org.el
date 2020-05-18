@@ -2200,6 +2200,12 @@ is non-nil."
   :config
   (push 'company-org-roam company-backends))
 
+;;;; Org Roam Server
+(use-package org-roam-server
+  :ensure t
+  :after org-roam
+  :demand t)
+
 ;;; Org Miscellaneous Packages
 
 (use-package htmlize :commands (htmlize-buffer))
