@@ -29,6 +29,11 @@
   (add-to-list 'company-backends 'company-keywords)
   (add-to-list 'company-backends 'company-files))
 
+(use-package company-prescient
+  :after company
+  :hook
+  (company-mode . company-prescient-mode))
+
 
 (use-package company-bibtex
   :ensure t
@@ -42,13 +47,14 @@
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
   (setq company-bibtex-org-citation-regex "-?@"))
 
+;;; Yasnippet
 (use-package yasnippet
   :defer 1
   :config
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
     (setq-local yas-buffer-local-condition
-            '(not (org-in-src-block-p t))))
+                '(not (org-in-src-block-p t))))
   (add-hook 'org-mode-hook #'cpm/yas-org-mode-hook)
 
   ;; snippet directory
@@ -59,7 +65,7 @@
 
   ;; Adding yasnippet support to company
   (with-eval-after-load 'company-mode
-  (add-to-list 'company-backends '(company-yasnippet)))
+    (add-to-list 'company-backends '(company-yasnippet)))
   (yas-reload-all)
   (yas-global-mode 1))
 
