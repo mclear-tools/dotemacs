@@ -9,6 +9,7 @@
 
 ;;; Magit
 (use-package magit
+  :general
   :commands
   (magit-blame-mode
    magit-commit
@@ -31,6 +32,9 @@
   ;; make magit go fullscreen
   ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-diff-refine-hunk t)
+  ;; control magit initial visibility
+  (setq magit-section-initial-visibility-alist
+        '((stashes . hide) (untracked . hide) (unpushed . hide)))
   (global-git-commit-mode t) ; use emacs as editor for git commits
   (setq magit-push-always-verify nil))
 
@@ -74,6 +78,10 @@
 (use-package evil-magit
   :after magit
   :demand t
+  :general
+  (:states '(motion normal) :keymaps 'magit-mode-map
+   "C-j" #'magit-section-forward-sibling
+   "C-k" #'magit-section-backward-sibling)
   :config
   (setq evil-magit-use-y-for-yank t
         evil-magit-use-z-for-folds t))
