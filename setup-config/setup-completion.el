@@ -1,4 +1,5 @@
-;;; Completion
+;;;; Completion
+;;;;; Company
 (use-package company
   :ensure t
   :after evil
@@ -47,7 +48,7 @@
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
   (setq company-bibtex-org-citation-regex "-?@"))
 
-;;; Yasnippet
+;;;;; Yasnippet
 (use-package yasnippet
   :defer 1
   :config
