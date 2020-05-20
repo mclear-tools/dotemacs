@@ -44,6 +44,17 @@
 ;; Produce backtraces when errors occur
 (setq debug-on-error nil)
 
+;;;; When-let errors
+;; https://github.com/alphapapa/frame-purpose.el/issues/3
+;; https://github.com/alphapapa/frame-purpose.el/issues/3
+(eval-and-compile
+  (when (version< emacs-version "26")
+    (with-no-warnings
+      (defalias 'when-let* #'when-let)
+      (function-put #'when-let* 'lisp-indent-function 1)
+      (defalias 'if-let* #'if-let)
+      (function-put #'if-let* 'lisp-indent-function 2))))
+
 ;;;; Clean View
 ;; Disable start-up screen
 (setq-default inhibit-startup-screen t)
@@ -275,7 +286,10 @@
   ;; don't use Melpa at all
   (setq quelpa-checkout-melpa-p nil)
   ;; quelpa dir settings
-  (setq quelpa-dir (concat cpm-local-dir "quelpa")))
+  (setq quelpa-dir (concat cpm-local-dir "quelpa"))
+  (let ((quelpa-melpa (concat cpm-local-dir "quelpa/melpa/recipes")))
+    (unless (file-directory-p quelpa-melpa)
+      (make-directory quelpa-melpa t))))
 
 ;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
