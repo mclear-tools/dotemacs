@@ -613,6 +613,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun cpm/helm-files-do-ag (&optional dir)
   "Search in files with `ag' using a default input."
   (interactive)
+  (require 'helm-ag)
   (helm-do-ag dir))
 
 ;;;; Make Window  a Frame
@@ -792,6 +793,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Search file for any TODO markers as specified in hl-todo-keyword-faces. Note that this uses the word boundary \\b to avoid matching these within other words, but this means that non-word keywords such as ???, which is in the list by default, will not be matched."
   (interactive)
   (require 'projectile)
+  (require 'helm-ag)
   (let* ((grouped (funcall #'regexp-opt (--map (car it) hl-todo-keyword-faces)))
          (unescaped (s-replace-all '(("\\(" . "(") ("\\)" . ")") ("\\|" . "|"))
                                    grouped))
