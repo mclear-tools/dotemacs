@@ -230,7 +230,7 @@ Lisp function does not specify a special indentation."
 ;;;; Plist
 (use-package plist-mode
   :ensure nil
-  :load-path cpm-elisp-dir)
+  :load-path "~/.emacs.d/.local/elisp/plist-mode")
 
 ;;;; Vim
 (use-package vimrc-mode

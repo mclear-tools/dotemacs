@@ -388,6 +388,8 @@
   :config
   (setq bookmark-default-file (concat cpm-cache-dir "bookmarks")))
 
+(quelpa
+ '(bookmark+ :fetcher wiki))
 (use-package bookmark+
   :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
   :config

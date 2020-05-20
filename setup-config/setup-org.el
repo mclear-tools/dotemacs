@@ -2224,7 +2224,7 @@ is non-nil."
 (use-package org-devonthink
   :commands (org-insert-dtp-link org-dtp-store-link)
   :ensure nil
-  :load-path cpm-elisp-dir)
+  :load-path "~/.emacs.d/.local/elisp/org-devonthink")
 
 
 ;;; Provide
