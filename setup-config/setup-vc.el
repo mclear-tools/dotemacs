@@ -78,16 +78,16 @@
 (use-package evil-magit
   :after magit
   :demand t
+  :custom
+  (evil-magit-use-z-for-folds t)
+  (evil-magit-use-y-for-yank t)
   :general
   (:states '(motion normal) :keymaps 'magit-mode-map
    "C-j" #'magit-section-forward-sibling
-   "C-k" #'magit-section-backward-sibling)
-  :config
-  (setq evil-magit-use-y-for-yank t
-        evil-magit-use-z-for-folds t))
+   "C-k" #'magit-section-backward-sibling))
 
 ;;; Git Navigation
-; Go back in Git time
+                                        ; Go back in Git time
 (use-package git-timemachine :commands git-timemachine)
 
 ;; Give git projects branches the dired treatment
