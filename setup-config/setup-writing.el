@@ -379,6 +379,9 @@
   :config
   (typo-global-mode))
 
+;;; Dictionary
+(use-package define-word
+  :ensure t)
 ;;; Notes / Deft
 (use-package deft
   :ensure t
