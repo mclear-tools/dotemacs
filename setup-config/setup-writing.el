@@ -173,8 +173,8 @@
          " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
          " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
          " --metadata=reference-section-title:'References & Further Reading'"
-         " --filter pandoc-citeproc"
-         ;; " --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib"
+         ;; " --filter pandoc-citeproc"
+         " --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib"
          ))
 
   (setq markdown-enable-math nil
