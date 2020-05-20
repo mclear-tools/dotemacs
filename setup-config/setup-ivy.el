@@ -196,6 +196,7 @@
 
 (use-package ivy-prescient
   :commands (ivy-prescient-mode ivy-prescient-re-builder)
+  :hook (counsel-mode . ivy-prescient-mode)
   :custom-face (ivy-minibuffer-match-face-1 ((t (:inherit font-lock-doc-face :foreground nil))))
   :preface
   (defun ivy-prescient-non-fuzzy (str)
@@ -213,6 +214,19 @@
                                 (swiper-isearch . ivy-prescient-non-fuzzy)
                                 (swiper-all . ivy-prescient-non-fuzzy)
                                 (t . ivy-prescient-re-builder))))
+
+;; :config
+;; (ivy-prescient-mode t)
+;; ;; Explicitly disable sorting by ivy-prescient for these commands.
+;; ;; See https://github.com/raxod502/prescient.el/issues/38
+;; (general-add-hook 'ivy-sort-functions-alist
+;;                   '((swiper . nil)
+;;                     (counsel-minibuffer-history . nil)
+;;                     (counsel-mark-ring . nil)))
+;; ;; Don't fallback to ivy-prescient.
+;; (general-remove-hook 'ivy-sort-functions-alist
+;;                      '((t . ivy-prescient-sort-function))))
+
 
 
 
