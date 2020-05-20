@@ -155,9 +155,7 @@
              goto-address-mode))
 
 ;;; Frog-Jump-Avy
-;; FIXME: fix loading with perspective
 (use-package frog-jump-buffer
-  :disabled
   :ensure t
   :commands frog-jump-buffer
   :general
@@ -166,6 +164,12 @@
   (dolist (regexp '("TAGS" "^\\*Compile-log" "-debug\\*$" "^\\:" "errors\\*$" "^\\*Backtrace" "-ls\\*$"
                     "stderr\\*$" "^\\*Flymake" "^\\*vc" "^\\*Warnings" "^\\*eldoc" "\\^*Shell Command"))
     (push regexp frog-jump-buffer-ignore-buffers))
+  (setq frog-jump-buffer-include-current-buffer nil) ;; don't include current buffer (esc to quit)
+  ;; posframe
+  (setq frog-jump-buffer-posframe-handler 'posframe-poshandler-frame-center)
+  (setq frog-jump-buffer-posframe-parameters '((left-fringe . 0)
+                                               (right-fringe . 0)
+                                               (internal-border-width . 12)))
   (setq frog-jump-buffer-max-buffers 15))
 
 

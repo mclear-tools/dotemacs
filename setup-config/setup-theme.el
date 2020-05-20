@@ -99,6 +99,7 @@
    `(ivy-posframe ((t (:background "#073642"))))
    `(which-key-posframe ((t (:background "#073642"))))
    `(helm-posframe-face ((t (:background "#073642"))))
+   `(frog-menu-posframe-background-face ((t (:background "#073642"))))
 
    ;; helm faces
    `(helm-selection ((t (:background "#1f4a54" :foreground "goldenrod1" :underline nil))))
@@ -171,6 +172,7 @@
    `(ivy-posframe ((t (:background "#eee8d5"))))
    `(which-key-posframe ((t (:background "#eee8d5"))))
    `(helm-posframe ((t (:background "#eee8d5"))))
+   `(frog-menu-posframe-background-face ((t (:background "#eee8d5"))))
 
    ;; helm faces
    `(helm-selection ((t (:background "#fdf6e3" :foreground "#268bd2" :underline nil :weight bold))))
