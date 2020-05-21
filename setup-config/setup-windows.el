@@ -3,7 +3,7 @@
 ;;; Window Movement
 ;; Move to other window
 (general-define-key :states '(normal motion visual insert)
-  "C-o" 'other-window)
+  "C-c w" 'other-window)
 
 ;; Quickly switch windows in Emacs
 (use-package ace-window
