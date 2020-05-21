@@ -6,8 +6,11 @@
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
 
-                                        ; calendars you want to download
-                                        ; each item links to a remote iCal calendar
+;; The following doesn't use org-mac-ical but if I were to ever use that this seems relevant
+;; https://emacs.stackexchange.com/questions/49117/org-mac-ical-not-working
+
+;; calendars you want to download
+;; each item links to a remote iCal calendar
 (when (file-directory-p (concat cpm-local-dir "diary-files/"))
   (setq calendars
         `(("work" . ,cal-work)
