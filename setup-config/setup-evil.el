@@ -154,11 +154,11 @@
     (global-undo-tree-mode -1))
   :general
   (:states '(normal)
-           "u" 'undo-fu-only-undo
-           "\C-r" 'undo-fu-only-redo)
+   "u" 'undo-only
+   "\C-r" 'undo-fu-only-redo)
   (:states '(normal insert motion emacs)
-           "s-z" 'undo-fu-only-undo
-           "s-Z" 'undo-fu-only-redo)
+   "s-z" 'undo-fu-only-undo
+   "s-Z" 'undo-fu-only-redo)
   :config
   ;; Store more undo history to prevent loss of data
   (setq undo-limit 400000
