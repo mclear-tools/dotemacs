@@ -68,7 +68,8 @@
 (use-package evil-collection
   :ensure t
   :after evil
-  :init
+  :demand t
+  :config
   (evil-collection-init)
   :custom
   (evil-collection-company-use-tng nil))
