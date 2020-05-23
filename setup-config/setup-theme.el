@@ -106,9 +106,10 @@
    `(helm-match ((t (:foreground "#b58900"))))
 
    ;; line number highlighting
-   `(line-number-current-line ((t (:inherit default :foreground "goldenrod1"))))
+   `(line-number-current-line ((t (:background "#002833" :foreground "goldenrod1"))))
+   `(line-number ((t (:background "#002833" :foreground "#586e75" :weight thin))))
    ;; '(nlinum-current-line ((t (:inherit default :foreground "goldenrod1"))))
-   `(linum-highlight-face ((t (:inherit default :foreground "goldenrod1"))))
+   `(linum-highlight-face ((t (:foreground "goldenrod1"))))
    ;; '(nlinum-hl-face ((t (:inherit default :foreground "goldenrod1"))))
 
    ;; battery faces
@@ -238,10 +239,12 @@
   (if (eq active-theme 'solarized-light)
       (progn (setq active-theme 'solarized-dark)
              (cpm/osx-menubar-theme-dark)
+             (cpm/disable-all-themes)
              (cpm/solarized-dark)
              (force-mode-line-update))
     (progn (setq active-theme 'solarized-light)
            (cpm/osx-menubar-theme-light)
+           (cpm/disable-all-themes)
            (cpm/solarized-light)
            (force-mode-line-update))))
 
