@@ -26,9 +26,19 @@
   :config
   (setq magit-log-margin '(t "%Y-%m-%d.%H:%M:%S "  magit-log-margin-width nil 18))
   (setq magit-refresh-verbose t)
+  ;; try to speed up magit
+  (setq magit-refresh-status-buffer nil)
+  (setq magit-git-executable "/usr/local/bin/git")
   ;; don't automatically present diff on commit
   ;; type C-c C-d to show the diff when needed
   (remove-hook 'server-switch-hook 'magit-commit-diff)
+  ;; remove some other slow processes
+  ;; see https://github.com/magit/magit/issues/2982#issuecomment-632453966
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
+
   ;; make magit go fullscreen
   ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-diff-refine-hunk t)
