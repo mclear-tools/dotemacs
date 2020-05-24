@@ -430,8 +430,10 @@
    ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
-   "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
-   "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
+   "st" #'cpm/hydra-todo/body
+   ;; "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
+   "sT" #'ivy-magit-todos  ;; search todos in git project
+   ;; "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
    )
 
 ;;; Toggle Keybindings
