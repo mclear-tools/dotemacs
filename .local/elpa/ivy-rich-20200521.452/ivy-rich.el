@@ -3,8 +3,8 @@
 ;; Copyright (C) 2016 Yevgnen Koh
 
 ;; Author: Yevgnen Koh <wherejoystarts@gmail.com>
-;; Package-Requires: ((emacs "24.5") (ivy "0.8.0"))
-;; Package-Version: 20200521.34
+;; Package-Requires: ((emacs "24.5") (ivy "0.13.0"))
+;; Package-Version: 20200521.452
 ;; Version: 0.1.6
 ;; Keywords: ivy
 
