@@ -35,9 +35,11 @@
   (ivy-mode . ivy-posframe-mode)
   :custom
   (ivy-posframe-size-function 'cpm/ivy-posframe-size)
+  (ivy-posframe-height 50)
+  (ivy-posframe-width 70)
   (ivy-posframe-parameters '((left-fringe . 0)
                              (right-fringe . 0)
-                             (internal-border-width . 12)))
+                             (internal-border-width . 15)))
   (ivy-posframe-display-functions-alist
    '((swiper          . ivy-posframe-display-at-frame-top-center)
      (swiper-isearch  . ivy-posframe-display-at-frame-top-center)
@@ -52,7 +54,7 @@
 (defun cpm/ivy-posframe-size ()
   (list
    :min-height ivy-height
-   :min-width (round (* (frame-width) 0.72))))
+   :min-width (round (* (frame-width) 0.52))))
 
 ;;; Company Posframe
 (eval-when-compile

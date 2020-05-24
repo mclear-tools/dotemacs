@@ -42,7 +42,22 @@
   :init
   ;; For better performance
   (setq ivy-rich-parse-remote-buffer nil)
-  (setq ivy-rich-path-style 'abbrev))
+  (setq ivy-rich-path-style 'abbrev)
+  :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+  (setq ivy-rich-display-transformers-list
+        '(counsel-M-x
+          (:columns
+           ((counsel-M-x-transformer (:width 40))
+            (ivy-rich-counsel-function-docstring (:face font-lock-doc-face :width 60))))
+          counsel-describe-function
+          (:columns
+           ((counsel-describe-function-transformer (:width 40))
+            (ivy-rich-counsel-function-docstring (:face font-lock-doc-face :width 60))))
+          counsel-describe-variable
+          (:columns
+           ((counsel-describe-variable-transformer (:width 40))
+            (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face :width 60)))))))
 
 ;; Better experience with icons
 ;; Enable it before`ivy-rich-mode' for better performance
@@ -58,7 +73,7 @@
   :hook (ivy-mode . counsel-mode)
   :defines
   (projectile-completion-system magit-completing-read-function)
-  :commands (council-org-goto jump-in-buffer counsel-org-tag)
+  :commands (counsel-projectile counsel-org-goto jump-in-buffer counsel-org-tag)
   :general
   (:keymaps 'counsel-mode-map
    "C-j" #'ivy-next-line
