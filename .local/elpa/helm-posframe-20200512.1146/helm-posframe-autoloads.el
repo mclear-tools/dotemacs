@@ -14,7 +14,7 @@ Enable helm-posframe.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helm-posframe" '("helm-posframe-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helm-posframe" '(#("helm-posframe-" 0 14 (face font-lock-function-name-face)))))
 
 ;;;***
 

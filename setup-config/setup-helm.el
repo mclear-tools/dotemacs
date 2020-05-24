@@ -22,7 +22,7 @@
   :config
   (progn
     (set-face-attribute 'helm-source-header nil
-                        :height 180)
+                        :height 130)
     (setq helm-locate-fuzzy-match nil
           helm-locate-command "mdfind -interpret -name %s %s")
     (setq helm-M-x-fuzzy-match t  ;; Use fuzzy match in helm

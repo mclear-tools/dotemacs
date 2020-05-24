@@ -115,6 +115,12 @@ When 0, no border is shown."
 (defvar helm-posframe-buffer nil
   "The posframe-buffer used by helm-posframe.")
 
+;; add face
+(defface helm-posframe
+  '((t (:inherit default)))
+  "Face used by the helm-posframe."
+  :group 'helm-posframe)
+
 ;; Fix warn
 (defvar emacs-basic-display)
 
@@ -128,7 +134,10 @@ Argument BUFFER."
          :poshandler helm-posframe-poshandler
          :font helm-posframe-font
          :override-parameters helm-posframe-parameters
-	 :internal-border-width helm-posframe-border-width
+         :internal-border-width helm-posframe-border-width
+         :background-color (face-attribute 'helm-posframe :background nil t)
+         :foreground-color (face-attribute 'helm-posframe :foreground nil t)
+         :internal-border-color (face-attribute 'ivy-posframe-border :background nil t)
          :respect-header-line t
          (funcall helm-posframe-size-function)))
 

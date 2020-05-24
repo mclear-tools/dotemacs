@@ -98,7 +98,7 @@
    `(hydra-posframe-face ((t (:background "#073642"))))
    `(ivy-posframe ((t (:background "#073642"))))
    `(which-key-posframe ((t (:background "#073642"))))
-   `(helm-posframe-face ((t (:background "#073642"))))
+   `(helm-posframe ((t (:background "#073642"))))
    `(frog-menu-posframe-background-face ((t (:background "#073642"))))
 
    ;; helm faces
