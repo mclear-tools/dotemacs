@@ -2,6 +2,9 @@
 ;; I use solarized except in terminal, where Gruvbox seems to work better
 ;; For help on custom themeing see https://emacs.stackexchange.com/questions/17431/how-do-i-change-portions-of-a-custom-theme
 
+;;https://emacs.stackexchange.com/a/52804/11934
+(setq custom--inhibit-theme-enable nil)
+
 ;;; Gruvbox Theme
 (use-package gruvbox-theme
   :if (not (display-graphic-p))
@@ -197,23 +200,23 @@
 
 ;;; Doom Themes
 (use-package doom-themes
+  :defer 2
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (setq doom-themes-treemacs-theme "doom-colors")) ; use the colorful treemacs theme
 
+;; I get errors if I don't load these functions separately
+(with-eval-after-load 'doom-themes
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
-
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
+
+
 ;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
   "disable all active themes."
