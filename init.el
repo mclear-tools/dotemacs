@@ -55,40 +55,6 @@
       (defalias 'if-let* #'if-let)
       (function-put #'if-let* 'lisp-indent-function 2))))
 
-;;;; Clean View
-;; Disable start-up screen
-(setq-default inhibit-startup-screen t)
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-message t)
-(setq initial-scratch-message "")
-(setq frame-inhibit-implied-resize t)
-
-;; UI - Disable visual cruft
-(unless (eq window-system 'ns)
-  (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
-
-;; Quick start scratch buffer
-(setq initial-major-mode 'fundamental-mode)
-
-;; echo buffer
-;; Don't display any message
-;; https://emacs.stackexchange.com/a/437/11934
-(defun display-startup-echo-area-message ()
-  (message ""))
-
-;; And bury the scratch buffer, don't kill it
-(defadvice kill-buffer (around kill-buffer-around-advice activate)
-  (let ((buffer-to-kill (ad-get-arg 0)))
-    (if (equal buffer-to-kill "*scratch*")
-        (bury-buffer)
-      ad-do-it)))
-
 ;;;; Directory Variables
 ;;  We're going to define a number of directories that are used throughout this
 ;;  configuration to store different types of files.
@@ -122,6 +88,56 @@
 
 (defconst cpm-setup-dir (concat cpm-emacs-dir "setup-config/")
   "Where the setup-init files are stored.")
+
+;;;; Package Initialization Settings
+;; we're setting `package-enable-at-startup` to nil so that packages will not
+;; automatically be loaded for us since use-package will be handling that.
+
+(eval-and-compile
+  (setq package-user-dir (concat cpm-local-dir "elpa/"))
+  (setq load-prefer-newer t ;; use newest version of file
+        ;; Ask package.el to not add (package-initialize) to .emacs
+        package--init-file-ensured t)
+  ;; don't set if emacs 27
+  (when (version< emacs-version "27.0")
+    (setq package-enable-at-startup nil))
+  ;; make the package directory
+  (unless (file-directory-p package-user-dir)
+    (make-directory package-user-dir t)))
+
+;;;; Clean View
+;; Disable start-up screen
+(setq-default inhibit-startup-screen t)
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message "")
+(setq frame-inhibit-implied-resize t)
+
+;; UI - Disable visual cruft
+(unless (eq window-system 'ns)
+  (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
+
+;; Quick start scratch buffer
+(setq initial-major-mode 'fundamental-mode)
+
+;; echo buffer
+;; Don't display any message
+;; https://emacs.stackexchange.com/a/437/11934
+(defun display-startup-echo-area-message ()
+  (message ""))
+
+;; And bury the scratch buffer, don't kill it
+(defadvice kill-buffer (around kill-buffer-around-advice activate)
+  (let ((buffer-to-kill (ad-get-arg 0)))
+    (if (equal buffer-to-kill "*scratch*")
+        (bury-buffer)
+      ad-do-it)))
 
 ;;;; System Variables
 (defconst sys/macp
@@ -166,23 +182,6 @@
 ;; compiler warnings.
 (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
 
-;;;; Package Initialization Settings
-;; we're setting `package-enable-at-startup` to nil so that packages will not
-;; automatically be loaded for us since use-package will be handling that.
-
-(eval-and-compile
-  (setq package-user-dir (concat cpm-local-dir "elpa/"))
-  (setq load-prefer-newer t ;; use newest version of file
-        ;; Ask package.el to not add (package-initialize) to .emacs
-        package--init-file-ensured t)
-  ;; don't set if emacs 27
-  (when (version< emacs-version "27.0")
-    (setq package-enable-at-startup nil))
-  ;; make the package directory
-  (unless (file-directory-p package-user-dir)
-    (make-directory package-user-dir t)))
-
-
 ;;;; Load Path
 ;; We're going to set the load path ourselves so that we don't have to call
 ;; `package-initialize` at runtime and incur a large performance hit. This
@@ -210,10 +209,10 @@
       use-package-enable-imenu-support t
       use-package-always-ensure t)
 
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
 (eval-when-compile
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("gnu" . "http://elpa.gnu.org/packages/")))
   (require 'package)
   (package-initialize)
   (unless (package-installed-p 'use-package)
@@ -221,12 +220,13 @@
     (package-install 'use-package))
   (require 'use-package))
 
-;; initialize packages after evil has loaded
+;; initialize packages after startup
 (defun cpm/package-startup ()
   (interactive)
-  (package-initialize)
-  (package-refresh-contents 'async))
-(add-hook 'after-init-hook 'cpm/package-startup)
+  (package-initialize))
+;; (with-eval-after-load 'async
+;;   (package-refresh-contents 'async)))
+(add-hook 'evil-after-load-hook 'cpm/package-startup)
 
 ;;;; Benchmark Init
 (use-package benchmark-init
@@ -245,9 +245,9 @@
   (setq paradox-github-token nil)
   :config
   (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
-  (setq paradox-execute-asynchronously nil
-        ;; Show all possible counts
-        paradox-display-download-count t
+  ;; (with-eval-after-load 'async
+  ;;   (setq paradox-execute-asynchronously nil))
+  (setq paradox-display-download-count t ;; Show all possible counts
         paradox-display-star-count t
         ;; Don't star automatically
         paradox-automatically-star nil)
