@@ -4,6 +4,8 @@
 ;; and https://lists.gnu.org/archive/html/emacs-devel/2017-10/msg00372.html
 ;; for more information
 
+;; (setq package-quickstart t)
+;; (setq package-quickstart-file "~/.emacs.d/.local/temp/cache/package-quickstart.el")
 (setq package-enable-at-startup nil)
-(setq package-quickstart t)
-(setq package-quickstart-file "~/.emacs.d/.local/temp/cache/package-quickstart.el")
+
+;;; Early Startup
