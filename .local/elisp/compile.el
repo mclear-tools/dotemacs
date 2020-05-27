@@ -1,0 +1,6 @@
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
+(shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc")
+(byte-compile-file (concat user-emacs-directory "init.el"))
+(byte-compile-file (concat user-emacs-directory "early-init.el"))
+(byte-compile-file (concat user-emacs-directory "custom.el"))
+(byte-recompile-directory "~/.emacs.d/setup-config" 0 t)
