@@ -76,10 +76,10 @@
 (setenv "PAGER" "cat")
 
 ;; hack to fix pasting issue, the paste micro-state won't work in term
-(general-define-key :states '(normal) :keymaps 'term-raw-map
-       "p" 'term-paste
-       "C-k" 'term-send-up
-       "C-j" 'term-send-down)
+;; (general-define-key :states '(normal motion) :keymaps 'term-raw-map
+;;   "p" 'term-paste
+;;   "C-k" 'term-send-up
+;;   "C-j" 'term-send-down)
 
 (general-define-key :states '(insert) :keymaps 'term-raw-map
   "C-c C-d" 'term-send-eof
@@ -129,10 +129,11 @@
   :ensure t
   :commands (vterm vterm-other-window)
   :general
-  (:states '(normal insert)
+  (:states '(normal motion insert)
    :keymaps 'vterm-mode-map
    ;; fix issue with fzf
    "C-j" #'term-send-down
+   "C-k" #'term-send-up
    "s-v" #'vterm-yank
    "C-v" #'vterm-yank)
   (:states '(normal)
@@ -402,6 +403,6 @@
 (use-package esh-autosuggest
   :hook (eshell-mode . esh-autosuggest-mode))
 
-
+;;;; End Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-shell)
