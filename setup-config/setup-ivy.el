@@ -62,6 +62,7 @@
 ;; Better experience with icons
 ;; Enable it before`ivy-rich-mode' for better performance
 (use-package all-the-icons-ivy-rich
+  :disabled t
   :if window-system
   :hook (ivy-mode . all-the-icons-ivy-rich-mode)
   :init (setq all-the-icons-ivy-rich-icon-size 0.85))
