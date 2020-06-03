@@ -267,6 +267,23 @@
  :keymaps 'override
  "s-3" 'cpm/open-notes-in-workspace)
 
+;;;; Terminal Workspace
+(defun cpm/open-new-terminal-and-workspace ()
+  "open an empty buffer in its own perspective"
+  (interactive)
+  (persp-switch "Terminal")
+  (evil-set-initial-state 'vterm-mode 'insert)
+  (vterm)
+  (delete-other-windows)
+  (persp-add-buffer "vterm")
+  (setq frame-title-format '("" "%b")))
+
+(general-define-key
+ :states '(insert normal motion emacs)
+ :keymaps 'override
+ "s-4" 'cpm/open-new-terminal-and-workspace)
+
+
 ;;;; Open New Buffer in Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
 ;; dummy git project to give the isolation of buffers typical with a git project
