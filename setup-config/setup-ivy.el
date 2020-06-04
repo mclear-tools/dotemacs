@@ -38,34 +38,53 @@
 ;;;; Ivy-rich
 ;; More friendly display transformer for Ivy
 (use-package ivy-rich
-  :hook (after-init . ivy-rich-mode)
+  :hook (ivy-mode . ivy-rich-mode)
   :init
   ;; For better performance
   (setq ivy-rich-parse-remote-buffer nil)
   (setq ivy-rich-path-style 'abbrev)
   :config
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-  (setq ivy-rich-display-transformers-list
-        '(counsel-M-x
-          (:columns
-           ((counsel-M-x-transformer (:width 40))
-            (ivy-rich-counsel-function-docstring (:face font-lock-doc-face :width 60))))
-          counsel-describe-function
-          (:columns
-           ((counsel-describe-function-transformer (:width 40))
-            (ivy-rich-counsel-function-docstring (:face font-lock-doc-face :width 60))))
-          counsel-describe-variable
-          (:columns
-           ((counsel-describe-variable-transformer (:width 40))
-            (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face :width 60)))))))
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 ;; Better experience with icons
 ;; Enable it before`ivy-rich-mode' for better performance
 (use-package all-the-icons-ivy-rich
-  :disabled t
   :if window-system
   :hook (ivy-mode . all-the-icons-ivy-rich-mode)
-  :init (setq all-the-icons-ivy-rich-icon-size 0.85))
+  :init
+  (setq all-the-icons-ivy-rich-icon-size 0.85))
+
+;; for some reason all-the-icons-ivy is clobbering my settings for ivy-rich
+;; below fixes that
+(with-eval-after-load 'all-the-icons-ivy-rich
+  (plist-put all-the-icons-ivy-rich-display-transformers-list
+             'counsel-M-x
+             '(:columns
+               ((all-the-icons-ivy-rich-function-icon)
+                (counsel-M-x-transformer (:width 50))
+                (ivy-rich-counsel-function-docstring (:face font-lock-doc-face :width 60)))))
+  (plist-put all-the-icons-ivy-rich-display-transformers-list
+             'counsel-describe-function
+             '(:columns
+               ((all-the-icons-ivy-rich-function-icon)
+                (counsel-describe-function-transformer (:width 50))
+                (ivy-rich-counsel-function-docstring (:face font-lock-doc-face :width 60)))))
+  (plist-put all-the-icons-ivy-rich-display-transformers-list
+             'counsel-describe-variable
+             '(:columns
+               ((all-the-icons-ivy-rich-variable-icon)
+                (counsel-describe-variable-transformer (:width 50))
+                (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face :width 60)))))
+  (plist-put all-the-icons-ivy-rich-display-transformers-list
+             'counsel-set-variable
+             '(:columns
+               ((all-the-icons-ivy-rich-variable-icon)
+                (counsel-describe-variable-transformer (:width 50))
+                (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face :width 60))))))
+
+
+
+
 
 
 ;;;; Counsel
