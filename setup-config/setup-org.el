@@ -485,11 +485,6 @@ _vr_ reset      ^^                       ^^                 ^^
     (when (equal "capture" (frame-parameter nil 'name))
       (delete-frame)))
 
-  ;; (defun cpm/activate-capture-frame ()
-  ;;   "run org-capture in capture frame"
-  ;;   (select-frame-by-name "capture")
-  ;;   (switch-to-buffer (get-buffer-create "*scratch*"))
-  ;;   (org-capture))
 
 ;;;; Fix Org Capture Recentering Window problem
   (eval-after-load "org-agenda"
@@ -2164,6 +2159,7 @@ is non-nil."
 
 (use-package org-roam
   :ensure nil
+  :disabled
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org
   :hook
