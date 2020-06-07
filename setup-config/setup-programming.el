@@ -44,7 +44,6 @@
 ;;; Languages
 ;;;; Applescript
 (use-package applescript-mode
-  :ensure t
   :mode (("\\.scpt\\'" . applescript-mode)
          ("\\.applescript\\'"       . applescript-mode))
   :commands (applescript-mode))
@@ -85,7 +84,6 @@
 ;; [2]: http://emacs.stackexchange.com/q/10230/12534
 ;; Package for helping advise other packages
 (use-package el-patch
-  :ensure t
   :defer 1
   :config
   (setq el-patch-enable-use-package-integration t))
@@ -229,7 +227,7 @@ Lisp function does not specify a special indentation."
 
 ;;;; Plist
 (use-package plist-mode
-  :ensure nil
+  :straight nil
   :load-path "~/.emacs.d/.local/elisp/plist-mode")
 
 ;;;; Vim
@@ -275,7 +273,6 @@ Lisp function does not specify a special indentation."
 
 ;;; Linting/Error Checking
 (use-package flycheck
-  :ensure t
   :defer 2
   :init
   (setq global-flycheck-mode 1)

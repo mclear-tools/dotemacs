@@ -7,7 +7,6 @@
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
   :mode (("\\.org$" . org-mode))
-  :ensure org-plus-contrib
   :general (cpm/leader-keys
              "uc" 'org-capture)
   :init
@@ -615,15 +614,15 @@ _vr_ reset      ^^                       ^^                 ^^
 
 ;; Avoid `org-babel-do-load-languages' since it does an eager require.
 (use-package ob-python
+  :straight nil
   :defer t
-  :ensure org-plus-contrib
   :commands (org-babel-execute:python)
   :config
   (progn
     (setq org-babel-python-command "python3"))) ;Default to python 3.x
 
 (use-package ob-ditaa
-  :ensure nil
+  :straight nil
   :defer t
   :config
   (progn
@@ -633,7 +632,7 @@ _vr_ reset      ^^                       ^^                 ^^
                               (concat user-emacs-directory "software/")))))
 
 (use-package ob-plantuml
-  :ensure nil
+  :straight nil
   :defer t
   :config
   (progn
@@ -654,8 +653,8 @@ Instead it's simpler to use bash."
     (advice-add 'org-babel-execute:plantuml :around #'cpm/advice-org-babel-execute:plantuml)))
 
 (use-package ob-shell
+  :straight nil
   :defer t
-  :ensure org-plus-contrib
   :commands
   (org-babel-execute:sh
    org-babel-expand-body:sh
@@ -663,19 +662,19 @@ Instead it's simpler to use bash."
    org-babel-expand-body:bash))
 
 (use-package ob-lisp
+  :straight nil
   :defer t
-  :ensure org-plus-contrib
   :commands (org-babel-execute:lisp))
 
 (use-package ob-latex
+  :straight nil
   :defer t
-  :ensure org-plus-contrib
   :commands
   (org-babel-execute:latex))
 
 ;;; Org Babel Tangle
 (use-package ob-tangle
-  :ensure nil
+  :straight nil
   :defer t
   :config
   (progn
@@ -2102,7 +2101,7 @@ is non-nil."
 ;;;; Ox-Hugo
 ;; [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
 (use-package ox-hugo :after ox)
-;; (use-package ox-hugo-auto-export :ensure nil :after ox-hugo)
+;; (use-package ox-hugo-auto-export :after ox-hugo)
 
 ;;;; Batch Export Files with Org-Hugo
 ;; mark files and then batch export them with this command
@@ -2153,12 +2152,11 @@ is non-nil."
 ;;; Org Roam (Wiki & Notes)
 ;; Good notes package but a lot is still in flux
 ;; see https://org-roam.readthedocs.io/en/latest/
-(eval-when-compile
-  (quelpa
-   '(org-roam :fetcher github :repo "org-roam/org-roam")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(org-roam :fetcher github :repo "org-roam/org-roam")))
 
 (use-package org-roam
-  :ensure nil
   :disabled
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org
@@ -2250,7 +2248,6 @@ is non-nil."
 
 ;;;; Org Roam Server
 (use-package org-roam-server
-  :ensure t
   :after org-roam
   :demand t)
 
@@ -2258,11 +2255,12 @@ is non-nil."
 
 (use-package htmlize :commands (htmlize-buffer))
 
-(use-package org-inlinetask :ensure nil :commands org-inlinetask-insert-task)
+(use-package org-inlinetask :straight nil :commands org-inlinetask-insert-task)
 
  ;; ignore export of headlines marked with :ignore: tag
 (use-package ox-extra
-  :ensure nil
+  :straight nil
+  :requires (org-plus-contrib)
   :after ox
   :demand t
   :config
@@ -2270,9 +2268,9 @@ is non-nil."
 
 ;; Devonthink integration
 (use-package org-devonthink
-  :commands (org-insert-dtp-link org-dtp-store-link)
-  :ensure nil
-  :load-path "~/.emacs.d/.local/elisp/org-devonthink")
+  :straight nil
+  :load-path "~/.emacs.d/.local/elisp/org-devonthink"
+  :commands (org-insert-dtp-link org-dtp-store-link))
 
 
 ;;; Provide

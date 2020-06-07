@@ -115,7 +115,6 @@
 ;; Add customizable 256 color support: https://github.com/dieggsy/eterm-256color  to term and ansiterm
 (use-package eterm-256color
   :disabled
-  :ensure t
   :hook
   (term-mode-hook . eterm-256color-mode)
   (vterm-mode-hook . eterm-256color-mode))
@@ -126,14 +125,13 @@
 ;;   (quelpa '(vterm :fetcher github :repo "akermu/emacs-libvterm"
 ;;                   :files (:defaults "*.c" "*.h" "CMakeLists.txt"))))
 (use-package vterm
-  :ensure t
   :commands (vterm vterm-other-window)
   :general
   (:states '(normal motion insert)
    :keymaps 'vterm-mode-map
    ;; fix issue with fzf
-   "C-j" #'term-send-down
-   "C-k" #'term-send-up
+   "C-j" #'vterm-send-down
+   "C-k" #'vterm-send-up
    "s-v" #'vterm-yank
    "C-v" #'vterm-yank)
   (:states '(normal)
@@ -162,7 +160,6 @@
 ;; (eval-when-compile
 ;;   (quelpa '(vterm-toggle :fetcher github :repo "jixiuf/vterm-toggle")))
 (use-package vterm-toggle
-  :ensure t
   :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
   :config
   (setq vterm-toggle-fullscreen-p nil)
@@ -195,7 +192,6 @@
 ;;; Tramp
 ;; An easy way to ssh
 (use-package tramp
-  :ensure nil
   :defer 1)
 (use-package tramp-term :commands tramp-term)
 

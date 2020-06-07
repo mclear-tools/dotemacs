@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "undo-tree" "0.7.4" "Treat undo history as a tree" 'nil :stars '("" #("370K" 0 4 (value 370575 font-lock-face paradox-download-face))) :keywords '("convenience" "files" "undo" "redo" "history" "tree") :authors '(("Toby Cubitt" . "toby-undo-tree@dr-qubit.org")) :maintainer '("Toby Cubitt" . "toby-undo-tree@dr-qubit.org") :url "http://www.dr-qubit.org/emacs.php")

@@ -5,7 +5,7 @@
 
 ;;;; Dired Settings
 (use-package dired
-  :ensure nil
+  :straight nil
   :commands (dired dired-jump dired-jump-other-window)
   :general
   (:keymaps 'dired-mode-map
@@ -51,24 +51,21 @@
 
 ;;;; Narrow Dired to Match Filter
 (use-package dired-narrow
-  :ensure t
   :general (:keymaps 'dired-mode-map
             "/"  'dired-narrow))
 
 ;;;; Dired Sort
 (use-package dired-quick-sort
-  :ensure t
   :general
   (:keymaps 'dired-mode-map
    :states '(normal motion)
    "s" #'hydra-dired-quick-sort/body))
 
 ;;;; Dired Plus
-(eval-when-compile
-  (quelpa
-   '(dired+ :fetcher wiki)))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(dired+ :fetcher wiki)))
 (use-package dired+
-  :ensure nil
   :after dired
   :hook ((dired-mode . diredp--set-up-font-locking)
          (dired-mode . dired-omit-mode))
@@ -99,7 +96,6 @@
 
 ;;;; Peep Dired
 (use-package peep-dired
-  :ensure t
   :commands (peep-dired)
   :functions (peep-dired-kill-buffers-without-window)
   :general

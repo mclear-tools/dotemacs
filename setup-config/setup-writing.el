@@ -59,7 +59,7 @@
 
 ;;; Abbrev
 (use-package abbrev
-  :ensure nil
+  :straight nil
   :defer 2
   :config
   ;; (add-hook 'text-mode-hook #'abbrev-mode)
@@ -112,7 +112,6 @@
 
 ;;; Org Ref
 (use-package org-ref
-  :ensure t
   :commands (org-ref org-ref-get-bibtex-entry)
   :after org
   :demand t
@@ -135,7 +134,6 @@
 
 (use-package org-ref-ox-hugo
   :disabled
-  :ensure nil
   :load-path "~/.emacs.d/.local/elisp/org-ref-ox-hugo-20200315/"
   :after org-ref
   :demand t
@@ -197,7 +195,6 @@
 
 ;;; Markdown TOC
 (use-package markdown-toc
-  :ensure t
   :after markdown
   :hook (markdown-mode . markdown-toc))
 
@@ -294,13 +291,13 @@
     (setq-default TeX-master nil)))
 
 (use-package preview
-  :ensure nil
+  :straight nil
   :after auctex
   :commands LaTeX-preview-setup
   :init
   (progn
     (setq-default preview-scale 1.4
-      preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+                  preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
 (use-package reftex
   :commands turn-on-reftex
@@ -374,17 +371,15 @@
 
 ;;; Grammar
 (use-package typo
-  :ensure t
   :defer 2
   :config
   (typo-global-mode))
 
 ;;; Dictionary
 (use-package define-word
-  :ensure t)
+  )
 ;;; Notes / Deft
 (use-package deft
-  :ensure t
   :commands (deft deft-open-file-other-window cpm/notebook deft-new-file-named)
   :general
   (:keymaps 'deft-mode-map :states '(normal motion)

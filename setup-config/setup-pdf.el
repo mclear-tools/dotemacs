@@ -253,7 +253,6 @@
   "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library")
 
 (use-package org-noter
-  :ensure t
   :after org
   :commands (org-noter)
   :config
@@ -267,7 +266,6 @@
 ;; Couldn't get either of these working
 (use-package org-pdfview
   :disabled
-  :ensure t
   :config
   (org-link-set-parameters "pdfview"
                            :follow #'org-pdfview-open
@@ -294,7 +292,6 @@
 
 (use-package org-noter-pdftools
   :disabled
-  :ensure nil
   :after (org-noter))
 
 

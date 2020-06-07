@@ -9,7 +9,6 @@
 
 ;;; Projectile
 (use-package projectile
-  :ensure t
   :hook (after-init . projectile-mode)
   :init
   ;; save projectile-known-projects-file in cache folder
@@ -186,7 +185,6 @@
                     (persp-window-switch . nil))))))
 
 (use-package persp-mode-projectile-bridge
-  :ensure t
   :after (persp-mode projectile-mode)
   :hook (persp-mode . persp-mode-projectile-bridge-mode)
   :functions (persp-add-new
@@ -405,8 +403,8 @@
   :config
   (setq bookmark-default-file (concat cpm-cache-dir "bookmarks")))
 
-(quelpa
- '(bookmark+ :fetcher wiki))
+;; (quelpa
+;;  '(bookmark+ :fetcher wiki))
 (use-package bookmark+
   :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
   :config

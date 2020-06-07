@@ -1,7 +1,6 @@
 ;;; OSX Settings
 ;;;; Clipboad
 (use-package simpleclip
-  :ensure t
   :disabled t
   :defer 1
   :config
@@ -89,12 +88,10 @@
 
 ;;;; Reveal in Finder
 (use-package reveal-in-osx-finder
-  :ensure t
   :defer 2)
 
 ;;;; Get mac links from safari
 (use-package grab-mac-link
-  :ensure t
   :defer 1)
 
 (with-eval-after-load 'org-mac-link

@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "zenburn-theme" "20200525.1331" "A low contrast color theme for Emacs." 'nil :stars '(#("691" 0 3 (font-lock-face paradox-star-face)) #("230K" 0 4 (value 230978 font-lock-face paradox-download-face))) :commit "44917f266bf627e394375eee818edfbfad265ea3" :authors '(("Bozhidar Batsov" . "bozhidar@batsov.com")) :maintainer '("Bozhidar Batsov" . "bozhidar@batsov.com") :url "http://github.com/bbatsov/zenburn-emacs")

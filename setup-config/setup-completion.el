@@ -1,7 +1,6 @@
 ;;;; Completion
 ;;;;; Company
 (use-package company
-  :ensure t
   :after evil
   :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
   :custom-face
@@ -37,7 +36,6 @@
 
 
 (use-package company-bibtex
-  :ensure t
   :after company
   :demand t
   :general
@@ -62,7 +60,7 @@
   (setq yas-snippet-dirs '("~/.emacs.d/.local/snippets/cpm-snippets"
                            yasnippet-snippets-dir))
   ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
-  (use-package yasnippet-snippets :ensure t :after yasnippet :demand t)
+  (use-package yasnippet-snippets  :after yasnippet :demand t)
 
   ;; Adding yasnippet support to company
   (with-eval-after-load 'company-mode

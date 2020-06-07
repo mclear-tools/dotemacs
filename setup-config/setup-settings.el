@@ -69,7 +69,6 @@
 ;;;;; Whitespace
 ;; Manage whitespace in prog modes
 (use-package ws-butler
-  :ensure t
   :hook (prog-mode . ws-butler-mode))
 
 ;;;; Backups / Auto-Save
@@ -126,7 +125,6 @@
 
 ;;;; Save History
 (use-package savehist
-  :ensure nil
   :defer 1
   :config
   (setq-default savehist-file (concat cpm-cache-dir "savehist"))
@@ -141,7 +139,6 @@
 
 ;;;; Desktop
 (use-package desktop
-  :ensure nil
   :defer 1
   :config
   (setq desktop-dirname             (concat cpm-cache-dir "desktops")
@@ -212,7 +209,6 @@
 
 ;;;; Information
 (use-package helpful
-  :ensure t
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'helpful-mode 'motion))
@@ -244,15 +240,14 @@
 
 ;;;; Emacs Profiling
 (use-package esup
-  :ensure t
   :config
   (setq esup-depth 0))
 
 ;;;; Long Lines
 ;; Emacs has problems with reading files with long lines. This package helps with that
 ;; https://www.emacswiki.org/emacs?action=browse;oldid=OverLongLineMode;id=SoLong
-(eval-when-compile
-  (quelpa '(so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)))
+;; (eval-when-compile
+;;   (quelpa '(so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)))
 (use-package so-long
   :defer 1
   :config (global-so-long-mode 1))
@@ -260,13 +255,12 @@
 ;;;; Highlight Lines
 ;; Highlight lines. You can toggle this off
 (use-package hl-line-mode
-  :ensure nil
+  :straight nil
   :hook
   (prog-mode markdown-mode org-mode))
 
 ;;;; Miscellaneous
 (use-package remember
-  :ensure nil
   :commands (remember remember-notes)
   :config
   (setq remember-data-dir (concat cpm-cache-dir "remember")
@@ -278,7 +272,6 @@
 (setq confirm-kill-processes nil) ; don't object when quitting
 
 (use-package autorevert
-  :ensure nil
   :defer 1
   :config
   (setq auto-revert-interval .5)
@@ -290,12 +283,10 @@
 
 (use-package request
   :defer t
-  :ensure nil
   :config
   (setq request-storage-directory (concat cpm-cache-dir "request")))
 
 (use-package multi-compile
-  :ensure t
   :defer 3
   :config
   (setq multi-compile-history-file (concat cpm-cache-dir "multi-compile.cache"))
@@ -319,7 +310,7 @@
                                                 ("test pdf" . "pandoc -s --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")
                                                 ("pandoc-letter-pdf & Open" . "pandoc -s --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --template=/Users/Roambot/dotfiles/pandoc/pandoc-templates/letter.tex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")
                                                 ("pandoc-book-chapter-pdf & Open" . "pandoc -s -N --pdf-engine=xelatex --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/promote-headers.lua --filter pandoc-latex-color  --metadata=reference-section-title:'References' --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")
-                              ((string/starts-with buffer-file-name "/Users/roambot/Dropbox/Work/projects/Book-Projects/rationality-book/") . (("compile rationality book" . "cd %make-dir && make -k && open %make-dirbuild/pdf/kant-rationality-book.pdf"))))))))
+                                                ((string/starts-with buffer-file-name "/Users/roambot/Dropbox/Work/projects/Book-Projects/rationality-book/") . (("compile rationality book" . "cd %make-dir && make -k && open %make-dirbuild/pdf/kant-rationality-book.pdf"))))))))
 
 ;; I think this goes with multi-compile
 (defun string/starts-with (string prefix)

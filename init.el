@@ -89,22 +89,6 @@
 (defconst cpm-setup-dir (concat cpm-emacs-dir "setup-config/")
   "Where the setup-init files are stored.")
 
-;;;; Package Initialization Settings
-;; we're setting `package-enable-at-startup` to nil so that packages will not
-;; automatically be loaded for us since use-package will be handling that.
-
-(eval-and-compile
-  (setq package-user-dir (concat cpm-local-dir "elpa/"))
-  (setq load-prefer-newer t ;; use newest version of file
-        ;; Ask package.el to not add (package-initialize) to .emacs
-        package--init-file-ensured t)
-  ;; don't set if emacs 27
-  (when (version< emacs-version "27.0")
-    (setq package-enable-at-startup nil))
-  ;; make the package directory
-  (unless (file-directory-p package-user-dir)
-    (make-directory package-user-dir t)))
-
 ;;;; Clean View
 ;; Disable start-up screen
 (setq-default inhibit-startup-screen t)
@@ -190,10 +174,11 @@
 ;; load path. Otherwise any time a builtin package was required it would have to
 ;; search all of third party paths first.
 (eval-and-compile
-  (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t)))
+  ;; (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t)))
   (push cpm-setup-dir load-path))
 
-;;; Use-Package Settings
+
+;;; Package Settings
 ;; I tell use-package to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
 ;; only loaded later when they are explicitly used. But it can also cause
@@ -203,22 +188,46 @@
 ;; latter means package loading stays out of my way if I'm doing, e.g., a quick
 ;; restart-and-check of something in emacs.
 
+
+;;;; Straight
+
+;; Don't check packages on startup
+(setq straight-check-for-modifications nil)
+
+;; bootstrap straight
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(setq straight-check-for-modifications nil)
+(setq straight-use-package-by-default t)
+
+;;;; Use-Package
+
+;; install use package
+(straight-use-package 'use-package)
+
 (setq use-package-always-defer t
       use-package-verbose t
       use-package-minimum-reported-time 0.01
-      use-package-enable-imenu-support t
-      use-package-always-ensure t)
+      use-package-enable-imenu-support t)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")))
-(eval-when-compile
-  (require 'package)
-  (package-initialize)
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'package)
+;;   (package-initialize)
+;;   (unless (package-installed-p 'use-package)
+;;     (package-refresh-contents)
+;;     (package-install 'use-package))
+;;   (require 'use-package))
 
 ;; initialize packages after startup
 (defun cpm/package-startup ()
@@ -228,9 +237,9 @@
 ;;   (package-refresh-contents 'async)))
 (add-hook 'evil-after-load-hook 'cpm/package-startup)
 
+
 ;;;; Benchmark Init
 (use-package benchmark-init
-  :ensure t
   ;; demand when using
   ;; :demand t
   :config
@@ -272,29 +281,9 @@
      "ZQ" 'evil-quit
      "ZZ" 'quit-window)))
 
-;;;; Quelpa
-;; Get emacs packages from anywhere:
-;; https://github.com/quelpa/quelpa#installation and use with use-package:
-;; https://github.com/quelpa/quelpa-use-package
-
-(use-package quelpa
-  :ensure t
-  :commands (quelpa quelpa-upgrade)
-  :init
-  ;; disable checking Melpa
-  (setq quelpa-update-melpa-p nil)
-  ;; don't use Melpa at all
-  (setq quelpa-checkout-melpa-p nil)
-  ;; quelpa dir settings
-  (setq quelpa-dir (concat cpm-local-dir "quelpa"))
-  (let ((quelpa-melpa (concat cpm-local-dir "quelpa/melpa/recipes")))
-    (unless (file-directory-p quelpa-melpa)
-      (make-directory quelpa-melpa t))))
-
 ;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
 (use-package auto-compile
-  :ensure t
   :defer 1
   :config
   (setq auto-compile-display-buffer nil)
@@ -372,31 +361,28 @@
 ;; I used to use outshine.el but it was overkill -- these packages are much smaller/simpler
 
 (use-package outline
-  :ensure nil
   :hook (prog-mode . outline-minor-mode))
 
 (use-package bicycle
-  :ensure t
   :after outline
   :demand t
   :general
   (:keymaps 'outline-minor-mode-map :states '(normal motion)
-    "<tab>" 'bicycle-cycle
-    "S-<tab>" 'bicycle-cycle-global)
+   "<tab>" 'bicycle-cycle
+   "S-<tab>" 'bicycle-cycle-global)
   (:keymaps 'outline-minor-mode-map :states '(normal motion)
-    "gh" 'outline-up-heading
-    "gj" 'outline-forward-same-level
-    "gk" 'outline-backward-same-level
-    "gl" 'outline-next-visible-heading
-    "gu" 'outline-previous-visible-heading
-    "M-j"   'outline-move-subtree-down
-    "M-k"   'outline-move-subtree-up
-    "M-h"   'outline-promote
-    "M-l"   'outline-demote))
+   "gh" 'outline-up-heading
+   "gj" 'outline-forward-same-level
+   "gk" 'outline-backward-same-level
+   "gl" 'outline-next-visible-heading
+   "gu" 'outline-previous-visible-heading
+   "M-j"   'outline-move-subtree-down
+   "M-k"   'outline-move-subtree-up
+   "M-h"   'outline-promote
+   "M-l"   'outline-demote))
 
 ;; Make outline faces look better
 (use-package outline-minor-faces
-  :ensure t
   :after outline
   :demand t
   :config (add-hook 'outline-minor-mode-hook

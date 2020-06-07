@@ -1,16 +1,16 @@
 ;; Open a child frame.
 
 ;;; Posframe
-(eval-when-compile
-  (quelpa
-   '(posframe :fetcher github :repo "tumashu/posframe")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(posframe :fetcher github :repo "tumashu/posframe")))
 (use-package posframe
-  :ensure nil)
+  )
 
 ;;; Helm posframe
-(eval-when-compile
-  (quelpa
-   '(helm-posframe :fetcher github :repo "tumashu/helm-posframe")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(helm-posframe :fetcher github :repo "tumashu/helm-posframe")))
 (use-package helm-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . helm-posframe-enable)
@@ -26,9 +26,9 @@
   (setq helm-posframe-poshandler 'posframe-poshandler-frame-center))
 
 ;;; Ivy Posframe
-(eval-when-compile
-  (quelpa
-   '(ivy-posframe :fetcher github :repo "tumashu/ivy-posframe")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(ivy-posframe :fetcher github :repo "tumashu/ivy-posframe")))
 (use-package ivy-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook
@@ -57,11 +57,10 @@
    :min-width (round (* (frame-width) 0.52))))
 
 ;;; Company Posframe
-(eval-when-compile
-  (quelpa
-   '(company-posframe :fetcher github :repo "tumashu/company-posframe")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(company-posframe :fetcher github :repo "tumashu/company-posframe")))
 (use-package company-posframe
-  :ensure nil
   :disabled
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (company-mode . company-posframe-mode))
@@ -83,12 +82,11 @@
 
 ;;; Hydra Posframe
 ;; doesn't work well with ivy hydras
-(eval-when-compile
-  (quelpa
-   '(hydra-posframe :fetcher github :repo "Ladicle/hydra-posframe")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(hydra-posframe :fetcher github :repo "Ladicle/hydra-posframe")))
 (use-package hydra-posframe
   :disabled
-  :ensure nil
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . hydra-posframe-enable)
   :config

@@ -4,7 +4,6 @@
 
 ;;; Imenu list outline
 (use-package imenu-list
-  :ensure t
   :commands (imenu-list-smart-toggle imenu-list-minor-mode)
   :config
   (setq imenu-list-focus-after-activation t
@@ -26,12 +25,10 @@
 
 ;;; Go To Change
 (use-package goto-chg
-  :ensure t
   :commands goto-last-change goto-last-change-reverse)
 
 ;; ;;; Treemacs
 (use-package treemacs
-  :ensure t
   :commands treemacs
   :general
   (:states '(normal insert motion emacs)
@@ -80,11 +77,11 @@
 
 (use-package treemacs-evil
   :after treemacs evil
-  :ensure t)
+  )
 
 (use-package treemacs-projectile
   :after treemacs projectile
-  :ensure t)
+  )
 
 ;; ;;; Centered Cursor
 (use-package centered-cursor-mode
@@ -119,7 +116,6 @@
 
 ;; ;;; Recent files
 (use-package recentf
-  :ensure nil
   :commands (helm-recentf)
   :hook (after-init . recentf-mode)
   :config
@@ -142,7 +138,6 @@
 ;; ;; your choice using the browse-url package, or if it's an e-mail
 ;; ;; address, to send an e-mail to that address.
 (use-package goto-addr
-  :ensure nil
   :hook ((compilation-mode . goto-address-mode)
          (prog-mode . goto-address-prog-mode)
          (eshell-mode . goto-address-mode)
@@ -156,7 +151,6 @@
 
 ;;; Frog-Jump-Avy
 (use-package frog-jump-buffer
-  :ensure t
   :commands frog-jump-buffer
   :general
   ("C-c b" 'frog-jump-buffer)

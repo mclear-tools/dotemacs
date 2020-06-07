@@ -46,7 +46,6 @@
 
 ;;;; Deadgrep
 (use-package deadgrep
-  :ensure t
   :general
   (:states '(normal motion visual insert emacs)
    :keymaps 'override

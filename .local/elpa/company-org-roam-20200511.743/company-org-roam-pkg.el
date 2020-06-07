@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "company-org-roam" "20200511.743" "Company backend for Org-roam" '((emacs "26.1") (company "0.9.0") (dash "2.13") (org-roam "1.0.0")) :stars '("" #(" " 0 1 (value 0 font-lock-face paradox-download-face))) :commit "b5af6f2e783bfb337c8f0ae33674e0963c71cea0" :keywords '("org-mode" "roam" "convenience") :authors '(("Jethro Kuan" . "jethrokuan95@gmail.com")) :maintainer '("Jethro Kuan" . "jethrokuan95@gmail.com") :url "https://github.com/jethrokuan/company-org-roam")

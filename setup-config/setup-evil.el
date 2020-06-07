@@ -5,6 +5,10 @@
   :init
   (setq evil-want-integration t
         evil-want-keybinding nil)
+  :general
+  (:states '(normal motion)
+   "gb" #'evil-jump-backward
+   "gf" #'evil-jump-forward)
   :config
   (progn
     ;; Cursor shape and color
@@ -66,7 +70,6 @@
 
 ;;; Evil Collection
 (use-package evil-collection
-  :ensure t
   :after evil
   :demand t
   :config
@@ -183,7 +186,6 @@
   :commands (evil-visualstar/begin-search-forward evil-visualstar/begin-search-backward))
 
 (use-package evil-multiedit
-  :ensure t
   :after evil-visualstar
   :config
   ;; Default keybindings
@@ -224,7 +226,6 @@
   (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 
 (use-package evil-mc
-  :ensure t
   :commands (evil-mc-make-all-cursors evil-mc-make-and-goto-next-match))
 
 
@@ -239,7 +240,6 @@
 
 ;;; Evil Owl (Markers)
 (use-package evil-owl
-  :ensure t
   :after evil
   :general
   (:keymaps 'evil-owl-popup-map

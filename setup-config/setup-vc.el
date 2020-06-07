@@ -50,7 +50,6 @@
 
 ;; settings for committing using magit
 (use-package git-commit
-  :ensure t
   :after magit
   :hook (git-commit-mode . cpm/git-commit-auto-fill-everywhere)
   :custom (git-commit-summary-max-length 50)
@@ -64,7 +63,6 @@
 (use-package transient
   :after magit
   :demand t
-  :ensure t
   :init
   (setq transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
   (setq transient-values-file (concat cpm-cache-dir "transient/values.el"))
@@ -73,7 +71,6 @@
 ;; add todos in magit
 (use-package magit-todos
   ;; :load-path "~/.emacs.d/.local/elisp/magit-todos"
-  :ensure t
   :after magit
   :demand t
   :config
@@ -81,7 +78,6 @@
 
 ;; generate ignore files with helm
 (use-package helm-gitignore
-  :ensure t
   :commands helm-gitignore)
 
 ;;  Evil bindings for magit
@@ -174,7 +170,6 @@
 
 ;;; Show Git Status in Dired
 (use-package diff-hl
-  :ensure t
   :disabled t
   :defer 1
   :config
@@ -183,7 +178,6 @@
 
 ;;; Diff Files with Vdiff
 (use-package vdiff
-  :ensure t
   :general
   (:states 'normal
    :keymaps 'vdiff-mode-map

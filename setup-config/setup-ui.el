@@ -86,7 +86,6 @@
 
 ;;; Line Numbers
 (use-package display-line-numbers
-  :ensure nil
   ;; :hook (markdown-mode prog-mode)
   :commands display-line-numbers-mode
   :init
@@ -111,8 +110,8 @@
 (use-package all-the-icons
   :after dashboard)
 ;;dependency
-(quelpa
- '(font-lock+ :fetcher wiki))
+;; (quelpa
+;;  '(font-lock+ :fetcher wiki))
 (use-package font-lock+
   :defer 1)
 ;; icons for dired

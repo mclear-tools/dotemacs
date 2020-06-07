@@ -1,6 +1,5 @@
 ;;; Helm
 (use-package helm
-  :ensure t
   :defer
   :init
   ;; ;; fix errors on byte compile
@@ -113,7 +112,6 @@
 ;;; Helm  Packages
 
 (use-package helm-org
-  :ensure t
   :after helm
   :commands (helm-org-agenda-files-headings
              helm-org-in-buffer-headings
@@ -150,7 +148,7 @@
   :commands helm-dired-recent-dirs-view)
 
 (use-package helm-files
-  :ensure nil
+  :straight nil
   :defer t
   :config
   (setq helm-ff-skip-boring-files t)
@@ -180,7 +178,6 @@
 
 ;;;; Helm-markers
 (use-package helm-evil-markers
-  :ensure t
   :after (evil helm)
   :demand t
   :config
@@ -190,7 +187,6 @@
 ;;;; Helm-preview
 ;; Preview files selected in helm
 (use-package helm-file-preview
-  :ensure t
   :after helm
   :demand t
   :config

@@ -48,7 +48,6 @@
 
 ;; add exchange support
 (use-package excorporate
-  :ensure t
   :after org
   :disabled t
   :config

@@ -34,6 +34,10 @@
         (ivy-unmark)
       (ivy-mark))))
 
+(use-package ivy-hydra
+  :requires (ivy)
+  :after ivy
+  :demand t)
 
 ;;;; Ivy-rich
 ;; More friendly display transformer for Ivy
@@ -89,7 +93,6 @@
 
 ;;;; Counsel
 (use-package counsel
-  :ensure t
   :hook (ivy-mode . counsel-mode)
   :defines
   (projectile-completion-system magit-completing-read-function)
@@ -184,7 +187,6 @@
 
 ;;;; Swiper
 (use-package swiper
-  :ensure t
   :commands (swiper swiper-all)
   :config
   ;; Improve search experience of `swiper'

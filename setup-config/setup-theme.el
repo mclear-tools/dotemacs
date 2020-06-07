@@ -15,7 +15,6 @@
 ;;; Solarized Theme
 ;;;; Solarized Package Settings
 (use-package solarized-theme
-  :ensure t
   :if (display-graphic-p)
   :demand t
   :init

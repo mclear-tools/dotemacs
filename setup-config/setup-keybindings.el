@@ -196,8 +196,8 @@
 
 ;;; Markdown Keybindings
   (use-package evil-markdown
-    :ensure nil
-    :load-path "~/.emacs.d/.local/elisp/evil-markdown"
+    ;; :load-path "~/.emacs.d/.local/elisp/evil-markdown"
+    :straight (:host github :repo "Somelauw/evil-markdown")
     :after markdown-mode evil
     :demand t)
 
@@ -578,7 +578,6 @@
 
 ;;; Org Keybindings
   (use-package evil-org
-    :ensure t
     :after org
     :hook (org-mode . evil-org-mode)
     :config

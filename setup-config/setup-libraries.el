@@ -5,7 +5,6 @@
 ;; backward compatibility respectively. The git package is also a library.
 
 (use-package async
-  :ensure t
   :defer 2
   :init
   (setq async-bytecomp-allowed-packages '(all))
@@ -37,9 +36,9 @@
 (use-package dash    :defer 2)
 (use-package s       :defer 2)
 (use-package f       :defer 2)
-(use-package subr-x  :defer 2 :ensure nil)
-; lots of packages depend on these libraries
-(use-package cl-lib  :demand t :ensure nil)
+(use-package subr-x  :straight nil :defer 2)
+;; lots of packages depend on these libraries
+(use-package cl-lib  :demand t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-libraries)

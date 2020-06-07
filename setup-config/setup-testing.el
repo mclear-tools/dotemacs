@@ -1,11 +1,10 @@
 ;;; Testing
 ;;;; Helpful Demos
-  (use-package elisp-demos
-    :ensure t
-    :defer 1
-    :config
-    ;; inject demos into helpful
-    (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+(use-package elisp-demos
+  :defer 1
+  :config
+  ;; inject demos into helpful
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
 ;;;; Pretty Ligatures
 (when cpm-ligatures
@@ -46,7 +45,6 @@ codepoints starting from codepoint-start."
 
 ;;;; Bug Hunter
 (use-package bug-hunter
-  :ensure t
   :defer 2)
 
 
@@ -59,10 +57,9 @@ codepoints starting from codepoint-start."
 
 ;;;; Did You Mean
 ;; https://gitlab.com/kisaragi-hiu/didyoumean.el/
-(eval-when-compile
-  (quelpa '(didyoumean :fetcher gitlab :repo "kisaragi-hiu/didyoumean.el")))
+;; (eval-when-compile
+;;   (quelpa '(didyoumean :fetcher gitlab :repo "kisaragi-hiu/didyoumean.el")))
 (use-package didyoumean
-  :ensure nil
   :defer 2)
 
 ;;;; Compile with Nearest Makefile
@@ -103,7 +100,6 @@ codepoints starting from codepoint-start."
 
 ;;;; Writegood Mode
 (use-package writegood-mode
-  :ensure t
   :hook (markdown-mode . writegood-mode)
   :config
   (setq cpm/weasel-words
@@ -118,11 +114,10 @@ codepoints starting from codepoint-start."
         (-concat writegood-weasel-words cpm/weasel-words)))
 
 ;;;; Add Colors to Info Mode
-(eval-when-compile
-  (quelpa
-   '(info-colors :fetcher github :repo "ubolonton/info-colors")))
+;; (eval-when-compile
+;;   (quelpa
+;;    '(info-colors :fetcher github :repo "ubolonton/info-colors")))
 (use-package info-colors
-  :ensure nil
   :config
   (add-hook 'Info-selection-hook 'info-colors-fontify-node))
 
