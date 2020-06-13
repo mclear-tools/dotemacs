@@ -210,6 +210,7 @@
     (progn
       (persp-switch "agenda")
       (setq frame-title-format '("" "%b"))
+      (require 'org)
       (require 'org-super-agenda)
       (cpm/jump-to-org-super-agenda)
       (persp-add-buffer "*Org Agenda*"))))
