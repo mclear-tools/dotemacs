@@ -22,6 +22,8 @@
   ;;  "RET" 'widget-button-press
   ;;  "<down-mouse-1>" 'widget-button-click
   ;;  "g" #'dashboard-insert-startupify-lists)
+  :custom-face
+  (dashboard-heading ((t (:inherit font-lock-variable-name-face))))
   :config
   ;; banner & header
   (setq dashboard-startup-banner (concat cpm-local-dir "icons/128x128@2x.png")
