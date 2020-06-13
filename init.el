@@ -166,18 +166,6 @@
 ;; compiler warnings.
 (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
 
-;;;; Load Path
-;; We're going to set the load path ourselves so that we don't have to call
-;; `package-initialize` at runtime and incur a large performance hit. This
-;; load-path will actually be faster than the one created by
-;; `package-initialize` because it appends the elpa packages to the end of the
-;; load path. Otherwise any time a builtin package was required it would have to
-;; search all of third party paths first.
-(eval-and-compile
-  ;; (setq load-path (append load-path (directory-files package-user-dir t "^[^.]" t)))
-  (push cpm-setup-dir load-path))
-
-
 ;;; Package Settings
 ;; I tell use-package to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
@@ -189,15 +177,28 @@
 ;; restart-and-check of something in emacs.
 
 
-;;;; Straight
+;;;; Load Path
+;; Add config files to load-path
+(eval-and-compile
+  (push cpm-setup-dir load-path))
+;; prefer newer versions
+(setq load-prefer-newer t)
 
+
+;;;; Straight
+;; use straight.el to install all packages
+;; https://github.com/raxod502/straight.el
 ;; Don't check packages on startup
 (setq straight-check-for-modifications nil)
+;; set dir
+(setq straight-base-dir cpm-local-dir)
+;; use use-package
+(setq straight-use-package-by-default t)
 
 ;; bootstrap straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" straight-base-dir))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
@@ -208,35 +209,17 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(setq straight-check-for-modifications nil)
-(setq straight-use-package-by-default t)
+;; update packages every week
+(run-at-time "10:00pm" 604800 'straight-normalize-all)
 
 ;;;; Use-Package
-
 ;; install use package
 (straight-use-package 'use-package)
-
+;; settings
 (setq use-package-always-defer t
       use-package-verbose t
       use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
-
-;; (eval-when-compile
-;;   (require 'package)
-;;   (package-initialize)
-;;   (unless (package-installed-p 'use-package)
-;;     (package-refresh-contents)
-;;     (package-install 'use-package))
-;;   (require 'use-package))
-
-;; initialize packages after startup
-(defun cpm/package-startup ()
-  (interactive)
-  (package-initialize))
-;; (with-eval-after-load 'async
-;;   (package-refresh-contents 'async)))
-(add-hook 'evil-after-load-hook 'cpm/package-startup)
-
 
 ;;;; Benchmark Init
 (use-package benchmark-init
@@ -245,41 +228,6 @@
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'emacs-startup-hook 'benchmark-init/deactivate))
-
-;;;; Paradox Package Management
-;; Better interface for package management https://github.com/Malabarba/paradox
-(use-package paradox
-  :commands (paradox-list-packages paradox-upgrade-packages)
-  :init
-  (setq paradox-github-token nil)
-  :config
-  (add-to-list 'evil-emacs-state-modes 'paradox-menu-mode)
-  ;; (with-eval-after-load 'async
-  ;;   (setq paradox-execute-asynchronously nil))
-  (setq paradox-display-download-count t ;; Show all possible counts
-        paradox-display-star-count t
-        ;; Don't star automatically
-        paradox-automatically-star nil)
-  (with-eval-after-load 'general
-    (general-define-key
-     :states '(normal motion emacs)
-     :keymaps 'paradox-menu-mode-map
-     "i" 'package-menu-mark-install
-     "d" 'package-menu-mark-delete
-     "f" 'hydra-paradox-filter/body
-     "gr" 'package-menu-refresh
-     "J" 'paradox-next-describe
-     "K" 'paradox-previous-describe
-     "l" 'paradox-menu-view-commit-list
-     "U" 'package-menu-mark-upgrades
-     ;; undo
-     "u" 'package-menu-mark-unmark
-     ;; execute
-     "x" 'package-menu-execute
-     ;; quit
-     "q" 'quit-window ;; FIXME: Can macros make sense here?
-     "ZQ" 'evil-quit
-     "ZZ" 'quit-window)))
 
 ;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
@@ -304,6 +252,7 @@
 ;; These are the "can't live without" modules
 (require 'setup-libraries)
 (require 'setup-keybindings)
+(require 'setup-functions-macros)
 (require 'setup-evil)
 (require 'setup-settings)
 (require 'setup-dired)
@@ -313,7 +262,6 @@
 
 ;;;; Other Modules
 (require 'setup-ui)
-(require 'setup-functions-macros)
 (require 'setup-modeline)
 (require 'setup-theme)
 (require 'setup-osx)
@@ -391,17 +339,16 @@
 
 ;;;; Byte Compile Config Files
 ;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
-(defun cpm/byte-compile-dotemacs ()
-  "Byte compile all files in the .emacs.d base directory"
-  (interactive)
-  (shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc")
-  (byte-recompile-directory user-emacs-directory 0 t))
-
 (defun cpm/delete-byte-compiled-files ()
   "Delete byte-compiled files"
   (interactive)
   (shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc"))
 
+(defun cpm/byte-compile-dotemacs ()
+  "Byte compile all files in the .emacs.d base directory"
+  (interactive)
+  (cpm/delete-byte-compiled-files)
+  (byte-recompile-directory user-emacs-directory 0 t))
 
 ;; reset file-name-handler-alist
 (add-hook 'emacs-startup-hook (lambda ()
@@ -412,7 +359,3 @@
                  (float-time
                   (time-subtract after-init-time before-init-time)) gcs-done))
 (put 'narrow-to-page 'disabled nil)
-
-;; demand some packages in daemon mode
-(if (daemonp)
-    (require 'org))
