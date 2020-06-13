@@ -44,11 +44,6 @@
   ;; open PDF files in external viewer
   (setq dired-guess-shell-alist-user '(("\.pdf$" . default))))
 
-;;;; Async Dired
-(autoload 'dired-async-mode "dired-async.el" nil t)
-(with-eval-after-load 'dired-mode
-  (dired-async-mode 1))
-
 ;;;; Narrow Dired to Match Filter
 (use-package dired-narrow
   :general (:keymaps 'dired-mode-map
@@ -62,13 +57,10 @@
    "s" #'hydra-dired-quick-sort/body))
 
 ;;;; Dired Plus
-;; (eval-when-compile
-;;   (quelpa
-;;    '(dired+ :fetcher wiki)))
 (use-package dired+
   :after dired
-  :hook ((dired-mode . diredp--set-up-font-locking)
-         (dired-mode . dired-omit-mode))
+  :hook ((dired-mode . diredp--set-up-font-locking))
+  ;;(dired-mode . dired-omit-mode))
   :init
   (setq font-lock-maximum-decoration t)
   (setq diredp-omit-files-regexp "\\.?#\\|^\\.$\\|^\\.\\.")
