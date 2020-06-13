@@ -1,4 +1,5 @@
 ;;; Settings
+
 ;;;; General Settings
 
 ;;;;; Custom File Location
@@ -46,7 +47,7 @@
   :commands (vr/query-replace)
   :config
   (use-package visual-regexp-steroids
-  :commands (vr/select-query-replace)))
+    :commands (vr/select-query-replace)))
 
 ;;;;; UTF 8
 (setq locale-coding-system 'utf-8)
@@ -97,7 +98,7 @@
       (concat cpm-cache-dir "auto-save-list/.saves-"))
 (let ((auto-save-files-dir (concat cpm-cache-dir "auto-save-files")))
   (setq auto-save-file-name-transforms
-      `((".*" ,auto-save-files-dir t)))
+        `((".*" ,auto-save-files-dir t)))
   (when (not (file-exists-p auto-save-files-dir))
     (make-directory auto-save-files-dir t)))
 
@@ -239,18 +240,23 @@
           (insert "\n"))))))
 
 ;;;; Emacs Profiling
+;; might be worth checking this out more closely
+;; https://github.com/raxod502/radian/blob/c4246176155873d3937ff997965279048dabbc01/emacs/radian.el#L4423-L4476
 (use-package esup
+  :commands esup
   :config
   (setq esup-depth 0))
 
 ;;;; Long Lines
 ;; Emacs has problems with reading files with long lines. This package helps with that
 ;; https://www.emacswiki.org/emacs?action=browse;oldid=OverLongLineMode;id=SoLong
-;; (eval-when-compile
-;;   (quelpa '(so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)))
+;; Prior to 27.1, not included.
 (use-package so-long
+  :straight (so-long :type git
+                     :repo "https://git.savannah.gnu.org/git/so-long.git")
   :defer 1
-  :config (global-so-long-mode 1))
+  :config
+  (global-so-long-mode))
 
 ;;;; Highlight Lines
 ;; Highlight lines. You can toggle this off
