@@ -12,6 +12,25 @@
   :config
   (load-theme 'gruvbox t))
 
+;;; Doom Themes
+(use-package doom-themes
+  :defer 2
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (setq doom-themes-treemacs-theme "doom-colors")) ; use the colorful treemacs theme
+
+;; I get errors if I don't load these functions separately
+(with-eval-after-load 'doom-themes
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+
 ;;; Solarized Theme
 ;;;; Solarized Package Settings
 (use-package solarized-theme
@@ -33,9 +52,7 @@
   ;; Use colors for indicators such as git:gutter, flycheck and similar
   (setq solarized-emphasize-indicators t)
   ;; Set to nil of you don't want to change size of org-mode headlines (but keep other size-changes)
-  (setq solarized-scale-org-headlines t)
-  :config
-  (load-theme 'solarized-light t))
+  (setq solarized-scale-org-headlines t))
 
 ;;;; Customized Solarized Faces
 ;;;;;   Solarized Dark
@@ -194,27 +211,6 @@
    `(fancy-battery-critical ((t (:foreground "dark red" :weight bold))))
    `(fancy-battery-discharging ((t (:foreground "dark magenta" :weight bold))))))
 
-;;;; Load Custom Solarized Theme
-(cpm/solarized-light)
-
-;;; Doom Themes
-(use-package doom-themes
-  :defer 2
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; Enable custom treemacs theme (all-the-icons must be installed!)
-  (setq doom-themes-treemacs-theme "doom-colors")) ; use the colorful treemacs theme
-
-;; I get errors if I don't load these functions separately
-(with-eval-after-load 'doom-themes
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
-
 
 ;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
@@ -269,52 +265,53 @@
 
 ;;; Packaging Themes
 ;; I don't really use any other themes so I've disabled this
-           ;; (defvar packages-appearance '(doom-themes
-           ;;                               nord-theme
-           ;;                               solarized-theme
-           ;;                               zenburn-theme
-           ;;                               molokai-theme
-           ;;                               darktooth-theme
-           ;;                               gotham-theme
-           ;;                               ample-theme
-           ;;                               material-theme
-           ;;                               leuven-theme
-           ;;                               spacemacs-theme
-           ;;                               gruvbox-theme
-           ;;                               forest-blue-theme
-           ;;                               flatland-theme
-           ;;                               afternoon-theme
-           ;;                               cyberpunk-theme
-           ;;                               darkmine-theme
-           ;;                               tao-theme
-           ;;                               darkokai-theme
-           ;;                               jazz-theme
-           ;;                               suscolors-theme
-           ;;                               omtose-phellack-theme
-           ;;                               atom-one-dark-theme
-           ;;                               nubox
-           ;;                               color-theme-sanityinc-tomorrow
-           ;;                               alect-themes
-           ;;                               kaolin-themes
-           ;;                               srcery-theme)
-           ;;   "A list of themes to ensure are installed at launch.")
+;; I'm keeping it mainly as a list of themes I like
+;; (defvar packages-appearance '(doom-themes
+;;                               nord-theme
+;;                               solarized-theme
+;;                               zenburn-theme
+;;                               molokai-theme
+;;                               darktooth-theme
+;;                               gotham-theme
+;;                               ample-theme
+;;                               material-theme
+;;                               leuven-theme
+;;                               spacemacs-theme
+;;                               gruvbox-theme
+;;                               forest-blue-theme
+;;                               flatland-theme
+;;                               afternoon-theme
+;;                               cyberpunk-theme
+;;                               darkmine-theme
+;;                               tao-theme
+;;                               darkokai-theme
+;;                               jazz-theme
+;;                               suscolors-theme
+;;                               omtose-phellack-theme
+;;                               atom-one-dark-theme
+;;                               nubox
+;;                               color-theme-sanityinc-tomorrow
+;;                               alect-themes
+;;                               kaolin-themes
+;;                               srcery-theme)
+;;   "A list of themes to ensure are installed at launch.")
 
-           ;; (defun appearance-packages-installed-p ()
-           ;;   (loop for p in packages-appearance
-           ;;         when (not (package-installed-p p)) do (return nil)
-           ;;         finally (return t)))
+;; (defun appearance-packages-installed-p ()
+;;   (loop for p in packages-appearance
+;;         when (not (package-installed-p p)) do (return nil)
+;;         finally (return t)))
 
-           ;; (unless (appearance-packages-installed-p)
-           ;;   ;; check for new packages (package versions)
-           ;;   (message "%s" "Emacs is now refreshing its package themes...")
-           ;;   (package-refresh-contents)
-           ;;   (message "%s" " done.")
-           ;;   ;; install the missing packages
-           ;;   (dolist (p packages-appearance)
-           ;;     (when (not (package-installed-p p))
-           ;;       (package-install p))))
+;; (unless (appearance-packages-installed-p)
+;;   ;; check for new packages (package versions)
+;;   (message "%s" "Emacs is now refreshing its package themes...")
+;;   (package-refresh-contents)
+;;   (message "%s" " done.")
+;;   ;; install the missing packages
+;;   (dolist (p packages-appearance)
+;;     (when (not (package-installed-p p))
+;;       (package-install p))))
 
-           ;; (provide 'packages-appearance)
+;; (provide 'packages-appearance)
 
 ;;; End setup-theme.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
