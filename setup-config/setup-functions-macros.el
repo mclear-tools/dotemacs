@@ -522,7 +522,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (kill-new (shell-command-to-string "pbpaste | pandoc-citeproc -y -f bibtex | pbcopy"))
   (yank))
 
+;; NOTE: piping to pbcopy doesn't seem to work but it is ready to paste as is
 (defun cpm/org-to-rtf ()
+  "convert org to rtf and send to clipboard"
   (interactive)
   (kill-new (shell-command-to-string "pbpaste | pandoc -s -f org -t rtf")))
 
