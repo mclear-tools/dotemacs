@@ -1,16 +1,9 @@
 ;; Open a child frame.
 
 ;;; Posframe
-;; (eval-when-compile
-;;   (quelpa
-;;    '(posframe :fetcher github :repo "tumashu/posframe")))
-(use-package posframe
-  )
+(use-package posframe)
 
 ;;; Helm posframe
-;; (eval-when-compile
-;;   (quelpa
-;;    '(helm-posframe :fetcher github :repo "tumashu/helm-posframe")))
 (use-package helm-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . helm-posframe-enable)
@@ -26,9 +19,6 @@
   (setq helm-posframe-poshandler 'posframe-poshandler-frame-center))
 
 ;;; Ivy Posframe
-;; (eval-when-compile
-;;   (quelpa
-;;    '(ivy-posframe :fetcher github :repo "tumashu/ivy-posframe")))
 (use-package ivy-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook
