@@ -6,6 +6,7 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
+  :straight org-plus-contrib
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
@@ -48,7 +49,13 @@
 
 
 ;;;; Org Modules
-  (setq org-modules (quote (org-tempo org-protocol org-habit org-mac-link)))
+  (with-eval-after-load 'org
+    (add-to-list 'org-modules 'org-habit t)
+    (add-to-list 'org-modules 'org-tempo t)
+    (add-to-list 'org-modules 'org-protocol t)
+    (add-to-list 'org-modules 'org-mac-link t)
+    )
+
 
 ;;;; Org ID
   (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
@@ -181,6 +188,42 @@
                 " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
           (search . " %i %-12:c")))
 
+;;;; Org Super-Agenda
+  ;; Supercharge org-agenda: https://github.com/alphapapa/org-super-agenda
+  ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking
+
+  (use-package org-super-agenda
+    :commands org-super-agenda-mode
+    :general
+    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
+     ","  'cpm/hydra-org-agenda/body)
+    :config
+    (org-super-agenda-mode)
+    (setq org-super-agenda-date-format "%A, %e %b")
+    (setq org-super-agenda-groups
+          '((:name "Overdue"
+             :deadline past)
+            (:name "Scheduled"
+             :time-grid t)
+            (:name "Today"
+             :scheduled today
+             :deadline nil)
+            (:name "Due Today"
+             :deadline today)
+            (:name "Upcoming"
+             ;; :deadline future
+             ;; :scheduled future
+             :auto-ts t)
+            ;; (:name "Scheduled"
+            ;;  :scheduled t)
+            ))
+
+    (defun cpm/jump-to-org-super-agenda ()
+      (interactive)
+      (require 'org)
+      (require 'org-super-agenda)
+      (org-agenda nil "A")))
+
 ;;;; Agenda Toggle
   (defun cpm/toggle-org-agenda-file-set ()
     (interactive)
@@ -244,42 +287,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       (if (= pri-value pri-current)
           subtree-end
         nil)))
-
-;;;; Org Super-Agenda
-  ;; Supercharge org-agenda: https://github.com/alphapapa/org-super-agenda
-  ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking
-
-  (use-package org-super-agenda
-    ;; :pin manual ;; throws errors for some reason when I update
-    :commands org-super-agenda-mode
-    :general
-    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
-     ","  'cpm/hydra-org-agenda/body)
-    :after (org org-agenda)
-    :config
-    (org-super-agenda-mode)
-    (setq org-super-agenda-date-format "%A, %e %b")
-    (setq org-super-agenda-groups
-          '((:name "Overdue"
-             :deadline past)
-            (:name "Scheduled"
-             :time-grid t)
-            (:name "Today"
-             :scheduled today
-             :deadline nil)
-            (:name "Due Today"
-             :deadline today)
-            (:name "Upcoming"
-             ;; :deadline future
-             ;; :scheduled future
-             :auto-ts t)
-            ;; (:name "Scheduled"
-            ;;  :scheduled t)
-            )))
-
-  (defun cpm/jump-to-org-super-agenda ()
-    (interactive)
-    (org-agenda nil "A"))
 
 ;;;; Hydra for Agenda
   ;; Hydra for org agenda (graciously offered by Spacemacs)
@@ -584,6 +591,11 @@ _vr_ reset      ^^                       ^^                 ^^
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
+
+  ;; fix refile
+  (defun cpm/fix-org-refile ()
+    (interactive)
+    (shell-command-to-string "cd ~/.emacs.d/.local/straight/build && find org*/*.elc -print0 | xargs -0 rm"))
 
 ;;; Open Files in Default Application
   ;;Open files in their default applications (ms word being the prime example)
@@ -2105,10 +2117,11 @@ is non-nil."
 
 ;;;; Batch Export Files with Org-Hugo
 ;; mark files and then batch export them with this command
-(define-key dired-mode-map (kbd "C-+")
-  (lambda()
-    (interactive)
-    (diredp-do-apply/eval 'org-hugo-export-wim-to-md '(4))))
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-+")
+    (lambda()
+      (interactive)
+      (diredp-do-apply/eval 'org-hugo-export-wim-to-md '(4)))))
 
 
 
