@@ -44,7 +44,7 @@
   (setq magit-diff-refine-hunk t)
   ;; control magit initial visibility
   (setq magit-section-initial-visibility-alist
-        '((stashes . hide) (untracked . hide) (unpushed . hide)))
+        '((stashes . hide) (untracked . hide) (unpushed . hide) ([unpulled status] . show)))
   (global-git-commit-mode t) ; use emacs as editor for git commits
   (setq magit-push-always-verify nil))
 
@@ -70,10 +70,10 @@
 
 ;; add todos in magit
 (use-package magit-todos
-  ;; :load-path "~/.emacs.d/.local/elisp/magit-todos"
   :after magit
   :demand t
   :config
+  (setq magit-todos-depth 2)
   (magit-todos-mode))
 
 ;; generate ignore files with helm

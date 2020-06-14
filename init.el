@@ -194,6 +194,8 @@
 (setq straight-base-dir cpm-local-dir)
 ;; use use-package
 (setq straight-use-package-by-default t)
+;; Check updates manually
+(setq straight-vc-git-auto-fast-forward nil)
 
 ;; bootstrap straight
 (defvar bootstrap-version)
@@ -209,8 +211,20 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; update packages every week
-(run-at-time "10:00pm" 604800 'straight-normalize-all)
+;; use experimental straight commands
+(require 'straight-x)
+;; https://github.com/raxod502/straight.el#how-do-i-pin-package-versions-or-use-only-tagged-releases
+(autoload #'straight-x-pull-all "straight-x")
+(autoload #'straight-x-freeze-versions "straight-x")
+;; async fetch
+(autoload #'straight-x-fetch-all "straight-x")
+
+;; package updates
+;; use this workflow?
+;; https://github.com/raxod502/straight.el/issues/354#issuecomment-465305063
+
+;; ;; automatic update packages every week
+;; (run-at-time "10:00pm" 604800 'straight-x-pull-all)
 
 ;;;; Use-Package
 ;; install use package
