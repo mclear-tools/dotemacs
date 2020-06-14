@@ -94,6 +94,7 @@
   :config
   ;; set colors -- this is best with dark solarized right now
   (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 100000)
   (setq ansi-color-names-vector
         ["#002833" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
   (setq vterm-term-environment-variable "xterm-256color")
