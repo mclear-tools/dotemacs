@@ -267,14 +267,21 @@
  "s-3" 'cpm/open-notes-in-workspace)
 
 ;;;; Terminal Workspace
+(defun cpm/vterm-home ()
+  (interactive)
+  (let ((default-directory "~/"))
+    (multi-vterm-next)))
+
 (defun cpm/open-new-terminal-and-workspace ()
   "open an empty buffer in its own perspective"
   (interactive)
-  (persp-switch "Terminal")
+  (if (get-buffer "*vterminal<1>*")
+      (persp-switch "Terminal")
+    (persp-switch "Terminal"))
   (evil-set-initial-state 'vterm-mode 'insert)
-  (vterm)
+  (cpm/vterm-home)
   (delete-other-windows)
-  (persp-add-buffer "vterm")
+  (persp-add-buffer "*vterminal<1>*")
   (setq frame-title-format '("" "%b")))
 
 (general-define-key

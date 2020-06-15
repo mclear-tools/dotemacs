@@ -169,7 +169,8 @@
    "#" 'universal-argument
    "`" 'beacon-blink
    ;; "'" 'shell-pop
-   "\\" 'vterm-toggle-cd
+   ;; "\\" 'vterm-toggle-cd
+   "\\" 'multi-vterm-dedicated-toggle
    "." 'quick-commit
    ";" 'evil-commentary-line
    "[" 'cpm/previous-user-buffer
