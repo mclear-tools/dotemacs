@@ -34,10 +34,10 @@
   (remove-hook 'server-switch-hook 'magit-commit-diff)
   ;; remove some other slow processes
   ;; see https://github.com/magit/magit/issues/2982#issuecomment-632453966
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
+  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
+  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
+  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
+  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
 
   ;; make magit go fullscreen
   ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
