@@ -14,6 +14,7 @@
 (use-package f       :straight nil :defer 2)
 (use-package subr-x  :straight nil :defer 2)
 ;; lots of packages depend on these libraries
+(use-package cl      :straight nil :demand t)
 (use-package cl-lib  :straight nil :demand t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
