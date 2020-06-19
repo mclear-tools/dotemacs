@@ -6,6 +6,8 @@
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line
    "C-<SPC>" 'cpm/ivy-toggle-mark)
+  (:keymaps 'ivy-switch-buffer-map
+   "C-d" 'ivy-switch-buffer-kill)
   :defines (projectile-completion-system
             magit-completing-read-function)
   :commands (ivy--format-function-generic
