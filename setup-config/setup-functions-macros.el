@@ -467,6 +467,17 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (save-excursion (insert "#+END_" choice))))))))))
 
 
+;;;; Org Export Body to HTML Buffer
+(defun cpm/org-export-to-buffer-html-as-body (&optional async subtreep visible-only body-only ext-plist)
+  "Export org buffer body to html"
+  (interactive)
+  (org-export-to-buffer 'html "*Org HTML Export*"
+    async body-only ext-plist (lambda () (html-mode)))
+  (cpm/copy-whole-buffer-to-clipboard)
+  (delete-windows-on "*Org HTML Export*")
+  (message "HTML copied!"))
+  ;; (cpm/previous-user-buffer))
+
 ;;;; Clipboard Transforms Using Pandoc
 (defun cpm/org-to-markdown ()
   "convert clipboard contents from org to markdown and paste"

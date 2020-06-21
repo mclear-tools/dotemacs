@@ -507,6 +507,7 @@
    ;; "uc" 'cpm/pandoc-convert-to-pdf
    "uC" 'cpm/pandoc-command-line-convert-to-pdf
    "ug" 'org-mac-grab-link
+   "uh" #'cpm/org-export-to-buffer-html-as-body
    "ui" 'cpm/org-goto-inbox
    "uk" 'kill-compilation
    "ul" 'desktop-read
@@ -663,9 +664,9 @@
   (general-define-key :states '(normal insert) :keymaps 'org-mode-map
     ;; easily emphasize text
     ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-    "s-b" (lambda () (interactive) (org-emphasize ?\*))
-    "s-i" (lambda () (interactive) (org-emphasize ?\/))
-    "s-l" (lambda () (interactive) (org-emphasize ?\=))
+    "s-b" (lambda () (interactive) (er/mark-word) (org-emphasize ?\*))
+    "s-i" (lambda () (interactive) (er/mark-word) (org-emphasize ?\/))
+    "s-l" (lambda () (interactive) (er/mark-word) (org-emphasize ?\=))
     ;; better pasting behavior in org-mode
     "s-v" 'org-yank)
 
