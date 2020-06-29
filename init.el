@@ -150,15 +150,20 @@
 ;; Properly verify outgoing ssl connections.
 ;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
 
-(setq gnutls-verify-error t
-      tls-checktrust gnutls-verify-error
-      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-                        ;; compatibility fallbacks
-                        "gnutls-cli -p %p %h"
-                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
-      nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
-;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(with-eval-after-load 'gnutls
+  (setq gnutls-verify-error t)
+  (setq gnutls-min-prime-bits 3072)
+  (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem"))
+
+;; (setq gnutls-verify-error t
+;;       tls-checktrust gnutls-verify-error
+;;       tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+;;                         ;; compatibility fallbacks
+;;                         "gnutls-cli -p %p %h"
+;;                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
+;;       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
+;; ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 ;;;; Byte Compile Warnings
 ;; Disable certain byte compiler warnings to cut down on the noise. This is a
