@@ -1543,6 +1543,14 @@ is non-nil."
 (fset 'cpm/reveal-to-html-open
       "\C-c\C-e\C-sRB")
 
+(defun cpm/reveal-to-pdf ()
+  "print reveal.js slides to pdf"
+  (interactive)
+  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/phil105-classplan.html?print-pdf'")
+  (delete-windows-on "*Async Shell Command*" t))
+
+
+
 ;;; Org GTD
 ;;;; GTD Project Functions
 (defun cpm/org-goto-todo ()

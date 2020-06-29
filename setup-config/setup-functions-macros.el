@@ -476,7 +476,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (cpm/copy-whole-buffer-to-clipboard)
   (delete-windows-on "*Org HTML Export*")
   (message "HTML copied!"))
-  ;; (cpm/previous-user-buffer))
+;; (cpm/previous-user-buffer))
+
 
 ;;;; Clipboard Transforms Using Pandoc
 (defun cpm/org-to-markdown ()
@@ -578,13 +579,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (if default-directory
       (browse-url-of-file (expand-file-name default-directory))
     (error "No `default-directory' to open")))
-
-;;;; Send Reveal Slides to PDF
-(defun cpm/reveal-to-pdf ()
-  "print reveal.js slides to pdf"
-  (interactive)
-  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/phil105-classplan.html?print-pdf'")
-  (delete-windows-on "*Async Shell Command*" t))
 
 ;;;; Rotate Windows
 ;; from magnars modified by ffevotte for dedicated windows support
