@@ -505,6 +505,9 @@
    "uaw" 'cpm/jump-to-week-agenda
    "um" 'cpm/org-to-markdown
    ;; "uc" 'cpm/pandoc-convert-to-pdf
+   "ub" '(:ignore t :which-key "Beamer functions")
+   "ubp" #'cpm/org-export-beamer-presentation
+   "ubh" #'cpm/org-export-beamer-handout
    "uC" 'cpm/pandoc-command-line-convert-to-pdf
    "ug" 'org-mac-grab-link
    "uh" #'cpm/org-export-to-buffer-html-as-body
