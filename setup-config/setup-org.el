@@ -44,7 +44,8 @@
                 ;; additionally expand text and move focus to the expected point.
                 org-catch-invisible-edits 'show-and-error
                 org-imenu-depth 8
-                imenu-auto-rescan t)
+                imenu-auto-rescan t
+                org-export-with-smart-quotes t)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 
@@ -781,7 +782,7 @@ Instead it's simpler to use bash."
   (defun rasmus/org-prettify-symbols ()
     (mapc (apply-partially 'add-to-list 'prettify-symbols-alist)
           (cl-reduce 'append
-                     (mapcar (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                     (mapcar (lambda (x) (list x (cons (downcase (car x)) (cdr x))))
                              `(("#+begin_src" . ?╦) ;; ➤ 🖝 ➟ ➤ ✎ ✎
                                ("#+end_src"   . ?╩) ;; □
                                ("#+header:" . ,rasmus/ob-header-symbol)
@@ -2351,6 +2352,14 @@ is non-nil."
   :after org-roam
   :demand t)
 
+;;; Citeproc for Org
+(use-package citeproc-org
+  :straight (:host github :repo "andras-simonyi/citeproc-org")
+  :after org
+  :demand t
+  :config
+  (citeproc-org-setup))
+
 ;;; Org Miscellaneous Packages
 
 (use-package htmlize :commands (htmlize-buffer))
@@ -2359,8 +2368,7 @@ is non-nil."
 
  ;; ignore export of headlines marked with :ignore: tag
 (use-package ox-extra
-  :straight nil
-  :requires (org-plus-contrib)
+  :straight (org-plus-contrib)
   :after ox
   :demand t
   :config
