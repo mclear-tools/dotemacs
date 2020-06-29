@@ -372,6 +372,7 @@
 ;;; Grammar
 (use-package typo
   :defer 2
+  :hook (org-mode . typo-mode)
   :config
   (typo-global-mode))
 
