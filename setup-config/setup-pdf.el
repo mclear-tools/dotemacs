@@ -144,12 +144,12 @@
   ;; initialise
   (pdf-tools-install)
   ;; open pdfs scaled to fit page
-  (setq-default pdf-view-display-size 'fit-page)
+  (setq-default pdf-view-display-size 1.25)
   ;; automatically annotate highlights
   (setq pdf-annot-activate-created-annotations t)
   ;; HiDPI
   (setq pdf-view-use-scaling t
-        pdf-view-use-imagemagick nil)
+        pdf-view-use-imagemagick t)
   (progn
     (pdf-tools-install)
     (evil-set-initial-state 'pdf-view-mode 'normal)
