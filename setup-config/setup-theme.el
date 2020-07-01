@@ -263,6 +263,21 @@
       (cpm/osx-menubar-theme-dark)
       (cpm/solarized-dark))))
 
+;;; Load Theme with System Mode
+;; See https://www.reddit.com/r/emacs/comments/hejsqm/is_there_a_way_to_detect_lightdark_mode_on_mac/fvrr382?utm_source=share&utm_medium=web2x
+
+(defun cpm/set-system-theme-mode ()
+  (interactive)
+  (if (string= (shell-command-to-string "printf %s \"$( osascript -e \'tell application \"System Events\" to tell appearance preferences to return dark mode\' )\"") "true")
+      (progn
+        (cpm/disable-all-themes)
+        (cpm/solarized-dark))
+    (progn
+      (cpm/disable-all-themes)
+      (cpm/solarized-light))))
+
+;; (cpm/set-system-theme-mode)
+
 ;;; Packaging Themes
 ;; I don't really use any other themes so I've disabled this
 ;; I'm keeping it mainly as a list of themes I like
