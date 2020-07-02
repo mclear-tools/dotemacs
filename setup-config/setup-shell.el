@@ -85,7 +85,8 @@
    "C-j" #'vterm-send-down
    "C-k" #'vterm-send-up
    "s-v" #'vterm-yank
-   "C-v" #'vterm-yank)
+   "C-v" #'vterm-yank
+   "<C-escape>" #'evil-normal-state)
   (:states '(normal)
    :keymaps 'vterm-mode-map
    "p" #'vterm-yank
@@ -101,7 +102,11 @@
   (add-hook 'vterm-mode-hook
             (lambda ()
               (setq-local evil-insert-state-cursor '("chartreuse3" box))
-              (evil-insert-state))))
+              (evil-insert-state)))
+  (defun cpm/vterm-mode-hook ()
+    (unless evil-collection-vterm-send-escape-to-vterm-p
+      (evil-collection-vterm-toggle-send-escape)))
+  (add-hook 'vterm-mode-hook 'cpm/vterm-mode-hook))
 
 ;; directory tracking
 (defun vterm--rename-buffer-as-title (title)
