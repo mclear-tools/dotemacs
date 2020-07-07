@@ -1,0 +1,11 @@
+(("auto-compile" . "3e92c5b1a94b0cf43f2d624180a1cb01df92afd8")
+ ("benchmark-init-el" . "7a0f263282bbc86b01b662636306f22813082647")
+ ("bicycle" . "295636818abf37848157f37ce7182a47099e6f97")
+ ("emacsmirror-mirror" . "5d8df117215e4d7e816bd63672cd467e532c662d")
+ ("gnu-elpa-mirror" . "0b80c77a7122df25ce5c4bfa6ca653b335b31a3e")
+ ("melpa" . "38ea66665abd85da45aa005ba0fc03891fbbee63")
+ ("outline-minor-faces" . "f91168a887d8979471842037f1275dbc8914501f")
+ ("packed" . "c41c3dfda86ae33832ffc146923e2a4675cbacfa")
+ ("straight.el" . "a7f94876b2bf96d2595706270be6630ecc94f0d3")
+ ("use-package" . "bfc5ecd69cdf71fae0af722d90336c66a6415f03"))
+:alpha
