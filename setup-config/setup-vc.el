@@ -195,5 +195,8 @@
     (transient-suffix-put 'magit-dispatch "e" :command 'vdiff-magit-dwim)
     (transient-suffix-put 'magit-dispatch "E" :description "vdiff")
     (transient-suffix-put 'magit-dispatch "E" :command 'vdiff-magit)))
+;;; Ediff
+;; Don't open ediff in new frame
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-vc)
