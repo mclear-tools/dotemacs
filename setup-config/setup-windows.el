@@ -59,15 +59,15 @@
   (global-unset-key (kbd (format "M-%d" n))))
 
 (use-package windmove
+  :after general
   :commands (windmove-up windmove-down windmove-left windmove-right)
   :general
-  (:states '(normal motion insert)
-   (cpm/leader-keys
-     "w"   #'(:ignore t :which-key "Windows")
-     "w l" #'windmove-right
-     "w h" #'windmove-left
-     "w j" #'windmove-down
-     "w k" #'windmove-up))
+  (cpm/leader-keys
+    "w"   #'(:ignore t :which-key "Windows")
+    "w l" #'windmove-right
+    "w h" #'windmove-left
+    "w j" #'windmove-down
+    "w k" #'windmove-up)
   :config
   (defun cpm/split-window-right-and-focus ()
     "Split the window horizontally and focus the new window."
