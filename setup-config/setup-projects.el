@@ -53,11 +53,11 @@
    "g8" 'eyebrowse-switch-to-window-config-8
    "g9" 'eyebrowse-switch-to-window-config-9)
   (cpm/leader-keys
-   "w." 'hydra-eyebrowse/body
-   "ww" 'eyebrowse-switch-to-window-config
-   "wr" 'eyebrowse-rename-window-config)
+    "w." 'hydra-eyebrowse/body
+    "ww" 'eyebrowse-switch-to-window-config
+    "wr" 'eyebrowse-rename-window-config)
   :config
-  (setq eyebrowse-new-workspace t
+  (setq eyebrowse-new-workspace 'dired-jump
         eyebrowse-mode-line-style 'hide
         eyebrowse-wrap-around t
         eyebrowse-switch-back-and-forth t)
@@ -270,6 +270,7 @@
 (defun cpm/vterm-home ()
   (interactive)
   (let ((default-directory "~/"))
+    (require 'multi-vterm)
     (multi-vterm-next)))
 
 (defun cpm/open-new-terminal-and-workspace ()
