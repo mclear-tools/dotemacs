@@ -43,7 +43,7 @@
     ;; (setq evil-visual-state-tag "VISUAL")
     ;; use insert in commits automatically
     (add-hook 'git-commit-mode-hook 'evil-insert-state)
-    (evil-set-initial-state 'dashboard-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'motion)
     (evil-set-initial-state 'messages-buffer-mode 'motion)
     (evil-set-initial-state 'magit-log-edit-mode 'insert)
     (evil-set-initial-state 'org-agenda-mode 'motion)
