@@ -29,7 +29,6 @@
                 org-pretty-entities t ;; make latex look good
                 org-pretty-entities-include-sub-superscripts t
                 org-hide-leading-stars t
-                org-export-with-smart-quotes t ;; export smart quote marks
                 org-refile-use-cache t  ;; use cache for org refile
                 org-startup-folded t
                 org-yank-adjusted-subtrees t  ;; adjust subtrees to depth when yanked
@@ -414,10 +413,10 @@ _vr_ reset      ^^                       ^^                 ^^
 ;;; Org Capture
 ;;;; Capture Settings
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
-  (general-define-key
-   :states '(insert normal motion emacs)
-   :keymaps 'override
-   "C-c c" #'org-capture)
+  ;; (general-define-key
+  ;;  :states '(insert normal motion emacs)
+  ;;  :keymaps 'override
+  ;;  "C-c c" #'org-capture)
   (setq org-capture-templates
         ;; Note the ` and , to get concat to evaluate properly
         `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
@@ -446,6 +445,12 @@ _vr_ reset      ^^                       ^^                 ^^
     (org-set-property "DATE_CAPTURED" (format-time-string "%F %A")))
 
   (add-hook 'org-capture-before-finalize-hook 'add-property-with-date-captured)
+
+  ;; Add newline to captured items
+  (defun cpm/org-capture-newlines-at-end ()
+    (goto-char (point-max))
+    (insert "\n\n"))
+  (add-hook 'org-capture-prepare-finalize 'cpm/org-capture-newlines-at-end)
 
 ;;;; Org Journal Capture
   ;; Tell emacs what you're doing a few times a day. Depends on a
@@ -596,7 +601,8 @@ _vr_ reset      ^^                       ^^                 ^^
   ;; fix refile
   (defun cpm/fix-org-refile ()
     (interactive)
-    (shell-command-to-string "cd ~/.emacs.d/.local/straight/build && find org*/*.elc -print0 | xargs -0 rm"))
+    (shell-command-to-string "cd ~/.emacs.d/.local/straight/build && find org*/*.elc -print0 | xargs -0 rm")
+    (org-reload))
 
 ;;; Open Files in Default Application
   ;;Open files in their default applications (ms word being the prime example)
@@ -1994,6 +2000,8 @@ is non-nil."
 ;; Some useful settings
 ;;;; Backends
 (setq org-export-backends '(ascii beamer html icalendar latex odt pandoc hugo md))
+;; export odt to docx
+(setq org-odt-preferred-output-format 'docx)
 
 ;;;; Export Last Subtree
 ;; bind f5 to keyboard macro of export-last-subtree

@@ -617,6 +617,7 @@
    "d"   #'org-time-stamp
    "D"   #'org-deadline
    "e"   #'org-edit-special
+   "f"   #'org-fill-paragraph
    "n"   #'cpm/narrow-or-widen-dwim
    "r"   #'org-refile
    "s"   #'org-schedule
