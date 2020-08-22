@@ -428,17 +428,17 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (if (org-at-table-p)
       (call-interactively 'org-table-rotate-recalc-marks)
     (let* ((choices '(
-                      ("a" . "ASCII")
-                      ("c" . "COMMENT")
-                      ("C" . "CENTER")
-                      ("e" . "EXAMPLE")
-                      ("E" . "SRC emacs-lisp")
-                      ("h" . "HTML")
-                      ("l" . "LaTeX")
-                      ("n" . "NOTES")
-                      ("q" . "QUOTE")
-                      ("s" . "SRC")
-                      ("v" . "VERSE")
+                      ("a" . "ascii")
+                      ("c" . "comment")
+                      ("C" . "center")
+                      ("e" . "example")
+                      ("E" . "src emacs-lisp")
+                      ("h" . "html")
+                      ("l" . "laTeX")
+                      ("n" . "notes")
+                      ("q" . "quote")
+                      ("s" . "src")
+                      ("v" . "verse")
                       ))
            (key
             (key-description
@@ -459,12 +459,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (let ((start (region-beginning))
                     (end (region-end)))
                 (goto-char end)
-                (insert "#+END_" choice "\n")
+                (insert "#+end_" choice "\n")
                 (goto-char start)
-                (insert "#+BEGIN_" choice "\n")))
+                (insert "#+begin_" choice "\n")))
              (t
-              (insert "#+BEGIN_" choice "\n")
-              (save-excursion (insert "#+END_" choice))))))))))
+              (insert "#+begin_" choice "\n")
+              (save-excursion (insert "#+end_" choice))))))))))
 
 
 ;;;; Org Export Body to HTML Buffer
