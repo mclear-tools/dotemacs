@@ -269,6 +269,9 @@
 (use-package palimpsest
   :diminish palimpsest-mode
   :hook ((markdown-mode org-mode) . palimpsest-mode)
+  :custom
+  (palimpsest-send-bottom "C-c C-z")
+  (palimpsest-send-top "C-c C-a")
   :config
   (setq palimpsest-trash-file-suffix ".archive"))
 
