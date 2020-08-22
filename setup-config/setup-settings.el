@@ -85,41 +85,44 @@
       backup-by-copying t               ; don't clobber symlinks
       version-control t                 ; version numbers for backup files
       delete-old-versions t             ; delete excess backup files silently
-      delete-by-moving-to-trash t
-      kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made
-      kept-new-versions 6               ; newest versions to keep when a new numbered backup is made
+      kept-old-versions 10               ; oldest versions to keep when a new numbered backup is made
+      kept-new-versions 10               ; newest versions to keep when a new numbered backup is made
       )
 (setq vc-make-backup-files t) ;;  backup versioned files, which Emacs does not do by default
 
 (use-package backup-walker
   :commands backup-walker-start)
 
-(setq auto-save-list-file-prefix
-      (concat cpm-cache-dir "auto-save-list/.saves-"))
-(let ((auto-save-files-dir (concat cpm-cache-dir "auto-save-files")))
-  (setq auto-save-file-name-transforms
-        `((".*" ,auto-save-files-dir t)))
-  (when (not (file-exists-p auto-save-files-dir))
-    (make-directory auto-save-files-dir t)))
+(use-package auto-save
+  :straight nil
+  :hook (after-init . auto-save-mode)
+  :config
+  (setq auto-save-list-file-prefix
+        (concat cpm-cache-dir "auto-save-list/.saves-"))
+  (let ((auto-save-files-dir (concat cpm-cache-dir "auto-save-files")))
+    (setq auto-save-file-name-transforms
+          `((".*" ,auto-save-files-dir t)))
+    (when (not (file-exists-p auto-save-files-dir))
+      (make-directory auto-save-files-dir t)))
 
-(setq auto-save-default t               ; auto-save every buffer that visits a file
-      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
-      auto-save-visited-mode t
-      delete-auto-save-files t
-      create-lockfiles nil)
+  (setq auto-save-default t               ; auto-save every buffer that visits a file
+        auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+        auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+        auto-save-visited-mode t
+        delete-auto-save-files t
+        create-lockfiles nil))
 
-(defun full-auto-save ()
+(defun cpm/full-auto-save ()
   (interactive)
   (save-excursion
     (dolist (buf (buffer-list))
       (set-buffer buf)
       (if (and (buffer-file-name) (buffer-modified-p))
           (basic-save-buffer)))))
-(add-hook 'auto-save-hook 'full-auto-save)
+(add-hook 'auto-save-hook 'cpm/full-auto-save)
 
 ;; Save all buffers after idle time
-(run-with-idle-timer 5 t (lambda () (full-auto-save)))
+(run-with-idle-timer 5 t (lambda () (cpm/full-auto-save)))
 ;; Save on exit from insert state
 ;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
 
