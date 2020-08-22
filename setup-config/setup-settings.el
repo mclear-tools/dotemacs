@@ -301,6 +301,10 @@
   (setq multi-compile-history-file (concat cpm-cache-dir "multi-compile.cache"))
   (setq multi-compile-completion-system 'default)
   (setq multi-compile-alist '(
+                              (org-mode . (
+                                           ("pandoc-docx & Open" . "pandoc -s -f org+smart --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx   --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.docx %file-name && open %file-sans.docx")
+                                           ("pandoc-pdf & Open" . "pandoc -s -f org+smart --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")))
+
                               ;; commands for pandoc
                               (markdown-mode . (
                                                 ("pandoc-normalize" . "pandoc -f markdown -t markdown -s --id-prefix=%file-sans: --atx-headers --columns=85 --wrap=auto --reference-location=block -o %file-name %file-name")
