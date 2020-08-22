@@ -44,8 +44,12 @@
   ;; make fonts look better with anti-aliasing
   (setq mac-allow-anti-aliasing t)
   ;; delete files by moving them to the trash
-  (setq delete-by-moving-to-trash t)
-  (setq trash-directory "~/.Trash")
+  (use-package osx-trash
+    :straight t
+    :defer 1
+    :config
+    (setq delete-by-moving-to-trash t)
+    (osx-trash-setup))
 
   ;; Make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)
