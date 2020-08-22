@@ -35,10 +35,12 @@
   ;; Like with ls, append "@" to file names if they're symlinks
   (setq dired-ls-F-marks-symlinks t)
   ;; don't ask about killing buffer visiting file
-  (setq dired-clean-confirm-killing-deleted-buffers t)
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
   ;; always delete and copy recursively
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
+  (setq dired-deletion-confirmer 'y-or-n-p)
+  (setq dired-dwim-target t)
   ;; allow editing file permissions
   (setq wdired-allow-to-change-permissions t)
   ;; open PDF files in external viewer
