@@ -13,7 +13,8 @@
   :init
 ;;; Org Settings
 ;;;; Org Directories
-  (setq-default org-directory "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org-files/")
+  ;; (setq-default org-directory "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org-files/")
+  (setq-default org-directory "~/Dropbox/org-files/")
   (setq-default org-default-notes-file (concat org-directory "inbox.org"))
   (setq-default org-agenda-files (list org-directory))
 
@@ -108,8 +109,10 @@
 ;;;; Org Regex (Emphasis)
   (with-eval-after-load 'org
                                         ; chars for prematch
+    ;; (setcar org-emphasis-regexp-components " \t('\"{[:alpha:]")
     (setcar org-emphasis-regexp-components            "     ('\"{“”\[\\\_\-")
                                         ; chars for postmatch
+    ;; (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
     (setcar (nthcdr 1 org-emphasis-regexp-components) "\] -   .,!?;:''“”\")}/\\“”\_\-")
                                         ; forbidden chars
     (setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
@@ -426,7 +429,9 @@ _vr_ reset      ^^                       ^^                 ^^
           ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
            "* %? :link: \n%(grab-mac-link 'firefox 'org)")
           ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-           "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
+           "* TODO %? :email: \n%(org-mac-outlook-message-get-links)")
+          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
+          ;;  "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
           ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
           ;;  "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
@@ -1532,6 +1537,8 @@ is non-nil."
 (defun cpm/org-export-to-beamer-pdf-open ()
   "Export org subtree to beamer pdf and open"
   (interactive)
+  (universal-argument)
+  (universal-argument-more)
   (org-open-file (org-beamer-export-to-pdf nil t)))
 
 ;;;; Org to beamer slides or handout
@@ -2267,10 +2274,11 @@ is non-nil."
 
 (use-package org-roam
   :disabled
+  :straight nil
   :commands (org-roam org-roam-new-file org-roam-find-file)
-  :after org
-  :hook
-  (org-mode . org-roam-mode)
+  ;; :after org
+  ;; :hook
+  ;; (org-mode . org-roam-mode)
   :custom
   (org-roam-directory "~/Dropbox/Work/projects/notebook/org/")
   ;;;; Org Roam Keybindings
@@ -2349,16 +2357,18 @@ is non-nil."
            :unnarrowed t))))
 
 ;;;; Company Org Roam
-(use-package company-org-roam
-  :after company
-  :demand t
-  :config
-  (push 'company-org-roam company-backends))
+;; (use-package company-org-roam
+;;   :straight nil
+;;   :after company
+;;   :demand t
+;;   :config
+;;   (push 'company-org-roam company-backends))
 
 ;;;; Org Roam Server
-(use-package org-roam-server
-  :after org-roam
-  :demand t)
+;; (use-package org-roam-server
+;;   :straight nil
+;;   :after org-roam
+;;   :demand t)
 
 ;;; Citeproc for Org
 (use-package citeproc-org
@@ -2376,7 +2386,8 @@ is non-nil."
 
  ;; ignore export of headlines marked with :ignore: tag
 (use-package ox-extra
-  :straight (org-plus-contrib)
+  ;; :straight (org-plus-contrib)
+  :straight nil
   :after ox
   :demand t
   :config
@@ -2388,6 +2399,26 @@ is non-nil."
   :load-path "~/.emacs.d/.local/elisp/org-devonthink"
   :commands (org-insert-dtp-link org-dtp-store-link))
 
+
+;;; Org Outlook
+;; Open outlook message links in org
+;; from https://superuser.com/a/100084 and
+;; https://emacs.stackexchange.com/a/35916/11934
+
+(defun org-outlook-open (id)
+  "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
+  (shell-command-to-string (concat "open" id)))
+
+(with-eval-after-load 'org
+  (org-add-link-type "outlook" 'org-outlook-open)
+
+  (org-link-set-parameters
+   "outlook"
+   :follow (lambda (path) (org-outlook-open path))
+   :export (lambda (path desc backend)
+             (cond
+              ((eq 'html backend)
+               (format "<a href=\"outlook:%s\">%s</a>" path desc))))))
 
 ;;; Provide
 (provide 'setup-org)
