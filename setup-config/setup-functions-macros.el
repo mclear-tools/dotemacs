@@ -545,14 +545,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun cpm/org-to-rtf ()
   "convert org to rtf and send to clipboard"
   (interactive)
-  (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t rtf")))
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t html | /usr/bin/textutil -stdin -stdout -format html -convert rtf -fontsize 14 -font Helvetica | pbcopy")))
 
 (defun cpm/org-to-mail-rtf ()
   "copy buffer, convert clipboard contents from org to rtf, and send to mail message"
   (interactive)
   (cpm/copy-whole-buffer-to-clipboard)
   ;; (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t rtf"))
-  (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t html | /usr/bin/textutil -stdin -stdout -format html -convert rtf -fontsize 14"))
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t html | /usr/bin/textutil -stdin -stdout -format html -convert rtf -fontsize 14 | pbcopy"))
   (kill-buffer)
   (delete-frame)
   (do-applescript "if application \"Mail\" is running then
