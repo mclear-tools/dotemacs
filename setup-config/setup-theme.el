@@ -116,8 +116,11 @@
    ;; posframe faces
    `(hydra-posframe-face ((t (:background "#073642"))))
    `(ivy-posframe ((t (:background "#073642"))))
+   `(ivy-posframe-border ((t (:background "#073642"))))
    `(which-key-posframe ((t (:background "#073642"))))
+   `(which-key-posframe-border ((t (:background "#073642"))))
    `(helm-posframe ((t (:background "#073642"))))
+   `(helm-posframe-border ((t (:background "#073642"))))
    `(frog-menu-posframe-background-face ((t (:background "#073642"))))
 
    ;; helm faces
@@ -190,8 +193,11 @@
    ;; posframe faces
    `(hydra-posframe-face ((t (:background "#eee8d5"))))
    `(ivy-posframe ((t (:background "#eee8d5"))))
+   `(ivy-posframe-border ((t (:background "#eee8d5"))))
    `(which-key-posframe ((t (:background "#eee8d5"))))
+   `(which-key-posframe-border ((t (:background "#eee8d5"))))
    `(helm-posframe ((t (:background "#eee8d5"))))
+   `(helm-posframe-border ((t (:background "#eee8d5"))))
    `(frog-menu-posframe-background-face ((t (:background "#eee8d5"))))
 
    ;; helm faces
@@ -235,16 +241,16 @@
 (defun toggle-dark-light-theme ()
   (interactive)
   (if (eq active-theme 'solarized-light)
-      (progn (setq active-theme 'solarized-dark)
-             (cpm/osx-menubar-theme-dark)
+      (progn (cpm/osx-menubar-theme-dark)
              (cpm/disable-all-themes)
              (cpm/solarized-dark)
-             (force-mode-line-update))
-    (progn (setq active-theme 'solarized-light)
-           (cpm/osx-menubar-theme-light)
+             (force-mode-line-update)
+             (setq active-theme 'solarized-dark))
+    (progn (cpm/osx-menubar-theme-light)
            (cpm/disable-all-themes)
            (cpm/solarized-light)
-           (force-mode-line-update))))
+           (force-mode-line-update)
+           (setq active-theme 'solarized-light))))
 
 ;;; Night Timer
 ;; Got the idea from https://github.com/hmatheisen/theme-switcher
@@ -271,9 +277,11 @@
   (if (string= (shell-command-to-string "printf %s \"$( osascript -e \'tell application \"System Events\" to tell appearance preferences to return dark mode\' )\"") "true")
       (progn
         (cpm/disable-all-themes)
+        ;; (shell-command-to-string "defaults write org.gnu.Emacs TransparentTitleBar DARK")
         (cpm/solarized-dark))
     (progn
       (cpm/disable-all-themes)
+      ;; (shell-command-to-string "defaults write org.gnu.Emacs TransparentTitleBar LIGHT")
       (cpm/solarized-light))))
 
 ;; (cpm/set-system-theme-mode)
