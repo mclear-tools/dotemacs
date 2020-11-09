@@ -372,10 +372,10 @@
       (substring fname-or-url 7)
     fname-or-url))
 
-;;; Grammar
+;;; Typography
 (use-package typo
   :defer 2
-  :hook (org-mode . typo-mode)
+  ;; :hook (org-mode . typo-mode)
   :config
   (typo-global-mode))
 
