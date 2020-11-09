@@ -122,14 +122,15 @@
 ;; so many problems with this package...
 ;; https://github.com/emacs-evil/evil/issues/1074
 (use-package undo-tree
-  ;; :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
-  :disabled
+  :after evil
+  :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
+  ;; :disabled
   :general
   (:states '(normal)
-           "u" 'undo-tree-undo)
+   "u" 'undo-tree-undo)
   (:states '(normal insert motion emacs)
-           "s-z" 'undo-tree-undo
-           "s-Z" 'undo-tree-redo)
+   "s-z" 'undo-tree-undo
+   "s-Z" 'undo-tree-redo)
   :init
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-diff t)
@@ -143,13 +144,13 @@
     (unless (file-directory-p undo-dir)
       (make-directory undo-dir t)))
   (setq undo-tree-auto-save-history t)
-  :config
-  (global-undo-tree-mode))
+  (global-undo-tree-mode 1))
 
 ;;; Undo-Fu
 ;; trying another undo package
 ;; https://gitlab.com/ideasman42/emacs-undo-fu
 (use-package undo-fu
+  :disabled
   :after evil
   :demand t
   :init
@@ -171,8 +172,9 @@
 
 ;; persistent undo across sessions
 (use-package undo-fu-session
+  :disabled
   :after undo-fu
-  :demand t
+  ;; :demand t
   :config
   (setq undo-fu-session-file-limit nil)
   (setq undo-fu-session-directory (concat cpm-cache-dir "undo-fu-session/"))
