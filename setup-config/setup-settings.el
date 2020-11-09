@@ -255,8 +255,9 @@
 ;; https://www.emacswiki.org/emacs?action=browse;oldid=OverLongLineMode;id=SoLong
 ;; Prior to 27.1, not included.
 (use-package so-long
-  :straight (so-long :type git
-                     :repo "https://git.savannah.gnu.org/git/so-long.git")
+  ;; :straight (so-long :type git
+                     ;; :repo "https://git.savannah.gnu.org/git/so-long.git")
+  :straight nil
   :defer 1
   :config
   (global-so-long-mode))
