@@ -483,7 +483,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun cpm/org-to-markdown ()
   "convert clipboard contents from org to markdown and paste"
   (interactive)
-  (kill-new (shell-command-to-string "pbpaste | pandoc --atx-headers -f org -t markdown"))
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f org -t markdown"))
   (yank))
 
 (defun cpm/markdown-to-org ()
