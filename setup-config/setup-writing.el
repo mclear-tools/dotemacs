@@ -68,16 +68,12 @@
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
 
-;;; Ivy/Helm Bibtex
-(use-package ivy-bibtex
-  :commands ivy-bibtex
+;;; Helm Bibtex
+(use-package helm-bibtex
+  :straight t
+  :commands helm-bibtex
+  :after helm
   :config
-  ;; ivy-bibtex requires ivy's `ivy--regex-ignore-order` regex builder, which
-  ;; ignores the order of regexp tokens when searching for matching candidates.
-  ;; Add something like this to your init file:
-  (setq ivy-re-builders-alist
-        '((ivy-bibtex . ivy--regex-ignore-order)
-          (t . ivy--regex-plus)))
   ;; Set insert citekey with markdown citekeys for org-mode
   (setq bibtex-completion-format-citation-functions
         '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
@@ -87,41 +83,29 @@
   (setq bibtex-completion-display-formats
         '((t . "${author:16} ${title:36} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
   ;; Set default action for ivy-bibtex to edit notes file
-  (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
-  ;; Set default action for helm-bibtex as inserting citation
-  ;; (helm-delete-action-from-source "Insert citation" helm-source-bibtex)
-  ;; (helm-add-action-to-source "Insert citation" 'helm-bibtex-insert-citation helm-source-bibtex 0)
+  (setq helm-bibtex-default-action 'helm-bibtex-edit-notes)
   (setq bibtex-completion-pdf-symbol "⌘")
   (setq bibtex-completion-notes-symbol "✎")
   (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
-  ;; (setq bibtex-completion-notes-template-multiple-files "---\ntitle: '${author} (${year}): ${title}'\noised: |\n   @${=key=}\n---\n\n[PDF Link](${file})\n\n```{.bibtex}\n INSERT BIBTEX HERE \n```")
-  ;; (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+HUGO_CUSTOM_FRONT_MATTER: nocite: \'(@${=key=})\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags:: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n INSERT BIBTEX HERE #+END_SRC")
   (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
   (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
         bibtex-completion-library-path "~/Dropbox/Work/be-library/"
         bibtex-completion-pdf-field nil
-        ;; bibtex-completion-notes-path "~/Dropbox/Notes/reading-notes"
-        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/org"
-        ;; bibtex-completion-additional-search-fields '(keywords)
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
         bibtex-completion-notes-extension ".org"
         helm-bibtex-full-frame nil))
-
-;;;; bibtex macro
-(fset 'bibtex-src
-      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("{dt@" 0 "%d")) arg)))
 
 ;;; Org Ref
 (use-package org-ref
   :commands (org-ref org-ref-get-bibtex-entry)
   :after org
-  :demand t
   :init
   (setq reftex-default-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
   (setq org-ref-completion-library 'org-ref-ivy-cite)
   (setq org-ref-default-bibliography '("~/Dropbox/Work/bibfile.bib")
         org-ref-pdf-directory (concat (getenv "HOME") "/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library/")
-        org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/org")
-        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/org"
+        org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/content-org")
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
         org-ref-notes-function 'org-ref-notes-function-many-files)
   :config
   (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
@@ -181,6 +165,7 @@
         markdown-open-command "~/bin/mark.sh"
         markdown-footnote-location 'immediately
         markdown-unordered-list-item-prefix "-   "
+        markdown-header-scaling t
         markdown-use-pandoc-style-yaml-metadata t)
   ;; markdown hooks
   (add-hook 'markdown-mode-hook
@@ -381,7 +366,7 @@
 
 ;;; Dictionary
 (use-package define-word
-  )
+  :commands (define-word define-word-at-point))
 ;;; Notes / Deft
 (use-package deft
   :commands (deft deft-open-file-other-window cpm/notebook deft-new-file-named)
@@ -399,7 +384,7 @@
   (with-eval-after-load 'evil
     (add-to-list 'evil-insert-state-modes 'deft-mode))
   ;; basic settings for use with zettel
-  (setq deft-directory (concat (getenv "HOME") "/Dropbox/work/projects/notebook/org")
+  (setq deft-directory (concat (getenv "HOME") "/Dropbox/work/projects/notebook/content-org")
         deft-recursive t
         deft-use-filename-as-title t
         deft-separator " "
@@ -433,9 +418,9 @@
   (defun cpm/notebook ()
     "Goto main notes with deft"
     (interactive)
-    (any-deft "~/Dropbox/Work/projects/notebook/org")
+    (any-deft "~/Dropbox/Work/projects/notebook/content-org")
     (kill-this-buffer)
-    (any-deft "~/Dropbox/Work/projects/notebook/org"))
+    (any-deft "~/Dropbox/Work/projects/notebook/content-org"))
   (defun cpm/deft-open ()
     (interactive)
     (deft-open-file-other-window t))

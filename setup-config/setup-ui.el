@@ -20,40 +20,18 @@
  ;; fast, or hold down control to move 3x as fast. Perfect for trackpads.
  mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6)))
 
-;;; Fonts
-(defvar cpm-font1 (font-spec :family "InconsolataLGC Nerd Font" :size 13))
-(defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
-(defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
-(defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
-(defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
-(defvar cpm-font5 (font-spec :family "RobotoMono Nerd Font" :size 14))
-(defvar cpm-ligatures nil)
-(defvar cpm-vari-font (font-spec :family "Avenir Next"))
-(defvar cpm-unicode-font (font-spec :family "Symbola"))
-(set-face-attribute 'default nil :font cpm-font2)
-(set-face-attribute 'variable-pitch nil :font cpm-vari-font)
-(set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
-(setq-default line-spacing 0.10)
-
 ;;; Frames
-;;;; Frame formatting
-(setq frame-title-format "\n")
-;; (setq frame-title-format '('nil))
-;; (setq frame-title-format
-;;       '((buffer-file-name "%f" "%b")))
 
-(if (display-graphic-p)
-    (progn
-      ;; start frame of emacs maximized
-      (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-      ;; new frames
-      (setq default-frame-alist
-            '(
-              (top . 25)
-              (left . 275)
-              (width . 106) ;; chars
-              (height . 60) ;; lines
-              ))))
+;;;; Frame defaults
+
+(setq default-frame-alist
+      (append (list
+	           '(font . "RobotoMono Nerd Font:style=Light:size=16")
+               '(internal-border-width . 24)
+               '(left-fringe    . 0)
+               '(right-fringe   . 0)
+               )))
+
 
 ;;;; Frame titlebar
 ;; Theme transparent titlebar
@@ -68,6 +46,19 @@
   :if (eq system-type 'darwin)
   :init (ns-auto-titlebar-mode))
 
+;; (if (display-graphic-p)
+;;     (progn
+;;       ;; start frame of emacs maximized
+;;       ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;;       ;; new frames
+;;       (setq default-frame-alist
+;;             '(
+;;               (top . 25)
+;;               (left . 275)
+;;               (width . 106) ;; chars
+;;               (height . 60) ;; lines
+;;               ))))
+
 ;; no border title
 ;; (setq default-frame-alist '((undecorated . t)))
 
@@ -78,6 +69,26 @@
                            '((vertical-scroll-bars . nil)
                              (horizontal-scroll-bars . nil))))
 (add-hook 'after-make-frame-functions 'cpm/disable-scroll-bars)
+
+
+
+;;; Fonts
+(defvar cpm-font1 (font-spec :family "InconsolataLGC Nerd Font" :size 13))
+(defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
+(defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
+(defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
+(defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
+(defvar cpm-font6 (font-spec :family "RobotoMono Nerd Font" :size 14))
+(defvar cpm-ligatures nil)
+(defvar cpm-vari-font (font-spec :family "Avenir Next"))
+(defvar cpm-unicode-font (font-spec :family "Symbola"))
+;; (set-face-attribute 'default nil :font cpm-font5)
+(set-face-attribute 'variable-pitch nil :font cpm-vari-font)
+(set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
+(setq-default line-spacing 0.10)
+
+
+
 
 ;;; Scale Text
 (global-set-key (kbd "s-=") 'text-scale-increase)
@@ -90,6 +101,19 @@
   :commands display-line-numbers-mode
   :init
   (setq-default display-line-numbers-type 'visual))
+
+
+;;; Dialogs and popups
+
+;; No file dialog
+(setq use-file-dialog nil)
+
+;; No dialog box
+(setq use-dialog-box nil)
+
+;; Set popup windows
+(setq pop-up-windows nil)
+
 
 ;;; Highlight
 (use-package highlight-numbers
@@ -108,7 +132,7 @@
 
 ;;; Icons
 (use-package all-the-icons
-  :after dashboard)
+  :defer t)
 ;;dependency
 ;; (quelpa
 ;;  '(font-lock+ :fetcher wiki))
@@ -121,12 +145,21 @@
   :init
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-;;; Beacon
-(use-package beacon
- :defer 5
- :config
- (beacon-mode 1)
- (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
+;; No ugly button for checkboxes
+(setq widget-image-enable nil)
+
+
+;;; Highlight Cursor Line with Pulse
+;; From https://karthinks.com/software/batteries-included-with-emacs/
+;; Replace external package with internal command
+
+(defun pulse-line (&rest _)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command scroll-down-command
+                                     recenter-top-bottom other-window select-window-by-number))
+  (advice-add command :after #'pulse-line))
 
 ;;; Emoji
 (use-package emojify
@@ -135,8 +168,10 @@
   :config
   (setq emojify-emojis-dir (concat cpm-etc-dir "emojis")))
 
+;;; Underline
+(setq x-underline-at-descent-line t)
 
 
-
+;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-ui)

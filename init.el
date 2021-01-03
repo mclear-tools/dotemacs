@@ -5,55 +5,6 @@
 ;; use-package definition.
 
 ;;; Startup
-;;;; Speed up startup
-;; Help speed up emacs initialization
-;; See https://blog.d46.us/advanced-emacs-startup/
-;; and http://tvraman.github.io/emacspeak/blog/emacs-start-speed-up.html
-;; and https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/
-
-(defvar cpm--file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-
-;;;; Garbage collection
-;; Adjust garbage collection thresholds during startup, and thereafter
-;; see http://akrl.sdf.org
-;; https://gitlab.com/koral/gcmh
-;; NOTE: The system linked above generates too many GC pauses so I'm using my own mixed setup
-;; https://github.com/purcell/emacs.d/blob/3b1302f2ce3ef2f69641176358a38fd88e89e664/init.el#L24
-
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
-
-(defmacro k-time (&rest body)
-  "Measure and return the time it takes evaluating BODY."
-  `(let ((time (current-time)))
-     ,@body
-     (float-time (time-since time))))
-
-;; When idle for 15sec run the GC no matter what.
-(defvar k-gc-timer
-  (run-with-idle-timer 15 t
-                       (lambda ()
-                         (message "Garbage Collector has run for %.06fsec"
-                                  (k-time (garbage-collect))))))
-
-;;;; Check Errors
-;; Produce backtraces when errors occur
-(setq debug-on-error nil)
-
-;;;; When-let errors
-;; https://github.com/alphapapa/frame-purpose.el/issues/3
-;; https://github.com/alphapapa/frame-purpose.el/issues/3
-(eval-and-compile
-  (when (version< emacs-version "26")
-    (with-no-warnings
-      (defalias 'when-let* #'when-let)
-      (function-put #'when-let* 'lisp-indent-function 1)
-      (defalias 'if-let* #'if-let)
-      (function-put #'if-let* 'lisp-indent-function 2))))
 
 ;;;; Directory Variables
 ;;  We're going to define a number of directories that are used throughout this
@@ -89,39 +40,11 @@
 (defconst cpm-setup-dir (concat cpm-emacs-dir "setup-config/")
   "Where the setup-init files are stored.")
 
-;;;; Clean View
-;; Disable start-up screen
-(setq-default inhibit-startup-screen t)
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-message t)
-(setq initial-scratch-message "")
-(setq frame-inhibit-implied-resize t)
-
-;; UI - Disable visual cruft
-(unless (eq window-system 'ns)
-  (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
-
-;; Quick start scratch buffer
-(setq initial-major-mode 'fundamental-mode)
-
-;; echo buffer
-;; Don't display any message
-;; https://emacs.stackexchange.com/a/437/11934
-(defun display-startup-echo-area-message ()
-  (message ""))
-
-;; And bury the scratch buffer, don't kill it
-(defadvice kill-buffer (around kill-buffer-around-advice activate)
-  (let ((buffer-to-kill (ad-get-arg 0)))
-    (if (equal buffer-to-kill "*scratch*")
-        (bury-buffer)
-      ad-do-it)))
+;; dir for  natively compiled *.eln files
+;; https://github.com/jimeh/build-emacs-for-macos#configuration
+(when (boundp 'comp-eln-load-path)
+  (setcar comp-eln-load-path
+          (expand-file-name "cache/eln-cache/" cpm-cache-dir)))
 
 ;;;; System Variables
 (defconst sys/macp
@@ -165,12 +88,6 @@
 ;; ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
 ;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-;;;; Byte Compile Warnings
-;; Disable certain byte compiler warnings to cut down on the noise. This is a
-;; personal choice and can be removed if you would like to see any and all byte
-;; compiler warnings.
-(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
-
 ;;; Package Settings
 ;; I tell use-package to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
@@ -185,9 +102,9 @@
 ;;;; Load Path
 ;; Add config files to load-path
 (eval-and-compile
-  (push cpm-setup-dir load-path))
-;; prefer newer versions
-(setq load-prefer-newer t)
+  (progn
+    (push cpm-setup-dir load-path)
+    (push (concat cpm-setup-dir "nano-config/") load-path)))
 
 
 ;;;; Straight
@@ -234,7 +151,7 @@
 ;; install use package
 (straight-use-package 'use-package)
 ;; settings
-(setq use-package-always-defer t
+(setq use-package-always-defer nil
       use-package-verbose t
       use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
@@ -243,6 +160,7 @@
 (use-package benchmark-init
   ;; demand when using
   ;; :demand t
+  :defer t
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'emacs-startup-hook 'benchmark-init/deactivate))
@@ -253,10 +171,12 @@
   :defer 1
   :config
   (setq auto-compile-display-buffer nil)
-  (setq auto-compile-mode-line-counter t)
+  (setq auto-compile-mode-line-counter nil)
+  (setq auto-compile-use-mode-line nil)
   (setq auto-compile-update-autoloads t)
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
+
 
 ;;; Personal Information
 ;; Give emacs some personal info
@@ -274,47 +194,61 @@
 (require 'setup-evil)
 (require 'setup-settings)
 (require 'setup-dired)
-(require 'setup-ivy)
+(require 'setup-narrowing)
 (require 'setup-helm)
-(require 'setup-server)
+(require 'setup-osx)
 
 ;;;; Other Modules
-(require 'setup-ui)
-(require 'setup-modeline)
-(require 'setup-theme)
-(require 'setup-osx)
+(require 'setup-server)
 (require 'setup-windows)
+(require 'setup-ui)
 (require 'setup-navigation)
 (require 'setup-search)
 (require 'setup-vc)
 (require 'setup-shell)
 (require 'setup-org)
+(require 'setup-org-extensions)
 (require 'setup-writing)
 (require 'setup-projects)
 (require 'setup-programming)
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-completion)
-(require 'setup-dashboard)
-(require 'setup-posframe)
-(require 'setup-testing)
+(require 'setup-nano-personal)
+;; (require 'setup-modeline)
+;; (require 'setup-theme)
+;; (require 'setup-dashboard)
+;; (require 'setup-posframe)
+;; (require 'setup-testing)
+
+;; Nano welcome message (optional)
+(let ((inhibit-message t))
+  (message "Welcome to GNU Emacs")
+  (message (format "Initialization time: %s" (emacs-init-time))))
+
 
 ;;; Config Helper Functions
 
 ;;;; Config Navigation
 ;; Function to navigate config files
-(defun cpm/find-files-setup-config-directory ()
-  "use counsel to find setup files"
-  (interactive)
-  (counsel-find-file cpm-setup-dir))
-  ;; (helm-find-files-1 cpm-setup-dir))
 
-;; Function to search config files
-(defun cpm/search-setup-config-files ()
-  "use counsel rg to search all config files"
+(defun cpm/find-files-setup-config-directory ()
+  "use ido to find setup files"
   (interactive)
-  (counsel-rg nil cpm-setup-dir))
-;; (helm-do-ag cpm-setup-dir))
+  (ido-find-file-in-dir cpm-setup-dir))
+;; (helm-find-files-1 cpm-setup-dir))
+
+;; Function to search in config files
+(defun cpm/search-setup-config-files ()
+  "use ripgrep to search all config files"
+  (interactive)
+  (helm-grep-ag-1 cpm-setup-dir))
+
+
+;; (let ((default-directory cpm-setup-dir)) ;; seems necessary to block searching in current dir
+;;   (let ((current-prefix-arg '(4)))
+;;     (consult-ripgrep cpm-setup-dir))))
+;; (Helmgdo-ag cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()

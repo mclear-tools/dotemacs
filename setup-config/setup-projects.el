@@ -30,6 +30,9 @@
   (setq projectile-git-submodule-command nil
         projectile-current-project-on-switch 'move-to-end))
 
+(add-hook 'projectile-after-switch-project-hook (lambda ()
+                                                  (projectile-invalidate-cache nil)))
+
 
 ;;; Eyebrowse
 (use-package eyebrowse
@@ -149,12 +152,12 @@
   ;; https://github.com/Bad-ptr/persp-mode.el/issues/96
   ;; https://github.com/Bad-ptr/persp-mode-projectile-bridge.el/issues/4
   ;; https://emacs-china.org/t/topic/6416/7
-  (defun* persp-add-new (name &optional (phash *persp-hash*))
+  (cl-defun persp-add-new (name &optional (phash *persp-hash*))
     "Create a new perspective with the given `NAME'. Add it to `PHASH'.
    Return the created perspective."
     (interactive "sA name for the new perspective: ")
     (if (and name (not (equal "" name)))
-        (destructuring-bind (e . p)
+        (cl-destructuring-bind (e . p)
             (persp-by-name-and-exists name phash)
           (if e p
             (setq p (if (equal persp-nil-name name)
@@ -209,7 +212,7 @@
         (delete-other-windows))
     (progn
       (persp-switch "agenda")
-      (setq frame-title-format '("" "%b"))
+      ;; (setq frame-title-format '("" "%b"))
       (require 'org)
       (require 'org-super-agenda)
       (cpm/jump-to-org-super-agenda)
@@ -227,13 +230,13 @@
   (if (get-buffer "init.el")
       (persp-switch "emacs.d")
     (persp-switch "emacs.d")
-    (setq frame-title-format
-          '(""
-            "%b"
-            (:eval
-             (let ((project-name (projectile-project-name)))
-               (unless (string= "-" project-name)
-                 (format " in [%s]" project-name))))))
+    ;; (setq frame-title-format
+    ;;       '(""
+    ;;         "%b"
+    ;;         (:eval
+    ;;          (let ((project-name (projectile-project-name)))
+    ;;            (unless (string= "-" project-name)
+    ;;              (format " in [%s]" project-name))))))
     (require 'crux)
     (crux-find-user-init-file)
     (require 'magit)
@@ -251,13 +254,13 @@
   (if (get-buffer "*Deft*")
       (persp-switch "Notes")
     (persp-switch "Notes")
-    (setq frame-title-format
-          '(""
-            "%b"
-            (:eval
-             (let ((project-name (projectile-project-name)))
-               (unless (string= "-" project-name)
-                 (format " in [%s]" project-name))))))
+    ;; (setq frame-title-format
+    ;;       '(""
+    ;;         "%b"
+    ;;         (:eval
+    ;;          (let ((project-name (projectile-project-name)))
+    ;;            (unless (string= "-" project-name)
+    ;;              (format " in [%s]" project-name))))))
     (cpm/notebook))
   (persp-add-buffer "*Deft*"))
 
@@ -283,7 +286,8 @@
   (cpm/vterm-home)
   (delete-other-windows)
   (persp-add-buffer "*vterminal<1>*")
-  (setq frame-title-format '("" "%b")))
+  ;; (setq frame-title-format '("" "%b"))
+  )
 
 (general-define-key
  :states '(insert normal motion emacs)
@@ -311,48 +315,49 @@
     (setq default-directory cpm-project-temp-dir)
     (find-file (concat cpm-project-temp-dir "temp"))
     (persp-add-buffer "*scratch*")
-    (setq frame-title-format '("" "%b"))))
+    ;; (setq frame-title-format '("" "%b")))
+    ))
 
 
 ;;;; Open Project in New Workspace
-(defun cpm/open-existing-project-and-workspace ()
-  "open a project as its own perspective"
-  (interactive)
-  (persp-switch "new-persp")
-  (counsel-projectile-switch-project)
-  (setq frame-title-format
-        '(""
-          "%b"
-          (:eval
-           (let ((project-name (projectile-project-name)))
-             (unless (string= "-" project-name)
-               (format " in [%s]" project-name))))))
-  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
-  (require 'magit)
-  (magit-status-setup-buffer)
-  (persp-rename (projectile-project-name)))
+  (defun cpm/open-existing-project-and-workspace ()
+    "open a project as its own perspective"
+    (interactive)
+    (persp-switch "new-persp")
+    (projectile-switch-project)
+    ;; (setq frame-title-format
+    ;;       '(""
+    ;;         "%b"
+    ;;         (:eval
+    ;;          (let ((project-name (projectile-project-name)))
+    ;;            (unless (string= "-" project-name)
+    ;;              (format " in [%s]" project-name))))))
+    ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
+    (require 'magit)
+    (magit-status-setup-buffer)
+    (persp-rename (projectile-project-name)))
 
 ;;;; Open & Create New Project in New Workspace
 ;; Create a new git project in its own perspective & workspace and create some useful
 ;; files
-(defun cpm/create-new-project-and-workspace ()
-  "create & open a project as its own perspective"
-  (interactive)
-  ;; (eyebrowse-switch-to-window-config-1)
-  (persp-switch "new-project")
-  (cpm/git-new-project)
-  (setq frame-title-format
-        '(""
-          "%b"
-          (:eval
-           (let ((project-name (projectile-project-name)))
-             (unless (string= "-" project-name)
-               (format " in [%s]" project-name))))))
-  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
-  (delete-other-windows)
-  (find-file ".gitignore")
-  (find-file "project-todo.org")
-  (magit-status-setup-buffer))
+  (defun cpm/create-new-project-and-workspace ()
+    "create & open a project as its own perspective"
+    (interactive)
+    ;; (eyebrowse-switch-to-window-config-1)
+    (persp-switch "new-project")
+    (cpm/git-new-project)
+    ;; (setq frame-title-format
+    ;;       '(""
+    ;;         "%b"
+    ;;         (:eval
+    ;;          (let ((project-name (projectile-project-name)))
+    ;;            (unless (string= "-" project-name)
+    ;;              (format " in [%s]" project-name))))))
+    ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
+    (delete-other-windows)
+    (find-file ".gitignore")
+    (find-file "project-todo.org")
+    (magit-status-setup-buffer))
 
 
 ;;;; Eyebrowse & Perspectives

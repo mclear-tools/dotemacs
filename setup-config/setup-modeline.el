@@ -29,12 +29,13 @@
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :custom-face
-  (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
+  ;; (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
   (doom-modeline-eyebrowse ((t (:inherit highlight))))
   (doom-modeline-inactive-bar ((t (:inherit highlight))))
   :config
   (setq doom-modeline-bar-width 3
-        doom-modeline-height 38
+        ;; doom-modeline-height 38
+        doom-modeline-height 25
         doom-modeline-buffer-file-name-style 'truncate-upto-project
         doom-modeline-major-mode-color-icon t
         doom-modeline-enable-word-count t
@@ -121,6 +122,13 @@
   (doom-modeline-eyebrowse ((t (:inherit highlight))))
   (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
   (doom-modeline-inactive-bar ((t (:inherit highlight)))))
+
+;;;; Modeline Position
+
+;; Put modeline at top of buffer
+;; (setq-default header-line-format (doom-modeline-set-main-modeline))
+;; (setq-default header-line-format mode-line-format)
+;; (setq-default mode-line-format "")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-modeline)

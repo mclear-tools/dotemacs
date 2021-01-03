@@ -1,5 +1,7 @@
 ;;; Search
+;;;; Ag
 (use-package ag
+  :defer 2
   :config
   (progn
     (defun ag/jump-to-result-if-only-one-match ()

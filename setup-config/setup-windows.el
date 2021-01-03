@@ -1,5 +1,17 @@
 ;; Windows (and Buffers...)
 
+;;; Windows
+;; Vertical window divider
+(use-package emacs
+  :straight nil
+  :hook (after-init-hook . window-divider-mode)
+  :config
+  (setq window-divider-default-right-width 18)
+  ;; (setq window-divider-default-bottom-width 1)
+  (setq window-divider-default-places 'right-only)
+  (window-divider-mode 1))
+
+
 ;;; Window Movement
 ;; Move to other window
 (general-define-key :states '(normal motion visual insert)
@@ -61,14 +73,15 @@
 (use-package windmove
   :after general
   :commands (windmove-up windmove-down windmove-left windmove-right)
-  :general
-  (cpm/leader-keys
-    "w"   #'(:ignore t :which-key "Windows")
-    "w l" #'windmove-right
-    "w h" #'windmove-left
-    "w j" #'windmove-down
-    "w k" #'windmove-up)
+  ;; :general
+  ;; (cpm/leader-keys
+  ;;   "w"   #'(:ignore t :which-key "Windows")
+  ;;   "w l" #'windmove-right
+  ;;   "w h" #'windmove-left
+  ;;   "w j" #'windmove-down
+  ;;   "w k" #'windmove-up)
   :config
+  (windmove-default-keybindings)
   (defun cpm/split-window-right-and-focus ()
     "Split the window horizontally and focus the new window."
     (interactive)
@@ -85,6 +98,7 @@
 ;; Winner mode is a built-in package for restoring window configurations
 ;; https://www.emacswiki.org/emacs/WinnerMode
 (use-package winner
+  :straight nil
   :commands (winner-undo winner-redo winner-mode)
   :config
   (winner-mode 1))

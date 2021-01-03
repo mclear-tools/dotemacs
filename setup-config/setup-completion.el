@@ -4,11 +4,11 @@
   :after evil
   :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
   :custom-face
-  ;; Nicer looking faces
-  (company-tooltip-common
-   ((t (:inherit company-tooltip :weight bold :underline nil))))
-  (company-tooltip-common-selection
-   ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+  ;; ;; Nicer looking faces
+  ;; (company-tooltip-common
+  ;;  ((t (:inherit company-tooltip :weight bold :underline nil))))
+  ;; (company-tooltip-common-selection
+  ;;  ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
   ;; ;; key bindings
   :general
   (:keymaps 'company-active-map
@@ -28,12 +28,6 @@
   ;; Default backends
   (add-to-list 'company-backends 'company-keywords)
   (add-to-list 'company-backends 'company-files))
-
-(use-package company-prescient
-  :after company
-  :hook
-  (company-mode . company-prescient-mode))
-
 
 (use-package company-bibtex
   :after company

@@ -261,7 +261,7 @@
         org-noter-insert-note-no-questions t
         org-noter-kill-frame-at-session-end t
         org-noter-default-notes-file-names '("noter-notes.org")
-        org-noter-notes-search-path '("~/Dropbox/Work/projects/notebook/org")))
+        org-noter-notes-search-path '("~/Dropbox/Work/projects/notebook/content-org")))
 
 ;; Couldn't get either of these working
 (use-package org-pdfview

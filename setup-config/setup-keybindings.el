@@ -1,4 +1,5 @@
 ;; Keybindings for config
+
 ;;; General
 (use-package general
   :demand t
@@ -24,6 +25,7 @@
 ;;; Namespaced Keybindings
 ;; set keybindings for use with evil
 (with-eval-after-load 'evil
+
 ;;;;  Application Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
@@ -50,8 +52,8 @@
    :non-normal-prefix "C-SPC"
 
    "b"  '(:ignore t :which-key "Buffers")
-   "ba" 'counsel-ibuffer
-   "bb" 'ivy-switch-buffer
+   "ba" 'consult-buffer
+   "bb" 'consult-buffer
    ;; "bb" 'helm-mini
    "bc" 'cpm/copy-whole-buffer-to-clipboard
    "bD" 'kill-buffer-and-window
@@ -59,9 +61,8 @@
    "be" 'erase-buffer
    ;; "bf" 'cpm/browse-file-directory
    "bf" 'reveal-in-osx-finder
-   "bg" 'frog-jump-buffer
    ;; "bj" 'cpm/jump-in-buffer
-   "bj" #'counsel-outline
+   "bj" #'consult-outline
    "bk" 'evil-delete-buffer
    "bK" 'crux-kill-other-buffers
    "bm" 'helm-evil-markers
@@ -121,15 +122,15 @@
    :non-normal-prefix "C-SPC"
 
    "f"  '(:ignore t :which-key "Files")
-   "fb" 'counsel-bookmark
+   "fb" 'consult-bookmark
    ;; "fb" 'helm-bookmarks
-   "ff" 'counsel-find-file
+   "ff" 'consult-find
    ;; "ff" 'helm-find-files
-   "fl" 'counsel-locate
+   "fl" 'consult-locate
    ;; "fl" 'helm-locate
    "fo" 'crux-open-with
    "fs" 'save-buffer
-   "fr" 'counsel-recentf
+   "fr" 'consult-recent-file
    ;; "fr" 'helm-recentf
    "fy" 'cpm/show-and-copy-buffer-filename
    )
@@ -141,12 +142,12 @@
    :prefix "SPC"
    :non-normal-prefix "C-SPC"
 
-   "A" 'counsel-apropos
+   "A" 'consult-apropos
    ;; "A" 'helm-apropos
    "B" #'cpm/dashboard
-   "?" 'counsel-descbinds
+   ;; "?" 'counsel-descbinds
    ;; "?" 'helm-descbinds
-   "<SPC>" 'counsel-M-x
+   "<SPC>" 'execute-extended-command
    ;; "<SPC>" 'helm-M-x
    ;; "d" #'deer
    "d" #'dired-jump
@@ -156,10 +157,10 @@
    ;; "e" 'server-edit
    "e" 'cpm/org-to-mail-rtf
    "G" 'general-describe-keybindings
-   "j" 'avy-goto-char
-   "k" 'counsel-yank-pop
+   ;; "j" 'avy-goto-char
+   "k" 'consult-yank-pop
    ;; "k" 'helm-show-kill-ring
-   "l" 'ivy-resume
+   "l" 'consult-history
    ;; "l" 'helm-resume
    ;; "N" 'research-notes
    "n" 'cpm/notebook
@@ -408,9 +409,9 @@
 
    "s" '(:ignore t :which-key "Search")
    "sa" 'helm-org-rifle-agenda-files
-   "sd" 'counsel-rg ; search current buffer's directory
+   "sd" 'consult-ripgrep ; search current buffer's directory
    "sD" #'cpm/counsel-search-in-input-dir ; search with directory input
-   "sb" 'swiper-all
+   "sb" 'consult-multi-occur
    ;; "sb" 'helm-ag-buffers
    ;; "sf" 'helm-do-ag-this-file
    "sf" 'swiper
@@ -427,7 +428,7 @@
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
    ;; "ss" #'swiper
-   "ss" 'swiper-isearch
+   "ss" 'consult-line
    ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
    ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
@@ -527,7 +528,7 @@
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "uW" 'osx-dictionary-search-input
-   "ux" 'ivy-bibtex
+   "ux" 'helm-bibtex
    )
 
 ;;; Version Control (Git) Keybindings

@@ -6,13 +6,15 @@
 
 (use-package async
   :straight nil
-  :defer 1
+  :defer
   :config
-  (dired-async-mode 1))
+  (dired-async-mode 1)
+  (setq dired-async--modeline-mode nil))
+
 (use-package dash    :straight nil :defer 2)
 (use-package s       :straight nil :defer 2)
 (use-package f       :straight nil :defer 2)
-(use-package subr-x  :straight nil :defer 2)
+(use-package subr-x  :straight nil :defer 1)
 ;; lots of packages depend on these libraries
 (use-package cl      :straight nil :demand t)
 (use-package cl-lib  :straight nil :demand t)

@@ -1,7 +1,3 @@
-;;; Avy
-(use-package avy
-  :commands (avy-goto-char))
-
 ;;; Imenu list outline
 (use-package imenu-list
   :commands (imenu-list-smart-toggle imenu-list-minor-mode)
@@ -17,6 +13,7 @@
 
 ;;; Save place
 (use-package saveplace
+  :defer 1
   :init
   (save-place-mode 1)
   :config
@@ -27,7 +24,7 @@
 (use-package goto-chg
   :commands goto-last-change goto-last-change-reverse)
 
-;; ;;; Treemacs
+;;; Treemacs
 (use-package treemacs
   :commands treemacs
   :general
@@ -83,7 +80,7 @@
   :after treemacs projectile
   )
 
-;; ;;; Centered Cursor
+;;; Centered Cursor
 (use-package centered-cursor-mode
   :diminish centered-cursor-mode
   :hook ((prog-mode markdown-mode org-mode) . centered-cursor-mode)
@@ -98,7 +95,7 @@
                                  scroll-bar-toolkit-scroll
                                  evil-mouse-drag-region))))
 
-;; ;;; Hydra
+;;; Hydra
 (use-package hydra :defer 1)
 
 ;; hydra for TODOs
@@ -114,9 +111,8 @@
     ("o" hl-todo-occur "Occur")
     ("q" nil "Quit" :color blue :exit t)))
 
-;; ;;; Recent files
+;;; Recent files
 (use-package recentf
-  :commands (helm-recentf)
   :hook (after-init . recentf-mode)
   :config
   (setq recentf-save-file (concat cpm-cache-dir "recentf"))
@@ -132,11 +128,11 @@
         recentf-max-saved-items 300
         recentf-max-menu-items 10))
 
-;; ;;; Goto Address
-;; ;; This package allows you to click or hit a key sequence while on a
-;; ;; URL or e-mail address, and either load the URL into a browser of
-;; ;; your choice using the browse-url package, or if it's an e-mail
-;; ;; address, to send an e-mail to that address.
+;;;; Goto Address
+;; This package allows you to click or hit a key sequence while on a
+;; URL or e-mail address, and either load the URL into a browser of
+;; your choice using the browse-url package, or if it's an e-mail
+;; address, to send an e-mail to that address.
 (use-package goto-addr
   :hook ((compilation-mode . goto-address-mode)
          (prog-mode . goto-address-prog-mode)
@@ -149,22 +145,6 @@
   :commands (goto-address-prog-mode
              goto-address-mode))
 
-;;; Frog-Jump-Avy
-(use-package frog-jump-buffer
-  :commands frog-jump-buffer
-  :general
-  ("C-c b" 'frog-jump-buffer)
-  :config
-  (dolist (regexp '("TAGS" "^\\*Compile-log" "-debug\\*$" "^\\:" "errors\\*$" "^\\*Backtrace" "-ls\\*$"
-                    "stderr\\*$" "^\\*Flymake" "^\\*vc" "^\\*Warnings" "^\\*eldoc" "\\^*Shell Command"))
-    (push regexp frog-jump-buffer-ignore-buffers))
-  (setq frog-jump-buffer-include-current-buffer nil) ;; don't include current buffer (esc to quit)
-  ;; posframe
-  (setq frog-jump-buffer-posframe-handler 'posframe-poshandler-frame-center)
-  (setq frog-jump-buffer-posframe-parameters '((left-fringe . 0)
-                                               (right-fringe . 0)
-                                               (internal-border-width . 12)))
-  (setq frog-jump-buffer-max-buffers 15))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

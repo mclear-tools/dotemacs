@@ -16,8 +16,7 @@
    magit-diff
    magit-log
    magit-status)
-  :hook (;;(git-commit-mode . turn-on-flyspell)
-         (evil-magit-init . magit-mode))
+  ;; :hook (git-commit-mode . turn-on-flyspell)
   :init
   (setq vc-follow-symlinks t)
   ;; Suppress the message we get about "Turning on
@@ -31,7 +30,7 @@
   (setq magit-git-executable "/usr/local/bin/git")
   ;; don't automatically present diff on commit
   ;; type C-c C-d to show the diff when needed
-  (remove-hook 'server-switch-hook 'magit-commit-diff)
+  ;; (remove-hook 'server-switch-hook 'magit-commit-diff)
   ;; remove some other slow processes
   ;; see https://github.com/magit/magit/issues/2982#issuecomment-632453966
   ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
@@ -47,6 +46,18 @@
         '((stashes . hide) (untracked . hide) (unpushed . hide) ([unpulled status] . show)))
   (global-git-commit-mode t) ; use emacs as editor for git commits
   (setq magit-push-always-verify nil))
+
+;; display magit status in new frame
+(defun magit-display-buffer-pop-up-frame (buffer)
+  (if (with-current-buffer buffer (eq major-mode 'magit-status-mode))
+      (display-buffer buffer
+                      '((display-buffer-reuse-window
+                         display-buffer-pop-up-frame)
+                        (reusable-frames . t)))
+    (magit-display-buffer-traditional buffer)))
+
+(setq magit-display-buffer-function #'magit-display-buffer-traditional)
+
 
 ;; settings for committing using magit
 (use-package git-commit
@@ -70,27 +81,26 @@
 
 ;; add todos in magit
 (use-package magit-todos
-  :after magit
-  :demand t
+  :commands (magit-todos-list magit-todos-mode ivy-magit-todos)
   :config
-  (setq magit-todos-depth 2)
-  (magit-todos-mode))
+  (setq magit-todos-depth 2))
+  ;; (magit-todos-mode))
 
 ;; generate ignore files with helm
 (use-package helm-gitignore
   :commands helm-gitignore)
 
 ;;  Evil bindings for magit
-(use-package evil-magit
-  :after magit
-  :demand t
-  :custom
-  (evil-magit-use-z-for-folds t)
-  (evil-magit-use-y-for-yank t)
-  :general
-  (:states '(motion normal) :keymaps 'magit-mode-map
-   "C-j" #'magit-section-forward-sibling
-   "C-k" #'magit-section-backward-sibling))
+;; (use-package evil-magit
+;;   :after magit
+;;   :demand t
+;;   :custom
+;;   (evil-magit-use-z-for-folds t)
+;;   (evil-magit-use-y-for-yank t)
+;;   :general
+;;   (:states '(motion normal) :keymaps 'magit-mode-map
+;;    "C-j" #'magit-section-forward-sibling
+;;    "C-k" #'magit-section-backward-sibling))
 
 ;;; Git Navigation
                                         ; Go back in Git time
