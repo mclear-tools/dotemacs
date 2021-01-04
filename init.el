@@ -242,7 +242,9 @@
 (defun cpm/search-setup-config-files ()
   "use ripgrep to search all config files"
   (interactive)
-  (helm-grep-ag-1 cpm-setup-dir))
+  (let ((default-directory cpm-setup-dir))
+    (consult-ripgrep)))
+;; (helm-grep-ag-1 cpm-setup-dir))
 
 
 ;; (let ((default-directory cpm-setup-dir)) ;; seems necessary to block searching in current dir
