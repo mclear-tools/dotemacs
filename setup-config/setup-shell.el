@@ -41,7 +41,7 @@
 
 ;; clickable links & no highlight of line
 (defun my-term-hook ()
-  (goto-address-mode) (global-hl-line-mode 0) (setq comint-buffer-maximum-size most-positive-fixnum))
+  (goto-address-mode) (hl-line-mode 0) (setq comint-buffer-maximum-size most-positive-fixnum))
 (add-hook 'term-mode-hook 'my-term-hook)
 (add-hook 'vterm-mode-hook 'my-term-hook)
 
