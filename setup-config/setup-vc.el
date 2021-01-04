@@ -9,7 +9,6 @@
 
 ;;; Magit
 (use-package magit
-  :general
   :commands
   (magit-blame-mode
    magit-commit

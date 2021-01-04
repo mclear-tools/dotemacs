@@ -51,7 +51,7 @@
     (setq delete-by-moving-to-trash t)
     (osx-trash-setup))
 
-  ;; Make new frames when opening a new file with Emacs unless on scratch buffer
+  ;; (Do not) make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)
 
   ;; fullscreen (disable for non-space full screen)
