@@ -1,18 +1,122 @@
-;; Themes
-;; For help on custom themeing see https://emacs.stackexchange.com/questions/17431/how-do-i-change-portions-of-a-custom-theme
-
+;; Mods and functions for Nano config
 ;;https://emacs.stackexchange.com/a/52804/11934
 (setq custom--inhibit-theme-enable nil)
 
+;;; Nano Themes
+;;;; Define Nano Themes
 
-;;; Disable All Custom Themes
+(defun nano-theme-dark ()
+  "Enable dark Nano theme and customizations."
+  (interactive)
+  (nano-theme-set-dark)
+  (nano-faces)
+  (nano-theme)
+  ;; Fall back font for glyph missing in Roboto
+  (defface fallback '((t :family "Fira Code"
+                         :inherit 'nano-face-faded)) "Fallback")
+  (set-display-table-slot standard-display-table 'truncation
+                          (make-glyph-code ?… 'fallback))
+  (set-display-table-slot standard-display-table 'wrap
+                          (make-glyph-code ?↩ 'fallback))
+  )
+
+(defun nano-theme-light ()
+  "Enable light Nano theme and customizations."
+  (interactive)
+  (nano-theme-set-light)
+  (nano-faces)
+  (nano-theme)
+  ;; Fall back font for glyph missing in Roboto
+  (defface fallback '((t :family "Fira Code"
+                         :inherit 'nano-face-faded)) "Fallback")
+  (set-display-table-slot standard-display-table 'truncation
+                          (make-glyph-code ?… 'fallback))
+  (set-display-table-slot standard-display-table 'wrap
+                          (make-glyph-code ?↩ 'fallback))
+  )
+
+;;;; Custom Faces for Nano Themes
+
+
+;; pulled from nano-themes to use independently
+(defun nano-theme--mode-line ()
+  "Derive mode-line and header-line faces from nano-faces."
+  (set-face-attribute 'mode-line nil
+                      :height 0.1
+                      :foreground (face-background 'nano-face-default)
+                      :background (face-background 'nano-face-default)
+                      :overline (face-background 'nano-face-subtle)
+                      :underline nil
+                      :box nil)
+  (set-face-attribute 'mode-line-inactive nil
+                      :height 0.1
+                      :foreground (face-background 'nano-face-default)
+                      :background (face-background 'nano-face-default)
+                      :overline (face-background 'nano-face-subtle)
+                      :underline nil
+                      :inherit nil
+                      :box nil)
+  ;;(when (display-graphic-p)
+  (set-face-attribute 'header-line nil
+                      :weight 'light
+                      :foreground (face-foreground 'nano-face-default)
+                      :background (face-background 'nano-face-default)
+
+                      :overline nil
+                      :underline nil
+                      :box nil
+                      :box `(:line-width 1
+                             :color ,(face-background 'nano-face-default)
+                             :style nil)
+                      :inherit nil)
+
+  (set-face-attribute 'internal-border nil
+                      :background (face-background 'nano-face-default)))
+
+
+(defun nano-theme--minibuffer ()
+  "Derive minibuffer / echo area faces from nano faces."
+  ;; Minibuffer / echo area
+  (dolist (buffer (list " *Minibuf-0*" " *Echo Area 0*"
+                        " *Minibuf-1*" " *Echo Area 1*"))
+    (when (get-buffer buffer)
+      (with-current-buffer buffer
+        (face-remap-add-relative 'default 'nano-face-faded)))))
+
+
+
+
+(defun cpm/nano-custom-faces ()
+  "custom faces for nano theme"
+  (set-face 'italic                                     'nano-face-salient))
+
+(defun nano-theme--magit ()
+  ;; Inherit theme for  Magit
+  (with-eval-after-load 'magit
+    (set-face 'magit-branch 'nano-face-strong)
+    (set-face 'magit-diff-context-highlight 'nano-face-subtle)
+    (set-face 'magit-diff-file-header 'nano-face-subtle)
+    (set-face 'magit-diffstat-added 'nano-face-critical)
+    (set-face 'magit-diffstat-removed 'nano-face-popout)
+    (set-face 'magit-hash 'nano-face-background)
+    (set-face 'magit-hunk-heading 'nano-face-salient)
+    (set-face 'magit-hunk-heading-highlight 'nano-face-popout)
+    (set-face 'magit-item-highlight 'nano-face-critical)
+    (set-face 'magit-log-author 'nano-face-subtle)
+    (set-face 'magit-process-ng 'nano-face-bold)
+    (set-face 'magit-process-ok 'nano-face-salient)
+    (set-face 'magit-section-heading 'nano-face-subtle)
+    (set-face 'magit-section-highlight 'nano-face-critical)))
+
+
+;;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
   "disable all active themes."
   (interactive)
   (dolist (i custom-enabled-themes)
     (disable-theme i)))
 
-;;; Toggle Menubar
+;;;; Toggle Menubar
 (defun cpm/osx-toggle-menubar-theme ()
   (interactive)
   (shell-command "dark-mode"))
@@ -23,23 +127,23 @@
   (interactive)
   (shell-command "dark-mode on"))
 
-;;; Theme & menubar toggle
-(setq active-theme 'nano-theme-light)
+;;;; Theme & menubar toggle
+(setq active-theme 'nano-theme-dark)
 (defun toggle-dark-light-theme ()
   (interactive)
   (if (eq active-theme 'nano-theme-light)
       (progn (cpm/osx-menubar-theme-dark)
              (cpm/disable-all-themes)
-             (nano-theme-set-dark)
+             (nano-theme-dark)
              (force-mode-line-update)
              (setq active-theme 'nano-theme-dark))
     (progn (cpm/osx-menubar-theme-light)
            (cpm/disable-all-themes)
-           (nano-theme-set-light)
+           (nano-theme-light)
            (force-mode-line-update)
            (setq active-theme 'nano-theme-light))))
 
-;;; Night Timer
+;;;; Night Timer
 ;; Got the idea from https://github.com/hmatheisen/theme-switcher
 ;; When emacs is launched in the evening automatically load the dark theme
 (defvar day-hour 08
@@ -50,79 +154,63 @@
 
 ;; (let ((now (string-to-number (format-time-string "%H"))))
 ;;   (if (and (>= now day-hour) (< now night-hour))
-;;       (nano-theme-set-light)
+;;       (nano-theme-light)
 ;;     (progn
-;;       (setq active-theme 'nano-theme-dark)
 ;;       (cpm/osx-menubar-theme-dark)
-;;       (nano-theme-set-dark))))
+;;       (nano-theme-dark))))
 
-;;; Load Theme with System Mode
-;; See https://www.reddit.com/r/emacs/comments/hejsqm/is_there_a_way_to_detect_lightdark_mode_on_mac/fvrr382?utm_source=share&utm_medium=web2x
 
-(defun cpm/set-system-theme-mode ()
-  (interactive)
-  (if (string= (shell-command-to-string "printf %s \"$( osascript -e \'tell application \"System Events\" to tell appearance preferences to return dark mode\' )\"") "true")
-      (progn
-        (cpm/disable-all-themes)
-        ;; (shell-command-to-string "defaults write org.gnu.Emacs TransparentTitleBar DARK")
-        (cpm/solarized-dark))
-    (progn
-      (cpm/disable-all-themes)
-      ;; (shell-command-to-string "defaults write org.gnu.Emacs TransparentTitleBar LIGHT")
-      (cpm/solarized-light))))
 
-;; (cpm/set-system-theme-mode)
+;;; Nano
+(use-package nano
+  :straight (:type git :host github :repo "rougier/nano-emacs"
+             :fork (:host github :repo "mclear-tools/nano-emacs" :branch "test-new-stuff"))
+  :config
+  (require 'nano-base-colors)
+  (require 'nano-colors)
+  (require 'nano-faces)
+  (require 'nano-theme)
+  (require 'nano-theme-dark)
+  (require 'nano-theme-light)
+  (require 'nano-splash)
+  (require 'nano-modeline)
+  )
 
-;;; Packaging Themes
-;; I don't really use any other themes so I've disabled this
-;; I'm keeping it mainly as a list of themes I like
-;; (defvar packages-appearance '(doom-themes
-;;                               nord-theme
-;;                               solarized-theme
-;;                               zenburn-theme
-;;                               molokai-theme
-;;                               darktooth-theme
-;;                               gotham-theme
-;;                               ample-theme
-;;                               material-theme
-;;                               leuven-theme
-;;                               spacemacs-theme
-;;                               gruvbox-theme
-;;                               forest-blue-theme
-;;                               flatland-theme
-;;                               afternoon-theme
-;;                               cyberpunk-theme
-;;                               darkmine-theme
-;;                               tao-theme
-;;                               darkokai-theme
-;;                               jazz-theme
-;;                               suscolors-theme
-;;                               omtose-phellack-theme
-;;                               atom-one-dark-theme
-;;                               nubox
-;;                               color-theme-sanityinc-tomorrow
-;;                               alect-themes
-;;                               kaolin-themes
-;;                               srcery-theme)
-;;   "A list of themes to ensure are installed at launch.")
 
-;; (defun appearance-packages-installed-p ()
-;;   (loop for p in packages-appearance
-;;         when (not (package-installed-p p)) do (return nil)
-;;         finally (return t)))
 
-;; (unless (appearance-packages-installed-p)
-;;   ;; check for new packages (package versions)
-;;   (message "%s" "Emacs is now refreshing its package themes...")
-;;   (package-refresh-contents)
-;;   (message "%s" " done.")
-;;   ;; install the missing packages
-;;   (dolist (p packages-appearance)
-;;     (when (not (package-installed-p p))
-;;       (package-install p))))
+;;; Gruvbox Theme
+(use-package gruvbox-theme
+  :straight t
+  :if (not (display-graphic-p))
+  :demand t
+  :config
+  (load-theme 'gruvbox t))
 
-;; (provide 'packages-appearance)
+;;; Doom Themes
+(use-package doom-themes
+  :straight t
+  ;; :defer 1
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (setq doom-themes-treemacs-theme "doom-colors")) ; use the colorful treemacs theme
 
-;;; End setup-theme.el
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; I get errors if I don't load these functions separately
+(with-eval-after-load 'doom-themes
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+
+
+;;; Set Theme
+
+(nano-theme-dark)
+;; (nano-theme--mode-line)
+
+;;; End Provide Nano Personal
 (provide 'setup-theme)

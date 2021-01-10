@@ -69,25 +69,6 @@
 (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
 
 
-;;;; Security
-;; Properly verify outgoing ssl connections.
-;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
-
-(with-eval-after-load 'gnutls
-  (setq gnutls-verify-error t)
-  (setq gnutls-min-prime-bits 3072)
-  (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem"))
-
-;; (setq gnutls-verify-error t
-;;       tls-checktrust gnutls-verify-error
-;;       tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-;;                         ;; compatibility fallbacks
-;;                         "gnutls-cli -p %p %h"
-;;                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
-;;       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
-;; ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
-;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
 ;;; Package Settings
 ;; I tell use-package to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
@@ -156,6 +137,28 @@
       use-package-minimum-reported-time 0.01
       use-package-enable-imenu-support t)
 
+;;;; Security
+;; Properly verify outgoing ssl connections.
+;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
+
+(use-package gnutls
+  :ensure nil
+  :init
+  (setq gnutls-verify-error t
+        gnutls-min-prime-bits 3072))
+  ;; (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem"))
+
+;; (setq gnutls-verify-error t
+;;       tls-checktrust gnutls-verify-error
+;;       tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+;;                         ;; compatibility fallbacks
+;;                         "gnutls-cli -p %p %h"
+;;                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
+;;       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
+;; ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+
 ;;;; Benchmark Init
 (use-package benchmark-init
   ;; demand when using
@@ -202,6 +205,7 @@
 (require 'setup-server)
 (require 'setup-windows)
 (require 'setup-ui)
+(require 'setup-theme)
 (require 'setup-navigation)
 (require 'setup-search)
 (require 'setup-vc)
@@ -214,9 +218,8 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-completion)
-(require 'setup-nano-personal)
+
 ;; (require 'setup-modeline)
-;; (require 'setup-theme)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-posframe)
 ;; (require 'setup-testing)
@@ -242,8 +245,9 @@
 (defun cpm/search-setup-config-files ()
   "use ripgrep to search all config files"
   (interactive)
-  (let ((default-directory cpm-setup-dir))
-    (consult-ripgrep)))
+  (consult-ripgrep cpm-setup-dir))
+;; (let ((default-directory cpm-setup-dir))
+;;   (consult-ripgrep)))
 ;; (helm-grep-ag-1 cpm-setup-dir))
 
 
