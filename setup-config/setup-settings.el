@@ -19,7 +19,15 @@
 (setq require-final-newline t)
 
 ;; unique buffers
-(setq uniquify-buffer-name-style 'forward)
+(use-package uniquify
+  :straight nil
+  :defer 1
+  :config
+  (setq uniquify-buffer-name-style 'reverse
+        uniquify-separator " • "
+        uniquify-after-kill-buffer-p t
+        uniquify-ignore-buffers-re "^\\*"))
+
 ;; Keep focus while navigating help buffers
 (setq help-window-select 't)
 ;; big files
@@ -65,7 +73,6 @@
 (show-paren-mode t)
 (setq show-paren-delay 0)
 (blink-cursor-mode 0)
-
 
 ;;;;; Whitespace
 ;; Manage whitespace in prog modes
@@ -129,7 +136,7 @@
 
 ;;;; Save History
 (use-package savehist
-  :defer 1
+  :hook (after-init . savehist-mode)
   :config
   (setq-default savehist-file (concat cpm-cache-dir "savehist"))
   (when (not (file-exists-p savehist-file))
@@ -143,7 +150,7 @@
 
 ;;;; Desktop
 (use-package desktop
-  :defer 1
+  :defer
   :config
   (setq desktop-dirname             (concat cpm-cache-dir "desktops")
         desktop-base-file-name      "emacs.desktop"
@@ -249,7 +256,7 @@
   ;; :straight (so-long :type git
   ;; :repo "https://git.savannah.gnu.org/git/so-long.git")
   :straight nil
-  :defer 1
+  :hook (after-init . global-so-long-mode)
   :config
   (global-so-long-mode))
 
@@ -265,6 +272,11 @@
 ;; Use pager commands for read-only buffers
 (setq view-read-only t)
 
+;;;; Expand Region
+(use-package expand-region
+  :straight t
+  :defer 1)
+
 ;;;; Miscellaneous
 (use-package remember
   :commands (remember remember-notes)
@@ -278,7 +290,7 @@
 (setq confirm-kill-processes nil) ; don't object when quitting
 
 (use-package autorevert
-  :defer 1
+  :hook (after-init . global-auto-revert-mode)
   :config
   (setq auto-revert-interval .5)
   (global-auto-revert-mode)

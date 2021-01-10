@@ -112,7 +112,8 @@
     (delete-other-windows))
   (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
-        peep-dired-max-size 5242880))
+        peep-dired-max-size 5242880)
+  (setq peep-dired-cleanup-eagerly t))
 
 ;;;; Dired Ranger
 ;; https://github.com/Fuco1/dired-hacks#dired-ranger

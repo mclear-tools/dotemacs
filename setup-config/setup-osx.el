@@ -46,10 +46,9 @@
   ;; delete files by moving them to the trash
   (use-package osx-trash
     :straight t
-    :defer 1
+    :hook (after-init . osx-trash-setup)
     :config
-    (setq delete-by-moving-to-trash t)
-    (osx-trash-setup))
+    (setq delete-by-moving-to-trash t))
 
   ;; (Do not) make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)

@@ -191,6 +191,12 @@
                 " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
           (search . " %i %-12:c")))
 
+;;;; Elegant Agenda
+
+  (use-package elegant-agenda-mode
+    :straight (elegant-agenda-mode :type git :host github :repo "justinbarclay/elegant-agenda-mode")
+    :hook org-agenda-mode-hook)
+
 ;;;; Org Super-Agenda
   ;; Supercharge org-agenda: https://github.com/alphapapa/org-super-agenda
   ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking

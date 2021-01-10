@@ -42,7 +42,7 @@
 
 ;;;;; Yasnippet
 (use-package yasnippet
-  :defer 1
+  :hook (after-init . yas-global-mode)
   :config
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
@@ -59,8 +59,7 @@
   ;; Adding yasnippet support to company
   (with-eval-after-load 'company-mode
     (add-to-list 'company-backends '(company-yasnippet)))
-  (yas-reload-all)
-  (yas-global-mode 1))
+  (yas-reload-all))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-completion)

@@ -111,54 +111,57 @@
 ;; No dialog box
 (setq use-dialog-box nil)
 
-;; Set popup windows
-(setq pop-up-windows nil)
+;; No confirmation for visiting non-existent files
+(setq confirm-nonexistent-file-or-buffer nil)
 
-;; Set popup frams
-(setq pop-up-frames nil)
+;; Set popup windows
+(setq-default pop-up-windows t)
+
+;; Set popup frames
+(setq-default pop-up-frames nil)
 
 
 ;;; Highlight
- (use-package highlight-numbers
-   :defer t
-   :commands highlight-numbers-mode
-   :init
-   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+(use-package highlight-numbers
+  :defer t
+  :commands highlight-numbers-mode
+  :init
+  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
- (use-package hl-todo
-   :defer t
-   :commands hl-todo-mode
-   :init
-   ;; (add-hook 'org-mode-hook #'hl-todo-mode)
-   (add-hook 'prog-mode-hook #'hl-todo-mode)
-   (add-hook 'markdown-mode-hook #'hl-todo-mode))
+(use-package hl-todo
+  :defer t
+  :commands hl-todo-mode
+  :init
+  ;; (add-hook 'org-mode-hook #'hl-todo-mode)
+  (add-hook 'prog-mode-hook #'hl-todo-mode)
+  (add-hook 'markdown-mode-hook #'hl-todo-mode))
 
 ;;; Icons
- (use-package all-the-icons
-   :defer t)
- ;;dependency
- ;; (quelpa
- ;;  '(font-lock+ :fetcher wiki))
- (use-package font-lock+
-   :defer 1)
- ;; icons for dired
- (use-package all-the-icons-dired
-   :defer t
-   :commands all-the-icons-dired-mode
-   :init
-   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+(use-package all-the-icons
+  :defer t)
+;;dependency
+;; (quelpa
+;;  '(font-lock+ :fetcher wiki))
+(use-package font-lock+
+  :defer 1)
+;; icons for dired
+(use-package all-the-icons-dired
+  :defer t
+  :commands all-the-icons-dired-mode
+  :init
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
- ;; No ugly button for checkboxes
- (setq widget-image-enable nil)
+;; No ugly button for checkboxes
+(setq widget-image-enable nil)
 
 
 ;;; Highlight Cursor Line with Pulse
- ;; From https://karthinks.com/software/batteries-included-with-emacs/
- ;; Replace external package with internal command
+;; From https://karthinks.com/software/batteries-included-with-emacs/
+;; Replace external package with internal command
 
- (defun pulse-line (&rest _)
-   "Pulse the current line."
-   (pulse-momentary-highlight-one-line (point)))
+(defun pulse-line (&rest _)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
 
 (dolist (command '(scroll-up-command scroll-down-command
                                      recenter-top-bottom other-window select-window-by-number))

@@ -7,7 +7,7 @@
   :hook (after-init-hook . window-divider-mode)
   :config
   (setq window-divider-default-right-width 18)
-  ;; (setq window-divider-default-bottom-width 1)
+  (setq window-divider-default-bottom-width 1)
   (setq window-divider-default-places 'right-only)
   (window-divider-mode 1))
 
@@ -23,13 +23,13 @@
 
 ;; Numbered window shortcuts for Emacs
 (use-package window-numbering
-  :defer 1
+  :hook (after-init . window-numbering-mode)
   :config
   (defun window-numbering-install-mode-line (&optional position)
     "Do nothing, the display is handled by the powerline.")
   (setq window-numbering-auto-assign-0-to-minibuffer nil)
 
-  (window-numbering-mode 1)
+  
 
   ;; make sure imenu list is always 0
   (defun cpm/window-numbering-assign ()

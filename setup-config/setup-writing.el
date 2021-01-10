@@ -23,6 +23,10 @@
   ;;           "--ignore=3")))
 
 (use-package flyspell
+  :general
+  (:states '(normal insert emacs) :keymaps 'flyspell-mode-map
+   "C-;" 'flyspell-auto-correct-previous-word
+   "C-:" 'flyspell-correct-wrapper)
   :config
   (setq flyspell-abbrev-p t
         flyspell-use-global-abbrev-table-p t
@@ -32,15 +36,11 @@
          (org-mode . flyspell-mode)
          (prog-mode . flyspell-prog-mode)))
 
-(use-package flyspell-correct-ivy
-  :general
-  (:states '(normal insert emacs) :keymaps 'flyspell-mode-map
-   "C-;" 'flyspell-auto-correct-previous-word
-   "C-:" 'flyspell-correct-wrapper))
 
 (with-eval-after-load 'hydra
+  ;; keybinding is SPC-S
   (defhydra hydra-spelling (:color blue)
-  "
+    "
   ^
   ^Spelling^          ^Errors^            ^Checker^
   ^────────^──────────^──────^────────────^───────^───────
@@ -56,6 +56,8 @@
     ("d" ispell-change-dictionary)
     ("f" flyspell-buffer :color pink)
     ("m" flyspell-mode)))
+
+
 
 ;;; Abbrev
 (use-package abbrev

@@ -1,7 +1,8 @@
 ;;; Evil Mode
 
 (use-package evil
-  :defer .1 ;; don't block emacs when starting, load evil immediately after startup
+  ;; start as soon as possible but don't block loading
+  :defer .1
   :init
   (setq evil-want-integration t
         evil-want-keybinding nil)
@@ -64,14 +65,14 @@
     ;; fine-grained undo
     (setq evil-want-fine-undo t)
     ;; disable undo-tree
-    (global-undo-tree-mode -1)
+    ;; (global-undo-tree-mode 1)
     ;; evil everywhere
-    (evil-mode 1)))
+    (evil-mode 1)
+    ))
 
 ;;; Evil Collection
 (use-package evil-collection
   :after evil
-  :demand t
   :config
   (evil-collection-init)
   :custom
@@ -90,8 +91,7 @@
 
 (use-package evil-embrace
   :after evil-surround
-  :after evil
-  :hook ((markdown org) . embrace-org-mode-hook)
+  :hook ((text prog) . embrace-org-mode-hook)
   :config
   (with-eval-after-load 'evil-surround
     (evil-embrace-enable-evil-surround-integration))
