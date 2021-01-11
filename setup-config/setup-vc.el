@@ -5,7 +5,24 @@
 
 ;;; VC
 ;;disable emacs vc for git; just use magit!
-(setq vc-handled-backends (delq 'Git vc-handled-backends))
+;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
+(use-package vc
+  :straight nil
+  :hook (after-init . vc-mode)
+  :custom (vc-follow-symlinks t))
+
+(use-package vc-git
+  :straight nil
+  :after vc
+  :config
+  (setq vc-git-diff-switches "--patch-with-stat")
+  (setq vc-git-print-log-follow t))
+
+(use-package vc-annotate
+  :after vc
+  :straight nil
+  :config
+  (setq vc-annotate-display-mode 'scale))
 
 ;;; Magit
 (use-package magit
@@ -17,7 +34,6 @@
    magit-status)
   ;; :hook (git-commit-mode . turn-on-flyspell)
   :init
-  (setq vc-follow-symlinks t)
   ;; Suppress the message we get about "Turning on
   ;; magit-auto-revert-mode" when loading Magit.
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
