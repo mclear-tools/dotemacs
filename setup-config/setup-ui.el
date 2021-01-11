@@ -178,6 +178,11 @@
 (setq x-underline-at-descent-line t)
 
 
+;;; Delight
+(use-package delight
+  :straight t
+  :demand t)
+
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-ui)
