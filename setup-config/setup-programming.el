@@ -49,18 +49,33 @@
   :commands (applescript-mode))
 
 ;;;; Elisp
+;;;;; Lisp Packages
+(use-package lisp-mode
+  :commands lisp-mode
+  :straight nil)
+
+(use-package emacs-lisp-mode
+  :straight nil
+  :mode (("\\.el$" . emacs-lisp-mode))
+  :interpreter (("emacs" . emacs-lisp-mode))
+  )
+
 (use-package elisp-slime-nav
+  :straight nil
   :commands elisp-slime-nav-mode
   :config
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook 'turn-on-elisp-slime-nav-mode)))
 
 (use-package eldoc
+  :straight nil
   :commands eldoc-mode
+  :hook (emacs-lisp-mode . turn-on-eldoc-mode)
   :diminish eldoc-mode
   :config
   ;; Show ElDoc messages in the echo area immediately, instead of after 1/2 a second.
   (setq eldoc-idle-delay 0))
+
 ;; Elisp hook
 (add-hook 'emacs-lisp-mode-hook (lambda ()
                                   (setq show-trailing-whitespace t)
@@ -70,6 +85,7 @@
                                   (company-mode)
                                   (rainbow-delimiters-mode)))
 
+;;;;; Elisp indentation
 ;; Fix the indentation of keyword lists in Emacs Lisp. See [1] and [2].
 ;;
 ;; Before:
@@ -83,6 +99,7 @@
 ;; [1]: https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L12-L94
 ;; [2]: http://emacs.stackexchange.com/q/10230/12534
 ;; Package for helping advise other packages
+
 (use-package el-patch
   :defer 1
   :config
