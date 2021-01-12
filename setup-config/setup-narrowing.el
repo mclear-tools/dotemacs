@@ -14,14 +14,9 @@
    "C-j"    'icomplete-forward-completions
    "<up>"   'icomplete-backward-completions
    "C-k"    'icomplete-backward-completions)
-  :hook
-  (icomplete-minibuffer-setup . visual-line-mode)
   :custom
   (icomplete-show-matches-on-no-input t)
-  (icomplete-hide-common-prefix nil)
-  :config
-  (advice-add 'icomplete-vertical-minibuffer-teardown
-              :after #'visual-line-mode))
+  (icomplete-hide-common-prefix nil))
 
 (use-package icomplete-vertical
   :straight (icomplete-vertical :type git :host github :repo "oantolin/icomplete-vertical")
@@ -58,15 +53,17 @@
    "x"  'consult-file-externally)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
-  (defun unique-completion ()
-    (when (= (length (embark-minibuffer-candidates)) 1)
-      (run-at-time 0 nil #'minibuffer-force-complete-and-exit)))
-  (setf (alist-get 'variable embark-keymap-alist) 'embark-symbol-map)
-  (defun resize-embark-live-occur-window (&rest _)
-    (when (string-match-p "Live" (buffer-name))
-      (fit-window-to-buffer (get-buffer-window)
-                            (floor (frame-height) 2) 1)))
-  (add-hook 'embark-pre-action-hook #'completion--flush-all-sorted-completions))
+  ;; (defun unique-completion ()
+  ;;   (when (= (length (embark-minibuffer-candidates)) 1)
+  ;;     (run-at-time 0 nil #'minibuffer-force-complete-and-exit)))
+  ;; (setf (alist-get 'variable embark-keymap-alist) 'embark-symbol-map)
+  ;; (defun resize-embark-live-occur-window (&rest _)
+  ;;   (when (string-match-p "Live" (buffer-name))
+  ;;     (fit-window-to-buffer (get-buffer-window)
+  ;;                           (floor (frame-height) 2) 1)))
+  ;; (add-hook 'embark-pre-action-hook #'completion--flush-all-sorted-completions))
+
+  )
 
 ;;;; Marginalia
 ;; Enable richer annotations using the Marginalia package
@@ -107,6 +104,8 @@
   ;; Optionally configure a function which returns the project root directory
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-root-function #'projectile-project-root)
+  (setq consult-async-min-input 0)
+  (setq consult-async-input-debounce 0.01)
 
   ;; Optionally configure narrowing key.
   ;; Both < and C-+ work reasonably well.

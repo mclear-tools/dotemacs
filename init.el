@@ -198,7 +198,7 @@
 (require 'setup-evil)
 (require 'setup-settings)
 (require 'setup-dired)
-(require 'setup-narrowing)
+(require 'setup-completion)
 (require 'setup-helm)
 (require 'setup-osx)
 
@@ -218,17 +218,11 @@
 (require 'setup-programming)
 (require 'setup-pdf)
 (require 'setup-calendars)
-(require 'setup-completion)
 
 ;; (require 'setup-modeline)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-posframe)
 ;; (require 'setup-testing)
-
-;; Nano welcome message (optional)
-(let ((inhibit-message t))
-  (message "Welcome to GNU Emacs")
-  (message (format "Initialization time: %s" (emacs-init-time))))
 
 
 ;;; Config Helper Functions
