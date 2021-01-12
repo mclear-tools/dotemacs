@@ -348,25 +348,25 @@
    "p!"  'projectile-run-shell-command-in-root
    "p&"  'projectile-run-async-shell-command-in-root
    "pa"  'projectile-toggle-between-implementation-and-test
-   "pb"  'counsel-projectile-switch-to-buffer
+   "pb"  'projectile-switch-to-buffer
    "pc"  'projectile-compile-project
-   "pd"  'counsel-projectile-find-dir
+   "pd"  'projectile-find-dir
    "pD"  'projectile-dired
-   "pf"  'counsel-projectile-find-file
+   "pf"  'projectile-find-file
    "pF"  #'cpm/counsel-projectile-find-file-other-window
    "pg"  'cpm/goto-projects
-   "ph"  'counsel-projectile
-   "pJ"  'counsel-bookmark
+   "ph"  'projectile
+   "pJ"  'bookmark
    "pG"  'projectile-regenerate-tags
    "pI"  'projectile-invalidate-cache
    "pk"  'projectile-kill-buffers
    "pn"  #'cpm/open-new-buffer-and-workspace
    "pN"  #'cpm/create-new-project-and-workspace
    "po"  #'cpm/open-existing-project-and-workspace
-   "pp"  'counsel-projectile-switch-project
-   "pr"  'counsel-recentf
+   "pp"  'projectile-switch-project
+   "pr"  'recentf
    "pR"  'projectile-replace
-   "ps"  #'counsel-projectile-rg
+   "ps"  #'projectile-ag
    ;; "ps1" #'cpm/load-phil101
    ;; "ps2" #'cpm/load-phil232
    ;; "ps5" #'cpm/load-phil105
