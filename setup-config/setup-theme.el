@@ -109,14 +109,14 @@
     (set-face 'magit-section-highlight 'nano-face-critical)))
 
 
-;;;; Disable All Custom Themes
+;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
   "disable all active themes."
   (interactive)
   (dolist (i custom-enabled-themes)
     (disable-theme i)))
 
-;;;; Toggle Menubar
+;;; Toggle Menubar
 (defun cpm/osx-toggle-menubar-theme ()
   (interactive)
   (shell-command "dark-mode"))
@@ -127,7 +127,7 @@
   (interactive)
   (shell-command "dark-mode on"))
 
-;;;; Theme & menubar toggle
+;;; Theme & menubar toggle
 (setq active-theme 'nano-theme-dark)
 (defun toggle-dark-light-theme ()
   (interactive)
@@ -177,6 +177,22 @@
   )
 
 
+;;; Modus Themes
+(use-package modus-themes
+  :straight t
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-slanted-constructs t
+        modus-themes-bold-constructs nil)
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; Load the theme of your choice:
+  ;; (modus-themes-load-operandi)
+  ;; (modus-themes-load-vivendi)
+  ;; :bind ("<f5>" . modus-themes-toggle)
+  )
 
 ;;; Gruvbox Theme
 (use-package gruvbox-theme
@@ -189,7 +205,7 @@
 ;;; Doom Themes
 (use-package doom-themes
   :straight t
-  ;; :defer 1
+  :defer 1
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled

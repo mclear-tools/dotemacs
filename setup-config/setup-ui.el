@@ -80,7 +80,7 @@
 (defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
 (defvar cpm-font6 (font-spec :family "RobotoMono Nerd Font" :size 14))
 (defvar cpm-ligatures nil)
-(defvar cpm-vari-font (font-spec :family "Avenir Next"))
+(defvar cpm-vari-font (font-spec :family "Avenir Next" :size 18))
 (defvar cpm-unicode-font (font-spec :family "Symbola"))
 ;; (set-face-attribute 'default nil :font cpm-font5)
 (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
