@@ -142,7 +142,8 @@
 ;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
 
 (use-package gnutls
-  :ensure nil
+  :straight nil
+  :defer 1
   :init
   (setq gnutls-verify-error t
         gnutls-min-prime-bits 3072))
