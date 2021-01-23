@@ -72,6 +72,19 @@
 
 
 
+;;;; Miniframe
+(use-package mini-frame
+  :straight (:type git :host github :repo "muffinmad/emacs-mini-frame")
+  ;; :hook (after-init . mini-frame-mode)
+  :commands (mini-frame-mode)
+  :config
+  (custom-set-variables
+   '(mini-frame-show-parameters
+     '((top . 10)
+       (width . 0.7)
+       (left . 0.5))))
+  (setq mini-frame-resize t))
+
 ;;; Fonts
 (defvar cpm-font1 (font-spec :family "InconsolataLGC Nerd Font" :size 13))
 (defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
@@ -80,7 +93,7 @@
 (defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
 (defvar cpm-font6 (font-spec :family "RobotoMono Nerd Font" :size 14))
 (defvar cpm-ligatures nil)
-(defvar cpm-vari-font (font-spec :family "Avenir Next" :size 18))
+(defvar cpm-vari-font (font-spec :family "Avenir Next" :size 20))
 (defvar cpm-unicode-font (font-spec :family "Symbola"))
 ;; (set-face-attribute 'default nil :font cpm-font5)
 (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
@@ -181,7 +194,7 @@
 ;;; Delight
 (use-package delight
   :straight t
-  :demand t)
+  :defer 1)
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
