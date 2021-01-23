@@ -188,7 +188,9 @@
       "y" 'pdf-view-kill-ring-save )
 
     ;; midnite mode
-    (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
+    ;; (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
+    (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" )) ; nano values
+
 
     (defun bms/pdf-no-filter ()
       "View pdf without colour filter."
@@ -200,7 +202,8 @@
     (defun bms/pdf-midnite-original ()
       "Set pdf-view-midnight-colors to original colours."
       (interactive)
-      (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
+      (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" )) ; nano values
+      ;; (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
       (pdf-view-midnight-minor-mode)
       )
 
