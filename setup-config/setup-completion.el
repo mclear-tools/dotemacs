@@ -2,13 +2,13 @@
 
 ;;; Narrowing Completion
 
-;;;; Icomplete vertical narrowing
-(use-package icomplete
-  :after general
-  :demand t
-  :straight nil
+;;;; Icomplete
+(use-package icomplete-vertical
+  :straight (icomplete-vertical :type git :host github :repo "oantolin/icomplete-vertical")
+  :hook (after-init . icomplete-vertical-mode)
   :general
   (:keymaps 'icomplete-minibuffer-map
+   "C-v"    'icomplete-vertical-toggle
    "RET"    'icomplete-force-complete-and-exit
    "C-M-i"  'minibuffer-complete
    "M-RET"  'exit-minibuffer
@@ -18,40 +18,65 @@
    "C-k"    'icomplete-backward-completions)
   :custom
   (icomplete-show-matches-on-no-input t)
-  (icomplete-hide-common-prefix nil))
-
-(use-package icomplete-vertical
-  :straight (icomplete-vertical :type git :host github :repo "oantolin/icomplete-vertical")
-  :after general
-  :demand t
-  :custom
-  (completion-styles '(partial-completion substring))
-  (completion-category-overrides '((file (styles basic substring))))
+  (icomplete-hide-common-prefix nil)
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   :config
   (icomplete-mode)
-  (icomplete-vertical-mode)
-  :general
-  (:keymaps 'icomplete-minibuffer-map
-   "C-v"    'icomplete-vertical-toggle))
+  (icomplete-vertical-mode))
 
 ;;;; Orderless
 ;; ordering of narrowed candidates
-
 (use-package orderless
-  :ensure t
   :straight t
-  :init (icomplete-mode) ; optional but recommended!
+  :init (icomplete-mode)
   :custom (completion-styles '(orderless)))
+
+;;;; Selectrum
+;; selectrum is nice but I think I like Icomplete better
+;; Icomplete is less buggy and orderless works well.
+
+(use-package selectrum
+  :disabled
+  :straight t
+  :demand t
+  :general
+  (:keymaps 'selectrum-minibuffer-map
+   ;; "RET"    'icomplete-force-complete-and-exit
+   "C-M-i"  'minibuffer-complete
+   "M-RET"  'exit-minibuffer
+   "<down>" 'selectrum-next-candidate
+   "C-j"    'selectrum-next-candidate
+   "<up>"   'selectrum-previous-candidate
+   "C-k"    'selectrum-previous-candidate)
+  :init
+  (setq selectrum-extend-current-candidate-highlight nil)
+  (setq selectrum-num-candidates-displayed 15)
+  (setq selectrum-fix-minibuffer-height t)
+  :custom-face
+  (selectrum-primary-highlight ((t (:weight bold :foreground "#EBCB8B"))))
+  :config
+  (selectrum-mode +1)
+  (defun cpm/selectrum-hook ()
+    (hl-line-mode 0))
+  (add-hook 'selectrum-mode-hook 'cpm/selectrum-hook))
+
+
+(use-package selectrum-prescient
+  :disabled
+  :straight t
+  :config
+  (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
+  (selectrum-prescient-mode +1))
+
 
 
 ;;;; Embark
 ;; Actions on narrowed candidates
 (use-package embark
   :straight (embark :type git :host github :repo "oantolin/embark")
-  :after (icomplete-vertical)
+  ;; :after (icomplete-vertical)
   :commands (embark-act embark-keymap-help)
   :bind ("C-o" . embark-act)
   :general
@@ -66,6 +91,12 @@
    "x"  'consult-file-externally)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
+  ;; use which key for commands
+  (setq embark-action-indicator
+        (lambda (map)
+          (which-key--show-keymap "Embark" map nil nil 'no-paging)
+          #'which-key--hide-popup-ignore-command)
+        embark-become-indicator embark-action-indicator)
   ;; (defun unique-completion ()
   ;;   (when (= (length (embark-minibuffer-candidates)) 1)
   ;;     (run-at-time 0 nil #'minibuffer-force-complete-and-exit)))
@@ -78,12 +109,21 @@
 
   )
 
+(use-package embark-consult
+  :straight nil
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode . embark-consult-preview-minor-mode))
+
 ;;;; Marginalia
 ;; Enable richer annotations using the Marginalia package
 ;; Info about candidates pulled from metadata
 (use-package marginalia
   :straight (marginalia :type git :host github :repo "minad/marginalia")
-  :after icomplete-vertical
+  ;; :after icomplete-vertical
   :general
   (:keymaps 'minibuffer-local-map
    "C-M-a"  'marginalia-cycle)
@@ -95,8 +135,8 @@
   ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode)
   ;; ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations.
-  ;; (advice-add #'marginalia-cycle :after
-  ;;             (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit)))))
+  (advice-add #'marginalia-cycle :after
+              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
 
   ;; Prefer richer, more heavy, annotations over the lighter default variant.
   ;; E.g. M-x will show the documentation string additional to the keybinding.
@@ -116,37 +156,37 @@
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
   :config
-  (setq consult--find-cmd '("mdfind" "-name"))
+  (setq consult-locate-command '("mdfind" "-name"))
   ;; Optionally configure a function which returns the project root directory
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-root-function #'projectile-project-root)
   (setq consult-async-min-input 0)
   (setq consult-async-input-debounce 0.01)
-
-  ;; Optionally configure narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  ;; (setq consult-narrow-key "<") ;; (kbd "C-+")
-
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; Probably not needed if you are using which-key.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-  ;; Optional configure a view library to be used by `consult-buffer'.
-  ;; The view library must provide two functions, one to open the view by name,
-  ;; and one function which must return a list of views as strings.
-  ;; Example: https://github.com/minad/bookmark-view/
-  ;; (setq consult-view-open-function #'bookmark-jump
-  ;;       consult-view-list-function #'bookmark-view-names)
-
-  ;; Optionally enable previews. Note that individual previews can be disabled
-  ;; via customization variables.
-  ;; (consult-preview-mode)
-
   )
 
+;; Optionally configure narrowing key.
+;; Both < and C-+ work reasonably well.
+;; (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+;; Optionally make narrowing help available in the minibuffer.
+;; Probably not needed if you are using which-key.
+;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+;; Optional configure a view library to be used by `consult-buffer'.
+;; The view library must provide two functions, one to open the view by name,
+;; and one function which must return a list of views as strings.
+;; Example: https://github.com/minad/bookmark-view/
+;; (setq consult-view-open-function #'bookmark-jump
+;;       consult-view-list-function #'bookmark-view-names)
+
+;; Optionally enable previews. Note that individual previews can be disabled
+;; via customization variables.
+;; (consult-preview-mode)
 
 
-;;; General Completion
+
+
+;;; Buffer Completion
 ;;;; Company
 (use-package company
   :after evil
@@ -164,7 +204,8 @@
         company-minimum-prefix-length 3
         company-require-match nil
         company-dabbrev-ignore-case nil
-        company-dabbrev-downcase nil)
+        company-dabbrev-downcase nil
+        company-show-numbers t)
   :config
   ;; Default backends
   (add-to-list 'company-backends 'company-keywords)
