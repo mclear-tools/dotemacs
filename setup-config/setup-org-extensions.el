@@ -914,11 +914,10 @@ Instead it's simpler to use bash."
 (use-package org-roam
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org
-  :hook
-  (org-mode . org-roam-mode)
-  :custom
-  (org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
-  (org-roam-db-location "~/Dropbox/Work/projects/notebook/content-org/org-roam.db")
+  :hook (org-mode . org-roam-mode)
+  :init
+  (setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
+  (setq org-roam-db-location "~/Dropbox/Work/projects/notebook/content-org/org-roam.db")
   ;;;; Org Roam Keybindings
   :general
   (:states '(normal motion insert)
