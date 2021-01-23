@@ -264,9 +264,7 @@
 ;; Highlight lines. You can toggle this off
 (use-package hl-line-mode
   :straight nil
-  :defer 1
-  :config
-  (global-hl-line-mode 1))
+  :hook (after-init . global-hl-line-mode))
 
 ;;;; Read Only
 ;;https://karthinks.com/software/batteries-included-with-emacs/
