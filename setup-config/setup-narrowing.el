@@ -43,7 +43,6 @@
   :bind ("C-o" . embark-act)
   :general
   (:keymaps 'minibuffer-local-completion-map
-   "C-;" 'embark-act-noexit
    "C-:" 'embark-act
    "C-J" 'embark-switch-to-live-occur
    "M-q" 'embark-occur-toggle-view)
@@ -53,6 +52,7 @@
    "x"  'consult-file-externally)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
+  (setq embark-quit-after-action t)
   ;; (defun unique-completion ()
   ;;   (when (= (length (embark-minibuffer-candidates)) 1)
   ;;     (run-at-time 0 nil #'minibuffer-force-complete-and-exit)))
