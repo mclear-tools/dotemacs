@@ -1,4 +1,5 @@
 ;;; Testing
+
 ;;;; Helpful Demos
 (use-package elisp-demos
   :defer 1
@@ -153,6 +154,7 @@
 ;;;; Pretty Info
 (use-package info+
   :straight t
+  :defer 1
   :config
   (eval-after-load "info" '(require 'info+)))
 
