@@ -135,7 +135,8 @@
 (setq use-package-always-defer nil
       use-package-verbose t
       use-package-minimum-reported-time 0.01
-      use-package-enable-imenu-support t)
+      use-package-enable-imenu-support t
+      use-package-always-ensure nil)
 
 ;;;; Security
 ;; Properly verify outgoing ssl connections.
@@ -218,11 +219,12 @@
 (require 'setup-programming)
 (require 'setup-pdf)
 (require 'setup-calendars)
+(require 'setup-testing)
 
+;; (require 'setup-timer)
 ;; (require 'setup-modeline)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-posframe)
-;; (require 'setup-testing)
 
 
 ;;; Config Helper Functions
@@ -233,7 +235,9 @@
 (defun cpm/find-files-setup-config-directory ()
   "use ido to find setup files"
   (interactive)
-  (ido-find-file-in-dir cpm-setup-dir))
+  (projectile-find-file-in-directory cpm-setup-dir))
+  ;; (setq ido-enable-flex-matching t)
+  ;; (ido-find-file-in-dir cpm-setup-dir))
 ;; (helm-find-files-1 cpm-setup-dir))
 
 ;; Function to search in config files
