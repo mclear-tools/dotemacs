@@ -2,6 +2,22 @@
 ;;https://emacs.stackexchange.com/a/52804/11934
 (setq custom--inhibit-theme-enable nil)
 
+;;; Nano
+(use-package nano
+  :straight (:type git :host github :repo "rougier/nano-emacs"
+             :fork (:host github :repo "mclear-tools/nano-emacs" :branch "test-new-stuff"))
+  :config
+  (require 'nano-base-colors)
+  (require 'nano-colors)
+  (require 'nano-faces)
+  (require 'nano-theme)
+  (require 'nano-theme-dark)
+  (require 'nano-theme-light)
+  (require 'nano-splash)
+  (require 'nano-modeline)
+  )
+
+
 ;;; Nano Themes
 ;;;; Define Nano Themes
 
@@ -39,6 +55,8 @@
 
 
 ;; pulled from nano-themes to use independently
+;; This is material to get the mode line to run separately of the theme;
+;; as well as attempts as custom functions
 (defun nano-theme--mode-line ()
   "Derive mode-line and header-line faces from nano-faces."
   (set-face-attribute 'mode-line nil
@@ -86,10 +104,12 @@
 
 
 
+;; These don't work
 (defun cpm/nano-custom-faces ()
   "custom faces for nano theme"
   (set-face 'italic                                     'nano-face-salient))
 
+;; these seem unnecessary
 (defun nano-theme--magit ()
   ;; Inherit theme for  Magit
   (with-eval-after-load 'magit
@@ -110,6 +130,7 @@
 
 
 ;;; Disable All Custom Themes
+;; function to disable all themes
 (defun cpm/disable-all-themes ()
   "disable all active themes."
   (interactive)
@@ -117,17 +138,22 @@
     (disable-theme i)))
 
 ;;; Toggle Menubar
+;; toggle menubar to light or dark
 (defun cpm/osx-toggle-menubar-theme ()
+  "toggle menubar to dark or light using shell command"
   (interactive)
   (shell-command "dark-mode"))
 (defun cpm/osx-menubar-theme-light ()
+  "turn dark mode off"
   (interactive)
   (shell-command "dark-mode off"))
 (defun cpm/osx-menubar-theme-dark ()
+  "turn dark mode on"
   (interactive)
   (shell-command "dark-mode on"))
 
 ;;; Theme & menubar toggle
+;; Coordinate setting of theme with os theme
 (setq active-theme 'nano-theme-dark)
 (defun toggle-dark-light-theme ()
   (interactive)
@@ -142,57 +168,6 @@
            (nano-theme-light)
            (force-mode-line-update)
            (setq active-theme 'nano-theme-light))))
-
-;;;; Night Timer
-;; Got the idea from https://github.com/hmatheisen/theme-switcher
-;; When emacs is launched in the evening automatically load the dark theme
-(defvar day-hour 08
-  "The hour when the theme goes from dark to light in the morning. Default is 8am. ")
-
-(defvar night-hour 18
-  "The hour when the theme goes from light to dark in the evening. Default is 6pm.")
-
-;; (let ((now (string-to-number (format-time-string "%H"))))
-;;   (if (and (>= now day-hour) (< now night-hour))
-;;       (nano-theme-light)
-;;     (progn
-;;       (cpm/osx-menubar-theme-dark)
-;;       (nano-theme-dark))))
-
-
-
-;;; Nano
-(use-package nano
-  :straight (:type git :host github :repo "rougier/nano-emacs"
-             :fork (:host github :repo "mclear-tools/nano-emacs" :branch "test-new-stuff"))
-  :config
-  (require 'nano-base-colors)
-  (require 'nano-colors)
-  (require 'nano-faces)
-  (require 'nano-theme)
-  (require 'nano-theme-dark)
-  (require 'nano-theme-light)
-  (require 'nano-splash)
-  (require 'nano-modeline)
-  )
-
-
-;;; Modus Themes
-(use-package modus-themes
-  :straight t
-  :init
-  ;; Add all your customizations prior to loading the themes
-  (setq modus-themes-slanted-constructs t
-        modus-themes-bold-constructs nil)
-
-  ;; Load the theme files before enabling a theme
-  (modus-themes-load-themes)
-  :config
-  ;; Load the theme of your choice:
-  ;; (modus-themes-load-operandi)
-  ;; (modus-themes-load-vivendi)
-  ;; :bind ("<f5>" . modus-themes-toggle)
-  )
 
 ;;; Gruvbox Theme
 (use-package gruvbox-theme
@@ -413,9 +388,12 @@
 
 
 ;;; Set Theme
+;; call theme of choice
 
 (nano-theme-dark)
+;; (nano-theme-light)
 ;; (nano-theme--mode-line)
 ;; (cpm/solarized-dark)
+
 ;;; End Provide Nano Personal
 (provide 'setup-theme)
