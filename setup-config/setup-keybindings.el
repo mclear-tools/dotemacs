@@ -14,7 +14,7 @@
 ;;; Which Key
 (use-package which-key
   :after general
-  :demand t
+  :defer 1
   :diminish ""
   :config
   (setq which-key-special-keys nil)
@@ -25,10 +25,12 @@
   (which-key-mode))
 
 ;;; Namespaced Keybindings
+
 ;; set keybindings for use with evil
 (with-eval-after-load 'evil
 
 ;;;;  Application Keybindings
+
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -126,7 +128,7 @@
    "f"  '(:ignore t :which-key "Files")
    "fb" 'consult-bookmark
    ;; "fb" 'helm-bookmarks
-   "ff" 'consult-find
+   "ff" 'find-file
    ;; "ff" 'helm-find-files
    "fl" 'consult-locate
    ;; "fl" 'helm-locate
@@ -146,7 +148,7 @@
 
    "A" 'consult-apropos
    ;; "A" 'helm-apropos
-   "B" #'cpm/dashboard
+   ;; "B" #'cpm/dashboard
    ;; "?" 'counsel-descbinds
    ;; "?" 'helm-descbinds
    "<SPC>" 'execute-extended-command
@@ -170,7 +172,7 @@
    "S" 'hydra-spelling/body
    ;; "W" 'woman
    "#" 'universal-argument
-   "`" 'beacon-blink
+   ;; "`" 'beacon-blink
    ;; "'" 'shell-pop
    ;; "\\" 'vterm-toggle-cd
    "\\" 'multi-vterm-dedicated-toggle
