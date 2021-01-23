@@ -69,14 +69,14 @@
 ;; https://www.reddit.com/r/emacs/comments/9jp9zt/anyone_know_what_variable_binding_depth_exceeds/
 (setq max-specpdl-size 13000)
 
-
 ;;; Package settings
-;; (setq package-quickstart t)
-;; (setq package-quickstart-file "~/.emacs.d/.local/temp/cache/package-quickstart.el")
-(setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil) ;; use straight
+;; Do not allow loading from the package cache (same reason).
+(setq package-quickstart nil)
 ;; for native comp
 ;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
 (setq comp-speed 2)
+
 
 
 ;;; Clean View
