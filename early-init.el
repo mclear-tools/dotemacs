@@ -15,17 +15,21 @@
 (setq file-name-handler-alist nil)
 
 ;;;; Garbage collection
+
+;; Defer garbage collection further back in the startup process
+(setq gc-cons-threshold most-positive-fixnum)
+
 ;; Adjust garbage collection thresholds during startup, and thereafter
 ;; see http://akrl.sdf.org
 ;; https://gitlab.com/koral/gcmh
 ;; NOTE: The system linked above generates too many GC pauses so I'm using my own mixed setup
 ;; https://github.com/purcell/emacs.d/blob/3b1302f2ce3ef2f69641176358a38fd88e89e664/init.el#L24
 
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+;; (let ((normal-gc-cons-threshold (* 20 1024 1024))
+;;       (init-gc-cons-threshold (* 128 1024 1024)))
+;;   (setq gc-cons-threshold init-gc-cons-threshold)
+;;   (add-hook 'emacs-startup-hook
+;;             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 (defmacro k-time (&rest body)
   "Measure and return the time it takes evaluating BODY."
@@ -37,8 +41,9 @@
 (defvar k-gc-timer
   (run-with-idle-timer 15 t
                        (lambda ()
-                         (message "Garbage Collector has run for %.06fsec"
-                                  (k-time (garbage-collect))))))
+                         (let ((inhibit-message t))
+                           (message "Garbage Collector has run for %.06fsec"
+                                    (k-time (garbage-collect)))))))
 
 
 ;;;; Prefer Newer files
@@ -71,8 +76,11 @@
 
 ;;; Package settings
 (setq package-enable-at-startup nil) ;; use straight
+(advice-add #'package--ensure-init-file :override #'ignore)
+
 ;; Do not allow loading from the package cache (same reason).
 (setq package-quickstart nil)
+
 ;; for native comp
 ;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
 (setq comp-speed 2)
@@ -88,21 +96,18 @@
 (setq frame-inhibit-implied-resize t)
 
 ;; UI - Disable visual cruft
-(unless (eq window-system 'ns)
-  (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
+;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+(push '(horizontal-scroll-bars) default-frame-alist)
 
 ;; Quick start scratch buffer
 (setq initial-major-mode 'fundamental-mode)
 
-;; echo buffer
-;; Don't display any message
-;; https://emacs.stackexchange.com/a/437/11934
+;; ;; echo buffer
+;; ;; Don't display any message
+;; ;; https://emacs.stackexchange.com/a/437/11934
 (defun display-startup-echo-area-message ()
   (message ""))
 
@@ -114,11 +119,17 @@
       ad-do-it)))
 
 
-;; No frame title header
-(setq-default frame-title-format nil)
 ;; (setq frame-title-format "\n")
 ;; (setq frame-title-format
 ;;       '((buffer-file-name "%f" "%b")))
 
-;; maximize frame
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we easily halve startup times with fonts that are
+;; larger than the system default.
+(setq frame-inhibit-implied-resize t)
+
+;; No frame title header
+(setq-default frame-title-format nil)
+
+;; Prevent early display of modeline.
+(setq-default mode-line-format nil)
