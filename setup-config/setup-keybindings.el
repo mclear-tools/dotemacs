@@ -147,6 +147,7 @@
    :non-normal-prefix "C-SPC"
 
    "A" 'consult-apropos
+   "?" 'consult-man
    ;; "A" 'helm-apropos
    ;; "B" #'cpm/dashboard
    ;; "?" 'counsel-descbinds
@@ -164,7 +165,7 @@
    ;; "j" 'avy-goto-char
    "k" 'consult-yank-pop
    ;; "k" 'helm-show-kill-ring
-   "l" 'consult-history
+   "l" 'selectrum-repeat
    ;; "l" 'helm-resume
    ;; "N" 'research-notes
    "n" 'cpm/notebook
@@ -428,7 +429,7 @@
    ;; "sm" 'swiper-mc
    "so" #'ivy-occur
    ;; "so" 'helm-occur
-   "sp" 'swiper-thing-at-point
+   ;; "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
    ;; "ss" #'swiper
