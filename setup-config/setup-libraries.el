@@ -5,19 +5,20 @@
 ;; backward compatibility respectively. The git package is also a library.
 
 (use-package async
-  :straight nil
+  :straight t
   :defer
   :config
   (dired-async-mode 1)
   (setq dired-async--modeline-mode nil))
 
-(use-package dash    :straight nil :defer 2)
-(use-package s       :straight nil :defer 2)
-(use-package f       :straight nil :defer 2)
-(use-package subr-x  :straight nil :defer 1)
+(use-package anaphora :straight t :defer 1)
+(use-package dash     :straight t :defer 2)
+(use-package s        :straight t :defer 2)
+(use-package f        :straight t :defer 2)
+(use-package subr-x   :straight (:type built-in) :defer 1)
 ;; lots of packages depend on these libraries
-(use-package cl      :straight nil :defer t)
-(use-package cl-lib  :straight nil :demand t)
+(use-package cl       :straight (:type built-in) :defer t)
+(use-package cl-lib   :straight (:type built-in) :demand t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-libraries)
