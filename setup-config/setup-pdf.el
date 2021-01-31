@@ -248,8 +248,7 @@
                                     (linum-mode -1)
                                     (line-number-mode -1)
                                     (column-number-mode -1)
-                                    (auto-revert-mode -1)
-                                    (beacon-mode -1)))))
+                                    (auto-revert-mode -1)))))
 
 ;;;; PDF Notetaking Tools
 (defvar user-pdf-dir
