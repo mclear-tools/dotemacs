@@ -6,7 +6,7 @@
 (use-package nano
   :straight (:type git :host github :repo "rougier/nano-emacs"
              :fork (:host github :repo "mclear-tools/nano-emacs" :branch "test-new-stuff"))
-  :init
+  :config
   (require 'nano-base-colors)
   (require 'nano-colors)
   (require 'nano-faces)
