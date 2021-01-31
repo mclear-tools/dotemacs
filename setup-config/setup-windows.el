@@ -4,13 +4,12 @@
 ;; Vertical window divider
 (use-package emacs
   :straight nil
-  :hook (after-init-hook . window-divider-mode)
+  :hook (window-setup-hook . window-divider-mode)
   :config
   (setq window-divider-default-right-width 18)
   (setq window-divider-default-bottom-width 1)
   (setq window-divider-default-places 'right-only)
   (window-divider-mode 1))
-
 
 ;;; Window Movement
 ;; Move to other window
