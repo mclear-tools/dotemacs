@@ -20,7 +20,7 @@
 
 ;; unique buffers
 (use-package uniquify
-  :straight nil
+  :straight (:type built-in)
   :defer 1
   :config
   (setq uniquify-buffer-name-style 'reverse
@@ -80,30 +80,18 @@
   :hook (prog-mode . ws-butler-mode))
 
 ;;;; Backups / Auto-Save
-(let ((backup-dir (concat cpm-cache-dir "backup")))
-  ;; Move backup file to `~/.emacs.d/.local/cache/backup'
-  (setq backup-directory-alist `(("." . ,backup-dir)))
-  ;; Makesure backup directory exist
-  (when (not (file-exists-p backup-dir))
-    (make-directory backup-dir t)))
-
-
-(setq make-backup-files t               ; backup of a file the first time it is saved.
-      backup-by-copying t               ; don't clobber symlinks
-      version-control t                 ; version numbers for backup files
-      delete-old-versions t             ; delete excess backup files silently
-      kept-old-versions 10               ; oldest versions to keep when a new numbered backup is made
-      kept-new-versions 10               ; newest versions to keep when a new numbered backup is made
-      )
-(setq vc-make-backup-files t) ;;  backup versioned files, which Emacs does not do by default
-
-(use-package backup-walker
-  :commands backup-walker-start)
-
-(use-package auto-save
-  :straight nil
+(use-package files
+  :straight (:type built-in)
   :hook (after-init . auto-save-mode)
   :init
+  ;; backups
+  (let ((backup-dir (concat cpm-cache-dir "backup")))
+    ;; Move backup file to `~/.emacs.d/.local/cache/backup'
+    (setq backup-directory-alist `(("." . ,backup-dir)))
+    ;; Makesure backup directory exist
+    (when (not (file-exists-p backup-dir))
+      (make-directory backup-dir t)))
+  ;; auto save
   (setq auto-save-list-file-prefix
         (concat cpm-cache-dir "auto-save-list/.saves-"))
   (let ((auto-save-files-dir (concat cpm-cache-dir "auto-save-files/")))
@@ -117,7 +105,17 @@
    auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
    auto-save-visited-mode t
    delete-auto-save-files t
-   create-lockfiles nil))
+   create-lockfiles nil)
+  :config
+  (setq  make-backup-files t                ; backup of a file the first time it is saved.
+         backup-by-copying t               ; don't clobber symlinks
+         version-control t                 ; version numbers for backup files
+         delete-old-versions t             ; delete excess backup files silently
+         kept-old-versions 0               ; oldest versions to keep when a new numbered backup is made
+         kept-new-versions 10              ; newest versions to keep when a new numbered backup is made
+         vc-make-backup-files t            ; backup versioned files, which Emacs does not do by default
+
+         )
 
 (defun cpm/full-auto-save ()
   (interactive)
@@ -126,12 +124,17 @@
       (set-buffer buf)
       (if (and (buffer-file-name) (buffer-modified-p))
           (basic-save-buffer)))))
+
 (add-hook 'auto-save-hook 'cpm/full-auto-save)
 
 ;; Save all buffers after idle time
 (run-with-idle-timer 5 t (lambda () (cpm/full-auto-save)))
 ;; Save on exit from insert state
 ;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
+)
+
+(use-package backup-walker
+  :commands backup-walker-start)
 
 
 ;;;; Save History
@@ -193,18 +196,22 @@
   (format-date "%m-%d-%Y %H:%M:%S"))
 
 ;;;; Time Stamps
-(defun cpm/time-stamp ()
-  (interactive)
-  (insert (concat  "Time-stamp: <"(format-time-string "%Y-%02m%02d-%02H:%02M:%02S")">")))
+(use-package time-stamp
+  :straight (:type built-in)
+  :commands (time-stamp cpm/time-stamp)
+  :config
+  (setq time-stamp-active t          ; do enable time-stamps
+        time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp:
+        time-stamp-format "Last modified on %Y-%02m%02d-%02H:%02M:%02S") ; date format
+  (add-hook 'before-save-hook 'time-stamp) ; update when saving
 
-(setq time-stamp-active t          ; do enable time-stamps
-      time-stamp-line-limit 10     ; check first 10 buffer lines for Time-stamp:
-      time-stamp-format "Last modified on %Y-%02m%02d-%02H:%02M:%02S") ; date format
-(add-hook 'before-save-hook 'time-stamp) ; update when saving
+  (defun cpm/time-stamp ()
+    (interactive)
+    (insert (concat  "Time-stamp: <"(format-time-string "%Y-%02m%02d-%02H:%02M:%02S")">")))
 
-(defun format-date (format)
-  (let ((system-time-locale "en_US.UTF-8"))
-    (insert (format-time-string format))))
+  (defun format-date (format)
+    (let ((system-time-locale "en_US.UTF-8"))
+      (insert (format-time-string format)))))
 
 ;;;; Universal Argument
 (general-define-key "M-u" 'universal-argument)
@@ -255,16 +262,17 @@
 (use-package so-long
   ;; :straight (so-long :type git
   ;; :repo "https://git.savannah.gnu.org/git/so-long.git")
-  :straight nil
+  :straight (:type built-in)
   :hook (after-init . global-so-long-mode)
   :config
   (global-so-long-mode))
 
 ;;;; Highlight Lines
 ;; Highlight lines. You can toggle this off
-(use-package hl-line-mode
-  :straight nil
-  :hook (after-init . global-hl-line-mode))
+(use-package hl-line
+  :straight (:type built-in)
+  :commands (hl-line-mode))
+  ;; :hook (after-init . global-hl-line-mode))
 
 ;;;; Read Only
 ;;https://karthinks.com/software/batteries-included-with-emacs/
@@ -289,19 +297,21 @@
 (setq confirm-kill-processes nil) ; don't object when quitting
 
 (use-package autorevert
+  :straight (:type built-in)
   :hook (after-init . global-auto-revert-mode)
-  :config
+  :init
   (setq auto-revert-interval .5)
-  (global-auto-revert-mode)
+  :config
   (setq auto-revert-verbose nil ; Shut up, please!
         revert-without-query '(".*") ;; disable revert query
         ;; Revert Dired buffers, too
-        global-auto-revert-non-file-buffers t))
+        global-auto-revert-non-file-buffers t)
+  (global-auto-revert-mode))
 
-(use-package request
-  :defer t
-  :config
-  (setq request-storage-directory (concat cpm-cache-dir "request")))
+;; (use-package request
+;;   :defer t
+;;   :config
+;;   (setq request-storage-directory (concat cpm-cache-dir "request")))
 
 ;; Follow symlinks
 (setq find-file-visit-truename t)
