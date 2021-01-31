@@ -79,7 +79,8 @@
   (global-set-key (kbd "s-W") 'delete-frame)
   (global-set-key (kbd "s-n") 'make-frame)
   (global-set-key (kbd "s-N") 'nameframe-create-frame)
-  ;; (global-set-key (kbd "s-z") 'undo-tree-undo)
+  (global-set-key (kbd "s-z") 'evil-undo)
+  (global-set-key (kbd "s-Z") 'evil-redo)
   (global-set-key (kbd "s-s")
                   (lambda ()
                     (interactive)
@@ -107,3 +108,8 @@ This will use the command `open' with the message URL."
 
 
 (provide 'setup-osx)
+;;;; Homebrew
+(use-package homebrew
+  :straight (homebrew :host github :repo "jdormit/homebrew.el")
+  :commands
+  (homebrew-install homebrew-upgrade homebrew-update homebrew-edit homebrew-info homebrew-package-info))
