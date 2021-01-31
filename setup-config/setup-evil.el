@@ -12,19 +12,6 @@
    "gf" #'evil-jump-forward)
   :config
   (progn
-    ;; Cursor shape and color
-    (defcustom dotemacs-evil/emacs-cursor
-      "red"
-      "The color of the cursor when in Emacs state."
-      :type 'color
-      :group 'dotemacs-evil)
-
-    (defcustom dotemacs-evil/emacs-insert-mode
-      nil
-      "If non-nil, insert mode will act as Emacs state."
-      :type 'boolean
-      :group 'dotemacs-evil)
-
     ;; move over visual lines like normal lines
     (general-define-key :states '(motion normal)
       "j"   #'evil-next-visual-line
@@ -32,7 +19,7 @@
 
     (setq evil-search-module 'evil-search)
     (setq evil-magic 'very-magic)
-    ;; (setq evil-want-C-i-jump nil)
+    (setq evil-want-C-i-jump nil)
     ;; Set colors for cursor states
     (setq evil-emacs-state-cursor '("SkyBlue2" box))
     (setq evil-normal-state-cursor '("DarkGoldenrod2" box))
@@ -44,16 +31,15 @@
     ;; (setq evil-visual-state-tag "VISUAL")
     ;; use insert in commits automatically
     (add-hook 'git-commit-mode-hook 'evil-insert-state)
-    (evil-set-initial-state 'dashboard-mode 'motion)
-    (evil-set-initial-state 'messages-buffer-mode 'motion)
-    (evil-set-initial-state 'magit-log-edit-mode 'insert)
-    (evil-set-initial-state 'org-agenda-mode 'motion)
-    (evil-set-initial-state 'org-export-dispatch 'motion)
-    (evil-set-initial-state 'paradox-menu-mode 'motion)
+    ;; (evil-set-initial-state 'dashboard-mode 'motion)
+    ;; (evil-set-initial-state 'messages-buffer-mode 'motion)
+    ;; (evil-set-initial-state 'magit-log-edit-mode 'insert)
+    ;; (evil-set-initial-state 'org-agenda-mode 'motion)
+    ;; (evil-set-initial-state 'org-export-dispatch 'motion)
     ;; evil-normal-state is preferred, so revert when idle
-    (run-with-idle-timer 60 t 'evil-normal-state)
+    (run-with-idle-timer 15 t 'evil-normal-state)
     ;; don't echo evil state
-    (setq evil-echo-state nil)
+    (setq evil-echo-state t)
     ;; don't move cursor back when exiting insert state
     (setq evil-move-cursor-back nil)
     ;; edit by visual lines
@@ -61,11 +47,11 @@
     ;; whether to allow evil-char move across lines
     (setq evil-cross-lines nil)
     ;; Use counsel to provide :ls
-    (evil-ex-define-cmd "buffers" 'counsel-ibuffer)
+    (evil-ex-define-cmd "buffers" 'consult-buffer)
+    ;; Set undo system
+    (setq evil-undo-system 'undo-redo)
     ;; fine-grained undo
     (setq evil-want-fine-undo t)
-    ;; disable undo-tree
-    ;; (global-undo-tree-mode 1)
     ;; evil everywhere
     (evil-mode 1)
     ))
@@ -116,12 +102,13 @@
 ;; there are problems but there doesn't seem to be a workaround
 ;; https://github.com/emacs-evil/evil/issues/1074 and
 ;; http://ergoemacs.org/emacs/emacs_best_redo_mode.html
-;; So disable undo-tree; have to do this manually b/c it is automatically loaded by evil
-
+;; emacs 28 has undo-redo so disable undo-tree
 ;; so many problems with this package...
 ;; https://github.com/emacs-evil/evil/issues/1074
 (use-package undo-tree
+  :disabled t
   :after evil
+  :straight (:type git :host gitlab :repo "tsc25/undo-tree")
   :commands (undo-tree-undo undo-tree-redo undo-tree-visualize)
   ;; :disabled
   :general
