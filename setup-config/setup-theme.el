@@ -6,7 +6,7 @@
 (use-package nano
   :straight (:type git :host github :repo "rougier/nano-emacs"
              :fork (:host github :repo "mclear-tools/nano-emacs" :branch "test-new-stuff"))
-  :config
+  :init
   (require 'nano-base-colors)
   (require 'nano-colors)
   (require 'nano-faces)
@@ -14,8 +14,7 @@
   (require 'nano-theme-dark)
   (require 'nano-theme-light)
   (require 'nano-splash)
-  (require 'nano-modeline)
-  )
+  (require 'nano-modeline))
 
 
 ;;; Nano Themes
@@ -159,14 +158,14 @@
   (interactive)
   (if (eq active-theme 'nano-theme-light)
       (progn (cpm/osx-menubar-theme-dark)
-             (cpm/disable-all-themes)
+             ;; (cpm/disable-all-themes)
              (nano-theme-dark)
-             (force-mode-line-update)
+             ;; (force-mode-line-update)
              (setq active-theme 'nano-theme-dark))
     (progn (cpm/osx-menubar-theme-light)
-           (cpm/disable-all-themes)
+           ;; (cpm/disable-all-themes)
            (nano-theme-light)
-           (force-mode-line-update)
+           ;; (force-mode-line-update)
            (setq active-theme 'nano-theme-light))))
 
 ;;; Gruvbox Theme
@@ -387,13 +386,33 @@
 
 
 
-;;; Set Theme
-;; call theme of choice
+;;; Modus Operandi Theme
+(use-package modus-themes
+  :disabled
+  :straight t
+  :init
+  (modus-themes-load-themes)
+  :config
+  (modus-themes-load-vivendi))
 
-(nano-theme-dark)
-;; (nano-theme-light)
-;; (nano-theme--mode-line)
-;; (cpm/solarized-dark)
+;;; Set Theme by Timer
+;; Inspired by https://github.com/hmatheisen/theme-switcher
+;; When emacs is launched in the evening automatically load the dark theme
+;; set to dark theme after 6pm
+(defvar day-hour 08
+  "The hour when the theme goes from dark to light in the morning. Default is 8am. ")
+
+(defvar night-hour 18
+  "The hour when the theme goes from light to dark in the evening. Default is 6pm.")
+
+(let ((now (string-to-number (format-time-string "%H"))))
+  (if (and (>= now day-hour) (< now night-hour))
+      (progn
+        (cpm/osx-menubar-theme-dark)
+        (nano-theme-light))
+    (progn
+      (cpm/osx-menubar-theme-dark)
+      (nano-theme-dark))))
 
 ;;; End Provide Nano Personal
 (provide 'setup-theme)
