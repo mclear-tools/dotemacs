@@ -26,12 +26,15 @@
 
 (setq default-frame-alist
       (append (list
-	           '(font . "RobotoMono Nerd Font:style=Light:size=15")
+	           '(font . "Roboto Mono:style=Light:size=15")
                '(internal-border-width . 24)
                '(left-fringe    . 0)
                '(right-fringe   . 0)
                )))
 
+;; maximize frame
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(setq window-resize-pixelwise t)
 
 ;;;; Frame titlebar
 ;; Theme transparent titlebar
@@ -46,31 +49,15 @@
   :if (eq system-type 'darwin)
   :init (ns-auto-titlebar-mode))
 
-;; (if (display-graphic-p)
-;;     (progn
-;;       ;; start frame of emacs maximized
-;;       ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-;;       ;; new frames
-;;       (setq default-frame-alist
-;;             '(
-;;               (top . 25)
-;;               (left . 275)
-;;               (width . 106) ;; chars
-;;               (height . 60) ;; lines
-;;               ))))
-
-;; no border title
-;; (setq default-frame-alist '((undecorated . t)))
-
-;;;; No frame scroll bars
-(defun cpm/disable-scroll-bars (frame)
-  "Disable scroll bars on new frames"
-  (modify-frame-parameters frame
-                           '((vertical-scroll-bars . nil)
-                             (horizontal-scroll-bars . nil))))
-(add-hook 'after-make-frame-functions 'cpm/disable-scroll-bars)
-
-
+;;;; UI Elements
+(unless (eq window-system 'ns)
+  (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
 
 ;;;; Miniframe
 (use-package mini-frame
@@ -98,7 +85,7 @@
 ;; (set-face-attribute 'default nil :font cpm-font5)
 (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
 (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
-(setq-default line-spacing 0.10)
+;; (setq-default line-spacing 0.10)
 
 
 
