@@ -89,10 +89,10 @@
 (use-package transient
   :after magit
   :demand t
-  :init
-  (setq transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
-  (setq transient-values-file (concat cpm-cache-dir "transient/values.el"))
-  (setq transient-history-file (concat cpm-cache-dir "transient/history.el")))
+  :custom
+  (transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
+  (transient-values-file (concat cpm-cache-dir "transient/values.el"))
+  (transient-history-file (concat cpm-cache-dir "transient/history.el")))
 
 ;; add todos in magit
 (use-package magit-todos
