@@ -57,7 +57,7 @@
 
    "b"  '(:ignore t :which-key "Buffers")
    "ba" 'consult-buffer
-   "bb" 'consult-buffer
+   "bb" 'persp-switch-to-buffer
    ;; "bb" 'helm-mini
    "bc" 'cpm/copy-whole-buffer-to-clipboard
    "bD" 'kill-buffer-and-window
@@ -72,6 +72,7 @@
    "bm" 'helm-evil-markers
    "bn" 'evil-buffer-new
    "bN" 'cpm/new-buffer-new-frame
+   "bp" 'persp-temporarily-display-buffer
    "br" 'revert-buffer
    "bR" 'crux-rename-buffer-and-file
    "bs" 'counsel-switch-buffer-other-window
