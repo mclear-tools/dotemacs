@@ -6,7 +6,9 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
-  :straight org-plus-contrib
+  :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
+             :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
+  ;; :straight org-plus-contrib
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
@@ -1373,6 +1375,29 @@ is non-nil."
 
 
 
+
+;;;; Org Tag Selection
+
+(defun cpm/org-select-tags-completing-read ()
+  "Select tags to add to headline."
+  (interactive)
+  (let* ((current (org-get-tags (point)))
+         (selected (completing-read-multiple "Select org tag(s): " (org-get-buffer-tags))))
+    (alet (-uniq (append (-difference current selected)
+                         (-difference selected current)))
+      (org-set-tags it))))
+
+;;;; Org Copy Link
+;; see https://emacs.stackexchange.com/a/63038/11934
+(defun cpm/org-link-copy-at-point ()
+  (interactive)
+  (save-excursion
+    (let* ((ol-regex "\\[\\[.*?:.*?\\]\\(\\[.*?\\]\\)?\\]")
+           (beg (re-search-backward "\\[\\["))
+           (end (re-search-forward ol-regex))
+           (link-string (buffer-substring-no-properties (match-beginning 0) (match-end 0))))
+      (kill-new link-string)
+      (message "Org link %s is copied." link-string))))
 
 ;;; Provide
 (provide 'setup-org)
