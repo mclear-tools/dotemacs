@@ -4,12 +4,14 @@
 
 ;;;; Icomplete
 (use-package icomplete-vertical
+  :disabled
   :straight (icomplete-vertical :type git :host github :repo "oantolin/icomplete-vertical")
   :hook (after-init . icomplete-vertical-mode)
   :general
   (:keymaps 'icomplete-minibuffer-map
    "C-v"    'icomplete-vertical-toggle
    "RET"    'icomplete-force-complete-and-exit
+   "TAB"    'icomplete-force-complete-and-exit
    "C-M-i"  'minibuffer-complete
    "M-RET"  'exit-minibuffer
    "<down>" 'icomplete-forward-completions
@@ -19,6 +21,7 @@
   :custom
   (icomplete-show-matches-on-no-input t)
   (icomplete-hide-common-prefix nil)
+  (icomplete-compute-delay 0.0)
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
@@ -26,11 +29,14 @@
   (icomplete-mode)
   (icomplete-vertical-mode))
 
+
 ;;;; Orderless
 ;; ordering of narrowed candidates
 (use-package orderless
   :straight t
-  :init (icomplete-mode)
+  :after consult
+  :demand t
+  ;; :init (icomplete-mode)
   :custom (completion-styles '(orderless)))
 
 ;;;; Selectrum
@@ -38,7 +44,7 @@
 ;; Icomplete is less buggy and orderless works well.
 
 (use-package selectrum
-  :disabled
+  ;; :disabled
   :straight t
   :demand t
   :general
@@ -50,25 +56,26 @@
    "C-j"    'selectrum-next-candidate
    "<up>"   'selectrum-previous-candidate
    "C-k"    'selectrum-previous-candidate)
-  :init
-  (setq selectrum-extend-current-candidate-highlight nil)
-  (setq selectrum-num-candidates-displayed 15)
-  (setq selectrum-fix-minibuffer-height t)
   :custom-face
   (selectrum-primary-highlight ((t (:weight bold :foreground "#EBCB8B"))))
+  (selectrum-secondary-highlight ((t (:weight bold :foreground "#81A1C1"))))
   :config
-  (selectrum-mode +1)
-  (defun cpm/selectrum-hook ()
-    (hl-line-mode 0))
-  (add-hook 'selectrum-mode-hook 'cpm/selectrum-hook))
+  (setq selectrum-num-candidates-displayed 10)
+  (setq selectrum-fix-vertical-window-height t)
+  (setq selectrum-extend-current-candidate-highlight t)
+  (setq selectrum-count-style 'matches)
+  (setq selectrum-refine-candidates-function #'orderless-filter)
+  (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
+  (selectrum-mode +1))
 
 
 (use-package selectrum-prescient
-  :disabled
+  ;; :disabled
   :straight t
   :config
   (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
-  (selectrum-prescient-mode +1))
+  (selectrum-prescient-mode +1)
+  (prescient-persist-mode))
 
 
 
@@ -110,7 +117,7 @@
   )
 
 (use-package embark-consult
-  :straight nil
+  :straight (embark :type git :host github :repo "oantolin/embark")
   :after (embark consult)
   :demand t ; only necessary if you have the hook below
   ;; if you want to have consult previews as you move around an
@@ -224,13 +231,15 @@
 
 ;;;; Yasnippet
 (use-package yasnippet
-  :hook (after-init . yas-global-mode)
+  ;; :hook (after-init . yas-global-mode)
+  :defer 2
   :config
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
     (setq-local yas-buffer-local-condition
                 '(not (org-in-src-block-p t))))
   (add-hook 'org-mode-hook #'cpm/yas-org-mode-hook)
+  (yas-global-mode)
 
   ;; snippet directory
   (setq yas-snippet-dirs '("~/.emacs.d/.local/snippets/cpm-snippets"
