@@ -182,7 +182,6 @@
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
-
 ;;; Personal Information
 ;; Give emacs some personal info
 (setq user-full-name "Colin McLear"
@@ -235,9 +234,10 @@
 (defun cpm/find-files-setup-config-directory ()
   "use ido to find setup files"
   (interactive)
+  (require 'projectile)
   (projectile-find-file-in-directory cpm-setup-dir))
-  ;; (setq ido-enable-flex-matching t)
-  ;; (ido-find-file-in-dir cpm-setup-dir))
+;; (setq ido-enable-flex-matching t)
+;; (ido-find-file-in-dir cpm-setup-dir))
 ;; (helm-find-files-1 cpm-setup-dir))
 
 ;; Function to search in config files
@@ -307,12 +307,15 @@
   (cpm/delete-byte-compiled-files)
   (byte-recompile-directory user-emacs-directory 0 t))
 
+;;;; After Startup
+
 ;; reset file-name-handler-alist
 (add-hook 'emacs-startup-hook (lambda ()
-                                (setq file-name-handler-alist cpm--file-name-handler-alist)))
-
-;; Startup time
-(message (format "Emacs ready in %.2f seconds with %d garbage collections."
-                 (float-time
-                  (time-subtract after-init-time before-init-time)) gcs-done))
-(put 'narrow-to-page 'disabled nil)
+                                (setq file-name-handler-alist cpm--file-name-handler-alist)
+                                ;; reset garbage collection
+                                (setq gc-cons-threshold 800000)
+                                ;; Startup time
+                                (message (format "Emacs ready in %.2f seconds with %d garbage collections."
+                                                 (float-time
+                                                  (time-subtract after-init-time before-init-time)) gcs-done)
+                                         (put 'narrow-to-page 'disabled nil))))
