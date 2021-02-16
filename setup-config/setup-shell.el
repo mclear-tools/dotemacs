@@ -92,6 +92,8 @@
    "P" #'vterm-yank)
   :custom (vterm-install t)
   :config
+  (eval-when-compile
+    (setq vterm-always-compile-module t))
   (setq vterm-keymap-exceptions nil)
   ;; set colors -- this is best with dark solarized right now
   (setq vterm-kill-buffer-on-exit t)
