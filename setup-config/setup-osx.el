@@ -105,11 +105,19 @@ This will use the command `open' with the message URL."
     (start-process (concat "open message:" message-id) nil
                    "open" (concat "message://" (substring message-id 2) ""))))
 
-
-
-(provide 'setup-osx)
 ;;;; Homebrew
 (use-package homebrew
   :straight (homebrew :host github :repo "jdormit/homebrew.el")
   :commands
   (homebrew-install homebrew-upgrade homebrew-update homebrew-edit homebrew-info homebrew-package-info))
+
+;;;; Security Keychain
+;; Seehttps://www.reddit.com/r/emacs/comments/ew75ib/emacs_mu4e_and_mbsync_setup_for_fastmail_on_macos/fg23tcj?utm_source=share&utm_medium=web2x&context=3
+(eval-after-load 'auth-source
+  '(when (member window-system '(mac ns))
+     (add-to-list 'auth-sources 'macos-keychain-internet)
+     (add-to-list 'auth-sources 'macos-keychain-generic)))
+
+
+;;; End OSX Settings
+(provide 'setup-osx)
