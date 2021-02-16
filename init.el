@@ -148,7 +148,7 @@
   :init
   (setq gnutls-verify-error t
         gnutls-min-prime-bits 3072))
-  ;; (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem"))
+;; (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem"))
 
 ;; (setq gnutls-verify-error t
 ;;       tls-checktrust gnutls-verify-error
@@ -219,6 +219,7 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
+(require 'setup-email)
 
 ;; (require 'setup-timer)
 ;; (require 'setup-modeline)
