@@ -294,6 +294,27 @@
  :keymaps 'override
  "s-4" 'cpm/open-new-terminal-and-workspace)
 
+;;;; Open Mu4e Email in Workspace
+(defun cpm/open-email-in-workspace ()
+  "open agenda in its own perspective"
+  (interactive)
+  (if (get-buffer "*mu4e-main*")
+      (progn
+        (persp-switch "Email")
+        ;; (eyebrowse-switch-to-window-config-1)
+        (switch-to-buffer "*mu4e-main*")
+        (delete-other-windows))
+    (progn
+      (persp-switch "Email")
+      ;; (setq frame-title-format '("" "%b"))
+      (mu4e)
+      (persp-add-buffer "*mu4e-main*"))))
+
+(general-define-key
+ :states '(insert normal motion emacs)
+ :keymaps 'override
+ "s-5" 'cpm/open-email-in-workspace)
+
 
 ;;;; Open New Buffer in Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
