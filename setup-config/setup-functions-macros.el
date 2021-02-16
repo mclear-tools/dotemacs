@@ -566,7 +566,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                    end if"))
 
 
-
+;;;; Mailmate save mail and kill client
+;; Save buffer and exit emacsclient for Mailmate
+(defun cpm/email-save-and-kill ()
+  (interactive)
+  (save-buffer)
+  (server-edit))
 ;;;; Helm Projectile
 (defun cpm/helm-projectile-find-file-other-window ()
   "Find a file in a project and open in a vertical split"

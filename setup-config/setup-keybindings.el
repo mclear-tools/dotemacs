@@ -161,7 +161,8 @@
    ;; "D" #'cpm/deer-split-window
    "E" 'cpm/call-emacs
    ;; "e" 'server-edit
-   "e" 'cpm/org-to-mail-rtf
+   "e" 'cpm/email-save-and-kill
+   ;; "e" 'cpm/org-to-mail-rtf
    "G" 'general-describe-keybindings
    ;; "j" 'avy-goto-char
    "k" 'consult-yank-pop
@@ -178,6 +179,7 @@
    ;; "'" 'shell-pop
    ;; "\\" 'vterm-toggle-cd
    "\\" 'multi-vterm-dedicated-toggle
+   "," 'pulse-line
    "." 'quick-commit
    ";" 'evil-commentary-line
    "[" 'cpm/previous-user-buffer
