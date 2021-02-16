@@ -243,6 +243,11 @@
           (insert description)))))
 
 
+;;;; Engrave Faces
+(use-package engrave-faces
+  :straight (:type git :host github :repo "tecosaur/engrave-faces")
+  :after org
+  :demand t)
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
