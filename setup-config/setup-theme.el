@@ -128,46 +128,6 @@
     (set-face 'magit-section-highlight 'nano-face-critical)))
 
 
-;;; Disable All Custom Themes
-;; function to disable all themes
-(defun cpm/disable-all-themes ()
-  "disable all active themes."
-  (interactive)
-  (dolist (i custom-enabled-themes)
-    (disable-theme i)))
-
-;;; Toggle Menubar
-;; toggle menubar to light or dark
-(defun cpm/osx-toggle-menubar-theme ()
-  "toggle menubar to dark or light using shell command"
-  (interactive)
-  (shell-command "dark-mode"))
-(defun cpm/osx-menubar-theme-light ()
-  "turn dark mode off"
-  (interactive)
-  (shell-command "dark-mode off"))
-(defun cpm/osx-menubar-theme-dark ()
-  "turn dark mode on"
-  (interactive)
-  (shell-command "dark-mode on"))
-
-;;; Theme & menubar toggle
-;; Coordinate setting of theme with os theme
-(setq active-theme 'nano-theme-dark)
-(defun toggle-dark-light-theme ()
-  (interactive)
-  (if (eq active-theme 'nano-theme-light)
-      (progn (cpm/osx-menubar-theme-dark)
-             ;; (cpm/disable-all-themes)
-             (nano-theme-dark)
-             ;; (force-mode-line-update)
-             (setq active-theme 'nano-theme-dark))
-    (progn (cpm/osx-menubar-theme-light)
-           ;; (cpm/disable-all-themes)
-           (nano-theme-light)
-           ;; (force-mode-line-update)
-           (setq active-theme 'nano-theme-light))))
-
 ;;; Gruvbox Theme
 (use-package gruvbox-theme
   :straight t
@@ -395,24 +355,76 @@
   :config
   (modus-themes-load-vivendi))
 
+
+;;; Disable All Custom Themes
+;; function to disable all themes
+(defun cpm/disable-all-themes ()
+  "disable all active themes."
+  (interactive)
+  (dolist (i custom-enabled-themes)
+    (disable-theme i)))
+
+;;; Toggle Menubar
+;; toggle menubar to light or dark
+(defun cpm/osx-toggle-menubar-theme ()
+  "toggle menubar to dark or light using shell command"
+  (interactive)
+  (shell-command "dark-mode"))
+(defun cpm/osx-menubar-theme-light ()
+  "turn dark mode off"
+  (interactive)
+  (shell-command "dark-mode off"))
+(defun cpm/osx-menubar-theme-dark ()
+  "turn dark mode on"
+  (interactive)
+  (shell-command "dark-mode on"))
+
+;;; Theme & menubar toggle
+;; Coordinate setting of theme with os theme
+;; (setq active-theme 'nano-theme-light)
+(defun toggle-dark-light-theme ()
+  (interactive)
+  (if (eq active-theme 'nano-theme-light)
+      (progn (cpm/osx-menubar-theme-dark)
+             ;; (cpm/disable-all-themes)
+             (nano-theme-dark)
+             ;; (force-mode-line-update)
+             (setq active-theme 'nano-theme-dark))
+    (progn (cpm/osx-menubar-theme-light)
+           ;; (cpm/disable-all-themes)
+           (nano-theme-light)
+           ;; (force-mode-line-update)
+           (setq active-theme 'nano-theme-light))))
+
 ;;; Set Theme by Timer
 ;; Inspired by https://github.com/hmatheisen/theme-switcher
 ;; When emacs is launched in the evening automatically load the dark theme
 ;; set to dark theme after 6pm
-(defvar day-hour 08
-  "The hour when the theme goes from dark to light in the morning. Default is 8am. ")
+;; (defvar day-hour 08
+;;   "The hour when the theme goes from dark to light in the morning. Default is 8am. ")
 
-(defvar night-hour 18
-  "The hour when the theme goes from light to dark in the evening. Default is 6pm.")
+;; (defvar night-hour 18
+;;   "The hour when the theme goes from light to dark in the evening. Default is 6pm.")
 
-(let ((now (string-to-number (format-time-string "%H"))))
-  (if (and (>= now day-hour) (< now night-hour))
-      (progn
-        (cpm/osx-menubar-theme-dark)
-        (nano-theme-light))
-    (progn
-      (cpm/osx-menubar-theme-dark)
-      (nano-theme-dark))))
+;; (let ((now (string-to-number (format-time-string "%H"))))
+;;   (if (and (>= now day-hour) (< now night-hour))
+;;       (progn
+;;         (cpm/osx-menubar-theme-light)
+;;         (nano-theme-light))
+;;     (progn
+;;       (cpm/osx-menubar-theme-dark)
+;;       (nano-theme-dark))))
+
+;;; System Appearance Hook
+;; See https://github.com/d12frosted/homebrew-emacs-plus#system-appearance-change
+(defun cpm/system-apply-theme (appearance)
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (progn (nano-theme-light) (setq active-theme 'nano-theme-light)))
+    ('dark (progn (nano-theme-dark) (setq active-theme 'nano-theme-dark)))))
+
+(add-hook 'ns-system-appearance-change-functions #'cpm/system-apply-theme)
 
 ;;; End Provide Nano Personal
 (provide 'setup-theme)
