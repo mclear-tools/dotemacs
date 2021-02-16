@@ -63,7 +63,7 @@
   (setq selectrum-num-candidates-displayed 10)
   (setq selectrum-fix-vertical-window-height t)
   (setq selectrum-extend-current-candidate-highlight t)
-  (setq selectrum-count-style 'matches)
+  (setq selectrum-count-style 'current/matches)
   (setq selectrum-refine-candidates-function #'orderless-filter)
   (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
   (selectrum-mode +1))
@@ -163,7 +163,7 @@
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
   :config
-  (setq consult-locate-command '("mdfind" "-name"))
+  (setq consult-locate-command "mdfind -name ARG OPTS")
   ;; Optionally configure a function which returns the project root directory
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-root-function #'projectile-project-root)
