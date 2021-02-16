@@ -161,6 +161,7 @@
 
 (defun pulse-line (&rest _)
   "Pulse the current line."
+  (interactive)
   (pulse-momentary-highlight-one-line (point)))
 
 (dolist (command '(scroll-up-command scroll-down-command
