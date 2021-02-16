@@ -184,26 +184,12 @@ Instead it's simpler to use bash."
     (add-hook 'post-command-hook 'rasmus/org-prettify-src t t))
   (add-hook 'org-mode-hook #'rasmus/org-prettify-symbols))
 
-;;; FIXME Org Show Markup/Pretty Entities
-;; show markup at point
-;; Doesn't seem to work reliably
-;; https://www.reddit.com/r/orgmode/comments/43uuck/temporarily_show_emphasis_markers_when_the_cursor
-(defun cpm/org-show-emphasis-markers-at-point ()
-  (save-match-data
-    (if (and (org-in-regexp org-emph-re 2)
-             (>= (point) (match-beginning 3))
-             (<= (point) (match-end 4))
-             (member (match-string 3) (mapcar 'car org-emphasis-alist)))
-        (with-silent-modifications
-          (remove-text-properties
-           (match-beginning 3) (match-beginning 5)
-           '(invisible org-link)))
-      (apply 'font-lock-flush (list (match-beginning 3) (match-beginning 5))))))
-
-;; (add-hook 'post-command-hook
-;;           'cpm/org-show-emphasis-markers-at-point nil t)
-
-
+;;; Org Show Markup/Pretty Entities
+;; show markup at point -- this should be part of org!
+(use-package org-appear
+  :straight (:type git :host github :repo "awth13/org-appear")
+  :commands (org-appear-mode)
+  :hook (org-mode . org-appear-mode))
 
 ;;; Org-Reveal
 (use-package ox-reveal
@@ -1087,5 +1073,18 @@ Instead it's simpler to use bash."
               ((eq 'html backend)
                (format "<a href=\"outlook:%s\">%s</a>" path desc))))))
 
+;;; Org Tree Slides
+(use-package org-tree-slide
+  :straight t
+  :general
+  (:states '(normal motion)
+   :keymaps 'org-tree-slide-mode-map
+   "C-j" 'org-tree-slide-move-next-tree
+   "C-k" 'org-tree-slide-move-previous-tree
+   "C-s C-c" 'org-tree-slide-content)
+  :config
+  (setq org-tree-slide-skip-outline-level 4)
+  (org-tree-slide-narrowing-control-profile)
+  (setq org-tree-slide-skip-done nil))
 ;;; Provide Org Extensions
 (provide 'setup-org-extensions)
