@@ -6,12 +6,16 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
-  :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
-             :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
-  ;; :straight org-plus-contrib
+  ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
+  ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
+  :straight org-plus-contrib
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
+  :custom-face
+  ;; strikethrough done headings
+  (org-headline-done ((t (:inherit variable-pitch :strike-through t))))
+  (org-agenda-done ((t (:inherit variable-pitch :strike-through t))))
   :init
 ;;; Org Settings
 ;;;; Org Directories
@@ -22,9 +26,12 @@
 
 ;;;; Org Config Settings
   :config
+  ;; (require 'org-fold)   ;; hack to make org and evil-surround work right now FIXME
+  (setq org-latex-listings 'engraved) ;; relies on engrave-faces package for highlighting
   (add-hook 'org-mode-hook #'visual-line-mode)
   (setq org-stuck-projects (quote ("" nil nil "")))
   (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
+  (setf org-export-with-smart-quotes t)
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-return-follows-link t ;; make RET follow links
                 org-list-allow-alphabetical t ;; allow alphabetical list
@@ -46,8 +53,7 @@
                 ;; additionally expand text and move focus to the expected point.
                 org-catch-invisible-edits 'show-and-error
                 org-imenu-depth 8
-                imenu-auto-rescan t
-                org-export-with-smart-quotes t)
+                imenu-auto-rescan t)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 
@@ -436,12 +442,12 @@ _vr_ reset      ^^                       ^^                 ^^
            "**** %<%H:%M>\n%?")
           ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
            "* %? :link: \n%(grab-mac-link 'firefox 'org)")
-          ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-           "* TODO %? :email: \n%(org-mac-outlook-message-get-links)")
+          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
+          ;;  "* TODO %? :email: \n%(org-mac-outlook-message-get-links)")
           ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
           ;;  "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
-          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-          ;;  "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
+          ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
+           "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
           ("M" "UNL Merit Review" entry (file ,(concat org-directory "merit-reviews.org"))
@@ -712,7 +718,9 @@ _vr_ reset      ^^                       ^^                 ^^
 (defun cpm/goto-org-files ()
   "goto org-files directory"
   (interactive)
-  (ido-find-file-in-dir org-directory))
+  (require 'projectile)
+  (projectile-find-file-in-directory org-directory))
+;; (ido-find-file-in-dir org-directory))
 (defun cpm/goto-inbox.org ()
   "goto org-inbox"
   (interactive)
@@ -1357,11 +1365,15 @@ is non-nil."
 ;;;; Org to beamer slides or handout
 (defun cpm/org-export-beamer-presentation ()
   (interactive)
-  (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation"))))
+  (save-excursion
+    (goto-char (point-min))
+    (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation")))))
 
 (defun cpm/org-export-beamer-handout ()
   (interactive)
-  (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-handout"))))
+  (save-excursion
+    (goto-char (point-min))
+    (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-handout")))))
 
 
 ;;;; Org Export Last Subtree
