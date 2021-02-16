@@ -10,6 +10,9 @@
   (:states '(normal motion)
    "gb" #'evil-jump-backward
    "gf" #'evil-jump-forward)
+  :custom
+  ;; Set undo system
+  (evil-undo-system 'undo-redo)
   :config
   (progn
     ;; move over visual lines like normal lines
@@ -48,8 +51,6 @@
     (setq evil-cross-lines nil)
     ;; Use counsel to provide :ls
     (evil-ex-define-cmd "buffers" 'consult-buffer)
-    ;; Set undo system
-    (setq evil-undo-system 'undo-redo)
     ;; fine-grained undo
     (setq evil-want-fine-undo t)
     ;; evil everywhere
@@ -74,16 +75,16 @@
   (:states '(visual)
    "s" 'evil-surround-region
    "S" 'evil-substitute)
-  :config (global-evil-surround-mode 1))
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package evil-embrace
   :after evil-surround
-  :hook ((text prog) . embrace-org-mode-hook)
+  :demand t
   :config
-  (with-eval-after-load 'evil-surround
-    (evil-embrace-enable-evil-surround-integration))
-  (setq evil-embrace-show-help-p nil)
   (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+  (evil-embrace-enable-evil-surround-integration)
+  (setq evil-embrace-show-help-p nil)
   (defun embrace-markdown-mode-hook ()
     (dolist (lst '((?* "*" . "*")
                    (?\ "\\" . "\\")
