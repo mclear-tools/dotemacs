@@ -16,10 +16,16 @@
   (setq mu4e-attachments-dir "~/Downloads")
 
   ;; Viewing
-  (setq mu4e-headers-date-format "%d/%m/%Y")
+  (setq mu4e-headers-date-format "%Y-%m-%d %H:%M:%S"
+        mu4e-headers-fields '((:date . 20)
+			                  (:flags . 5)
+			                  (:mailing-list . 10)
+			                  (:from-or-to . 25)
+			                  (:subject . nil)))
   (setq mu4e-speedbar-support t)
   (setq mu4e-use-fancy-chars t)
   ;; how to handle html-formatted emails
+  ;; NOTE: superseded by xwidget support -- see mu4e-views below
   (setq mu4e-html2text-command 'mu4e-shr2text)
   (add-to-list 'mu4e-view-actions '("view in browser" . mu4e-action-view-in-browser) t)
   ;; Other options for rendering
@@ -84,8 +90,48 @@
                   (mu4e-drafts-folder  . "/Fastmail/Drafts")
                   (mu4e-sent-folder  . "/Fastmail/Sent")
                   (mu4e-refile-folder  . "/Fastmail/Archive")
-                  (mu4e-trash-folder  . "/Fastmail/Trash")))))
-  )
+                  (mu4e-trash-folder  . "/Fastmail/Trash"))))))
+
+;;; Better Viewing Mu4e Views
+;; This makes mu4e render html emails in emacs via xwidgets.
+;; It basically reproduces a modern email client experience. Depends on compiling emacs with xwidgets
+;; to check that exwidgets are installed
+;; evaluate (xwidget-webkit-browse-url "https://www.gnu.org/")
+
+(use-package mu4e-views
+  :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views")
+  :after mu4e
+  :demand t
+  :general
+  (:states '(normal motion) :keymaps 'mu4e-headers-mode-map
+   "v"  #'mu4e-views-mu4e-select-view-msg-method)
+  :config
+  (setq mu4e-views-completion-method 'default) ;; use default for completion
+  (setq mu4e-views-default-view-method "html") ;; make xwidgets default
+  (mu4e-views-mu4e-use-view-msg-method "html") ;; select the default
+  (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window) ;; when pressing n and p stay in the current window
+  (setq mu4e-views-auto-view-selected-message t)) ;; automatically open messages when moving in the headers view)
+
+;;; Mu4e Thread Folding
+(use-package mu4e-thread-folding
+  :straight (mu4e-thread-folding :type git :host github :repo "rougier/mu4e-thread-folding")
+  :after mu4e
+  :config
+  (add-to-list 'mu4e-header-info-custom
+               '(:empty . (:name "Empty"
+                           :shortname ""
+                           :function (lambda (msg) "  "))))
+  (setq mu4e-headers-fields '((:empty         .    2)
+                              (:human-date    .   12)
+                              (:flags         .    6)
+                              (:mailing-list  .   10)
+                              (:from          .   22)
+                              (:subject       .   nil)))
+  (define-key mu4e-headers-mode-map (kbd "<tab>")     'mu4e-headers-toggle-at-point)
+  (define-key mu4e-headers-mode-map (kbd "<left>")    'mu4e-headers-fold-at-point)
+  (define-key mu4e-headers-mode-map (kbd "<S-left>")  'mu4e-headers-fold-all)
+  (define-key mu4e-headers-mode-map (kbd "<right>")   'mu4e-headers-unfold-at-point)
+  (define-key mu4e-headers-mode-map (kbd "<S-right>") 'mu4e-headers-unfold-all))
 
 ;;; HTML Email (Org-Mime)
 (use-package org-mime
@@ -95,12 +141,17 @@
   (setq org-mime-export-options '(:section-numbers nil
                                   :with-author nil
                                   :with-toc nil)))
+
+;;; Mu4e Icons
+(use-package mu4e-marker-icons
+  :straight t
+  :after mu4e
+  :init (mu4e-marker-icons-mode 1))
+
 ;;; Mu4e Dashboard
 (use-package mu4e-dashboard
   :straight (:host github :type git :repo "rougier/mu4e-dashboard")
-  :after mu4e
-  :config
-  (mu4e-dashboard-mode))
+  :after mu4e)
 
 ;;; End Setup Email
 
