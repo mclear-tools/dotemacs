@@ -646,6 +646,7 @@ Instead it's simpler to use bash."
 
 ;;;; Ox-Pandoc
 (use-package ox-pandoc
+  :straight (:type git :host github :repo "mclear-tools/ox-pandoc")
   :after ox
   :config
   ;; default options for all output formats
