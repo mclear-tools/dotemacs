@@ -107,7 +107,8 @@
 ;;;; Org Entities
   (setq org-entities-user
         '(("nec" "\Box" nil "◻" "" "" "◻")
-          ("pos" "\Diamond" nil "◇" "" "" "◇")))
+          ("pos" "\Diamond" nil "◇" "" "" "◇")
+          ("space" "~" nil "&nbsp;" " " " " " ")))
   (add-hook 'org-mode-hook
             (lambda ()
               (centered-cursor-mode)
@@ -282,10 +283,10 @@
       (if pos (goto-char pos))
       (if backwards (goto-char (line-beginning-position)))))
 
-  (with-eval-after-load 'org-agenda
-    (general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
-      "J" 'air-org-agenda-next-header
-      "K" 'air-org-agenda-previous-header))
+  ;; (with-eval-after-load 'org-agenda
+  ;;   (general-define-key :keymaps 'org-agenda-mode-map :states '(normal motion)
+  ;;     "J" 'air-org-agenda-next-header
+  ;;     "K" 'air-org-agenda-previous-header))
 
   (defun air-org-skip-subtree-if-habit ()
     "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
@@ -1367,7 +1368,9 @@ is non-nil."
   (interactive)
   (save-excursion
     (goto-char (point-min))
-    (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation")))))
+    (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation"))))
+
+;; (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation")))))
 
 (defun cpm/org-export-beamer-handout ()
   (interactive)
