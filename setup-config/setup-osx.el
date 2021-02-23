@@ -50,6 +50,15 @@
     :config
     (setq delete-by-moving-to-trash t))
 
+  ;; this might also work NOTE: not tested!
+  ;; https://emacs.stackexchange.com/a/63342/11934
+  (defun cpm/system-move-file-to-trash (filename)
+    "Move file or directory named FILENAME to the trash."
+    (ns-do-applescript
+     (format
+      "tell application \"Finder\" to delete POSIX file \"%s\""
+      filename)))
+
   ;; (Do not) make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)
 
