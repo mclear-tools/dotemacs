@@ -45,6 +45,11 @@
                            (message "Garbage Collector has run for %.06fsec"
                                     (k-time (garbage-collect)))))))
 
+;;;; Native Comp
+;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
+;; https://akrl.sdf.org/gccemacs.html#org335c0de
+;; (setq comp-speed 2
+;;       comp-deferred-compilation t)
 
 ;;;; Prefer Newer files
 ;; prefer newer versions
@@ -80,12 +85,6 @@
 
 ;; Do not allow loading from the package cache (same reason).
 (setq package-quickstart nil)
-
-;; for native comp
-;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
-(setq comp-speed 2)
-
-
 
 ;;; Clean View
 ;; Disable start-up screen
