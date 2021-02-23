@@ -43,8 +43,10 @@
     (run-with-idle-timer 15 t 'evil-normal-state)
     ;; don't echo evil state
     (setq evil-echo-state t)
-    ;; don't move cursor back when exiting insert state
-    (setq evil-move-cursor-back nil)
+    ;; Make evil cursor behavior more emacsy
+    (setq evil-move-cursor-back nil) ;; don't move cursor back when exiting insert state
+    (setq evil-move-beyond-eol t) ;; allow end of line movement
+    (setq evil-highlight-closing-paren-at-point-states nil)
     ;; edit by visual lines
     (setq evil-respect-visual-line-mode nil)
     ;; whether to allow evil-char move across lines
