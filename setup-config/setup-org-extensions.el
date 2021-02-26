@@ -189,7 +189,11 @@ Instead it's simpler to use bash."
 (use-package org-appear
   :straight (:type git :host github :repo "awth13/org-appear")
   :commands (org-appear-mode)
-  :hook (org-mode . org-appear-mode))
+  :hook (org-mode . org-appear-mode)
+  :init
+  (setq org-appear-autoemphasis  t)
+  (setq org-appear-autolinks t)
+  (setq org-appear-autosubmarkers t))
 
 ;;; Org-Reveal
 (use-package ox-reveal
@@ -1084,8 +1088,19 @@ Instead it's simpler to use bash."
    "C-k" 'org-tree-slide-move-previous-tree
    "C-s C-c" 'org-tree-slide-content)
   :config
+  (setq org-tree-slide-activate-message "Presentation mode ON")
+  (setq org-tree-slide-deactivate-message "Presentation mode OFF")
+  (setq org-tree-slide-breadcrumbs "    >    ")
+  (setq org-tree-slide-content-margin-top 4)
   (setq org-tree-slide-skip-outline-level 4)
   (org-tree-slide-narrowing-control-profile)
-  (setq org-tree-slide-skip-done nil))
+  (setq org-tree-slide-skip-done nil)
+  (setq org-tree-slide-modeline-display nil))
+;;; Org Autolist (Smart Lists)
+;; Better list behavior
+(use-package org-auto-list
+  :straight (:type git :host github :repo "calvinwyoung/org-autolist")
+  :hook (org-mode . org-autolist-mode))
+
 ;;; Provide Org Extensions
 (provide 'setup-org-extensions)
