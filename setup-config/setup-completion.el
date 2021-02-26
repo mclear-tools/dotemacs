@@ -29,16 +29,6 @@
   (icomplete-mode)
   (icomplete-vertical-mode))
 
-
-;;;; Orderless
-;; ordering of narrowed candidates
-(use-package orderless
-  :straight t
-  :after consult
-  :demand t
-  ;; :init (icomplete-mode)
-  :custom (completion-styles '(orderless)))
-
 ;;;; Selectrum
 ;; selectrum is nice but I think I like Icomplete better
 ;; Icomplete is less buggy and orderless works well.
@@ -46,7 +36,6 @@
 (use-package selectrum
   ;; :disabled
   :straight t
-  :demand t
   :general
   (:keymaps 'selectrum-minibuffer-map
    ;; "RET"    'icomplete-force-complete-and-exit
@@ -56,27 +45,34 @@
    "C-j"    'selectrum-next-candidate
    "<up>"   'selectrum-previous-candidate
    "C-k"    'selectrum-previous-candidate)
-  :custom-face
-  (selectrum-primary-highlight ((t (:weight bold :foreground "#EBCB8B"))))
-  (selectrum-secondary-highlight ((t (:weight bold :foreground "#81A1C1"))))
   :config
   (setq selectrum-num-candidates-displayed 10)
   (setq selectrum-fix-vertical-window-height t)
   (setq selectrum-extend-current-candidate-highlight t)
   (setq selectrum-count-style 'current/matches)
-  (setq selectrum-refine-candidates-function #'orderless-filter)
   (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
+  (setq selectrum-refine-candidates-function #'orderless-filter)
   (selectrum-mode +1))
 
-
 (use-package selectrum-prescient
-  ;; :disabled
   :straight t
+  :after selectrum
+  :custom-face
+  (selectrum-prescient-primary-highlight ((t (:weight bold :foreground "#EBCB8B"))))
+  (selectrum-prescient-secondary-highlight ((t (:weight bold :foreground "#81A1C1"))))
   :config
   (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
   (selectrum-prescient-mode +1)
   (prescient-persist-mode))
 
+;;;; Orderless
+;; ordering of narrowed candidates
+(use-package orderless
+  :straight t
+  :after selectrum
+  :config
+  (setq completion-styles '(orderless))
+  (setq orderless-skip-highlighting (lambda () selectrum-active-p)))
 
 
 ;;;; Embark
@@ -228,6 +224,12 @@
   (add-to-list 'company-backends 'company-bibtex)
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
   (setq company-bibtex-org-citation-regex "-?cite:"))
+
+(use-package company-prescient
+  :after company
+  :demand t
+  :config
+  (company-prescient-mode t))
 
 ;;;; Yasnippet
 (use-package yasnippet
