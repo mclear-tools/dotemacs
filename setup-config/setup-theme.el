@@ -17,6 +17,7 @@
   (require 'nano-modeline))
 
 
+
 ;;; Nano Themes
 ;;;; Define Nano Themes
 
@@ -353,6 +354,15 @@
   :init
   (modus-themes-load-themes)
   :config
+  (setq modus-themes-bold-constructs t
+        modus-themes-slanted-constructs t
+        modus-themes-syntax "yellow-comments-green-strings"
+        modus-themes-prompts "subtle-accented"
+        modus-themes-mode-line "borderless-moody"
+        modus-themes-completions "moderate"
+        modus-themes-paren-match "subtle-bold"
+        modus-themes-scale-headings t
+        modus-themes-variable-pitch-headings t)
   (modus-themes-load-vivendi))
 
 
