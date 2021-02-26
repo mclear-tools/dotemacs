@@ -35,10 +35,10 @@
     ;; use insert in commits automatically
     (add-hook 'git-commit-mode-hook 'evil-insert-state)
     ;; (evil-set-initial-state 'dashboard-mode 'motion)
-    ;; (evil-set-initial-state 'messages-buffer-mode 'motion)
-    ;; (evil-set-initial-state 'magit-log-edit-mode 'insert)
-    ;; (evil-set-initial-state 'org-agenda-mode 'motion)
-    ;; (evil-set-initial-state 'org-export-dispatch 'motion)
+    (evil-set-initial-state 'messages-buffer-mode 'motion)
+    (evil-set-initial-state 'magit-log-edit-mode 'insert)
+    (evil-set-initial-state 'org-agenda-mode 'motion)
+    (evil-set-initial-state 'org-export-dispatch 'motion)
     ;; evil-normal-state is preferred, so revert when idle
     (run-with-idle-timer 15 t 'evil-normal-state)
     ;; don't echo evil state
@@ -46,7 +46,8 @@
     ;; Make evil cursor behavior more emacsy
     (setq evil-move-cursor-back nil) ;; don't move cursor back when exiting insert state
     (setq evil-move-beyond-eol t) ;; allow end of line movement
-    (setq evil-highlight-closing-paren-at-point-states nil)
+    ;; highlight closing bracket like vim not emacs
+    (setq evil-highlight-closing-paren-at-point-states '(not emacs insert replace))
     ;; edit by visual lines
     (setq evil-respect-visual-line-mode nil)
     ;; whether to allow evil-char move across lines
