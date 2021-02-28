@@ -27,6 +27,7 @@
 ;;;; Org Config Settings
   :config
   ;; (require 'org-fold)   ;; hack to make org and evil-surround work right now FIXME
+  ;; use timestamp for id
   (setq org-latex-listings 'engraved) ;; relies on engrave-faces package for highlighting
   (add-hook 'org-mode-hook #'visual-line-mode)
   (setq org-stuck-projects (quote ("" nil nil "")))
@@ -68,6 +69,8 @@
 
 ;;;; Org ID
   (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
+  (setq org-id-method 'ts) ;; use timestamp for id
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id) ;; create ids
 
 ;;;; Org State Settings
   (setq org-todo-keywords
@@ -218,23 +221,26 @@
     :config
     (org-super-agenda-mode)
     (setq org-super-agenda-date-format "%A, %e %b")
-    (setq org-super-agenda-groups
-          '((:name "Overdue"
-             :deadline past)
-            (:name "Scheduled"
-             :time-grid t)
-            (:name "Today"
-             :scheduled today
-             :deadline nil)
-            (:name "Due Today"
-             :deadline today)
-            (:name "Upcoming"
-             ;; :deadline future
-             ;; :scheduled future
-             :auto-ts t)
-            ;; (:name "Scheduled"
-            ;;  :scheduled t)
-            ))
+    (let ((two-weeks-from-today (format-time-string "%Y-%m-%d" (org-read-date nil t "+2w"))))
+      (setq org-super-agenda-groups
+            '(
+              (:name "Today"
+               :time-grid t
+               :date today
+               :order 1)
+              (:name "Scheduled earlier"
+               :scheduled past
+               :order 4)
+              (:name "Overdue"
+               :deadline past
+               :order 6)
+              (:name "Due Today"
+               :deadline today
+               :order 8)
+              (:name "Due Soon"
+               :deadline future
+               :order 10)
+              )))
 
     (defun cpm/jump-to-org-super-agenda ()
       (interactive)
