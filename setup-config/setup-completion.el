@@ -34,8 +34,8 @@
 ;; Icomplete is less buggy and orderless works well.
 
 (use-package selectrum
-  ;; :disabled
   :straight t
+  :hook (after-init . selectrum-mode)
   :general
   (:keymaps 'selectrum-minibuffer-map
    ;; "RET"    'icomplete-force-complete-and-exit
