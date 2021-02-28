@@ -922,6 +922,8 @@ Instead it's simpler to use bash."
      "z n"  #'org-roam-new-file
      "z N"  #'org-roam--new-file-named))
   :config
+  ;; use org-id links
+  (setq org-roam-prefer-id-links t)
   ;;;; Org Roam Formatting
   (setq org-roam-date-filename-format "%Y-%m%d-%H%M")
   (setq org-roam-date-title-format "%Y-%m%d-%H%M")
