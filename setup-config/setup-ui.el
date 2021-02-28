@@ -23,10 +23,9 @@
 ;;; Frames
 
 ;;;; Frame defaults
-
 (setq default-frame-alist
       (append (list
-	           '(font . "Roboto Mono:style=Light:size=15")
+	           ;; '(font . "Roboto Mono:style=Light:size=15")
                '(internal-border-width . 24)
                '(left-fringe    . 0)
                '(right-fringe   . 0)
@@ -42,13 +41,6 @@
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 
-;; Fix titlebar titling colors
-;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
-(use-package ns-auto-titlebar
-  :commands ns-auto-titlebar-mode
-  :if (eq system-type 'darwin)
-  :init (ns-auto-titlebar-mode))
-
 ;;;; UI Elements
 (unless (eq window-system 'ns)
   (menu-bar-mode -1))
@@ -58,6 +50,15 @@
   (scroll-bar-mode -1))
 (when (fboundp 'horizontal-scroll-bar-mode)
   (horizontal-scroll-bar-mode -1))
+
+
+;;;; Fix titlebar titling colors
+;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
+(use-package ns-auto-titlebar
+  :commands ns-auto-titlebar-mode
+  :if (eq system-type 'darwin)
+  :init (ns-auto-titlebar-mode))
+
 
 ;;;; Miniframe
 (use-package mini-frame
@@ -73,24 +74,53 @@
   (setq mini-frame-resize t))
 
 ;;; Fonts
-(defvar cpm-font1 (font-spec :family "InconsolataLGC Nerd Font" :size 13))
-(defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
-(defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
-(defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
-(defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
-(defvar cpm-font6 (font-spec :family "RobotoMono Nerd Font" :size 14))
-(defvar cpm-ligatures nil)
-(defvar cpm-vari-font (font-spec :family "Avenir Next" :size 20))
-(defvar cpm-unicode-font (font-spec :family "Symbola"))
+
+;; (defvar cpm-font1 (font-spec :family "InconsolataLGC Nerd Font" :size 13))
+;; (defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
+;; (defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
+;; (defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
+;; (defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
+;; (defvar cpm-font6 (font-spec :family "RobotoMono Nerd Font" :size 14))
+;; (defvar cpm-ligatures nil)
+;; (defvar cpm-vari-font (font-spec :family "Avenir Next" :size 20))
+;; (defvar cpm-unicode-font (font-spec :family "Symbola"))
 ;; (set-face-attribute 'default nil :font cpm-font5)
-(set-face-attribute 'variable-pitch nil :font cpm-vari-font)
-(set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
+;; (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
+;; (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
 ;; (setq-default line-spacing 0.10)
 
+(use-package faces
+  :straight (:type built-in)
+  :defer t
+  :custom
+  (face-font-family-alternatives
+   '(("Monospace" "Roboto Mono" "Hasklug Nerd Font" "InconsolataLGC Nerd Font" "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
+     ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
+     ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
+  :custom-face
+  (variable-pitch ((t (:family "Serif" :height 200))))
+  (fixed-pitch ((t (:family "Monospace Serif" :height 150))))
+  (default ((t (:family "Monospace" :height 150))))
+  :config
+  ;; (set-face-attribute 'default nil :font "Roboto Mono Light" :height 150)
+  ;; (set-face-attribute 'fixed-pitch nil :font "Roboto Mono" :height 150)
+  ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
+  (set-fontset-font t 'unicode "Symbola" nil 'prepend))
 
+(use-package font-lock
+  :straight (:type built-in)
+  :defer t
+  :custom-face
+  (font-lock-comment-face ((t (:inherit font-lock-comment-face :italic t))))
+  (font-lock-doc-face ((t (:inherit font-lock-doc-face :italic t))))
+  (font-lock-string-face ((t (:inherit font-lock-string-face :italic t)))))
 
 
 ;;; Scale Text
+;; Set default line spacing (in pixels)
+(setq-default line-spacing nil)
+;; When using `text-scale-incraese', this sets each 'step' to about one point size.
+(setq text-scale-mode-step 1.08)
 (global-set-key (kbd "s-=") 'text-scale-increase)
 (global-set-key (kbd "s--") 'text-scale-decrease)
 (global-set-key (kbd "s-0") 'text-scale-adjust)
@@ -104,19 +134,14 @@
 
 
 ;;; Dialogs and popups
-
 ;; No file dialog
 (setq use-file-dialog nil)
-
 ;; No dialog box
 (setq use-dialog-box nil)
-
 ;; No confirmation for visiting non-existent files
 (setq confirm-nonexistent-file-or-buffer nil)
-
 ;; Set popup windows
 (setq-default pop-up-windows t)
-
 ;; Set popup frames
 (setq-default pop-up-frames nil)
 

@@ -105,5 +105,15 @@
 ;;; Windows & Buffers
 (setq switch-to-buffer-preserve-window-point 'already-displayed)
 
+;; unique buffers
+(use-package uniquify
+  :straight (:type built-in)
+  :defer 1
+  :config
+  (setq uniquify-buffer-name-style 'reverse
+        uniquify-separator " • "
+        uniquify-after-kill-buffer-p t
+        uniquify-ignore-buffers-re "^\\*"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-windows)
