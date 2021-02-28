@@ -13,20 +13,9 @@
   (if (file-exists-p private)
 	  (load-file private)))
 
-
 ;;;;; Text settings
 ;; Make sure your text files end in a newline
 (setq require-final-newline t)
-
-;; unique buffers
-(use-package uniquify
-  :straight (:type built-in)
-  :defer 1
-  :config
-  (setq uniquify-buffer-name-style 'reverse
-        uniquify-separator " • "
-        uniquify-after-kill-buffer-p t
-        uniquify-ignore-buffers-re "^\\*"))
 
 ;; Keep focus while navigating help buffers
 (setq help-window-select 't)
@@ -41,7 +30,7 @@
 ;; Single space between sentences is more widespread than double
 (setq-default sentence-end-double-space nil)
 
-; Iterate through CamelCase words
+;; Iterate through CamelCase words
 (global-subword-mode 1)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -49,13 +38,6 @@
 (setq-default fill-column 85)
 (global-visual-line-mode)
 (setq line-move-visual t) ;; move via visual lines
-
-;;;;; Search and Replace
-(use-package visual-regexp
-  :commands (vr/query-replace)
-  :config
-  (use-package visual-regexp-steroids
-    :commands (vr/select-query-replace)))
 
 ;;;;; UTF 8
 (setq locale-coding-system 'utf-8)
@@ -73,6 +55,14 @@
 (show-paren-mode t)
 (setq show-paren-delay 0)
 (blink-cursor-mode 0)
+
+;;;;; Search and Replace
+(use-package visual-regexp
+  :commands (vr/query-replace)
+  :config
+  (use-package visual-regexp-steroids
+    :commands (vr/select-query-replace)))
+
 
 ;;;;; Whitespace
 ;; Manage whitespace in prog modes
@@ -114,24 +104,23 @@
          kept-old-versions 0               ; oldest versions to keep when a new numbered backup is made
          kept-new-versions 10              ; newest versions to keep when a new numbered backup is made
          vc-make-backup-files t            ; backup versioned files, which Emacs does not do by default
-
          )
 
-(defun cpm/full-auto-save ()
-  (interactive)
-  (save-excursion
-    (dolist (buf (buffer-list))
-      (set-buffer buf)
-      (if (and (buffer-file-name) (buffer-modified-p))
-          (basic-save-buffer)))))
+  (defun cpm/full-auto-save ()
+    (interactive)
+    (save-excursion
+      (dolist (buf (buffer-list))
+        (set-buffer buf)
+        (if (and (buffer-file-name) (buffer-modified-p))
+            (basic-save-buffer)))))
 
-(add-hook 'auto-save-hook 'cpm/full-auto-save)
+  (add-hook 'auto-save-hook 'cpm/full-auto-save)
 
-;; Save all buffers after idle time
-(run-with-idle-timer 5 t (lambda () (cpm/full-auto-save)))
-;; Save on exit from insert state
-;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
-)
+  ;; Save all buffers after idle time
+  (run-with-idle-timer 5 t (lambda () (cpm/full-auto-save)))
+  ;; Save on exit from insert state
+  ;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
+  )
 
 (use-package backup-walker
   :commands backup-walker-start)
@@ -218,6 +207,8 @@
 
 ;;;; Helpful Information
 (use-package helpful
+  :init
+  (setq evil-lookup-func #'helpful-at-point)
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'helpful-mode 'motion))
