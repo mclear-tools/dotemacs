@@ -20,8 +20,23 @@
 (use-package ace-window
   :commands (ace-window ace-swap-window aw-flip-window cpm/window-exchange))
 
+(use-package emacs-winum
+  :straight (winum :type git :host github :repo "deb0ch/emacs-winum")
+  :hook (after-init . winum-mode)
+  :config
+  (setq window-numbering-scope            'global
+        winum-reverse-frame-list          nil
+        winum-auto-assign-0-to-minibuffer t
+        ;; winum-auto-setup-mode-line        t
+        winum-format                      " %s "
+        ;; winum-mode-line-position          1
+        winum-ignored-buffers             '(" *which-key*")
+        winum-ignored-buffers-regexp      '(" \\*Treemacs-.*")))
+
+
 ;; Numbered window shortcuts for Emacs
 (use-package window-numbering
+  :disabled
   :hook (after-init . window-numbering-mode)
   :config
   (defun window-numbering-install-mode-line (&optional position)
