@@ -219,10 +219,11 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
-(require 'setup-email)
+(require 'setup-modeline)
+;; (require 'setup-email)
+(require 'setup-nano)
 
 ;; (require 'setup-timer)
-;; (require 'setup-modeline)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-posframe)
 
@@ -290,7 +291,6 @@
 ;; Make outline faces look better
 (use-package outline-minor-faces
   :after outline
-  :demand t
   :config (add-hook 'outline-minor-mode-hook
                     'outline-minor-faces-add-font-lock-keywords))
 
