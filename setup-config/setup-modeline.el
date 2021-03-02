@@ -1,134 +1,128 @@
 ;;; Modeline
 
 ;;;; Hide Modeline
-(defvar-local hidden-mode-line-mode nil)
-(defvar-local hide-mode-line nil)
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+(use-package emacs-hide-mode-line
+  :straight (:type git :host github :repo "hlissner/emacs-hide-mode-line")
+  :commands hide-mode-line-mode)
 
-;;;; Doom Modeline
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :custom-face
-  ;; (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
-  (doom-modeline-eyebrowse ((t (:inherit highlight))))
-  (doom-modeline-inactive-bar ((t (:inherit highlight))))
-  :config
-  (setq doom-modeline-bar-width 3
-        ;; doom-modeline-height 38
-        doom-modeline-height 25
-        doom-modeline-buffer-file-name-style 'truncate-upto-project
-        doom-modeline-major-mode-color-icon t
-        doom-modeline-enable-word-count t
-        doom-modeline-persp-name t
-        doom-modeline-buffer-encoding nil
-        doom-modeline-persp-name-icon t
-        find-file-visit-truename t
-        doom-modeline-minor-modes nil)
-
-  ;; Change the evil tag
-  (setq evil-normal-state-tag   (propertize " 🅝" )
-        evil-emacs-state-tag    (propertize " 🅔" )
-        evil-insert-state-tag   (propertize " 🅘" )
-        evil-replace-state-tag  (propertize " 🅡" )
-        evil-motion-state-tag   (propertize " 🅜" )
-        evil-visual-state-tag   (propertize " 🅥" )
-        evil-operator-state-tag (propertize " 🅞" ))
-
-  (doom-modeline-def-segment evil-state
-                             "The current evil state. Requires `evil-mode' to be enabled."
-                             (when (bound-and-true-p evil-local-mode)
-                               (let ((tag (evil-state-property evil-state :tag t)))
-                                 (propertize tag 'face
-                                             (if (doom-modeline--active)
-                                                 (cond ((eq tag evil-normal-state-tag)   '(:foreground "DarkGoldenrod2" :height 1.25))
-                                                       ((eq tag evil-emacs-state-tag)    '(:foreground "SkyBlue2" :height 1.25))
-                                                       ((eq tag evil-insert-state-tag)   '(:foreground "chartreuse3" :height 1.25))
-                                                       ((eq tag evil-motion-state-tag)   '(:foreground "plum3" :height 1.25))
-                                                       ((eq tag evil-replace-state-tag)  '(:foreground "red" :height 1.25))
-                                                       ((eq tag evil-visual-state-tag)   '(:foreground "gray" :height 1.25))
-                                                       ((eq tag evil-operator-state-tag) '(:foreground "red" :height 1.25))))))))
-
-
-  ;; window number faces & formatting
-  (doom-modeline-def-segment window-number
-                             (if (bound-and-true-p window-numbering-mode)
-                                 (propertize (format " %s " (window-numbering-get-number-string))
-                                             'face (if (doom-modeline--active)
-                                                       'doom-modeline-active-window-number
-                                                     'doom-modeline-inactive-window-number))
-                               ""))
-
-  ;; workspace number faces & formatting
-  (doom-modeline-def-segment workspace-name
-                             "The current workspace name or number.
-  Requires `eyebrowse-mode' to be enabled."
-                             (if (and (bound-and-true-p eyebrowse-mode)
-                                      (< 1 (length (eyebrowse--get 'window-configs))))
-                                 (let* ((num (eyebrowse--get 'current-slot))
-                                        (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
-                                        (str (if (and tag (< 0 (length tag)))
-                                                 tag
-                                               (when num (int-to-string num)))))
-                                   (assq-delete-all 'eyebrowse-mode mode-line-misc-info)
-                                   (concat
-                                    (propertize (format " %s " str) 'face
-                                                (if (doom-modeline--active)
-                                                    '(:foreground "#2aa198")
-                                                  'mode-line-inactive))
-                                    (propertize "|" 'face '(:foreground "#586e75"))))))
-
-  ;;
-  ;; Mode line setup
-  ;;
-  (doom-modeline-def-modeline 'cpm/my-doom-mode-line
-                              '(workspace-name window-number bar evil-state buffer-info vcs matches remote-host parrot selection-info)
-                              '(misc-info persp-name input-method buffer-encoding process checker buffer-position " "))
-
-  (defun setup-custom-doom-modeline ()
-    (doom-modeline-set-modeline 'cpm/my-doom-mode-line 'default))
-
-  (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline)
-
-  (defface doom-modeline-active-window-number
-    '((t (:inherit warning)))
-    "Face for active window number segment of the mode-line."
-    :group 'doom-modeline)
-  (defface doom-modeline-inactive-window-number
-    '((t (:inherit mode-line-emphasis)))
-    "Face for inactive window number segment of the mode-line."
-    :group 'doom-modeline)
-
-  :custom-face
-  (doom-modeline-eyebrowse ((t (:inherit highlight))))
-  (doom-modeline-bar ((t (:inherit highlight :inverse-video t :background "#268bd2"))))
-  (doom-modeline-inactive-bar ((t (:inherit highlight)))))
+;;;; Modeline Bell
+(use-package mode-line-bell
+  :straight t
+  :hook (after-init . mode-line-bell-mode))
 
 ;;;; Modeline Position
 
 ;; Put modeline at top of buffer
-;; (setq-default header-line-format (doom-modeline-set-main-modeline))
-;; (setq-default header-line-format mode-line-format)
-;; (setq-default mode-line-format "")
+(setq-default header-line-format mode-line-format)
+(setq-default mode-line-format'(""))
+(setq x-underline-at-descent-line t)
 
+
+;;;; Modeline Underline
+;; set modeline to underline
+;; (set-face-attribute 'mode-line nil
+;;                     :underline (face-foreground 'default)
+;;                     :overline nil
+;;                     :box nil
+;;                     :foreground (face-background 'default)
+;;                     :background (face-background 'default))
+;; (set-face 'mode-line-inactive                            'mode-line)
+
+;;;; Clean Mode Line
+
+(defvar mode-line-cleaner-alist
+  `((auto-complete-mode . " α")
+    (yas/minor-mode . " υ")
+    (paredit-mode . " π")
+    (eldoc-mode . "")
+    (abbrev-mode . "")
+    ;; Major modes
+    (lisp-interaction-mode . "λ")
+    (hi-lock-mode . "")
+    (python-mode . "Py")
+    (emacs-lisp-mode . "EL")
+    (nxhtml-mode . "nx"))
+  "Alist for `clean-mode-line'.
+
+When you add a new element to the alist, keep in mind that you
+must pass the correct minor/major mode symbol and a string you
+want to use in the modeline *in lieu of* the original.")
+
+(defun clean-mode-line ()
+  (interactive)
+  (require'cl)
+  (loop for cleaner in mode-line-cleaner-alist
+        do (let* ((mode (car cleaner))
+                  (mode-str (cdr cleaner))
+                  (old-mode-str (cdr (assq mode minor-mode-alist))))
+             (when old-mode-str
+               (setcar old-mode-str mode-str))
+             ;; major mode
+             (when (eq mode major-mode)
+               (setq mode-name mode-str)))))
+
+(add-hook 'after-change-major-mode-hook 'clean-mode-line)
+
+;;; Header Line
+;;;; Functions for Header Line
+;; https://www.gonsie.com/blorg/modeline.html
+(defun vc-branch ()
+  (if vc-mode
+      (let ((backend (vc-backend buffer-file-name)))
+        (concat "" (substring-no-properties vc-mode
+                                             (+ (if (eq backend 'Hg) 2 3) 2))))  nil))
+
+;; From https://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
+;; ---------------------------------------------------------------------
+(defun shorten-directory (dir max-length)
+  "Show up to `max-length' characters of a directory name `dir'."
+  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+        (output ""))
+    (when (and path (equal "" (car path)))
+      (setq path (cdr path)))
+    (while (and path (< (length output) (- max-length 4)))
+      (setq output (concat (car path) "/" output))
+      (setq path (cdr path)))
+    (when path
+      (setq output (concat "…/" output)))
+    output))
+
+
+
+;;;; Header Line Setup
+
+;; Mode line (this might be slow because of the "☰" that requires substitution)
+;; This line below makes things a bit faster
+(set-fontset-font "fontset-default"  '(#x2600 . #x26ff) "Fira Code 16")
+
+(define-key mode-line-major-mode-keymap [header-line]
+  (lookup-key mode-line-major-mode-keymap [mode-line]))
+
+(defun mode-line-render (left right)
+  (let* ((available-width (- (window-width) (length left) )))
+    (format (format "%%s %%%ds" available-width) left right)))
+(setq-default header-line-format
+              '((:eval
+                 (mode-line-render
+                  (format-mode-line (list
+                                     ;;FIXME this next line throws error at startup
+                                     (format " %s " (winum-get-number-string))
+                                     (propertize "|" 'face `(:inherit face-faded)
+                                                 'help-echo "Mode(s) menu"
+                                                 'mouse-face 'mode-line-highlight
+                                                 'local-map   mode-line-major-mode-keymap)
+                                     " %b "
+                                     (if (and buffer-file-name (buffer-modified-p))
+                                         (propertize "(**)" 'face `(:foreground "#f08290")))
+                                     (propertize " %m " 'face `(:inherit face-faded))))
+                  (format-mode-line (list
+                                     (vc-branch)
+                                     (propertize "%4l:%2c  " 'face `(:inherit face-faded))))
+                  ))))
+
+
+
+;;; End Modeline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (provide 'setup-modeline)

@@ -129,6 +129,3 @@
 
 ;; No frame title header
 (setq-default frame-title-format nil)
-
-;; Prevent early display of modeline.
-(setq-default mode-line-format nil)
