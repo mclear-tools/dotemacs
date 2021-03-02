@@ -215,7 +215,7 @@
   (add-to-list 'company-backends 'company-files))
 
 (use-package company-bibtex
-  :after company
+  :after (:any (:all company org) (:all company markdown))
   :demand t
   :general
   (:states 'insert
