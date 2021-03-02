@@ -75,19 +75,7 @@
 
 ;;; Fonts
 
-;; (defvar cpm-font1 (font-spec :family "InconsolataLGC Nerd Font" :size 13))
-;; (defvar cpm-font2 (font-spec :family "Hasklug Nerd Font" :size 13))
-;; (defvar cpm-font3 (font-spec :family "DejaVuSansMono Nerd Font" :size 13))
-;; (defvar cpm-font4 (font-spec :family "SauceCodePro Nerd Font" :size 13))
-;; (defvar cpm-font5 (font-spec :family "FiraCode Nerd Font" :size 13))
-;; (defvar cpm-font6 (font-spec :family "RobotoMono Nerd Font" :size 14))
-;; (defvar cpm-ligatures nil)
-;; (defvar cpm-vari-font (font-spec :family "Avenir Next" :size 20))
-;; (defvar cpm-unicode-font (font-spec :family "Symbola"))
-;; (set-face-attribute 'default nil :font cpm-font5)
-;; (set-face-attribute 'variable-pitch nil :font cpm-vari-font)
-;; (set-fontset-font t 'unicode cpm-unicode-font nil 'prepend)
-;; (setq-default line-spacing 0.10)
+(setq-default line-spacing 0.10)
 
 (use-package faces
   :straight (:type built-in)
@@ -106,14 +94,6 @@
   ;; (set-face-attribute 'fixed-pitch nil :font "Roboto Mono" :height 150)
   ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
   (set-fontset-font t 'unicode "Symbola" nil 'prepend))
-
-(use-package font-lock
-  :straight (:type built-in)
-  :defer t
-  :custom-face
-  (font-lock-comment-face ((t (:inherit font-lock-comment-face :italic t))))
-  (font-lock-doc-face ((t (:inherit font-lock-doc-face :italic t))))
-  (font-lock-string-face ((t (:inherit font-lock-string-face :italic t)))))
 
 
 ;;; Scale Text
