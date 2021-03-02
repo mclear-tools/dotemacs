@@ -245,6 +245,7 @@
 
 ;;;; Engrave Faces
 (use-package engrave-faces
+  :disabled
   :straight (:type git :host github :repo "tecosaur/engrave-faces")
   :after org
   :demand t)
