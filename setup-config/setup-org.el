@@ -6,9 +6,9 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
+  :straight org-plus-contrib
   ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
   ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
-  :straight org-plus-contrib
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
@@ -214,7 +214,9 @@
   ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking
 
   (use-package org-super-agenda
+    :straight t
     :commands org-super-agenda-mode
+    :after org
     :general
     (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
      ","  'cpm/hydra-org-agenda/body)
