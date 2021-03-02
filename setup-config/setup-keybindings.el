@@ -565,12 +565,12 @@
    :prefix "SPC"
    :non-normal-prefix "C-SPC"
 
-   "0" 'select-window-0
-   "1" 'select-window-1
-   "2" 'select-window-2
-   "3" 'select-window-3
-   "4" 'select-window-4
-   "5" 'select-window-5
+   "0" 'winum-select-window-0
+   "1" 'winum-select-window-1
+   "2" 'winum-select-window-2
+   "3" 'winum-select-window-3
+   "4" 'winum-select-window-4
+   "5" 'winum-select-window-5
 
    "w"  '(:ignore t :which-key "Windows")
    "wa" 'ace-window
