@@ -308,5 +308,6 @@
 (setq find-file-visit-truename t)
 
 
+;;; End Settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-settings)
