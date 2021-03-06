@@ -176,12 +176,22 @@
         markdown-unordered-list-item-prefix "-   "
         markdown-header-scaling t
         markdown-use-pandoc-style-yaml-metadata t)
+
+  (defun cpm--markdown-settings ()
+    "settings for markdown mode"
+    (progn
+      (turn-on-flyspell)
+      (auto-fill-mode)
+      (centered-cursor-mode 1)
+      (git-gutter-mode 1)
+      (hl-todo-mode)))
+
   ;; markdown hooks
-  (add-hook 'markdown-mode-hook
-            '(lambda ()
-               (turn-on-flyspell) (auto-fill-mode) (centered-cursor-mode 1) (git-gutter-mode 1)   (hl-todo-mode)))
-  ;; remove strikout comment face
-  (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil))
+  (add-hook 'markdown-mode-hook 'cpm--markdown-settings)
+
+  )
+;; remove strikout comment face
+;; (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil)
 
 ;; macro: delete backslashes in paragraph to cleanup markdown conversion
 (fset 'cpm/md-delete-backslash
