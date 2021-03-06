@@ -50,6 +50,8 @@
 ;; https://akrl.sdf.org/gccemacs.html#org335c0de
 ;; (setq comp-speed 2
 ;;       comp-deferred-compilation t)
+;; Silence nativecomp warnings popping up on 28.0.50
+(setq comp-async-report-warnings-errors nil)
 
 ;;;; Prefer Newer files
 ;; prefer newer versions
