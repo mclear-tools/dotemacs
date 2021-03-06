@@ -221,6 +221,7 @@
 (require 'setup-testing)
 (require 'setup-modeline)
 ;; (require 'setup-email)
+(require 'setup-splash)
 (require 'setup-nano)
 
 ;; (require 'setup-timer)
