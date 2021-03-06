@@ -123,7 +123,7 @@ want to use in the modeline *in lieu of* the original.")
                   (format-mode-line (list
                                      " %n "
                                      (vc-branch)
-                                     (propertize "%4l:%2c |" 'face `(:inherit face-faded))
+                                     (propertize " %4l:%2c:" 'face `(:inherit face-faded))
                                      ;;https://emacs.stackexchange.com/a/10637/11934
                                      (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit face-faded))
                                      "  "))
