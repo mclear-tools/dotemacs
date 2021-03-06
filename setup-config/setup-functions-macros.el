@@ -50,7 +50,8 @@
   (interactive)
   (start-process "Emacs" nil
                  ;; (executable-find "/usr/local/bin/emacs")))
-                 (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
+                 ;; (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
+                 (executable-find "Emacs")))
 
 ;;;; Clipboard to/from Buffer
 ;; http://stackoverflow.com/a/10216338/4869
