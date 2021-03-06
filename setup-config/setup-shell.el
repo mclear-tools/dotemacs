@@ -16,10 +16,10 @@
 ;;; Completion Buffer
 ;; Remove completion buffer when done
 (add-hook 'minibuffer-exit-hook
-          '(lambda ()
-             (let ((buffer "*Completions*"))
-               (and (get-buffer buffer)
-                    (kill-buffer buffer)))))
+          #'(lambda ()
+              (let ((buffer "*Completions*"))
+                (and (get-buffer buffer)
+                     (kill-buffer buffer)))))
 
 ;;; Terminal
 ;;;; Settings
@@ -329,8 +329,8 @@
     (eshell-send-input)))
 
 (add-hook 'eshell-mode-hook
-      '(lambda()
-          (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
+          #'(lambda()
+              (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
 
 ;;;; Eshell Magit
 (defun eshell/magit ()

@@ -28,7 +28,7 @@
         winum-reverse-frame-list          nil
         winum-auto-assign-0-to-minibuffer t
         ;; winum-auto-setup-mode-line        t
-        winum-format                      " %s "
+        ;; winum-format                      " %s
         ;; winum-mode-line-position          1
         winum-ignored-buffers             '(" *which-key*")
         winum-ignored-buffers-regexp      '(" \\*Treemacs-.*")))

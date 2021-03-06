@@ -172,6 +172,9 @@
 (dolist (command '(scroll-up-command scroll-down-command
                                      recenter-top-bottom other-window select-window-by-number))
   (advice-add command :after #'pulse-line))
+(defadvice other-window (after other-window-pulse activate) (pulse-line))
+(defadvice delete-window (after delete-window-pulse activate) (pulse-line))
+(defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate))
 
 ;;; Emoji
 (use-package emojify
