@@ -2,7 +2,12 @@
 ;; start server for emacsclient
 (use-package server
   :if window-system
-  :hook (after-init . server-mode))
+  :config
+  ;; avoid warning screen
+  (or (server-running-p)
+      (server-start)))
+;; generates warning on startup of another emacs instance
+;; :hook (after-init . server-mode))
 
 ;; have these functions available for server
 (defun cpm/activate-capture-frame ()
