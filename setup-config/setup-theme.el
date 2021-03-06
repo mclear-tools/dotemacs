@@ -96,6 +96,13 @@ information and this can be made by setting a very light
 background color that is barely perceptible."
   :group 'bespoke)
 
+(defface face-accent1 nil
+  "Bright accent face"
+  :group 'bespoke)
+
+(set-face-attribute 'face-accent1 nil
+                    :foreground "#BF616A")
+
 (set-face-attribute 'face-strong-bold nil
                     :inherit'face-default
                     :weight 'bold)
@@ -182,9 +189,9 @@ background color that is barely perceptible."
   (set-modeline-faces)
 
   (set-face-attribute 'header-line nil
-                      :background "#ECEFF4"
-                      :foreground "#677691"
-                      :box '(:line-width 8  :color "#ECEFF4" :height 150)
+                      :background "#D8DEE9"
+                      :foreground "#37474F"
+                      :box '(:line-width 8  :color "#D8DEE9" :height 150)
                       :overline nil
                       :underline nil
                       :height 150)
@@ -200,8 +207,8 @@ background color that is barely perceptible."
   (set-face-attribute 'default nil
                       :foreground (face-foreground 'default)
                       :background (face-background 'default))
-  (set-face-attribute 'face-critical nil :foreground "#385f38"
-                      :background "#f8f893")
+  (set-face-attribute 'face-critical nil :foreground "#A3BE8C"
+                      :background "#EBCB8B")
   (set-face-attribute 'face-popout nil :foreground "#D08770")
   (set-face-attribute 'face-strong nil :foreground "#dcdccc"
                       :weight 'regular)
@@ -213,8 +220,8 @@ background color that is barely perceptible."
   (set-modeline-faces)
   (set-face-attribute 'header-line nil
                       :foreground "#ECEFF4"
-                      :background "#434C5E"
-                      :box '(:line-width 8 :color "#434C5E" :height 150)
+                      :background "#3B4252"
+                      :box '(:line-width 8 :color "#3B4252" :height 150)
                       :overline nil
                       :underline nil
                       :height 150)
@@ -405,7 +412,7 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face-attribute 'term-color-yellow nil
                       :foreground "#FFEE58" :background "#FFF9C4"))
 
-;;;;; org-agende
+;;;;; Org-agende
 (with-eval-after-load 'org-agenda
   (set-face 'org-agenda-calendar-event                    'default)
   (set-face 'org-agenda-calendar-sexp                     'face-faded)
@@ -417,9 +424,9 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face-attribute 'org-agenda-date-today nil
                       :inherit 'variable-pitch
                       :height 1.25
-                      :foreground (face-background 'face-salient))
+                      :foreground (face-background 'face-popout))
   (with-eval-after-load 'org-super-agenda
-    (set-face 'org-super-agenda-header                   'face-strong-bold))
+    (set-face 'org-super-agenda-header                   'face-accent1))
   (set-face 'org-agenda-date-weekend                      'face-faded)
   (set-face 'org-agenda-diary                             'face-faded)
   (set-face 'org-agenda-dimmed-todo-face                  'face-faded)
@@ -432,7 +439,7 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face 'org-agenda-restriction-lock                  'face-faded)
   (set-face 'org-agenda-structure                        'face-faded))
 
-;;;;; org mode
+;;;;; Org mode
 (with-eval-after-load 'org
   (set-face 'org-archived                                 'face-faded)
   (set-face 'org-block                                    'face-faded)
@@ -540,7 +547,7 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face 'org-target                                   'face-faded)
   (set-face 'org-time-grid                                'face-faded)
   (set-face 'org-todo                                    'face-popout)
-  (set-face 'org-upcoming-deadline                        'face-strong)
+  (set-face 'org-upcoming-deadline                        'face-strong-bold)
   (set-face 'org-upcoming-distant-deadline                'face-strong)
   (set-face 'org-verbatim                                 'face-faded)
   (set-face 'org-verse                                    'face-faded)
@@ -633,7 +640,7 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face 'mu4e-draft-face                              'face-faded)
   (set-face 'mu4e-flagged-face                            'face-faded)
   (set-face 'mu4e-footer-face                             'face-faded)
-  (set-face 'mu4e-forwarded-face                          'face-faded)
+  (set-face 'mu4e-forwarded-face                          'face-default)
   (set-face 'mu4e-header-face                                'default)
   (set-face 'mu4e-header-highlight-face                  'face-subtle)
   (set-face 'mu4e-header-key-face                        'face-strong)
@@ -697,11 +704,13 @@ function is a convenience wrapper used by `describe-package-1'."
 (defun cpm/osx-menubar-theme-light ()
   "turn dark mode off"
   (interactive)
-  (shell-command "dark-mode off"))
+  (shell-command "dark-mode off")
+  (bespoke-light))
 (defun cpm/osx-menubar-theme-dark ()
   "turn dark mode on"
   (interactive)
-  (shell-command "dark-mode on"))
+  (shell-command "dark-mode on")
+  (bespoke-dark))
 
 ;;; Theme & menubar toggle
 (defun toggle-dark-light-theme ()

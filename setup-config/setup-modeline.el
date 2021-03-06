@@ -91,34 +91,45 @@ want to use in the modeline *in lieu of* the original.")
 
 ;;;; Header Line Setup
 
-;; Mode line (this might be slow because of the "☰" that requires substitution)
-;; This line below makes things a bit faster
-(set-fontset-font "fontset-default"  '(#x2600 . #x26ff) "Fira Code 16")
+;; Mode line in header
 
+(use-package emacs
+  :straight nil
+  :after winum
+  :config
 (define-key mode-line-major-mode-keymap [header-line]
   (lookup-key mode-line-major-mode-keymap [mode-line]))
 
 (defun mode-line-render (left right)
   (let* ((available-width (- (window-width) (length left) )))
     (format (format "%%s %%%ds" available-width) left right)))
+
 (setq-default header-line-format
               '((:eval
                  (mode-line-render
                   (format-mode-line (list
-                                     ;;FIXME this next line throws error at startup
                                      (format " %s " (winum-get-number-string))
                                      (propertize "|" 'face `(:inherit face-faded)
                                                  'help-echo "Mode(s) menu"
                                                  'mouse-face 'mode-line-highlight
                                                  'local-map   mode-line-major-mode-keymap)
+
                                      " %b "
-                                     (if (and buffer-file-name (buffer-modified-p))
-                                         (propertize "(**)" 'face `(:foreground "#f08290")))
+                                     (cond ((and buffer-file-name (buffer-modified-p))
+                                            (propertize "(**)" 'face `(:foreground "#f08290")))
+                                           (buffer-read-only
+                                            (propertize "(RO)" 'face `(:inherit face-popout))))
                                      (propertize " %m " 'face `(:inherit face-faded))))
                   (format-mode-line (list
+                                     " %n "
                                      (vc-branch)
-                                     (propertize "%4l:%2c  " 'face `(:inherit face-faded))))
-                  ))))
+                                     (propertize "%4l:%2c |" 'face `(:inherit face-faded))
+                                     ;;https://emacs.stackexchange.com/a/10637/11934
+                                     (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit face-faded))
+                                     "  "))
+                  )))))
+
+
 
 
 
