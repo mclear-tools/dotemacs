@@ -132,9 +132,11 @@ background color that is barely perceptible."
                       :box nil
                       :foreground (face-background 'default)
                       :background (face-background 'default))
+  ;; render modeline the same in active & inactive windows
   (set-face 'mode-line-inactive                            'mode-line)
   (set-face-attribute 'cursor nil
                       :background (face-foreground 'default))
+  ;; divide windows more attractively
   (set-face-attribute 'window-divider nil
                       :foreground (face-background 'mode-line))
   (set-face-attribute 'window-divider-first-pixel nil
@@ -169,6 +171,8 @@ background color that is barely perceptible."
 
 ;;;; Light theme
 (defun bespoke-light ()
+  "set bespoke light theme"
+  (interactive)
   (setq frame-background-mode 'light)
   (set-background-color "#FFFEF9")
   (set-foreground-color "#37474F")
@@ -191,7 +195,7 @@ background color that is barely perceptible."
   (set-face-attribute 'header-line nil
                       :background "#D8DEE9"
                       :foreground "#37474F"
-                      :box '(:line-width 8  :color "#D8DEE9" :height 150)
+                      :box '(:line-width 6  :color "#D8DEE9" :height 150)
                       :overline nil
                       :underline nil
                       :height 150)
@@ -200,6 +204,8 @@ background color that is barely perceptible."
 
 ;;;; Dark theme
 (defun bespoke-dark ()
+  "set dark theme"
+  (interactive)
   (setq frame-background-mode 'dark)
   (set-background-color "#2E3440")
   (set-foreground-color "#FFFEF9")
@@ -221,16 +227,17 @@ background color that is barely perceptible."
   (set-face-attribute 'header-line nil
                       :foreground "#ECEFF4"
                       :background "#3B4252"
-                      :box '(:line-width 8 :color "#3B4252" :height 150)
+                      :box '(:line-width 6 :color "#3B4252" :height 150)
                       :overline nil
                       :underline nil
                       :height 150)
+  (setq mini-frame-internal-border-color "#3B4252")
 
   (with-eval-after-load 'cus-edit (set-button-faces)))
 
 ;;;; Faces
 ;; Structural
-(set-face 'bold                                          'face-strong)
+(set-face 'bold                                          'face-strong-bold)
 (set-face 'italic                                         'face-faded-italic)
 (set-face 'bold-italic                                   'face-strong-bold-italic)
 (set-face 'region                                        'face-subtle)
@@ -261,7 +268,7 @@ background color that is barely perceptible."
 (set-face 'show-paren-mismatch                           'face-normal)
 (set-face-attribute 'tooltip nil                         :height 0.85)
 
-;;;;; Programming mode
+;;;;; Font Lock
 (set-face 'font-lock-comment-face                         'face-faded)
 (set-face 'font-lock-doc-face                             'face-faded)
 (set-face 'font-lock-string-face                         'face-popout)
@@ -460,8 +467,7 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face-attribute 'org-document-title nil
                       :inherit 'variable-pitch
                       :height 1.25
-                      :foreground (face-foreground 'face-salient)
-                      :background (face-background 'face-default))
+                      :foreground (face-foreground 'face-salient))
   (set-face 'org-done                                        'default)
   (set-face 'org-drawer                                   'face-faded)
   (set-face 'org-ellipsis                                 'face-faded)
