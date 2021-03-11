@@ -48,8 +48,11 @@
 ;;;; Native Comp
 ;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
 ;; https://akrl.sdf.org/gccemacs.html#org335c0de
-;; (setq comp-speed 2
-;;       comp-deferred-compilation t)
+(setq comp-speed 2
+      comp-deferred-compilation t)
+(when (boundp 'comp-eln-load-path)
+  (setcar comp-eln-load-path
+          (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
 ;; Silence nativecomp warnings popping up on 28.0.50
 (setq comp-async-report-warnings-errors nil)
 
@@ -131,3 +134,4 @@
 
 ;; No frame title header
 (setq-default frame-title-format nil)
+(setq-default mode-line-format'(""))
