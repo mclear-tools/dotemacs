@@ -3,6 +3,21 @@
 ;;; Posframe
 (use-package posframe)
 
+;;; Selectrum Posframe
+;; (setq selectrum-display-action '(display-buffer-show-in-posframe))
+
+(defun display-buffer-show-in-posframe (buffer _alist)
+  (frame-root-window
+   (posframe-show buffer
+                  :min-height 10
+                  :min-width (round (* (frame-width) 0.75))
+                  :internal-border-width 15
+                  :left-fringe 0
+                  :right-fringe 0
+                  :poshandler 'posframe-poshandler-frame-center)))
+
+;; (add-hook 'minibuffer-exit-hook 'posframe-delete-all)
+
 ;;; Helm posframe
 (use-package helm-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
