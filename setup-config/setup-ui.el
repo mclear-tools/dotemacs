@@ -68,7 +68,7 @@
   :config
   (custom-set-variables
    '(mini-frame-show-parameters
-     '((top . 10)
+     '((top . 60)
        (width . 0.7)
        (left . 0.5))))
   (setq mini-frame-resize t))
