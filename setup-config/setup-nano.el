@@ -2,6 +2,7 @@
 ;; Mods and functions for Nano config
 (use-package nano
   ;; :disabled t
+  :defer 2
   :straight (:type git :host github :repo "rougier/nano-emacs"
              :fork (:host github :repo "mclear-tools/nano-emacs" :branch "test-new-stuff"))
   :config
