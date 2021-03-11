@@ -17,19 +17,13 @@
 (setq-default mode-line-format'(""))
 (setq x-underline-at-descent-line t)
 
+;;;; Modeline Appearance
 
-;;;; Modeline Underline
-;; set modeline to underline
-;; (set-face-attribute 'mode-line nil
-;;                     :underline (face-foreground 'default)
-;;                     :overline nil
-;;                     :box nil
-;;                     :foreground (face-background 'default)
-;;                     :background (face-background 'default))
-;; (set-face 'mode-line-inactive                            'mode-line)
+;; see setup-theme.el for mode line appearance settings
 
 ;;;; Clean Mode Line
-
+;; https://www.masteringemacs.org/article/hiding-replacing-modeline-strings
+;; NOTE: this is only for minor and major modes
 (defvar mode-line-cleaner-alist
   `((auto-complete-mode . " α")
     (yas/minor-mode . " υ")
@@ -41,7 +35,8 @@
     (hi-lock-mode . "")
     (python-mode . "Py")
     (emacs-lisp-mode . "EL")
-    (nxhtml-mode . "nx"))
+    (nxhtml-mode . "nx")
+    (markdown-mode . "MD"))
   "Alist for `clean-mode-line'.
 
 When you add a new element to the alist, keep in mind that you
@@ -87,49 +82,72 @@ want to use in the modeline *in lieu of* the original.")
       (setq output (concat "…/" output)))
     output))
 
-
-
 ;;;; Header Line Setup
 
 ;; Mode line in header
-
 (use-package emacs
   :straight nil
   :after winum
   :config
-(define-key mode-line-major-mode-keymap [header-line]
-  (lookup-key mode-line-major-mode-keymap [mode-line]))
+  (define-key mode-line-major-mode-keymap [header-line]
+    (lookup-key mode-line-major-mode-keymap [mode-line]))
 
-(defun mode-line-render (left right)
-  (let* ((available-width (- (window-width) (length left) )))
-    (format (format "%%s %%%ds" available-width) left right)))
+  (defun mode-line-render (left right)
+    (let* ((available-width (- (window-width) (length left) )))
+      (format (format "%%s %%%ds" available-width) left right)))
 
-(setq-default header-line-format
-              '((:eval
-                 (mode-line-render
-                  (format-mode-line (list
-                                     (format " %s " (winum-get-number-string))
-                                     (propertize "|" 'face `(:inherit face-faded)
-                                                 'help-echo "Mode(s) menu"
-                                                 'mouse-face 'mode-line-highlight
-                                                 'local-map   mode-line-major-mode-keymap)
+  (setq-default header-line-format
+                '((:eval
+                   (mode-line-render
+                    (format-mode-line (list
+                                       (format " %s " (winum-get-number-string))
+                                       (propertize "|" 'face `(:inherit face-faded)
+                                                   'help-echo "Mode(s) menu"
+                                                   'mouse-face 'mode-line-highlight
+                                                   'local-map   mode-line-major-mode-keymap)
+                                       ;; (shorten-directory default-directory 32)
+                                       " %b "
+                                       ;; (propertize evil-mode-line-tag 'face `(:inherit face-faded))
+                                       (cond ((and buffer-file-name (buffer-modified-p))
+                                              (propertize "(**)" 'face `(:foreground "#f08290")))
+                                             (buffer-read-only
+                                              (propertize "(RO)" 'face `(:inherit face-popout))))
+                                       (if (buffer-narrowed-p)
+                                           (propertize "⇥"  'face `(:inherit face-faded)))
+                                       (propertize " %m " 'face `(:inherit face-faded))))
+                    (format-mode-line (list
+                                       (vc-branch)
+                                       (propertize " %4l:%2c:%o" 'face `(:inherit face-faded))
+                                       ;;https://emacs.stackexchange.com/a/10637/11934
+                                       ;; (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit face-faded))
+                                       "  "
+                                       ))
+                    ))))
+  )
 
-                                     " %b "
-                                     (cond ((and buffer-file-name (buffer-modified-p))
-                                            (propertize "(**)" 'face `(:foreground "#f08290")))
-                                           (buffer-read-only
-                                            (propertize "(RO)" 'face `(:inherit face-popout))))
-                                     (propertize " %m " 'face `(:inherit face-faded))))
-                  (format-mode-line (list
-                                     " %n "
-                                     (vc-branch)
-                                     (propertize " %4l:%2c:" 'face `(:inherit face-faded))
-                                     ;;https://emacs.stackexchange.com/a/10637/11934
-                                     (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit face-faded))
-                                     "  "))
-                  )))))
 
 
+;;;; Inactive Header line
+;; https://emacs.stackexchange.com/a/3522/11934
+(defun cpm-update-header ()
+  (mapc
+   (lambda (window)
+     (with-current-buffer (window-buffer window)
+       ;; don't mess with buffers that don't have a header line
+       (when header-line-format
+         (let ((original-format (get 'header-line-format 'original))
+               (inactive-face 'face-faded)) ; change this to your favorite inactive header line face
+           ;; if we didn't save original format yet, do it now
+           (when (not original-format)
+             (put 'header-line-format 'original header-line-format)
+             (setq original-format header-line-format))
+           ;; check if this window is selected, set faces accordingly
+           (if (eq window (selected-window))
+               (setq header-line-format original-format)
+             (setq header-line-format `(:propertize ,original-format face ,inactive-face)))))))
+   (window-list)))
+
+(add-hook 'buffer-list-update-hook #'cpm-update-header)
 
 
 
