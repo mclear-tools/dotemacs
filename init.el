@@ -134,7 +134,7 @@
 ;; settings
 (setq use-package-always-defer nil
       use-package-verbose t
-      use-package-minimum-reported-time 0.01
+      use-package-minimum-reported-time 0
       use-package-enable-imenu-support t
       use-package-always-ensure nil)
 
