@@ -93,8 +93,15 @@
   ;; (set-face-attribute 'default nil :font "Roboto Mono Light" :height 150)
   ;; (set-face-attribute 'fixed-pitch nil :font "Roboto Mono" :height 150)
   ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
-  (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+  (set-fontset-font t 'unicode "Symbola" nil 'prepend)
 
+;; Fall back font for glyph missing in Roboto
+(defface fallback '((t :family "Fira Code"
+                       :inherit 'nano-face-faded)) "Fallback")
+(set-display-table-slot standard-display-table 'truncation
+                        (make-glyph-code ?… 'fallback))
+(set-display-table-slot standard-display-table 'wrap
+                        (make-glyph-code ?↩ 'fallback)))
 
 ;;; Scale Text
 ;; Set default line spacing (in pixels)
