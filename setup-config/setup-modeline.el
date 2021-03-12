@@ -82,19 +82,41 @@ want to use in the modeline *in lieu of* the original.")
       (setq output (concat "…/" output)))
     output))
 
-;;;; Header Line Setup
 
-;; Mode line in header
+;;;; Header Line Setup
 (use-package emacs
   :straight nil
   :after winum
   :config
+  ;; Mode line in header
   (define-key mode-line-major-mode-keymap [header-line]
     (lookup-key mode-line-major-mode-keymap [mode-line]))
 
+  ;; Organize mode line
   (defun mode-line-render (left right)
     (let* ((available-width (- (window-width) (length left) )))
       (format (format "%%s %%%ds" available-width) left right)))
+  ;; Inactive Header line
+  ;; https://emacs.stackexchange.com/a/3522/11934
+  (defun cpm-update-header ()
+    (mapc
+     (lambda (window)
+       (with-current-buffer (window-buffer window)
+         ;; don't mess with buffers that don't have a header line
+         (when header-line-format
+           (let ((original-format (get 'header-line-format 'original))
+                 (inactive-face 'face-faded)) ; change this to your favorite inactive header line face
+             ;; if we didn't save original format yet, do it now
+             (when (not original-format)
+               (put 'header-line-format 'original header-line-format)
+               (setq original-format header-line-format))
+             ;; check if this window is selected, set faces accordingly
+             (if (eq window (selected-window))
+                 (setq header-line-format original-format)
+               (setq header-line-format `(:propertize ,original-format face ,inactive-face)))))))
+     (window-list)))
+
+  (add-hook 'buffer-list-update-hook #'cpm-update-header)
 
   (setq-default header-line-format
                 '((:eval
@@ -123,31 +145,10 @@ want to use in the modeline *in lieu of* the original.")
                                        "  "
                                        ))
                     ))))
+
   )
 
 
-
-;;;; Inactive Header line
-;; https://emacs.stackexchange.com/a/3522/11934
-(defun cpm-update-header ()
-  (mapc
-   (lambda (window)
-     (with-current-buffer (window-buffer window)
-       ;; don't mess with buffers that don't have a header line
-       (when header-line-format
-         (let ((original-format (get 'header-line-format 'original))
-               (inactive-face 'face-faded)) ; change this to your favorite inactive header line face
-           ;; if we didn't save original format yet, do it now
-           (when (not original-format)
-             (put 'header-line-format 'original header-line-format)
-             (setq original-format header-line-format))
-           ;; check if this window is selected, set faces accordingly
-           (if (eq window (selected-window))
-               (setq header-line-format original-format)
-             (setq header-line-format `(:propertize ,original-format face ,inactive-face)))))))
-   (window-list)))
-
-(add-hook 'buffer-list-update-hook #'cpm-update-header)
 
 
 
