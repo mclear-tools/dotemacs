@@ -2,6 +2,7 @@
 ;; start server for emacsclient
 (use-package server
   :if window-system
+  :defer 2
   :config
   ;; avoid warning screen
   (or (server-running-p)
