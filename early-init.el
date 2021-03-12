@@ -93,20 +93,25 @@
 
 ;;; Clean View
 ;; Disable start-up screen
-(setq-default inhibit-startup-screen t)
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-message t)
-(setq initial-scratch-message "")
+;; Resizing the Emacs frame can be an expensive part of changing the
+;; font. By inhibiting this, we easily halve startup times with fonts that are
+;; larger than the system default.
 (setq frame-inhibit-implied-resize t)
+
+;; No frame title header
+(setq-default frame-title-format nil)
+(setq-default mode-line-format'(""))
+(setq-default inhibit-startup-screen t)
+(setq-default inhibit-splash-screen t)
+(setq-default inhibit-startup-message t)
+(setq-default initial-scratch-message nil)
+(setq-default frame-inhibit-implied-resize t)
 
 ;; UI - Disable visual cruft
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-(push '(horizontal-scroll-bars) default-frame-alist)
-
-;; Quick start scratch buffer
+(tool-bar-mode 0)
+(tooltip-mode 0)
+(menu-bar-mode 0)
 (setq initial-major-mode 'fundamental-mode)
 
 ;; ;; echo buffer
@@ -123,15 +128,3 @@
       ad-do-it)))
 
 
-;; (setq frame-title-format "\n")
-;; (setq frame-title-format
-;;       '((buffer-file-name "%f" "%b")))
-
-;; Resizing the Emacs frame can be a terribly expensive part of changing the
-;; font. By inhibiting this, we easily halve startup times with fonts that are
-;; larger than the system default.
-(setq frame-inhibit-implied-resize t)
-
-;; No frame title header
-(setq-default frame-title-format nil)
-(setq-default mode-line-format'(""))
