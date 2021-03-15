@@ -15,6 +15,14 @@
                       :underline  'unspecified :overline   'unspecified
                       :box        'unspecified :inherit    style))
 
+;;;; What Face?
+;; https://stackoverflow.com/a/66287459/6277148
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
 ;;;; Bespoke Faces
 
 ;; A theme is fully defined by these six faces
@@ -227,7 +235,7 @@ background color that is barely perceptible."
   (set-face-attribute 'header-line nil
                       :foreground "#ECEFF4"
                       :background "#3B4252"
-                      :box '(:line-width 6 :color "#3B4252" :height 150)
+                      :box '(:line-width 5 :color "#3B4252" :height 150)
                       :overline nil
                       :underline nil
                       :height 150)
@@ -468,7 +476,7 @@ function is a convenience wrapper used by `describe-package-1'."
                       :inherit 'variable-pitch
                       :height 1.25
                       :foreground (face-foreground 'face-salient))
-  (set-face 'org-done                                        'default)
+  (set-face 'org-done                                        'face-faded)
   (set-face 'org-drawer                                   'face-faded)
   (set-face 'org-ellipsis                                 'face-faded)
   (set-face 'org-footnote                                 'face-faded)
@@ -540,7 +548,7 @@ function is a convenience wrapper used by `describe-package-1'."
   (set-face 'org-mode-line-clock-overrun                  'face-faded)
   (set-face 'org-priority                                 'face-faded)
   (set-face 'org-property-value                           'face-faded)
-  (set-face 'org-quote                                    'face-faded)
+  (set-face 'org-quote                                    'face-salient)
   (set-face 'org-scheduled                                'face-salient)
   (set-face 'org-scheduled-previously                     'face-salient)
   (set-face 'org-scheduled-today                          '(face-strong
