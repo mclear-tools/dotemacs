@@ -69,6 +69,7 @@
   (setq diredp-hide-details-initially-flag nil)
   (setq diredp-toggle-find-file-reuse-dir 1)
   :custom-face
+  ;; TODO: change colors to work with bespoke theme
   (diredp-compressed-file-name ((t (:foreground "#00629D"))))
   (diredp-compressed-file-suffix ((t (:foreground "#839496"))))
   (diredp-date-time ((t (:foreground "#9EA0E5"))))
