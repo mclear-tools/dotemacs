@@ -43,8 +43,10 @@ For more information please take a look at the individual [[file:setup-config/][
 
 Here are some screenshots:
 
-Dark Theme (elisp):
+*** Dark Theme (elisp):
+
 [[file:screenshots/dark-example.png]]
 
-Light Theme (org):
+
+*** Light Theme (org):
 [[file:screenshots/light-example.png]]
