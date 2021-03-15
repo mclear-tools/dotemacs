@@ -77,8 +77,49 @@
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
 
+;;; Bibtex-Actions
+;; Use completing read to select actions for bibtex
+(use-package bibtex-actions
+  :straight (:host github :repo "bdarcus/bibtex-actions")
+  :commands (bibtex-actions-open
+             bibtex-actions-open-pdf
+             bibtex-actions-open-link
+             bibtex-actions-insert-citation
+             bibtex-actions-insert-reference
+             bibtex-actions-insert-key
+             bibtex-actions-insert-bibtex
+             bibtex-actions-add-pdf-attachment
+             bibtex-actions-open-notes
+             bibtex-actions-open-entry
+             bibtex-actions-add-pdf-to-library)
+  :config
+  ;; Set insert citekey with markdown citekeys for org-mode
+  (setq bibtex-completion-format-citation-functions
+        '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-default)))
+  (setq bibtex-completion-display-formats
+        '((t . "${author:16} ${title:36} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7}")))
+  ;; Set default action for ivy-bibtex to edit notes file
+  (setq bibtex-completion-pdf-symbol "⌘")
+  (setq bibtex-completion-notes-symbol "✎")
+  (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
+  (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
+        bibtex-completion-library-path "~/Dropbox/Work/be-library/"
+        bibtex-completion-pdf-field nil
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        bibtex-completion-notes-extension ".org"
+        )
+  ;; use w/embark-act
+  (with-eval-after-load 'embark
+    (setf (alist-get 'bibtex embark-keymap-alist) 'bibtex-actions-map))
+  )
+
 ;;; Helm Bibtex
 (use-package helm-bibtex
+  :disabled
   :straight t
   :commands helm-bibtex
   :after helm
