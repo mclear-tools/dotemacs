@@ -8,10 +8,11 @@ are best. If you like vim bindings but don't tend to want to think about configu
 emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way of managing your
 configuration. For a more traditional emacs feel there are also the configurations of
 [[Https://github.com/purcell/emacs.d][Purcell]], [[https://github.com/bbatsov/prelude][Batsov (prelude)]], [[https://github.com/seagle0128/.emacs.d][Zhang (Centaur Emacs)]], and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally
-sane setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. My configuration is also
-influenced by the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter
-kit]]) and [[https://github.com/novoid/dot-emacs][Karl Voit's]] config. Some other good emacs starter kits to look at include
-John Kitchen's [[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
+sane setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. My configuration is
+influenced by rougier's work with [[https://github.com/rougier/elegant-emacs][elegant-emacs]] and [[https://github.com/rougier/nano-emacs][nano-emacs]]; see also the [[https://github.com/gilbertw1/bmacs][bmacs]]
+configuration of Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl Voit's]]
+config. Some other good emacs starter kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][scimax]]
+and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
 This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
 that file and the various config "helper" functions for navigation. The modules are
@@ -43,10 +44,9 @@ For more information please take a look at the individual [[file:setup-config/][
 
 Here are some screenshots:
 
-*** Dark Theme (elisp):
-
+#+attr_html: :width 47.5%
 [[file:screenshots/dark-example.png]]
 
 
-*** Light Theme (org):
+#+attr_html: :width 47.5%
 [[file:screenshots/light-example.png]]
