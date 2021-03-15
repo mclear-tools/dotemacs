@@ -130,5 +130,16 @@
         uniquify-after-kill-buffer-p t
         uniquify-ignore-buffers-re "^\\*"))
 
+;;; Buffer Modes
+;; from http://www.jurta.org/en/emacs/dotemacs, set the major mode
+;; of buffers that are not visiting a file
+(setq-default major-mode (lambda ()
+                           (if buffer-file-name
+                               (fundamental-mode)
+                             (let ((buffer-file-name (buffer-name)))
+                               (set-auto-mode)))))
+
+
+;;; End Windows & Buffers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-windows)
