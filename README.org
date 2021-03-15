@@ -44,9 +44,10 @@ For more information please take a look at the individual [[file:setup-config/][
 
 Here are some screenshots:
 
-#+attr_html: :width 47.5%
-[[file:screenshots/dark-example.png]]
+#+BEGIN_HTML
+<div>
+<img src="./screenshots/light-example.png" width=47.5%/>
+<img src="./screenshots/dark-example.png" width=47.5%/>
+</div>
+#+END_HTML
 
-
-#+attr_html: :width 47.5%
-[[file:screenshots/light-example.png]]
