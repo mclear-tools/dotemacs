@@ -536,7 +536,7 @@
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "uW" 'osx-dictionary-search-input
-   "ux" 'helm-bibtex
+   "ux" 'bibtex-actions-open
    )
 
 ;;; Version Control (Git) Keybindings
