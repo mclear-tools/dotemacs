@@ -23,7 +23,7 @@ contains the config for spelling and markdown mode). Note that while I have an
 
 Some highlights of this emacs setup include:
 
-1. Short start up time -- when byte-compiled starts in roughly 1 sec (this may vary
+1. Short start up time -- starts in roughly 1 sec (this may vary
    with your system)
 2. Uses [[https://github.com/raxod502/straight.el][straight.el]] for package management
 3. Comprehensive [[file:setup-config/setup-keybindings.el][keybindings]] using [[https://github.com/noctuid/general.el][general.el]] and spacebar as my leader key
@@ -31,7 +31,7 @@ Some highlights of this emacs setup include:
 5. Sensible [[file:setup-config/setup-settings.el][defaults]]
 6. [[file:setup-config/setup-dired.el][Dired]] with good colors and evil keybindings
 7. Completion with [[https://github.com/raxod502/selectrum][selectrum]] and [[file:setup-config/setup-completion.el][related packages]]
-8. Custom [[file:setup-config/setup-theme.el][bespoke]] theme (based on [[https://github.com/rougier/elegant-emacs][elegant-emacs]], but mac-centric with toggles for
+8. Custom [[https://github.com/mclear-tools/bespoke-themes][bespoke]] theme (based on [[https://github.com/rougier/elegant-emacs][elegant-emacs]], but mac-centric with toggles for
    dark/light mode)
 9. An attractive custom [[file:setup-config/setup-modeline.el][headerline]] (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]])
 10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
