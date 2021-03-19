@@ -40,7 +40,7 @@
     (evil-set-initial-state 'org-agenda-mode 'motion)
     (evil-set-initial-state 'org-export-dispatch 'motion)
     ;; evil-normal-state is preferred, so revert when idle
-    (run-with-idle-timer 15 t 'evil-normal-state)
+    (run-with-idle-timer 60 t 'evil-normal-state)
     ;; don't echo evil state
     (setq evil-echo-state t)
     ;; Make evil cursor behavior more emacsy
@@ -52,7 +52,7 @@
     (setq evil-respect-visual-line-mode nil)
     ;; whether to allow evil-char move across lines
     (setq evil-cross-lines nil)
-    ;; Use counsel to provide :ls
+    ;; Use consult to provide :ls
     (evil-ex-define-cmd "buffers" 'consult-buffer)
     ;; fine-grained undo
     (setq evil-want-fine-undo t)
