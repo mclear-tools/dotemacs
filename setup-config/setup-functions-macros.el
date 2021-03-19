@@ -1,13 +1,37 @@
 ;;; Useful Functions
 
+;;;; Revert all buffers
+;;
+(defun cpm/revert-all-file-buffers ()
+  "Refresh all open file buffers without confirmation.
+Buffers in modified (not yet saved) state in emacs will not be reverted. They
+will be reverted though if they were modified outside emacs.
+Buffers visiting files which do not exist any more or are no longer readable
+will be killed."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (let ((filename (buffer-file-name buf)))
+      ;; Revert only buffers containing files, which are not modified;
+      ;; do not try to revert non-file buffers like *Messages*.
+      (when (and filename
+                 (not (buffer-modified-p buf)))
+        (if (file-readable-p filename)
+            ;; If the file exists and is readable, revert the buffer.
+            (with-current-buffer buf
+              (revert-buffer :ignore-auto :noconfirm :preserve-modes))
+          ;; Otherwise, kill the buffer.
+          (let (kill-buffer-query-functions) ; No query done when killing buffer
+            (kill-buffer buf)
+            (message "Killed non-existing/unreadable file buffer: %s" filename))))))
+  (message "Finished reverting buffers containing unmodified files."))
 ;;;; Insert Weather
 ;; From [[https://www.baty.blog/2019/insert-weather-into-emacs-buffer][Jack Baty]] with some slight modifications for formatting. See also [[https://github.com/chubin/wttr.in][wttr.in]]. 
 (defun cpm/insert-weather ()
   (interactive)
   (let ((w (shell-command-to-string "curl -s 'wttr.in/?0qT'")))
     (insert (mapconcat (function (lambda (x) (format ": %s" x)))
-           (split-string w "\n")
-           "\n")))
+                       (split-string w "\n")
+                       "\n")))
   (newline))
 
 
@@ -845,11 +869,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (insert "---" "\n")))
 
 
-;;;; Counsel search given directory
-(defun cpm/counsel-search-in-input-dir ()
-  "Grep for a string in the input directory using counsel"
+;;;; Search given directory
+(defun cpm/search-in-input-dir ()
+  "Grep for a string in the input directory using completing read function"
   (interactive)
-  (let ((current-prefix-arg '(4))) (call-interactively #'counsel-rg)))
+  (let ((current-prefix-arg '(4))) (call-interactively #'consult-grep)))
+
+;; (let ((current-prefix-arg '(4))) (call-interactively #'counsel-rg)))
 
 ;;; Doom Functions & Macros
 ;; A set of fantastic macros written by hlissner
