@@ -96,7 +96,7 @@
 
 ;; add todos in magit
 (use-package magit-todos
-  :commands (magit-todos-list magit-todos-mode ivy-magit-todos)
+  :commands (magit-todos-list magit-todos-mode)
   :config
   (setq magit-todos-depth 2))
   ;; (magit-todos-mode))

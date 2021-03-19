@@ -75,7 +75,7 @@
    "bp" 'persp-temporarily-display-buffer
    "br" 'revert-buffer
    "bR" 'crux-rename-buffer-and-file
-   "bs" 'counsel-switch-buffer-other-window
+   "bs" 'consult-buffer-other-window
    "bt" 'cpm/open-dir-in-iterm
    )
 
@@ -418,19 +418,19 @@
    "s" '(:ignore t :which-key "Search")
    "sa" 'helm-org-rifle-agenda-files
    "sd" 'consult-ripgrep ; search current buffer's directory
-   "sD" #'cpm/counsel-search-in-input-dir ; search with directory input
+   "sD" #'cpm/search-in-input-dir ; search with directory input
    "sb" 'consult-multi-occur
    ;; "sb" 'helm-ag-buffers
    ;; "sf" 'helm-do-ag-this-file
    "sf" 'swiper
    "sj" 'cpm/forward-or-backward-sexp
-   "sk" 'counsel-yank-pop
-   "sl" 'ivy-resume
+   "sk" 'consult-yank-pop
+   "sl" 'selectrum-repeat
    "sn" #'cpm/search-all-notes
    ;; "sk" 'helm-show-kill-ring
    ;; "sl" 'cpm/helm-list-search-buffers
    ;; "sm" 'swiper-mc
-   "so" #'ivy-occur
+   ;; "so" #'ivy-occur
    ;; "so" 'helm-occur
    ;; "sp" 'swiper-thing-at-point
    "sr" #'vr/query-replace
@@ -482,7 +482,7 @@
    "ts" 'flyspell-mode
    "tS" 'ispell-buffer
    "tt" 'toggle-dark-light-theme
-   "tT" 'counsel-load-theme
+   "tT" 'cpm/load-theme
    ;; "tT" 'helm-themes
    "tv" 'vterm-toggle-cd
    "tw" 'writeroom-mode
@@ -630,7 +630,7 @@
    "n"   #'cpm/narrow-or-widen-dwim
    "r"   #'org-refile
    "s"   #'org-schedule
-   "t"   #'counsel-org-tag
+   "t"   #'cpm/org-select-tags-completing-read
    "T"   #'org-todo
    "v"   #'variable-pitch-mode
    "l"   #'org-insert-link

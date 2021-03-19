@@ -653,12 +653,12 @@ _vr_ reset      ^^                       ^^                 ^^
   )
 ;;; Org-Goto
 ;; Make counsel display org headings nicely.
-(with-eval-after-load 'org
-  (setq counsel-outline-display-style 'path)
-  (setq counsel-outline-path-separator " ➜ ")
-  (setq counsel-outline-face-style 'org)
-  (general-define-key :keymaps 'org-mode-map "C-c C-j" #'counsel-org-goto)
-  (general-define-key :keymaps 'org-mode-map "C-u C-c C-j" #'counsel-org-goto-all))
+;; (with-eval-after-load 'org
+;;   (setq counsel-outline-display-style 'path)
+;;   (setq counsel-outline-path-separator " ➜ ")
+;;   (setq counsel-outline-face-style 'org))
+;; (general-define-key :keymaps 'org-mode-map "C-c C-j" #'counsel-org-goto)
+;; (general-define-key :keymaps 'org-mode-map "C-u C-c C-j" #'counsel-org-goto-all))
 
 ;;; Org Indirect Buffer
 (setq org-indirect-buffer-display 'current-window)

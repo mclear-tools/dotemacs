@@ -235,7 +235,7 @@
 ;; Function to navigate config files
 
 (defun cpm/find-files-setup-config-directory ()
-  "use ido to find setup files"
+  "use projectile to find setup files"
   (interactive)
   (require 'projectile)
   (projectile-find-file-in-directory cpm-setup-dir))
