@@ -42,7 +42,7 @@ Some highlights of this emacs setup include:
     
 For more information please take a look at the individual [[file:setup-config/][configuration files]]. 
 
-Here are some screenshots:
+Screenshots:
 
 #+BEGIN_HTML
 <div>
