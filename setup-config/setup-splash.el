@@ -65,13 +65,13 @@
 
           ;; Vertical padding to center
           (insert-char ?\n padding-center)
-          (insert (propertize "Welcome to Emacs" 'face 'face-strong))
+          (insert (propertize "Welcome to Emacs" 'face '(:inherit default :weight bold)))
           (center-line)
           (insert "\n")
-          (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'face-faded))
+          (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'font-lock-comment-face))
           (center-line)
           (insert "\n")
-          (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'face-faded))
+          (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'font-lock-comment-face))
           (center-line)
 
           (goto-char 0)

@@ -5,21 +5,31 @@
   :straight (:type git :host github :repo "hlissner/emacs-hide-mode-line")
   :commands hide-mode-line-mode)
 
-;;;; Modeline Bell
-(use-package mode-line-bell
-  :straight t
-  :hook (after-init . mode-line-bell-mode))
-
-;;;; Modeline Position
-
-;; Put modeline at top of buffer
-(setq-default header-line-format mode-line-format)
-(setq-default mode-line-format'(""))
-(setq x-underline-at-descent-line t)
-
 ;;;; Modeline Appearance
+;; see bespoke theme for further mode line appearance settings
 
-;; see setup-theme.el for mode line appearance settings
+;; set value of mode-line in case we want to revert from header-line
+(setq cpm--default-mode-line
+      '((:eval
+         (mode-line-render
+          (format-mode-line (list
+                             (format " %s " (winum-get-number-string))
+                             "|"
+                             ;; (shorten-directory default-directory 32)
+                             " %b "
+                             ;; (propertize evil-mode-line-tag 'face `(:inherit mode-line))
+                             (cond ((and buffer-file-name (buffer-modified-p))
+                                    (propertize "(**)" 'face `(:foreground "#f08290")))
+                                   (buffer-read-only "(RO)" ))
+                             (if (buffer-narrowed-p)
+                                 ("⇥"))
+                             " %m "))
+          (format-mode-line (list
+                             (vc-branch)
+                             " %4l:%2c:%o"
+                             ;;https://emacs.stackexchange.com/a/10637/11934
+                             "  ")
+                            )))))
 
 ;;;; Clean Mode Line
 ;; https://www.masteringemacs.org/article/hiding-replacing-modeline-strings
@@ -82,11 +92,10 @@ want to use in the modeline *in lieu of* the original.")
       (setq output (concat "…/" output)))
     output))
 
-
-;;;; Header Line Setup
+;;;; Header line format
 (use-package emacs
   :straight nil
-  :after winum
+  :after (winum bespoke-themes)
   :config
   ;; Mode line in header
   (define-key mode-line-major-mode-keymap [header-line]
@@ -96,6 +105,7 @@ want to use in the modeline *in lieu of* the original.")
   (defun mode-line-render (left right)
     (let* ((available-width (- (window-width) (length left) )))
       (format (format "%%s %%%ds" available-width) left right)))
+
   ;; Inactive Header line
   ;; https://emacs.stackexchange.com/a/3522/11934
   (defun cpm-update-header ()
@@ -105,7 +115,7 @@ want to use in the modeline *in lieu of* the original.")
          ;; don't mess with buffers that don't have a header line
          (when header-line-format
            (let ((original-format (get 'header-line-format 'original))
-                 (inactive-face 'face-faded)) ; change this to your favorite inactive header line face
+                 (inactive-face 'fringe)) ; change this to your favorite inactive header line face
              ;; if we didn't save original format yet, do it now
              (when (not original-format)
                (put 'header-line-format 'original header-line-format)
@@ -115,7 +125,6 @@ want to use in the modeline *in lieu of* the original.")
                  (setq header-line-format original-format)
                (setq header-line-format `(:propertize ,original-format face ,inactive-face)))))))
      (window-list)))
-
   (add-hook 'buffer-list-update-hook #'cpm-update-header)
 
   (setq-default header-line-format
@@ -123,32 +132,31 @@ want to use in the modeline *in lieu of* the original.")
                    (mode-line-render
                     (format-mode-line (list
                                        (format " %s " (winum-get-number-string))
-                                       (propertize "|" 'face `(:inherit face-faded)
+                                       (propertize "|" 'face `(:inherit fringe)
                                                    'help-echo "Mode(s) menu"
                                                    'mouse-face 'mode-line-highlight
                                                    'local-map   mode-line-major-mode-keymap)
                                        ;; (shorten-directory default-directory 32)
                                        " %b "
-                                       ;; (propertize evil-mode-line-tag 'face `(:inherit face-faded))
+                                       ;; (propertize evil-mode-line-tag 'face `(:inherit bespoke-faded))
                                        (cond ((and buffer-file-name (buffer-modified-p))
                                               (propertize "(**)" 'face `(:foreground "#f08290")))
                                              (buffer-read-only
-                                              (propertize "(RO)" 'face `(:inherit face-popout))))
+                                              (propertize "(RO)" 'face `(:inherit font-lock-string-face))))
                                        (if (buffer-narrowed-p)
-                                           (propertize "⇥"  'face `(:inherit face-faded)))
-                                       (propertize " %m " 'face `(:inherit face-faded))))
+                                           (propertize "⇥"  'face `(:inherit fringe)))
+                                       (propertize " %m " 'face `(:inherit fringe))))
                     (format-mode-line (list
                                        (vc-branch)
-                                       (propertize " %4l:%2c:%o" 'face `(:inherit face-faded))
+                                       (propertize " %4l:%2c:%o" 'face `(:inherit fringe))
                                        ;;https://emacs.stackexchange.com/a/10637/11934
-                                       ;; (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit face-faded))
+                                       ;; (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit bespoke-faded))
                                        "  "
-                                       ))
-                    ))))
+                                       ))))))
 
+  ;; (setq-default header-line-format nil)
+  ;; (setq-default mode-line-format cpm--default-mode-line)
   )
-
-
 
 
 
