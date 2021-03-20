@@ -42,12 +42,16 @@ Some highlights of this emacs setup include:
     
 For more information please take a look at the individual [[file:setup-config/][configuration files]]. 
 
-Screenshots:
+*** Screenshots
+
 
 #+BEGIN_HTML
 <div>
+<img src="./screenshots/light-splash.png" width=47.5%/>
+<img src="./screenshots/dark-splash.png" width=47.5%/>
 <img src="./screenshots/light-example.png" width=47.5%/>
 <img src="./screenshots/dark-example.png" width=47.5%/>
+
 </div>
 #+END_HTML
 
