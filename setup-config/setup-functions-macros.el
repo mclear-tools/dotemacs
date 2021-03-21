@@ -1,5 +1,29 @@
 ;;; Useful Functions
 
+;;;; Mode line benchmark
+;; https://emacs.stackexchange.com/a/59221/11934
+(defmacro mode-line-benchmark-elapse-time (&rest forms)
+  "Return the time in seconds elapsed for execution of FORMS."
+  (declare (indent 0) (debug t))
+  (let ((t1 (make-symbol "t1")))
+    `
+    (let (,t1)
+      (setq ,t1 (current-time))
+      ,@forms
+      (float-time (time-since ,t1)))))
+
+(defun mode-line-benchmark ()
+  (interactive)
+  (let* ((value nil)
+         (repetitions 10000)
+         (wall-clock-time
+          (mode-line-benchmark-elapse-time
+           (dotimes (_ repetitions)
+             (setq value (format-mode-line mode-line-format)))))
+         (average-time (/ wall-clock-time repetitions)))
+    (message
+     "Time: %.10f per call, %.10f for %S calls: %S"
+     average-time wall-clock-time repetitions value)))
 ;;;; Revert all buffers
 ;;
 (defun cpm/revert-all-file-buffers ()
