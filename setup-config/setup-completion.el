@@ -61,18 +61,24 @@
   (selectrum-prescient-primary-highlight ((t (:weight bold :foreground "#EBCB8B"))))
   (selectrum-prescient-secondary-highlight ((t (:weight bold :foreground "#81A1C1"))))
   :config
+  (setq selectrum-prescient-enable-filtering nil)
   (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
-  (selectrum-prescient-mode +1)
-  (prescient-persist-mode))
+  (prescient-persist-mode)
+  (selectrum-prescient-mode +1))
 
 ;;;; Orderless
 ;; ordering of narrowed candidates
 (use-package orderless
   :straight t
   :after selectrum
+  :custom-face
+  (orderless-match-face-0 ((t (:weight bold :foreground "#873AB7"))))
+  (orderless-match-face-1 ((t (:weight bold :foreground "#D08770"))))
+  (orderless-match-face-2 ((t (:weight bold :foreground "#A3BE8C"))))
+  (orderless-match-face-3 ((t (:weight bold :foreground "#FFAB91"))))
   :config
   (setq completion-styles '(orderless))
-  (setq orderless-skip-highlighting (lambda () selectrum-active-p)))
+  (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
 
 
 ;;;; Embark
