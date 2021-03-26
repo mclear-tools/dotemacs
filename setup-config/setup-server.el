@@ -6,7 +6,9 @@
   :config
   ;; avoid warning screen
   (or (server-running-p)
-      (server-start)))
+      (server-start))
+  ;; no instructions
+  (setq server-client-instructions nil))
 ;; generates warning on startup of another emacs instance
 ;; :hook (after-init . server-mode))
 
