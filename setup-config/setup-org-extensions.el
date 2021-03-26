@@ -198,6 +198,9 @@ Instead it's simpler to use bash."
 ;;; Org-Reveal
 (use-package ox-reveal
   :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
+  :custom
+  ;; no injecting notes into template alist
+  (org-reveal-note-key-char nil)
   :after ox
   :demand t
   :load-path (lambda () (concat cpm-elisp-dir "ox-reveal"))

@@ -12,10 +12,6 @@
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
-  :custom-face
-  ;; strikethrough done headings
-  (org-headline-done ((t (:inherit variable-pitch :strike-through t))))
-  (org-agenda-done ((t (:inherit variable-pitch :strike-through t))))
   :init
 ;;; Org Settings
 ;;;; Org Directories
@@ -139,7 +135,8 @@
         '(("el" . "src emacs-lisp")
           ("t" . "COMMENT \TODO:")
           ("b" . "REVEAL: split")
-          ("f" . "ATTR_REVEAL: :frag (appear)")))
+          ("f" . "ATTR_REVEAL: :frag (appear)")
+          ("n" . "notes")))
   (dolist (ele new-structure-template-alist)
     (add-to-list 'org-structure-template-alist ele))
 
