@@ -2,14 +2,13 @@
 
 ;;; Windows
 ;; Vertical window divider
-(use-package emacs
-  :straight nil
-  :hook (window-setup-hook . window-divider-mode)
-  :config
-  (setq window-divider-default-right-width 18)
-  (setq window-divider-default-bottom-width 1)
-  (setq window-divider-default-places 'right-only)
-  (window-divider-mode 1))
+(use-package frame
+  :straight (:type built-in)
+  :custom
+  (window-divider-default-right-width 18)
+  (window-divider-default-bottom-width 1)
+  (window-divider-default-places 'right-only)
+  (window-divider-mode t))
 
 ;;; Window Movement
 ;; Move to other window
@@ -139,7 +138,13 @@
                              (let ((buffer-file-name (buffer-name)))
                                (set-auto-mode)))))
 
+;;; Revert All Buffers
+
+(use-package revert-buffer-all
+  :straight (:type git :host gitlab :repo "ideasman42/emacs-revert-buffer-all")
+  :commands (revert-buffer-all))
+
 
 ;;; End Windows & Buffers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'setup-windows)
+(provide 'setup-windows-buffers)

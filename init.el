@@ -204,7 +204,7 @@
 
 ;;;; Other Modules
 (require 'setup-server)
-(require 'setup-windows)
+(require 'setup-windows-buffers)
 (require 'setup-ui)
 (require 'setup-theme)
 (require 'setup-navigation)
