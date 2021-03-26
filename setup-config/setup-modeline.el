@@ -46,7 +46,8 @@
     (python-mode . "Py")
     (emacs-lisp-mode . "EL")
     (nxhtml-mode . "nx")
-    (markdown-mode . "MD"))
+    (markdown-mode . "MD")
+    (fundamental-mode . "FL"))
   "Alist for `clean-mode-line'.
 
 When you add a new element to the alist, keep in mind that you
@@ -75,7 +76,7 @@ want to use in the modeline *in lieu of* the original.")
   (if vc-mode
       (let ((backend (vc-backend buffer-file-name)))
         (concat "" (substring-no-properties vc-mode
-                                             (+ (if (eq backend 'Hg) 2 3) 2))))  nil))
+                                             (+ (if (eq backend 'Hg) 2 3) 2)) " "))  nil))
 
 ;; From https://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
 ;; ---------------------------------------------------------------------
@@ -95,7 +96,7 @@ want to use in the modeline *in lieu of* the original.")
 ;;;; Header line format
 (use-package emacs
   :straight nil
-  :after (winum bespoke-themes)
+  ;; :after (winum bespoke-themes)
   :config
   ;; Mode line in header
   (define-key mode-line-major-mode-keymap [header-line]
@@ -131,27 +132,38 @@ want to use in the modeline *in lieu of* the original.")
                 '((:eval
                    (mode-line-render
                     (format-mode-line (list
-                                       (format " %s " (winum-get-number-string))
-                                       (propertize "|" 'face `(:inherit fringe)
+                                       ;; (format " %s " (winum-get-number-string))
+                                       (cond ((and buffer-file-name (buffer-modified-p))
+                                              (propertize " ⨀" 'face `(:inherit error)))
+                                             ;; ✱ ⊕ Ⓡ
+                                             (buffer-read-only
+                                              (propertize " ⨂" 'face `(:inherit font-lock-string-face)))
+                                             (t
+                                              (propertize " ⨁" 'face `(:inherit isearch :weight normal))))
+                                       (propertize " | " 'face `(:inherit fringe)
                                                    'help-echo "Mode(s) menu"
                                                    'mouse-face 'mode-line-highlight
                                                    'local-map   mode-line-major-mode-keymap)
-                                       ;; (shorten-directory default-directory 32)
-                                       " %b "
+                                       "%b"
+                                       (when buffer-file-name
+                                         (propertize (concat "•" (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
+
                                        ;; (propertize evil-mode-line-tag 'face `(:inherit bespoke-faded))
-                                       (cond ((and buffer-file-name (buffer-modified-p))
-                                              (propertize "(**)" 'face `(:foreground "#f08290")))
-                                             (buffer-read-only
-                                              (propertize "(RO)" 'face `(:inherit font-lock-string-face))))
                                        (if (buffer-narrowed-p)
-                                           (propertize "⇥"  'face `(:inherit fringe)))
-                                       (propertize " %m " 'face `(:inherit fringe))))
+                                           (propertize " ⇥"  'face `(:inherit fringe)))
+                                       (propertize " %m" 'face `(:inherit fringe))))
                     (format-mode-line (list
-                                       (vc-branch)
-                                       (propertize " %4l:%2c:%o" 'face `(:inherit fringe))
+                                       (propertize "%l:%c " 'face `(:inherit fringe))
                                        ;;https://emacs.stackexchange.com/a/10637/11934
                                        ;; (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit bespoke-faded))
-                                       "  "
+                                       ;; show project name
+                                       (when buffer-file-name
+                                         (when (bound-and-true-p projectile-mode)
+                                           (let ((project-name (projectile-project-name)))
+                                             (unless (string= " " project-name)
+                                               (propertize (format "%s•" project-name) 'face `(:inherit isearch))))))
+                                       (vc-branch)
+                                       " "
                                        ))))))
 
   ;; (setq-default header-line-format nil)
