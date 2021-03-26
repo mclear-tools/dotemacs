@@ -1,5 +1,8 @@
 ;; Theming functions
 
+;;; No-confirm themes
+(setq custom-safe-themes t)
+
 ;;; Theme Custom Folder
 (setq-default custom-theme-directory (concat cpm-local-dir "custom-themes/"))
 (add-to-list 'custom-theme-load-path (concat custom-theme-directory "bespoke-themes/"))
@@ -44,11 +47,7 @@
 (use-package bespoke-themes
   :straight (:type built-in)
   :load-path ".local/custom-themes/bespoke-themes"
-  ;; :custom
-  ;; (set-bespoke-header-line nil)
   :config
-  ;; (bespoke-header-line)
-  ;; (setq-default header-line-format mode-line-format)
   ;; use mode line visual bell
   (bespoke-themes-visual-bell-config))
 
@@ -56,13 +55,18 @@
 (defun cpm/disable-all-themes ()
   "disable all active themes."
   (interactive)
-  (dolist (i custom-enabled-themes)
-    (disable-theme i))
-  (setq-default header-line-format nil)
-  (setq-default mode-line-format cpm--mode-line-format)
-  (setq x-underline-at-descent-line t)
-  (force-mode-line-update)
-  (cpm/revert-all-file-buffers))
+  (progn
+    (dolist (i custom-enabled-themes)
+      (disable-theme i))
+    ;; disable window-divider mode
+    (window-divider-mode 0)
+    ;; revert to mode line
+    (setq-default header-line-format nil)
+    (setq-default mode-line-format cpm--default-mode-line)
+    (setq x-underline-at-descent-line t)
+    (force-mode-line-update 'ALL)
+    ;; revert file-visiting buffers
+    (revert-buffer-all)))
 
 ;;; Load Theme Wrapper
 (defun cpm/load-theme ()
