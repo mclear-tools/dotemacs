@@ -215,6 +215,7 @@
   :general
   ("C-h f" #'helpful-function)
   ("C-h k" #'helpful-key)
+  ("C-h o" #'helpful-symbol)
   ("C-h v" #'helpful-variable)
   ("C-c C-." #'helpful-at-point)
   ("C-h C-l" #'find-library))
