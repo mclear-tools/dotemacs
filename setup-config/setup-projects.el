@@ -28,7 +28,9 @@
               (setq rg-cmd (format "%s --glob '!%s'" rg-cmd dir)))
             (concat "rg -0 --files --color=never --hidden" rg-cmd))))
   (setq projectile-git-submodule-command nil
-        projectile-current-project-on-switch 'move-to-end))
+        projectile-current-project-on-switch 'move-to-end)
+  (setq projectile-mode-line-prefix " P:")
+  (setq projectile-dynamic-mode-line t))
 
 (add-hook 'projectile-after-switch-project-hook (lambda ()
                                                   (projectile-invalidate-cache nil)))

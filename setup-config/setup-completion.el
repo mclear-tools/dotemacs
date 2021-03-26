@@ -57,9 +57,6 @@
 (use-package selectrum-prescient
   :straight t
   :after selectrum
-  :custom-face
-  (selectrum-prescient-primary-highlight ((t (:weight bold :foreground "#EBCB8B"))))
-  (selectrum-prescient-secondary-highlight ((t (:weight bold :foreground "#81A1C1"))))
   :config
   (setq selectrum-prescient-enable-filtering nil)
   (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
@@ -71,11 +68,6 @@
 (use-package orderless
   :straight t
   :after selectrum
-  :custom-face
-  (orderless-match-face-0 ((t (:weight bold :foreground "#873AB7"))))
-  (orderless-match-face-1 ((t (:weight bold :foreground "#D08770"))))
-  (orderless-match-face-2 ((t (:weight bold :foreground "#A3BE8C"))))
-  (orderless-match-face-3 ((t (:weight bold :foreground "#FFAB91"))))
   :config
   (setq completion-styles '(orderless))
   (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
@@ -172,6 +164,11 @@
   (setq consult-async-min-input 0)
   (setq consult-async-input-debounce 0.01)
   )
+
+(use-package consult-projectile
+  :straight (consult-projectile :type git :host gitlab
+                                :repo "OlMon/consult-projectile" :branch "master")
+  :commands (consult-projectile))
 
 ;; Optionally configure narrowing key.
 ;; Both < and C-+ work reasonably well.

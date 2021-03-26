@@ -355,13 +355,15 @@
    "p&"  'projectile-run-async-shell-command-in-root
    "pa"  'projectile-toggle-between-implementation-and-test
    "pb"  'projectile-switch-to-buffer
-   "pc"  'projectile-compile-project
+   "pc"  'consult-projectile
+   "pC"  'projectile-compile-project
    "pd"  'projectile-find-dir
    "pD"  'projectile-dired
    "pf"  'projectile-find-file
-   "pF"  #'cpm/counsel-projectile-find-file-other-window
+   "pF"  'projectile-find-file-other-window
    "pg"  'cpm/goto-projects
-   "ph"  'projectile
+   ;; "ph"  'projectile
+   "pi"  'consult-project-imenu
    "pJ"  'bookmark
    "pG"  'projectile-regenerate-tags
    "pI"  'projectile-invalidate-cache
