@@ -146,7 +146,7 @@ want to use in the modeline *in lieu of* the original.")
                                                    'local-map   mode-line-major-mode-keymap)
                                        "%b"
                                        (when buffer-file-name
-                                         (propertize (concat "•" (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
+                                         (propertize (concat " " (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
 
                                        ;; (propertize evil-mode-line-tag 'face `(:inherit bespoke-faded))
                                        (if (buffer-narrowed-p)
@@ -160,7 +160,7 @@ want to use in the modeline *in lieu of* the original.")
                                        (when buffer-file-name
                                          (when (bound-and-true-p projectile-mode)
                                            (let ((project-name (projectile-project-name)))
-                                             (unless (string= " " project-name)
+                                             (unless (string= "-" project-name)
                                                (propertize (format "%s•" project-name) 'face `(:inherit isearch))))))
                                        (vc-branch)
                                        " "
