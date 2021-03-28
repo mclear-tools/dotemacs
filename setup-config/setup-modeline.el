@@ -76,7 +76,7 @@ want to use in the modeline *in lieu of* the original.")
   (if vc-mode
       (let ((backend (vc-backend buffer-file-name)))
         (concat "" (substring-no-properties vc-mode
-                                             (+ (if (eq backend 'Hg) 2 3) 2)) "  "))  nil))
+                                             (+ (if (eq backend 'Hg) 2 3) 2)) " "))  nil))
 
 ;; From https://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
 ;; ---------------------------------------------------------------------
@@ -129,6 +129,7 @@ want to use in the modeline *in lieu of* the original.")
      (window-list)))
   (add-hook 'buffer-list-update-hook #'cpm-update-header)
 
+;;;; Header line content
   (setq-default header-line-format
                 '((:eval
                    (mode-line-render
@@ -136,14 +137,14 @@ want to use in the modeline *in lieu of* the original.")
                                        ;; show window number; deprecated in favor of buffer status
                                        ;; (format " %s " (winum-get-number-string))
                                        (cond ((and buffer-file-name (buffer-modified-p))
-                                              (propertize " ⨀" 'face `(:inherit error)))
+                                              (propertize " ⨀ " 'face `(:inherit bespoke-header-mod-face :weight bold)))
                                              ;; other unicode symbols: ✱ Ⓡ ⓦ ⊕ ⨁
                                              (buffer-read-only
-                                              (propertize " ⨂" 'face `(:inherit font-lock-string-face)))
+                                              (propertize " ⨂ " 'face `(:inherit bespoke-header-ro-face :weight bold)))
                                              (t
-                                              (propertize " ◯" 'face `(:inherit isearch :weight normal))))
-                                       (propertize " | " 'face `(:inherit fringe))
-                                       "%b"
+                                              (propertize " ◯ " 'face `(:inherit bespoke-header-default-face :weight bold))))
+                                       ;; (propertize " | " 'face `(:inherit fringe))
+                                       " %b"
                                        (when buffer-file-name
                                          (propertize (concat " " (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
 
@@ -155,23 +156,28 @@ want to use in the modeline *in lieu of* the original.")
                                                    'mouse-face 'mode-line-highlight
                                                    'local-map   mode-line-major-mode-keymap)))
                     (format-mode-line (list
-                                       (propertize "%l:%c " 'face `(:inherit fringe))
                                        ;;https://emacs.stackexchange.com/a/10637/11934
                                        ;; (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit bespoke-faded))
+
                                        ;; show project name
                                        (when buffer-file-name
                                          (when (bound-and-true-p projectile-mode)
                                            (let ((project-name (projectile-project-name)))
                                              (unless (string= "-" project-name)
-                                               (propertize (format "%s " project-name) 'face `(:slant italic :inherit isearch))))))
+                                               (propertize (format "%s " project-name) 'face `(:slant italic :inherit fringe))))))
+
                                        ;; when buffer-file is tracked in vc add spacer between project & branch
                                        (when vc-mode
-                                         (if (vc-registered (buffer-file-name))
-                                             (propertize "⦁ " 'face `(:inherit fringe))
-                                           "  "))
+                                         (when (vc-registered (buffer-file-name))
+                                           (propertize "⦁ " 'face `(:inherit fringe))))
+
                                        ;; show branch name
-                                       (vc-branch)
-                                       " "
+                                       ;; NOTE: I can't seem to get line/col to display properly without putting them into the conditional
+                                       (if vc-mode
+                                           (list
+                                            (propertize (vc-branch) 'face `(:inherit fringe))
+                                            "%l:%c  ")
+                                         "%l:%c  ")
                                        ))))))
 
   ;; (setq-default header-line-format nil)
@@ -183,4 +189,4 @@ want to use in the modeline *in lieu of* the original.")
 ;;; End Modeline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  (provide 'setup-modeline)
+(provide 'setup-modeline)
