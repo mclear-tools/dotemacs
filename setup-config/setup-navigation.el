@@ -98,19 +98,6 @@
 ;;; Hydra
 (use-package hydra :defer 1)
 
-;; hydra for TODOs
-(with-eval-after-load 'hydra
-  (defhydra cpm/hydra-todo
-    (:pre
-     (hl-todo-mode 1)
-     :post
-     (hl-todo-mode -1))
-    "Todo"
-    ("n" hl-todo-next "Next")
-    ("p" hl-todo-previous "Previous")
-    ("o" hl-todo-occur "Occur")
-    ("q" nil "Quit" :color blue :exit t)))
-
 ;;; Recent files
 (use-package recentf
   :hook (after-init . recentf-mode)

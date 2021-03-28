@@ -148,6 +148,21 @@
   (add-hook 'prog-mode-hook #'hl-todo-mode)
   (add-hook 'markdown-mode-hook #'hl-todo-mode))
 
+;; hydra for TODOs
+(with-eval-after-load 'hydra
+  (defhydra cpm/hydra-todo
+    (:pre
+     (hl-todo-mode 1)
+     :post
+     (hl-todo-mode -1))
+    "Todo"
+    ("n" hl-todo-next "Next")
+    ("p" hl-todo-previous "Previous")
+    ("o" hl-todo-occur "Occur")
+    ("q" nil "Quit" :color blue :exit t)))
+
+
+
 ;;; Icons
 (use-package all-the-icons
   :defer t)
