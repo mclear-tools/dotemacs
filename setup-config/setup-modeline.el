@@ -76,7 +76,7 @@ want to use in the modeline *in lieu of* the original.")
   (if vc-mode
       (let ((backend (vc-backend buffer-file-name)))
         (concat "" (substring-no-properties vc-mode
-                                             (+ (if (eq backend 'Hg) 2 3) 2)) " "))  nil))
+                                             (+ (if (eq backend 'Hg) 2 3) 2)) "  "))  nil))
 
 ;; From https://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
 ;; ---------------------------------------------------------------------
@@ -104,6 +104,7 @@ want to use in the modeline *in lieu of* the original.")
 
   ;; Organize mode line
   (defun mode-line-render (left right)
+    "Organize mode line entries to left and right"
     (let* ((available-width (- (window-width) (length left) )))
       (format (format "%%s %%%ds" available-width) left right)))
 
@@ -132,18 +133,16 @@ want to use in the modeline *in lieu of* the original.")
                 '((:eval
                    (mode-line-render
                     (format-mode-line (list
+                                       ;; show window number; deprecated in favor of buffer status
                                        ;; (format " %s " (winum-get-number-string))
                                        (cond ((and buffer-file-name (buffer-modified-p))
                                               (propertize " ⨀" 'face `(:inherit error)))
-                                             ;; ✱ ⊕ Ⓡ
+                                             ;; other unicode symbols: ✱ Ⓡ ⓦ ⊕ ⨁
                                              (buffer-read-only
                                               (propertize " ⨂" 'face `(:inherit font-lock-string-face)))
                                              (t
-                                              (propertize " ⨁" 'face `(:inherit isearch :weight normal))))
-                                       (propertize " | " 'face `(:inherit fringe)
-                                                   'help-echo "Mode(s) menu"
-                                                   'mouse-face 'mode-line-highlight
-                                                   'local-map   mode-line-major-mode-keymap)
+                                              (propertize " ◯" 'face `(:inherit isearch :weight normal))))
+                                       (propertize " | " 'face `(:inherit fringe))
                                        "%b"
                                        (when buffer-file-name
                                          (propertize (concat " " (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
@@ -151,7 +150,10 @@ want to use in the modeline *in lieu of* the original.")
                                        ;; (propertize evil-mode-line-tag 'face `(:inherit bespoke-faded))
                                        (if (buffer-narrowed-p)
                                            (propertize " ⇥"  'face `(:inherit fringe)))
-                                       (propertize " %m" 'face `(:inherit fringe))))
+                                       (propertize " %m " 'face `(:inherit fringe)
+                                                   'help-echo "Mode(s) menu"
+                                                   'mouse-face 'mode-line-highlight
+                                                   'local-map   mode-line-major-mode-keymap)))
                     (format-mode-line (list
                                        (propertize "%l:%c " 'face `(:inherit fringe))
                                        ;;https://emacs.stackexchange.com/a/10637/11934
@@ -161,7 +163,13 @@ want to use in the modeline *in lieu of* the original.")
                                          (when (bound-and-true-p projectile-mode)
                                            (let ((project-name (projectile-project-name)))
                                              (unless (string= "-" project-name)
-                                               (propertize (format "%s•" project-name) 'face `(:inherit isearch))))))
+                                               (propertize (format "%s " project-name) 'face `(:slant italic :inherit isearch))))))
+                                       ;; when buffer-file is tracked in vc add spacer between project & branch
+                                       (when vc-mode
+                                         (if (vc-registered (buffer-file-name))
+                                             (propertize "⦁ " 'face `(:inherit fringe))
+                                           "  "))
+                                       ;; show branch name
                                        (vc-branch)
                                        " "
                                        ))))))
@@ -175,4 +183,4 @@ want to use in the modeline *in lieu of* the original.")
 ;;; End Modeline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(provide 'setup-modeline)
+  (provide 'setup-modeline)
