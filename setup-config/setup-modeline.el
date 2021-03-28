@@ -134,8 +134,10 @@ want to use in the modeline *in lieu of* the original.")
                 '((:eval
                    (mode-line-render
                     (format-mode-line (list
-                                       ;; show window number; deprecated in favor of buffer status
+                                       ;; Show window number; deprecated in favor of buffer status
                                        ;; (format " %s " (winum-get-number-string))
+
+                                       ;; Buffer status
                                        (cond ((and buffer-file-name (buffer-modified-p))
                                               (propertize " ⨀ " 'face `(:inherit bespoke-header-mod-face :weight bold)))
                                              ;; other unicode symbols: ✱ Ⓡ ⓦ ⊕ ⨁
@@ -143,14 +145,27 @@ want to use in the modeline *in lieu of* the original.")
                                               (propertize " ⨂ " 'face `(:inherit bespoke-header-ro-face :weight bold)))
                                              (t
                                               (propertize " ◯ " 'face `(:inherit bespoke-header-default-face :weight bold))))
+
+                                       ;; Divider (deprecated)
                                        ;; (propertize " | " 'face `(:inherit fringe))
-                                       " %b"
+
+                                       ;; Filename (NOTE: not using %b since that leads to redundant info when using uniquify
+                                       (if buffer-file-name
+                                           (concat " " (file-name-nondirectory (buffer-file-name)))
+                                         " %b")
+
+                                       ;; Parent directory
                                        (when buffer-file-name
                                          (propertize (concat " " (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
 
+                                       ;; Evil tags
                                        ;; (propertize evil-mode-line-tag 'face `(:inherit bespoke-faded))
+
+                                       ;; Narrowed buffer
                                        (if (buffer-narrowed-p)
                                            (propertize " ⇥"  'face `(:inherit fringe)))
+
+                                       ;; Modes
                                        (propertize " %m " 'face `(:inherit fringe)
                                                    'help-echo "Mode(s) menu"
                                                    'mouse-face 'mode-line-highlight
@@ -159,19 +174,19 @@ want to use in the modeline *in lieu of* the original.")
                                        ;;https://emacs.stackexchange.com/a/10637/11934
                                        ;; (propertize (format "%3d%%" (/ (window-start) 0.01 (point-max))) 'face `(:inherit bespoke-faded))
 
-                                       ;; show project name
+                                       ;; Show project name
                                        (when buffer-file-name
                                          (when (bound-and-true-p projectile-mode)
                                            (let ((project-name (projectile-project-name)))
                                              (unless (string= "-" project-name)
                                                (propertize (format "%s " project-name) 'face `(:slant italic :inherit fringe))))))
 
-                                       ;; when buffer-file is tracked in vc add spacer between project & branch
+                                       ;; When buffer-file is tracked in vc add spacer between project & branch
                                        (when vc-mode
                                          (when (vc-registered (buffer-file-name))
                                            (propertize "⦁ " 'face `(:inherit fringe))))
 
-                                       ;; show branch name
+                                       ;; Show branch name
                                        ;; NOTE: I can't seem to get line/col to display properly without putting them into the conditional
                                        (if vc-mode
                                            (list
