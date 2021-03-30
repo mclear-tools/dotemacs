@@ -1419,5 +1419,21 @@ is non-nil."
       (kill-new link-string)
       (message "Org link %s is copied." link-string))))
 
-;;; Provide
+;;;; Remove Org Links
+;; https://emacs.stackexchange.com/a/10714/11934
+(defun cpm/org-replace-link-by-link-description ()
+  "Replace an org link by its description or, if empty, its address"
+  (interactive)
+  (if (org-in-regexp org-link-bracket-re 1)
+      (save-excursion
+        (let ((remove (list (match-beginning 0) (match-end 0)))
+              (description
+               (if (match-end 2)
+                   (org-match-string-no-properties 2)
+                 (org-match-string-no-properties 1))))
+          (apply 'delete-region remove)
+          (insert description)))))
+
+
+;;; End Org Setup
 (provide 'setup-org)

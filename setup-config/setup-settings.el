@@ -41,10 +41,13 @@
 
 ;;;;; UTF 8
 (setq locale-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 ;;;;; Interface settings
 ;; (setq visible-bell nil) ;; The default
@@ -204,40 +207,6 @@
 
 ;;;; Universal Argument
 (general-define-key "M-u" 'universal-argument)
-
-;;;; Helpful Information
-(use-package helpful
-  :init
-  (setq evil-lookup-func #'helpful-at-point)
-  :config
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'helpful-mode 'motion))
-  :general
-  ("C-h f" #'helpful-function)
-  ("C-h k" #'helpful-key)
-  ("C-h o" #'helpful-symbol)
-  ("C-h v" #'helpful-variable)
-  ("C-c C-." #'helpful-at-point)
-  ("C-h C-l" #'find-library))
-
-(advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
-
-;; Add melpa link to describe package info
-(defun cpm/describe-package--add-melpa-link (pkg)
-  (let* ((desc (if (package-desc-p pkg)
-                   pkg
-                 (cadr (assq pkg package-archive-contents))))
-         (name (if desc (package-desc-name desc) pkg))
-         (archive (if desc (package-desc-archive desc)))
-         (melpa-link (format "https://melpa.org/#/%s" name)))
-    (when (equal archive "melpa")
-      (save-excursion
-        (goto-char (point-min))
-        (when (re-search-forward "Summary:" nil t)
-          (forward-line 1)
-          (package--print-help-section "MELPA")
-          (help-insert-xref-button melpa-link 'help-url melpa-link)
-          (insert "\n"))))))
 
 ;;;; Emacs Profiling
 ;; might be worth checking this out more closely

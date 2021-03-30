@@ -1,5 +1,12 @@
 ;;; Useful Functions
 
+;;;; Make Temp Buffer
+(defun cpm/tmp-buffer()
+  "Make a temporary buffer and switch to it"
+  (interactive)
+  (switch-to-buffer (get-buffer-create (concat "tmp-" (format-time-string "%m.%dT%H.%M.%S"))))
+  (delete-other-windows))
+
 ;;;; Mode line benchmark
 ;; https://emacs.stackexchange.com/a/59221/11934
 (defmacro mode-line-benchmark-elapse-time (&rest forms)

@@ -95,13 +95,13 @@
   ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
   (set-fontset-font t 'unicode "Symbola" nil 'prepend)
 
-;; Fall back font for glyph missing in Roboto
-(defface fallback '((t :family "Fira Code"
-                       :inherit 'nano-face-faded)) "Fallback")
-(set-display-table-slot standard-display-table 'truncation
-                        (make-glyph-code ?… 'fallback))
-(set-display-table-slot standard-display-table 'wrap
-                        (make-glyph-code ?↩ 'fallback)))
+  ;; Fall back font for glyph missing in Roboto
+  (defface fallback '((t :family "Fira Code"
+                         :inherit fringe)) "Fallback")
+  (set-display-table-slot standard-display-table 'truncation
+                          (make-glyph-code ?… 'fallback))
+  (set-display-table-slot standard-display-table 'wrap
+                          (make-glyph-code ?↩ 'fallback)))
 
 ;;; Scale Text
 ;; Set default line spacing (in pixels)
@@ -213,6 +213,56 @@
 (use-package delight
   :straight t
   :defer 1)
+
+;;; Helpful Information
+;; Much better lookup both in details and headings/aesthetics
+(use-package helpful
+  :init
+  (setq evil-lookup-func #'helpful-at-point)
+  :config
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'helpful-mode 'motion))
+  :general
+  ("C-h f" #'helpful-function)
+  ("C-h k" #'helpful-key)
+  ("C-h o" #'helpful-symbol)
+  ("C-h v" #'helpful-variable)
+  ("C-c C-." #'helpful-at-point)
+  ("C-h C-l" #'find-library))
+
+(advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
+
+;; Add melpa link to describe package info
+(defun cpm/describe-package--add-melpa-link (pkg)
+  (let* ((desc (if (package-desc-p pkg)
+                   pkg
+                 (cadr (assq pkg package-archive-contents))))
+         (name (if desc (package-desc-name desc) pkg))
+         (archive (if desc (package-desc-archive desc)))
+         (melpa-link (format "https://melpa.org/#/%s" name)))
+    (when (equal archive "melpa")
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward "Summary:" nil t)
+          (forward-line 1)
+          (package--print-help-section "MELPA")
+          (help-insert-xref-button melpa-link 'help-url melpa-link)
+          (insert "\n"))))))
+
+;;;; Helpful Demos
+(use-package elisp-demos
+  :defer 1
+  :config
+  ;; inject demos into helpful
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+
+
+;;; Better Info
+;; Better looking info pages
+(use-package info-colors
+  :straight (:host github :repo "ubolonton/info-colors")
+  :config
+  (add-hook 'Info-selection-hook 'info-colors-fontify-node))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

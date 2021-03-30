@@ -427,6 +427,23 @@
 ;;; Dictionary
 (use-package define-word
   :commands (define-word define-word-at-point))
+;;; Writegood Mode
+(use-package writegood-mode
+  :hook (markdown-mode . writegood-mode)
+  :config
+  (setq cpm/weasel-words
+        '("actually"
+          "basically"
+          "easily"
+          "easy"
+          "specifically"
+          "simple"
+          "simply"))
+  (setq writegood-weasel-words
+        (-concat writegood-weasel-words cpm/weasel-words)))
+
+
+
 ;;; Notes / Deft
 (use-package deft
   :commands (deft deft-open-file-other-window cpm/notebook deft-new-file-named)
