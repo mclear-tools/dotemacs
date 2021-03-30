@@ -22,8 +22,13 @@
 
 ;;; Gruvbox Theme
 (use-package gruvbox-theme
-  ;; :if (not (display-graphic-p))
-  :defer t)
+  :after setup-modeline
+  :if (not (display-graphic-p))
+  :config
+  (cpm/disable-all-themes)
+  (setq-default header-line-format nil)
+  (setq-default mode-line-format cpm--default-mode-line)
+  (load-theme 'gruvbox t))
 
 ;;; Doom Themes
 (use-package doom-themes
