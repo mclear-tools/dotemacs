@@ -13,20 +13,20 @@
       '((:eval
          (mode-line-render
           (format-mode-line (list
-                             (format " %s " (winum-get-number-string))
+                             evil-mode-line-tag
                              "|"
                              ;; (shorten-directory default-directory 32)
                              " %b "
-                             ;; (propertize evil-mode-line-tag 'face `(:inherit mode-line))
+                             (if (buffer-narrowed-p)
+                                 ("⇥"))
+                             " %m "
                              (cond ((and buffer-file-name (buffer-modified-p))
                                     (propertize "(**)" 'face `(:foreground "#f08290")))
                                    (buffer-read-only "(RO)" ))
-                             (if (buffer-narrowed-p)
-                                 ("⇥"))
-                             " %m "))
+                             ))
           (format-mode-line (list
                              (vc-branch)
-                             " %4l:%2c:%o"
+                             " %l:%c:%o"
                              ;;https://emacs.stackexchange.com/a/10637/11934
                              "  ")
                             )))))
@@ -139,12 +139,12 @@ want to use in the modeline *in lieu of* the original.")
 
                                        ;; Buffer status
                                        (cond ((and buffer-file-name (buffer-modified-p))
-                                              (propertize " ⨀ " 'face `(:inherit bespoke-header-mod-face :weight bold)))
-                                             ;; other unicode symbols: ✱ Ⓡ ⓦ ⊕ ⨁
+                                              (propertize " ⦿ " 'face `(:inherit bespoke-header-mod-face :weight bold :height 1.10)))
+                                             ;; other unicode symbols: ✱ Ⓡ ⓦ ⊕ 🞊 ⨁ ⨂ ⨀ ◯ ⦿ ⊗ 🞅
                                              (buffer-read-only
-                                              (propertize " ⨂ " 'face `(:inherit bespoke-header-ro-face :weight bold)))
+                                              (propertize " ⊗ " 'face `(:inherit bespoke-header-ro-face :weight bold :height 1.10)))
                                              (t
-                                              (propertize " ◯ " 'face `(:inherit bespoke-header-default-face :weight bold))))
+                                              (propertize " 🞅 " 'face `(:inherit bespoke-header-default-face :height 1.10))))
 
                                        ;; Divider (deprecated)
                                        ;; (propertize " | " 'face `(:inherit fringe))
@@ -184,8 +184,8 @@ want to use in the modeline *in lieu of* the original.")
                                        ;; When buffer-file is tracked in vc add spacer between project & branch
                                        (when vc-mode
                                          (when (vc-registered (buffer-file-name))
-                                           (propertize "⦁ " 'face `(:inherit fringe))))
-
+                                           (propertize "• " 'face `(:inherit fringe))))
+                                       ;; "⦁ "
                                        ;; Show branch name
                                        ;; NOTE: I can't seem to get line/col to display properly without putting them into the conditional
                                        (if vc-mode
