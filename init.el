@@ -220,10 +220,10 @@
 (require 'setup-calendars)
 (require 'setup-testing)
 (require 'setup-modeline)
-;; (require 'setup-email)
 (require 'setup-splash)
 (require 'setup-nano)
 
+;; (require 'setup-email)
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-posframe)
