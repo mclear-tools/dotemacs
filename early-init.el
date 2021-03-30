@@ -96,16 +96,13 @@
 ;; Resizing the Emacs frame can be an expensive part of changing the
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
 ;; larger than the system default.
-(setq frame-inhibit-implied-resize t)
 
-;; No frame title header
 (setq-default frame-title-format nil)
-(setq-default mode-line-format'(""))
+(setq-default frame-inhibit-implied-resize t)
 (setq-default inhibit-startup-screen t)
 (setq-default inhibit-splash-screen t)
 (setq-default inhibit-startup-message t)
 (setq-default initial-scratch-message nil)
-(setq-default frame-inhibit-implied-resize t)
 
 ;; UI - Disable visual cruft
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
