@@ -5,7 +5,7 @@
 (use-package frame
   :straight (:type built-in)
   :custom
-  (window-divider-default-right-width 18)
+  (window-divider-default-right-width 12)
   (window-divider-default-bottom-width 1)
   (window-divider-default-places 'right-only)
   (window-divider-mode t))
@@ -22,11 +22,13 @@
 (use-package emacs-winum
   :straight (winum :type git :host github :repo "deb0ch/emacs-winum")
   :hook (after-init . winum-mode)
+  :custom
+  ;; seems to require being set in custom to take effect
+  (winum-auto-setup-mode-line nil)
   :config
   (setq window-numbering-scope            'global
         winum-reverse-frame-list          nil
         winum-auto-assign-0-to-minibuffer t
-        ;; winum-auto-setup-mode-line        t
         ;; winum-format                      " %s
         ;; winum-mode-line-position          1
         winum-ignored-buffers             '(" *which-key*")
@@ -112,9 +114,7 @@
 ;; https://www.emacswiki.org/emacs/WinnerMode
 (use-package winner
   :straight nil
-  :commands (winner-undo winner-redo winner-mode)
-  :config
-  (winner-mode 1))
+  :hook (after-init . winner-mode))
 
 ;;; Windows & Buffers
 (setq switch-to-buffer-preserve-window-point 'already-displayed)
@@ -122,7 +122,7 @@
 ;; unique buffers
 (use-package uniquify
   :straight (:type built-in)
-  :defer 1
+  :defer 3
   :config
   (setq uniquify-buffer-name-style 'reverse
         uniquify-separator " • "
