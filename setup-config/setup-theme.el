@@ -3,9 +3,8 @@
 ;;; No-confirm themes
 (setq custom-safe-themes t)
 
-;;; Theme Custom Folder
+;;; Custom Theme Folder
 (setq-default custom-theme-directory (concat cpm-local-dir "custom-themes/"))
-(add-to-list 'custom-theme-load-path (concat custom-theme-directory "bespoke-themes/"))
 
 ;;; What Face?
 ;; https://stackoverflow.com/a/66287459/6277148
@@ -15,19 +14,12 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-;;; Autothemer
-
-(use-package autothemer
-  :straight t)
 
 ;;; Gruvbox Theme
 (use-package gruvbox-theme
-  :after setup-modeline
+  :disabled
   :if (not (display-graphic-p))
   :config
-  (cpm/disable-all-themes)
-  (setq-default header-line-format nil)
-  (setq-default mode-line-format cpm--default-mode-line)
   (load-theme 'gruvbox t))
 
 ;;; Doom Themes
@@ -40,21 +32,19 @@
   ;; Enable custom treemacs theme (all-the-icons must be installed!)
   (setq doom-themes-treemacs-theme "doom-colors")) ; use the colorful treemacs theme
 
-;; I get errors if I don't load these functions separately
-;; (with-eval-after-load 'doom-themes
-;;   ;; Enable flashing mode-line on errors
-;; (doom-themes-visual-bell-config)
-;;   (doom-themes-treemacs-config)
-;;   ;; Corrects (and improves) org-mode's native fontification.
-;;   (doom-themes-org-config))
-
 ;;; Bespoke Theme
 (use-package bespoke-themes
   :straight (:type built-in)
   :load-path ".local/custom-themes/bespoke-themes"
+  :init
+  ;; add to load path
+  (add-to-list 'custom-theme-load-path (concat custom-theme-directory "bespoke-themes/"))
   :config
+  ;; set header line
+  (setq set-bespoke-header-line t)
   ;; use mode line visual bell
   (bespoke-themes-visual-bell-config))
+
 
 ;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
@@ -67,10 +57,10 @@
     (window-divider-mode 0)
     ;; revert to mode line
     (setq-default header-line-format nil)
-    (setq-default mode-line-format cpm--default-mode-line)
+    ;; (setq-default mode-line-format cpm--default-mode-line)
     (setq x-underline-at-descent-line t)
     (force-mode-line-update 'ALL)
-    ;; revert file-visiting buffers
+    ;; revert all buffers
     (revert-buffer-all)))
 
 ;;; Load Theme Wrapper
