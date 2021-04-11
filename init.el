@@ -92,7 +92,8 @@
 ;; use straight.el to install all packages
 ;; https://github.com/raxod502/straight.el
 ;; Don't check packages on startup
-(setq straight-check-for-modifications nil)
+;; (setq straight-check-for-modifications nil)
+(setq straight-check-for-modifications '(check-on-save find-when-checking))
 ;; set dir
 (setq straight-base-dir cpm-local-dir)
 ;; use use-package
