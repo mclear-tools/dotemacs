@@ -4,18 +4,11 @@
   :config
   (setq imenu-list-focus-after-activation t
         imenu-list-auto-resize t
-        imenu-list-position 'left)
-  :custom-face
-  (imenu-list-entry-face-0 ((t (:inherit imenu-list-entry-face :foreground "#269bd2"))))
-  (imenu-list-entry-face-1 ((t (:inherit imenu-list-entry-face :foreground "medium sea green"))))
-  (imenu-list-entry-face-2 ((t (:inherit imenu-list-entry-face :foreground "#cb4b16"))))
-  (imenu-list-entry-face-3 ((t (:inherit imenu-list-entry-face :foreground "#b58900")))))
+        imenu-list-position 'left))
 
 ;;; Save place
 (use-package saveplace
-  :defer 1
-  :init
-  (save-place-mode 1)
+  :hook (after-init . save-place-mode)
   :config
   (setq save-place-file (concat cpm-cache-dir "saved-places"))
   (setq save-place-forget-unreadable-files nil))
@@ -100,7 +93,8 @@
 
 ;;; Recent files
 (use-package recentf
-  :hook (after-init . recentf-mode)
+  ;; :hook (after-init . recentf-mode)
+  :defer 2
   :config
   (setq recentf-save-file (concat cpm-cache-dir "recentf"))
   ;; remove agenda files from list.
@@ -124,6 +118,7 @@
   :hook ((compilation-mode . goto-address-mode)
          (prog-mode . goto-address-prog-mode)
          (eshell-mode . goto-address-mode)
+         (text-mode . goto-address-mode)
          (shell-mode . goto-address-mode))
   :general (:states '(normal insert emacs motion)
             :keymaps 'goto-address-highlight-keymap

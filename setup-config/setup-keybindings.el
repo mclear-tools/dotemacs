@@ -29,7 +29,7 @@
 ;; set keybindings for use with evil
 (with-eval-after-load 'evil
 
-;;;;  Application Keybindings
+;;;; Application Keybindings
 
   (general-define-key
    :states '(normal motion visual insert emacs)
@@ -48,7 +48,7 @@
    "aw" 'wttrin
    )
 
-;;;;  Buffer Keybindings
+;;;; Buffer Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -79,7 +79,7 @@
    "bt" 'cpm/open-dir-in-iterm
    )
 
-;;;;  Comment Keybindings
+;;;; Comment Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -95,7 +95,7 @@
    "cy"  'evil-commentary-yank-line
    )
 
-;;;;  Config Keybindings
+;;;; Config Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -119,7 +119,7 @@
    "Cs" 'cpm/search-setup-config-files
    )
 
-;;;;  File Keybindings
+;;;; File Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -140,7 +140,7 @@
    "fy" 'cpm/show-and-copy-buffer-filename
    )
 
-;;;;  General Keybindings
+;;;; General Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -185,9 +185,10 @@
    "[" 'cpm/previous-user-buffer
    "]" 'cpm/next-user-buffer
    "TAB" 'switch-to-previous-buffer
+   ":" 'shell-command
    )
 
-;;;;  Compile Keybindings
+;;;; Compile Keybindings
   (general-define-key
    :states '(normal motion visual insert emacs)
    :keymaps 'override
@@ -238,6 +239,7 @@
    "c]"  'markdown-complete-buffer
    "cb"  'cpm/clone-buffer-and-narrow
    "cc"  'multi-compile-run
+   "cl"  'markdown-live-preview-mode
    "cm"  'markdown-other-window
    "cn"  'markdown-cleanup-list-numbers
    "co"  'markdown-open

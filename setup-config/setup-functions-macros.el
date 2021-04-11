@@ -136,11 +136,11 @@ will be killed."
 (defun goto-init.el ()
   "Open init.el file"
   (interactive)
-  (find-file "~/.emacs.d/init.el"))
+  (find-file user-init-file))
 (defun goto-custom.el ()
   "Open custom.el file"
   (interactive)
-  (find-file "~/.emacs.d/custom.el"))
+  (find-file custom-file))
 (defun goto-config.org ()
   "Open config.org file"
   (interactive)
@@ -149,7 +149,7 @@ will be killed."
   "Load config "
   (interactive)
   ;; (cpm/tangle-emacs-config)
-  (load-file "~/.emacs.d/init.el"))
+  (load-file user-init-file))
 (defun goto-dotfiles.org ()
   "Open dotfiles.org file"
   (interactive)
@@ -157,7 +157,7 @@ will be killed."
 (defun goto-emacs-dir ()
   "Open dotfiles.org file"
   (interactive)
-  (find-file "~/.emacs.d"))
+  (find-file user-emacs-directory))
 (defun goto-cpm-elisp-dir ()
   (interactive)
   (find-file cpm-elisp-dir))
@@ -193,10 +193,10 @@ will be killed."
 ;;;; Useful Buffers
 (defun cpm/user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
-Typically, if buffer name starts with *, it's not considered a user buffer.
-This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
-You can override this function to get your idea of “user buffer”.
-version 2016-06-18"
+  Typically, if buffer name starts with *, it's not considered a user buffer.
+  This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
+  You can override this function to get your idea of “user buffer”.
+  version 2016-06-18"
   (interactive)
   (if (string-equal "*" (substring (buffer-name) 0 1))
       nil
@@ -207,9 +207,9 @@ version 2016-06-18"
 
 (defun cpm/next-user-buffer ()
   "Switch to the next user buffer.
-“user buffer” is determined by `cpm/user-buffer-q'.
-URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+  “user buffer” is determined by `cpm/user-buffer-q'.
+  URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+  Version 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -221,9 +221,9 @@ Version 2016-06-19"
 
 (defun cpm/previous-user-buffer ()
   "Switch to the previous user buffer.
-“user buffer” is determined by `cpm/user-buffer-q'.
-URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+  “user buffer” is determined by `cpm/user-buffer-q'.
+  URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+  Version 2016-06-19"
   (interactive)
   (previous-buffer)
   (let ((i 0))
@@ -261,12 +261,12 @@ Version 2016-06-19"
 (with-eval-after-load 'ediff
   (defhydra hydra-ediff (:color blue :hint nil)
     "
-^Buffers           Files           VC                     Ediff regions
-----------------------------------------------------------------------
-_b_uffers           _f_iles (_=_)       _r_evisions              _l_inewise
-_B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
-                  _c_urrent file
-"
+  ^Buffers           Files           VC                     Ediff regions
+  ----------------------------------------------------------------------
+  _b_uffers           _f_iles (_=_)       _r_evisions              _l_inewise
+  _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
+  _c_urrent file
+  "
     ("b" ediff-buffers)
     ("B" ediff-buffers3)
     ("=" ediff-files)
@@ -285,8 +285,8 @@ _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
 
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
-In Delete Selection mode, if the mark is active, just deactivate it;
-then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  In Delete Selection mode, if the mark is active, just deactivate it;
+  then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (interactive)
   (if (and delete-selection-mode transient-mark-mode mark-active)
       (setq deactivate-mark  t)
@@ -314,12 +314,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun cpm/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   (interactive)
-  (let ((fill-column
-         (if (eq last-command 'cpm/fill-or-unfill)
-             (progn (setq this-command nil)
-                    (point-max))
-           fill-column)))
-    (call-interactively #'fill-paragraph)))
+  ;; if in an org buffer use org-fill-paragraph
+  (if (derived-mode-p 'org-mode)
+      (org-fill-paragraph)
+    (let ((fill-column
+           (if (eq last-command 'cpm/fill-or-unfill)
+               (progn (setq this-command nil)
+                      (point-max))
+             fill-column)))
+      (call-interactively #'fill-paragraph))))
 
 (global-set-key [remap fill-paragraph]
                 #'cpm/fill-or-unfill)
@@ -612,14 +615,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (kill-buffer)
   (delete-frame)
   (do-applescript "if application \"Mail\" is running then
-                   tell application \"Mail\"
-                   activate
-                   delay 0.35
-                   tell application \"System Events\"
-                   keystroke \"v\" using {command down}
-                   end tell
-                   end tell
-                   end if"))
+  tell application \"Mail\"
+  activate
+  delay 0.35
+  tell application \"System Events\"
+  keystroke \"v\" using {command down}
+  end tell
+  end tell
+  end if"))
 
 
 ;;;; Mailmate save mail and kill client

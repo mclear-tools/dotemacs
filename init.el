@@ -219,10 +219,10 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
-(require 'setup-modeline)
 (require 'setup-splash)
-(require 'setup-nano)
 
+;; (require 'setup-nano)
+;; (require 'setup-modeline)
 ;; (require 'setup-email)
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)
