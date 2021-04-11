@@ -161,6 +161,14 @@
     ("o" hl-todo-occur "Occur")
     ("q" nil "Quit" :color blue :exit t)))
 
+;; ;;https://github.com/erickgnavar/dotfiles/tree/master/.emacs.d#highlight-todo-fixme-etc
+;; (defun cpm/highlight-todo-like-words ()
+;;   (font-lock-add-keywords
+;;    nil `(("\\<\\(FIXME\\|TODO\\|NOTE\\)"
+;;           1 font-lock-warning-face t))))
+
+
+;; (add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
 
 
 ;;; Icons
@@ -261,8 +269,18 @@
 ;; Better looking info pages
 (use-package info-colors
   :straight (:host github :repo "ubolonton/info-colors")
+  :defer t
   :config
   (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+
+;;; Xwidget Browser
+(use-package xwwp-follow-link
+  :straight (:host github :repo "canatella/xwwp")
+  :custom
+  (xwwp-follow-link-completion-system 'default)
+  :general
+  (:keymaps 'xwidget-webkit-mode-map
+   "v"  'xwwp-follow-link))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
