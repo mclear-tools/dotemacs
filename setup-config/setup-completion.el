@@ -79,17 +79,21 @@
   :straight (embark :type git :host github :repo "oantolin/embark")
   ;; :after (icomplete-vertical)
   :commands (embark-act embark-keymap-help)
-  :bind ("C-o" . embark-act)
   :general
+  ("C-S-o"   'embark-act
+   "C-h B"  'embark-bindings)
   (:keymaps 'minibuffer-local-completion-map
    "C-;" 'embark-act-noexit
-   "C-:" 'embark-act
+   "C-S-o" 'embark-act
    "C-J" 'embark-switch-to-live-occur
    "M-q" 'embark-occur-toggle-view)
   (:keymaps 'completion-list-mode-map
    ";"  'embark-act)
   (:keymaps 'embark-file-map
    "x"  'consult-file-externally)
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
   ;; use which key for commands
