@@ -3,7 +3,9 @@
 ;;;; General Settings
 
 ;;;;; Custom File Location
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; Don't use persistent custom file (speeds up load time)
+(setq custom-file (make-temp-file "emacs-custom"))
 (when (file-exists-p custom-file)
   (load custom-file))
 
@@ -92,8 +94,10 @@
           `((".*" ,auto-save-files-dir t)))
     (when (not (file-exists-p auto-save-files-dir))
       (make-directory auto-save-files-dir t)))
-  (setq
-   auto-save-default t               ; auto-save every buffer that visits a file
+  ;; auto-save every buffer that visits a file but not *scratch* etc
+  ;; see https://emacs.stackexchange.com/q/7729/11934
+  (setq-default auto-save-default t)
+  (setq-default
    auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
    auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
    auto-save-visited-mode t
@@ -108,6 +112,9 @@
          kept-new-versions 10              ; newest versions to keep when a new numbered backup is made
          vc-make-backup-files t            ; backup versioned files, which Emacs does not do by default
          )
+  ;; save scratch buffer to auto-save dir
+  (progn (set-buffer "*scratch*")
+         (setq-local default-directory (concat cpm-cache-dir "auto-save-files/")))
 
   (defun cpm/full-auto-save ()
     (interactive)
@@ -244,6 +251,18 @@
 (use-package expand-region
   :straight t
   :defer 1)
+
+;;;; Safe Variables
+(use-package files
+  :straight (:type built-in)
+  :config
+  (setq safe-local-variable-values
+        '((eval require 'org-roam-dev)
+          (eval when
+                (fboundp 'rainbow-mode)
+                (rainbow-mode 1))
+          (org-download-heading-lvl)
+          (magit-todos-branch-list nil))))
 
 ;;;; Miscellaneous
 (use-package remember
