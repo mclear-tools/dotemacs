@@ -2,15 +2,15 @@
 ;; start server for emacsclient
 (use-package server
   :if window-system
+  ;; :hook (after-init . server-mode)
   :defer 2
   :config
+  ;; t/nil for instructions
+  (setq server-client-instructions t)
   ;; avoid warning screen
   (or (server-running-p)
-      (server-start))
-  ;; no instructions
-  (setq server-client-instructions nil))
-;; generates warning on startup of another emacs instance
-;; :hook (after-init . server-mode))
+      (server-start)))
+
 
 ;; have these functions available for server
 (defun cpm/activate-capture-frame ()
