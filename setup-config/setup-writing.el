@@ -203,9 +203,9 @@
          " --number-sections"
          " --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua"
          " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
-         " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
-         " --metadata=reference-section-title:'References & Further Reading'"
-         ;; " --filter pandoc-citeproc"
+         ;; " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
+         " --metadata=reference-section-title:References"
+         " --citeproc"
          " --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib"
          ))
 
@@ -217,6 +217,15 @@
         markdown-unordered-list-item-prefix "-   "
         markdown-header-scaling t
         markdown-use-pandoc-style-yaml-metadata t)
+  (setq markdown-live-preview-window-function 'cpm--markdown-live-preview-window-xwidget)
+
+  (defun cpm--markdown-live-preview-window-xwidget (file)
+    "Preview file with xwidget browser"
+    (xwidget-webkit-browse-url (concat "file://" file))
+    (let ((buf (xwidget-buffer (xwidget-webkit-current-session))))
+      (when (buffer-live-p buf)
+        (and (eq buf (current-buffer)) (quit-window))
+        (pop-to-buffer buf))))
 
   (defun cpm--markdown-settings ()
     "settings for markdown mode"
@@ -237,6 +246,7 @@
 ;; macro: delete backslashes in paragraph to cleanup markdown conversion
 (fset 'cpm/md-delete-backslash
       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\361\361f\\x" 0 "%d")) arg)))
+
 
 ;;; Markdown TOC
 (use-package markdown-toc
