@@ -37,11 +37,9 @@
   :straight (:type built-in)
   :load-path ".local/custom-themes/bespoke-themes"
   :init
-  ;; add to load path
-  (add-to-list 'custom-theme-load-path (concat custom-theme-directory "bespoke-themes/"))
-  :config
   ;; set header line
   (setq set-bespoke-header-line t)
+  :config
   ;; use mode line visual bell
   (bespoke-themes-visual-bell-config))
 
@@ -54,14 +52,23 @@
     (dolist (i custom-enabled-themes)
       (disable-theme i))
     ;; disable window-divider mode
-    (window-divider-mode 0)
+    (window-divider-mode -1)
     ;; revert to mode line
     (setq-default header-line-format nil)
-    ;; (setq-default mode-line-format cpm--default-mode-line)
-    (setq x-underline-at-descent-line t)
-    (force-mode-line-update 'ALL)
-    ;; revert all buffers
-    (revert-buffer-all)))
+    (setq-default mode-line-format
+                  '((:eval
+                     (list
+                      evil-mode-line-tag
+                      "| "
+                      "%b "
+                      "%m "
+                      (cond ((and buffer-file-name (buffer-modified-p))
+                             (propertize "(**)" 'face `(:foreground "#f08290")))
+                            (buffer-read-only "(RO)" ))
+                      " %l:%c %0"
+                      " "
+                      ))))
+    (force-mode-line-update)))
 
 ;;; Load Theme Wrapper
 (defun cpm/load-theme ()
