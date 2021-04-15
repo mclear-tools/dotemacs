@@ -174,6 +174,12 @@
                                 :repo "OlMon/consult-projectile" :branch "master")
   :commands (consult-projectile))
 
+;; integrate consult and persp-mode
+(defun cpm/persp-consult-buffer ()
+  (interactive)
+  (with-persp-buffer-list () (consult-buffer)))
+
+
 ;; Optionally configure narrowing key.
 ;; Both < and C-+ work reasonably well.
 ;; (setq consult-narrow-key "<") ;; (kbd "C-+")
@@ -196,7 +202,7 @@
 
 
 
-;;; Buffer Completion
+;;; In-Buffer Completion
 ;;;; Company
 (use-package company
   :after evil
