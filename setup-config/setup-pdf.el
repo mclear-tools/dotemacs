@@ -142,7 +142,7 @@
   :commands (pdf-view-mode)
   :config
   ;; initialise
-  (pdf-loader-install)
+  (pdf-loader-install :no-query)
   ;; open pdfs scaled to fit page
   (setq-default pdf-view-display-size 1.25)
   ;; automatically annotate highlights
@@ -151,7 +151,6 @@
   (setq pdf-view-use-scaling t
         pdf-view-use-imagemagick nil)
   (progn
-    (pdf-tools-install)
     (evil-set-initial-state 'pdf-view-mode 'normal)
     (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
     (general-define-key :states '(normal) :keymaps 'pdf-view-mode-map
