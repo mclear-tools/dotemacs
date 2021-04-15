@@ -93,8 +93,7 @@
 
 ;;; Recent files
 (use-package recentf
-  ;; :hook (after-init . recentf-mode)
-  :defer 2
+  :hook (after-init . recentf-mode)
   :config
   (setq recentf-save-file (concat cpm-cache-dir "recentf"))
   ;; remove agenda files from list.
