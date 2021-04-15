@@ -68,9 +68,15 @@
           (insert (propertize "Welcome to Emacs" 'face '(:inherit default :weight bold)))
           (center-line)
           (insert "\n")
+          ;; FIXME
+          ;; (insert-image (create-image (expand-file-name "icons/emacs-e.svg" cpm-local-dir)))
           (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'font-lock-comment-face))
           (center-line)
           (insert "\n")
+          ;; FIXME
+          ;; (insert (propertize (shell-command-to-string "fortune | cowsay") 'face 'font-lock-comment-face))
+          ;; (center-line)
+          ;; (insert "\n")
           (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'font-lock-comment-face))
           (center-line)
           (insert "\n")
