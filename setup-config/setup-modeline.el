@@ -1,9 +1,5 @@
 ;;; Modeline
 
-;;;; Hide Modeline
-(use-package emacs-hide-mode-line
-  :straight (:type git :host github :repo "hlissner/emacs-hide-mode-line")
-  :commands hide-mode-line-mode)
 
 ;;;; Modeline Appearance
 ;; see bespoke theme for further mode line appearance settings

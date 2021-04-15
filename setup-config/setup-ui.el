@@ -26,7 +26,7 @@
 (setq default-frame-alist
       (append (list
 	           ;; '(font . "Roboto Mono:style=Light:size=15")
-               '(internal-border-width . 24)
+               '(internal-border-width . 20)
                '(left-fringe    . 0)
                '(right-fringe   . 0)
                )))
@@ -281,6 +281,12 @@
   :general
   (:keymaps 'xwidget-webkit-mode-map
    "v"  'xwwp-follow-link))
+
+;;; Mode line
+;;;; Hide Modeline
+(use-package emacs-hide-mode-line
+  :straight (:type git :host github :repo "hlissner/emacs-hide-mode-line")
+  :commands hide-mode-line-mode)
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
