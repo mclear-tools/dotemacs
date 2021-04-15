@@ -290,14 +290,32 @@ Lisp function does not specify a special indentation."
 
 
 ;;; Linting/Error Checking
-(use-package flycheck
-  :defer 2
-  :init
-  (setq global-flycheck-mode 1)
+(use-package flymake
+  :straight (:type built-in)
+  :commands flymake-mode
   :config
-  (setq-default flycheck-emacs-lisp-initialize-packages t
-                flycheck-highlighting-mode 'symbols
-                flycheck-check-syntax-automatically '(idle-change)))
+  (setq flymake-fringe-indicator-position 'left-fringe)
+  (setq flymake-suppress-zero-counters t)
+  (setq flymake-start-on-flymake-mode t)
+  (setq flymake-no-changes-timeout nil)
+  (setq flymake-start-on-save-buffer t)
+  (setq flymake-proc-compilation-prevents-syntax-check t)
+  (setq flymake-wrap-around nil))
+
+(use-package package-lint-flymake
+  :straight t
+  :after flymake
+  :config
+  (package-lint-flymake-setup))
+
+;; (use-package flycheck
+;;   :defer 2
+;;   :init
+;;   (setq global-flycheck-mode 1)
+;;   :config
+;;   (setq-default flycheck-emacs-lisp-initialize-packages t
+;;                 flycheck-highlighting-mode 'symbols
+;;                 flycheck-check-syntax-automatically '(idle-change)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
