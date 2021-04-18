@@ -94,6 +94,8 @@
 ;; Don't check packages on startup
 ;; (setq straight-check-for-modifications nil)
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
+;; set branch
+(setq straight-repository-branch "develop")
 ;; set dir
 (setq straight-base-dir cpm-local-dir)
 ;; use use-package
