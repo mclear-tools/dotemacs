@@ -117,7 +117,8 @@
   ;; :hook (markdown-mode prog-mode)
   :commands display-line-numbers-mode
   :init
-  (setq-default display-line-numbers-type 'visual))
+  (setq-default display-line-numbers-type 'visual)
+  (setq-default display-line-numbers-width-start t))
 
 
 ;;; Dialogs and popups
