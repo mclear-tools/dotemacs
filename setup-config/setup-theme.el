@@ -14,14 +14,6 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-
-;;; Gruvbox Theme
-(use-package gruvbox-theme
-  :disabled
-  :if (not (display-graphic-p))
-  :config
-  (load-theme 'gruvbox t))
-
 ;;; Doom Themes
 (use-package doom-themes
   :defer 2
@@ -37,11 +29,17 @@
   :straight (:type built-in)
   :load-path ".local/custom-themes/bespoke-themes"
   :init
-  ;; set header line
-  (setq set-bespoke-header-line t)
+  (if (not (display-graphic-p))
+      ;; No header line in terminal
+      (setq set-bespoke-header-line nil)
+    ;; Set header line in GUI
+    (setq set-bespoke-header-line t))
   :config
-  ;; use mode line visual bell
+  ;; Load dark theme for terminal
+  (load-theme 'bespoke-dark t)
+  ;; Use mode line visual bell
   (bespoke-themes-visual-bell-config))
+
 
 
 ;;; Disable All Custom Themes
