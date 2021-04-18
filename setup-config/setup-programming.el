@@ -21,12 +21,12 @@
 (use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
   :init
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  :config
-  (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-         :foreground "red"
-         :inherit 'error
-         :box t))
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  ;; :config
+  ;; (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+  ;;        :foreground "red"
+  ;;        :inherit 'error
+  ;;        :box t))
 
 ;; https://github.com/Fanael/rainbow-identifiers Rainbow identifiers mode is an Emacs
 ;; minor mode providing highlighting of identifiers based on their names. Each
