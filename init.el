@@ -238,13 +238,10 @@
 ;; Function to navigate config files
 
 (defun cpm/find-files-setup-config-directory ()
-  "use projectile to find setup files"
+  "find setup files"
   (interactive)
-  (require 'projectile)
-  (projectile-find-file-in-directory cpm-setup-dir))
-;; (setq ido-enable-flex-matching t)
-;; (ido-find-file-in-dir cpm-setup-dir))
-;; (helm-find-files-1 cpm-setup-dir))
+  (let ((default-directory cpm-setup-dir))
+    (call-interactively 'find-file)))
 
 ;; Function to search in config files
 (defun cpm/search-setup-config-files ()
