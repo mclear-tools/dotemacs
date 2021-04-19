@@ -200,6 +200,8 @@
   (interactive)
   (pulse-momentary-highlight-one-line (point)))
 
+(add-hook 'window-state-change-hook #'pulse-line)
+
 (dolist (command '(scroll-up-command scroll-down-command
                                      recenter-top-bottom other-window select-window-by-number))
   (advice-add command :after #'pulse-line))
