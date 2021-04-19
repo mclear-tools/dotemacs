@@ -181,7 +181,7 @@
    ;; "'" 'shell-pop
    ;; "\\" 'vterm-toggle-cd
    "\\" 'multi-vterm-dedicated-toggle
-   "," 'pulse-line
+   "," 'recenter-top-bottom
    "." 'quick-commit
    ";" 'evil-commentary-line
    "[" 'cpm/previous-user-buffer

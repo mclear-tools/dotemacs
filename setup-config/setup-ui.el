@@ -175,9 +175,7 @@
 ;;; Icons
 (use-package all-the-icons
   :defer t)
-;;dependency
-;; (quelpa
-;;  '(font-lock+ :fetcher wiki))
+
 (use-package font-lock+
   :defer 1)
 ;; icons for dired
@@ -195,19 +193,21 @@
 ;; From https://karthinks.com/software/batteries-included-with-emacs/
 ;; Replace external package with internal command
 
-(defun pulse-line (&rest _)
-  "Pulse the current line."
-  (interactive)
-  (pulse-momentary-highlight-one-line (point)))
+(use-package pulse
+  :straight (:type built-in)
+  :defer 1
+  :commands (pulse-line pulse-momentary-highlight-one-line)
+  :config
+  (defun pulse-line (&rest _)
+    "Pulse the current line."
+    (interactive)
+    (pulse-momentary-highlight-one-line (point)))
 
-(add-hook 'window-state-change-hook #'pulse-line)
+  (dolist (command '(scroll-up-command scroll-down-command
+                                       recenter-top-bottom other-window))
+    (advice-add command :after #'pulse-line))
 
-(dolist (command '(scroll-up-command scroll-down-command
-                                     recenter-top-bottom other-window select-window-by-number))
-  (advice-add command :after #'pulse-line))
-(defadvice other-window (after other-window-pulse activate) (pulse-line))
-(defadvice delete-window (after delete-window-pulse activate) (pulse-line))
-(defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate))
+  (add-hook 'window-state-change-hook #'pulse-line))
 
 ;;; Emoji
 (use-package emojify
