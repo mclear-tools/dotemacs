@@ -28,8 +28,8 @@
     (setq evil-normal-state-cursor   '("#ebcb8b" box))
     (setq evil-visual-state-cursor   '("#677691" box))
     (setq evil-insert-state-cursor   '("#ed683e" (bar . 2)))
-    (setq evil-replace-state-cursor  '("#93004d" hbar))
-    (setq evil-motion-state-cursor   '("#a9444e" box))
+    (setq evil-replace-state-cursor  '("#a9444e" hbar))
+    (setq evil-motion-state-cursor   '("#93004d" box))
     (setq evil-operator-state-cursor '("#cc1f24" hollow))
     ;; (setq evil-visual-state-tag "VISUAL")
     ;; use insert in commits automatically
