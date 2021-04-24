@@ -34,12 +34,21 @@
 
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-(setq-default indicate-empty-lines nil)
-(setq-default fill-column 85)
+
+;; Allow visual lines
 (global-visual-line-mode)
 (setq line-move-visual t) ;; move via visual lines
+
+;;;;; Indentation
+;; yes, both are needed!
+(setq default-tab-width 4)
+(setq tab-width 4)
+(setq default-fill-column 80)
+(setq fill-column 80)
+(setq-default evil-indent-convert-tabs nil)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default evil-shift-round nil)
 
 ;;;;; UTF 8
 (setq locale-coding-system 'utf-8)
@@ -296,6 +305,26 @@
 ;; Follow symlinks
 (setq find-file-visit-truename t)
 
+
+;;;; Mouse
+;; Hide mouse cursor while typing. Why?
+;; .. it can overlap characters we want to see.
+(setq make-pointer-invisible t)
+
+;;;; Undo
+;; Don't group undo steps. Why?
+;; .. without this is groups actions into a fixed number of steps which feels unpredictable.
+(fset 'undo-auto-amalgamate 'ignore)
+
+;; Increase undo limits. Why?
+;; .. ability to go far back in history can be useful, modern systems have sufficient memory.
+;; Limit of 64mb.
+(setq undo-limit 6710886400)
+;; Strong limit of 1.5x (96mb)
+(setq undo-strong-limit 100663296)
+;; Outer limit of 10x (960mb).
+;; Note that the default is x100), but this seems too high.
+(setq undo-outer-limit 1006632960)
 
 ;;; End Settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
