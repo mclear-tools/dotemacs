@@ -1,55 +1,77 @@
 ;; UI & Appearance
 
 ;;; Scrolling
-(setq auto-window-vscroll nil)
-;; the text cursor moves off-screen. Instead, only scroll the minimum amount
-;; necessary to show the new line. (A number of 101+ disables re-centering.)
-(setq scroll-conservatively 101)
+(use-package emacs
+  :straight (:type built-in)
+  :config
+  (setq auto-window-vscroll nil)
+  ;; the text cursor moves off-screen. Instead, only scroll the minimum amount
+  ;; necessary to show the new line. (A number of 101+ disables re-centering.)
+  (setq scroll-margin 0
+        scroll-conservatively 101
+        scroll-preserve-screen-position t))
 
-;; Optimize mouse wheel scrolling for smooth-scrolling trackpad use.
-;; Trackpads send a lot more scroll events than regular mouse wheels,
-;; so the scroll amount and acceleration must be tuned to smooth it out.
-(setq
- ;; If the frame contains multiple windows, scroll the one under the cursor
- ;; instead of the one that currently has keyboard focus.
- mouse-wheel-follow-mouse 't
- ;; Completely disable mouse wheel acceleration to avoid speeding away.
- mouse-wheel-progressive-speed nil
- ;; The most important setting of all! Make each scroll-event move 2 lines at
- ;; a time (instead of 5 at default). Simply hold down shift to move twice as
- ;; fast, or hold down control to move 3x as fast. Perfect for trackpads.
- mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6)))
+(use-package mwheel
+  :straight (:type built-in)
+  :config
+  ;; Optimize mouse wheel scrolling for smooth-scrolling trackpad use.
+  ;; Trackpads send a lot more scroll events than regular mouse wheels,
+  ;; so the scroll amount and acceleration must be tuned to smooth it out.
+  (setq
+   ;; If the frame contains multiple windows, scroll the one under the cursor
+   ;; instead of the one that currently has keyboard focus.
+   mouse-wheel-follow-mouse 't
+   ;; Completely disable mouse wheel acceleration to avoid speeding away.
+   mouse-wheel-progressive-speed nil
+   ;; The most important setting of all! Make each scroll-event move 2 lines at
+   ;; a time (instead of 5 at default). Simply hold down shift to move twice as
+   ;; fast, or hold down control to move 3x as fast. Perfect for trackpads.
+   mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6))))
 
 ;;; Frames
 
 ;;;; Frame defaults
-(setq default-frame-alist
-      (append (list
-	           ;; '(font . "Roboto Mono:style=Light:size=15")
-               '(internal-border-width . 20)
-               '(left-fringe    . 0)
-               '(right-fringe   . 0)
-               )))
+(use-package frame
+  :straight (:type built-in)
+  :config
+  ;; Make a clean & minimalist frame
+  (setq-default default-frame-alist
+                (append (list
+	                     ;; '(font . "Roboto Mono:style=Light:size=15")
+                         '(internal-border-width . 20)
+                         '(left-fringe    . 0)
+                         '(right-fringe   . 0)
+                         '(tool-bar-lines . 0)
+                         '(menu-bar-lines . 0)
+                         '(vertical-scroll-bars . nil)
+                         )))
 
-;; maximize frame
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-(setq window-resize-pixelwise t)
+  ;; maximize frame
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  (setq-default window-resize-pixelwise t)
+  (setq-default frame-resize-pixelwise t)
+
 
 ;;;; Frame titlebar
-;; Theme transparent titlebar
-(when (memq window-system '(mac ns))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+  ;; Make titlebar the color of theme
+  (when (memq window-system '(mac ns))
+    (add-to-list 'default-frame-alist '(ns-appearance . dark))
+    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+
+  ;; No frame title
+  (setq-default frame-title-format nil)
+  ;; No frame icon
+  (setq ns-use-proxy-icon nil)
 
 ;;;; UI Elements
-(unless (eq window-system 'ns)
-  (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
+  (unless (eq window-system 'ns)
+    (menu-bar-mode -1))
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+  (when (fboundp 'horizontal-scroll-bar-mode)
+    (horizontal-scroll-bar-mode -1)))
 
 
 ;;;; Fix titlebar titling colors
@@ -93,8 +115,12 @@
   ;; (set-face-attribute 'default nil :font "Roboto Mono Light" :height 150)
   ;; (set-face-attribute 'fixed-pitch nil :font "Roboto Mono" :height 150)
   ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
+  ;; Allow unicode
   (set-fontset-font t 'unicode "Symbola" nil 'prepend)
-
+  ;; Allow emoji
+  (when (member "Apple Color Emoji" (font-family-list))
+    (set-fontset-font
+     t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend))
   ;; Fall back font for glyph missing in Roboto
   (defface fallback '((t :family "Fira Code"
                          :inherit fringe)) "Fallback")
@@ -102,6 +128,8 @@
                           (make-glyph-code ?… 'fallback))
   (set-display-table-slot standard-display-table 'wrap
                           (make-glyph-code ?↩ 'fallback)))
+
+
 
 ;;; Scale Text
 ;; Set default line spacing (in pixels)
@@ -112,6 +140,11 @@
 (global-set-key (kbd "s--") 'text-scale-decrease)
 (global-set-key (kbd "s-0") 'text-scale-adjust)
 
+;;; Bidirectional Text
+;; Disable bidirectional text support. Why?
+;; .. slight performance improvement.
+(setq bidi-display-reordering nil)
+
 ;;; Line Numbers
 (use-package display-line-numbers
   ;; :hook (markdown-mode prog-mode)
@@ -120,6 +153,11 @@
   (setq-default display-line-numbers-type 'visual)
   (setq-default display-line-numbers-width-start t))
 
+
+;;; Empty Lines
+;; Show empty lines. Why?
+;; .. without this you can't tell if there are blank lines at the end of the file.
+(setq-default indicate-empty-lines t)
 
 ;;; Dialogs and popups
 ;; No file dialog
@@ -227,6 +265,7 @@
 
 ;;; Helpful Information
 ;; Much better lookup both in details and headings/aesthetics
+;; Better help info
 (use-package helpful
   :init
   (setq evil-lookup-func #'helpful-at-point)
@@ -290,6 +329,17 @@
 (use-package emacs-hide-mode-line
   :straight (:type git :host github :repo "hlissner/emacs-hide-mode-line")
   :commands hide-mode-line-mode)
+
+;;; Dim inactive windows
+(use-package dimmer
+  :straight (:host github :repo "gonewest818/dimmer.el")
+  :config
+  (setq dimmer-fraction 0.4)
+  (setq dimmer-adjustment-mode :foreground)
+  (setq dimmer-use-colorspace :rgb)
+  (dimmer-configure-which-key)
+  (dimmer-configure-magit)
+  (dimmer-mode t))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
