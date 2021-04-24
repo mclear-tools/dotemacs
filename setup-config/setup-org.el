@@ -49,6 +49,7 @@
                 ;; prevent editing invisible area, and show an error message in echo area instead;
                 ;; additionally expand text and move focus to the expected point.
                 org-catch-invisible-edits 'show-and-error
+                org-use-fast-todo-selection 'expert ;; don't use popup window
                 org-imenu-depth 8
                 imenu-auto-rescan t)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
