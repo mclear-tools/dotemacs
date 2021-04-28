@@ -28,6 +28,7 @@
   ;; NOTE: superseded by xwidget support -- see mu4e-views below
   (setq mu4e-html2text-command 'mu4e-shr2text)
   (add-to-list 'mu4e-view-actions '("view in browser" . mu4e-action-view-in-browser) t)
+  ;;; NOTE: need to add something about not loading remote images (mu4e-view-show-images ?)
   ;; Other options for rendering
   ;;; (setq mu4e-html2text-command "iconv -c -t utf-8 | pandoc -f html -t plain")
   ;;; (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
@@ -92,7 +93,7 @@
                   (mu4e-refile-folder  . "/Fastmail/Archive")
                   (mu4e-trash-folder  . "/Fastmail/Trash"))))))
 
-;;; Better Viewing Mu4e Views
+;;; Better Viewing – Mu4e Views
 ;; This makes mu4e render html emails in emacs via xwidgets.
 ;; It basically reproduces a modern email client experience. Depends on compiling emacs with xwidgets
 ;; to check that exwidgets are installed

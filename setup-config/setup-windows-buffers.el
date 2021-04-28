@@ -117,9 +117,10 @@
   :hook (after-init . winner-mode))
 
 ;;; Windows & Buffers
+;; switch-to-buffer tries to preserve window-point
 (setq switch-to-buffer-preserve-window-point 'already-displayed)
 
-;; unique buffers
+;;; Unique buffers
 (use-package uniquify
   :straight (:type built-in)
   :defer 3

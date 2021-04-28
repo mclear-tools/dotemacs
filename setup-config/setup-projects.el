@@ -116,7 +116,6 @@
   ("w" eyebrowse-switch-to-window-config :exit t)
   ("q" nil))
 
-
 ;;; Perspectives
 (use-package persp-mode
   :hook (after-init . persp-mode)
@@ -343,44 +342,44 @@
 
 
 ;;;; Open Project in New Workspace
-  (defun cpm/open-existing-project-and-workspace ()
-    "open a project as its own perspective"
-    (interactive)
-    (persp-switch "new-persp")
-    (projectile-switch-project)
-    ;; (setq frame-title-format
-    ;;       '(""
-    ;;         "%b"
-    ;;         (:eval
-    ;;          (let ((project-name (projectile-project-name)))
-    ;;            (unless (string= "-" project-name)
-    ;;              (format " in [%s]" project-name))))))
-    ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
-    (require 'magit)
-    (magit-status-setup-buffer)
-    (persp-rename (projectile-project-name)))
+(defun cpm/open-existing-project-and-workspace ()
+  "open a project as its own perspective"
+  (interactive)
+  (persp-switch "new-persp")
+  (projectile-switch-project)
+  ;; (setq frame-title-format
+  ;;       '(""
+  ;;         "%b"
+  ;;         (:eval
+  ;;          (let ((project-name (projectile-project-name)))
+  ;;            (unless (string= "-" project-name)
+  ;;              (format " in [%s]" project-name))))))
+  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
+  (require 'magit)
+  (magit-status-setup-buffer)
+  (persp-rename (projectile-project-name)))
 
 ;;;; Open & Create New Project in New Workspace
 ;; Create a new git project in its own perspective & workspace and create some useful
 ;; files
-  (defun cpm/create-new-project-and-workspace ()
-    "create & open a project as its own perspective"
-    (interactive)
-    ;; (eyebrowse-switch-to-window-config-1)
-    (persp-switch "new-project")
-    (cpm/git-new-project)
-    ;; (setq frame-title-format
-    ;;       '(""
-    ;;         "%b"
-    ;;         (:eval
-    ;;          (let ((project-name (projectile-project-name)))
-    ;;            (unless (string= "-" project-name)
-    ;;              (format " in [%s]" project-name))))))
-    ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
-    (delete-other-windows)
-    (find-file ".gitignore")
-    (find-file "project-todo.org")
-    (magit-status-setup-buffer))
+(defun cpm/create-new-project-and-workspace ()
+  "create & open a project as its own perspective"
+  (interactive)
+  ;; (eyebrowse-switch-to-window-config-1)
+  (persp-switch "new-project")
+  (cpm/git-new-project)
+  ;; (setq frame-title-format
+  ;;       '(""
+  ;;         "%b"
+  ;;         (:eval
+  ;;          (let ((project-name (projectile-project-name)))
+  ;;            (unless (string= "-" project-name)
+  ;;              (format " in [%s]" project-name))))))
+  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
+  (delete-other-windows)
+  (find-file ".gitignore")
+  (find-file "project-todo.org")
+  (magit-status-setup-buffer))
 
 
 ;;;; Eyebrowse & Perspectives

@@ -1,5 +1,6 @@
 ;; ---------------------------------------------------------------------
 ;; Adapted from Emacs N Λ N O developers (Rougier)
+;; See also https://github.com/rougier/emacs-splash
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

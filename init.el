@@ -248,15 +248,6 @@
   "use ripgrep to search all config files"
   (interactive)
   (consult-ripgrep cpm-setup-dir))
-;; (let ((default-directory cpm-setup-dir))
-;;   (consult-ripgrep)))
-;; (helm-grep-ag-1 cpm-setup-dir))
-
-
-;; (let ((default-directory cpm-setup-dir)) ;; seems necessary to block searching in current dir
-;;   (let ((current-prefix-arg '(4)))
-;;     (consult-ripgrep cpm-setup-dir))))
-;; (Helmgdo-ag cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()
