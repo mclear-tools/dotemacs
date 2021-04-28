@@ -85,15 +85,19 @@
 ;;;; Miniframe
 (use-package mini-frame
   :straight (:type git :host github :repo "muffinmad/emacs-mini-frame")
-  ;; :hook (after-init . mini-frame-mode)
+  :hook (after-init . mini-frame-mode)
   :commands (mini-frame-mode)
-  :config
-  (custom-set-variables
-   '(mini-frame-show-parameters
-     '((top . 60)
-       (width . 0.7)
-       (left . 0.5))))
-  (setq mini-frame-resize t))
+  :custom
+  (mini-frame-show-parameters '(;(top    . 0.065)
+                                (width  . 0.75)
+                                (left   . 0.5)
+                                (height . 12)
+                                (internal-border-width . 20)
+                                (left-fringe . 12)
+                                (right-fringe . 12)))
+  (mini-frame-color-shift-step 10)
+  (mini-frame-advice-functions '(completing-read))
+  (mini-frame-resize nil))
 
 ;;; Fonts
 
