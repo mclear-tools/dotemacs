@@ -82,7 +82,7 @@
   :preface
   (defun cpm/git-commit-auto-fill-everywhere ()
     "Ensures that the commit body does not exceed 72 characters."
-    (setq fill-column 72)
+    (setq fill-column 85)
     (setq-local comment-auto-fill-only-comments nil)))
 
 ;; transient popups for magit
