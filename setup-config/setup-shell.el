@@ -119,6 +119,16 @@
     (rename-buffer (format "term %s" title) t)))
 (add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
 
+;; vterm frame
+(defun vterm-frame ()
+  "Open a new terminal frame."
+  (interactive)
+  (let ((frame (selected-frame)))
+    (with-selected-frame frame
+      (progn
+        (vterm)
+        (set-frame-parameter frame 'name "terminal")))))
+
 ;; vterm toggle
 (use-package vterm-toggle
   :disabled

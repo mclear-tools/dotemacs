@@ -1,5 +1,11 @@
 ;;; Useful Functions
 
+;;;; Delete Frame or Quit
+(defun cpm/delete-frame-or-quit ()
+  "Delete the selected frame.  If the last one, kill Emacs."
+  (interactive)
+  (condition-case nil (delete-frame) (error (save-buffers-kill-emacs))))
+
 ;;;; Undo-Redo
 ;; Copied from Emacs 28
 (when (version< emacs-version "28.0")
@@ -1159,8 +1165,8 @@ will be killed."
                 (cond ((and cmacs--local cmacs--keymaps)
                        (push `(lwarn 'cmacs-map :warning
                                      "Can't local bind '%s' key to a keymap; skipped"
-  ,key)
-  forms)
+                                     ,key)
+                             forms)
                        (throw 'skip 'local))
                       ((and cmacs--keymaps states)
                        (dolist (keymap cmacs--keymaps)
