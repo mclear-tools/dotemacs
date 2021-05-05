@@ -37,7 +37,7 @@
   ;; Make a clean & minimalist frame
   (setq-default default-frame-alist
                 (append (list
-	                     ;; '(font . "Roboto Mono:style=Light:size=15")
+	                     '(font . "SF Mono:style=medium:size=15")
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
@@ -53,10 +53,10 @@
 
 
 ;;;; Frame titlebar
-  ;; Make titlebar the color of theme
-  (when (memq window-system '(mac ns))
-    (add-to-list 'default-frame-alist '(ns-appearance . dark))
-    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+  ;; ;; Make titlebar the color of theme
+  ;; (when (memq window-system '(mac ns))
+  ;;   (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  ;;   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 
   ;; No frame title
   (setq-default frame-title-format nil)
@@ -81,34 +81,16 @@
   :if (eq system-type 'darwin)
   :init (ns-auto-titlebar-mode))
 
-
-;;;; Miniframe
-(use-package mini-frame
-  :straight (:type git :host github :repo "muffinmad/emacs-mini-frame")
-  :hook (after-init . mini-frame-mode)
-  :commands (mini-frame-mode)
-  :custom
-  (mini-frame-show-parameters '(;(top    . 0.065)
-                                (width  . 0.75)
-                                (left   . 0.5)
-                                (height . 12)
-                                (internal-border-width . 20)
-                                (left-fringe . 12)
-                                (right-fringe . 12)))
-  (mini-frame-color-shift-step 10)
-  (mini-frame-advice-functions '(completing-read))
-  (mini-frame-resize nil))
-
 ;;; Fonts
 
-(setq-default line-spacing 0.10)
+(setq-default line-spacing 0.20)
 
 (use-package faces
   :straight (:type built-in)
   :defer t
   :custom
   (face-font-family-alternatives
-   '(("Monospace" "Roboto Mono" "Hasklug Nerd Font" "InconsolataLGC Nerd Font" "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
+   '(("Monospace" "SF Mono" "RobotoMono Nerd Font" "InconsolataLGC Nerd Font" "Hasklug Nerd Font"  "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
      ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
      ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
   :custom-face
@@ -337,13 +319,14 @@
 ;;; Dim inactive windows
 (use-package dimmer
   :straight (:host github :repo "gonewest818/dimmer.el")
+  :hook (after-init . dimmer-mode)
   :config
   (setq dimmer-fraction 0.4)
   (setq dimmer-adjustment-mode :foreground)
   (setq dimmer-use-colorspace :rgb)
   (dimmer-configure-which-key)
   (dimmer-configure-magit)
-  (dimmer-mode t))
+  (dimmer-configure-posframe))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
