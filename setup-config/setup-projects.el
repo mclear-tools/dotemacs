@@ -169,35 +169,35 @@
       (message "[persp-mode] Error: Can't create a perspective with empty name.")
       nil)))
 
-  ;; ;; Integrate Ivy
-  ;; ;; https://gist.github.com/Bad-ptr/1aca1ec54c3bdb2ee80996eb2b68ad2d#file-persp-ivy-el
-  ;; (with-eval-after-load 'ivy
-  ;;   (add-to-list 'ivy-ignore-buffers
-  ;;                #'(lambda (b)
-  ;;                    (when persp-mode
-  ;;                      (let ((persp (get-current-persp)))
-  ;;                        (if persp
-  ;;                            (not (persp-contain-buffer-p b persp))
-  ;;                          nil)))))
+;; ;; Integrate Ivy
+;; ;; https://gist.github.com/Bad-ptr/1aca1ec54c3bdb2ee80996eb2b68ad2d#file-persp-ivy-el
+;; (with-eval-after-load 'ivy
+;;   (add-to-list 'ivy-ignore-buffers
+;;                #'(lambda (b)
+;;                    (when persp-mode
+;;                      (let ((persp (get-current-persp)))
+;;                        (if persp
+;;                            (not (persp-contain-buffer-p b persp))
+;;                          nil)))))
 
-  ;;   (setq ivy-sort-functions-alist
-  ;;         (append ivy-sort-functions-alist
-  ;;                 '((persp-kill-buffer   . nil)
-  ;;                   (persp-remove-buffer . nil)
-  ;;                   (persp-add-buffer    . nil)
-  ;;                   (persp-switch        . nil)
-  ;;                   (persp-window-switch . nil))))))
+;;   (setq ivy-sort-functions-alist
+;;         (append ivy-sort-functions-alist
+;;                 '((persp-kill-buffer   . nil)
+;;                   (persp-remove-buffer . nil)
+;;                   (persp-add-buffer    . nil)
+;;                   (persp-switch        . nil)
+;;                   (persp-window-switch . nil))))))
 
-  (use-package persp-mode-projectile-bridge
-    :after (persp-mode projectile-mode)
-    :hook (persp-mode . persp-mode-projectile-bridge-mode)
-    :functions (persp-add-new
-                persp-add-buffer
-                set-persp-parameter)
-    :commands (persp-mode-projectile-bridge-find-perspectives-for-all-buffers
-               persp-mode-projectile-bridge-kill-perspectives
-               persp-mode-projectile-bridge-add-new-persp
-               projectile-project-buffers))
+(use-package persp-mode-projectile-bridge
+  :after (persp-mode projectile-mode)
+  :hook (persp-mode . persp-mode-projectile-bridge-mode)
+  :functions (persp-add-new
+              persp-add-buffer
+              set-persp-parameter)
+  :commands (persp-mode-projectile-bridge-find-perspectives-for-all-buffers
+             persp-mode-projectile-bridge-kill-perspectives
+             persp-mode-projectile-bridge-add-new-persp
+             projectile-project-buffers))
 
 ;;; Project Functions
 ;;;; Open agenda as workspace
