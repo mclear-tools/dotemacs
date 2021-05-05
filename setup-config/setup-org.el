@@ -6,9 +6,9 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
-  :straight org-plus-contrib
-  ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
-  ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
+  ;; :straight t
+  :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
+             :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
@@ -201,12 +201,6 @@
                 " %i %-12:c %(concat \"\"(org-format-outline-path (org-get-outline-path)) \" \->\") ")
           (search . " %i %-12:c")))
 
-;;;; Elegant Agenda
-
-  (use-package elegant-agenda-mode
-    :straight (elegant-agenda-mode :type git :host github :repo "justinbarclay/elegant-agenda-mode")
-    :hook org-agenda-mode-hook)
-
 ;;;; Org Super-Agenda
   ;; Supercharge org-agenda: https://github.com/alphapapa/org-super-agenda
   ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking
@@ -314,7 +308,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 ;;;; Hydra for Agenda
   ;; Hydra for org agenda (graciously offered by Spacemacs)
-  (after! org-agenda
+  (with-eval-after-load 'org-agenda
     (org-super-agenda-mode)
     (defhydra cpm/hydra-org-agenda (:color pink :hint none)
       "
@@ -409,20 +403,22 @@ _vr_ reset      ^^                       ^^                 ^^
                                              (org-agenda-sorting-strategy
                                               '(category-keep))))))
           ("w" todo "WAITING")
-          ("A" "Super Agenda" (
-                               (agenda "" ((org-agenda-span 'day)))
-                               (alltodo "" ((org-agenda-overriding-header nil)
-                                            (org-super-agenda-groups
-                                             '((:name "Priority"
-                                                :priority>= "C")
-                                               (:name "Next to do"
-                                                :todo "NEXT")
-                                               (:name "In Progress"
-                                                :todo "DOING")
-                                               (:todo ("WAITING" "HOLD"))
-                                               (:todo "MAYBE")
-                                               (:name "Reading List"
-                                                :todo "TOREAD")))))))
+          ("A" "Super Agenda" ((agenda "" ((org-agenda-span 'day)))))
+          ;; (alltodo "" ((org-agenda-overriding-header "")
+          ;; (org-super-agenda-groups
+          ;;  '(
+          ;;    (:name "Priority"
+          ;;     :priority>= "C")
+          ;;    (:name "Next to do"
+          ;;     :todo "NEXT")
+          ;;    (:name "In Progress"
+          ;;     :todo "DOING")
+          ;;    (:todo ("WAITING" "HOLD"))
+          ;;    (:todo "MAYBE")
+          ;;    (:name "Reading List"
+          ;;     :todo "TOREAD")
+          ;;    ))
+          ;; )
           ("W" "Week's agenda and all TODOs"
            ((tags "PRIORITY=\"A\""
                   ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
@@ -1434,7 +1430,6 @@ is non-nil."
                  (org-match-string-no-properties 1))))
           (apply 'delete-region remove)
           (insert description)))))
-
 
 ;;; End Org Setup
 (provide 'setup-org)
