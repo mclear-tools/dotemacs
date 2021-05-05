@@ -223,13 +223,13 @@
 (require 'setup-calendars)
 (require 'setup-testing)
 (require 'setup-splash)
+(require 'setup-childframe)
 
 ;; (require 'setup-nano)
 ;; (require 'setup-modeline)
 ;; (require 'setup-email)
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)
-;; (require 'setup-posframe)
 
 
 ;;; Config Helper Functions
