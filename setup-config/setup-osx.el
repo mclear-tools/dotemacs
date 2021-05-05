@@ -78,7 +78,7 @@
   (global-set-key (kbd "<H-backspace>") 'delete-forward-char)
 
   ;; Keybindings
-  (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "s-q") 'cpm/delete-frame-or-quit)
   (global-set-key (kbd "H-q") 'cpm/kill-all-emacsen)
   (global-set-key (kbd "s-v") 'yank)
   (global-set-key (kbd "s-c") 'evil-yank)
