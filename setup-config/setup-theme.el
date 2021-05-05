@@ -30,15 +30,21 @@
   :load-path ".local/custom-themes/bespoke-themes"
   :init
   (if (not (display-graphic-p))
-      ;; No header line in terminal
-      (setq set-bespoke-header-line nil)
-    ;; Set header line in GUI
-    (setq set-bespoke-header-line t))
+      (progn
+        ;; Set up evil cursor colors
+        (setq set-bespoke-evil-cursors nil)
+        ;; No header line in terminal
+        (setq set-bespoke-header-line nil))
+    (progn
+      ;; Set header line in GUI
+      (setq set-bespoke-header-line t)
+      ;; Set up evil cursor colors
+      (setq set-bespoke-evil-cursors t)))
   :config
-  ;; Load dark theme for terminal
-  (load-theme 'bespoke-dark t)
   ;; Use mode line visual bell
-  (bespoke-themes-visual-bell-config))
+  (bespoke-themes-visual-bell-config)
+  ;; Load dark theme
+  (load-theme 'bespoke-dark t))
 
 
 
@@ -115,16 +121,27 @@
         (face-remap-add-relative 'default 'fringe)))))
 (bespoke-theme--minibuffer)
 
+
+;;; After Load Theme Hook
+(defvar after-load-theme-hook nil
+  "Hook run after a color theme is loaded using `load-theme'.")
+(defadvice load-theme (after run-after-load-theme-hook activate)
+  "Run `after-load-theme-hook'."
+  (run-hooks 'after-load-theme-hook))
+
+
 ;;; System Appearance Hook
 ;; See https://github.com/d12frosted/homebrew-emacs-plus#system-appearance-change
 (defun cpm/system-apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
-    ('light (progn (load-theme 'bespoke-light t)
-                   (setq active-theme 'light-theme)))
-    ('dark (progn (load-theme 'bespoke-dark t)
-                  (setq active-theme 'dark-theme)))))
+    ('light (progn
+              (load-theme 'bespoke-light t)
+              (setq active-theme 'light-theme)))
+    ('dark (progn
+             (load-theme 'bespoke-dark t)
+             (setq active-theme 'dark-theme)))))
 
 (add-hook 'ns-system-appearance-change-functions #'cpm/system-apply-theme)
 
@@ -135,6 +152,7 @@
   (if (eq active-theme 'light-theme)
       (load-theme 'bespoke-light t)
     (load-theme 'bespoke-dark t)))
+
 
 ;;; End setup-theme
 
