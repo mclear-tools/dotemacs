@@ -26,8 +26,9 @@ This config is based on a series of "[[file:setup-config/][modules]]" loaded in 
 that file and the various config "helper" functions for navigation. The modules are
 organized thematically rather than package by package (e.g. the [[file:setup-config/setup-writing.el][writing module]]
 contains the config for spelling and markdown mode). Note that while I have an
-[[file:early-init.el][early-init]] file for use with emacs 27+, the configuration is tested to work with emacs
-26+ on MacOS, with the latest stable release being best.
+[[file:early-init.el][early-init]] file for use with emacs 27+, the configuration should work with emacs 26+
+on MacOS (though I haven't tested this in awhile), with the latest release being
+best (I'm currently on emacs 28)
 
 Some highlights of this emacs setup include:
 
