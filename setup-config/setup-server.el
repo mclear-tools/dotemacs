@@ -6,7 +6,7 @@
   :defer 2
   :config
   ;; t/nil for instructions
-  (setq server-client-instructions t)
+  (setq server-client-instructions nil)
   ;; avoid warning screen
   (or (server-running-p)
       (server-start)))

@@ -66,8 +66,7 @@
    "be" 'erase-buffer
    ;; "bf" 'cpm/browse-file-directory
    "bf" 'reveal-in-osx-finder
-   ;; "bj" 'cpm/jump-in-buffer
-   "bj" #'consult-outline
+   "bj" 'cpm/jump-in-buffer
    "bk" 'evil-delete-buffer
    "bK" 'crux-kill-other-buffers
    "bm" 'helm-evil-markers

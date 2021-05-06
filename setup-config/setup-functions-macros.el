@@ -389,9 +389,9 @@ will be killed."
   (interactive)
   (cond
    ((eq major-mode 'org-mode)
-    (call-interactively 'counsel-org-goto))
+    (call-interactively 'consult-org-heading))
    (t
-    (call-interactively 'counsel-semantic-or-imenu))))
+    (call-interactively 'consult-outline))))
 
 ;;;; Resume
 ;; resume last jump
