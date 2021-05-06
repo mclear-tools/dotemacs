@@ -1,36 +1,72 @@
-;; ---------------------------------------------------------------------
-;; Adapted from Emacs N Λ N O developers (Rougier)
-;; See also https://github.com/rougier/emacs-splash
-;;
+;;; setup-splash.el --- An alternative splash screen -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2020 Nicolas .P Rougier
+
+;; Author: Nicolas P. Rougier <nicolas.rougier@inria.fr>
+;; Mondifications: Colin McLear
+;; URL: https://github.com/rougier/emacs-splash
+;; Keywords: startup
+;; Version: 0.1
+;; Package-Requires:
+
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;;
+
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;;
+
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;; ---------------------------------------------------------------------
+
+;;; Commentary:
 ;;
-;; This file defines the splash screen
-;;  - No logo, no modeline, no scrollbars
-;;  - Any key / mouse click kills the splash screen
-;;  - With emacs-mac (Mituharu), splash screen is faded out after .5 seconds
+;;  An alternative splash screen:
+;;
+;;  +–—————————––––––––––––––––––––––––––––————————————————————+
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                       www.gnu.org                        |
+;;  |                  GNU Emacs version XX.Y                  |
+;;  |                   a free/libre editor                    |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |                                                          |
+;;  |        GNU Emacs comes with ABSOLUTELY NO WARRANTY       |
+;;  |     Copyright (C) 2020 Free Software Foundation, Inc.    |
+;;  |                                                          |
+;;  +––––––––––––––––––––––––––––––––––––––————————————————————+
+;;
+;; Features:
+;;
+;;  - No logo, no moddeline, no scrollbars
+;;  - "q" or <esc> kills the splash screen
+;;  - Any other key open the about-emacs buffer
+;;  - With emacs-mac (Mituharu), splash screen is faded out after 3 seconds
 ;;
 ;; Note: The screen is not shown if there are opened file buffers. For
 ;;       example, if you start emacs with a filename on the command
-;;       line, the splash screen is not shown.
+;;       line, the splash is not shown.
 ;;
 ;; Usage:
-(require 'subr-x)
+;;
+;;  (require 'setup-splash)
+;;
+;;; Code:
 (require 'cl-lib)
 
-(defun bespoke-splash ()
-  "Bespoke Emacs splash screen"
+
+(defun splash-screen ()
+  "Emacs splash screen"
 
   (interactive)
 
@@ -40,13 +76,18 @@
       (setq header-line-format nil)
       (setq mode-line-format nil)))
 
+
   (let* ((splash-buffer  (get-buffer-create "*splash*"))
-         (height         (round (- (window-body-height nil) 1) ))
-         (width          (round (window-body-width nil)        ))
-         (padding-center (+ (/ height 2) 1)))
+         (recover-session (and auto-save-list-file-prefix
+                               (file-directory-p (file-name-directory
+                                                  auto-save-list-file-prefix))))
+         (height         (- (window-body-height nil) 1))
+         (width          (window-body-width nil))
+         (padding-center (- (/ height 2) 1))
+         (padding-bottom (- height (/ height 2) 3)))
 
     ;; If there are buffer associated with filenames,
-    ;;  we don't show the splash screen.
+    ;;  we don't show splash screen.
     (if (eq 0 (length (cl-loop for buf in (buffer-list)
                                if (buffer-file-name buf)
                                collect (buffer-file-name buf))))
@@ -55,9 +96,9 @@
           (erase-buffer)
 
           ;; Buffer local settings
-          (if (one-window-p) (setq mode-line-format nil))
+          (if (one-window-p)
+              (setq mode-line-format nil))
           (setq cursor-type nil)
-          (setq line-spacing 0)
           (setq vertical-scroll-bar nil)
           (setq horizontal-scroll-bar nil)
           (setq fill-column width)
@@ -66,42 +107,63 @@
 
           ;; Vertical padding to center
           (insert-char ?\n padding-center)
-          (insert (propertize "Welcome to Emacs" 'face '(:inherit default :weight bold)))
-          (center-line)
-          (insert "\n")
-          ;; FIXME
-          ;; (insert-image (create-image (expand-file-name "icons/emacs-e.svg" cpm-local-dir)))
-          (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'font-lock-comment-face))
-          (center-line)
-          (insert "\n")
-          ;; FIXME
-          ;; (insert (propertize (shell-command-to-string "fortune | cowsay") 'face 'font-lock-comment-face))
-          ;; (center-line)
-          ;; (insert "\n")
-          (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'font-lock-comment-face))
-          (center-line)
-          (insert "\n")
+
+          ;; Central text
+          (insert-text-button " www.gnu.org "
+                              'action (lambda (_) (browse-url "https://www.gnu.org"))
+                              'help-echo "Visit www.gnu.org website"
+                              'follow-link t)
+          (center-line) (insert "\n")
+          (insert (concat
+                   (propertize "Welcome to GNU Emacs"  'face 'bold)
+                   " " "version "
+                   (format "%d.%d" emacs-major-version emacs-minor-version)))
+          (center-line) (insert "\n")
+          (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow))
+          (center-line) (insert "\n")
+          (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'shadow))
+          (center-line) (insert "\n") (insert "\n")
+
+          ;; Recover session button
+          (when recover-session
+            ;; (delete-char -2)
+            (insert-text-button " [Recover session] "
+                                'action (lambda (_) (call-interactively 'recover-session))
+                                'help-echo "Recover previous session"
+                                'face 'warning
+                                'follow-link t)
+            (center-line)
+            ;; (insert "\n") (insert "\n")
+            )
+
+
+          ;; Vertical padding to bottom
+          (insert-char ?\n padding-bottom)
+
+
+          ;; Copyright text
+          (insert (propertize
+                   "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow))
+          (center-line) (insert "\n")
+
           (goto-char 0)
           (read-only-mode t)
-          (local-set-key [q] 'bespoke-splash-kill)
+
+          (local-set-key [t]               'splash-screen-fade-to-default)
+          (local-set-key (kbd "C-[")       'splash-screen-fade-to-default)
+          (local-set-key (kbd "<escape>")  'splash-screen-fade-to-default)
+          (local-set-key (kbd "q")         'splash-screen-fade-to-default)
+          (local-set-key (kbd "<mouse-1>") 'mouse-set-point)
+          (local-set-key (kbd "<mouse-2>") 'operate-this-button)
+          ;; (local-set-key " "               'splash-screen-fade-to-default)
+          ;; (local-set-key "x"               'splash-screen-fade-to-default)
+          ;; (local-set-key (kbd "<RET>")     'splash-screen-fade-to-default)
+          ;; (local-set-key (kbd "<return>")  'splash-screen-fade-to-default)
           (display-buffer-same-window splash-buffer nil)
-          (run-with-idle-timer 0.05 nil (lambda() (message nil)))
-          (run-with-idle-timer 1.50 nil 'bespoke-splash-fade-out-slow)
-	      (if (fboundp 'bespoke-splash-help-message)
-              (run-with-idle-timer 0.55 nil 'bespoke-splash-help-message))
-	      )
-      (bespoke-splash-kill))))
+          (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default)))))
 
-(defun center-string (string)
-  "Pad a string with space on the left such as to center it"
-  (let* ((padding (/ (- (window-body-width) (length string)) 2))
-         (padding (+ (length string) padding)))
-    ;; If the string is displayed as a tooltip, don't pad it
-    (if (and tooltip-mode (fboundp 'x-show-tip))
-        string
-      (format (format "%%%ds" padding) string))))
 
-;; Mac only animation , available from
+;; Mac animation, only available from
 ;;  https://bitbucket.org/mituharu/emacs-mac/src/master/
 ;;  https://github.com/railwaycat/homebrew-emacsmacport
 (defvar mac-animation-locked-p nil)
@@ -112,7 +174,8 @@
     (mac-animation-toggle-lock)
     (mac-start-animation nil :type 'fade-out :duration duration)
     (run-with-timer duration nil 'mac-animation-toggle-lock)))
-(defun bespoke-splash-fade-out (duration)
+
+(defun splash-screen-fade-to (about duration)
   "Fade out current frame for duration and goes to command-or-bufffer"
   (interactive)
   (defalias 'mac-animation-fade-out-local
@@ -121,25 +184,24 @@
       (progn (if (and (display-graphic-p) (fboundp 'mac-start-animation))
                  (advice-add 'set-window-buffer
                              :before 'mac-animation-fade-out-local))
-             (message nil)
+             (if about (about-emacs))
              (kill-buffer "*splash*")
              (if (and (display-graphic-p) (fboundp 'mac-start-animation))
                  (advice-remove 'set-window-buffer
                                 'mac-animation-fade-out-local)))))
-(defun bespoke-splash-fade-out-slow ()
-  (interactive) (bespoke-splash-fade-out 1.00))
-(defun bespoke-splash-fade-out-fast ()
-  (interactive) (bespoke-splash-fade-out 0.25))
+(defun splash-screen-fade-to-about ()
+  (interactive) (splash-screen-fade-to 1 1.0))
+(defun splash-screen-fade-to-default ()
+  (interactive) (splash-screen-fade-to nil 0.25))
 
-(defun bespoke-splash-kill ()
+(defun splash-screen-kill ()
   "Kill the splash screen buffer (immediately)."
   (interactive)
   (if (get-buffer "*splash*")
-      (progn (message nil)
-             (cancel-function-timers 'bespoke-splash-fade-out-slow)
-             (cancel-function-timers 'bespoke-spash-help-message)
-             (kill-buffer "*splash*"))))
+      (kill-buffer "*splash*")))
 
+;; Suppress any startup message in the echo area
+(run-with-idle-timer 0.05 nil (lambda() (message nil)))
 
 ;; Install hook after frame parameters have been applied and only if
 ;; no option on the command line
@@ -150,11 +212,10 @@
          ;; (not inhibit-startup-screen)
          )
     (progn
-      (add-hook 'window-setup-hook 'bespoke-splash)
+      (add-hook 'window-setup-hook 'splash-screen)
       (setq inhibit-startup-screen t
             inhibit-startup-message t
             inhibit-startup-echo-area-message t)))
 
-
-;;; End Splash
 (provide 'setup-splash)
+;;; setup-splash.el ends here

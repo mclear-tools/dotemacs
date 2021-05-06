@@ -54,15 +54,18 @@ note that I'm by no means a competent programmer, so I'm sure there are better w
 of implementing many elements of this config. Suggestions are welcome! 
 
 *** Screenshots
-
-
 #+BEGIN_HTML
 <div>
-<img src="./screenshots/light-splash.png" width=47.5%/>
-<img src="./screenshots/dark-splash.png" width=47.5%/>
-<img src="./screenshots/light-example.png" width=47.5%/>
-<img src="./screenshots/dark-example.png" width=47.5%/>
+<img src="./screenshots/light-splash.png"/>
+<img src="./screenshots/light-colors.png"/>
+<img src="./screenshots/light-git.png"/>
+<img src="./screenshots/light-agenda.png"/>
 
+<img src="./screenshots/dark-splash.png" />
+<img src="./screenshots/dark-colors.png" />
+<img src="./screenshots/dark-git.png" />
+<img src="./screenshots/dark-agenda.png" />
 </div>
 #+END_HTML
+
 

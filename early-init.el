@@ -5,6 +5,7 @@
 ;; for more information
 
 ;;; Early Startup
+
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
 ;; See https://blog.d46.us/advanced-emacs-startup/
@@ -103,6 +104,7 @@
 (setq-default inhibit-splash-screen t)
 (setq-default inhibit-startup-message t)
 (setq-default initial-scratch-message nil)
+
 
 ;; UI - Disable visual cruft
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.

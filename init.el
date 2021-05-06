@@ -206,6 +206,7 @@
 (require 'setup-osx)
 
 ;;;; Other Modules
+(require 'setup-splash)
 (require 'setup-server)
 (require 'setup-windows-buffers)
 (require 'setup-ui)
@@ -222,7 +223,6 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
-(require 'setup-splash)
 (require 'setup-childframe)
 
 ;; (require 'setup-nano)
