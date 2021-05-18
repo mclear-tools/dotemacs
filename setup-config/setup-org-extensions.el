@@ -192,7 +192,7 @@ Instead it's simpler to use bash."
   :hook (org-mode . org-appear-mode)
   :init
   (setq org-appear-autoemphasis  t)
-  (setq org-appear-autolinks t)
+  (setq org-appear-autolinks nil)
   (setq org-appear-autosubmarkers t))
 
 ;;; Org-Reveal
