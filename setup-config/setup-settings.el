@@ -194,16 +194,6 @@
   (desktop-save-in-desktop-dir)
   (save-buffers-kill-emacs))
 
-
-;;;; Date & Time
-(defun cpm/insert-date ()
-  (interactive)
-  (format-date "%A, %B %d %Y"))
-
-(defun cpm/insert-date-and-time ()
-  (interactive)
-  (format-date "%m-%d-%Y %H:%M:%S"))
-
 ;;;; Time Stamps
 (use-package time-stamp
   :straight (:type built-in)
@@ -216,11 +206,20 @@
 
   (defun cpm/time-stamp ()
     (interactive)
-    (insert (concat  "Time-stamp: <"(format-time-string "%Y-%02m%02d-%02H:%02M:%02S")">")))
+    (insert (concat  "Time-stamp: <"(format-time-string "%Y-%02m%02d-%02H:%02M:%02S")">"))))
 
-  (defun format-date (format)
-    (let ((system-time-locale "en_US.UTF-8"))
-      (insert (format-time-string format)))))
+;;;; Date & Time
+(defun format-date (format)
+  (let ((system-time-locale "en_US.UTF-8"))
+    (insert (format-time-string format))))
+
+(defun cpm/insert-date ()
+  (interactive)
+  (format-date "%A, %B %d %Y"))
+
+(defun cpm/insert-date-and-time ()
+  (interactive)
+  (format-date "%m-%d-%Y %H:%M:%S"))
 
 ;;;; Universal Argument
 (general-define-key "M-u" 'universal-argument)
