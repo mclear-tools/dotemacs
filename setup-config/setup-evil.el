@@ -136,6 +136,10 @@
   (setq undo-tree-auto-save-history t)
   (global-undo-tree-mode 1))
 
+;;; Evil Matchit
+(use-package evil-matchit
+  :straight t
+  :hook (after-init . global-evil-matchit-mode))
 
 ;;; End Evil-Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
