@@ -51,7 +51,7 @@
 ;; https://akrl.sdf.org/gccemacs.html#org335c0de
 (setq native-comp-speed 2
       native-comp-deferred-compilation t)
-(when (boundp 'comp-eln-load-path)
+(when (boundp 'native-comp-eln-load-path)
   (setcar native-comp-eln-load-path
           (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
 ;; Silence nativecomp warnings popping up on 28.0.50
