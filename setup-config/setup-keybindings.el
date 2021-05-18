@@ -357,9 +357,10 @@
    "p!"  'projectile-run-shell-command-in-root
    "p&"  'projectile-run-async-shell-command-in-root
    "pa"  'projectile-toggle-between-implementation-and-test
-   "pb"  'projectile-switch-to-buffer
-   "pc"  'consult-projectile
-   "pC"  'projectile-compile-project
+   ;; "pb"  'projectile-switch-to-buffer
+   "pb"  'consult-projectile
+   ;; "pc"  'consult-projectile
+   "pc"  'projectile-compile-project
    "pd"  'projectile-find-dir
    "pD"  'projectile-dired
    "pf"  'projectile-find-file
@@ -438,6 +439,7 @@
    ;; "so" #'ivy-occur
    ;; "so" 'helm-occur
    ;; "sp" 'swiper-thing-at-point
+   "sp" #'consult-line-symbol-at-point
    "sr" #'vr/query-replace
    "sR" 'helm-org-rifle
    ;; "ss" #'swiper
