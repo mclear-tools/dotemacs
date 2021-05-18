@@ -156,7 +156,24 @@
                                      (user-error (format "%s\n%s" command output))))))
     (set-process-filter proc #'comint-output-filter)))
 
+;;;; Symbol List
+(use-package symbolist
+  :straight (:host github :repo "lassik/emacs-symbolist")
+  :commands (symbolist-prefix symbolist-regexp))
 
+;;;; Org-Hugo Links
+;; New link type for Org-Hugo internal links
+(defun org-hugo-link-complete ()
+  "Create link with Hugo ref shortcode"
+  (concat "{{% ref " (file-relative-name (read-file-name "File: ")) " %}}"))
+
+(defun org-hugo-follow (link)
+  (find-file (expand-file-name link)))
+
+(with-eval-after-load 'org
+  (org-link-set-parameters "hugo"
+                           :complete 'org-hugo-link-complete
+                           :follow 'org-hugo-follow))
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
