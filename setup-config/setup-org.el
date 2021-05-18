@@ -6,9 +6,9 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
-  ;; :straight t
-  :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
-             :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
+  :straight t
+  ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
+  ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :mode (("\\.org$" . org-mode))
   :general (cpm/leader-keys
              "uc" 'org-capture)
@@ -1430,6 +1430,11 @@ is non-nil."
                  (org-match-string-no-properties 1))))
           (apply 'delete-region remove)
           (insert description)))))
+
+;;;; Org Contrib
+(use-package org-contrib
+  :straight t
+  :after org)
 
 ;;; End Org Setup
 (provide 'setup-org)
