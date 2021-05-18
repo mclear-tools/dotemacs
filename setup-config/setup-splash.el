@@ -78,9 +78,6 @@
 
 
   (let* ((splash-buffer  (get-buffer-create "*splash*"))
-         (recover-session (and auto-save-list-file-prefix
-                               (file-directory-p (file-name-directory
-                                                  auto-save-list-file-prefix))))
          (height         (- (window-body-height nil) 1))
          (width          (window-body-width nil))
          (padding-center (- (/ height 2) 1))
@@ -88,79 +85,73 @@
 
     ;; If there are buffer associated with filenames,
     ;;  we don't show splash screen.
-    (if (eq 0 (length (cl-loop for buf in (buffer-list)
-                               if (buffer-file-name buf)
-                               collect (buffer-file-name buf))))
+    ;; (if (eq 0 (length (cl-loop for buf in (buffer-list)
+    ;;                            if (buffer-file-name buf)
+    ;;                            collect (buffer-file-name buf))))
 
-        (with-current-buffer splash-buffer
-          (erase-buffer)
+    (with-current-buffer splash-buffer
+      (erase-buffer)
 
-          ;; Buffer local settings
-          (if (one-window-p)
-              (setq mode-line-format nil))
-          (setq cursor-type nil)
-          (setq vertical-scroll-bar nil)
-          (setq horizontal-scroll-bar nil)
-          (setq fill-column width)
-          (face-remap-add-relative 'link :underline nil)
-          (if (not (display-graphic-p)) (menu-bar-mode 0))
+      ;; Buffer local settings
+      (if (one-window-p)
+          (setq mode-line-format nil))
+      (setq cursor-type nil)
+      (setq vertical-scroll-bar nil)
+      (setq horizontal-scroll-bar nil)
+      (setq fill-column width)
+      (face-remap-add-relative 'link :underline nil)
+      (if (not (display-graphic-p)) (menu-bar-mode 0))
 
-          ;; Vertical padding to center
-          (insert-char ?\n padding-center)
+      ;; Vertical padding to center
+      (insert-char ?\n padding-center)
 
-          ;; Central text
-          (insert-text-button " www.gnu.org "
-                              'action (lambda (_) (browse-url "https://www.gnu.org"))
-                              'help-echo "Visit www.gnu.org website"
-                              'follow-link t)
-          (center-line) (insert "\n")
-          (insert (concat
-                   (propertize "Welcome to GNU Emacs"  'face 'bold)
-                   " " "version "
-                   (format "%d.%d" emacs-major-version emacs-minor-version)))
-          (center-line) (insert "\n")
-          (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow))
-          (center-line) (insert "\n")
-          (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'shadow))
-          (center-line) (insert "\n") (insert "\n")
-
-          ;; Recover session button
-          (when recover-session
-            ;; (delete-char -2)
-            (insert-text-button " [Recover session] "
-                                'action (lambda (_) (call-interactively 'recover-session))
-                                'help-echo "Recover previous session"
-                                'face 'warning
-                                'follow-link t)
-            (center-line)
-            ;; (insert "\n") (insert "\n")
-            )
+      ;; Central text
+      (insert (concat
+               (propertize "Welcome to GNU Emacs"  'face 'bold)
+               " "
+               (propertize (format "%d.%d" emacs-major-version emacs-minor-version) 'face 'bold)))
+      (center-line) (insert "\n")
+      (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow))
+      (center-line) (insert "\n")
+      (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'shadow))
+      (center-line) (insert "\n") (insert "\n")
+      (insert-text-button " mclear-tools/dotemacs  "
+                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/dotemacs"))
+                          'help-echo "Visit dotemacs repo"
+                          'face 'warning
+                          'follow-link t)
+      (center-line)(insert "\n")
+      (insert-text-button " mclear-tools/bespoke-themes  "
+                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-themes"))
+                          'help-echo "Visit bespoke-themes repo"
+                          'face 'warning
+                          'follow-link t)
+      (center-line)(insert "\n")
+      ;; Vertical padding to bottom
+      (insert-char ?\n padding-bottom)
 
 
-          ;; Vertical padding to bottom
-          (insert-char ?\n padding-bottom)
+      ;; Footer text
+      (insert (propertize
+               "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow))
+      (center-line) (insert "\n")
 
+      (goto-char 0)
+      (read-only-mode t)
 
-          ;; Copyright text
-          (insert (propertize
-                   "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow))
-          (center-line) (insert "\n")
-
-          (goto-char 0)
-          (read-only-mode t)
-
-          (local-set-key [t]               'splash-screen-fade-to-default)
-          (local-set-key (kbd "C-[")       'splash-screen-fade-to-default)
-          (local-set-key (kbd "<escape>")  'splash-screen-fade-to-default)
-          (local-set-key (kbd "q")         'splash-screen-fade-to-default)
-          (local-set-key (kbd "<mouse-1>") 'mouse-set-point)
-          (local-set-key (kbd "<mouse-2>") 'operate-this-button)
-          ;; (local-set-key " "               'splash-screen-fade-to-default)
-          ;; (local-set-key "x"               'splash-screen-fade-to-default)
-          ;; (local-set-key (kbd "<RET>")     'splash-screen-fade-to-default)
-          ;; (local-set-key (kbd "<return>")  'splash-screen-fade-to-default)
-          (display-buffer-same-window splash-buffer nil)
-          (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default)))))
+      (local-set-key [t]               'splash-screen-fade-to-default)
+      (local-set-key (kbd "C-[")       'splash-screen-fade-to-default)
+      (local-set-key (kbd "<escape>")  'splash-screen-fade-to-default)
+      (local-set-key (kbd "q")         'splash-screen-fade-to-default)
+      (local-set-key (kbd "<mouse-1>") 'mouse-set-point)
+      (local-set-key (kbd "<mouse-2>") 'operate-this-button)
+      ;; (local-set-key " "               'splash-screen-fade-to-default)
+      ;; (local-set-key "x"               'splash-screen-fade-to-default)
+      ;; (local-set-key (kbd "<RET>")     'splash-screen-fade-to-default)
+      ;; (local-set-key (kbd "<return>")  'splash-screen-fade-to-default)
+      (display-buffer-same-window splash-buffer nil)
+      (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default))
+    (switch-to-buffer "*splash*")))
 
 
 ;; Mac animation, only available from
