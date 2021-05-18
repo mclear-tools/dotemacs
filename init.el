@@ -68,7 +68,6 @@
 (setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
 (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
 
-
 ;;; Package Settings
 ;; I tell use-package to always defer loading packages unless explicitly told
 ;; otherwise. This speeds up initialization significantly as many packages are
@@ -102,6 +101,8 @@
 (setq straight-use-package-by-default t)
 ;; Check updates manually
 (setq straight-vc-git-auto-fast-forward nil)
+;; see https://github.com/raxod502/straight.el/issues/757
+(setq native-comp-deferred-compilation-deny-list nil)
 
 ;; bootstrap straight
 (defvar bootstrap-version)
@@ -260,25 +261,36 @@
 ;; I used to use outshine.el but it was overkill -- these packages are much smaller/simpler
 
 (use-package outline
-  :hook (prog-mode . outline-minor-mode))
-
-(use-package bicycle
-  :after outline
-  :demand t
+  :straight (:type built-in)
+  :hook (prog-mode . outline-minor-mode)
   :general
   (:keymaps 'outline-minor-mode-map :states '(normal motion)
-   "<tab>" 'bicycle-cycle
-   "S-<tab>" 'bicycle-cycle-global)
+   "<tab>" 'outline-cycle
+   "M-<tab>" 'outline-cycle-buffer)
   (:keymaps 'outline-minor-mode-map :states '(normal motion)
-   "gh" 'outline-up-heading
-   "gj" 'outline-forward-same-level
-   "gk" 'outline-backward-same-level
-   "gl" 'outline-next-visible-heading
-   "gu" 'outline-previous-visible-heading
+   "gh"    'outline-previous-visible-heading
+   "gj"    'outline-forward-same-level
+   "gk"    'outline-backward-same-level
+   "gl"    'outline-next-visible-heading
+   "gu"    'outline-up-heading
    "M-j"   'outline-move-subtree-down
    "M-k"   'outline-move-subtree-up
    "M-h"   'outline-promote
-   "M-l"   'outline-demote))
+   "M-l"   'outline-demote)
+  :config
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              ;; prevent `outline-level' from being overwritten by `lispy'
+              (setq-local outline-level #'outline-level)
+              ;; setup heading regexp specific to `emacs-lisp-mode'
+              (setq-local outline-regexp ";;;\\(;* \\)")
+              ;; heading alist allows for subtree-like folding
+              (setq-local outline-heading-alist
+                          '((";;; " . 1)
+                            (";;;; " . 2)
+                            (";;;;; " . 3)
+                            (";;;;;; " . 4)
+                            (";;;;;;; " . 5))))))
 
 ;; Make outline faces look better
 (use-package outline-minor-faces
