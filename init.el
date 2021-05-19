@@ -266,7 +266,7 @@
   :general
   (:keymaps 'outline-minor-mode-map :states '(normal motion)
    "<tab>" 'outline-cycle
-   "M-<tab>" 'outline-cycle-buffer)
+   "S-<tab>" 'outline-cycle-buffer)
   (:keymaps 'outline-minor-mode-map :states '(normal motion)
    "gh"    'outline-previous-visible-heading
    "gj"    'outline-forward-same-level
