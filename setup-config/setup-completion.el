@@ -2,72 +2,9 @@
 
 ;;; Narrowing Completion
 
-;;;; Icomplete
-(use-package icomplete-vertical
-  :disabled
-  :straight (icomplete-vertical :type git :host github :repo "oantolin/icomplete-vertical")
-  :hook (after-init . icomplete-vertical-mode)
-  :general
-  (:keymaps 'icomplete-minibuffer-map
-   "C-v"    'icomplete-vertical-toggle
-   "RET"    'icomplete-force-complete-and-exit
-   "TAB"    'icomplete-force-complete-and-exit
-   "C-M-i"  'minibuffer-complete
-   "M-RET"  'exit-minibuffer
-   "<down>" 'icomplete-forward-completions
-   "C-j"    'icomplete-forward-completions
-   "<up>"   'icomplete-backward-completions
-   "C-k"    'icomplete-backward-completions)
-  :custom
-  (icomplete-show-matches-on-no-input t)
-  (icomplete-hide-common-prefix nil)
-  (icomplete-compute-delay 0.0)
-  (read-file-name-completion-ignore-case t)
-  (read-buffer-completion-ignore-case t)
-  (completion-ignore-case t)
-  :config
-  (icomplete-mode)
-  (icomplete-vertical-mode))
-
-;;;; Vertico
-(use-package vertico
-  :general
-  (:keymaps 'vertico-map
-   "C-j"    'vertico-next
-   "C-k"    'vertico-previous)
-  :init
-  (vertico-mode)
-  :config
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  (setq vertico-cycle t))
-
-;; A few more useful configurations...
-(use-package emacs
-  :init
-  ;; Add prompt indicator to `completing-read-multiple'.
-  (defun crm-indicator (args)
-    (cons (concat "[CRM] " (car args)) (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Grow and shrink minibuffer
-  ;;(setq resize-mini-windows t)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
-
-;; Persist history over Emacs restarts using savehist (see setup-settings). Vertico sorts by history position.
-
-;;;; Selectrum
-;; selectrum is nice but I think I like Icomplete better
-;; Icomplete is less buggy and orderless works well.
-
+;;; Selectrum
+;; Good completion package -- much more sane and organized than ivy. Still more than I really need but works well
 (use-package selectrum
-  :disabled t
   :straight t
   :hook (after-init . selectrum-mode)
   :general
@@ -86,8 +23,10 @@
   (setq selectrum-count-style 'current/matches)
   (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
   (setq selectrum-refine-candidates-function #'orderless-filter)
-  (selectrum-mode +1))
+  (selectrum-mode +1)
+  )
 
+;; history
 (use-package selectrum-prescient
   :disabled
   :straight t
@@ -98,23 +37,14 @@
   (prescient-persist-mode)
   (selectrum-prescient-mode +1))
 
-;;;; Orderless
-;; ordering of narrowed candidates
-;; Use the `orderless' completion style.
-;; Enable `partial-completion' for files to allow path expansion.
-;; You may prefer to use `initials' instead of `partial-completion'.
+;; ordering
 (use-package orderless
-  :init
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
-
-;; (use-package orderless
-;;   :straight t
-;;   :after selectrum
-;;   :config
-;;   (setq completion-styles '(orderless))
-;;   (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
+  :straight t
+  :after selectrum
+  :config
+  (setq completion-styles '(orderless))
+  (setq completion-category-defaults nil)
+  (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
 
 ;;;; Affe (Fuzzy Search)
 (use-package affe
@@ -156,18 +86,7 @@
         (lambda (map)
           (which-key--show-keymap "Embark" map nil nil 'no-paging)
           #'which-key--hide-popup-ignore-command)
-        embark-become-indicator embark-action-indicator)
-  ;; (defun unique-completion ()
-  ;;   (when (= (length (embark-minibuffer-candidates)) 1)
-  ;;     (run-at-time 0 nil #'minibuffer-force-complete-and-exit)))
-  ;; (setf (alist-get 'variable embark-keymap-alist) 'embark-symbol-map)
-  ;; (defun resize-embark-live-occur-window (&rest _)
-  ;;   (when (string-match-p "Live" (buffer-name))
-  ;;     (fit-window-to-buffer (get-buffer-window)
-  ;;                           (floor (frame-height) 2) 1)))
-  ;; (add-hook 'embark-pre-action-hook #'completion--flush-all-sorted-completions))
-
-  )
+        embark-become-indicator embark-action-indicator))
 
 (use-package embark-consult
   :straight t
@@ -183,7 +102,6 @@
 ;; Info about candidates pulled from metadata
 (use-package marginalia
   :straight (marginalia :type git :host github :repo "minad/marginalia")
-  ;; :after icomplete-vertical
   :general
   (:keymaps 'minibuffer-local-map
    "C-M-a"  'marginalia-cycle)
@@ -197,7 +115,6 @@
   ;; ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations.
   (advice-add #'marginalia-cycle :after
               (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
-
   ;; Prefer richer, more heavy, annotations over the lighter default variant.
   ;; E.g. M-x will show the documentation string additional to the keybinding.
   ;; By default only the keybinding is shown as annotation.
@@ -207,7 +124,7 @@
 
 ;;;; Consult
 ;; Example configuration for Consult
-;; Useful functions; drop-in replacement for ivy/swiper
+;; Useful functions; a drop-in replacement for ivy/swiper
 
 (use-package consult
   :straight (consult :type git :host github :repo "minad/consult")
@@ -221,8 +138,7 @@
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-root-function #'projectile-project-root)
   (setq consult-async-min-input 0)
-  (setq consult-async-input-debounce 0.01)
-  )
+  (setq consult-async-input-debounce 0.01))
 
 (use-package consult-projectile
   :straight (consult-projectile :type git :host gitlab
@@ -258,13 +174,13 @@
 ;; via customization variables.
 ;; (consult-preview-mode)
 
-
-
-
 ;;; In-Buffer Completion
 ;;;; Company
+;; complete anything http://company-mode.github.io
+;; completion in region; use child-frame for better visual performance
+;; see setup-childframe.el
+;; might be better off with cofu https://github.com/minad/corfu
 (use-package company
-  :after evil
   :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
   :general
   (:keymaps 'company-active-map
@@ -275,11 +191,12 @@
    "C-k"   #'company-select-previous
    "C-l"   #'company-complete-selection)
   :init
-  (setq company-idle-delay 0.3
+  (setq company-idle-delay 0.2
         company-minimum-prefix-length 3
         company-require-match nil
         company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil
+        company-selection-wrap-around t
         company-show-numbers t)
   :config
   ;; Default backends
@@ -297,11 +214,16 @@
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
   (setq company-bibtex-org-citation-regex "-?cite:"))
 
+;;;; Company Prescient
+
 (use-package company-prescient
   :after company
   :demand t
   :config
   (company-prescient-mode t))
+
+
+
 
 ;;;; Yasnippet
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
