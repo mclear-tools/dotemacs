@@ -816,22 +816,6 @@ will be killed."
  #'set-point-before-yanking-if-in-text-mode)
 ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00975.html
 
-;;;; Sticky Buffer
-;; Stick/Lock buffer to window, courtesy of ShingoFukuyama.
-;; https://gist.github.com/ShingoFukuyama/8797743
-
-(defvar sticky-buffer-previous-header-line-format)
-(define-minor-mode sticky-buffer-mode
-  "Make the current window always display this buffer."
-  nil " sticky" nil
-  (if sticky-buffer-mode
-      (progn
-        (set (make-local-variable 'sticky-buffer-previous-header-line-format)
-             header-line-format)
-        (set-window-dedicated-p (selected-window) sticky-buffer-mode))
-    (set-window-dedicated-p (selected-window) sticky-buffer-mode)
-    (setq header-line-format sticky-buffer-previous-header-line-format)))
-
 ;;;; Exchange Windows
 ;; Swap buffers in windows and leave the cursor in the original window. Courtesy of
 ;; Mike Zamansky's video.
