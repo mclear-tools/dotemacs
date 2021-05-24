@@ -62,7 +62,7 @@
 
 ;;; Evil Collection
 (use-package evil-collection
-  :after evil
+  :defer 2
   :config
   (evil-collection-init)
   :custom
