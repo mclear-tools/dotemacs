@@ -116,6 +116,17 @@
 ;;   (setq completion-styles '(orderless))
 ;;   (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
 
+;;;; Affe (Fuzzy Search)
+(use-package affe
+  :straight (affe :type git :host github :repo "minad/affe" )
+  :after orderless
+  :config
+  ;; Configure Orderless
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches)
+  (setq affe-grep-command "rg -L --null --color=never --max-columns=1000 --no-heading --line-number -v ^$ .")
+  ;; Manual preview key for `affe-grep'
+  (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))
 
 ;;;; Embark
 ;; Actions on narrowed candidates

@@ -129,7 +129,7 @@
 ;; async fetch
 (autoload #'straight-x-fetch-all "straight-x")
 
-;; ;; automatic update packages every week
+;; ;; automatically update packages every week
 ;; (run-at-time "10:00pm" 604800 'straight-x-pull-all)
 
 ;;;; Use-Package
@@ -246,9 +246,10 @@
 
 ;; Function to search in config files
 (defun cpm/search-setup-config-files ()
-  "use ripgrep to search all config files"
+  "async fuzzy search with ripgrep for all config files"
   (interactive)
-  (consult-ripgrep cpm-setup-dir))
+  (affe-grep cpm-setup-dir))
+;; (consult-ripgrep cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()
