@@ -9,6 +9,8 @@
   (window-divider-default-bottom-width 1)
   (window-divider-default-places 'right-only)
   (window-divider-mode t))
+;; Make sure new frames use window-divider
+(add-hook 'before-make-frame-hook 'window-divider-mode)
 
 ;;; Window Movement
 ;; Move to other window
