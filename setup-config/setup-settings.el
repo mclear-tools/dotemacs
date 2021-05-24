@@ -326,6 +326,81 @@
 ;; Note that the default is x100), but this seems too high.
 (setq undo-outer-limit 1006632960)
 
+;;;; Transient Popups
+(use-package transient
+  :defer 2
+  :custom
+  (transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
+  (transient-values-file (concat cpm-cache-dir "transient/values.el"))
+  (transient-history-file (concat cpm-cache-dir "transient/history.el")))
+
+;;;; Help Transient
+;; A little more useful for calling help than just C-h (less info density)
+;; see https://luca.cambiaghi.me/vanilla-emacs/readme.html#h:14F8ECDE-9E15-46F7-B903-ECE383251C48
+(use-package transient
+  :general
+  (cpm/leader-keys
+    "h" 'cpm/help-transient)
+  :config
+  (transient-define-prefix cpm/help-transient ()
+    ["Help Commands"
+     ["Mode & Bindings"
+      ("m" "Mode" describe-mode)
+      ("b" "Major Bindings" which-key-show-full-major-mode)
+      ("B" "Minor Bindings" which-key-show-full-minor-mode-keymap)
+      ("d" "Descbinds" describe-bindings)
+      ]
+     ["Describe"
+      ("c" "Command" helpful-command)
+      ("f" "Function" helpful-callable)
+      ("v" "Variable" helpful-variable)
+      ("k" "Key" helpful-key)
+      ]
+     ["Info on"
+      ("C-c" "Emacs Command" Info-goto-emacs-command-node)
+      ("C-f" "Function" info-lookup-symbol)
+      ("C-v" "Variable" info-lookup-symbol)
+      ("C-k" "Emacs Key" Info-goto-emacs-key-command-node)
+      ]
+     ["Goto Source"
+      ("L" "Library" find-library)
+      ("F" "Function" find-function)
+      ("V" "Variable" find-variable)
+      ("K" "Key" find-function-on-key)
+      ]
+     ]
+    [
+     ["Internals"
+      ("e" "Echo Messages" view-echo-area-messages)
+      ("l" "Lossage" view-lossage)
+      ]
+     ["Describe"
+      ("s" "Symbol" helpful-symbol)
+      ("." "At Point   " helpful-at-point)
+      ;; ("C-f" "Face" counsel-describe-face)
+      ("w" "Where Is" where-is)
+      ("=" "Position" what-cursor-position)
+      ]
+     ["Info Manuals"
+      ("C-i" "Info" info)
+      ("C-4" "Other Window " info-other-window)
+      ("C-e" "Emacs" info-emacs-manual)
+      ;; ("C-l" "Elisp" info-elisp-manual)
+      ]
+     ["Exit"
+      ("q" "Quit" transient-quit-one)
+      ("<escape>" "Quit" transient-quit-one)
+      ]
+     ]
+    [
+     ["External"
+      ("W" "Dictionary" dictionary-lookup-definition)
+      ]
+     ]
+    )
+  )
+
+
 ;;; End Settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-settings)

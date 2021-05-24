@@ -85,15 +85,6 @@
     (setq fill-column 85)
     (setq-local comment-auto-fill-only-comments nil)))
 
-;; transient popups for magit
-(use-package transient
-  :after magit
-  :demand t
-  :custom
-  (transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
-  (transient-values-file (concat cpm-cache-dir "transient/values.el"))
-  (transient-history-file (concat cpm-cache-dir "transient/history.el")))
-
 ;; add todos in magit
 (use-package magit-todos
   :commands (magit-todos-list magit-todos-mode)
