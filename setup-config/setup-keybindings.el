@@ -9,6 +9,11 @@
 	:keymaps 'override
 	:prefix "SPC"
 	:non-normal-prefix "C-SPC")
+  (general-create-definer cpm/local-leader-keys
+	:states '(normal visual)
+	:keymaps 'override
+	:prefix ","
+	:non-normal-prefix "C-,")
   (general-override-mode))
 
 ;;; Which Key
@@ -157,6 +162,7 @@
    "<SPC>" 'execute-extended-command
    ;; "<SPC>" 'helm-M-x
    ;; "d" #'deer
+   "c" #'company-complete
    "d" #'dired-jump
    "D" #'dired-jump-other-window
    ;; "D" #'cpm/deer-split-window
@@ -168,6 +174,7 @@
    ;; "j" 'avy-goto-char
    "k" 'consult-yank-pop
    ;; "k" 'helm-show-kill-ring
+   ;; "l" 'uchronia-repeat
    "l" 'selectrum-repeat
    ;; "l" 'helm-resume
    ;; "N" 'research-notes
