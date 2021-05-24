@@ -90,7 +90,7 @@
   :defer t
   :custom
   (face-font-family-alternatives
-   '(("Monospace" "SF Mono" "RobotoMono Nerd Font" "InconsolataLGC Nerd Font" "Hasklug Nerd Font"  "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
+   '(("Monospace" "SF Mono" "InconsolataLGC Nerd Font" "RobotoMono Nerd Font" "FiraCode Nerd Font" "Hasklug Nerd Font"  "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
      ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
      ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
   :custom-face
@@ -231,7 +231,8 @@
                                        recenter-top-bottom other-window))
     (advice-add command :after #'pulse-line))
 
-  (add-hook 'window-state-change-hook #'pulse-line))
+  ;; (add-hook 'window-state-change-hook #'pulse-line)
+  )
 
 ;;; Emoji
 (use-package emojify
