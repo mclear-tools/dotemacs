@@ -429,13 +429,15 @@
    :non-normal-prefix "C-SPC"
 
    "s" '(:ignore t :which-key "Search")
-   "sa" 'helm-org-rifle-agenda-files
-   "sd" 'consult-ripgrep ; search current buffer's directory
+   ;; "sa" 'helm-org-rifle-agenda-files
+   "sa" 'consult-org-agenda
+   "sd" 'affe-grep; search current buffer's directory
    "sD" #'cpm/search-in-input-dir ; search with directory input
    "sb" 'consult-multi-occur
    ;; "sb" 'helm-ag-buffers
    ;; "sf" 'helm-do-ag-this-file
-   "sf" 'swiper
+   "sf" 'consult-line
+   "sh" 'consult-org-heading
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'consult-yank-pop
    "sl" 'selectrum-repeat
@@ -448,7 +450,7 @@
    ;; "sp" 'swiper-thing-at-point
    "sp" #'consult-line-symbol-at-point
    "sr" #'vr/query-replace
-   "sR" 'helm-org-rifle
+   ;; "sR" 'helm-org-rifle
    ;; "ss" #'swiper
    "ss" 'consult-line
    ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
@@ -456,7 +458,7 @@
    "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
    "st" #'cpm/hydra-todo/body
    ;; "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
-   "sT" #'ivy-magit-todos  ;; search todos in git project
+   ;; "sT" #'ivy-magit-todos  ;; search todos in git project
    ;; "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
    )
 
