@@ -53,6 +53,9 @@
 (use-package which-key-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
+  :custom-face
+  (which-key-posframe-border ((t (:inherit default :background ,bespoke-subtle))))
+  (which-key-posframe ((t (:inherit default :background ,bespoke-subtle))))
   :config
   (setq posframe-arghandler #'cpm/posframe-arghandler)
   ;; see https://github.com/yanghaoxie/which-key-posframe/issues/5#issuecomment-527528759
