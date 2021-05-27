@@ -203,7 +203,6 @@
 (require 'setup-settings)
 (require 'setup-dired)
 (require 'setup-completion)
-(require 'setup-helm)
 (require 'setup-osx)
 
 ;;;; Other Modules
@@ -212,6 +211,7 @@
 (require 'setup-windows-buffers)
 (require 'setup-ui)
 (require 'setup-theme)
+(require 'setup-childframe)
 (require 'setup-navigation)
 (require 'setup-search)
 (require 'setup-vc)
@@ -224,13 +224,13 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
-(require 'setup-childframe)
 
 ;; (require 'setup-nano)
 ;; (require 'setup-modeline)
 ;; (require 'setup-email)
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)
+;; (require 'setup-helm)
 
 
 ;;; Config Helper Functions
