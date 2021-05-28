@@ -58,8 +58,14 @@
    :states '(normal motion)
    "s" #'hydra-dired-quick-sort/body))
 
+;;;; Dired Colors
+(use-package diredfl
+  :straight t
+  :hook (dired-mode . diredfl-global-mode))
+
 ;;;; Dired Plus
 (use-package dired+
+  :disabled t
   :after dired
   :hook ((dired-mode . diredp--set-up-font-locking))
   ;;(dired-mode . dired-omit-mode))
