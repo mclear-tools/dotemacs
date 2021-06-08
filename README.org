@@ -60,12 +60,12 @@ of implementing many elements of this config. Suggestions are welcome!
 <div>
 <img src="./screenshots/light-splash.png"/>
 <img src="./screenshots/light-colors.png"/>
-<img src="./screenshots/light-git.png"/>
+<img src="./screenshots/light-magit.png"/>
 <img src="./screenshots/light-agenda.png"/>
 
 <img src="./screenshots/dark-splash.png" />
 <img src="./screenshots/dark-colors.png" />
-<img src="./screenshots/dark-git.png" />
+<img src="./screenshots/dark-magit.png" />
 <img src="./screenshots/dark-agenda.png" />
 </div>
 #+END_HTML

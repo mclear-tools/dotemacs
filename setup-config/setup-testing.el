@@ -174,6 +174,22 @@
   (org-link-set-parameters "hugo"
                            :complete 'org-hugo-link-complete
                            :follow 'org-hugo-follow))
+
+;;;; Mini-Pop-Up
+(use-package mini-popup
+  :disabled
+  :straight (:host github :repo "minad/mini-popup")
+  :config
+  ;; Configure a height function (Example for Vertico)
+  (defun mini-popup-height-resize ()
+    (* (1+ (min vertico--total vertico-count)) (default-line-height)))
+  (defun mini-popup-height-fixed ()
+    (* (1+ (if vertico--input vertico-count 0)) (default-line-height)))
+  (setq mini-popup--height-function #'mini-popup-height-fixed)
+
+  ;; Ensure that the popup is updated after refresh (Consult-specific)
+  (add-hook 'consult--completion-refresh-hook #'mini-popup--setup-hook 99)
+  )
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
