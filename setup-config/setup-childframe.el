@@ -7,30 +7,35 @@
   :hook (after-init . mini-frame-mode)
   :commands (mini-frame-mode)
   :custom
-  (mini-frame-show-parameters `((top    . 0.023)
-                                (width  . 0.98)
-                                (left   . 0.5)
-                                (height . 11)
-                                (child-frame-border-width . 15)
-                                (internal-border-width . 0)
-                                (left-fringe . 20)
-                                (right-fringe . 20)
-                                ;; set colors for bespoke theme
-                                (foreground-color . ,bespoke-strong)
-                                (background-color . ,bespoke-subtle)
-                                ))
+  (mini-frame-show-parameters
+   `((top    . 0.023)
+     (width  . 0.98)
+     (left   . 0.5)
+     (height . 11)
+     (child-frame-border-width . 15)
+     (internal-border-width . 0)
+     (left-fringe . 20)
+     (right-fringe . 20)
+     ;; set colors for bespoke theme
+     (foreground-color . ,bespoke-strong)
+     (background-color . ,bespoke-subtle)
+     ))
   ;; (mini-frame-color-shift-step 7)
   (mini-frame-advice-functions '(read-from-minibuffer
                                  read-string
                                  completing-read))
   (mini-frame-resize nil)
   :config
-  (defun cpm/reload-child-frame ()
-    "function to reload child-frame settings"
-    (interactive)
-    (load-library "setup-childframe"))
-  ;; add hook to reload mini-frame colors on bespoke-theme change
-  (add-hook 'after-load-theme-hook 'cpm/reload-child-frame))
+  (setq mini-frame-ignore-commands
+        '("edebug-eval-expression" debugger-eval-expression))
+  (setq mini-frame-resize 'not-set))
+
+(defun cpm/reload-child-frame ()
+  "function to reload child-frame settings"
+  (interactive)
+  (load-library "setup-childframe"))
+;; add hook to reload mini-frame colors on bespoke-theme change
+(add-hook 'after-load-theme-hook 'cpm/reload-child-frame)
 
 ;;; Posframe
 (use-package posframe)
@@ -44,8 +49,8 @@
   (transient-posframe ((t (:foreground ,bespoke-strong :background ,bespoke-subtle))))
   :config
   (setq transient-posframe-border-width 20
-        transient-posframe-min-height (round (* (frame-height) 0.4))
-        transient-posframe-min-width (round (* (frame-width) 0.4))
+        transient-posframe-min-height (round (* (frame-height) 0.6))
+        transient-posframe-min-width (round (* (frame-width) 0.6))
         transient-posframe-poshandler 'posframe-poshandler-frame-top-center
         ))
 
