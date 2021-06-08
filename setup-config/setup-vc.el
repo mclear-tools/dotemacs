@@ -32,7 +32,7 @@
    magit-diff
    magit-log
    magit-status)
-  ;; :hook (git-commit-mode . turn-on-flyspell)
+  :hook (git-commit-mode . turn-on-flyspell)
   :init
   ;; Suppress the message we get about "Turning on
   ;; magit-auto-revert-mode" when loading Magit.
