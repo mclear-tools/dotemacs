@@ -37,6 +37,8 @@
   ;; Suppress the message we get about "Turning on
   ;; magit-auto-revert-mode" when loading Magit.
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
+  :custom-face
+  (magit-header-line ((t (:inherit header-line))))
   :config
   (setq magit-log-margin '(t "%Y-%m-%d.%H:%M:%S "  magit-log-margin-width nil 18))
   (setq magit-refresh-verbose t)
