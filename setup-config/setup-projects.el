@@ -238,8 +238,7 @@
     ;;          (let ((project-name (projectile-project-name)))
     ;;            (unless (string= "-" project-name)
     ;;              (format " in [%s]" project-name))))))
-    (require 'crux)
-    (crux-find-user-init-file)
+    (find-file-other-window user-init-file)
     (require 'magit)
     (magit-status-setup-buffer)))
 
