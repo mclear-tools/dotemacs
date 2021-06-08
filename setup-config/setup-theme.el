@@ -5,6 +5,12 @@
 
 ;;; Custom Theme Folder
 (setq-default custom-theme-directory (concat cpm-local-dir "custom-themes/"))
+;; find all themes recursively in custom-theme-folder
+(let ((basedir custom-theme-directory))
+  (dolist (f (directory-files basedir))
+    (if (and (not (or (equal f ".") (equal f "..")))
+             (file-directory-p (concat basedir f)))
+        (add-to-list 'custom-theme-load-path (concat basedir f)))))
 
 ;;; What Face?
 ;; https://stackoverflow.com/a/66287459/6277148
@@ -28,25 +34,31 @@
 (use-package bespoke-themes
   :straight (:type built-in)
   :load-path ".local/custom-themes/bespoke-themes"
-  :init
-  (if (not (display-graphic-p))
-      (progn
-        ;; Set up evil cursor colors
-        (setq set-bespoke-evil-cursors nil)
-        ;; No header line in terminal
-        (setq set-bespoke-header-line nil))
-    (progn
-      ;; Set header line in GUI
-      (setq set-bespoke-header-line t)
-      ;; Set up evil cursor colors
-      (setq set-bespoke-evil-cursors t)))
   :config
+  ;; Set header line
+  (if (not (display-graphic-p))
+      ;; Use footer line in terminal
+      (setq bespoke-set-mode-line 'footer)
+    (setq bespoke-set-mode-line 'header))
+  ;; Set mode line height
+  (setq bespoke-set-modeline-height 3)
+  ;; Set up evil cursor colors
+  (setq bespoke-set-evil-cursors t)
   ;; Use mode line visual bell
-  (bespoke-themes-visual-bell-config)
-  ;; Load dark theme
-  (load-theme 'bespoke-dark t))
+  (setq bespoke-set-visual-bell t)
+  ;; Set use of italics
+  (setq bespoke-set-italic-comments t
+        bespoke-set-italic-keywords t)
+  ;; Set variable pitch
+  (setq bespoke-set-variable-pitch t)
+  ;; Set initial theme variant
+  (setq bespoke-set-theme 'dark)
+  ;; Load theme
+  (load-theme 'bespoke t))
 
-
+(use-package nano-modeline
+  :straight (:host github :repo "rougier/nano-modeline")
+  :commands (nano-modeline))
 
 ;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
@@ -90,16 +102,14 @@
 (defun cpm/osx-menubar-theme-light ()
   "turn dark mode off"
   (interactive)
-  (shell-command "dark-mode off")
-  (load-theme 'bespoke-light t))
+  (shell-command "dark-mode off"))
 (defun cpm/osx-menubar-theme-dark ()
   "turn dark mode on"
   (interactive)
-  (shell-command "dark-mode on")
-  (load-theme 'bespoke-dark t))
-
+  (shell-command "dark-mode on"))
 
 ;;; Theme & menubar toggle
+(setq active-theme 'light-theme)
 (defun toggle-dark-light-theme ()
   "Coordinate setting of theme with os theme and toggle"
   (interactive)
@@ -108,19 +118,6 @@
              (setq active-theme 'dark-theme))
     (progn (cpm/osx-menubar-theme-light)
            (setq active-theme 'light-theme))))
-
-
-;;; Minibuffer & Echo
-(defun bespoke-theme--minibuffer ()
-  "Derive minibuffer / echo area faces from bespoke faces."
-  ;; Minibuffer / echo area
-  (dolist (buffer (list " *Minibuf-0*" " *Echo Area 0*"
-                        " *Minibuf-1*" " *Echo Area 1*"))
-    (when (get-buffer buffer)
-      (with-current-buffer buffer
-        (face-remap-add-relative 'default 'fringe)))))
-(bespoke-theme--minibuffer)
-
 
 ;;; After Load Theme Hook
 (defvar after-load-theme-hook nil
@@ -137,21 +134,23 @@
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
     ('light (progn
-              (load-theme 'bespoke-light t)
-              (setq active-theme 'light-theme)))
+              (setq bespoke-set-theme 'light)
+              (load-theme 'bespoke t)
+              (setq active-theme 'light-theme)
+              ))
     ('dark (progn
-             (load-theme 'bespoke-dark t)
-             (setq active-theme 'dark-theme)))))
+             (setq bespoke-set-theme 'dark)
+             (load-theme 'bespoke t)
+             (setq active-theme 'dark-theme)
+             ))))
 
 (add-hook 'ns-system-appearance-change-functions #'cpm/system-apply-theme)
 
 ;;; Reload Active Theme
-(defun cpm/reload-active-theme ()
+(defun cpm/bespoke-reload-theme ()
   "reload current bespoke theme"
   (interactive)
-  (if (eq active-theme 'light-theme)
-      (load-theme 'bespoke-light t)
-    (load-theme 'bespoke-dark t)))
+  (load-theme 'bespoke t))
 
 
 ;;; End setup-theme
