@@ -58,16 +58,27 @@ of implementing many elements of this config. Suggestions are welcome!
 *** Screenshots
 #+BEGIN_HTML
 <div>
-<img src="./screenshots/light-splash.png"/>
-<img src="./screenshots/light-colors.png"/>
-<img src="./screenshots/light-magit.png"/>
-<img src="./screenshots/light-agenda.png"/>
-
-<img src="./screenshots/dark-splash.png" />
-<img src="./screenshots/dark-colors.png" />
-<img src="./screenshots/dark-magit.png" />
-<img src="./screenshots/dark-agenda.png" />
+<p>Splash</p>
+<img src="./screenshots/light-splash.png" width=47.5%/>
+<img src="./screenshots/dark-splash.png" width=47.5%/>
 </div>
+
+<div>
+<p>Colors</p>
+<img src="./screenshots/light-colors.png" width=47.5%/>
+<img src="./screenshots/dark-colors.png"  width=47.5%/>
+</div>
+
+<div>
+<p>Agenda</p>
+<img src="./screenshots/light-agenda.png" width=47.5%/>
+<img src="./screenshots/dark-agenda.png"  width=47.5%/>
+</div>
+
+<div>
+<p>Org</p>
+<img src="./screenshots/light-org.png" width=47.5%/>
+<img src="./screenshots/dark-org.png"  width=47.5%/>
+</div>
+
 #+END_HTML
-
-
