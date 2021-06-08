@@ -224,7 +224,7 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
-
+;; (require 'setup-ivy)
 ;; (require 'setup-nano)
 ;; (require 'setup-modeline)
 ;; (require 'setup-email)
