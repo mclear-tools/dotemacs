@@ -81,6 +81,8 @@
   :if (eq system-type 'darwin)
   :init (ns-auto-titlebar-mode))
 
+;;; Color
+(setq-default ns-use-srgb-colorspace t)
 ;;; Fonts
 
 (setq-default line-spacing 0.20)
@@ -204,6 +206,7 @@
   :defer 1)
 ;; icons for dired
 (use-package all-the-icons-dired
+  :if (display-graphic-p)
   :defer t
   :commands all-the-icons-dired-mode
   :init
@@ -231,8 +234,7 @@
                                        recenter-top-bottom other-window))
     (advice-add command :after #'pulse-line))
 
-  ;; (add-hook 'window-state-change-hook #'pulse-line)
-  )
+  (add-hook 'window-state-change-hook #'pulse-line))
 
 ;;; Emoji
 (use-package emojify
@@ -322,9 +324,12 @@
   :straight (:host github :repo "gonewest818/dimmer.el")
   :hook (after-init . dimmer-mode)
   :config
-  (setq dimmer-fraction 0.4)
+  (setq mini-frame-create-lazy nil)
+  (setq dimmer-exclusion-predicates '(window-minibuffer-p))
+  (setq dimmer-fraction 0.5)
   (setq dimmer-adjustment-mode :foreground)
   (setq dimmer-use-colorspace :rgb)
+  (setq dimmer-watch-frame-focus-events nil)
   (dimmer-configure-which-key)
   (dimmer-configure-magit)
   (dimmer-configure-posframe))
