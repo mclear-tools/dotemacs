@@ -237,14 +237,16 @@
         company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil
         company-selection-wrap-around t
-        company-show-numbers t)
+        company-search-regexp-function 'company-search-words-regexp
+        company-show-numbers t
+        company-echo-truncate-lines nil)
   :config
   ;; Default backends
   (add-to-list 'company-backends 'company-keywords)
   (add-to-list 'company-backends 'company-files))
 
 (use-package company-bibtex
-  :after (:any (:all company org) (:all company markdown))
+  :after company
   :demand t
   :general
   (:states 'insert
