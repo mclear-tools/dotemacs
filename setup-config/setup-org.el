@@ -767,6 +767,7 @@ _vr_ reset      ^^                       ^^                 ^^
 ;; http://pragmaticemacs.com/emacs/export-org-mode-headlines-to-separate-files/ ; see also:
 ;; http://emacs.stackexchange.com/questions/2259/how-to-export-top-level-headings-of-org-mode-buffer-to-separate-files
 
+;; FIXME: neither of these functions work right now for some reason.
 (defun cpm/org-export-headlines-to-docx ()
   "Export all subtrees that are *not* tagged with :noexport: to
     separate files.
@@ -802,6 +803,7 @@ _vr_ reset      ^^                       ^^                 ^^
     Subtrees that do not have the :EXPORT_FILE_NAME: property set
     are exported to a filename derived from the headline text."
   (interactive)
+  (require 'ox-pandoc)
   (save-buffer)
   (let ((modifiedp (buffer-modified-p)))
     (save-excursion
