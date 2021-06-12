@@ -2,10 +2,10 @@
  ("benchmark-init-el" . "7a0f263282bbc86b01b662636306f22813082647")
  ("el-get" . "52df810e538243d07f2a317ad36e351b440a75e0")
  ("emacsmirror-mirror" . "a3cf6458e9bf5aaf34bbfd1dcad4bf21d5b05c7c")
- ("gnu-elpa-mirror" . "6417888b014b45df00fa8d7956738e98d5d7418d")
- ("melpa" . "1bebe80350df731711bc526ca9fe942410211220")
+ ("gnu-elpa-mirror" . "97425c5a7472e0c669d34c719ea194520afddc8d")
+ ("melpa" . "870901c45fb35384953568a972aa36ad445e1ad9")
  ("outline-minor-faces" . "942bd43ea7099984e9ebccf48db70af345d4b6bf")
  ("packed" . "ed63b4803899c3719aeeba461e249c473e5b26f0")
- ("straight.el" . "da4cf73b1e6a79778468dbd4199fd5b22a1a9734")
+ ("straight.el" . "521173e0b48a03b7094bb964da88ea5c008e35f6")
  ("use-package" . "a7422fb8ab1baee19adb2717b5b47b9c3812a84c"))
 :beta
