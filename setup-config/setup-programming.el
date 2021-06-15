@@ -380,6 +380,10 @@ Lisp function does not specify a special indentation."
 (use-package multi-compile
   :commands (compile multi-compile-run)
   :config
+  ;; Use for book compiling
+  (defun string/starts-with (string prefix)
+    "Return t if STRING starts with prefix."
+    (and (stringp string) (string-match (rx-to-string `(: bos ,prefix) t) string)))
   (setq multi-compile-history-file (concat cpm-cache-dir "multi-compile.cache"))
   (setq multi-compile-completion-system 'default)
   (setq multi-compile-alist '(
@@ -407,10 +411,6 @@ Lisp function does not specify a special indentation."
                                                 ("pandoc-book-chapter-pdf & Open" . "pandoc -s -N --pdf-engine=xelatex --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --citeproc --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/promote-headers.lua --filter pandoc-latex-color --metadata=reference-section-title:'References' --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml -o %file-sans.pdf %file-name && open %file-sans.pdf")
                                                 ((string/starts-with buffer-file-name "/Users/roambot/Dropbox/Work/projects/Book-Projects/rationality-book/") . (("compile rationality book" . "cd %make-dir && make -k && open %make-dirbuild/pdf/kant-rationality-book.pdf"))))))))
 
-;; I think this goes with multi-compile
-(defun string/starts-with (string prefix)
-  "Return t if STRING starts with prefix."
-  (and (stringp string) (string-match (rx-to-string `(: bos ,prefix) t) string)))
 
 
 
