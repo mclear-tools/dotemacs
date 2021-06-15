@@ -234,7 +234,8 @@
                                        recenter-top-bottom other-window))
     (advice-add command :after #'pulse-line))
 
-  (add-hook 'window-state-change-hook #'pulse-line))
+  ;; (add-hook 'window-state-change-hook #'pulse-line)
+  )
 
 ;;; Emoji
 (use-package emojify
