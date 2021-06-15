@@ -2,7 +2,7 @@
 
 ;;; New Org
 ;; remove references to older org in path
-(setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+;; (setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
