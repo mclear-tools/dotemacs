@@ -35,13 +35,10 @@
   :straight (:type built-in)
   :load-path ".local/custom-themes/bespoke-themes"
   :config
-  ;; Set header line
-  (if (not (display-graphic-p))
-      ;; Use footer line in terminal
-      (setq bespoke-set-mode-line 'footer)
-    (setq bespoke-set-mode-line 'header))
+  ;; Set mode line as header line
+  (setq bespoke-set-mode-line 'header)
   ;; Set mode line height
-  (setq bespoke-set-modeline-height 3)
+  (setq bespoke-set-mode-line-height 3)
   ;; Set up evil cursor colors
   (setq bespoke-set-evil-cursors t)
   ;; Use mode line visual bell
@@ -55,6 +52,10 @@
   (setq bespoke-set-theme 'dark)
   ;; Load theme
   (load-theme 'bespoke t))
+
+;;; Nano Theme
+(use-package nano-theme
+  :straight (:host github :repo "rougier/nano-theme"))
 
 (use-package nano-modeline
   :straight (:host github :repo "rougier/nano-modeline")
