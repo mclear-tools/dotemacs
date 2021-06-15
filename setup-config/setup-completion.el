@@ -267,6 +267,22 @@
 
 
 
+;;;; Company Org Block
+;; Org block completion
+;; https://github.com/xenodium/company-org-block
+(use-package company-org-block
+  :after org
+  :straight (:host github :repo "xenodium/company-org-block")
+  :custom
+  (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+  :config
+  (require 'org-element)
+  :hook ((org-mode . (lambda ()
+                       (setq-local company-backends '(company-org-block))
+                       (company-mode +1)))))
+
+
+
 ;;;; Yasnippet
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 (use-package yasnippet-snippets  :after yasnippet :demand t)
@@ -289,6 +305,11 @@
   (yas-reload-all))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Icons
+(use-package icon-affixation
+  :straight (:host github :repo "iyefrat/icon-affixation")
+  :hook (after-init . icon-affixation-mode))
 
 ;;; End Completion
 (provide 'setup-completion)
