@@ -7,7 +7,8 @@
   (when (executable-find "aspell")
     (setq ispell-program-name "aspell")
     ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
-    (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))))
+    (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")))
+  (setq ispell-choices-win-default-height 6))
   ;; (when (executable-find "hunspell")
   ;;   (setq-default ispell-program-name "hunspell")
   ;;   (setq ispell-extra-args   '("-d en_US"))
@@ -468,6 +469,24 @@
    "C-o" 'cpm/deft-open
    "C-p" 'cpm/deft-open-preview)
   :config
+  ;; https://github.com/jrblevin/deft/issues/100
+  (defun deft-parse-summary (contents title)
+    "Parse the file CONTENTS, given the TITLE, and extract a summary.
+The summary is a string extracted from the contents following the
+title."
+    (let* ((summary (let ((case-fold-search nil))
+                      (replace-regexp-in-string deft-strip-summary-regexp " " contents)))
+           (summary-processed (deft-chomp
+                                (if (and title
+                                         (not deft-use-filename-as-title)
+                                         (string-match (regexp-quote
+                                                        (if deft-org-mode-title-prefix
+                                                            (concat "^#+TITLE: " title)
+                                                          title))
+                                                       summary))
+                                    (substring summary (match-end 0) nil)
+                                  summary))))
+      (substring summary-processed 0 (min 512 (string-width summary-processed)))))
   (with-eval-after-load 'evil
     (add-to-list 'evil-insert-state-modes 'deft-mode))
   ;; basic settings for use with zettel
