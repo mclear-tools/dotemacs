@@ -191,11 +191,80 @@ want to use in the modeline *in lieu of* the original.")
                                          "%l:%c  ")
                                        ))))))
 
-  ;; (setq-default header-line-format nil)
-  ;; (setq-default mode-line-format cpm--default-mode-line)
   )
 
 
+;;; Terminal Alternative
+;; Organize mode line
+(defun mode-line-render (left right)
+  "Organize mode line entries to left and right"
+  (let* ((available-width (- (window-width) (length left))))
+    (format (format "%%s %%%ds" available-width) left right)))
+;; Alternative value of mode-line in case we want to use in terminal
+(setq-default bespoke--terminal-mode-line
+              (let* ((window (get-buffer-window (current-buffer)))
+                     (active (eq window bespoke-modeline--selected-window)))
+                '((:eval
+                   (mode-line-render
+                    (format-mode-line (list
+                                       ;; Buffer status
+                                       (cond ((and buffer-file-name (buffer-modified-p))
+                                              (propertize " ** " 'face (if active `(:inherit bespoke-header-mod-face :height 1.10) 'bespoke-faded))
+                                              (buffer-read-only
+                                               (propertize " RO " 'face (if active `(:inherit bespoke-header-mod-face :height 1.10) 'bespoke-faded)))
+                                              (t
+                                               (propertize " RW " 'face (if active `(:inherit bespoke-header-mod-face :height 1.10) 'bespoke-faded)))))
+
+                                       ;; (propertize " ** " 'face (if active `(:inherit bespoke-header-mod-face :height 1.10) `(:inherit bespoke-faded :height 1.10)))
+                                       ;; (buffer-read-only
+                                       ;;  (propertize " RO " 'face (if active `(:inherit bespoke-header-ro-face :height 1.10) `(:inherit bespoke-faded :height 1.10))))
+                                       ;; (t
+                                       ;;  (propertize " RW " 'face (if active `(:inherit bespoke-header-default-face :height 1.10) `(:inherit bespoke-faded :height 1.10))))))
+
+                                       ;; Filename (NOTE: not using %b since that leads to redundant info when using uniquify
+                                       (if buffer-file-name
+                                           (concat " " (file-name-nondirectory (buffer-file-name)))
+                                         " %b")
+
+                                       ;; Parent directory
+                                       ;; (when buffer-file-name
+                                       ;;   (propertize (concat " " (file-name-nondirectory (directory-file-name default-directory)) "/") 'face `(:inherit fringe)))
+
+                                       ;; Evil tags
+                                       (propertize evil-mode-line-tag 'face `(:inherit fringe))
+
+                                       ;; Narrowed buffer
+                                       (if (buffer-narrowed-p)
+                                           (propertize " ⇥"  'face `(:inherit fringe)))
+
+                                       ;; Modes
+                                       (propertize " %m " 'face `(:inherit fringe)
+                                                   'help-echo "Mode(s) menu"
+                                                   'mouse-face 'mode-line-highlight
+                                                   'local-map   mode-line-major-mode-keymap)))
+                    (format-mode-line (list
+                                       ;; Show project name
+                                       (when buffer-file-name
+                                         (when (bound-and-true-p projectile-mode)
+                                           (let ((project-name (projectile-project-name)))
+                                             (unless (string= "-" project-name)
+                                               (propertize (format "%s " project-name) 'face `(:slant italic :inherit fringe))))))
+
+                                       ;; When buffer-file is tracked in vc add spacer between project & branch
+                                       (when vc-mode
+                                         (when (vc-registered (buffer-file-name))
+                                           (propertize "" 'face `(:inherit fringe))))
+                                       ;; Show branch name
+                                       ;; NOTE: I can't seem to get line/col to display properly without putting them into the conditional
+                                       (if vc-mode
+                                           (list
+                                            (propertize (vc-project-branch) 'face `(:inherit fringe))
+                                            " %l:%c  ")
+                                         "%l:%c  "))))))))
+
+
+(setq-default header-line-format nil)
+(setq-default mode-line-format bespoke--terminal-mode-line)
 
 ;;; End Modeline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
