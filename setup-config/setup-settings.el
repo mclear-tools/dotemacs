@@ -3,11 +3,13 @@
 ;;;; General Settings
 
 ;;;;; Custom File Location
-;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 ;; Don't use persistent custom file (speeds up load time)
 (setq custom-file (make-temp-file "emacs-custom"))
 (when (file-exists-p custom-file)
   (load custom-file))
+
+;; If using custom settings put them in a separate file
+;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 ;;;;; Private File
 ;; where to store private or "secret" info
@@ -243,13 +245,6 @@
   :hook (after-init . global-so-long-mode)
   :config
   (global-so-long-mode))
-
-;;;; Highlight Lines
-;; Highlight lines. You can toggle this off
-(use-package hl-line
-  :straight (:type built-in)
-  :commands (hl-line-mode))
-  ;; :hook (after-init . global-hl-line-mode))
 
 ;;;; Read Only
 ;;https://karthinks.com/software/batteries-included-with-emacs/
