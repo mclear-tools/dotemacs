@@ -38,14 +38,15 @@
   (setq-default default-frame-alist
                 (append (list
 	                     '(font . "SF Mono:style=medium:size=15")
-                         '(height . 45)
-                         '(width . 85)
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)
+                         '(horizontal-scroll-bars . nil)
+                         '(height . 45)
+                         '(width . 85)
                          )))
 
   ;; maximize frame

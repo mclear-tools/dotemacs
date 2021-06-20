@@ -113,6 +113,19 @@
 (tooltip-mode 0)
 (menu-bar-mode 0)
 (setq initial-major-mode 'fundamental-mode)
+(setq default-frame-alist
+      (append (list
+               '(internal-border-width . 20)
+               '(left-fringe    . 0)
+               '(right-fringe   . 0)
+               '(tool-bar-lines . 0)
+               '(menu-bar-lines . 0)
+               '(vertical-scroll-bars . nil)
+               '(horizontal-scroll-bars . nil)
+               '(height . 45)
+               '(width . 85)
+               )))
+
 
 ;; ;; echo buffer
 ;; ;; Don't display any message
