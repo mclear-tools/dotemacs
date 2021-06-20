@@ -43,16 +43,13 @@
 (use-package transient-posframe
   :straight (:host github :repo "yanghaoxie/transient-posframe")
   :if (and (window-system) (version<= "26.1" emacs-version))
-  :hook (after-init . transient-posframe-mode)
-  :custom-face
-  (transient-posframe-border ((t (:inherit default :background ,bespoke-subtle))))
-  (transient-posframe ((t (:foreground ,bespoke-strong :background ,bespoke-subtle))))
+  :commands (transient-posframe-mode)
+  :hook (magit-mode . transient-posframe-mode)
   :config
   (setq transient-posframe-border-width 20
-        transient-posframe-min-height (round (* (frame-height) 0.6))
-        transient-posframe-min-width (round (* (frame-width) 0.6))
-        transient-posframe-poshandler 'posframe-poshandler-frame-top-center
-        ))
+        transient-posframe-min-height (round (* (frame-height) 0.5))
+        transient-posframe-min-width (round (* (frame-width) 0.5))
+        transient-posframe-poshandler 'posframe-poshandler-frame-top-center))
 
 ;;; Which-Key Posframe
 (use-package which-key-posframe
