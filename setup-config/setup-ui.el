@@ -161,6 +161,26 @@
 
 
 ;;; Highlight
+;;;; Highlight Lines
+;; Highlight lines. You can toggle this off
+(use-package hl-line+
+  :straight t
+  :custom-face
+  (hl-line ((t (:inherit highlight))))
+  :custom
+  (global-hl-line-mode nil)
+  (hl-line-flash-show-period 1.0)
+  (hl-line-inhibit-highlighting-for-modes '(dired-mode))
+  (hl-line-when-idle-interval 2)
+  :config
+  (toggle-hl-line-when-idle 1 t))
+
+;; (use-package hl-line
+;;   :straight (:type built-in)
+;;   :commands (hl-line-mode))
+;;   ;; :hook (after-init . global-hl-line-mode))
+
+;;;; Highlight Numbers & TODOS
 (use-package highlight-numbers
   :defer t
   :commands highlight-numbers-mode
@@ -198,6 +218,27 @@
 ;; (add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
 
 
+;;;; Highlight Cursor Line with Pulse
+;; From https://karthinks.com/software/batteries-included-with-emacs/
+;; Replace external package with internal command
+
+(use-package pulse
+  :straight (:type built-in)
+  :defer 1
+  :commands (pulse-line pulse-momentary-highlight-one-line)
+  :config
+  (defun pulse-line (&rest _)
+    "Pulse the current line."
+    (interactive)
+    (pulse-momentary-highlight-one-line (point)))
+  ;; pulse for commands
+  (dolist (command '(scroll-up-command scroll-down-command
+                                       recenter-top-bottom other-window))
+    (advice-add command :after #'pulse-line))
+  ;; pulse on window change
+  (push 'pulse-line window-selection-change-functions)
+  )
+
 ;;; Icons
 (use-package all-the-icons
   :defer t)
@@ -215,27 +256,6 @@
 ;; No ugly button for checkboxes
 (setq widget-image-enable nil)
 
-
-;;; Highlight Cursor Line with Pulse
-;; From https://karthinks.com/software/batteries-included-with-emacs/
-;; Replace external package with internal command
-
-(use-package pulse
-  :straight (:type built-in)
-  :defer 1
-  :commands (pulse-line pulse-momentary-highlight-one-line)
-  :config
-  (defun pulse-line (&rest _)
-    "Pulse the current line."
-    (interactive)
-    (pulse-momentary-highlight-one-line (point)))
-
-  (dolist (command '(scroll-up-command scroll-down-command
-                                       recenter-top-bottom other-window))
-    (advice-add command :after #'pulse-line))
-
-  ;; (add-hook 'window-state-change-hook #'pulse-line)
-  )
 
 ;;; Emoji
 (use-package emojify
