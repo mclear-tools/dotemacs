@@ -444,7 +444,7 @@ _vr_ reset      ^^                       ^^                 ^^
           ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "journal.org"))
            "**** %<%H:%M>\n%?")
           ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
-           "* %? :link: \n%(grab-mac-link 'firefox 'org)")
+           "* %? :link: \n%(grab-mac-link 'safari 'org)")
           ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
           ;;  "* TODO %? :email: \n%(org-mac-outlook-message-get-links)")
           ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
