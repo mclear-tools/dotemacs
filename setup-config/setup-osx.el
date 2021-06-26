@@ -40,24 +40,42 @@
 
 (setq IS-LINUX (eq system-type 'gnu/linux)
       IS-MAC (eq system-type 'darwin))
+
 (when IS-MAC
   ;; make fonts look better with anti-aliasing
   (setq mac-allow-anti-aliasing t)
-  ;; delete files by moving them to the trash
-  (use-package osx-trash
-    :straight t
-    :hook (after-init . osx-trash-setup)
-    :config
-    (setq delete-by-moving-to-trash t))
 
-  ;; this might also work NOTE: not tested!
-  ;; https://emacs.stackexchange.com/a/63342/11934
-  (defun cpm/system-move-file-to-trash (filename)
-    "Move file or directory named FILENAME to the trash."
-    (ns-do-applescript
-     (format
-      "tell application \"Finder\" to delete POSIX file \"%s\""
-      filename)))
+  ;; delete files by moving them to the trash
+  ;; See https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
+  (use-package emacs
+    :straight (:type built-in)
+    :config
+    (setq delete-by-moving-to-trash t)
+    (setq trash-directory "~/.Trash")  ;; fallback for `move-file-to-trash'
+    (defun system-move-file-to-trash (path)
+      "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
+
+Relies on the command-line utility 'trash' to be installed.
+Get it from:  <http://hasseg.org/trash/>"
+      (shell-command (concat "trash -vF \"" path "\""
+                             "| sed -e 's/^/Trashed: /'")
+                     nil ;; Name of output buffer
+                     "*Trash Error Buffer*")))
+
+  ;; (use-package osx-trash
+  ;;   :straight t
+  ;;   :hook (after-init . osx-trash-setup)
+  ;;   :config
+  ;;   (setq delete-by-moving-to-trash t))
+
+  ;; ;; this might also work NOTE: not tested!
+  ;; ;; https://emacs.stackexchange.com/a/63342/11934
+  ;; (defun cpm/system-move-file-to-trash (filename)
+  ;;   "Move file or directory named FILENAME to the trash."
+  ;;   (ns-do-applescript
+  ;;    (format
+  ;;     "tell application \"Finder\" to delete POSIX file \"%s\""
+  ;;     filename)))
 
   ;; (Do not) make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)
