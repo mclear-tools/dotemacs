@@ -340,6 +340,9 @@ Lisp function does not specify a special indentation."
                 ;; default is \x2502 but it is very slow on Mac
                 ;; highlight-indent-guides-character ?\xFFE8
                 highlight-indent-guides-responsive 'top
+                highlight-indent-guides-auto-odd-face-perc 5
+                highlight-indent-guides-auto-even-face-perc 5
+                highlight-indent-guides-auto-character-face-perc 15
                 highlight-indent-guides-auto-enabled t))
 
 
