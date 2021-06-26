@@ -224,6 +224,7 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
+
 ;; (require 'setup-ivy)
 ;; (require 'setup-nano)
 ;; (require 'setup-modeline)
@@ -298,7 +299,6 @@
   :after outline
   :config (add-hook 'outline-minor-mode-hook
                     'outline-minor-faces-add-font-lock-keywords))
-
 
 ;;;; Byte Compile Config Files
 ;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
