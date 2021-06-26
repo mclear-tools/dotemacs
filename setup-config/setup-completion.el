@@ -311,12 +311,8 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
-  ;; use which key for commands
-  (setq embark-action-indicator
-        (lambda (map)
-          (which-key--show-keymap "Embark" map nil nil 'no-paging)
-          #'which-key--hide-popup-ignore-command)
-        embark-become-indicator embark-action-indicator))
+  (setq embark-prompter 'embark-completing-read-prompter))
+
 
 (use-package embark-consult
   :straight t

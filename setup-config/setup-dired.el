@@ -63,52 +63,19 @@
   :straight t
   :hook (dired-mode . diredfl-global-mode))
 
-;;;; Dired Plus
-(use-package dired+
-  :disabled t
-  :after dired
-  :hook ((dired-mode . diredp--set-up-font-locking))
-  ;;(dired-mode . dired-omit-mode))
-  :init
-  (setq font-lock-maximum-decoration t)
-  (setq diredp-omit-files-regexp "\\.?#\\|^\\.$\\|^\\.\\.")
-  (setq diredp-hide-details-initially-flag nil)
-  (setq diredp-toggle-find-file-reuse-dir 1))
-  ;; :custom-face
-  ;; ;; TODO: change colors to work with bespoke theme
-  ;; (diredp-compressed-file-name ((t (:foreground "#00629D"))))
-  ;; (diredp-compressed-file-suffix ((t (:foreground "#839496"))))
-  ;; (diredp-date-time ((t (:foreground "#9EA0E5"))))
-  ;; (diredp-deletion ((t (:background "Red" :foreground "Yellow"))))
-  ;; (diredp-dir-heading ((t (:background "#69B7F0" :foreground "#002b36"))))
-  ;; (diredp-dir-name ((t (:foreground "#69B7F0"))))
-  ;; (diredp-dir-priv ((t (:foreground "#268bd2"))))
-  ;; (diredp-exec-priv ((t (:foreground "#990A1b"))))
-  ;; (diredp-file-name ((t (:foreground "#2aa198"))))
-  ;; (diredp-file-suffix ((t (:foreground "#839496"))))
-  ;; (diredp-flag-mark-line ((t (:foreground "#dc322f"))))
-  ;; (diredp-no-priv ((t (:foreground "#b58900"))))
-  ;; (diredp-number ((t (:foreground "#DEB542"))))
-  ;; (diredp-rare-priv ((t (:background "#cb4b16" :foreground "#B4C342"))))
-  ;; (diredp-read-priv ((t (:foreground "#F2804F"))))
-  ;; (diredp-tagged-autofile-name ((t (:foreground "#328C04113"))))
-  ;; (diredp-write-priv ((t (:foreground "#8b2C02")))))
-
-
 ;;;; Peep Dired
 (use-package peep-dired
   :commands (peep-dired)
-  :functions (peep-dired-kill-buffers-without-window)
   :general
   (:keymaps 'dired-mode-map
-   :states '(normal motion)
+   :states '(normal)
    "p" #'peep-dired)
   (:keymaps 'peep-dired-mode-map
    :states '(normal)
    "j" #'peep-dired-next-file
    "k" #'peep-dired-prev-file
    "RET" #'cpm/peep-dired-open
-   "TAB" #'other-window)
+   "TAB" #'evil-window-next)
   :config
   ;; helper function for opening files in full window
   (defun cpm/peep-dired-open ()
@@ -118,9 +85,11 @@
     (dired-find-file)
     (delete-other-windows))
   (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif")
-        peep-dired-max-size 5242880)
-  (setq peep-dired-cleanup-eagerly t))
+  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif"))
+  (setq peep-dired-cleanup-eagerly nil)
+  (setq peep-dired-enable-on-directories t)
+  (setq peep-dired-cleanup-on-disable t))
+
 
 ;;;; Dired Ranger
 ;; https://github.com/Fuco1/dired-hacks#dired-ranger
