@@ -2,7 +2,7 @@
 ;; https://github.com/jwiegley/emacs-async, https://github.com/magnars/s.el,
 ;; https://github.com/magnars/dash.el http://elpa.gnu.org/packages/cl-lib.html are
 ;; libraries for asynchronous processing string manipulation, list manipulation and
-;; backward compatibility respectively. The git package is also a library.
+;; backward compatibility respectively.
 
 (use-package async
   :straight t
