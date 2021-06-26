@@ -121,7 +121,6 @@
 ;;Git gutter is great for giving visual feedback on changes, but it doesn't play well
 ;;with org-mode using org-indent. So I don't use it globally.
 (use-package git-gutter
-  :defer t
   :hook ((markdown-mode . git-gutter-mode)
          (prog-mode . git-gutter-mode)
          (conf-mode . git-gutter-mode))
@@ -160,23 +159,25 @@
      :color blue)))
 
 (use-package git-gutter-fringe
-  :diminish git-gutter-mode
+  :straight t
   :after git-gutter
   :demand fringe-helper
   :config
+  (require 'git-gutter-fringe)
+  ;; (global-git-gutter-mode t)
   ;; subtle diff indicators in the fringe
   ;; places the git gutter outside the margins.
   (setq-default fringes-outside-margins t)
   ;; thin fringe bitmaps
   (define-fringe-bitmap 'git-gutter-fr:added
-  [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-  nil nil 'center)
+    [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+    nil nil 'center)
   (define-fringe-bitmap 'git-gutter-fr:modified
-  [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-  nil nil 'center)
+    [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+    nil nil 'center)
   (define-fringe-bitmap 'git-gutter-fr:deleted
-  [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-  nil nil 'center))
+    [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+    nil nil 'center))
 
 ;;; Quick commits
 ;; Make a quick commit without opening magit. This is a version of a

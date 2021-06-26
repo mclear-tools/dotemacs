@@ -76,7 +76,6 @@
   (when (fboundp 'horizontal-scroll-bar-mode)
     (horizontal-scroll-bar-mode -1)))
 
-
 ;;;; Fix titlebar titling colors
 ;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
 (use-package ns-auto-titlebar
@@ -104,6 +103,14 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (add-hook 'after-init-hook #'cpm/frame-recenter)
 (add-hook 'after-make-frame-functions #'cpm/frame-recenter)
+
+;;;; Fringe
+(use-package fringe
+  :straight (:type built-in)
+  :custom
+  ;; minimal fringe, left only
+  ;; use this only because of git-gutter-fringe
+  (fringe-mode '(2 . 0)))
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
@@ -141,6 +148,16 @@ If FRAME is omitted or nil, use currently selected frame."
   (set-display-table-slot standard-display-table 'wrap
                           (make-glyph-code ?↩ 'fallback)))
 
+
+
+;;; Font Lock
+(use-package font-lock
+  :straight (:type built-in)
+  :custom
+  ;; Max font lock decoration (set nil for less)
+  (font-lock-maximum-decoration t)
+  ;; No limit on font lock
+  (font-lock-maximum-size nil))
 
 
 ;;; Scale Text
