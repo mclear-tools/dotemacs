@@ -136,6 +136,20 @@
   (setq undo-tree-auto-save-history t)
   (global-undo-tree-mode 1))
 
+;;; Evil Lion
+;; Left-align with gl MOTION CHAR or right-align with gL MOTION CHAR. If the align
+;; separator is / you will be prompted for a regular expression instead of a plain
+;; character. If the align separator is RET alignment will be performed with
+;; align.el's rules specific for the major mode. You can pass count 1 to align on the
+;; first occurrence of CHAR. To pass count, use: COUNT gl MOTION CHAR. Example, left
+;; align gl: After pressing glip= (gl is the operator, ip text object paragraph, =
+;; separator)
+(use-package evil-lion
+  :after evil
+  :straight (:host github :repo "edkolev/evil-lion")
+  :config
+  (evil-lion-mode))
+
 ;;; Evil Matchit
 (use-package evil-matchit
   :straight t
