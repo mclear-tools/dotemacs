@@ -283,7 +283,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   :config
   ;; Configure Orderless
   (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches)
+        affe-highlight-function #'orderless--highlight)
   (setq affe-grep-command "rg -L --null --color=never --max-columns=1000 --no-heading --line-number -v ^$ .")
   ;; Manual preview key for `affe-grep'
   (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))

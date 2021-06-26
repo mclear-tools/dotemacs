@@ -83,8 +83,7 @@
 ;; Add config files to load-path
 (eval-and-compile
   (progn
-    (push cpm-setup-dir load-path)
-    (push (concat cpm-setup-dir "nano-config/") load-path)))
+    (push cpm-setup-dir load-path)))
 
 
 ;;;; Straight
