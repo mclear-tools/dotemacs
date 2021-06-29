@@ -60,6 +60,15 @@
     (evil-mode 1)
     ))
 
+;;; Evil Cursor (In Terminal)
+(use-package term-cursor
+  :if (not (display-graphic-p))
+  :straight (term-cursor :host github :repo "h0d/term-cursor.el")
+  :after evil
+  :init
+  ;; For all buffers
+  (global-term-cursor-mode))
+
 ;;; Evil Collection
 (use-package evil-collection
   :defer 2
@@ -68,12 +77,9 @@
   :custom
   (evil-collection-company-use-tng nil))
 
-
 ;;; Evil Surround
 (use-package evil-surround
   :after evil
-  :demand t
-  ;; :commands (evil-surround-region evil-surround-change evil-surround-delete)
   :general
   (:states '(visual)
    "s" 'evil-surround-region

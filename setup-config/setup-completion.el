@@ -498,6 +498,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;;; Icons
 (use-package icon-affixation
   :straight (:host github :repo "iyefrat/icon-affixation")
+  :if (display-graphic-p)
   :hook (after-init . icon-affixation-mode))
 
 ;;; End Completion
