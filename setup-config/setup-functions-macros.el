@@ -2,9 +2,12 @@
 
 ;;;; Delete Frame or Quit
 (defun cpm/delete-frame-or-quit ()
-  "Delete the selected frame.  If the last one, kill Emacs."
+  "Delete the selected frame & kill terminal buffers. If the last frame, kill Emacs."
   (interactive)
-  (condition-case nil (delete-frame) (error (save-buffers-kill-emacs))))
+  (kill-matching-buffers "*vterm" nil t)
+  (when (condition-case nil (delete-frame)
+          (error (save-buffers-kill-emacs))))
+  (select-frame-set-input-focus (selected-frame)))
 
 ;;;; Undo-Redo
 ;; Copied from Emacs 28
