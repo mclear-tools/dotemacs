@@ -18,7 +18,7 @@
 (use-package subr-x   :straight (:type built-in) :defer 1)
 ;; lots of packages depend on these libraries
 (use-package cl       :straight (:type built-in) :defer t)
-(use-package cl-lib   :straight (:type built-in) :demand t)
+(use-package cl-lib   :straight (:type built-in) :defer t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-libraries)
