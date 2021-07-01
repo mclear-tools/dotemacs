@@ -1,5 +1,30 @@
 ;;; Useful Functions
 
+;;;; Insert Comment Seperator
+;; ======================================================
+;; Insert commented seperator like this line
+;; ======================================================
+;; https://github.com/kuanyui/writing-utils.el/blob/db29d30e11b6d6d96c0d351b642af97631f3365f/writing-utils.el#L85
+
+(defun cpm/insert-commented-separator()
+  "Insert a commented separator in your code. Like this in
+ELisp:
+;; ======================================================
+;; Title
+;; ======================================================
+Which makes code easier to read.
+"
+  (interactive)
+  (let* ((line (make-string 54 (string-to-char "=")))
+	     (comment-start (if (member major-mode '(emacs-lisp-mode lisp-mode))
+			                ";; " comment-start))
+	     (seperator (concat comment-start line)))
+    (when (> (current-column) 0) (end-of-line) (newline))
+    (insert (format "%s\n%s\n%s"
+		            seperator comment-start seperator))
+    (previous-line)
+    ))
+
 ;;;; Delete Frame or Quit
 (defun cpm/delete-frame-or-quit ()
   "Delete the selected frame & kill terminal buffers. If the last frame, kill Emacs."
