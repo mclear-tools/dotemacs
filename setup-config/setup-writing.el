@@ -202,6 +202,7 @@
          " --css=/Users/roambot/.pandoc/pandoc.css"
          " --quiet"
          " --number-sections"
+         " --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua"
          " --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua"
          " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
          ;; " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
