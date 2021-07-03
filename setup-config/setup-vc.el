@@ -128,7 +128,7 @@
   :config
   (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
         git-gutter:update-interval 1
-        git-gutter:window-width 2
+        git-gutter:window-width nil
         git-gutter:ask-p nil)
   (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
                               :hint nil)
@@ -169,23 +169,20 @@
   ;; places the git gutter outside the margins.
   (setq-default fringes-outside-margins t)
   ;; thin fringe bitmaps
-  (define-fringe-bitmap 'git-gutter-fr:added
-    [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-    nil nil 'center)
-  (define-fringe-bitmap 'git-gutter-fr:modified
-    [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-    nil nil 'center)
-  (define-fringe-bitmap 'git-gutter-fr:deleted
-    [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-    nil nil 'center))
+  (define-fringe-bitmap 'git-gutter-fr:added [224]
+    nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224]
+    nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
+    nil nil 'bottom))
 
 ;;; Quick commits
 ;; Make a quick commit without opening magit. This is a version of a
 ;; workflow I used to use in Sublime Text. Perfect for short commit messages.
 (defun quick-commit ()
-"make a quick commit from the mini-buffer"
-(interactive)
-(evil-ex '"!Git add % && Git commit -m '" ))
+  "make a quick commit from the mini-buffer"
+  (interactive)
+  (evil-ex '"!Git add % && Git commit -m '" ))
 
 ;;; Show Git Status in Dired
 (use-package diff-hl
