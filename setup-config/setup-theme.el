@@ -41,6 +41,8 @@
   (setq bespoke-set-mode-line-height 3)
   ;; Show diff lines in modeline
   (setq bespoke-set-git-diff-mode-line t)
+  ;; Set mode-line cleaner
+  (setq bespoke-set-mode-line-cleaner t)
   ;; Set up evil cursor colors
   (setq bespoke-set-evil-cursors t)
   ;; Use mode line visual bell
