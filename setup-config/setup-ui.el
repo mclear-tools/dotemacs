@@ -110,7 +110,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :custom
   ;; minimal fringe, left only
   ;; use this only because of git-gutter-fringe
-  (fringe-mode '(2 . 0)))
+  (fringe-mode '(4 . 0)))
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
@@ -184,9 +184,9 @@ If FRAME is omitted or nil, use currently selected frame."
 
 
 ;;; Empty Lines
-;; Show empty lines. Why?
-;; .. without this you can't tell if there are blank lines at the end of the file.
-(setq-default indicate-empty-lines t)
+;; Don't show empty lines.
+;; .. Allows you to tell if there are blank lines at the end of the file.
+(setq-default indicate-empty-lines nil)
 
 ;;; Dialogs and popups
 ;; No file dialog
