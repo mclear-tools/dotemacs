@@ -131,6 +131,11 @@
 ;; ;; automatically update packages every week
 ;; (run-at-time "10:00pm" 604800 'straight-x-pull-all)
 
+(defun cpm/straight-update-packages ()
+  (interactive)
+  (straight-x-fetch-all)
+  (straight-merge-all))
+
 ;;;; Use-Package
 ;; install use package
 (straight-use-package 'use-package)
