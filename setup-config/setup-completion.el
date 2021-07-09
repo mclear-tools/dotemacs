@@ -496,10 +496,10 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Icons
-(use-package icon-affixation
-  :straight (:host github :repo "iyefrat/icon-affixation")
+(use-package all-the-icons-completion
+  :straight (:host github :repo "iyefrat/all-the-icons-completion")
   :if (display-graphic-p)
-  :hook (after-init . icon-affixation-mode))
+  :hook (after-init . all-the-icons-completion-mode))
 
 ;;; End Completion
 (provide 'setup-completion)
