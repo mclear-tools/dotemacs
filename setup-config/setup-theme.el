@@ -38,7 +38,7 @@
   ;; Set mode line as header line
   (setq bespoke-set-mode-line 'header)
   ;; Set mode line height
-  (setq bespoke-set-mode-line-height 3)
+  (setq bespoke-set-mode-line-size 4)
   ;; Show diff lines in modeline
   (setq bespoke-set-git-diff-mode-line t)
   ;; Set mode-line cleaner
@@ -59,9 +59,11 @@
 
 ;;; Nano Theme
 (use-package nano-theme
+  :defer t
   :straight (:host github :repo "rougier/nano-theme"))
 
 (use-package nano-modeline
+  :defer t
   :straight (:host github :repo "rougier/nano-modeline")
   :commands (nano-modeline))
 
@@ -155,6 +157,7 @@
 (defun cpm/bespoke-reload-theme ()
   "reload current bespoke theme"
   (interactive)
+  (cpm/disable-all-themes)
   (load-theme 'bespoke t))
 
 
