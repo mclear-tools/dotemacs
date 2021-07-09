@@ -108,9 +108,11 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package fringe
   :straight (:type built-in)
   :custom
-  ;; minimal fringe, left only
-  ;; use this only because of git-gutter-fringe
-  (fringe-mode '(4 . 0)))
+  ;; minimal fringe, right only
+  ;; set this only because of git-gutter-fringe
+  ;; if using on left alignment of cursor with header line is annoyingly off
+  (fringe-mode '(0 . 4)))
+
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
@@ -136,6 +138,12 @@ If FRAME is omitted or nil, use currently selected frame."
   ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
   ;; Allow unicode
   (set-fontset-font t 'unicode "Symbola" nil 'prepend)
+
+  ;; ;; Allow font awesome fonts
+  ;; (when (require 'all-the-icons nil 'noerror)
+  ;;   (let ((fontset (face-attribute 'default :fontset)))
+  ;;     (set-fontset-font
+  ;;      fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append)))
   ;; Allow emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font

@@ -168,6 +168,7 @@
   ;; subtle diff indicators in the fringe
   ;; places the git gutter outside the margins.
   (setq-default fringes-outside-margins t)
+  (setq git-gutter-fr:side 'right-fringe)
   ;; thin fringe bitmaps
   (define-fringe-bitmap 'git-gutter-fr:added [224]
     nil nil '(center repeated))
