@@ -407,10 +407,17 @@ will be killed."
     (fill-paragraph nil region)))
 
 ;;;; Insert seconds
-(defun cpm/insert-seconds-epoch ()
+(defun cpm/insert-time-string ()
+  "Insert year, day, hour, month, and second as a single string
+with no seperation"
   (interactive)
-  (insert (format-time-string "%s"))) ; the integer number of seconds since the epoch
-(global-set-key (kbd "C-c e") 'cpm/insert-seconds-epoch)
+  (insert (format-time-string "%Y%d%H%M%S")))
+
+(defun cpm/insert-time-seconds-epoch ()
+  "Insert the integer number of seconds since the epoch."
+  (interactive)
+  (insert (format-time-string "%s")))
+(global-set-key (kbd "C-c e") 'cpm/insert-time-seconds-epoch)
 
 ;;;; Jump in Buffer
 (defun cpm/jump-in-buffer ()
@@ -635,7 +642,7 @@ will be killed."
 (defun cpm/tex-to-markdown ()
   "convert clipboard contents from markdown to org and paste"
   (interactive)
-  (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t markdown --atx-headers"))
+  (kill-new (shell-command-to-string "pbpaste | pandoc -f latex -t markdown --markdown-headings=atx"))
   (yank))
 
 (defun cpm/markdown-to-tex ()
@@ -653,7 +660,7 @@ will be killed."
 (defun cpm/cite-to-markdown ()
   "convert clipboard contents to markdown with citations and paste"
   (interactive)
-  (kill-new (shell-command-to-string "pbpaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib -s -t markdown-native_divs-raw_html-citations --atx-headers"))
+  (kill-new (shell-command-to-string "pbpaste | pandoc --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib -s -t markdown-native_divs-raw_html-citations --markdown-headings=atx"))
   (yank))
 
 (defun cpm/bibtex-to-yaml-reference ()
