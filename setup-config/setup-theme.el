@@ -157,8 +157,9 @@
 (defun cpm/bespoke-reload-theme ()
   "reload current bespoke theme"
   (interactive)
-  (cpm/disable-all-themes)
-  (load-theme 'bespoke t))
+  (progn
+    (bespoke--disable-all-themes)
+    (load-theme 'bespoke t)))
 
 
 ;;; End setup-theme
