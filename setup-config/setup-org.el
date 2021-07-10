@@ -29,6 +29,11 @@
   (setq org-stuck-projects (quote ("" nil nil "")))
   (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
   (setf org-export-with-smart-quotes t)
+  ;; remove obsolete file link settings
+  ;; https://www.reddit.com/r/emacs/comments/oggf1d/whats_the_difference_between_org_mode_link_types/h4l6l1r
+  (setq org-link-parameters (delq (assoc "file+sys" org-link-parameters) org-link-parameters))
+  (setq org-link-parameters (delq (assoc "file+emacs" org-link-parameters) org-link-parameters))
+
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-return-follows-link t ;; make RET follow links
                 org-list-allow-alphabetical t ;; allow alphabetical list
