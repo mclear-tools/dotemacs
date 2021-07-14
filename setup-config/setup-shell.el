@@ -21,6 +21,10 @@
                 (and (get-buffer buffer)
                      (kill-buffer buffer)))))
 
+;;;; Display Buffers for Shell Processes
+;; Don't pop up buffer for async commands
+(add-to-list 'display-buffer-alist
+             (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 ;;; Terminal
 ;;;; Settings
 ;; Sane settings for ansi-term
