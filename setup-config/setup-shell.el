@@ -23,8 +23,22 @@
 
 ;;;; Display Buffers for Shell Processes
 ;; Don't pop up buffer for async commands
-(add-to-list 'display-buffer-alist
-             (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+;; See https://stackoverflow.com/a/47910509
+(defun async-shell-command-no-window
+    (command)
+  (interactive)
+  (let
+      ((display-buffer-alist
+        (list
+         (cons
+          "\\*Async Shell Command\\*.*"
+          (cons #'display-buffer-no-window nil)))))
+    (async-shell-command
+     command)))
+
+;; Never show buffer ...
+;; (add-to-list 'display-buffer-alist
+;;              (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 ;;; Terminal
 ;;;; Settings
 ;; Sane settings for ansi-term
