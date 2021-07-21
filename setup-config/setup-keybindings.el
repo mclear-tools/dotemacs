@@ -27,6 +27,8 @@
   (setq which-key-idle-delay .6)
   ;; use minibuffer
   (which-key-setup-minibuffer)
+  ;; separator
+  (setq which-key-separator " → ")
   (which-key-mode))
 
 ;;; Namespaced Keybindings
