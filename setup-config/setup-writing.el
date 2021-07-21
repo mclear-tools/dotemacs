@@ -319,6 +319,8 @@
 ;;; Interleave (Notes)
 (use-package interleave
   :commands interleave-mode)
+
+;;; Lorem Ipsum
 (use-package lorem-ipsum
   :commands (Lorem-ipsum-insert-sentences Lorem-ipsum-insert-list Lorem-ipsum-insert-paragraphs)
   :config
@@ -456,89 +458,6 @@
           "simply"))
   (setq writegood-weasel-words
         (-concat writegood-weasel-words cpm/weasel-words)))
-
-
-
-;;; Notes / Deft
-(use-package deft
-  :commands (deft deft-open-file-other-window cpm/notebook deft-new-file-named)
-  :general
-  (:keymaps 'deft-mode-map :states '(normal motion)
-   "o" 'cpm/deft-open
-   "p" 'cpm/deft-open-preview
-   "q" 'kill-this-buffer)
-  (:keymaps 'deft-mode-map :states '(insert)
-   "C-j" 'evil-next-line
-   "C-k" 'evil-previous-line
-   "C-o" 'cpm/deft-open
-   "C-p" 'cpm/deft-open-preview)
-  :config
-  ;; https://github.com/jrblevin/deft/issues/100
-  (defun deft-parse-summary (contents title)
-    "Parse the file CONTENTS, given the TITLE, and extract a summary.
-The summary is a string extracted from the contents following the
-title."
-    (let* ((summary (let ((case-fold-search nil))
-                      (replace-regexp-in-string deft-strip-summary-regexp " " contents)))
-           (summary-processed (deft-chomp
-                                (if (and title
-                                         (not deft-use-filename-as-title)
-                                         (string-match (regexp-quote
-                                                        (if deft-org-mode-title-prefix
-                                                            (concat "^#+TITLE: " title)
-                                                          title))
-                                                       summary))
-                                    (substring summary (match-end 0) nil)
-                                  summary))))
-      (substring summary-processed 0 (min 512 (string-width summary-processed)))))
-  (with-eval-after-load 'evil
-    (add-to-list 'evil-insert-state-modes 'deft-mode))
-  ;; basic settings for use with zettel
-  (setq deft-directory (concat (getenv "HOME") "/Dropbox/work/projects/notebook/content-org")
-        deft-recursive t
-        deft-use-filename-as-title t
-        deft-separator " "
-        deft-extensions '("org" "txt" "md")
-        deft-default-extension "org")
-  ;; file renaming rules
-  (setq deft-file-naming-rules
-        '((noslash . "-")
-          (nospace . "-")
-          (case-fn . downcase)))
-  (setq deft-strip-summary-regexp
-        (concat "\\("
-                "[\n\t]" ;; blank
-                "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
-                ;;yaml metadata
-                "\\|^\\-\\{3\\}$"
-                "\\|^[a-zA-Z_]+:.*$"
-                "\\|@[a-zA-Z_].*$"
-                ;; line beginning with markdown links
-                "\\|^\\[.*$"
-                "\\|^# .*$" ;; md titles
-                "\\)"))
-
-  ;;function to run deft in specified directory
-  (defun any-deft (dir)
-    "Run deft in directory DIR"
-    (setq deft-directory dir)
-    (switch-to-buffer "*Deft*")
-    (kill-this-buffer)
-    (deft))
-  (defun cpm/notebook ()
-    "Goto main notes with deft"
-    (interactive)
-    (any-deft "~/Dropbox/Work/projects/notebook/content-org")
-    (kill-this-buffer)
-    (any-deft "~/Dropbox/Work/projects/notebook/content-org"))
-  (defun cpm/deft-open ()
-    (interactive)
-    (deft-open-file-other-window t))
-  (defun cpm/deft-open-preview ()
-    (interactive)
-    (deft-open-file-other-window)))
-
-
 
 
 
