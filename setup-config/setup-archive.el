@@ -1,4 +1,180 @@
-;;;; Icomplete
+;;; Old Notes Search
+(defvar cpm-notes-dir "~/Dropbox/Work/projects/notebook/content-org/")
+(defun cpm/search-all-notes ()
+  (interactive)
+  (cd cpm-notes-dir)
+  (call-interactively #'deadgrep))
+
+;;; Company Org Roam
+(use-package company-org-roam
+  :disabled t
+  :after (org company)
+  :demand t
+  :config
+  (push 'company-org-roam company-backends))
+
+
+;;; Deft
+(use-package deft
+  :commands (deft deft-open-file-other-window cpm/notebook deft-new-file-named)
+  :general
+  (:keymaps 'deft-mode-map :states '(normal motion)
+   "o" 'cpm/deft-open
+   "p" 'cpm/deft-open-preview
+   "q" 'kill-this-buffer)
+  (:keymaps 'deft-mode-map :states '(insert)
+   "C-j" 'evil-next-line
+   "C-k" 'evil-previous-line
+   "C-o" 'cpm/deft-open
+   "C-p" 'cpm/deft-open-preview)
+  :config
+  ;; https://github.com/jrblevin/deft/issues/100
+  (defun deft-parse-summary (contents title)
+    "Parse the file CONTENTS, given the TITLE, and extract a summary.
+The summary is a string extracted from the contents following the
+title."
+    (let* ((summary (let ((case-fold-search nil))
+                      (replace-regexp-in-string deft-strip-summary-regexp " " contents)))
+           (summary-processed (deft-chomp
+                                (if (and title
+                                         (not deft-use-filename-as-title)
+                                         (string-match (regexp-quote
+                                                        (if deft-org-mode-title-prefix
+                                                            (concat "^#+TITLE: " title)
+                                                          title))
+                                                       summary))
+                                    (substring summary (match-end 0) nil)
+                                  summary))))
+      (substring summary-processed 0 (min 512 (string-width summary-processed)))))
+
+  (with-eval-after-load 'evil
+    (add-to-list 'evil-insert-state-modes 'deft-mode))
+  ;; basic settings for use with zettel
+  (setq deft-directory (concat (getenv "HOME") "/Dropbox/work/projects/notebook/content-org")
+        deft-recursive t
+        deft-use-filename-as-title t
+        deft-separator " "
+        deft-extensions '("org" "txt" "md")
+        deft-default-extension "org")
+  ;; file renaming rules
+  (setq deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+
+  (setq deft-strip-summary-regexp "\\`\\(.+\n\\)")
+
+
+  ;; (setq deft-strip-summary-regexp
+  ;;       (concat "\\("
+  ;;               "[\n\t]" ;; blank
+  ;;               "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+  ;;               ":PROPERTIES:\n\\(.+\n\\)+:END:\n" ;; strip org property drawer
+  ;;               ;;yaml metadata
+  ;;               "\\|^\\-\\{3\\}$"
+  ;;               "\\|^[a-zA-Z_]+:.*$"
+  ;;               "\\|@[a-zA-Z_].*$"
+  ;;               ;; line beginning with markdown links
+  ;;               "\\|^\\[.*$"
+  ;;               "\\|^# .*$" ;; md titles
+  ;;               "\\)"))
+
+  ;;function to run deft in specified directory
+  (defun any-deft (dir)
+    "Run deft in directory DIR"
+    (setq deft-directory dir)
+    (switch-to-buffer "*Deft*")
+    (kill-this-buffer)
+    (deft))
+  (defun cpm/notebook ()
+    "Goto main notes with deft"
+    (interactive)
+    (any-deft "~/Dropbox/Work/projects/notebook/content-org")
+    (kill-this-buffer)
+    (any-deft "~/Dropbox/Work/projects/notebook/content-org"))
+  (defun cpm/deft-open ()
+    (interactive)
+    (deft-open-file-other-window t))
+  (defun cpm/deft-open-preview ()
+    (interactive)
+    (deft-open-file-other-window)))
+
+;;; Selectrum
+;; Good completion package -- much more sane and organized than ivy. I'd prefer to use vertico but that doesn't work well with mini-frame-mode
+(use-package selectrum
+  :disabled
+  :straight (:host github :repo "raxod502/selectrum")
+  :hook (after-init . selectrum-mode)
+  :general
+  (:keymaps 'selectrum-minibuffer-map
+   ;; "RET"    'icomplete-force-complete-and-exit
+   "C-M-i"  'minibuffer-complete
+   "M-RET"  'exit-minibuffer
+   "<down>" 'selectrum-next-candidate
+   "C-j"    'selectrum-next-candidate
+   "<up>"   'selectrum-previous-candidate
+   "C-k"    'selectrum-previous-candidate)
+  :config
+  (setq selectrum-num-candidates-displayed 10)
+  (setq selectrum-fix-vertical-window-height t)
+  (setq selectrum-extend-current-candidate-highlight t)
+  (setq selectrum-count-style 'current/matches)
+  (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
+  (setq selectrum-refine-candidates-function #'orderless-filter))
+
+;; history
+(use-package selectrum-prescient
+  :disabled
+  :straight t
+  :after selectrum
+  :config
+  (setq selectrum-prescient-enable-filtering nil)
+  (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
+  (prescient-persist-mode)
+  (selectrum-prescient-mode +1))
+
+;; (use-package orderless
+;;   :straight t
+;;   :after selectrum
+;;   :config
+;;   (setq completion-styles '(orderless))
+;;   (setq completion-category-defaults nil)
+;;   (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
+
+
+;;; Miniframe
+;; Provides a great ui for completion, similar to posframe
+(use-package mini-frame
+  :disabled
+  :straight (:type git :host github :repo "muffinmad/emacs-mini-frame")
+  :hook (after-init . mini-frame-mode)
+  :commands (mini-frame-mode)
+  :custom
+  (mini-frame-show-parameters
+   `((top    . 0.023)
+     (width  . 0.98)
+     (left   . 0.5)
+     (height . 11)
+     (child-frame-border-width . 15)
+     (internal-border-width . 0)
+     (left-fringe . 20)
+     (right-fringe . 20)
+     ;; set colors for bespoke theme
+     (foreground-color . ,bespoke-strong)
+     (background-color . ,bespoke-subtle)
+     ))
+  ;; (mini-frame-color-shift-step 7)
+  (mini-frame-advice-functions '(read-from-minibuffer
+                                 read-string
+                                 completing-read))
+  (mini-frame-resize nil)
+  :config
+  (setq mini-frame-ignore-commands
+        '("edebug-eval-expression" debugger-eval-expression "vertico" vertico-mode))
+  (setq mini-frame-resize 'not-set))
+
+
+;;; Icomplete
 (use-package icomplete-vertical
   :disabled
   :straight (:type built-in)
@@ -26,48 +202,7 @@
   (icomplete-mode)
   (icomplete-vertical-mode))
 
-;;;; Vertico
-;; (use-package vertico
-;;   :general
-;;   (:keymaps 'vertico-map
-;;    "C-j"    'vertico-next
-;;    "C-k"    'vertico-previous)
-;;   :init
-;;   (vertico-mode)
-;;   :config
-;;   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-;;   (setq vertico-cycle t))
-
-;; ;; A few more useful configurations...
-;; (use-package emacs
-;;   :init
-;;   ;; Add prompt indicator to `completing-read-multiple'.
-;;   (defun crm-indicator (args)
-;;     (cons (concat "[CRM] " (car args)) (cdr args)))
-;;   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-;;   ;; Grow and shrink minibuffer
-;;   ;;(setq resize-mini-windows t)
-
-;;   ;; Do not allow the cursor in the minibuffer prompt
-;;   (setq minibuffer-prompt-properties
-;;         '(read-only t cursor-intangible t face minibuffer-prompt))
-;;   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-;;   ;; Enable recursive minibuffers
-;;   (setq enable-recursive-minibuffers t))
-
-;; ;; Persist history over Emacs restarts using savehist (see setup-settings). Vertico sorts by history position.
-
-;; (use-package orderless
-;;   :init
-;;   (setq completion-styles '(orderless)
-;;         completion-category-defaults nil
-;;         completion-category-overrides '((file (styles . (partial-completion))))))
-
-;; (selectrum-mode -1)
-
-;;;; Sticky Buffer
+;;; Sticky Buffer
 ;; Stick/Lock buffer to window, courtesy of ShingoFukuyama.
 ;; https://gist.github.com/ShingoFukuyama/8797743
 
@@ -83,7 +218,7 @@
 ;;     (set-window-dedicated-p (selected-window) sticky-buffer-mode)
 ;;     (setq header-line-format sticky-buffer-previous-header-line-format)))
 
-;;;; Dired Plus
+;;; Dired Plus
 (use-package dired+
   :disabled t
   :after dired
