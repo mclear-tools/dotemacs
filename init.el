@@ -242,6 +242,7 @@
 (require 'setup-org)
 (require 'setup-org-extensions)
 (require 'setup-writing)
+(require 'setup-notes)
 (require 'setup-projects)
 (require 'setup-programming)
 (require 'setup-pdf)
