@@ -771,76 +771,22 @@ Instead it's simpler to use bash."
 ;;; Org Roam (Wiki & Notes)
 ;; Good notes package but a lot is still in flux
 ;; see https://org-roam.readthedocs.io/en/latest/
-;; (eval-when-compile
-;;   (quelpa
-;;    '(org-roam :fetcher github :repo "org-roam/org-roam")))
 
 ;;;; Org Roam
 (use-package org-roam
   :commands (org-roam org-roam-new-file org-roam-find-file)
   :after org
-  ;; :hook (org-mode . org-roam-mode)
   :init
-  (setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
-  (setq org-roam-db-location "~/Dropbox/Work/projects/notebook/content-org/org-roam.db")
-  ;;;; Org Roam Keybindings
-  :general
-  (:states '(normal motion insert)
-   (cpm/leader-keys
-     "z"    #'(:ignore t :which-key "Zettelkasten")
-     "z l"  #'org-roam
-     "z t"  #'org-roam-today
-     "z f"  #'org-roam-find-file
-     "z i"  #'org-roam-insert
-     "z g"  #'org-roam-show-graph
-     "z n"  #'org-roam-new-file
-     "z N"  #'org-roam--new-file-named))
+  ;; No warnings
+  (setq org-roam-v2-ack t)
   :config
-  ;; use org-id links
-  (setq org-roam-prefer-id-links t)
-  ;;;; Org Roam Formatting
-  (setq org-roam-date-filename-format "%Y-%m%d-%H%M")
-  (setq org-roam-date-title-format "%Y-%m%d-%H%M")
-
-  ;; fix org roam title conversion
-  (defun org-roam--title-to-slug (title)
-    "Convert TITLE to a filename-suitable slug."
-    (cl-flet* ((nonspacing-mark-p (char)
-                                  (eq 'Mn (get-char-code-property char 'general-category)))
-               (strip-nonspacing-marks (s)
-                                       (apply #'string (seq-remove #'nonspacing-mark-p
-                                                                   (ucs-normalize-NFD-string s))))
-               (replace (title pair)
-                        (replace-regexp-in-string (car pair) (cdr pair) title)))
-      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
-                      ("__*" . "-")  ;; remove sequential underscores
-                      ("^_" . "")  ;; remove starting underscore
-                      ("_$" . "")))  ;; remove ending underscore
-             (slug (-reduce-from #'replace (strip-nonspacing-marks title) pairs)))
-        (s-downcase slug))))
-
-
-  ;;;; Org Roam backlink settings for export
-  ;; see https://org-roam.readthedocs.io/en/latest/org_export/
-  (defun my/org-roam--backlinks-list (file)
-    (if (org-roam--org-roam-file-p file)
-        (--reduce-from
-         (concat acc (format "- [[file:%s][%s]]\n"
-                             (file-relative-name (car it) org-roam-directory)
-                             (org-roam--get-title-or-slug (car it))))
-         "" (org-roam-sql [:select [from] :from links :where (= to $s1) :and (= from $s2)] file "roam"))
-      ""))
-
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
-
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
-
-   ;;;; Org Roam Templating
+  (setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
+  (setq org-roam-db-location (concat org-roam-directory "org-roam.db"))
+  ;; Set up org-roam
+  (org-roam-setup)
+  ;; Add completion
+  (push 'company-capf company-backends)
+  ;; Org Roam Templating
   ;; see https://org-roam.readthedocs.io/en/latest/templating/
   (setq org-roam-capture-templates
         '(("d" "default" plain (function org-roam-capture--get-point)
@@ -860,15 +806,10 @@ Instead it's simpler to use bash."
            :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: Weblinks\n#+ROAM_KEY: ${ref}\n #+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>\n\n- source :: ${ref}"
            :unnarrowed t))))
 
-;;;; Company Org Roam
-(use-package company-org-roam
-  :after (org company)
-  :demand t
-  :config
-  (push 'company-org-roam company-backends))
 
 ;;;; Org Roam Server
 (use-package org-roam-server
+  :disabled t
   :ensure t
   :disabled t
   :commands org-roam-server-mode
@@ -888,6 +829,7 @@ Instead it's simpler to use bash."
 ;;;; Org Roam Bibtex
 ;; If you installed via MELPA
 (use-package org-roam-bibtex
+  :disabled t
   :straight (:host github :repo "org-roam/org-roam-bibtex")
   :after org-roam
   :requires ivy-bibtex
@@ -906,6 +848,7 @@ Instead it's simpler to use bash."
 
 ;;; Citeproc for Org
 (use-package citeproc-org
+  :disabled t
   :straight (:host github :repo "andras-simonyi/citeproc-org")
   :after org
   :demand t
