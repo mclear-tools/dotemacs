@@ -61,7 +61,7 @@
    :non-normal-prefix "C-SPC"
 
    "b"  '(:ignore t :which-key "Buffers")
-   "ba" 'consult-buffer
+   "ba" 'ibuffer
    "bb" 'cpm/persp-consult-buffer
    ;; "bb" 'persp-switch-to-buffer
    ;; "bb" 'helm-mini
@@ -71,6 +71,7 @@
    "be" 'erase-buffer
    ;; "bf" 'cpm/browse-file-directory
    "bf" 'reveal-in-osx-finder
+   "bi" 'ibuffer-jump
    "bj" 'cpm/jump-in-buffer
    "bk" 'evil-delete-buffer
    "bK" 'crux-kill-other-buffers
@@ -174,11 +175,11 @@
    ;; "j" 'avy-goto-char
    "k" 'consult-yank-pop
    ;; "k" 'helm-show-kill-ring
-   ;; "l" 'uchronia-repeat
-   "l" 'selectrum-repeat
+   "l" 'vertico-repeat
+   ;; "l" 'selectrum-repeat
    ;; "l" 'helm-resume
    ;; "N" 'research-notes
-   "n" 'cpm/notebook
+   "n" 'consult-notes
    "r" 'cpm/resume-last-jump
    "S" 'hydra-spelling/body
    ;; "W" 'woman
@@ -441,7 +442,8 @@
    "sj" 'cpm/forward-or-backward-sexp
    "sk" 'consult-yank-pop
    "sl" 'selectrum-repeat
-   "sn" #'cpm/search-all-notes
+   "sn" #'consult-notes-search-all
+   ;; "sn" #'cpm/search-all-notes
    ;; "sk" 'helm-show-kill-ring
    ;; "sl" 'cpm/helm-list-search-buffers
    ;; "sm" 'swiper-mc
@@ -673,6 +675,7 @@
    :non-normal-prefix "C-SPC"
    "" nil
    "<escape>" #'org-agenda-Quit
+   "E"   #'org-agenda-entry-text-mode
    "m"   #'org-agenda-month-view
    "C-j" #'org-agenda-next-item
    "C-k" #'org-agenda-previous-item
@@ -702,6 +705,21 @@
 
   ;; end evil keybindings
   )
+
+;;; Zettelkasten/Notes/Wiki
+(general-define-key
+ :states '(normal motion insert)
+ (cpm/leader-keys
+   "z"    #'(:ignore t :which-key "Zettelkasten")
+   "z a"  #'consult-notes-search-all
+   "z i"  #'org-roam-node-insert
+   "z f"  #'org-roam-node-find
+   "z g"  #'org-roam-graph
+   "z l"  #'org-roam
+   "z n"  #'org-roam-capture
+   "z N"  #'org-roam--new-file-named
+   "z s"  #'cpm/zettelkasten-search
+   "z t"  #'org-roam-buffer-toggle))
 
 ;;; End keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
