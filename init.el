@@ -87,6 +87,7 @@
 
 
 ;;;; Straight
+;;;;; Straight settings
 ;; use straight.el to install all packages
 ;; https://github.com/raxod502/straight.el
 ;; Don't check packages on startup
@@ -102,7 +103,7 @@
 ;; see https://github.com/raxod502/straight.el/issues/757
 (setq native-comp-deferred-compilation-deny-list nil)
 
-;; bootstrap straight
+;;;;; Bootstrap straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" straight-base-dir))
@@ -116,6 +117,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;;;;; Straight-X
 ;; use experimental straight commands
 (require 'straight-x)
 ;; https://github.com/raxod502/straight.el#how-do-i-pin-package-versions-or-use-only-tagged-releases
@@ -127,13 +129,31 @@
 ;; async fetch
 (autoload #'straight-x-fetch-all "straight-x")
 
+;;;;; Straight Update Packages
 ;; ;; automatically update packages every week
 ;; (run-at-time "10:00pm" 604800 'straight-x-pull-all)
 
 ;; Update packages
-(defun cpm/straight-update-packages ()
+(defun cpm--straight-update-packages ()
+  "Wrapper for updating packages asynchronously with straight."
+  (progn
+    (call-interactively 'straight-x-fetch-all)
+    (switch-to-buffer "*straight*")
+    (delete-other-windows)
+    (run-with-idle-timer 10 2 (lambda () (evil-next-line)))
+    (run-with-timer 30 nil (lambda () (straight-merge-all)))
+    (run-with-timer 30 nil (lambda () (straight-check-all)))
+    (run-with-idle-timer 120 nil (lambda () (kill-emacs)))))
+
+(defun cpm/straight-update-packages-asynchronously ()
   (interactive)
-  (async-shell-command "emacs -Q -l '~/.emacs.d/.local/straight-update-packages.el'"))
+  (async-shell-command-no-window "emacs -no-splash --eval '(cpm--straight-update-packages)'"))
+
+;; Keybinding for updating packages interactively
+(with-eval-after-load 'general
+  (general-define-key :keymaps 'magit-log-mode-map
+    "Q" #'exit-recursive-edit))
+
 
 ;;;; Use-Package
 ;; install use package
