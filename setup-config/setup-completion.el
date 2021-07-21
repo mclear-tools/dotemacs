@@ -1,80 +1,248 @@
 ;; All packages related to narrowing and completion
 
 ;;; Narrowing Completion
-
 ;;;; Vertico
-;; ;; Enable vertico
-;; (use-package vertico
-;;   :straight (:host github :repo "minad/vertico")
-;;   :general
-;;   (:keymaps 'vertico-map
-;;    "C-j"    'vertico-next
-;;    "C-k"    'vertico-previous)
-;;   :hook (after-init . vertico-mode)
-;;   :config
-;;   (setq vertico-cycle t))
-
-;; ;; Use the `orderless' completion style.
-;; ;; Enable `partial-completion' for files to allow path expansion.
-;; ;; You may prefer to use `initials' instead of `partial-completion'.
-;; (use-package orderless
-;;   :init
-;;   (setq completion-styles '(orderless)
-;;         completion-category-defaults nil
-;;         completion-category-overrides '((file (styles . (partial-completion))))))
-
-;; ;; A few more useful configurations...
-;; (use-package emacs
-;;   :init
-;;   ;; Add prompt indicator to `completing-read-multiple'.
-;;   (defun crm-indicator (args)
-;;     (cons (concat "[CRM] " (car args)) (cdr args)))
-;;   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-;;   ;; Grow and shrink minibuffer
-;;   (setq resize-mini-windows nil)
-
-;;   ;; Do not allow the cursor in the minibuffer prompt
-;;   (setq minibuffer-prompt-properties
-;;         '(read-only t cursor-intangible t face minibuffer-prompt))
-;;   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-;;   ;; Enable recursive minibuffers
-;;   (setq enable-recursive-minibuffers t))
-
-;;;; Selectrum
-;; Good completion package -- much more sane and organized than ivy. Still more than I really need but works well
-(use-package selectrum
-  :straight (:host github :repo "raxod502/selectrum")
-  :hook (after-init . selectrum-mode)
+;; Enable vertico for vertical completion
+;; This and selectrum are great packages, but vertico is preferable if I can get feature parity with what I was using in selectrum
+(use-package vertico
+  :straight (:host github :repo "minad/vertico" :includes (vertico-repeat vertico-directory))
   :general
-  (:keymaps 'selectrum-minibuffer-map
-   ;; "RET"    'icomplete-force-complete-and-exit
-   "C-M-i"  'minibuffer-complete
-   "M-RET"  'exit-minibuffer
-   "<down>" 'selectrum-next-candidate
-   "C-j"    'selectrum-next-candidate
-   "<up>"   'selectrum-previous-candidate
-   "C-k"    'selectrum-previous-candidate)
+  (:keymaps 'vertico-map
+   "<escape>" #'minibuffer-keyboard-quit
+   "C-n"      #'vertico-next-group
+   "C-p"      #'vertico-previous-group
+   "C-j"      #'vertico-next
+   "C-k"      #'vertico-previous
+   "M-RET"    #'vertico-exit)
+  :hook (after-init . vertico-mode)
   :config
-  (setq selectrum-num-candidates-displayed 10)
-  (setq selectrum-fix-vertical-window-height t)
-  (setq selectrum-extend-current-candidate-highlight t)
-  (setq selectrum-count-style 'current/matches)
-  (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
-  (setq selectrum-refine-candidates-function #'orderless-filter))
+  ;; Cycle through candidates
+  (setq vertico-cycle t)
+  ;; Don't resize buffer
+  (setq vertico-resize nil)
+  ;; Don't show text completions bar
+  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
+  ;; Fix for org-tags
+  (defun disable-selection ()
+    (when (eq minibuffer-completion-table #'org-tags-completion-function)
+      (setq-local vertico-map minibuffer-local-completion-map
+                  completion-cycle-threshold nil
+                  completion-styles '(basic))))
+  (advice-add #'vertico--setup :before #'disable-selection)
 
-;; history
-(use-package selectrum-prescient
+  ;; Customize sorting based on completion category
+  ;; try the `completion-category-sort-function' first
+  (advice-add #'vertico--sort-function :before-until #'completion-category-sort-function)
+
+  (defun completion-category-sort-function (metadata)
+    (alist-get (completion-metadata-get metadata 'category)
+               completion-category-sort-function-overrides))
+
+  (defvar completion-category-sort-function-overrides
+    '((file . directories-before-files))
+    "Completion category-specific sorting function overrides.")
+
+  (defun directories-before-files (files)
+    ;; Still sort by history position, length and alphabetically
+    (setq files (vertico-sort-history-length-alpha files))
+    ;; But then move directories first
+    (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
+           (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
+
+;; Vertico repeat last command
+(use-package vertico-repeat
+  :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
+  :after vertico
+  :demand t)
+
+;; Configure directory extension
+(use-package vertico-directory
+  :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
+  :after vertico
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+         ("RET" . vertico-directory-enter)
+         ("DEL" . vertico-directory-delete-char)
+         ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+;; A few more useful configurations...
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Grow and shrink minibuffer
+  (setq resize-mini-windows t)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :straight (:type built-in)
+  :init
+  (savehist-mode))
+
+;;;; Ordering
+;; Setup for vertico
+;; Use the `orderless' completion style.
+;; Enable `partial-completion' for files to allow path expansion.
+;; You may prefer to use `initials' instead of `partial-completion'.
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+;;;; Embark
+;; Actions on narrowed candidates
+(use-package embark
+  :straight (embark :type git :host github :repo "oantolin/embark")
+  :commands (embark-act embark-keymap-help)
+  :general
+  ("C-S-o"   'embark-act
+   "C-h B"  'embark-bindings)
+  (:keymaps 'minibuffer-local-completion-map
+   "C-;" 'embark-act-noexit
+   "C-S-o" 'embark-act
+   "C-J" 'embark-switch-to-live-occur
+   "M-q" 'embark-occur-toggle-view)
+  (:keymaps 'completion-list-mode-map
+   ";"  'embark-act)
+  (:keymaps 'embark-file-map
+   "x"  'consult-file-externally)
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-to-list 'embark-allow-edit-commands 'consult-imenu)
+  (setq embark-prompter 'embark-completing-read-prompter)
+
+  ;; Useful Functions
+  (define-key embark-file-map (kbd "D") 'cpm/dired-here)
+  (defun cpm/dired-here (file)
+    "Open dired in this directory"
+    (dired (file-name-directory file)))
+
+  (define-key embark-file-map (kbd "g") 'cpm/consult-rg-here)
+  (defun cpm/consult-rg-here (file)
+    "consult-ripgrep in this directory."
+    (let ((default-directory (file-name-directory file)))
+      (consult-ripgrep))))
+
+(use-package embark-consult
   :straight t
-  :after selectrum
-  :config
-  (setq selectrum-prescient-enable-filtering nil)
-  (setq prescient-save-file (concat cpm-cache-dir "prescient-save.el"))
-  (prescient-persist-mode)
-  (selectrum-prescient-mode +1))
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode . embark-consult-preview-minor-mode))
 
-;; Selectrum info search commands
+;;;; Marginalia
+;; Enable richer annotations using the Marginalia package
+;; Info about candidates pulled from metadata
+(use-package marginalia
+  :straight (marginalia :type git :host github :repo "minad/marginalia")
+  :general
+  (:keymaps 'minibuffer-local-map
+   "C-M-a"  'marginalia-cycle)
+  ;; When using the Embark package, you can bind `marginalia-cycle' as an Embark action
+  (:keymaps 'embark-general-map
+   "A"  'marginalia-cycle)
+  :init
+  (marginalia-mode)
+  ;; ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations.
+  (advice-add #'marginalia-cycle :after
+              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
+  ;; Prefer richer, more heavy, annotations over the lighter default variant.
+  ;; E.g. M-x will show the documentation string additional to the keybinding.
+  ;; By default only the keybinding is shown as annotation.
+  ;; Note that there is the command `marginalia-cycle' to
+  ;; switch between the annotators.
+  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
+
+;;;; Consult
+;; Example configuration for Consult
+;; Useful functions; a drop-in replacement for ivy/swiper
+
+(use-package consult
+  :straight (consult :type git :host github :repo "minad/consult")
+  :commands (consult-buffer consult-find consult-apropos consult-yank-pop)
+  :custom-face
+  (consult-separator ((t (:inherit font-lock-keyword-face))))
+  :init
+  ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
+  (fset 'multi-occur #'consult-multi-occur)
+  :config
+  (setq consult-preview-key nil)
+  ;; disable preview for certain commands
+  (consult-customize
+   affe-grep consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-file consult--source-project-file consult--source-bookmark :preview-key (kbd "M-."))
+  (consult-customize consult-theme :preview-key '(:debounce 0.5 any))
+  ;; Make consult locate work with macos
+  (setq consult-locate-command "mdfind -name ARG OPTS")
+  ;; Optionally configure a function which returns the project root directory
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-root-function #'projectile-project-root)
+  (setq consult-async-min-input 0))
+
+;; Consult & Projectile
+(use-package consult-projectile
+  :straight (consult-projectile :type git :host gitlab
+                                :repo "OlMon/consult-projectile" :branch "master")
+  :commands (consult-projectile))
+
+;; Integrate consult and persp-mode
+(defun cpm/persp-consult-buffer ()
+  (interactive)
+  (with-persp-buffer-list () (consult-buffer)))
+
+;; See if this helps fix errors. See:
+;; https://github.com/Bad-ptr/persp-mode.el/issues/51
+;; https://github.com/Bad-ptr/persp-mode.el/issues/51#issuecomment-479634578
+(with-eval-after-load "persp-mode"
+  (defun toto (buffer-or-name)
+    (not (persp-get-buffer-or-null buffer-or-name)))
+  (add-to-list #'persp-buffer-list-restricted-filter-functions #'toto))
+
+(with-eval-after-load "persp-mode"
+  (setq persp-interactive-completion-function #'completing-read))
+
+;; Configure initial narrowing per command
+(defvar consult-initial-narrow-config
+  '((consult-projectile . ?p)))
+
+;; Add initial narrowing hook
+(defun consult-initial-narrow ()
+  (when-let (key (alist-get this-command consult-initial-narrow-config))
+    (setq unread-command-events (append unread-command-events (list key 32)))))
+;; (add-hook 'minibuffer-setup-hook #'consult-initial-narrow)
+
+;; Search at point with consult
+(defun consult-line-symbol-at-point ()
+  (interactive)
+  (consult-line (thing-at-point 'symbol)))
+
+(use-package consult-flycheck
+  :straight (:host github :repo "minad/consult-flycheck")
+  :after flycheck
+  :commands (consult-flycheck consult-flymake))
+
+;;;; Completing-Read Info
+;; Info search commands using completing-read
 ;; https://github.com/raxod502/selectrum/wiki/Useful-Commands#info
 (defvar Info-directory-list)
 (defvar Info-additional-directory-list)
@@ -82,10 +250,10 @@
 (declare-function info-initialize "info")
 (declare-function cl-mapcar "cl-lib")
 
-(defvar selectrum-info-history nil
-  "Completion history for `selectrum-info' and derived commands.")
+(defvar completing-read-info-history nil
+  "Completion history for `completing-read-info' and derived commands.")
 
-(defun selectrum--info-section-candidates (top-node)
+(defun completing-read--info-section-candidates (top-node)
   "Return an alist of sections and candidates in the Info buffer TOP-NODE.
 
 Candidates are returned in the order that their links are listed
@@ -141,7 +309,7 @@ sections are actually ordered."
                       candidates-alist)))
             (nreverse candidates-alist)))))))
 
-(defun selectrum--info-top-dir-menu-items ()
+(defun completing-read--info-top-dir-menu-items ()
   (let ((sub-topic-format
          ;; The `info' library states:
          ;; Note that nowadays we expect Info files to be made using makeinfo.
@@ -202,7 +370,7 @@ sections are actually ordered."
       (nreverse candidates-alist))))
 
 ;;;###autoload
-(defun selectrum-info (&optional top-node)
+(defun completing-read-info (&optional top-node)
   "Use `completing-read' to jump to an Info topic.
 
 Select from the available Info top-level nodes, then one of the sub-nodes.
@@ -210,7 +378,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   (interactive)
   (unless top-node
     (setq top-node
-          (let* ((items (selectrum--info-top-dir-menu-items))
+          (let* ((items (completing-read--info-top-dir-menu-items))
                  (key (completing-read "Info node: "
                                        (lambda (input predicate action)
                                          (if (eq action 'metadata)
@@ -228,7 +396,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   ;; optional sub-nodes.  If looking at a normal node (e.g., "(emacs)Intro"),
   ;; then just go there instead of asking for more sub-nodes.
   (if (string-match-p "(.*?)\\'" top-node)
-      (let* ((section-candidates-alist (selectrum--info-section-candidates top-node))
+      (let* ((section-candidates-alist (completing-read--info-section-candidates top-node))
              (section (completing-read "Info section: "
                                        (lambda (input predicate action)
                                          (if (eq action 'metadata)
@@ -240,168 +408,32 @@ If TOP-NODE is provided, then just select from its sub-nodes."
                                                                  input
                                                                  predicate)))
                                        nil
-                                       t nil 'selectrum-info-history)))
+                                       t nil 'completing-read-info-history)))
         (info (concat
                top-node
                (cdr (assoc section section-candidates-alist)))))
     (info top-node)))
 
 ;;;###autoload
-(defun selectrum-info-elisp-manual ()
-  "Like ‘selectrum-info’, but choose nodes from the Elisp reference manual. "
+(defun completing-read-info-elisp-manual ()
+  "Like ‘completing-read-info’, but choose nodes from the Elisp reference manual. "
   (interactive)
-  (selectrum-info "(elisp)"))
+  (completing-read-info "(elisp)"))
 
 ;;;###autoload
-(defun selectrum-info-emacs-manual ()
-  "Like ‘selectrum-info’, but directly choose nodes from the Emacs manual."
+(defun completing-read-info-emacs-manual ()
+  "Like ‘completing-read-info’, but directly choose nodes from the Emacs manual."
   (interactive)
-  (selectrum-info "(emacs)"))
+  (completing-read-info "(emacs)"))
 
 ;;;###autoload
-(defun selectrum-info-org-manual ()
-  "Like ‘selectrum-info’, but directly choose nodes from the Org manual."
+(defun completing-read-info-org-manual ()
+  "Like ‘completing-read-info’, but directly choose nodes from the Org manual."
   (interactive)
-  (selectrum-info "(org)"))
+  (completing-read-info "(org)"))
 
-;; Bind keys for selectrum-info
-(general-define-key "C-h i" #'selectrum-info)
-
-;;;; Ordering
-(use-package orderless
-  :straight t
-  :after selectrum
-  :config
-  (setq completion-styles '(orderless))
-  (setq completion-category-defaults nil)
-  (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
-
-;;;; Affe (Fuzzy Search)
-(use-package affe
-  :straight (affe :type git :host github :repo "minad/affe" )
-  :after orderless
-  :config
-  ;; Configure Orderless
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless--highlight)
-  (setq affe-grep-command "rg -L --null --color=never --max-columns=1000 --no-heading --line-number -v ^$ .")
-  ;; Manual preview key for `affe-grep'
-  (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))
-
-;;;; Embark
-;; Actions on narrowed candidates
-(use-package embark
-  :straight (embark :type git :host github :repo "oantolin/embark")
-  ;; :after (icomplete-vertical)
-  :commands (embark-act embark-keymap-help)
-  :general
-  ("C-S-o"   'embark-act
-   "C-h B"  'embark-bindings)
-  (:keymaps 'minibuffer-local-completion-map
-   "C-;" 'embark-act-noexit
-   "C-S-o" 'embark-act
-   "C-J" 'embark-switch-to-live-occur
-   "M-q" 'embark-occur-toggle-view)
-  (:keymaps 'completion-list-mode-map
-   ";"  'embark-act)
-  (:keymaps 'embark-file-map
-   "x"  'consult-file-externally)
-  :init
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (add-to-list 'embark-allow-edit-commands 'consult-imenu)
-  (setq embark-prompter 'embark-completing-read-prompter))
-
-
-(use-package embark-consult
-  :straight t
-  :after (embark consult)
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode . embark-consult-preview-minor-mode))
-
-;;;; Marginalia
-;; Enable richer annotations using the Marginalia package
-;; Info about candidates pulled from metadata
-(use-package marginalia
-  :straight (marginalia :type git :host github :repo "minad/marginalia")
-  :general
-  (:keymaps 'minibuffer-local-map
-   "C-M-a"  'marginalia-cycle)
-  ;; When using the Embark package, you can bind `marginalia-cycle' as an Embark action
-  (:keymaps 'embark-general-map
-   "A"  'marginalia-cycle)
-  :init
-  ;; Must be in the :init section of use-package such that the mode gets
-  ;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode)
-  ;; ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations.
-  (advice-add #'marginalia-cycle :after
-              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
-  ;; Prefer richer, more heavy, annotations over the lighter default variant.
-  ;; E.g. M-x will show the documentation string additional to the keybinding.
-  ;; By default only the keybinding is shown as annotation.
-  ;; Note that there is the command `marginalia-cycle' to
-  ;; switch between the annotators.
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
-
-;;;; Consult
-;; Example configuration for Consult
-;; Useful functions; a drop-in replacement for ivy/swiper
-
-(use-package consult
-  :straight (consult :type git :host github :repo "minad/consult")
-  :commands (consult-buffer consult-find consult-apropos consult-yank-pop)
-  :init
-  ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
-  (fset 'multi-occur #'consult-multi-occur)
-  :config
-  ;; disable preview for certain commands
-  (consult-customize
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-file consult--source-project-file consult--source-bookmark
-   :preview-key (kbd "M-."))
-  (consult-customize consult-theme :preview-key '(:debounce 0.5 any))
-  ;; Make consult locate work with macos
-  (setq consult-locate-command "mdfind -name ARG OPTS")
-  ;; Optionally configure a function which returns the project root directory
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-root-function #'projectile-project-root)
-  (setq consult-async-min-input 0))
-
-(use-package consult-projectile
-  :straight (consult-projectile :type git :host gitlab
-                                :repo "OlMon/consult-projectile" :branch "master")
-  :commands (consult-projectile))
-
-;; integrate consult and persp-mode
-(defun cpm/persp-consult-buffer ()
-  (interactive)
-  (with-persp-buffer-list () (consult-buffer)))
-
-;; Configure initial narrowing per command
-(defvar consult-initial-narrow-config
-  '((consult-projectile . ?p)))
-
-;; Add initial narrowing hook
-(defun consult-initial-narrow ()
-  (when-let (key (alist-get this-command consult-initial-narrow-config))
-    (setq unread-command-events (append unread-command-events (list key 32)))))
-;; (add-hook 'minibuffer-setup-hook #'consult-initial-narrow)
-
-;; Search at point with consult
-(defun consult-line-symbol-at-point ()
-  (interactive)
-  (consult-line (thing-at-point 'symbol)))
-
-(use-package consult-flycheck
-  :straight (:host github :repo "minad/consult-flycheck")
-  :after flycheck
-  :commands (consult-flycheck consult-flymake))
+;; Bind keys for completing-read-info
+(general-define-key "C-h i" #'completing-read-info)
 
 ;;; In-Buffer Completion
 ;;;; Company
@@ -412,7 +444,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 (use-package company
   :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
   :general
-  (:keymaps 'company-active-map
+  (:states 'insert :keymaps 'company-mode-map
    "C-/"   #'company-search-candidates
    "C-M-/" #'company-filter-candidates
    "C-d"   #'company-show-doc-buffer
@@ -453,9 +485,6 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   :config
   (company-prescient-mode t))
 
-
-
-
 ;;;; Company Org Block
 ;; Org block completion
 ;; https://github.com/xenodium/company-org-block
@@ -469,8 +498,6 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   :hook ((org-mode . (lambda ()
                        (setq-local company-backends '(company-org-block))
                        (company-mode +1)))))
-
-
 
 ;;;; Yasnippet
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
@@ -493,13 +520,13 @@ If TOP-NODE is provided, then just select from its sub-nodes."
     (add-to-list 'company-backends '(company-yasnippet)))
   (yas-reload-all))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Icons
 (use-package all-the-icons-completion
   :straight (:host github :repo "iyefrat/all-the-icons-completion")
   :if (display-graphic-p)
   :hook (after-init . all-the-icons-completion-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; End Completion
 (provide 'setup-completion)
