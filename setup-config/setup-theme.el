@@ -38,7 +38,7 @@
   ;; Set mode line as header line
   (setq bespoke-set-mode-line 'header)
   ;; Set mode line height
-  (setq bespoke-set-mode-line-size 4)
+  (setq bespoke-set-mode-line-size 3)
   ;; Show diff lines in modeline
   (setq bespoke-set-git-diff-mode-line t)
   ;; Set mode-line cleaner

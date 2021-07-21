@@ -221,6 +221,8 @@
     ;;            (unless (string= "-" project-name)
     ;;              (format " in [%s]" project-name))))))
     (find-file-other-window user-init-file)
+    ;; Need to require evil-collection for proper keybindings
+    (require 'evil-collection)
     (require 'magit)
     (magit-status-setup-buffer)))
 

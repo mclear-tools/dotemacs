@@ -184,6 +184,7 @@ If FRAME is omitted or nil, use currently selected frame."
 
 ;;; Line Numbers
 (use-package display-line-numbers
+  :straight (:type built-in)
   ;; :hook (markdown-mode prog-mode)
   :commands display-line-numbers-mode
   :init
