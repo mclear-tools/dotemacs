@@ -64,12 +64,20 @@
 ;;;; Ripgrep
 (use-package rg :commands rg)
 
-;;;; Search Notes
-(defvar cpm-notes-dir "~/Dropbox/Notes")
-(defun cpm/search-all-notes ()
-  (interactive)
-  (cd cpm-notes-dir)
-  (call-interactively #'deadgrep))
+;;;; Affe (Fuzzy Search)
+(use-package affe
+  :straight (affe :type git :host github :repo "minad/affe")
+  :after orderless
+  :commands (affe-grep)
+  :config
+  ;; Configure Orderless
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless--highlight)
+  (setq affe-count 50)
+  (setq affe-grep-command "rg -L --null --color=never --max-columns=1000 --no-heading --line-number -v ^$ .")
+  ;; Manual preview key for `affe-grep'
+  (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
