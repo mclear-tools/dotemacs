@@ -28,7 +28,6 @@
            (left . 0.5)
            (width . .855)
            (height . 10)
-           (border-width . 15)
            (child-frame-border-width . 15)
            (left-fringe . 20)
            (right-fringe . 20)
