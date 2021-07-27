@@ -86,14 +86,14 @@
    "s" 'evil-surround-region
    "S" 'evil-substitute)
   :config
-  (global-evil-surround-mode 1))
+  (global-evil-surround-mode))
 
 (use-package evil-embrace
-  :after evil-surround
+  :after evil
   :demand t
   :config
-  (add-hook 'org-mode-hook 'embrace-org-mode-hook)
   (evil-embrace-enable-evil-surround-integration)
+  (add-hook 'org-mode-hook 'embrace-org-mode-hook)
   (setq evil-embrace-show-help-p nil)
   (defun embrace-markdown-mode-hook ()
     (dolist (lst '((?* "*" . "*")
