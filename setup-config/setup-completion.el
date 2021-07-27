@@ -180,12 +180,13 @@
   :straight (consult :type git :host github :repo "minad/consult")
   :commands (consult-buffer consult-find consult-apropos consult-yank-pop)
   :custom-face
-  (consult-separator ((t (:inherit font-lock-keyword-face))))
+  (consult-file ((t (:inherit bespoke-popout))))
+  (consult-line-number ((t (:inherit bespoke-faded))))
   :init
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
   :config
-  (setq consult-preview-key nil)
+  (setq consult-preview-key (kbd "`"))
   ;; disable preview for certain commands
   (consult-customize
    affe-grep consult-ripgrep consult-git-grep consult-grep
@@ -464,18 +465,9 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   :config
   ;; Default backends
   (add-to-list 'company-backends 'company-keywords)
-  (add-to-list 'company-backends 'company-files))
-
-(use-package company-bibtex
-  :after company
-  :demand t
-  :general
-  (:states 'insert
-   "<C-tab>" #'company-bibtex)
-  :config
-  (add-to-list 'company-backends 'company-bibtex)
-  (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
-  (setq company-bibtex-org-citation-regex "-?cite:"))
+  (add-to-list 'company-backends 'company-files)
+  (add-to-list 'company-backends 'company-elisp)
+  (add-to-list 'company-backends 'company-semantic))
 
 ;;;; Company Prescient
 
@@ -489,8 +481,8 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;; Org block completion
 ;; https://github.com/xenodium/company-org-block
 (use-package company-org-block
-  :after org
   :straight (:host github :repo "xenodium/company-org-block")
+  :after org
   :custom
   (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
   :config
@@ -501,11 +493,11 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 
 ;;;; Yasnippet
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
-(use-package yasnippet-snippets  :after yasnippet :demand t)
 (use-package yasnippet
   ;; :hook (after-init . yas-global-mode)
   :defer 2
   :config
+  (use-package yasnippet-snippets)
   ;; snippet directory
   (setq-default yas-snippet-dirs '("~/.emacs.d/.local/snippets/cpm-snippets"
                                    yasnippet-snippets-dir))
