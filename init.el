@@ -163,6 +163,7 @@
       use-package-verbose t
       use-package-minimum-reported-time 0
       use-package-enable-imenu-support t
+      use-package-expand-minimally nil
       use-package-always-ensure nil)
 
 ;;;; Security
