@@ -181,7 +181,7 @@
    ;; "l" 'selectrum-repeat
    ;; "l" 'helm-resume
    ;; "N" 'research-notes
-   "n" 'consult-notes
+   ;; "n" 'consult-notes
    "r" 'cpm/resume-last-jump
    "S" 'hydra-spelling/body
    ;; "W" 'woman
@@ -556,7 +556,6 @@
    ;; "op" 'pandoc-convert-to-pdf
    "uw" 'count-words
    "uW" 'osx-dictionary-search-input
-   "ux" 'bibtex-actions-open
    )
 
 ;;; Version Control (Git) Keybindings
@@ -710,18 +709,21 @@
 
 ;;; Zettelkasten/Notes/Wiki
 (general-define-key
- :states '(normal motion insert)
- (cpm/leader-keys
-   "z"    #'(:ignore t :which-key "Zettelkasten")
-   "z a"  #'consult-notes-search-all
-   "z i"  #'org-roam-node-insert
-   "z f"  #'org-roam-node-find
-   "z g"  #'org-roam-graph
-   "z l"  #'org-roam
-   "z n"  #'org-roam-capture
-   "z N"  #'org-roam--new-file-named
-   "z s"  #'cpm/zettelkasten-search
-   "z t"  #'org-roam-buffer-toggle))
+ :states '(normal motion visual insert emacs)
+ :keymaps 'override
+ :prefix "SPC"
+ :non-normal-prefix "C-SPC"
+
+ "n"    '(:ignore t :which-key "Notes")
+ "n a"  #'consult-notes-search-all
+ "n c"  #'org-roam-capture
+ "n i"  #'org-roam-node-insert
+ "n f"  #'org-roam-node-find
+ "n g"  #'org-roam-graph
+ "n n"  #'consult-notes
+ "n N"  #'org-roam--new-file-named
+ "n s"  #'cpm/zettelkasten-search
+ "n t"  #'org-roam-buffer-toggle)
 
 ;;; End keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
