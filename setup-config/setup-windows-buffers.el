@@ -150,6 +150,7 @@
 ;;; iBuffer
 (use-package ibuffer
   :straight (:type built-in)
+  :commands (ibuffer)
   :custom
   (ibuffer-default-sorting-mode 'major-mode)
   (ibuffer-filter-group-name-face 'outline-1)

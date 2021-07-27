@@ -6,7 +6,8 @@
 
 ;; Org package settings -- use org-plus-contrib to get latest org
 (use-package org
-  :straight t
+  :straight (:includes oc)
+  :commands (org-mode)
   ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
   ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :mode (("\\.org$" . org-mode))
@@ -72,7 +73,7 @@
 ;;;; Org ID
   (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
   (setq org-id-method 'ts) ;; use timestamp for id
-  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id) ;; create ids
+  (setq org-id-link-to-org-use-id 'create-if-interactive) ;; create ids
 
 ;;;; Org State Settings
   (setq org-todo-keywords

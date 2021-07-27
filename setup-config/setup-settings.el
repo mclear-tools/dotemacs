@@ -4,9 +4,17 @@
 
 ;;;;; Custom File Location
 ;; Don't use persistent custom file (speeds up load time)
-(setq custom-file (make-temp-file "emacs-custom"))
-(when (file-exists-p custom-file)
-  (load custom-file))
+(use-package cus-edit
+  :straight (:type built-in)
+  :defer t
+  :custom
+  (custom-file (make-temp-file "emacs-custom"))
+  :config
+  (when (file-exists-p custom-file)
+    (load custom-file)))
+
+;; :custom
+;; (custom-file null-device "Don't store customizations"))
 
 ;; If using custom settings put them in a separate file
 ;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))

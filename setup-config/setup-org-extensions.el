@@ -1,4 +1,7 @@
 ;; Additions to org core functions
+;; NOTE: some org-extensions are set in other setup files:
+;; - org roam setup is in setup-notes
+;; - org citations setup is in setup-writing
 
 ;;; Org Babel
 ;; org babel source block settings
@@ -768,93 +771,6 @@ Instead it's simpler to use bash."
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 
-;;; Org Roam (Wiki & Notes)
-;; Good notes package but a lot is still in flux
-;; see https://org-roam.readthedocs.io/en/latest/
-
-;;;; Org Roam
-(use-package org-roam
-  :commands (org-roam org-roam-new-file org-roam-find-file)
-  :after org
-  :init
-  ;; No warnings
-  (setq org-roam-v2-ack t)
-  :config
-  (setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
-  (setq org-roam-db-location (concat org-roam-directory "org-roam.db"))
-  ;; Set up org-roam
-  (org-roam-setup)
-  ;; Add completion
-  (push 'company-capf company-backends)
-  ;; Org Roam Templating
-  ;; see https://org-roam.readthedocs.io/en/latest/templating/
-  (setq org-roam-capture-templates
-        '(("d" "default" plain (function org-roam-capture--get-point)
-           :file-name "%<%Y-%m%d-%H%M>-${slug}"
-           :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: zettel\n#+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
-           :unnarrowed t
-           :immediate-finish t)
-          ("p" "private" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "private-${slug}"
-           :head "#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
-           :unnarrowed t)))
-  (setq org-roam-ref-capture-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "websites/${slug}"
-           :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: Weblinks\n#+ROAM_KEY: ${ref}\n #+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>\n\n- source :: ${ref}"
-           :unnarrowed t))))
-
-
-;;;; Org Roam Server
-(use-package org-roam-server
-  :disabled t
-  :ensure t
-  :disabled t
-  :commands org-roam-server-mode
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-authenticate nil
-        org-roam-server-export-inline-images t
-        org-roam-server-serve-files nil
-        org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-        org-roam-server-network-poll t
-        org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
-
-;;;; Org Roam Bibtex
-;; If you installed via MELPA
-(use-package org-roam-bibtex
-  :disabled t
-  :straight (:host github :repo "org-roam/org-roam-bibtex")
-  :after org-roam
-  :requires ivy-bibtex
-  :demand t
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :bind (:map org-mode-map
-         ("s-b" . orb-note-actions))
-  :config
-  (setq orb-insert-interface 'ivy-bibtex)
-  (setq orb-templates
-        '(("b" "bib" plain (function org-roam-capture--get-point) ""
-           :file-name "${citekey}"
-           :head "#+TITLE: ${author-or-editor-abbrev} (${year}): ${title}\n#+ROAM_KEY: cite:${=citekey=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+begin_src bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+end_src" ; <--
-           :unnarrowed t))))
-
-
-;;; Citeproc for Org
-(use-package citeproc-org
-  :disabled t
-  :straight (:host github :repo "andras-simonyi/citeproc-org")
-  :after org
-  :demand t
-  :config
-  (citeproc-org-setup))
-
 ;;; Org Miscellaneous Packages
 
 (use-package htmlize :commands (htmlize-buffer))
@@ -877,25 +793,25 @@ Instead it's simpler to use bash."
   :commands (org-insert-dtp-link org-dtp-store-link))
 
 
-;;; Org Outlook
+;;; Org Outlook (Disabled)
 ;; Open outlook message links in org
 ;; from https://superuser.com/a/100084 and
 ;; https://emacs.stackexchange.com/a/35916/11934
 
-(defun org-outlook-open (id)
-  "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
-  (shell-command-to-string (concat "open" id)))
+;; (defun org-outlook-open (id)
+;;   "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
+;;   (shell-command-to-string (concat "open" id)))
 
-(with-eval-after-load 'org
-  (org-add-link-type "outlook" 'org-outlook-open)
+;; (with-eval-after-load 'org
+;;   (org-add-link-type "outlook" 'org-outlook-open)
 
-  (org-link-set-parameters
-   "outlook"
-   :follow (lambda (path) (org-outlook-open path))
-   :export (lambda (path desc backend)
-             (cond
-              ((eq 'html backend)
-               (format "<a href=\"outlook:%s\">%s</a>" path desc))))))
+;;   (org-link-set-parameters
+;;    "outlook"
+;;    :follow (lambda (path) (org-outlook-open path))
+;;    :export (lambda (path desc backend)
+;;              (cond
+;;               ((eq 'html backend)
+;;                (format "<a href=\"outlook:%s\">%s</a>" path desc))))))
 
 ;;; Org Tree Slides
 (use-package org-tree-slide
