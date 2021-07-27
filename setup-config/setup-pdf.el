@@ -229,7 +229,7 @@
       )
 
     (defun cpm/pdf-color-theme ()
-      (if (eq active-theme 'solarized-light)
+      (if (eq active-theme 'light-theme)
           (bms/pdf-no-filter)
         (bms/pdf-midnite-original)))
 
