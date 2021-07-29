@@ -722,6 +722,7 @@
  "n g"  #'org-roam-graph
  "n n"  #'consult-notes
  "n N"  #'org-roam--new-file-named
+ "n r"  #'cpm/find-note-relation
  "n s"  #'cpm/zettelkasten-search
  "n t"  #'org-roam-buffer-toggle)
 

@@ -235,7 +235,7 @@
 (defun cpm/open-notes-in-workspace ()
   "open notes dir in its own perspective"
   (interactive)
-  (if (get-buffer "*Deft*")
+  (if (get-buffer "content-org")
       (persp-switch "Notes")
     (persp-switch "Notes")
     ;; (setq frame-title-format
@@ -246,7 +246,7 @@
     ;;            (unless (string= "-" project-name)
     ;;              (format " in [%s]" project-name))))))
     (cpm/notebook))
-  (persp-add-buffer "*Deft*"))
+  (persp-add-buffer "content-org"))
 
 (general-define-key
  :states '(insert normal motion emacs)
