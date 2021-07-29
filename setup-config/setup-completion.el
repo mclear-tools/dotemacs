@@ -52,8 +52,7 @@
 ;; Vertico repeat last command
 (use-package vertico-repeat
   :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
-  :after vertico
-  :demand t)
+  :commands (vertico-repeat))
 
 ;; Configure directory extension
 (use-package vertico-directory
@@ -87,11 +86,8 @@
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
 
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :straight (:type built-in)
-  :init
-  (savehist-mode))
+;; Persist history over Emacs restarts with savehist mode. Vertico sorts by history position.
+;; See setup-settings.el
 
 ;;;; Ordering
 ;; Setup for vertico
@@ -127,6 +123,16 @@
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
   (setq embark-prompter 'embark-completing-read-prompter)
+
+  (setq embark--verbose-indicator-buffer " *Embark Actions*")
+  (setq embark-verbose-indicator-display-action '(display-buffer-reuse-window))
+
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none))))
 
   ;; Useful Functions
   (define-key embark-file-map (kbd "D") 'cpm/dired-here)
@@ -186,19 +192,20 @@
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
   :config
-  (setq consult-preview-key (kbd "`"))
-  ;; disable preview for certain commands
-  (consult-customize
-   affe-grep consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-file consult--source-project-file consult--source-bookmark :preview-key (kbd "M-."))
-  (consult-customize consult-theme :preview-key '(:debounce 0.5 any))
-  ;; Make consult locate work with macos
+  ;; Preview is manual and immediate
+  ;; https://github.com/minad/consult#live-previews
+  (setq consult-preview-key (kbd "C-p"))
+
+  ;; Make consult locate work with macos spotlight
   (setq consult-locate-command "mdfind -name ARG OPTS")
+
   ;; Optionally configure a function which returns the project root directory
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-root-function #'projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-root-function #'projectile-project-root)
   (setq consult-async-min-input 0))
+
+;; Use consult-completing-read for enhanced interface.
+(advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
 
 ;; Consult & Projectile
 (use-package consult-projectile
