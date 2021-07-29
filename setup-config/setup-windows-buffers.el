@@ -197,6 +197,7 @@
 
 (use-package ibuffer-vc
   :straight (:host github :repo "purcell/ibuffer-vc")
+  :defer 2
   :config
   ;; To include vc status info in the ibuffer list, add either
   ;; vc-status-mini or vc-status to `ibuffer-formats':

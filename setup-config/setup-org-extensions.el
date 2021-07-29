@@ -150,6 +150,7 @@ Instead it's simpler to use bash."
 
 ;;; Org-Reveal
 (use-package ox-reveal
+  :disabled
   :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
   :custom
   ;; no injecting notes into template alist

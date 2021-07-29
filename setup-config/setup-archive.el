@@ -276,3 +276,473 @@ title."
         bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
         bibtex-completion-notes-extension ".org"
         helm-bibtex-full-frame nil))
+;;; Citations
+;;;; Citeproc
+(use-package citeproc-el
+  :disabled
+  :defer 1
+  :straight (:host github :repo "andras-simonyi/citeproc-el"))
+
+;;;; Citeproc for Org
+;; This is necessary for Hugo to use with org-ref
+;; Though maybe it is obsoleted by Org cite?
+(use-package citeproc-org
+  ;; :straight (:host github :repo "andras-simonyi/citeproc-org")
+  :after ox-hugo
+  :demand t
+  :config
+  (citeproc-org-setup))
+
+;;;; Org-Ref
+;; I think org-cite/org-ref-cite is going to render org-ref obsolete
+;; Note that this requires helm-bibtex, helm, and ivy as dependencies
+(use-package org-ref
+  :straight nil
+  :commands (org-ref org-ref-get-bibtex-entry)
+  :after org
+  :demand t
+  :init
+  ;; (setq reftex-default-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
+  (setq reftex-default-bibliography '("~/Dropbox/Work/bibfile.bib"))
+  (setq org-ref-completion-library 'org-ref-reftex)
+  (setq org-ref-default-bibliography reftex-default-bibliography
+        org-ref-pdf-directory (concat (getenv "HOME") "/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library/")
+        org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/content-org")
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        org-ref-notes-function 'org-ref-notes-function-many-files)
+  :config
+  (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
+  (setq doi-utils-download-pdf nil)
+
+  ;; workaround for bibtex timer issue described here:
+  ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2018-01/msg00472.html
+  (cancel-function-timers 'bibtex-parse-buffers-stealthily)
+  )
+
+;;;; Bibtex-Actions
+;; Use completing read to select bibtex actions
+;; Note that this has bibtex-completion (part of helm-bibtex) as a dependency
+(use-package bibtex-actions
+  :straight (:host github :repo "bdarcus/bibtex-actions" :includes oc-bibtex-actions)
+  :commands (bibtex-actions-open
+             bibtex-actions-open-pdf
+             bibtex-actions-open-link
+             bibtex-actions-insert-citation
+             bibtex-actions-insert-reference
+             bibtex-actions-insert-key
+             bibtex-actions-insert-bibtex
+             bibtex-actions-add-pdf-attachment
+             bibtex-actions-open-notes
+             bibtex-actions-open-entry
+             bibtex-actions-add-pdf-to-library)
+  :general
+  (cpm/leader-keys
+    "ux" 'bibtex-actions-insert-key)
+  :custom
+  (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
+  (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
+  :config
+  ;; use icons
+  (setq bibtex-actions-symbols
+        `((pdf . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
+                  ,(all-the-icons-icon-for-file "foo.pdf" :face 'bibtex-actions-icon-dim)))
+          (note . (,(all-the-icons-icon-for-file "foo.txt") .
+                   ,(all-the-icons-icon-for-file "foo.txt" :face 'bibtex-actions-icon-dim)))
+          (link .
+                (,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'all-the-icons-dpurple) .
+                 ,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'bibtex-actions-icon-dim)))))
+  ;; Here we define a face to dim non 'active' icons, but preserve alignment
+  (defface bibtex-actions-icon-dim
+    '((((background dark)) :inherit bespoke-highlight)
+      (((background light)) :inherit bespoke-highlight))
+    "Face for obscuring/dimming icons"
+    :group 'all-the-icons-faces)
+
+  ;; don't autopopulate initial input
+  (setq bibtex-actions-initial-inputs
+        '((pdf    . nil)
+          (note   . nil)
+          (link   . nil)
+          (source . nil)))
+
+  ;; (setq bibtex-actions-symbols
+  ;;       `((pdf  "" . " ")
+  ;;         (note "" . " ")
+  ;;         (link "" . " ")))
+
+
+  ;; Library paths
+  (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
+        bibtex-completion-library-path "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library"
+        bibtex-completion-pdf-field nil
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        bibtex-completion-notes-extension ".org")
+
+  ;; Set insert citekey with markdown citekeys for org-mode
+  ;; FIXME -- org-mode citation isn't working the way I want it to
+  (setq bibtex-completion-format-citation-functions
+        '((org-mode      . bibtex-completion-format-citation-org-ref)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-pandoc-citeproc)))
+
+  ;; Notes templates
+  (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
+
+  ;; using with org-cite
+  ;; make sure to set this to ensure open commands work correctly
+  (setq bibtex-completion-additional-search-fields '(doi url))
+
+  ;; Use consult-completing-read for enhanced interface.
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
+  ;; use w/embark-act
+  (with-eval-after-load 'embark
+    ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
+    (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
+    (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
+    (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map))))
+
+;;;; Company-bibtex
+
+(use-package company-bibtex
+  :after company
+  :demand t
+  :general
+  (:states 'insert
+   "<C-tab>" #'company-bibtex)
+  :config
+  (add-to-list 'company-backends 'company-bibtex)
+  (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
+  (setq company-bibtex-org-citation-regex "-?cite:"))
+
+;;;; Org-Ref-Cite
+;; FIXME: not sure how to configure this yet
+(use-package org-ref-cite
+  :disabled
+  :straight (:host github :repo "jkitchin/org-ref-cite" )
+  :after (:all org oc)
+  :config
+  ;; (require 'org-ref-cite-advice)
+  ;; (require 'org-ref-cite-activate)
+  ;; (require 'org-ref-cite-follow)
+  ;; (require 'org-ref-cite-export)
+  ;; (require 'org-ref-cite-compat)
+  ;; (org-cite-register-processor 'org-ref-cite
+  ;;   :activate #'org-ref-cite-activate
+  ;;   :follow #'org-ref-cite-follow
+  ;;   :insert #'org-ref-cite-insert-processor
+  ;;   :export-bibliography #'org-ref-cite-export-bibliography
+  ;;   :export-citation #'org-ref-cite-export-citation
+  ;;   :export-finalizer #'org-ref-cite-use-package
+  ;;   :cite-styles (mapcar 'car org-ref-cite-styles))
+
+  ;; green links
+  (set-face-attribute 'org-cite nil
+                      :inherit bespoke-green)
+
+  (set-face-attribute 'org-cite-key nil
+                      :inherit bespoke-green)
+
+  (define-key org-mode-map (kbd "C-c \\") 'org-cite-insert)
+
+  (setq  flyspell-duplicate-distance 0
+         flyspell-mark-duplications-flag nil
+         warning-minimum-level :error))
+
+;;;; Org Ref
+;; I think org-cite/org-ref-cite is going to render org-ref obsolete
+(use-package org-ref
+  :straight nil
+  :disabled t
+  :commands (org-ref org-ref-get-bibtex-entry)
+  :after org
+  :init
+  (setq reftex-default-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
+  (setq org-ref-completion-library 'org-ref-reftex)
+  (setq org-ref-default-bibliography reftex-default-bibliography
+        org-ref-pdf-directory (concat (getenv "HOME") "/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library/")
+        org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/content-org")
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        org-ref-notes-function 'org-ref-notes-function-many-files)
+  :config
+  (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
+  (setq doi-utils-download-pdf nil))
+
+;; workaround for bibtex timer issue described here:
+;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2018-01/msg00472.html
+(cancel-function-timers 'bibtex-parse-buffers-stealthily)
+
+
+(use-package org-ref-ox-hugo
+  :disabled
+  :load-path "~/.emacs.d/.local/elisp/org-ref-ox-hugo-20200315/"
+  :after org-ref
+  :demand t
+  :init
+  (add-to-list 'org-ref-formatted-citation-formats
+               '("md"
+                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
+                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
+                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
+                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
+                 ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
+                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
+                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
+                 (nil . "${author}, *${title}* (${year})."))))
+
+
+;;;; Citation wreckage
+;; ;;;; Org-Cite
+;; ;; ;; Eventually this should be a full replacement of org-ref
+;; (use-package oc
+;;   :after org
+;;   ;; :config
+;;   ;; ;; activate processor for fontification, preview, etc
+;;   ;; ;; currently using basic, but would prefer org-cite-csl-activate
+;;   ;; (setq org-cite-follow-processor 'oc-bibtex-actions
+;;   ;;       org-cite-insert-processor 'oc-bibtex-actions)
+;;   ;; (setq org-cite-follow-processor 'basic
+;;   ;;       org-cite-insert-processor 'basic)
+;;   ;; ;; setup export processor; default csl/citeproc-el, with biblatex for latex
+;;   ;; (setq org-cite-export-processors
+;;   ;;       '((beamer natbib)
+;;   ;;         (latex biblatex)
+;;   ;;         (t csl)))
+;;   (setq org-cite-global-bibliography cpm-bibliography))
+
+;;   ;;; Org-cite processors
+;; (use-package oc-basic
+;;   :straight nil
+;;   :after oc)
+
+;; (use-package oc-biblatex
+;;   :straight nil
+;;   :after oc)
+
+;; (use-package oc-csl
+;;   :straight nil
+;;   :after oc
+;;   :config
+;;   ;; optional; add to docs instead?
+;;   (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
+;;   (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
+
+;; (use-package oc-natbib
+;;   :straight nil
+;;   :after oc)
+
+;;;; Org-Ref-Cite
+;; dependency of org-ref-cite
+(use-package major-mode-hydra
+  :straight (:host github :repo "jerrypnz/major-mode-hydra.el")
+  :defer t)
+
+(use-package org-ref-cite
+  :straight nil
+  :load-path "/Users/roambot/.emacs.d/.local/elisp/org-ref-cite/"
+  :after (:all org oc)
+  :config
+  (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
+  (setq org-cite-csl-locales-dir "~/.local/share/csl/locales")
+  (setq org-cite-global-bibliography cpm-bibliography)
+  (setq org-cite-activate-processor 'org-ref-cite
+        org-cite-export-processor '((html csl "chicago-author-date-16th-edition.csl")
+				                    (latex org-ref-cite)
+				                    (t csl "chicago-author-date-16th-edition.csl")))
+  ;; ;; green links
+  ;; (set-face-attribute 'org-cite nil
+  ;;                     :inherit bespoke-green)
+
+  ;; (set-face-attribute 'org-cite-key nil
+  ;;                     :inherit bespoke-green)
+  (define-key org-mode-map (kbd "C-c \\") 'org-cite-insert)
+
+  (setq  flyspell-duplicate-distance 0
+         flyspell-mark-duplications-flag nil
+         warning-minimum-level :error))
+
+
+
+
+;;; Old org-roam template
+;; '(("d" "default" plain (function org-roam-capture--get-point)
+;;    :file-name "%<%Y-%m%d-%H%M>-${slug}"
+;;    :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: zettel\n#+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
+;;    :unnarrowed t
+;;    :immediate-finish t)
+;; ("p" "private" plain (function org-roam-capture--get-point)
+;;  "%?"
+;;  :file-name "private-${slug}"
+;;  :head "#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"
+;;  :unnarrowed t)))
+;; (setq org-roam-ref-capture-templates
+;;       '(("r" "ref" plain (function org-roam-capture--get-point)
+;;          "%?"
+;;          :file-name "websites/${slug}"
+;;          :head "#+SETUPFILE:./hugo_setup.org\n#+HUGO_SECTION: Weblinks\n#+ROAM_KEY: ${ref}\n #+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>\n\n- source :: ${ref}"
+;;          :unnarrowed t))))
+
+;;; Old citation setup
+;;;; Bibliography files
+(defvar cpm-bibliography '("~/Dropbox/Work/bibfile.bib"))
+
+;;;; Citations
+;;;;; Citeproc
+(use-package citeproc
+  :straight (:host github
+             :repo "andras-simonyi/citeproc-el"
+             :branch "1-biblatex_support")
+  :defer t
+  :config
+  (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
+  (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
+
+;;;;; Bibtex Completion
+;; The backend of helm-ivy bibtex
+(use-package bibtex-completion
+  :straight (bibtex-completion :host github :repo "tmalsburg/helm-bibtex" :files (:defaults (:exclude "helm-bibtex.el" "ivy-bibtex.el")) :includes oc-bibtex-actions)
+  :defer t
+  :config
+  ;; Library paths
+  (setq bibtex-completion-bibliography cpm-bibliography
+        bibtex-completion-library-path "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library"
+        bibtex-completion-pdf-field nil
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        bibtex-completion-notes-extension ".org")
+  ;; using with org-cite
+  ;; make sure to set this to ensure open commands work correctly
+  (setq bibtex-completion-additional-search-fields '(doi url)))
+
+;;;;; Org-Cite
+;; Eventually this should be a full replacement of org-ref
+(use-package oc
+  :after org
+  (setq org-cite-global-bibliography cpm-bibliography)
+  (setq org-cite-export-processors
+        '((beamer natbib)
+          (latex biblatex)
+          (t csl))))
+
+;; Org-cite processors
+(use-package oc-basic
+  :straight nil
+  :after oc)
+
+(use-package oc-biblatex
+  :straight nil
+  :after oc)
+
+(use-package oc-csl
+  :straight nil
+  :after oc
+  :config
+  ;; optional; add to docs instead?
+  (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
+  (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
+
+(use-package oc-natbib
+  :straight nil
+  :after oc)
+
+;;;;; Bibtex-Actions
+;; Use completing read to select bibtex actions
+(use-package bibtex-actions
+  :requires bibtex-completion
+  :straight (:host github :repo "bdarcus/bibtex-actions" :includes oc-bibtex-actions)
+  :commands (bibtex-actions-open
+             bibtex-actions-open-pdf
+             bibtex-actions-open-link
+             bibtex-actions-insert-citation
+             bibtex-actions-insert-reference
+             bibtex-actions-insert-bibtex
+             bibtex-actions-add-pdf-attachment
+             bibtex-actions-open-notes
+             bibtex-actions-open-entry
+             bibtex-actions-add-pdf-to-library)
+  :custom
+  (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
+  (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
+  :config
+  ;; use icons
+  (setq bibtex-actions-symbols
+        `((pdf . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
+                  ,(all-the-icons-icon-for-file "foo.pdf" :face 'bibtex-actions-icon-dim)))
+          (note . (,(all-the-icons-icon-for-file "foo.txt") .
+                   ,(all-the-icons-icon-for-file "foo.txt" :face 'bibtex-actions-icon-dim)))
+          (link .
+                (,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'all-the-icons-dpurple) .
+                 ,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'bibtex-actions-icon-dim)))))
+  ;; Here we define a face to dim non 'active' icons, but preserve alignment
+  (defface bibtex-actions-icon-dim
+    '((((background dark)) :inherit bespoke-highlight)
+      (((background light)) :inherit bespoke-highlight))
+    "Face for obscuring/dimming icons"
+    :group 'all-the-icons-faces)
+
+  ;; don't autopopulate initial input
+  (setq bibtex-actions-initial-inputs
+        '((pdf    . nil)
+          (note   . nil)
+          (link   . nil)
+          (source . nil)))
+
+  ;; Notes templates
+  (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
+  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
+
+  ;; Library paths
+  (setq bibtex-completion-bibliography cpm-bibliography
+        bibtex-completion-library-path "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library"
+        bibtex-completion-pdf-field nil
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        bibtex-completion-notes-extension ".org")
+
+  ;; Set insert citekey with markdown citekeys for org-mode
+  ;; FIXME -- org-mode citation isn't working the way I want it to
+  (setq bibtex-completion-format-citation-functions
+        '((org-mode      . bibtex-completion-format-citation-org-cite)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-pandoc-citeproc)))
+
+  ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
+  (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
+  (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
+  (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map))
+  ;; (with-eval-after-load 'embark
+  ;;   (setf (alist-get 'bibtex embark-keymap-alist) 'bibtex-actions-map))
+
+  ;; using with org-cite
+  ;; make sure to set this to ensure open commands work correctly
+  (setq bibtex-completion-additional-search-fields '(doi url keywords)))
+
+(use-package oc-bibtex-actions
+  :after (oc bibtex-actions)
+  :general
+  (cpm/leader-keys
+    "ux" 'org-cite-insert)
+  :config
+  (setq org-cite-insert-processor 'oc-bibtex-actions
+        org-cite-follow-processor 'oc-bibtex-actions)
+  (setq bibtex-completion-format-citation-functions
+        '((org-mode      . bibtex-completion-format-citation-org-cite)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-pandoc-citeproc))))
+
+;;;;; Company-bibtex
+
+(use-package company-bibtex
+  :after company
+  :demand t
+  :general
+  (:states 'insert
+   "<C-tab>" #'company-bibtex)
+  :config
+  (add-to-list 'company-backends 'company-bibtex)
+  (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
+  (setq company-bibtex-org-citation-regex "-?cite:@"))
