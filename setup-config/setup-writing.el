@@ -69,7 +69,7 @@
 
 ;;; Abbrev
 (use-package abbrev
-  :straight nil
+  :straight (:type built-in)
   :defer 2
   :config
   ;; (add-hook 'text-mode-hook #'abbrev-mode)
@@ -77,118 +77,6 @@
         save-abbrevs 'nil)
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
-
-;;; Bibtex-Actions
-;; Use completing read to select actions for bibtex
-(use-package bibtex-actions
-  :straight (:host github :repo "bdarcus/bibtex-actions")
-  :commands (bibtex-actions-open
-             bibtex-actions-open-pdf
-             bibtex-actions-open-link
-             bibtex-actions-insert-citation
-             bibtex-actions-insert-reference
-             bibtex-actions-insert-key
-             bibtex-actions-insert-bibtex
-             bibtex-actions-add-pdf-attachment
-             bibtex-actions-open-notes
-             bibtex-actions-open-entry
-             bibtex-actions-add-pdf-to-library)
-  :custom
-  (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
-  (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
-  :config
-  ;; use icons
-  (setq bibtex-actions-symbols
-        `((pdf . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
-                  ,(all-the-icons-icon-for-file "foo.pdf" :face 'bibtex-actions-icon-dim)))
-          (note . (,(all-the-icons-icon-for-file "foo.txt") .
-                   ,(all-the-icons-icon-for-file "foo.txt" :face 'bibtex-actions-icon-dim)))
-          (link .
-                (,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'all-the-icons-dpurple) .
-                 ,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'bibtex-actions-icon-dim)))))
-  ;; Here we define a face to dim non 'active' icons, but preserve alignment
-  (defface bibtex-actions-icon-dim
-    '((((background dark)) :inherit bespoke-highlight)
-      (((background light)) :inherit bespoke-highlight))
-    "Face for obscuring/dimming icons"
-    :group 'all-the-icons-faces)
-
-  ;; (setq bibtex-actions-symbols
-  ;;       `((pdf  "" . " ")
-  ;;         (note "" . " ")
-  ;;         (link "" . " ")))
-
-  ;; don't autopopulate initial input
-  (setq bibtex-actions-initial-inputs
-        '((pdf    . nil)
-          (note   . nil)
-          (link   . nil)
-          (source . nil)))
-
-  ;; Set insert citekey with markdown citekeys for org-mode
-  (setq bibtex-completion-format-citation-functions
-        '((org-mode    . bibtex-completion-format-citation-pandoc-citeproc)
-          (latex-mode    . bibtex-completion-format-citation-cite)
-          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-          (default       . bibtex-completion-format-citation-default)))
-
-  ;; Notes templates
-  (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
-  (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
-
-  ;; Library paths
-  (setq bibtex-completion-bibliography "~/Dropbox/Work/bibfile.bib"
-        bibtex-completion-library-path "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library"
-        bibtex-completion-pdf-field nil
-        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
-        bibtex-completion-notes-extension ".org"
-        )
-
-  ;; use w/embark-act
-  (with-eval-after-load 'embark
-    (setf (alist-get 'bibtex embark-keymap-alist) 'bibtex-actions-map)))
-
-
-;;; Org Ref
-(use-package org-ref
-  :commands (org-ref org-ref-get-bibtex-entry)
-  :after org
-  :init
-  (setq reftex-default-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
-  (setq org-ref-completion-library 'org-ref-ivy-cite)
-  (setq org-ref-default-bibliography '("~/Dropbox/Work/bibfile.bib")
-        org-ref-pdf-directory (concat (getenv "HOME") "/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library/")
-        org-ref-notes-directory (concat (getenv "HOME") "/Users/roambot/Dropbox/Work/projects/notebook/content-org")
-        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
-        org-ref-notes-function 'org-ref-notes-function-many-files)
-  :config
-  (setf (cdr (assoc 'org-mode bibtex-completion-format-citation-functions)) 'org-ref-format-citation)
-  (setq doi-utils-download-pdf nil))
-
-;; workaround for bibtex timer issue described here:
-;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2018-01/msg00472.html
-(cancel-function-timers 'bibtex-parse-buffers-stealthily)
-
-
-(use-package org-ref-ox-hugo
-  :disabled
-  :load-path "~/.emacs.d/.local/elisp/org-ref-ox-hugo-20200315/"
-  :after org-ref
-  :demand t
-  :init
-  (add-to-list 'org-ref-formatted-citation-formats
-               '("md"
-                 ("article" . "${author}, *${title}*, ${journal}, *${volume}(${number})*, ${pages} (${year}). ${doi}")
-                 ("inproceedings" . "${author}, *${title}*, In ${editor}, ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-                 ("book" . "${author}, *${title}* (${year}), ${address}: ${publisher}.")
-                 ("phdthesis" . "${author}, *${title}* (Doctoral dissertation) (${year}). ${school}, ${address}.")
-                 ("inbook" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-                 ("incollection" . "${author}, *${title}*, In ${editor} (Eds.), ${booktitle} (pp. ${pages}) (${year}). ${address}: ${publisher}.")
-                 ("proceedings" . "${editor} (Eds.), _${booktitle}_ (${year}). ${address}: ${publisher}.")
-                 ("unpublished" . "${author}, *${title}* (${year}). Unpublished manuscript.")
-                 ("misc" . "${author} (${year}). *${title}*. Retrieved from [${howpublished}](${howpublished}). ${note}.")
-                 (nil . "${author}, *${title}* (${year})."))))
-
 
 ;;; Markdown
 (use-package markdown-mode
