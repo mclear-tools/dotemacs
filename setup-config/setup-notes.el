@@ -1,6 +1,6 @@
 ;;; Notebook Setup
 ;; I use hugo so define a setup file variable
-(defvar hugo-notebook-setup-file (concat (getenv "HOME") "/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org")
+(defvar hugo-notebook-setup-file  "~/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org"
   "Variable for notebook setup using hugo")
 
 (defun cpm/notebook ()
@@ -58,7 +58,7 @@
   ;; Org Roam Templating
   ;; see https://org-roam.readthedocs.io/en/latest/templating/
   (setq org-roam-capture-templates
-        `(("z" "Zettel" plain "%?"
+        '(("z" "Zettel" plain "%?"
            :if-new (file+head "%<%Y-%m%d-%H%M>-${slug}.org"
                               ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+HUGO_SECTION: zettel\n#+HUGO_SLUG: ${slug}\n#+TITLE: ${title}\n#+DATE: %<%Y-%m%d-%H%M>"))
            :unnarrowed t)
