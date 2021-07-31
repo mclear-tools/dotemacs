@@ -39,16 +39,17 @@ Some highlights of this emacs setup include:
 4. [[file:setup-config/setup-evil.el][Evil mode]]
 5. Sensible [[file:setup-config/setup-settings.el][defaults]]
 6. [[file:setup-config/setup-dired.el][Dired]] with good colors and evil keybindings
-7. Completion with [[https://github.com/raxod502/selectrum][selectrum]] and [[file:setup-config/setup-completion.el][related packages]]
+7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:setup-config/setup-completion.el][related packages]]
 8. Use of [[file:setup-config/setup-childframe.el][childframes]] in an integrated manner (integrated with the theme and made for
    easy viewing)
-9. Custom [[https://github.com/mclear-tools/bespoke-themes][bespoke]] theme (inspired by [[https://github.com/rougier/elegant-emacs][elegant-emacs]] and [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for
-   dark/light mode & various other options)
-10. An attractive custom [[file:setup-config/setup-modeline.el][headerline]] (part of bespoke-theme, inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]])
+9. Custom [[https://github.com/mclear-tools/bespoke-themes][bespoke]] theme (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for dark/light mode &
+   various other options)
+10. An attractive custom [[file:setup-config/setup-modeline.el][headerline]] (part of bespoke-theme, inspired by [[https://github.com/rougier/nano-modeline][nano-modeline]])
 11. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
 12. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/Bad-ptr/persp-mode.el][perspectives]]
 13. A configurable [[file:setup-config/setup-splash.el][splash page]]
-14. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with markdown, [[https://github.com/jgm/pandoc][pandoc]], [[https://github.com/jethrokuan/org-roam][zettel notes]], and [[file:setup-config/setup-org.el][org-mode]]
+14. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with great [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
+    dedicated [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-notes.el][functions for notes]], and [[file:setup-config/setup-org.el][org-mode]]
 
     
 For more information please take a look at the individual [[file:setup-config/][configuration files]]. Please
