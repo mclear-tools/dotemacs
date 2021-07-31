@@ -122,11 +122,10 @@
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
+  ;; Use completing-read
   (setq embark-prompter 'embark-completing-read-prompter)
-
-  (setq embark--verbose-indicator-buffer " *Embark Actions*")
-  (setq embark-verbose-indicator-display-action '(display-buffer-reuse-window))
-
+  ;; Don't display extra embark buffer
+  (setq embark-indicator 'embark-minimal-indicator)
 
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
