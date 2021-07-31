@@ -78,6 +78,13 @@
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
 
+;;; Emacs Everywhere
+;; Write with emacs everywhere
+;; https://github.com/tecosaur/emacs-everywhere
+(use-package emacs-everywhere
+  :straight (:host github :repo "tecosaur/emacs-everywhere")
+  :commands (emacs-everywhere))
+
 ;;; Markdown
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)

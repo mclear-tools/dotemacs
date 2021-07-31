@@ -6,6 +6,10 @@
 ;; Eventually this should be a full replacement of org-ref
 (use-package oc
   :after org
+  :general
+  (cpm/leader-keys
+    "ux" 'org-cite-insert)
+  :config
   (setq org-cite-global-bibliography cpm-bibliography)
   (setq org-cite-export-processors
         '((beamer natbib)
@@ -130,9 +134,6 @@
   :after (:any oc bibtex-actions)
   :demand t
   :commands (oc-bibtex-actions-select-style)
-  :general
-  (cpm/leader-keys
-    "ux" 'org-cite-insert)
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions))
