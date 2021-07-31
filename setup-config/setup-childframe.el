@@ -85,6 +85,7 @@
 
 ;;; Which-Key Posframe
 (use-package which-key-posframe
+  :disabled
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
   :config
