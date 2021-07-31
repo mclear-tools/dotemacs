@@ -67,7 +67,7 @@
 ;;;; Affe (Fuzzy Search)
 (use-package affe
   :straight (affe :type git :host github :repo "minad/affe")
-  :after orderless
+  :after (orderless consult)
   :commands (affe-grep)
   :config
   ;; Configure Orderless
