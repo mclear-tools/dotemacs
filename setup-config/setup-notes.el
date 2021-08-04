@@ -313,24 +313,12 @@
 
 
 
-;;;; Org Roam Server
-(use-package org-roam-server
-  :disabled t
-  :ensure t
-  :disabled t
-  :commands org-roam-server-mode
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-authenticate nil
-        org-roam-server-export-inline-images t
-        org-roam-server-serve-files nil
-        org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-        org-roam-server-network-poll t
-        org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
+;;;; Org Roam UI (Server/Web App)
+(use-package org-roam-ui
+  :straight (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+  :after org-roam
+  :commands (org-roam-ui-mode)
+  )
 
 ;;; Provide Setup-Notes
 (provide 'setup-notes)
