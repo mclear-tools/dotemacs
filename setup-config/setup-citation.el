@@ -29,7 +29,10 @@
   :straight nil
   :after oc
   :init
-  ;; optional; add to docs instead?
+  ;; make sure to download csl
+  ;; https://citationstyles.org
+  ;; https://github.com/citation-style-language
+  ;; repos for styles & locales
   (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
   (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
 
