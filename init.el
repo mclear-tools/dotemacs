@@ -136,14 +136,16 @@
 ;; Update packages
 (defun cpm--straight-update-packages ()
   "Wrapper for updating packages asynchronously with straight."
-  (progn
-    (call-interactively 'straight-x-fetch-all)
+  (with-eval-after-load 'straight
+    (message "this is a test")
+    (straight-x-fetch-all)
     (switch-to-buffer "*straight*")
     (delete-other-windows)
+    ;; this seems necessary to make sure all packages are fetched
     (run-with-idle-timer 10 2 (lambda () (evil-next-line)))
-    (run-with-timer 30 nil (lambda () (straight-merge-all)))
-    (run-with-timer 30 nil (lambda () (straight-check-all)))
-    (run-with-idle-timer 120 nil (lambda () (kill-emacs)))))
+    (run-with-idle-timer 30 2 (lambda () (straight-merge-all)))
+    (run-with-idle-timer 120 2 (lambda () (straight-check-all)))
+    (run-with-idle-timer 240 nil (lambda () (kill-emacs)))))
 
 (defun cpm/straight-update-packages-asynchronously ()
   (interactive)
