@@ -92,23 +92,8 @@
   :commands (magit-todos-list magit-todos-mode)
   :config
   (setq magit-todos-depth 2))
-  ;; (magit-todos-mode))
+;; (magit-todos-mode))
 
-;; generate ignore files with helm
-(use-package helm-gitignore
-  :commands helm-gitignore)
-
-;;  Evil bindings for magit
-;; (use-package evil-magit
-;;   :after magit
-;;   :demand t
-;;   :custom
-;;   (evil-magit-use-z-for-folds t)
-;;   (evil-magit-use-y-for-yank t)
-;;   :general
-;;   (:states '(motion normal) :keymaps 'magit-mode-map
-;;    "C-j" #'magit-section-forward-sibling
-;;    "C-k" #'magit-section-backward-sibling))
 
 ;;; Git Navigation
                                         ; Go back in Git time

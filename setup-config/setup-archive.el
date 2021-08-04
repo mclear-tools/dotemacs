@@ -746,3 +746,43 @@ title."
   (add-to-list 'company-backends 'company-bibtex)
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
   (setq company-bibtex-org-citation-regex "-?cite:@"))
+
+;;; Org Rifle
+;; Search [[https://github.com/alphapapa/helm-org-rifle][rapidly]] through org files using helm
+(use-package helm-org-rifle
+  :commands (helm-org-rifle helm-org-rifle-agenda-files helm-org-rifle-org-directory)
+  :config
+  ;; fix helm taking over various functions after being activated
+  (add-hook 'helm-org-rifle-after-command-hook (lambda () (helm-mode -1))))
+
+;;; Helm gitignore
+;; generate ignore files with helm
+(use-package helm-gitignore
+  :commands helm-gitignore)
+;;; Eshell helm
+;; helm support
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (eshell-cmpl-initialize)
+            (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+            (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
+            (cpm/setup-eshell)))
+
+(when (not (functionp 'eshell/rgrep))
+  (defun eshell/rgrep (&rest args)
+    "Use Emacs grep facility instead of calling external grep."
+    (eshell-grep "rgrep" args t)))
+
+;;; Evil Magit
+
+;;  Evil bindings for magit
+;; (use-package evil-magit
+;;   :after magit
+;;   :demand t
+;;   :custom
+;;   (evil-magit-use-z-for-folds t)
+;;   (evil-magit-use-y-for-yank t)
+;;   :general
+;;   (:states '(motion normal) :keymaps 'magit-mode-map
+;;    "C-j" #'magit-section-forward-sibling
+;;    "C-k" #'magit-section-backward-sibling))
