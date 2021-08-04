@@ -93,13 +93,13 @@
 (use-package vterm
   :commands (vterm vterm-other-window)
   :general
-  (:states '(normal motion insert)
-   :keymaps 'vterm-mode-map
+  (:keymaps 'vterm-mode-map
    ;; fix issue with fzf
    ;; "C-c" #'vterm-send-C-c
    "C-g" #'vterm--self-insert
    "C-j" #'vterm-send-down
    "C-k" #'vterm-send-up
+   "C-l" #'vterm-clear
    "s-v" #'vterm-yank
    "C-v" #'vterm-yank
    ;; "<C-escape>" #'evil-collection-vterm-toggle-send-escape)
@@ -124,45 +124,45 @@
               (setq-local evil-insert-state-cursor '("chartreuse3" box))
               (evil-insert-state))))
 
-;; Escape to vim mode in shell
-(defun cpm/vterm-escape-toggle ()
-  (interactive)
-  (evil-collection-vterm-toggle-send-escape)
-  (vterm-send-key "<escape>"))
+  ;; Escape to vim mode in shell
+  (defun cpm/vterm-escape-toggle ()
+    (interactive)
+    (evil-collection-vterm-toggle-send-escape)
+    (vterm-send-key "<escape>"))
 
-;; directory tracking
-(defun vterm--rename-buffer-as-title (title)
-  (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
-    (cd-absolute dir)
-    (rename-buffer (format "term %s" title) t)))
-(add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
+  ;; directory tracking
+  (defun vterm--rename-buffer-as-title (title)
+    (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
+      (cd-absolute dir)
+      (rename-buffer (format "term %s" title) t)))
+  (add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
 
-;; vterm frame
-(defun vterm-frame ()
-  "Open a new terminal frame."
-  (interactive)
-  (let ((frame (selected-frame)))
-    (with-selected-frame frame
-      (progn
-        (vterm)
-        (set-frame-parameter frame 'name "terminal")))))
+  ;; vterm frame
+  (defun vterm-frame ()
+    "Open a new terminal frame."
+    (interactive)
+    (let ((frame (selected-frame)))
+      (with-selected-frame frame
+        (progn
+          (vterm)
+          (set-frame-parameter frame 'name "terminal")))))
 
-;; vterm toggle
-(use-package vterm-toggle
-  :disabled
-  :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
-  :config
-  (setq vterm-toggle-fullscreen-p nil)
-  ;; toggle window in bottom side
-  (add-to-list 'display-buffer-alist
-               '("^v?term.*"
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 ;;(display-buffer-reuse-window display-buffer-in-direction)
-                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                 ;;(direction . bottom)
-                 ;;(dedicated . t) ;dedicated is supported in emacs27
-                 (reusable-frames . visible)
-                 (window-height . 0.5))))
+  ;; vterm toggle
+  (use-package vterm-toggle
+    :disabled
+    :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
+    :config
+    (setq vterm-toggle-fullscreen-p nil)
+    ;; toggle window in bottom side
+    (add-to-list 'display-buffer-alist
+                 '("^v?term.*"
+                   (display-buffer-reuse-window display-buffer-at-bottom)
+                   ;;(display-buffer-reuse-window display-buffer-in-direction)
+                   ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                   ;;(direction . bottom)
+                   ;;(dedicated . t) ;dedicated is supported in emacs27
+                   (reusable-frames . visible)
+                   (window-height . 0.5))))
 
 
 ;;;; Multi-Vterm
@@ -228,36 +228,22 @@
   (setq eshell-visual-subcommands '(("git" "log" "diff" "show"))))
 
 (defun cpm/setup-eshell ()
- (interactive)
+  (interactive)
   ;; turn off semantic-mode in eshell buffers
   (semantic-mode -1)
   ;; turn off hl-line-mode
   (hl-line-mode -1))
 
-;;;; Eshell helm
-;; helm support
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (eshell-cmpl-initialize)
-            (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-            (define-key eshell-mode-map (kbd "M-l") 'helm-eshell-history)
-            (cpm/setup-eshell)))
-
-    (when (not (functionp 'eshell/rgrep))
-      (defun eshell/rgrep (&rest args)
-        "Use Emacs grep facility instead of calling external grep."
-        (eshell-grep "rgrep" args t)))
-
 ;;;; Eshell Evil Histgory Navigation
 ;; History browsing. Note keybindings need to be buffer local as per
 ;; https://github.com/noctuid/general.el/issues/80
 (add-hook 'eshell-mode-hook
-(lambda ()
-  (general-define-key :states  '(normal insert emacs) :keymaps 'eshell-mode-map
-    "<down>" 'eshell-next-input
-    "<up>"   'eshell-previous-input
-    "C-k"    'eshell-next-input
-    "C-j"    'eshell-previous-input)))
+          (lambda ()
+            (general-define-key :states  '(normal insert emacs) :keymaps 'eshell-mode-map
+              "<down>" 'eshell-next-input
+              "<up>"   'eshell-previous-input
+              "C-k"    'eshell-next-input
+              "C-j"    'eshell-previous-input)))
 
 ;;;; Eshell Prompt
 ;; A nicer eshell prompt https://gist.github.com/ekaschalk/f0ac91c406ad99e53bb97752683811a5
