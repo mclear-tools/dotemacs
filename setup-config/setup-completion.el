@@ -478,6 +478,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;;;; Company Prescient
 
 (use-package company-prescient
+  :disabled
   :after company
   :demand t
   :config
