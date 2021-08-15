@@ -136,22 +136,22 @@
 ;; Update packages
 (defun cpm--straight-update-packages ()
   "Wrapper for updating packages asynchronously with straight."
-  (with-eval-after-load 'straight
-    (message "this is a test")
+
+  (with-eval-after-load 'straight-x
     (straight-x-fetch-all)
     (switch-to-buffer "*straight*")
     (delete-other-windows)
     ;; this seems necessary to make sure all packages are fetched
     (run-with-idle-timer 10 2 (lambda () (evil-next-line)))
     (run-with-idle-timer 30 2 (lambda () (straight-merge-all)))
-    (run-with-idle-timer 120 2 (lambda () (straight-check-all)))
+    (run-with-idle-timer 45 2 (lambda () (straight-check-all)))
     (run-with-idle-timer 240 nil (lambda () (kill-emacs)))))
 
 (defun cpm/straight-update-packages-asynchronously ()
   (interactive)
   (async-shell-command-no-window "emacs -no-splash --eval '(cpm--straight-update-packages)'"))
 
-;; Keybinding for updating packages interactively
+;; Keybindings for use with updating packages interactively
 (with-eval-after-load 'general
   (general-define-key :keymaps 'magit-log-mode-map
     "Q" #'exit-recursive-edit))
