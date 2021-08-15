@@ -555,6 +555,7 @@
    "uD" 'my-desktop
    "uj" 'cpm/goto-journal
    ;; "op" 'pandoc-convert-to-pdf
+   "uu" #'cpm/straight-update-packages-asynchronously
    "uw" 'count-words
    "uW" 'osx-dictionary-search-input
    )
