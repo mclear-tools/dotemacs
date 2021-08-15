@@ -80,7 +80,7 @@
 
 ;;; Evil Surround
 (use-package evil-surround
-  :after evil
+  ;; :after evil
   :general
   (:states '(visual)
    "s" 'evil-surround-region
@@ -89,7 +89,7 @@
   (global-evil-surround-mode))
 
 (use-package evil-embrace
-  :after evil
+  :after evil-surround
   :demand t
   :config
   (evil-embrace-enable-evil-surround-integration)
