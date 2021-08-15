@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; Search
 ;;;; Ag
 (use-package ag
@@ -65,20 +66,21 @@
 (use-package rg :commands rg)
 
 ;;;; Affe (Fuzzy Search)
+;; FIXME
+;; keybindings aren't working
 (use-package affe
   :straight (affe :type git :host github :repo "minad/affe")
-  :after (orderless consult)
   :commands (affe-grep)
+  :after (orderless)
   :config
-  ;; Configure Orderless
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless--highlight)
-  (setq affe-count 50)
-  (setq affe-grep-command "rg -L --null --color=never --max-columns=1000 --no-heading --line-number -v ^$ .")
-  ;; Manual preview key for `affe-grep'
-  (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))
+  ;; Orderless settings
+  (defun affe-orderless-regexp-compiler (input _type)
+    (setq input (orderless-pattern-compiler input))
+    (cons input (lambda (str) (orderless--highlight input str))))
+  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(provide 'setup-search)
+  (provide 'setup-search)
