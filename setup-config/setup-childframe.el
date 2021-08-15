@@ -61,6 +61,7 @@
   (add-hook 'consult--completion-refresh-hook
             (lambda (&rest _) (mini-popup--setup)) 99))
 
+
 ;;; Reload Child-Frame
 (defun cpm/reload-child-frame ()
   "function to reload child-frame settings"

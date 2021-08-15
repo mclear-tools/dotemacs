@@ -141,19 +141,17 @@ title."
 ;;   (setq completion-category-defaults nil)
 ;;   (setq orderless-skip-highlighting (lambda () selectrum-is-active)))
 
-
 ;;; Miniframe
 ;; Provides a great ui for completion, similar to posframe
 (use-package mini-frame
-  :disabled
   :straight (:type git :host github :repo "muffinmad/emacs-mini-frame")
   :hook (after-init . mini-frame-mode)
   :commands (mini-frame-mode)
   :custom
   (mini-frame-show-parameters
-   `((top    . 0.023)
-     (width  . 0.98)
+   `((top    . 0.0)
      (left   . 0.5)
+     (width  . 0.855)
      (height . 11)
      (child-frame-border-width . 15)
      (internal-border-width . 0)
