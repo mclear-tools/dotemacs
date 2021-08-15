@@ -6,9 +6,6 @@
 ;; Eventually this should be a full replacement of org-ref
 (use-package oc
   :after org
-  :general
-  (cpm/leader-keys
-    "ux" 'org-cite-insert)
   :config
   (setq org-cite-global-bibliography cpm-bibliography)
   (setq org-cite-export-processors
@@ -53,7 +50,8 @@
 ;; Needed for the other packages
 (use-package bibtex-completion
   :straight (bibtex-completion :host github :repo "tmalsburg/helm-bibtex" :files (:defaults (:exclude "helm-bibtex.el" "ivy-bibtex.el")) :includes oc-bibtex-actions)
-  :after (:any org markdown)
+  :defer 3
+  ;; :after (:any org markdown)
   :init
   ;; Library paths
   (setq bibtex-completion-bibliography cpm-bibliography
@@ -80,8 +78,8 @@
 ;;;; Bibtex-Actions
 ;; Use completing read to select bibtex actions
 (use-package bibtex-actions
-  :after bibtex-completion
-  :demand t
+  ;; :after bibtex-completion
+  ;; :demand t
   :straight (:host github :repo "bdarcus/bibtex-actions" :includes oc-bibtex-actions)
   :commands (bibtex-actions-open
              bibtex-actions-open-pdf
@@ -93,7 +91,13 @@
              bibtex-actions-add-pdf-attachment
              bibtex-actions-open-notes
              bibtex-actions-open-entry
-             bibtex-actions-add-pdf-to-library)
+             bibtex-actions-add-pdf-to-library
+             oc-bibtex-actions-select-style
+             oc-bibtex-actions-insert)
+
+  :general
+  (cpm/leader-keys
+    "ux" 'bibtex-actions-insert-citation)
   :custom
   (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
   (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
@@ -134,9 +138,9 @@
   (setq bibtex-completion-additional-search-fields '(doi url keywords)))
 
 (use-package oc-bibtex-actions
-  :after (:any oc bibtex-actions)
-  :demand t
-  :commands (oc-bibtex-actions-select-style)
+  ;; :after (:any oc bibtex-actions)
+  ;; :demand t
+  :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions))
