@@ -1,6 +1,7 @@
 ;; All packages related to narrowing and completion
 
 ;;; Narrowing Completion
+
 ;;;; Vertico
 ;; Enable vertico for vertical completion
 ;; This and selectrum are great packages, but vertico is preferable if I can get feature parity with what I was using in selectrum
@@ -20,8 +21,6 @@
   (setq vertico-cycle t)
   ;; Don't resize buffer
   (setq vertico-resize nil)
-  ;; Don't show text completions bar
-  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
   ;; Fix for org-tags
   (defun disable-selection ()
     (when (eq minibuffer-completion-table #'org-tags-completion-function)
@@ -31,27 +30,28 @@
   (advice-add #'vertico--setup :before #'disable-selection)
 
   ;; Customize sorting based on completion category
-  ;; try the `completion-category-sort-function' first
-  (advice-add #'vertico--sort-function :before-until #'completion-category-sort-function)
+  (defvar completion-category-sort-function-overrides
+    '((file . directories-before-files))
+    "Completion category-specific sorting function overrides.")
 
   (defun completion-category-sort-function (metadata)
     (alist-get (completion-metadata-get metadata 'category)
                completion-category-sort-function-overrides))
-
-  (defvar completion-category-sort-function-overrides
-    '((file . directories-before-files))
-    "Completion category-specific sorting function overrides.")
 
   (defun directories-before-files (files)
     ;; Still sort by history position, length and alphabetically
     (setq files (vertico-sort-history-length-alpha files))
     ;; But then move directories first
     (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
-           (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
+           (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
+
+  ;; try the `completion-category-sort-function' first
+  (advice-add #'vertico--sort-function :before-until #'completion-category-sort-function))
 
 ;; Vertico repeat last command
 (use-package vertico-repeat
   :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
+  :hook (minibuffer-setup . vertico-repeat--save)
   :commands (vertico-repeat))
 
 ;; Configure directory extension
@@ -60,7 +60,6 @@
   :after vertico
   ;; More convenient directory navigation commands
   :bind (:map vertico-map
-         ("RET" . vertico-directory-enter)
          ("DEL" . vertico-directory-delete-char)
          ("M-DEL" . vertico-directory-delete-word))
   ;; Tidy shadowed file names
@@ -105,6 +104,13 @@
 (use-package embark
   :straight (embark :type git :host github :repo "oantolin/embark")
   :commands (embark-act embark-keymap-help)
+  :custom
+  ;; Don't display extra embark buffer
+  (embark-indicators '(embark-minimal-indicator
+                       embark-highlight-indicator
+                       embark-isearch-highlight-indicator))
+  ;; Use completing-read
+  (embark-prompter 'embark-completing-read-prompter)
   :general
   ("C-S-o"   'embark-act
    "C-h B"  'embark-bindings)
@@ -122,10 +128,6 @@
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
   (add-to-list 'embark-allow-edit-commands 'consult-imenu)
-  ;; Use completing-read
-  (setq embark-prompter 'embark-completing-read-prompter)
-  ;; Don't display extra embark buffer
-  (setq embark-indicator 'embark-minimal-indicator)
 
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
@@ -182,8 +184,17 @@
 ;; Useful functions; a drop-in replacement for ivy/swiper
 
 (use-package consult
-  :straight (consult :type git :host github :repo "minad/consult")
-  :commands (consult-buffer consult-find consult-apropos consult-yank-pop)
+  :straight (consult :type git :host github :repo "minad/consult" :includes consult-org)
+  :commands (consult-line
+             consult-line-multi
+             consult-buffer
+             consult-find
+             consult-apropos
+             consult-yank-pop
+             consult-goto-line
+             consult-outline
+             consult-org-agenda
+             consult-org-heading)
   :custom-face
   (consult-file ((t (:inherit bespoke-popout))))
   (consult-line-number ((t (:inherit bespoke-faded))))
@@ -193,10 +204,10 @@
   :config
   ;; Preview is manual and immediate
   ;; https://github.com/minad/consult#live-previews
-  (setq consult-preview-key (kbd "C-p"))
+  (setq consult-preview-key (kbd "C-f"))
 
   ;; Make consult locate work with macos spotlight
-  (setq consult-locate-command "mdfind -name ARG OPTS")
+  (setq consult-locate-args "mdfind -name")
 
   ;; Optionally configure a function which returns the project root directory
   ;; (autoload 'projectile-project-root "projectile")
