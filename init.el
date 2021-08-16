@@ -141,10 +141,13 @@
     (straight-x-fetch-all)
     (switch-to-buffer "*straight*")
     (delete-other-windows)
-    ;; this seems necessary to make sure all packages are fetched
+    ;; this seems necessary to keep fetch from hanging/pausing
     (run-with-idle-timer 10 2 (lambda () (evil-next-line)))
+    ;; run merge
     (run-with-idle-timer 30 2 (lambda () (straight-merge-all)))
+    ;; build new packages
     (run-with-idle-timer 45 2 (lambda () (straight-check-all)))
+    ;; kill session
     (run-with-idle-timer 240 nil (lambda () (kill-emacs)))))
 
 (defun cpm/straight-update-packages-asynchronously ()
