@@ -1,5 +1,15 @@
 ;;; Useful Functions
 
+;;;; Jump to Minibuffer Window
+(defun cpm/goto-minibuffer-window ()
+  "locate point to minibuffer window if it is active."
+  (interactive)
+  (if (active-minibuffer-window)
+      (select-window (active-minibuffer-window))
+    (error "Minibuffer is not active")))
+
+(general-def "C-c m" #'cpm/goto-minibuffer-window)
+
 ;;;; Insert Comment Seperator
 ;; ======================================================
 ;; Insert commented seperator like this line
@@ -1390,6 +1400,7 @@ with no seperation"
     "Like you have somewhere better to be..."
     "Don't worry, I won't tell everyone you're a failure"
     "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden"
+    "Sed omnia praeclara tam difficilia, quam rara sunt"
     "(setq nothing t everything 'permitted)"
     "Emacs will remember that."
     "Emacs, Emacs never changes."
