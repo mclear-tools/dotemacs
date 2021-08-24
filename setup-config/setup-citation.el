@@ -15,13 +15,21 @@
 
 ;; Org-cite processors
 (use-package oc-basic
+  :disabled t
   :straight nil
   :after oc)
 
 (use-package oc-biblatex
+  :disabled t
   :straight nil
   :after oc)
 
+(use-package oc-natbib
+  :straight nil
+  :disabled t
+  :after oc)
+
+;; Currently only using csl
 (use-package oc-csl
   :straight nil
   :after oc
@@ -32,10 +40,6 @@
   ;; repos for styles & locales
   (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
   (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
-
-(use-package oc-natbib
-  :straight nil
-  :after oc)
 
 
 ;;;; Citeproc
@@ -50,8 +54,8 @@
 ;; Needed for the other packages
 (use-package bibtex-completion
   :straight (bibtex-completion :host github :repo "tmalsburg/helm-bibtex" :files (:defaults (:exclude "helm-bibtex.el" "ivy-bibtex.el")) :includes oc-bibtex-actions)
-  :defer 3
-  ;; :after (:any org markdown)
+  ;; :defer 3
+  :after (:any org markdown company-bibtex)
   :init
   ;; Library paths
   (setq bibtex-completion-bibliography cpm-bibliography
@@ -99,7 +103,7 @@
   (cpm/leader-keys
     "ux" 'bibtex-actions-insert-citation)
   :custom
-  (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
+  ;; (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
   (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
   :config
   ;; use icons
@@ -128,8 +132,10 @@
   ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
   (with-eval-after-load 'embark
     (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
-    (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
+    (add-to-list 'embark-keymap-alist '(bib-reference . bibtex-actions-map))
     (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map)))
+
+  (setq bibtex-actions-bibliography cpm-bibliography)
   ;; (with-eval-after-load 'embark
   ;;   (setf (alist-get 'bibtex embark-keymap-alist) 'bibtex-actions-map))
 
@@ -137,26 +143,27 @@
   ;; make sure to set this to ensure open commands work correctly
   (setq bibtex-completion-additional-search-fields '(doi url keywords)))
 
-(use-package oc-bibtex-actions
-  ;; :after (:any oc bibtex-actions)
-  ;; :demand t
-  :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
-  :config
-  (setq org-cite-insert-processor 'oc-bibtex-actions
-        org-cite-follow-processor 'oc-bibtex-actions))
+  ;;  auto-refreshing cache when bib files change
+  ;; (bibtex-actions-filenotify-setup '(LaTeX-mode-hook markdown-mode-hook org-mode-hook)))
+
+  (use-package oc-bibtex-actions
+    ;; :after (:any oc bibtex-actions)
+    ;; :demand t
+    :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
+    :config
+    (setq org-cite-insert-processor 'oc-bibtex-actions
+          org-cite-follow-processor 'oc-bibtex-actions))
 
 ;;;; Company-bibtex
 
 (use-package company-bibtex
-  :after company
-  :demand t
   :general
   (:states 'insert
    "<C-tab>" #'company-bibtex)
   :config
   (add-to-list 'company-backends 'company-bibtex)
   (setq company-bibtex-bibliography "~/Dropbox/Work/bibfile.bib")
-  (setq company-bibtex-org-citation-regex "-?cite:@"))
+  (setq company-bibtex-org-citation-regex "-?@"))
 
 
 ;;; Provide File
