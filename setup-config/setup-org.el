@@ -1,10 +1,7 @@
 ;; Org Mode
 
 ;;; New Org
-;; remove references to older org in path
-;; (setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
-
-;; Org package settings -- use org-plus-contrib to get latest org
+;; Org package settings
 (use-package org
   :straight (:includes oc)
   :commands (org-mode)
@@ -23,10 +20,6 @@
 
 ;;;; Org Config Settings
   :config
-  ;; (require 'org-fold)   ;; hack to make org and evil-surround work right now FIXME
-  ;; use timestamp for id
-  (setq org-latex-listings 'engraved) ;; relies on engrave-faces package for highlighting
-  (add-hook 'org-mode-hook #'visual-line-mode)
   (setq org-stuck-projects (quote ("" nil nil "")))
   (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
   (setf org-export-with-smart-quotes t)
@@ -58,8 +51,6 @@
                 org-use-fast-todo-selection 'expert ;; don't use popup window
                 org-imenu-depth 8
                 imenu-auto-rescan t)
-  (add-hook 'auto-save-hook 'org-save-all-org-buffers)
-
 
 ;;;; Org Modules
   (with-eval-after-load 'org
@@ -115,11 +106,6 @@
         '(("nec" "\Box" nil "◻" "" "" "◻")
           ("pos" "\Diamond" nil "◇" "" "" "◇")
           ("space" "~" nil "&nbsp;" " " " " " ")))
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (centered-cursor-mode)
-              (turn-on-auto-fill)
-              ))
 
 ;;;; Org Regex (Emphasis)
   (with-eval-after-load 'org
@@ -146,6 +132,14 @@
           ("n" . "notes")))
   (dolist (ele new-structure-template-alist)
     (add-to-list 'org-structure-template-alist ele))
+
+;;;; Org Hooks
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (centered-cursor-mode)
+              (turn-on-auto-fill)
+              (visual-line-mode)))
+  ;; (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 ;;; Org Agenda
   ;; Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
@@ -651,14 +645,6 @@ _vr_ reset      ^^                       ^^                 ^^
 ;;; End Org Use-Package Config
   ;; end org use-package config settings
   )
-;;; Org-Goto
-;; Make counsel display org headings nicely.
-;; (with-eval-after-load 'org
-;;   (setq counsel-outline-display-style 'path)
-;;   (setq counsel-outline-path-separator " ➜ ")
-;;   (setq counsel-outline-face-style 'org))
-;; (general-define-key :keymaps 'org-mode-map "C-c C-j" #'counsel-org-goto)
-;; (general-define-key :keymaps 'org-mode-map "C-u C-c C-j" #'counsel-org-goto-all))
 
 ;;; Org Indirect Buffer
 (setq org-indirect-buffer-display 'current-window)

@@ -154,8 +154,7 @@
 (use-package evil-lion
   :after evil
   :straight (:host github :repo "edkolev/evil-lion")
-  :config
-  (evil-lion-mode))
+  :commands (evil-lion-left evil-lion-right))
 
 ;;; Evil Matchit
 (use-package evil-matchit

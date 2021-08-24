@@ -1,5 +1,4 @@
 ;; Keybindings for config
-
 ;;; General
 (use-package general
   :demand t
@@ -22,12 +21,11 @@
   :defer 1
   :diminish ""
   :config
-  (setq which-key-special-keys t)
   ;; Set the time delay (in seconds) for the which-key popup to appear.
-  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-delay 1)
   (setq which-key-idle-secondary-delay 0.05)
   ;; use minibuffer
-  ;; (which-key-setup-minibuffer)
+  (which-key-setup-minibuffer)
   ;; separator
   (setq which-key-separator " → ")
   (which-key-mode))

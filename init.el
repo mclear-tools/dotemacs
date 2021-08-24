@@ -136,13 +136,12 @@
 ;; Update packages
 (defun cpm--straight-update-packages ()
   "Wrapper for updating packages asynchronously with straight."
-
   (with-eval-after-load 'straight-x
     (straight-x-fetch-all)
     (switch-to-buffer "*straight*")
     (delete-other-windows)
     ;; this seems necessary to keep fetch from hanging/pausing
-    (run-with-idle-timer 10 2 (lambda () (evil-next-line)))
+    (run-with-idle-timer 15 2 (lambda () (evil-next-line)))
     ;; run merge
     (run-with-idle-timer 30 2 (lambda () (straight-merge-all)))
     ;; build new packages
@@ -280,8 +279,8 @@
 (defun cpm/search-setup-config-files ()
   "async fuzzy search with ripgrep for all config files"
   (interactive)
-  (affe-grep cpm-setup-dir))
-;; (consult-ripgrep cpm-setup-dir))
+  ;; (affe-grep cpm-setup-dir))
+  (consult-ripgrep cpm-setup-dir))
 
 ;; Load init file
 (defun cpm/load-init-file ()
