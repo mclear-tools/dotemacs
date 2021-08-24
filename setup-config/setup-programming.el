@@ -36,6 +36,34 @@
 
 
 
+;;; Syntax Highlighting (Treesitter)
+;; Better syntax highlight -- but doesn't have elisp right no :(
+(use-package tree-sitter
+  :disabled
+  :straight t
+  :defer 3
+  :config
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs
+  :disabled
+  :straight t
+  :after tree-sitter)
+
+(use-package evil-textobj-treesitter
+  :disabled
+  :straight (:type git
+             :host github
+             :repo "meain/evil-textobj-treesitter"
+             :files (:defaults "queries"))
+  :after tree-sitter
+  :config
+  (define-key evil-outer-text-objects-map "f" (evil-textobj-treesitter-get-textobj "function.outer"))
+  (define-key evil-inner-text-objects-map "f" (evil-textobj-treesitter-get-textobj "function.inner"))
+  (define-key evil-outer-text-objects-map "c" (evil-textobj-treesitter-get-textobj "class.outer"))
+  (define-key evil-inner-text-objects-map "c" (evil-textobj-treesitter-get-textobj "class.inner")))
+
 ;;; Colors
 ;; https://github.com/emacsmirror/rainbow-mode Colorize color names in buffers
 (use-package rainbow-mode
