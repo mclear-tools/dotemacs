@@ -42,7 +42,7 @@ Some highlights of this emacs setup include:
 7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:setup-config/setup-completion.el][related packages]]
 8. Use of [[file:setup-config/setup-childframe.el][childframes]] in an integrated manner (integrated with the theme and made for
    easy viewing)
-9. Custom [[https://github.com/mclear-tools/bespoke-themes][bespoke]] theme (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for dark/light mode &
+9. My own [[https://github.com/mclear-tools/bespoke-themes][bespoke theme]] (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for dark/light mode &
    various other options)
 10. An attractive custom [[file:setup-config/setup-modeline.el][headerline]] (part of bespoke-theme, inspired by [[https://github.com/rougier/nano-modeline][nano-modeline]])
 11. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
