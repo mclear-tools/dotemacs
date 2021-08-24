@@ -8,13 +8,16 @@
   :straight (:type built-in)
   :defer t
   :custom
-  (custom-file (make-temp-file "emacs-custom"))
+  (custom-file (expand-file-name "custom.el" cpm-cache-dir))
   :config
+  (when (not (file-exists-p custom-file))
+    (write-file custom-file))
   (when (file-exists-p custom-file)
     (load custom-file)))
 
 ;; :custom
 ;; (custom-file null-device "Don't store customizations"))
+;; (custom-file (make-temp-file "emacs-custom"))
 
 ;; If using custom settings put them in a separate file
 ;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
