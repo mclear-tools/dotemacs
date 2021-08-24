@@ -259,6 +259,19 @@
   :after flycheck
   :commands (consult-flycheck consult-flymake))
 
+;;;; Consult Dir
+;; Consult-dir allows you to easily select and switch between “active” directories.
+(use-package consult-dir
+  :straight (:host github :repo "karthink/consult-dir")
+  :commands (consult-dir
+             consult-dir-jump-file)
+  :general
+  (:keymaps 'vertico-map
+   "C-d" #'consult-dir)
+  :config
+  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs))
+
+
 ;;;; Completing-Read Info
 ;; Info search commands using completing-read
 ;; https://github.com/raxod502/selectrum/wiki/Useful-Commands#info
