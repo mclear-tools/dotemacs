@@ -119,7 +119,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :defer t
   :custom
   (face-font-family-alternatives
-   '(("Monospace" "SF Mono" "InconsolataLGC Nerd Font" "RobotoMono Nerd Font" "FiraCode Nerd Font" "Hasklug Nerd Font"  "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
+   '(("Monospace" "SF Mono" "InconsolataLGC Nerd Font" "RobotoMono Nerd Font" "Victor Mono" "FiraCode Nerd Font" "Hasklug Nerd Font"  "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
      ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
      ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
   :custom-face
