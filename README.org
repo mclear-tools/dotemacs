@@ -2,7 +2,7 @@ These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files.
 [[https://github.com/d12frosted/homebrew-emacs-plus][emacs-plus]] or [[https://github.com/daviderestivo/homebrew-emacs-head][emacs-head]], and built via [[https://brew.sh/][Homebrew]]. Right now I'm using this recipe:
 
 #+begin_src sh
-brew install emacs-plus@28 --with-no-frame-refocus --with-xwidgets --with-modern-black-variant-icon
+brew install emacs-plus@28 --with-no-frame-refocus --with-xwidgets --with-modern-black-variant-icon --with-native-comp
 #+end_src
 
 The config files are updated/tweaked regularly. I use emacs primarily for all my
