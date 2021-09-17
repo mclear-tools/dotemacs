@@ -784,3 +784,12 @@ title."
 ;;   (:states '(motion normal) :keymaps 'magit-mode-map
 ;;    "C-j" #'magit-section-forward-sibling
 ;;    "C-k" #'magit-section-backward-sibling))
+;;; Doom Themes
+(use-package doom-themes
+  :disabled
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (setq doom-themes-treemacs-theme "doom-colors")) ; use the colorful treemacs theme
