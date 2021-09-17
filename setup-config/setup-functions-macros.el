@@ -267,7 +267,12 @@ will be killed."
 (global-set-key (kbd "H-w") 'formatted-copy)
 
 ;;;; CRUX
-(use-package crux :defer 1)
+(use-package crux
+  :defer 1
+  :bind
+  ("C-k" . crux-smart-kill-line)
+  ("C-c n" . crux-cleanup-buffer-or-region)
+  ("C-a" . crux-move-beginning-of-line))
 
 ;;;; Useful Buffers
 (defun cpm/user-buffer-q ()
