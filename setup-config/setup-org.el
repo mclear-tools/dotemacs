@@ -27,8 +27,11 @@
   ;; https://www.reddit.com/r/emacs/comments/oggf1d/whats_the_difference_between_org_mode_link_types/h4l6l1r
   (setq org-link-parameters (delq (assoc "file+sys" org-link-parameters) org-link-parameters))
   (setq org-link-parameters (delq (assoc "file+emacs" org-link-parameters) org-link-parameters))
-
+  ;; Don't use bad hyperref value
+  ;; https://emacs.stackexchange.com/a/46226/11934
+  (customize-set-value 'org-latex-hyperref-template nil)
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
+                org-footnote-auto-adjust t ;; renumber footnotes
                 org-return-follows-link t ;; make RET follow links
                 org-list-allow-alphabetical t ;; allow alphabetical list
                 org-hide-emphasis-markers t  ;; hide markers
@@ -39,7 +42,7 @@
                 org-startup-folded t
                 org-yank-adjusted-subtrees t  ;; adjust subtrees to depth when yanked
                 org-yank-folded-subtrees t  ;; fold subtrees on yank
-                org-M-RET-may-split-line '((default . nil))  ;; don't split line when creating a new headline, list item, or table field
+                org-M-RET-may-split-line '((default . t))  ;; don't split line when creating a new headline, list item, or table field
                 org-fontify-quote-and-verse-blocks t ;; make quotes stand out
                 org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
                 ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼"
@@ -1351,6 +1354,17 @@ is non-nil."
     (and (or org-table-may-need-update org-table-overlay-coordinates) ;;; remove?
          (org-table-align))
     (org-table-fix-formulas "@" nil (1- (org-table-current-dline)) n)))
+
+;;;; Org to PDF Notes
+(defun cpm/org-export-pdf-notes ()
+  "Export subtree of notes to PDF file"
+  (interactive)
+  (org-narrow-to-subtree)
+  (save-excursion
+    (goto-char (point-min))
+    (org-latex-export-to-pdf t t nil nil '(:latex-class "org-notes")))
+  (widen))
+
 ;;;; Org to Beamer PDF
 (defun cpm/org-export-to-beamer-pdf-open ()
   "Export org subtree to beamer pdf and open"
@@ -1425,7 +1439,7 @@ is non-nil."
           (apply 'delete-region remove)
           (insert description)))))
 
-;;;; Org Contrib
+;;; Org Contrib
 (use-package org-contrib
   :straight t
   :after org)
