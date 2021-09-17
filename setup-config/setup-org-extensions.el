@@ -124,9 +124,9 @@ Instead it's simpler to use bash."
                   ("[ ]" . "")
                   ("[X]" . "")
                   ("[-]" . "")
-                  (":PROPERTIES:" . "")
-                  (":END:" . "―")
-                  ("#+STARTUP:" . "")
+                  ;; (":PROPERTIES:" . "")
+                  ;; (":END:" . "―")
+                  ;; ("#+STARTUP:" . "")
                   ("#+ROAM_TAGS:" . "")
                   ("#+FILETAGS:" . "")
                   ("SCHEDULED:" . "")
@@ -757,12 +757,30 @@ Instead it's simpler to use bash."
                  \\usepackage{pgfpages}
                  [EXTRA]
                  \\setbeameroption{show notes on second screen=right}
-                 \\setbeamertemplate{note page}{\\pagecolor{yellow!5}\\insertnote}
-                 "
+                 \\setbeamertemplate{note page}{\\pagecolor{yellow!5}\\insertnote}"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
+;;;; Org PDF Notes Class
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-latex-classes
+               '("org-notes"
+                 "\\documentclass[12pt]{article}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+;; Set custom quote environment for notes
+;; FIXME: would be good to make this project local!
+(setq org-latex-default-quote-environment "quote-b")
+
+(defun cpm/cleanup-pdf-notes()
+  "Move notes to directory & cleanup other files"
+  (interactive)
+  (async-shell-command-no-window "trash *.tex *.bbl && mv *.pdf static/materials/handouts"))
 
 ;;; Org Miscellaneous Packages
 
