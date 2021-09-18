@@ -23,12 +23,13 @@ Voit's]] config. Some other good emacs starter kits to look at include John Kitc
 [[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
 This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
-that file and the various config "helper" functions for navigation. The modules are
-organized thematically rather than package by package (e.g. the [[file:setup-config/setup-writing.el][writing module]]
-contains the config for spelling and markdown mode). Note that while I have an
-[[file:early-init.el][early-init]] file for use with emacs 27+, the configuration should work with emacs 26+
-on MacOS (though I haven't tested this in awhile), with the latest release being
-best (I'm currently on emacs 28)
+that file and the various config "helper" functions for navigation. While many like
+to use a literate org-file for organizing their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring
+things in elisp files. The modules are organized thematically rather than package by
+package (e.g. the [[file:setup-config/setup-writing.el][writing module]] contains the config for spelling and markdown mode).
+Note that while I have an [[file:early-init.el][early-init]] file for use with emacs 27+, the configuration
+should work with emacs 26+ on MacOS (though I haven't tested this in awhile), with
+the latest release being best (I'm currently on emacs 28).
 
 Some highlights of this emacs setup include:
 
