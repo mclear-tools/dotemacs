@@ -15,18 +15,18 @@
 
 ;; Org-cite processors
 (use-package oc-basic
-  :disabled t
+  ;; :disabled t
   :straight nil
   :after oc)
 
 (use-package oc-biblatex
-  :disabled t
+  ;; :disabled t
   :straight nil
   :after oc)
 
 (use-package oc-natbib
+  ;; :disabled t
   :straight nil
-  :disabled t
   :after oc)
 
 ;; Currently only using csl
@@ -44,9 +44,7 @@
 
 ;;;; Citeproc
 (use-package citeproc
-  :straight (:host github
-             :repo "andras-simonyi/citeproc-el"
-             :branch "1-biblatex_support")
+  :straight (:host github :repo "andras-simonyi/citeproc-el")
   :after (oc oc-csl))
 
 ;;;; Bibtex Completion
@@ -60,15 +58,15 @@
   ;; Library paths
   (setq bibtex-completion-bibliography cpm-bibliography
         bibtex-completion-library-path "~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library"
-        bibtex-completion-pdf-field nil
-        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org"
+        bibtex-completion-pdf-field "file"
+        bibtex-completion-notes-path "~/Dropbox/Work/projects/notebook/content-org/ref-notes"
         bibtex-completion-notes-extension ".org")
   ;; using with org-cite
   ;; make sure to set this to ensure open commands work correctly
   (setq bibtex-completion-additional-search-fields '(doi url keywords))
 
   ;; Notes templates
-  (setq bibtex-completion-notes-template-one-file "* ${author} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
+  (setq bibtex-completion-notes-template-one-file "* ${author-or-editor} (${date}): ${title} \n :PROPERTIES:\n :INTERLEAVE_PDF: ${file}\n :Custom_ID: ${=key=}\n :END:\n [[pdfview:${file}][file link]]")
   (setq bibtex-completion-notes-template-multiple-files "#+TITLE: ${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: cite:${=key=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+BEGIN_SRC bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+END_SRC")
 
   ;; Set insert citekey with markdown citekeys for org-mode
@@ -85,6 +83,7 @@
   ;; :after bibtex-completion
   ;; :demand t
   :straight (:host github :repo "bdarcus/bibtex-actions" :includes oc-bibtex-actions)
+  :after (embark oc)
   :commands (bibtex-actions-open
              bibtex-actions-open-pdf
              bibtex-actions-open-link
@@ -102,10 +101,17 @@
   :general
   (cpm/leader-keys
     "ux" 'bibtex-actions-insert-citation)
-  :custom
+  ;; :custom
   ;; (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
-  (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
+  ;; (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
   :config
+  ;; Set templates
+  (setq bibtex-actions-templates
+        '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
+          (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")
+          (note . ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} (${year}): ${title}\n#+ROAM_KEY: cite:${=citekey=}\n \n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+begin_src bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+end_src"))))
+
+  (setq bibtex-actions-file-open-note-function 'orb-bibtex-actions-edit-note)
   ;; use icons
   (setq bibtex-actions-symbols
         `((pdf . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
@@ -143,17 +149,17 @@
   ;; make sure to set this to ensure open commands work correctly
   (setq bibtex-completion-additional-search-fields '(doi url keywords)))
 
-  ;;  auto-refreshing cache when bib files change
-  ;; (bibtex-actions-filenotify-setup '(LaTeX-mode-hook markdown-mode-hook org-mode-hook)))
+;;  auto-refreshing cache when bib files change
+;; (bibtex-actions-filenotify-setup '(LaTeX-mode-hook markdown-mode-hook org-mode-hook)))
 
-  (use-package oc-bibtex-actions
-    ;; :after (:any oc bibtex-actions)
-    ;; :demand t
-    :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
-    :config
-    (setq org-cite-insert-processor 'oc-bibtex-actions
-          org-cite-follow-processor 'oc-bibtex-actions))
-
+(use-package oc-bibtex-actions
+  :after (oc embark)
+  ;; :demand t
+  :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
+  :config
+  (setq org-cite-insert-processor 'oc-bibtex-actions
+        org-cite-follow-processor 'oc-bibtex-actions
+        org-cite-activate-processor 'basic))
 ;;;; Company-bibtex
 
 (use-package company-bibtex
