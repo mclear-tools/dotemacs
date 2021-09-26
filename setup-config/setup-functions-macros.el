@@ -796,10 +796,20 @@ with no seperation"
 ;;;; Show Filename of Buffer
 
 ;; http://camdez.com/blog/2013/11/14/emacs-show-buffer-file-name/
-(defun cpm/show-and-copy-buffer-filename ()
+(defun cpm/show-and-copy-buffer-full-filename ()
   "Show the full path to the current file in the minibuffer and copy to clipboard."
   (interactive)
   (let ((file-name (buffer-file-name)))
+    (if file-name
+        (progn
+          (message file-name)
+          (kill-new file-name))
+      (error "Buffer not visiting a file"))))
+
+(defun cpm/show-and-copy-buffer-filename ()
+  "Show the abbreviated path to the current file in the minibuffer and copy to clipboard."
+  (interactive)
+  (let ((file-name (abbreviate-file-name buffer-file-name)))
     (if file-name
         (progn
           (message file-name)
@@ -1199,8 +1209,8 @@ with no seperation"
                 (cond ((and cmacs--local cmacs--keymaps)
                        (push `(lwarn 'cmacs-map :warning
                                      "Can't local bind '%s' key to a keymap; skipped"
-                                     ,key)
-                             forms)
+  ,key)
+  forms)
                        (throw 'skip 'local))
                       ((and cmacs--keymaps states)
                        (dolist (keymap cmacs--keymaps)
