@@ -536,7 +536,11 @@
    "ub" '(:ignore t :which-key "Beamer functions")
    "ubp" #'cpm/org-export-beamer-presentation
    "ubh" #'cpm/org-export-beamer-handout
-   "uC" 'cpm/pandoc-command-line-convert-to-pdf
+   "uc"  '(:ignore t :whichkey "Citations")
+   "uci" #'bibtex-actions-insert-citation
+   "ucn" #'bibtex-actions-open-notes
+   "uce" #'bibtex-actions-open-entry
+   ;; "uC" 'cpm/pandoc-command-line-convert-to-pdf
    "ug" 'org-mac-grab-link
    "uh" #'cpm/org-export-to-buffer-html-as-body
    "ui" 'cpm/org-goto-inbox
@@ -715,7 +719,6 @@
  :non-normal-prefix "C-SPC"
 
  "n"    '(:ignore t :which-key "Notes")
- "n a"  #'consult-notes-search-all
  "n c"  #'org-roam-capture
  "n i"  #'org-roam-node-insert
  "n f"  #'org-roam-node-find
@@ -723,7 +726,7 @@
  "n n"  #'consult-notes
  "n N"  #'org-roam--new-file-named
  "n r"  #'cpm/find-note-relation
- "n s"  #'cpm/zettelkasten-search
+ "n s"  #'consult-notes-search-all
  "n t"  #'org-roam-buffer-toggle)
 
 ;;; End keybindings

@@ -13,22 +13,7 @@
           (latex biblatex)
           (t csl))))
 
-;; Org-cite processors
-(use-package oc-basic
-  ;; :disabled t
-  :straight nil
-  :after oc)
-
-(use-package oc-biblatex
-  ;; :disabled t
-  :straight nil
-  :after oc)
-
-(use-package oc-natbib
-  ;; :disabled t
-  :straight nil
-  :after oc)
-
+;; Org cite processors
 ;; Currently only using csl
 (use-package oc-csl
   :straight nil
@@ -41,7 +26,6 @@
   (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
   (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
 
-
 ;;;; Citeproc
 (use-package citeproc
   :straight (:host github :repo "andras-simonyi/citeproc-el")
@@ -52,8 +36,7 @@
 ;; Needed for the other packages
 (use-package bibtex-completion
   :straight (bibtex-completion :host github :repo "tmalsburg/helm-bibtex" :files (:defaults (:exclude "helm-bibtex.el" "ivy-bibtex.el")) :includes oc-bibtex-actions)
-  ;; :defer 3
-  :after (:any org markdown company-bibtex)
+  :after (:any org markdown)
   :init
   ;; Library paths
   (setq bibtex-completion-bibliography cpm-bibliography
@@ -80,10 +63,8 @@
 ;;;; Bibtex-Actions
 ;; Use completing read to select bibtex actions
 (use-package bibtex-actions
-  ;; :after bibtex-completion
-  ;; :demand t
   :straight (:host github :repo "bdarcus/bibtex-actions" :includes oc-bibtex-actions)
-  :after (embark oc)
+  :after (embark oc bibtex-completion)
   :commands (bibtex-actions-open
              bibtex-actions-open-pdf
              bibtex-actions-open-link
@@ -97,13 +78,6 @@
              bibtex-actions-add-pdf-to-library
              oc-bibtex-actions-select-style
              oc-bibtex-actions-insert)
-
-  :general
-  (cpm/leader-keys
-    "ux" 'bibtex-actions-insert-citation)
-  ;; :custom
-  ;; (bibtex-actions-template '((t . "${author:15}   ${title:40}   ${year:4}")))
-  ;; (bibtex-actions-template-suffix '((t . "   ${=key=:15}  ${=type=:12}    ${tags:*}")))
   :config
   ;; Set templates
   (setq bibtex-actions-templates
@@ -154,7 +128,6 @@
 
 (use-package oc-bibtex-actions
   :after (oc embark)
-  ;; :demand t
   :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions

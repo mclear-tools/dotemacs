@@ -8,8 +8,6 @@
   ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
   ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :mode (("\\.org$" . org-mode))
-  :general (cpm/leader-keys
-             "uc" 'org-capture)
   :init
 ;;; Org Settings
 ;;;; Org Directories
