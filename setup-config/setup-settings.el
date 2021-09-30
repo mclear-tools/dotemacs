@@ -6,10 +6,9 @@
 ;; Don't use persistent custom file (speeds up load time)
 (use-package cus-edit
   :straight (:type built-in)
-  :defer t
-  :custom
-  (custom-file (expand-file-name "custom.el" cpm-cache-dir))
+  :defer 1
   :config
+  (setq custom-file (expand-file-name "custom.el" cpm-cache-dir))
   (when (not (file-exists-p custom-file))
     (write-file custom-file))
   (when (file-exists-p custom-file)
