@@ -3,7 +3,8 @@
 ;;; New Org
 ;; Org package settings
 (use-package org
-  :straight (:includes oc)
+  ;; see https://github.com/raxod502/straight.el/issues/766#issuecomment-892018314
+  :straight (:includes oc :files (:defaults "lisp/*.el" ("etc/styles/" "etc/styles/*")))
   :commands (org-mode)
   ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
   ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
@@ -28,6 +29,7 @@
   ;; Don't use bad hyperref value
   ;; https://emacs.stackexchange.com/a/46226/11934
   (customize-set-value 'org-latex-hyperref-template nil)
+  (setq org-export-async-debug t)
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-footnote-auto-adjust t ;; renumber footnotes
                 org-return-follows-link t ;; make RET follow links
