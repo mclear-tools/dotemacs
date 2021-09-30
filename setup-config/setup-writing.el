@@ -244,8 +244,8 @@
     (add-hook 'LaTeX-mode-hook #'flyspell-mode)
     (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
     (setq-default TeX-engine 'xetex)
-    (setq TeX-auto-save t
-          TeX-parse-self t
+    (setq TeX-auto-save nil
+          TeX-parse-self nil
           TeX-save-query nil
           TeX-PDF-mode t)
     (setq-default TeX-master nil)))
