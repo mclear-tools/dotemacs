@@ -61,12 +61,11 @@
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
-;; Exec path -- Emacs won't know where to load things without this
-(defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
-(defconst usr-local-bin "/usr/local/bin")
-(defconst usr-local-sbin "/usr/local/sbin")
-(setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
-(setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
+;; (defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
+;; (defconst usr-local-bin "/usr/local/bin")
+;; (defconst usr-local-sbin "/usr/local/sbin")
+;; (setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
+;; (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
 
 ;;; Package Settings
 ;; I tell use-package to always defer loading packages unless explicitly told
@@ -169,6 +168,15 @@
       use-package-enable-imenu-support t
       use-package-expand-minimally nil
       use-package-always-ensure nil)
+
+;;;; Exec path
+;; Exec path -- Emacs won't know where to load things without this
+(use-package exec-path-from-shell
+  :straight t
+  :defer 1
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
 
 ;;;; Security
 ;; Properly verify outgoing ssl connections.
