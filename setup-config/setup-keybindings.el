@@ -164,7 +164,7 @@
    "<SPC>" 'execute-extended-command
    ;; "<SPC>" 'helm-M-x
    ;; "d" #'deer
-   "c" #'company-complete
+   ;; "c" #'company-complete
    "d" #'dired-jump
    "D" #'dired-jump-other-window
    ;; "D" #'cpm/deer-split-window
