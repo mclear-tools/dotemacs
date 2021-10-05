@@ -19,15 +19,9 @@
   :config
   ;; Cycle through candidates
   (setq vertico-cycle t)
+
   ;; Don't resize buffer
   (setq vertico-resize nil)
-  ;; Fix for org-tags
-  (defun disable-selection ()
-    (when (eq minibuffer-completion-table #'org-tags-completion-function)
-      (setq-local vertico-map minibuffer-local-completion-map
-                  completion-cycle-threshold nil
-                  completion-styles '(basic))))
-  (advice-add #'vertico--setup :before #'disable-selection)
 
   ;; Customize sorting based on completion category
   (defvar completion-category-sort-function-overrides
@@ -45,7 +39,7 @@
     (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
            (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
 
-  ;; try the `completion-category-sort-function' first
+  ;; Try the `completion-category-sort-function' first
   (advice-add #'vertico--sort-function :before-until #'completion-category-sort-function))
 
 ;; Vertico repeat last command
