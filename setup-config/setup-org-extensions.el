@@ -93,7 +93,9 @@ Instead it's simpler to use bash."
   (setq org-superstar-item-bullet-alist
         '((?* . ?•)
           (?+ . ?•)
-          (?- . ?•))))
+          (?- . ?•)))
+  ;; reduce chance of slowdown from font
+  (setq inhibit-compacting-font-caches t))
 
 ;; (setq org-superstar-item-bullet-alist
 ;;       '((?* . ?○)
@@ -515,12 +517,24 @@ Instead it's simpler to use bash."
 ;; Some useful settings
 ;;;; Backends
 (setq org-export-backends '(ascii beamer html icalendar latex odt pandoc hugo md))
-;; export odt to docx
-(setq org-odt-preferred-output-format 'docx)
+;; org v8 bundled with Emacs 24.4
+(setq org-odt-preferred-output-format "docx")
+
+;; Only OSX need below setup
+(defun my-setup-odt-org-convert-process ()
+  (interactive)
+  (let ((cmd "/Applications/LibreOffice.app/Contents/MacOS/soffice"))
+    (when (and (eq system-type 'darwin) (file-exists-p cmd))
+      ;; org v7
+      (setq org-export-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i")))
+      ;; org v8
+      (setq org-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i"))))
+    ))
+(my-setup-odt-org-convert-process)
 
 ;;;; Ox-Pandoc
 (use-package ox-pandoc
-  :straight (:type git :host github :repo "mclear-tools/ox-pandoc")
+  :straight (:type git :host github :repo "a-fent/ox-pandoc")
   :after ox
   :config
   ;; default options for all output formats

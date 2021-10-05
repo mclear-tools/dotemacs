@@ -53,7 +53,9 @@
                 org-catch-invisible-edits 'show-and-error
                 org-use-fast-todo-selection 'expert ;; don't use popup window
                 org-imenu-depth 8
-                imenu-auto-rescan t)
+                imenu-auto-rescan t
+                ;; dont export postamble
+                org-html-postamble nil)
 
 ;;;; Org Modules
   (with-eval-after-load 'org
