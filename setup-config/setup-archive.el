@@ -806,3 +806,14 @@ title."
 (use-package oc-natbib
   :straight nil
   :after oc)
+
+;;; Exec path
+;; Exec path -- Emacs won't know where to load things without this
+(use-package exec-path-from-shell
+  :straight t
+  :defer 1
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
+  (setq exec-path-from-shell-arguments '("-l"))
+  )
