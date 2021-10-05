@@ -1,5 +1,5 @@
 ;;; Bibliography files
-(defvar cpm-bibliography '("~/Dropbox/Work/bibfile.bib"))
+(defvar cpm-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
 
 ;;; Citations
 ;;;; Org-Cite
@@ -7,7 +7,8 @@
 (use-package oc
   :after org
   :config
-  (setq org-cite-global-bibliography cpm-bibliography)
+  (setq org-cite-global-bibliography `(,cpm-bibliography))
+  ;; (setq org-cite-global-bibliography nil)
   (setq org-cite-export-processors
         '((beamer natbib)
           (latex biblatex)
@@ -64,7 +65,7 @@
 ;; Use completing read to select bibtex actions
 (use-package bibtex-actions
   :straight (:host github :repo "bdarcus/bibtex-actions" :includes oc-bibtex-actions)
-  :after (embark oc bibtex-completion)
+  ;; :after (embark oc bibtex-completion org-roam org-roam-bibtex)
   :commands (bibtex-actions-open
              bibtex-actions-open-pdf
              bibtex-actions-open-link
@@ -78,14 +79,14 @@
              bibtex-actions-add-pdf-to-library
              oc-bibtex-actions-select-style
              oc-bibtex-actions-insert)
+  :init
+  (setq bibtex-actions-file-open-note-function 'orb-bibtex-actions-edit-note)
   :config
   ;; Set templates
   (setq bibtex-actions-templates
         '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
-          (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")
-          (note . ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} (${year}): ${title}\n#+ROAM_KEY: cite:${=citekey=}\n \n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+begin_src bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+end_src"))))
+          (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")))
 
-  (setq bibtex-actions-file-open-note-function 'orb-bibtex-actions-edit-note)
   ;; use icons
   (setq bibtex-actions-symbols
         `((pdf . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
@@ -115,7 +116,7 @@
     (add-to-list 'embark-keymap-alist '(bib-reference . bibtex-actions-map))
     (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map)))
 
-  (setq bibtex-actions-bibliography cpm-bibliography)
+  (setq bibtex-actions-bibliography `(,cpm-bibliography))
   ;; (with-eval-after-load 'embark
   ;;   (setf (alist-get 'bibtex embark-keymap-alist) 'bibtex-actions-map))
 
@@ -133,6 +134,7 @@
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
         org-cite-activate-processor 'basic))
+
 ;;;; Company-bibtex
 
 (use-package company-bibtex

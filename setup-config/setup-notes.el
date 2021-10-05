@@ -45,7 +45,7 @@
              org-roam-node-insert
              org-roam-capture
              org-roam-buffer-toggle)
-  ;; :hook (org-mode . org-roam-setup)
+  :hook (org-mode . org-roam-setup)
   :custom
   ;; Configure dirs
   (org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
@@ -76,7 +76,7 @@
                               :unnarrowed t))
           ("r" "reference note" plain "%?"
            :target (file+head "ref-notes/${citekey}.org"
-                              ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} (${year}): ${title}\n#+ROAM_KEY: cite:${=citekey=}\n \n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+begin_src bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+end_src"))
+                              ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} ${year}: ${title}\n#+hugo_section: reading-notes\n\n- tags :: \n- bookends link :: bookends://sonnysoftware.com/${beref}\n- pdf :: [[${file}][pdf link]]\n\n#+begin_src emacs-lisp :results value latex\n (bibtex-actions-insert-bibtex '((\"${citekey}\")))\n#+end_src"))
            :unnarrowed t)))
 
   ;; Filtering by subdirectory
@@ -268,7 +268,9 @@
   :after org-roam
   :hook (org-mode . org-roam-bibtex-mode)
   :config
-  (require 'org-ref))
+  (require 'org-ref)
+  (setq orb-process-file-keyword nil)
+  (setq orb-preformat-keywords '("citekey" "key" "entry-type" "year" "beref" "date" "pdf?" "note?" "file" "author" "editor" "author-abbrev" "editor-abbrev" "author-or-editor-abbrev")))
 
 ;; :bind (:map org-mode-map
 ;;        ("s-b" . orb-note-actions))
