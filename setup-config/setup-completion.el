@@ -519,23 +519,26 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;;;; Yasnippet
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 (use-package yasnippet
-  ;; :hook (after-init . yas-global-mode)
-  :defer 2
+  :hook (after-init . yas-global-mode)
+  ;; :defer 2
   :config
-  (use-package yasnippet-snippets)
-  ;; snippet directory
-  (setq-default yas-snippet-dirs '("~/.emacs.d/.local/snippets/cpm-snippets"
-                                   yasnippet-snippets-dir))
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
     (setq-local yas-buffer-local-condition
                 '(not (org-in-src-block-p t))))
   (add-hook 'org-mode-hook #'cpm/yas-org-mode-hook)
-  (yas-global-mode)
   ;; Adding yasnippet support to company
   (with-eval-after-load 'company-mode
     (add-to-list 'company-backends '(company-yasnippet)))
   (yas-reload-all))
+
+(use-package yasnippet-snippets
+  :after (yasnippet)
+  :config
+  ;; snippet directory
+  (setq-default yas-snippet-dirs '("~/.emacs.d/.local/snippets/cpm-snippets"
+                                   yasnippet-snippets-dir)))
+
 
 ;;; Icons
 (use-package all-the-icons-completion
