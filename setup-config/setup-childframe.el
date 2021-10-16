@@ -17,6 +17,7 @@
   :custom-face
   (mini-popup-background ((t (:background ,bespoke-subtle))))
   (mini-popup-border ((t (:background ,bespoke-subtle))))
+  (child-frame-border ((t (:background ,bespoke-subtle))))
   :hook (after-init . mini-popup-mode)
   :config
   (setq  mini-popup--frame-parameters
@@ -62,11 +63,12 @@
             (lambda (&rest _) (mini-popup--setup)) 99))
 
 
-;;; Reload Child-Frame
+;;; Reload Child-Frame for theme
 (defun cpm/reload-child-frame ()
   "function to reload child-frame settings"
   (interactive)
   (load-library "setup-childframe"))
+
 ;; add hook to reload child-frame colors on bespoke-theme change
 (add-hook 'after-load-theme-hook 'cpm/reload-child-frame)
 
@@ -88,6 +90,9 @@
 (use-package which-key-posframe
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
+  :custom-face
+  (which-key-posframe-border ((t (:background ,bespoke-subtle))))
+  (which-key-posframe ((t (:background ,bespoke-subtle))))
   :config
   (setq posframe-arghandler #'cpm/posframe-arghandler)
   ;; see https://github.com/yanghaoxie/which-key-posframe/issues/5#issuecomment-527528759
