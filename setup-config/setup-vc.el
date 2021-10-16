@@ -62,7 +62,10 @@
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide) ([unpulled status] . show)))
   (global-git-commit-mode t) ; use emacs as editor for git commits
-  (setq magit-push-always-verify nil))
+  (setq magit-push-always-verify nil)
+  ;; Fix Magit header line FIXME
+  (advice-add 'magit-set-header-line-format :override #'ignore)
+  )
 
 ;; display magit status in new frame
 (defun magit-display-buffer-pop-up-frame (buffer)
