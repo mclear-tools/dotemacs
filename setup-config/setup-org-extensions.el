@@ -2,6 +2,7 @@
 ;; NOTE: some org-extensions are set in other setup files:
 ;; - org roam setup is in setup-notes
 ;; - org citations setup is in setup-writing
+;; - some org export functions are in setup-teaching
 
 ;;; Org Babel
 ;; org babel source block settings
@@ -726,76 +727,6 @@ Instead it's simpler to use bash."
                  (funcall func))
                (end-of-line)))))))
 
-;;;; Slide Notes
-;; Allow reveal.js notes to work in beamer
-;; See https://joonro.github.io/Org-Coursepack/Lectures/04%20Creating%20Content%20for%20Slides%20and%20Handouts.html
-(defun string/starts-with (string prefix)
-  "Return t if STRING starts with prefix."
-  (and (string-match (rx-to-string `(: bos ,prefix) t) string) t))
-
-(defun my/process-NOTES-blocks (text backend info)
-  "Filter NOTES special blocks in export."
-  (cond
-   ((eq backend 'latex)
-    (if (string/starts-with text "\\begin{NOTES}") ""))
-   ((eq backend 'rst)
-    (if (string/starts-with text ".. NOTES::") ""))
-   ((eq backend 'html)
-    (if (string/starts-with text "<div class=\"NOTES\">") ""))
-   ((eq backend 'beamer)
-    (let ((text (replace-regexp-in-string "\\\\begin{NOTES}" "\\\\note{" text)))
-      (replace-regexp-in-string "\\\\end{NOTES}" "}" text)))
-   ))
-
-(eval-after-load 'ox '(add-to-list
-                       'org-export-filter-special-block-functions
-                       'my/process-NOTES-blocks))
-;;;; Beamer Options
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("beamer-handout"
-                 "\\documentclass[handout]{beamer}
-                    [NO-DEFAULT-PACKAGES]
-                    [EXTRA]
-                    \\setbeameroption{hidenotes}
-                    [PACKAGES]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("beamer-presentation"
-                 "\\documentclass[presentation]{beamer}
-                 [NO-DEFAULT-PACKAGES]
-                 [PACKAGES]
-                 \\usepackage{pgfpages}
-                 [EXTRA]
-                 \\setbeameroption{show notes on second screen=right}
-                 \\setbeamertemplate{note page}{\\pagecolor{yellow!5}\\insertnote}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
-
-;;;; Org PDF Notes Class
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("org-notes"
-                 "\\documentclass[12pt]{article}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-
-;; Set custom quote environment for notes
-;; FIXME: would be good to make this project local!
-(setq org-latex-default-quote-environment "quote-b")
-
-(defun cpm/cleanup-pdf-notes()
-  "Move notes to directory & cleanup other files"
-  (interactive)
-  (async-shell-command-no-window "trash *.tex *.bbl && mv *.pdf static/materials/handouts"))
-
 ;;; Org Miscellaneous Packages
 
 (use-package htmlize :commands (htmlize-buffer))
@@ -838,24 +769,6 @@ Instead it's simpler to use bash."
 ;;               ((eq 'html backend)
 ;;                (format "<a href=\"outlook:%s\">%s</a>" path desc))))))
 
-;;; Org Tree Slides
-(use-package org-tree-slide
-  :straight t
-  :general
-  (:states '(normal motion)
-   :keymaps 'org-tree-slide-mode-map
-   "C-j" 'org-tree-slide-move-next-tree
-   "C-k" 'org-tree-slide-move-previous-tree
-   "C-s C-c" 'org-tree-slide-content)
-  :config
-  (setq org-tree-slide-activate-message "Presentation mode ON")
-  (setq org-tree-slide-deactivate-message "Presentation mode OFF")
-  (setq org-tree-slide-breadcrumbs "    >    ")
-  (setq org-tree-slide-content-margin-top 4)
-  (setq org-tree-slide-skip-outline-level 4)
-  (org-tree-slide-narrowing-control-profile)
-  (setq org-tree-slide-skip-done nil)
-  (setq org-tree-slide-modeline-display nil))
 ;;; Org Autolist (Smart Lists)
 ;; Better list behavior
 (use-package org-auto-list

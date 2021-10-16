@@ -1357,40 +1357,6 @@ is non-nil."
          (org-table-align))
     (org-table-fix-formulas "@" nil (1- (org-table-current-dline)) n)))
 
-;;;; Org to PDF Notes
-(defun cpm/org-export-pdf-notes ()
-  "Export subtree of notes to PDF file"
-  (interactive)
-  (org-narrow-to-subtree)
-  (save-excursion
-    (goto-char (point-min))
-    (org-latex-export-to-pdf t t nil nil '(:latex-class "org-notes")))
-  (widen))
-
-;;;; Org to Beamer PDF
-(defun cpm/org-export-to-beamer-pdf-open ()
-  "Export org subtree to beamer pdf and open"
-  (interactive)
-  (universal-argument)
-  (universal-argument-more)
-  (org-open-file (org-beamer-export-to-pdf nil t)))
-
-;;;; Org to beamer slides or handout
-(defun cpm/org-export-beamer-presentation ()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation"))))
-
-;; (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation")))))
-
-(defun cpm/org-export-beamer-handout ()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-handout")))))
-
-
 ;;;; Org Export Last Subtree
 ;; bind f5 to keyboard macro of export-last-subtree
 (fset 'export-last-subtree

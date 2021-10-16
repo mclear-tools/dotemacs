@@ -257,6 +257,7 @@
 (require 'setup-programming)
 (require 'setup-pdf)
 (require 'setup-calendars)
+(require 'setup-teaching)
 (require 'setup-testing)
 
 ;; (require 'setup-ivy)

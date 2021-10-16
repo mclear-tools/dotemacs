@@ -817,3 +817,12 @@ title."
     (exec-path-from-shell-initialize))
   (setq exec-path-from-shell-arguments '("-l"))
   )
+
+;;; Org to beamer PDF
+;; Not sure why I have the universal arg stuff here
+(defun cpm/org-export-to-beamer-pdf-open ()
+  "Export org subtree to beamer pdf and open"
+  (interactive)
+  (universal-argument)
+  (universal-argument-more)
+  (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation"))))
