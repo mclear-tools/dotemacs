@@ -1,6 +1,72 @@
 ;; Useful functions specifically for teaching or teaching-related work
 ;; Setup files for defined custom classes are in .local
 
+;;; Org Latex Classes
+(setq org-latex-classes '(("beamer" "\\documentclass[presentation]{beamer}"
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+                          ("article" "\\documentclass[11pt]{article}"
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                          ("report" "\\documentclass[11pt]{report}"
+                           ("\\part{%s}" . "\\part*{%s}")
+                           ("\\chapter{%s}" . "\\chapter*{%s}")
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+                          ("book" "\\documentclass[11pt]{book}"
+                           ("\\part{%s}" . "\\part*{%s}")
+                           ("\\chapter{%s}" . "\\chapter*{%s}")
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+                          ;; notes
+                          ("org-notes" "\\documentclass[12pt]{article}
+                           [NO-DEFAULT-PACKAGES]
+                           [EXTRA]
+                           \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/notes-setup-file.tex}"
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                          ;; beamer handout
+                          ("beamer-handout" "\\documentclass[12pt]{article}
+                           [NO-DEFAULT-PACKAGES]
+                           [EXTRA]
+                           \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/handout-setup-file.tex}"
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                          ;; beamer presentation
+                          ("beamer-presentation" "\\documentclass[presentation]{beamer}
+                           [NO-DEFAULT-PACKAGES]
+                           [PACKAGES]
+                           \\usepackage{pgfpages}
+                           [EXTRA]
+                           \\setbeameroption{show notes on second screen=right}
+                           \\setbeamertemplate{note page}{\\pagecolor{yellow!5}\\insertnote}
+                           \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/unl-beamer-preamble.tex}"
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+                          ;; beamer slides only
+                          ("beamer-slides-no-notes" "\\documentclass[handout]{beamer}
+                           [NO-DEFAULT-PACKAGES]
+                           [EXTRA]
+                           \\setbeameroption{hidenotes}
+                           \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/unl-beamer-preamble.tex}
+                           [PACKAGES]"
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+
 ;;; Slide Filter Notes
 ;; Allow reveal.js notes to work in beamer
 ;; Filter out notes in specified format backends
@@ -30,33 +96,6 @@
                        'my/process-NOTES-blocks))
 
 ;;; Slides
-;;;; Custom Beamer Classes
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("beamer-slides-no-notes"
-                 "\\documentclass[handout]{beamer}
-                  [NO-DEFAULT-PACKAGES]
-                  [EXTRA]
-                  \\setbeameroption{hidenotes}
-                  \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/unl-beamer-preamble.tex}
-                  [PACKAGES]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("beamer-presentation"
-                 "\\documentclass[presentation]{beamer}
-                  [NO-DEFAULT-PACKAGES]
-                  [PACKAGES]
-                  \\usepackage{pgfpages}
-                  [EXTRA]
-                  \\setbeameroption{show notes on second screen=right}
-                  \\setbeamertemplate{note page}{\\pagecolor{yellow!5}\\insertnote}
-                  \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/unl-beamer-preamble.tex}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 ;;;; Org export to slides w/notes
 (defun cpm/org-export-beamer-presentation ()
@@ -97,21 +136,6 @@
 
 ;;; Handouts
 
-;;;; Custom Handout Class
-;; Making handouts for slides that don't just look like slides
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("beamer-handout"
-                 "\\documentclass[12pt]{article}
-                  [NO-DEFAULT-PACKAGES]
-                  [EXTRA]
-                  \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/handout-setup-file.tex}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-
 (defun cpm/org-export-beamer-handout ()
   "Export subtree content to PDF handout. Handout uses a distinctive quote style."
   (interactive)
@@ -135,20 +159,6 @@
 
 
 ;;; Notes
-;;;; Org PDF Notes Class
-;; Export org to a nice looking PDF file
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("org-notes"
-                 "\\documentclass[12pt]{article}
-                  [NO-DEFAULT-PACKAGES]
-                  [EXTRA]
-                  \\input{/Users/roambot/.emacs.d/.local/custom-org-latex-classes/notes-setup-file.tex}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
 ;;;; Org to PDF Notes
 (defun cpm/org-export-pdf-notes ()
