@@ -45,7 +45,7 @@
 ;; Vertico repeat last command
 (use-package vertico-repeat
   :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
-  :hook (minibuffer-setup . vertico-repeat--save)
+  :hook (minibuffer-setup . vertico-repeat-save)
   :commands (vertico-repeat))
 
 ;; Configure directory extension
@@ -77,7 +77,7 @@
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
+  (setf enable-recursive-minibuffers t))
 
 ;; Persist history over Emacs restarts with savehist mode. Vertico sorts by history position.
 ;; See setup-settings.el
@@ -488,10 +488,10 @@ If TOP-NODE is provided, then just select from its sub-nodes."
         company-echo-truncate-lines nil)
   :config
   ;; Default backends
-  (add-to-list 'company-backends 'company-keywords)
-  (add-to-list 'company-backends 'company-files)
-  (add-to-list 'company-backends 'company-elisp)
-  (add-to-list 'company-backends 'company-semantic))
+  (setq company-backends '(company-elisp
+                           company-keywords
+                           company-files
+                           company-semantic)))
 
 ;;;; Company Prescient
 
@@ -520,7 +520,8 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 (use-package yasnippet
   :hook (after-init . yas-global-mode)
-  ;; :defer 2
+  :init
+  (setq yas-snippet-dirs '("~/.emacs.d/.local/snippets"))
   :config
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
@@ -534,10 +535,10 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 
 (use-package yasnippet-snippets
   :after (yasnippet)
-  :config
-  ;; snippet directory
-  (setq-default yas-snippet-dirs '("~/.emacs.d/.local/snippets/cpm-snippets"
-                                   yasnippet-snippets-dir)))
+  :custom
+  (yasnippet-snippets-dir (concat cpm-local-dir "snippets")))
+
+
 
 
 ;;; Icons
