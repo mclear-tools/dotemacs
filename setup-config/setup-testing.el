@@ -175,21 +175,39 @@
                            :complete 'org-hugo-link-complete
                            :follow 'org-hugo-follow))
 
-;;;; Mini-Pop-Up
-(use-package mini-popup
-  :disabled
-  :straight (:host github :repo "minad/mini-popup")
-  :config
-  ;; Configure a height function (Example for Vertico)
-  (defun mini-popup-height-resize ()
-    (* (1+ (min vertico--total vertico-count)) (default-line-height)))
-  (defun mini-popup-height-fixed ()
-    (* (1+ (if vertico--input vertico-count 0)) (default-line-height)))
-  (setq mini-popup--height-function #'mini-popup-height-fixed)
+;;;; Toggle macro
 
-  ;; Ensure that the popup is updated after refresh (Consult-specific)
-  (add-hook 'consult--completion-refresh-hook #'mini-popup--setup-hook 99)
-  )
+(defun deftoggle-var-doc (name)
+  (concat "Non-nil if " name " is enabled.\n\n"
+          "See " name
+          " command for a description of this toggle."))
+(defun deftoggle-fun-doc (name doc)
+  (concat "Toggle " name " on or off.\n\n" doc))
+(defmacro deftoggle (name doc enabler disabler)
+  `(progn
+     (defvar ,name nil ,(deftoggle-var-doc (symbol-name name)))
+     (defun ,name (&optional enable)
+       ,(deftoggle-fun-doc (symbol-name name) doc)
+       (interactive)
+       (if (called-interactively-p 'interactive)
+           (progn
+             (if ,name
+                 ,disabler
+               ,enabler)
+             (setq ,name (not ,name)))
+         (progn
+           (if enable
+               ,enabler
+             ,disabler)
+           (setq ,name enable))))))
+;; It's very similar to define-minor-mode, but with all the hooks, keymaps, and lighters stripped out, so it's less verbose. Here I use it to toggle my theme for example:
+;; (deftoggle sam-toggle-theme
+;;   "Toggle theme between light and dark."
+;;   (progn (disable-theme 'dracula)
+;;          (load-theme 'spacemacs-light t))
+;;   (progn (disable-theme 'spacemacs-light)
+;;          (load-theme 'dracula t)))
+
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
