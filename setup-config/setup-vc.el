@@ -152,7 +152,7 @@
   :demand fringe-helper
   :config
   (require 'git-gutter-fringe)
-  ;; (global-git-gutter-mode t)
+  (global-git-gutter-mode t)
   ;; subtle diff indicators in the fringe
   ;; places the git gutter outside the margins.
   (setq-default fringes-outside-margins t)
