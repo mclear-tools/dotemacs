@@ -22,21 +22,10 @@
 
 ;;; Bespoke Theme
 (use-package bespoke-themes
-  :straight (:type built-in)
-  :load-path ".local/custom-themes/bespoke-themes"
+  :straight (:local-repo "/Users/roambot/.emacs.d/.local/custom-themes/bespoke-themes/")
   :config
-  ;; Set mode line as header line
-  (setq bespoke-set-mode-line 'header)
-  ;; Set mode line height
-  (setq bespoke-set-mode-line-size 3)
-  ;; Show diff lines in modeline
-  (setq bespoke-set-git-diff-mode-line t)
-  ;; Set mode-line cleaner
-  (setq bespoke-set-mode-line-cleaner t)
   ;; Set up evil cursor colors
   (setq bespoke-set-evil-cursors t)
-  ;; Use mode line visual bell
-  (setq bespoke-set-visual-bell t)
   ;; Set use of italics
   (setq bespoke-set-italic-comments t
         bespoke-set-italic-keywords t)
@@ -134,11 +123,13 @@
               (setq bespoke-set-theme 'light)
               (load-theme 'bespoke t)
               (setq active-theme 'light-theme)
+              (posframe-delete-all)
               ))
     ('dark (progn
              (setq bespoke-set-theme 'dark)
              (load-theme 'bespoke t)
              (setq active-theme 'dark-theme)
+             (posframe-delete-all)
              ))))
 
 (add-hook 'ns-system-appearance-change-functions #'cpm/system-apply-theme)
