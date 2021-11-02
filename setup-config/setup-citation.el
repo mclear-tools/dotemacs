@@ -3,16 +3,20 @@
 
 ;;; Citations
 ;;;; Org-Cite
-;; Eventually this should be a full replacement of org-ref
+;; Eventually this should be a full replacement for org-ref
 (use-package oc
+  :straight nil
   :after org
   :config
   (setq org-cite-global-bibliography `(,cpm-bibliography))
   ;; (setq org-cite-global-bibliography nil)
   (setq org-cite-export-processors
         '((beamer natbib)
-          (latex biblatex)
-          (t csl))))
+          (latex csl)
+          (t csl)))
+  ;; Color citation links for bespoke-theme
+  (set-face-attribute 'org-cite nil :foreground bespoke-blue)
+  (set-face-attribute 'org-cite-key nil :foreground bespoke-green))
 
 ;; Org cite processors
 ;; Currently only using csl
@@ -133,7 +137,7 @@
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
-        org-cite-activate-processor 'basic))
+        org-cite-activate-processor 'oc-bibtex-actions))
 
 ;;;; Company-bibtex
 
