@@ -132,8 +132,8 @@
     (progn
       (turn-on-flyspell)
       (auto-fill-mode)
-      (centered-cursor-mode 1)
-      (git-gutter-mode 1)
+      ;; (centered-cursor-mode 1)
+      ;; (git-gutter-mode 1)
       (hl-todo-mode)))
 
   ;; markdown hooks
@@ -207,7 +207,7 @@
   (interactive)
   (git-gutter-mode 0)
   (linum-mode 0)
-  (centered-cursor-mode)
+  ;; (centered-cursor-mode)
   (writeroom-mode)
   )
 

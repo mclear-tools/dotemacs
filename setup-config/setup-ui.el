@@ -5,10 +5,12 @@
   :straight (:type built-in)
   :config
   (setq auto-window-vscroll nil)
-  ;; the text cursor moves off-screen. Instead, only scroll the minimum amount
-  ;; necessary to show the new line. (A number of 101+ disables re-centering.)
-  (setq scroll-margin 0
-        scroll-conservatively 101
+  ;; Settings for better cursor
+  ;; see https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs
+  ;;  (NOTE: A number of 101+ disables re-centering.)
+  (setq maximum-scroll-margin 0.5
+        scroll-margin 99999
+        scroll-conservatively 0
         scroll-preserve-screen-position t))
 
 (use-package mwheel

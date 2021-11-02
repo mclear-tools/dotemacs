@@ -75,6 +75,7 @@
 
 ;;; Centered Cursor
 (use-package centered-cursor-mode
+  :disabled
   :diminish centered-cursor-mode
   :hook ((prog-mode markdown-mode org-mode) . centered-cursor-mode)
   :commands (centered-cursor-mode

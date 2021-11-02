@@ -141,7 +141,7 @@
 ;;;; Org Hooks
   (add-hook 'org-mode-hook
             (lambda ()
-              (centered-cursor-mode)
+              ;; (centered-cursor-mode)
               (turn-on-auto-fill)
               (visual-line-mode)))
   ;; (add-hook 'auto-save-hook 'org-save-all-org-buffers)
