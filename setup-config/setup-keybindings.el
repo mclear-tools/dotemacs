@@ -617,7 +617,15 @@
   (use-package evil-org
     :after org
     :hook (org-mode . evil-org-mode)
+    :init
+    ;; hack fix for upstream evil mode change
+    (fset 'evil-redirect-digit-argument 'ignore)
     :config
+    ;; ditto
+    (add-to-list 'evil-digit-bound-motions 'evil-org-beginning-of-line)
+    (evil-define-key 'motion 'evil-org-mode
+      (kbd "0") 'evil-org-beginning-of-line)
+    ;; use evil bindings in agenda
     (require 'evil-org-agenda)
     ;; write as sep hook so byte compile doesn't complain
     (add-hook 'evil-org-mode-hook
