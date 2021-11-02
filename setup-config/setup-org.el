@@ -3,11 +3,9 @@
 ;;; New Org
 ;; Org package settings
 (use-package org
+  :straight t
   ;; see https://github.com/raxod502/straight.el/issues/766#issuecomment-892018314
-  :straight (:includes oc :files (:defaults "lisp/*.el" ("etc/styles/" "etc/styles/*")))
   :commands (org-mode)
-  ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
-  ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :mode (("\\.org$" . org-mode))
   :init
 ;;; Org Settings
@@ -26,10 +24,6 @@
   ;; https://www.reddit.com/r/emacs/comments/oggf1d/whats_the_difference_between_org_mode_link_types/h4l6l1r
   (setq org-link-parameters (delq (assoc "file+sys" org-link-parameters) org-link-parameters))
   (setq org-link-parameters (delq (assoc "file+emacs" org-link-parameters) org-link-parameters))
-  ;; Don't use bad hyperref value
-  ;; https://emacs.stackexchange.com/a/46226/11934
-  (customize-set-value 'org-latex-hyperref-template nil)
-  (setq org-export-async-debug t)
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-footnote-auto-adjust t ;; renumber footnotes
                 org-return-follows-link t ;; make RET follow links
@@ -55,7 +49,11 @@
                 org-imenu-depth 8
                 imenu-auto-rescan t
                 ;; dont export postamble
-                org-html-postamble nil)
+                org-html-postamble nil
+                ;; don't use caching (seems to be causing problems)
+                ;; see https://emacs.stackexchange.com/questions/42006/trouble-with-org-mode
+                org-element-use-cache nil
+                org-export-with-broken-links t)
 
 ;;;; Org Modules
   (with-eval-after-load 'org
