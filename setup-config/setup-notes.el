@@ -263,14 +263,20 @@
 
 ;;;; Org Roam Bibtex
 ;; If you installed via MELPA
-(use-package org-roam-bibtex
-  :straight (:host github :repo "org-roam/org-roam-bibtex")
-  :after org-roam
-  :hook (org-mode . org-roam-bibtex-mode)
-  :config
-  (require 'org-ref)
-  (setq orb-process-file-keyword nil)
-  (setq orb-preformat-keywords '("citekey" "key" "entry-type" "year" "beref" "date" "pdf?" "note?" "file" "author" "editor" "author-abbrev" "editor-abbrev" "author-or-editor-abbrev")))
+(use-package org-ref :straight (:host github :repo "jkitchin/org-ref") :after org-roam-bibtex)
+  (use-package org-roam-bibtex
+    :straight (:host github :repo "org-roam/org-roam-bibtex")
+    :after org-roam
+    :hook (org-mode . org-roam-bibtex-mode)
+    :config
+    (require 'org-ref)
+    ;; fix org-ref lag in typing
+    ;; see https://github.com/jkitchin/org-ref/issues/647
+    (setq org-ref-colorize-links nil)
+    (setq org-ref-show-broken-links nil)
+
+    (setq orb-process-file-keyword nil)
+    (setq orb-preformat-keywords '("citekey" "key" "entry-type" "year" "beref" "date" "pdf?" "note?" "file" "author" "editor" "author-abbrev" "editor-abbrev" "author-or-editor-abbrev")))
 
 ;; :bind (:map org-mode-map
 ;;        ("s-b" . orb-note-actions))
