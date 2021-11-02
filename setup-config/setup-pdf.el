@@ -137,7 +137,8 @@
 ;;;; PDF-Tools
 ;; good but often problematic pdf reader and annotator
 (use-package pdf-tools
-  :straight t
+  ;; use maintained fork
+  :straight (:host github :repo "vedang/pdf-tools")
   :mode (("\\.pdf$" . pdf-view-mode))
   :commands (pdf-view-mode)
   :config
