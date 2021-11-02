@@ -1,8 +1,7 @@
-;;; Evil Mode
 
+;;; Evil Mode
 (use-package evil
-  ;; start as soon as possible but don't block loading
-  :defer .1
+  :straight t
   :init
   (setq evil-want-integration t
         evil-want-keybinding nil)
@@ -18,48 +17,115 @@
     ;; move over visual lines like normal lines
     (general-define-key :states '(motion normal)
       "j"   #'evil-next-visual-line
-      "k"   #'evil-previous-visual-line)
+      "k"   #'evil-previous-visual-line))
+  (setq evil-search-module 'evil-search)
+  (setq evil-magic 'very-magic)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-visual-state-tag "VISUAL")
+  ;; use insert in commits automatically
+  (add-hook 'git-commit-mode-hook 'evil-insert-state)
+  ;; don't echo evil state
+  (setq evil-echo-state t)
+  ;; Make evil cursor behavior more emacsy
+  (setq evil-move-cursor-back nil) ;; don't move cursor back when exiting insert state
+  (setq evil-move-beyond-eol t) ;; allow end of line movement
+  ;; highlight closing bracket like vim not emacs
+  (setq evil-highlight-closing-paren-at-point-states '(not emacs insert replace))
+  ;; edit by visual lines
+  (setq evil-respect-visual-line-mode nil)
+  ;; whether to allow evil-char move across lines
+  (setq evil-cross-lines nil)
+  ;; Use consult to provide :ls
+  (evil-ex-define-cmd "buffers" 'consult-buffer)
+  ;; fine-grained undo
+  (setq evil-want-fine-undo t)
 
-    (setq evil-search-module 'evil-search)
-    (setq evil-magic 'very-magic)
-    (setq evil-want-C-i-jump nil)
-    ;; Set colors for cursor states
-    ;; (setq evil-emacs-state-cursor    '("#649bce" box))
-    ;; (setq evil-normal-state-cursor   '("#ebcb8b" box))
-    ;; (setq evil-visual-state-cursor   '("#677691" box))
-    ;; (setq evil-insert-state-cursor   '("#ed683e" (bar . 2)))
-    ;; (setq evil-replace-state-cursor  '("#a9444e" hbar))
-    ;; (setq evil-motion-state-cursor   '("#93004d" box))
-    ;; (setq evil-operator-state-cursor '("#cc1f24" hollow))
-    (setq evil-visual-state-tag "VISUAL")
-    ;; use insert in commits automatically
-    (add-hook 'git-commit-mode-hook 'evil-insert-state)
-    ;; (evil-set-initial-state 'dashboard-mode 'motion)
-    (evil-set-initial-state 'messages-buffer-mode 'motion)
-    (evil-set-initial-state 'magit-mode 'normal)
-    (evil-set-initial-state 'magit-log-edit-mode 'insert)
-    (evil-set-initial-state 'org-agenda-mode 'motion)
-    (evil-set-initial-state 'org-export-dispatch 'motion)
-    ;; evil-normal-state is preferred, so revert when idle
-    (run-with-idle-timer 60 t 'evil-normal-state)
-    ;; don't echo evil state
-    (setq evil-echo-state t)
-    ;; Make evil cursor behavior more emacsy
-    (setq evil-move-cursor-back nil) ;; don't move cursor back when exiting insert state
-    (setq evil-move-beyond-eol t) ;; allow end of line movement
-    ;; highlight closing bracket like vim not emacs
-    (setq evil-highlight-closing-paren-at-point-states '(not emacs insert replace))
-    ;; edit by visual lines
-    (setq evil-respect-visual-line-mode nil)
-    ;; whether to allow evil-char move across lines
-    (setq evil-cross-lines nil)
-    ;; Use consult to provide :ls
-    (evil-ex-define-cmd "buffers" 'consult-buffer)
-    ;; fine-grained undo
-    (setq evil-want-fine-undo t)
-    ;; evil everywhere
-    (evil-mode 1)
-    ))
+  ;; evil everywhere
+  (evil-mode 1))
+
+;; (progn
+;;   (straight-use-package 'evil)
+;;   (defvar use-package--warning87
+;;     #'(lambda
+;;         (keyword err)
+;;         (let
+;;             ((msg
+;;               (format "%s/%s: %s" 'evil keyword
+;;                       (error-message-string err))))
+;;           (display-warning 'use-package msg :error))))
+;;   (condition-case-unless-debug err
+;;       (progn
+;;         (let
+;;             ((custom--inhibit-theme-enable nil))
+;;           (unless
+;;               (memq 'use-package custom-known-themes)
+;;             (deftheme use-package)
+;;             (enable-theme 'use-package)
+;;             (setq custom-enabled-themes
+;;                   (remq 'use-package custom-enabled-themes)))
+;;           (custom-theme-set-variables 'use-package
+;;                                       '(evil-undo-system 'undo-redo nil nil "Customized with use-package evil")))
+;;         (unless
+;;             (fboundp 'evil-jump-backward)
+;;           (autoload #'evil-jump-backward "evil" nil t))
+;;         (unless
+;;             (fboundp 'evil-jump-forward)
+;;           (autoload #'evil-jump-forward "evil" nil t))
+;;         (condition-case-unless-debug err
+;;             (setq evil-want-integration t evil-want-keybinding nil)
+;;           (error
+;;            (funcall use-package--warning87 :init err)))
+;;            (eval-after-load 'evil
+;;           '(let
+;;                ((now
+;;                  (current-time)))
+;;              (message "%s..." "Configuring package evil")
+;;              (prog1
+;;                  (condition-case-unless-debug err
+;;                      (progn
+;;                        (progn
+;;                          (general-define-key :states:
+;;                                              '(motion normal)
+;;                                              "j" #'evil-next-visual-line "k" #'evil-previous-visual-line)
+;;                          (setq evil-search-module 'evil-search)
+;;                          (setq evil-magic 'very-magic)
+;;                          (setq evil-want-C-i-jump nil)
+;;                          (setq evil-visual-state-tag "VISUAL")
+;;                          (add-hook 'git-commit-mode-hook 'evil-insert-state)
+;;                          (evil-set-initial-state 'messages-buffer-mode 'motion)
+;;                          (evil-set-initial-state 'magit-mode 'normal)
+;;                          (evil-set-initial-state 'magit-log-edit-mode 'insert)
+;;                          (evil-set-initial-state 'org-agenda-mode 'motion)
+;;                          (evil-set-initial-state 'org-export-dispatch 'motion)
+;;                          (run-with-idle-timer 60 t 'evil-normal-state)
+;;                          (setq evil-echo-state t)
+;;                          (setq evil-move-cursor-back nil)
+;;                          (setq evil-move-beyond-eol t)
+;;                          (setq evil-highlight-closing-paren-at-point-states
+;;                                '(not emacs insert replace))
+;;                          (setq evil-respect-visual-line-mode nil)
+;;                          (setq evil-cross-lines nil)
+;;                          (evil-ex-define-cmd "buffers" 'consult-buffer)
+;;                          (setq evil-want-fine-undo t)
+;;                          (evil-mode 1))
+;;                        t)
+;;                    (error
+;;                     (funcall use-package--warning87 :config err)))
+;;                (let
+;;                    ((elapsed
+;;                      (float-time
+;;                       (time-subtract
+;;                        (current-time)
+;;                        now))))
+;;                  (if
+;;                      (> elapsed 0)
+;;                      (message "%s...done (%.3fs)" "Configuring package evil" elapsed)
+;;                    (message "%s...done" "Configuring package evil"))))))
+;;         (general-def :states
+;;           '(normal motion)
+;;           "gb" #'evil-jump-backward "gf" #'evil-jump-forward :package 'evil))
+;;     (error
+;;      (funcall use-package--warning87 :catch err))))
 
 ;;; Evil Cursor (In Terminal)
 (use-package term-cursor
