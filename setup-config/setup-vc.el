@@ -86,8 +86,8 @@
   :custom (git-commit-summary-max-length 50)
   :preface
   (defun cpm/git-commit-auto-fill-everywhere ()
-    "Ensures that the commit body does not exceed 72 characters."
-    (setq fill-column 85)
+    "Ensures that the commit body does not exceed 80 characters."
+    (setq fill-column 80)
     (setq-local comment-auto-fill-only-comments nil)))
 
 ;; add todos in magit
