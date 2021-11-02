@@ -39,7 +39,7 @@
   ;; Make a clean & minimalist frame
   (setq-default default-frame-alist
                 (append (list
-	                     '(font . "SF Mono:style=medium:size=15")
+	                     '(font . "SF Mono Powerline:style=normal:size=13")
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
@@ -97,7 +97,7 @@ If FRAME is omitted or nil, use currently selected frame."
                          (/ (- monitor-h frame-h) 2))))
       (apply 'set-frame-position (flatten-list (list frame center))))))
 
-(add-hook 'after-init-hook #'cpm/frame-recenter)
+;; (add-hook 'after-init-hook #'cpm/frame-recenter)
 (add-hook 'after-make-frame-functions #'cpm/frame-recenter)
 
 ;;;; Fringe
@@ -114,20 +114,23 @@ If FRAME is omitted or nil, use currently selected frame."
 (setq-default ns-use-srgb-colorspace t)
 ;;; Fonts
 
-(setq-default line-spacing 0.20)
-
 (use-package faces
   :straight (:type built-in)
   :defer t
   :custom
-  (face-font-family-alternatives
-   '(("Monospace" "SF Mono" "InconsolataLGC Nerd Font" "RobotoMono Nerd Font" "Victor Mono" "FiraCode Nerd Font" "Hasklug Nerd Font"  "SauceCodePro Nerd Font" "Consolas" "Monaco" "PT Mono")
-     ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
-     ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
+  ;; (face-font-family-alternatives
+  ;;  '(("Monospace" "SF Mono" "InconsolataLGC Nerd Font" "Monaco")
+  ;;    ("Monospace Serif" "Roboto" "Monospace")
+  ;;    ("Serif" "Avenir" "serif")))
+  (face-font-family-alternatives '(
+                                   ("Monospace" "SF Mono Powerline" "InconsolataLGC Nerd Font Medium" "SF Mono" "RobotoMono Nerd Font" "Victor Mono" "FiraCode Nerd Font" "Hasklug Nerd Font" "SauceCodePro Nerd
+Font" "Consolas" "Monaco" "PT Mono")
+                                   ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
+                                   ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
   :custom-face
   (variable-pitch ((t (:family "Serif" :height 200))))
-  (fixed-pitch ((t (:family "Monospace Serif" :height 150))))
-  (default ((t (:family "Monospace" :height 150))))
+  (fixed-pitch ((t (:family "Monospace Serif" :height 130))))
+  (default ((t (:family "Monospace" :height 130))))
   :config
   ;; (set-face-attribute 'default nil :font "Roboto Mono Light" :height 150)
   ;; (set-face-attribute 'fixed-pitch nil :font "Roboto Mono" :height 150)
@@ -166,8 +169,8 @@ If FRAME is omitted or nil, use currently selected frame."
 
 ;;; Scale Text
 ;; Set default line spacing (in pixels)
-(setq-default line-spacing nil)
-;; When using `text-scale-incraese', this sets each 'step' to about one point size.
+(setq-default line-spacing 0.05)
+;; When using `text-scale-increase', this sets each 'step' to about one point size.
 (setq text-scale-mode-step 1.08)
 (global-set-key (kbd "s-=") 'text-scale-increase)
 (global-set-key (kbd "s--") 'text-scale-decrease)
@@ -400,6 +403,13 @@ If FRAME is omitted or nil, use currently selected frame."
   (dimmer-configure-which-key)
   (dimmer-configure-magit)
   (dimmer-configure-posframe))
+
+;;; Cursor
+(use-package emacs
+  :straight (:type built-in)
+  :custom
+  ;; don't show cursor in inactive windows
+  (cursor-in-non-selected-win dows nil))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
