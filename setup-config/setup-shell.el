@@ -170,6 +170,20 @@
 (use-package multi-vterm
   :commands (multi-vterm multi-vterm-projectile multi-vterm-dedicated-toggle))
 
+;;;; Shelldon
+;; Use the minibuffer to interact with async-shell
+(use-package shelldon
+  :straight (shelldon :type git
+                      :host github
+                      :repo "Overdr0ne/shelldon"
+                      :branch "master"
+                      :files ("shelldon.el"))
+  :config
+  ;; colors
+  (add-hook 'shelldon-mode-hook 'ansi-color-for-comint-mode-on)
+  (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+  (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t))
+
 ;;; Virtualenvwrapper
 (use-package virtualenvwrapper
   :after (:any eshell sane-term ansi-term)
