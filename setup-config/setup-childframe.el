@@ -64,12 +64,20 @@
 
 
 ;;; Reload Child-Frame for theme
+;; Child frames tend to have wonky colors after theme change. This tries to fix that.
 (defun cpm/reload-child-frame ()
-  "function to reload child-frame settings"
+  "Function to reload child-frame color settings on theme change."
   (interactive)
-  (load-library "setup-childframe"))
+  (posframe-delete-all)
+  (load-library "setup-childframe")
+  (custom-reevaluate-setting 'mini-popup-background)
+  (custom-reevaluate-setting 'mini-popup-border)
+  (custom-reevaluate-setting 'child-frame-border)
+  (custom-reevaluate-setting 'which-key-posframe-border)
+  (custom-reevaluate-setting 'which-key-posframe)
+  (custom-reevaluate-setting 'child-frame-border))
 
-;; add hook to reload child-frame colors on bespoke-theme change
+;; Add hook to reload child-frame colors on theme change
 (add-hook 'after-load-theme-hook 'cpm/reload-child-frame)
 
 ;;; Posframe
@@ -88,6 +96,7 @@
 
 ;;; Which-Key Posframe
 (use-package which-key-posframe
+  :disabled
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
   :custom-face
@@ -97,7 +106,7 @@
   (setq posframe-arghandler #'cpm/posframe-arghandler)
   ;; see https://github.com/yanghaoxie/which-key-posframe/issues/5#issuecomment-527528759
   (defun cpm/posframe-arghandler (buffer-or-name arg-name value)
-    (let ((info '(:width (round (* (frame-width) 0.72)) :height 75)))
+    (let ((info '(:width (round (* (frame-width) 0.62)) :height 75)))
       (or (plist-get info arg-name) value)))
   (setq which-key-posframe-border-width 20)
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-top-center))
