@@ -44,7 +44,7 @@
   (setq magit-refresh-verbose t)
   ;; try to speed up magit
   (setq magit-refresh-status-buffer nil)
-  (setq magit-git-executable "/usr/local/bin/git")
+  (setq magit-git-executable "/opt/homebrew/bin/git")
   ;; don't automatically present diff on commit
   ;; type C-c C-d to show the diff when needed
   ;; (remove-hook 'server-switch-hook 'magit-commit-diff)

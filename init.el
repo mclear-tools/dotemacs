@@ -85,10 +85,11 @@
     (push cpm-setup-dir load-path)))
 
 (defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
+(defconst homebrew "/opt/homebrew/bin")
 (defconst usr-local-bin "/usr/local/bin")
 (defconst usr-local-sbin "/usr/local/sbin")
-(setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
-(setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
+(setenv "PATH" (concat homebrew ":" usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
+(setq exec-path (append exec-path (list homebrew cpm-local-bin usr-local-sbin usr-local-bin)))
 
 ;;;; Straight
 ;;;;; Straight settings
@@ -106,6 +107,11 @@
 (setq straight-vc-git-auto-fast-forward nil)
 ;; see https://github.com/raxod502/straight.el/issues/757
 (setq native-comp-deferred-compilation-deny-list nil)
+;; Tell straight.el about the profiles we are going to be using.
+(setq straight-profiles
+      '((nil . "default.el")
+        ;; Packages which are pinned to a specific commit.
+        (pinned . "pinned.el")))
 
 ;;;;; Bootstrap straight
 (defvar bootstrap-version)
@@ -240,16 +246,17 @@
 ;;;; Other Modules
 (require 'setup-splash)
 (require 'setup-server)
+(require 'setup-org)
+(require 'setup-org-extensions)
 (require 'setup-windows-buffers)
 (require 'setup-ui)
+(require 'setup-modeline)
 (require 'setup-theme)
 (require 'setup-childframe)
 (require 'setup-navigation)
 (require 'setup-search)
 (require 'setup-vc)
 (require 'setup-shell)
-(require 'setup-org)
-(require 'setup-org-extensions)
 (require 'setup-writing)
 (require 'setup-citation)
 (require 'setup-notes)
@@ -262,7 +269,6 @@
 
 ;; (require 'setup-ivy)
 ;; (require 'setup-nano)
-;; (require 'setup-modeline)
 ;; (require 'setup-email)
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)

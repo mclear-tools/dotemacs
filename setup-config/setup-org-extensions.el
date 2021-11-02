@@ -539,7 +539,7 @@ Instead it's simpler to use bash."
   :after ox
   :config
   ;; default options for all output formats
-  (setq org-pandoc-command (expand-file-name "/usr/local/bin/pandoc"))
+  (setq org-pandoc-command (expand-file-name "pandoc" homebrew))
   (setq org-pandoc-options '((standalone . t)))
   ;; cancel above settings only for 'docx' format
   (setq org-pandoc-options-for-docx '((standalone . nil)))
