@@ -798,15 +798,14 @@ title."
 (use-package oc-basic
   :straight nil
   :after oc)
-
-(use-package oc-biblatex
-  :straight nil
-  :after oc)
-
+;; Org cite processors
 (use-package oc-natbib
   :straight nil
   :after oc)
 
+(use-package oc-biblatex
+  :straight nil
+  :after oc)
 ;;; Exec path
 ;; Exec path -- Emacs won't know where to load things without this
 (use-package exec-path-from-shell

@@ -11,14 +11,13 @@
   (setq org-cite-global-bibliography `(,cpm-bibliography))
   ;; (setq org-cite-global-bibliography nil)
   (setq org-cite-export-processors
-        '((beamer natbib)
+        '((beamer csl)
           (latex csl)
           (t csl)))
   ;; Color citation links for bespoke-theme
   (set-face-attribute 'org-cite nil :foreground bespoke-blue)
   (set-face-attribute 'org-cite-key nil :foreground bespoke-green))
 
-;; Org cite processors
 ;; Currently only using csl
 (use-package oc-csl
   :straight nil
