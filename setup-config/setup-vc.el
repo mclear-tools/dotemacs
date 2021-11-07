@@ -115,7 +115,7 @@
   :init
   :config
   (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
-        git-gutter:update-interval 1
+        ;; git-gutter:update-interval 1
         git-gutter:window-width nil
         git-gutter:ask-p nil)
   (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
