@@ -70,12 +70,11 @@
   (interactive)
   (posframe-delete-all)
   (load-library "setup-childframe")
+  (custom-reevaluate-setting 'child-frame-border)
   (custom-reevaluate-setting 'mini-popup-background)
   (custom-reevaluate-setting 'mini-popup-border)
-  (custom-reevaluate-setting 'child-frame-border)
   (custom-reevaluate-setting 'which-key-posframe-border)
-  (custom-reevaluate-setting 'which-key-posframe)
-  (custom-reevaluate-setting 'child-frame-border))
+  (custom-reevaluate-setting 'which-key-posframe))
 
 ;; Add hook to reload child-frame colors on theme change
 (add-hook 'after-load-theme-hook 'cpm/reload-child-frame)
@@ -96,7 +95,6 @@
 
 ;;; Which-Key Posframe
 (use-package which-key-posframe
-  :disabled
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
   :custom-face
