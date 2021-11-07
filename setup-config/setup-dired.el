@@ -103,6 +103,24 @@
             "s-m"  'dired-ranger-move
             "s-v"  'dired-ranger-paste))
 
+
+;;;; Cycle Dired Buffer
+;;https://www.reddit.com/r/emacs/comments/qnthhw/comment/hjiv2uc/?utm_source=share&utm_medium=web2x&context=3
+(add-hook 'dired-mode-hook
+          (defun cpm-dired-wrap ()
+            "Cycle from bottom to top of buffer"
+            (make-local-variable 'post-command-hook)
+            (add-hook 'post-command-hook
+                      (defun cpm-dired-wrap-1 ()
+                        ""
+                        (if (= 1 (save-excursion
+                                   (forward-line)))
+                            (goto-line 3))
+                        (if (= -1 (save-excursion
+                                    (forward-line -1)))
+                            (goto-line (count-lines
+                                        (point-min)
+                                        (point-max))))))))
 ;;; End Dired
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
