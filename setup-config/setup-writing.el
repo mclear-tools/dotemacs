@@ -8,7 +8,7 @@
     (setq ispell-program-name "aspell")
     ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
     (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")))
-  (setq ispell-choices-win-default-height 6))
+  (setq ispell-choices-win-default-height 8))
   ;; (when (executable-find "hunspell")
   ;;   (setq-default ispell-program-name "hunspell")
   ;;   (setq ispell-extra-args   '("-d en_US"))
