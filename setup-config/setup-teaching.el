@@ -96,9 +96,15 @@
                        'my/process-NOTES-blocks))
 
 ;;; Slides
+;; I got the tag based selective export idea from J Kitchin
+;; https://kitchingroup.cheme.cmu.edu/blog/2013/12/08/Selectively-exporting-headlines-in-org-mode/
+
+;; FIXME: Right now aync export doesn't work with let...
 
 ;;;; Org export to slides w/notes
+
 (defun cpm/org-export-beamer-presentation ()
+  "Export subtree to beamer PDF"
   (interactive)
   (let ((org-export-exclude-tags '("handout")))
     (save-excursion
@@ -108,14 +114,13 @@
 ;; (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation")))))
 
 
-;; I got the tag based selective export idea from J Kitchin
-;; https://kitchingroup.cheme.cmu.edu/blog/2013/12/08/Selectively-exporting-headlines-in-org-mode/
 (defun cpm/org-export--file-beamer-presentation ()
+  "Export file to beamer pdf"
   (interactive)
-  (let ((org-export-exclude-tags '("handout")))
+  (let ((org-export-exclude-tags '("noexport" "handout")))
     (save-excursion
       (goto-char (point-min))
-      (org-beamer-export-to-pdf t nil nil nil '(:latex-class "beamer-presentation")))))
+      (org-beamer-export-to-pdf nil nil nil nil '(:latex-class "beamer-presentation")))))
 
 ;;;; Org export to slides w/o notes
 (defun cpm/org-export-beamer-no-notes ()
@@ -140,23 +145,21 @@
   "Export subtree content to PDF handout. Handout uses a distinctive quote style."
   (interactive)
   (let ((org-latex-default-quote-environment "quote-b")
+        (org-latex-compiler "xelatex")
         (org-export-exclude-tags '("slides")))
     (org-narrow-to-subtree)
     (save-excursion
       (goto-char (point-min))
-      (org-latex-export-to-pdf t t nil nil '(:latex-class "beamer-handout")))
+      (org-latex-export-to-pdf nil t nil nil '(:latex-class "beamer-handout")))
     (widen)))
 
 (defun cpm/org-export--file-beamer-handout ()
   "Export file content to PDF handout. Handout uses a distinctive quote style."
   (interactive)
   (let ((org-latex-default-quote-environment "quote-b")
-        (org-export-exclude-tags '("slides")))
-    (save-excursion
-      (goto-char (point-min))
-      (org-latex-export-to-pdf t nil nil nil '(:latex-class "beamer-handout")))))
-
-
+        (org-latex-compiler "xelatex")
+        (org-export-exclude-tags '("slides" "noexport")))
+    (org-latex-export-to-pdf nil nil nil nil '(:latex-class "beamer-handout"))))
 
 ;;; Notes
 
@@ -164,20 +167,24 @@
 (defun cpm/org-export-pdf-notes ()
   "Export subtree of notes to PDF file. Note uses a distinctive quote style."
   (interactive)
-  (let ((org-latex-default-quote-environment "quote-b"))
+  (let ((org-latex-default-quote-environment "quote-b")
+        (org-latex-compiler "xelatex")
+        (org-export-exclude-tags '("noexport")))
     (org-narrow-to-subtree)
     (save-excursion
       (goto-char (point-min))
-      (org-latex-export-to-pdf t t nil nil '(:latex-class "org-notes")))
+      (org-latex-export-to-pdf nil t nil nil '(:latex-class "org-notes")))
     (widen)))
 
 (defun cpm/org-export--file-pdf-notes ()
   "Export file notes to PDF file. Note uses a distinctive quote style."
   (interactive)
-  (let ((org-latex-default-quote-environment "quote-b"))
+  (let ((org-latex-default-quote-environment "quote-b")
+        (org-latex-compiler "xelatex")
+        (org-export-exclude-tags '("noexport")))
     (save-excursion
       (goto-char (point-min))
-      (org-latex-export-to-pdf t nil nil nil '(:latex-class "org-notes")))))
+      (org-latex-export-to-pdf nil nil nil nil '(:latex-class "org-notes")))))
 
 (defun cpm/cleanup-pdf-notes()
   "Move notes to static directory & cleanup other files"
