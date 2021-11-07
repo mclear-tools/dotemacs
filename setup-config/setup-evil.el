@@ -38,7 +38,7 @@
   ;; Use consult to provide :ls
   (evil-ex-define-cmd "buffers" 'consult-buffer)
   ;; fine-grained undo
-  (setq evil-want-fine-undo t)
+  (setq evil-want-fine-undo nil)
 
   ;; evil everywhere
   (evil-mode 1))
