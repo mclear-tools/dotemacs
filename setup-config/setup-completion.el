@@ -517,12 +517,12 @@ If TOP-NODE is provided, then just select from its sub-nodes."
                        (company-mode +1)))))
 
 ;;;; Yasnippet
-;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 (use-package yasnippet
-  :hook (after-init . yas-global-mode)
-  :init
-  (setq yas-snippet-dirs '("~/.emacs.d/.local/snippets"))
+  :defer 1
   :config
+  ;; NOTE: need to specify dirs; does not look in non-snippet subdirs
+  (setq yas-snippet-dirs '("~/.emacs.d/.local/all-snippets/cpm-snippets"
+                           "~/.emacs.d/.local/all-snippets/yasnippet-snippets"))
   ;; see https://emacs.stackexchange.com/a/30150/11934
   (defun cpm/yas-org-mode-hook ()
     (setq-local yas-buffer-local-condition
@@ -531,12 +531,14 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   ;; Adding yasnippet support to company
   (with-eval-after-load 'company-mode
     (add-to-list 'company-backends '(company-yasnippet)))
+  (yas-global-mode 1)
   (yas-reload-all))
 
+;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 (use-package yasnippet-snippets
   :after (yasnippet)
   :custom
-  (yasnippet-snippets-dir (concat cpm-local-dir "snippets")))
+  (yasnippet-snippets-dir (concat cpm-local-dir "all-snippets/yasnippet-snippets")))
 
 
 
