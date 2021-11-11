@@ -39,7 +39,7 @@
   ;; Make a clean & minimalist frame
   (setq-default default-frame-alist
                 (append (list
-	                     '(font . "SF Mono Powerline:style=normal:size=13")
+	                     '(font . "SF Mono:style=normal:size=13")
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
@@ -123,7 +123,7 @@ If FRAME is omitted or nil, use currently selected frame."
   ;;    ("Monospace Serif" "Roboto" "Monospace")
   ;;    ("Serif" "Avenir" "serif")))
   (face-font-family-alternatives '(
-                                   ("Monospace" "SF Mono Powerline" "InconsolataLGC Nerd Font Medium" "SF Mono" "RobotoMono Nerd Font" "Victor Mono" "FiraCode Nerd Font" "Hasklug Nerd Font" "SauceCodePro Nerd
+                                   ("Monospace" "SF Mono" "InconsolataLGC Nerd Font Medium" "RobotoMono Nerd Font" "Victor Mono" "FiraCode Nerd Font" "Hasklug Nerd Font" "SauceCodePro Nerd
 Font" "Consolas" "Monaco" "PT Mono")
                                    ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
                                    ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
