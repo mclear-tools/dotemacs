@@ -544,9 +544,9 @@
    "ubp" #'cpm/org-export-beamer-presentation
    "ubh" #'cpm/org-export-beamer-handout
    "uc"  '(:ignore t :whichkey "Citations")
-   "uci" #'bibtex-actions-insert-citation
-   "ucn" #'bibtex-actions-open-notes
-   "uce" #'bibtex-actions-open-entry
+   "uci" #'org-cite-insert
+   "ucn" #'citar-open-notes
+   "uce" #'citar-open-entry
    ;; "uC" 'cpm/pandoc-command-line-convert-to-pdf
    "ug" 'org-mac-grab-link
    "uh" #'cpm/org-export-to-buffer-html-as-body

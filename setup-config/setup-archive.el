@@ -825,6 +825,76 @@ title."
   (universal-argument)
   (universal-argument-more)
   (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-presentation"))))
+
+;;; Bibtex actions / Citer
+;; Use completing read to select bibtex actions
+(use-package citar
+  :straight (:host github :repo "bdarcus/citar")
+  :commands (citar-insert-citation)
+  :init
+  (setq citar-file-open-note-function 'orb-bibtex-actions-edit-note)
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  :config
+  ;; Set templates
+  (setq citar-templates
+        '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
+          (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")))
+
+  ;; use icons
+  (setq citar-symbols
+        `((file . (,(all-the-icons-icon-for-file "foo.pdf" :face 'all-the-icons-dred) .
+                   ,(all-the-icons-icon-for-file "foo.pdf" :face 'citar-icon-dim)))
+          (note . (,(all-the-icons-icon-for-file "foo.txt") .
+                   ,(all-the-icons-icon-for-file "foo.txt" :face 'citar-icon-dim)))
+          (link .
+                (,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'all-the-icons-dpurple) .
+                 ,(all-the-icons-faicon "external-link-square" :v-adjust 0.02 :face 'citar-icon-dim)))))
+  ;; Here we define a face to dim non 'active' icons, but preserve alignment
+  (defface citar-icon-dim
+    '((((background dark)) :inherit bespoke-highlight)
+      (((background light)) :inherit bespoke-highlight))
+    "Face for obscuring/dimming icons"
+    :group 'all-the-icons-faces)
+
+  ;; don't autopopulate initial input
+  (setq citar-initial-inputs
+        '((pdf    . nil)
+          (note   . nil)
+          (link   . nil)
+          (source . nil)))
+
+  ;; embark
+  ;; use consult-completing-read for enhanced interface
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
+  ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
+  (with-eval-after-load 'embark
+    (add-to-list 'embark-target-finders 'citar-citation-key-at-point)
+    (add-to-list 'embark-keymap-alist '(bib-reference . citar-map))
+    (add-to-list 'embark-keymap-alist '(citation-key . citar-buffer-map)))
+
+  (setq citar-bibliography `(,cpm-bibliography))
+  ;; (with-eval-after-load 'embark
+  ;;   (setf (alist-get 'bibtex embark-keymap-alist) 'bibtex-actions-map))
+
+  ;; using with org-cite
+  ;; make sure to set this to ensure open commands work correctly
+  (setq citar-additional-search-fields '(doi url keywords)))
+
+;;  auto-refreshing cache when bib files change
+;; (bibtex-actions-filenotify-setup '(LaTeX-mode-hook markdown-mode-hook org-mode-hook)))
+
+;; (use-package oc-bibtex-actions
+;;   :after (oc embark)
+;;   :commands (oc-bibtex-actions-select-style oc-bibtex-actions-insert)
+;;   :config
+;;   (setq org-cite-insert-processor 'oc-bibtex-actions
+;;         org-cite-follow-processor 'oc-bibtex-actions
+;;         org-cite-activate-processor 'oc-bibtex-actions))
+
 ;;; Clipboard
 
 (use-package simpleclip
