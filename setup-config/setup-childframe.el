@@ -94,18 +94,19 @@
         transient-posframe-poshandler 'posframe-poshandler-frame-top-center))
 
 ;;; Which-Key Posframe
+;; this never works reliably -- spacing gets wonky
+;; or colors don't change correctly when theme changesd
+;; For spacing issue see
+;; https://github.com/yanghaoxie/which-key-posframe/issues/10
 (use-package which-key-posframe
+  :disabled
   :if (and (window-system) (version<= "26.1" emacs-version))
   :hook (after-init . which-key-posframe-mode)
   :custom-face
   (which-key-posframe-border ((t (:background ,bespoke-subtle))))
   (which-key-posframe ((t (:background ,bespoke-subtle))))
   :config
-  (setq posframe-arghandler #'cpm/posframe-arghandler)
-  ;; see https://github.com/yanghaoxie/which-key-posframe/issues/5#issuecomment-527528759
-  (defun cpm/posframe-arghandler (buffer-or-name arg-name value)
-    (let ((info '(:width (round (* (frame-width) 0.62)) :height 75)))
-      (or (plist-get info arg-name) value)))
+  (setq which-key-posframe-font nil)
   (setq which-key-posframe-border-width 20)
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-top-center))
 
