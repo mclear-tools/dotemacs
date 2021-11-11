@@ -189,7 +189,9 @@
 (defun cpm/cleanup-pdf-notes()
   "Move notes to static directory & cleanup other files"
   (interactive)
-  (async-shell-command-no-window "trash *.tex *.bbl && mv *.pdf static/materials/handouts"))
+  (shell-command-to-string "
+rm -f *.tex \
+mv -f *.pdf static/materials/handouts/"))
 
 ;;; Org Tree Slides
 (use-package org-tree-slide
