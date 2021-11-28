@@ -8,7 +8,7 @@
     (setq ispell-program-name "aspell")
     ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
     (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")))
-  (setq ispell-choices-win-default-height 8))
+  (setq ispell-choices-win-default-height 12))
   ;; (when (executable-find "hunspell")
   ;;   (setq-default ispell-program-name "hunspell")
   ;;   (setq ispell-extra-args   '("-d en_US"))
@@ -339,6 +339,11 @@
 ;;; Dictionary
 (use-package define-word
   :commands (define-word define-word-at-point))
+
+(use-package osx-dictionary
+  :straight (:type git :host github :repo "xuchunyang/osx-dictionary.el")
+  :commands (osx-dictionary-search-word-at-point osx-dictionary-search-input))
+
 ;;; Writegood Mode
 (use-package writegood-mode
   :hook (markdown-mode . writegood-mode)
