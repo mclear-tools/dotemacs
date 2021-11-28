@@ -582,6 +582,7 @@
    "gd" 'magit-diff
    "gh" #'hydra-git-gutter/body
    "gl" 'magit-log
+   "gL" 'magit-log-buffer-file ;; show history of selected region
    "gn" 'git-gutter:next-hunk
    "gp" 'git-gutter:previous-hunk
    "gr" 'magit-reflog
@@ -624,12 +625,7 @@
   (use-package evil-org
     :after org
     :hook (org-mode . evil-org-mode)
-    :init
-    ;; hack fix for upstream evil mode change
-    (fset 'evil-redirect-digit-argument 'ignore)
     :config
-    ;; ditto
-    (add-to-list 'evil-digit-bound-motions 'evil-org-beginning-of-line)
     (evil-define-key 'motion 'evil-org-mode
       (kbd "0") 'evil-org-beginning-of-line)
     ;; use evil bindings in agenda
@@ -639,8 +635,6 @@
               (lambda () (evil-org-set-key-theme)))
     (setq evil-org-key-theme '(navigation insert textobjects additional shift))
     (evil-org-agenda-set-keys))
-
-
 
   (general-define-key
    :states '(normal visual)
