@@ -87,7 +87,7 @@
 (setq max-specpdl-size 13000)
 
 ;;; Package settings
-(setq package-enable-at-startup nil) ;; use straight
+(setq package-enable-at-startup nil) ;; use straight not package.el
 (advice-add #'package--ensure-init-file :override #'ignore)
 
 ;; Do not allow loading from the package cache (same reason).

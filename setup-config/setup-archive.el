@@ -923,3 +923,4 @@ title."
 
 ;; (setq interprogram-cut-function 'paste-to-osx
 ;;       interprogram-paste-function 'copy-from-osx)
+

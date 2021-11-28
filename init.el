@@ -239,15 +239,15 @@
 (require 'setup-functions-macros)
 (require 'setup-evil)
 (require 'setup-settings)
-(require 'setup-dired)
-(require 'setup-completion)
-(require 'setup-osx)
 
 ;;;; Other Modules
 (require 'setup-splash)
 (require 'setup-server)
 (require 'setup-org)
 (require 'setup-org-extensions)
+(require 'setup-dired)
+(require 'setup-completion)
+(require 'setup-osx)
 (require 'setup-windows-buffers)
 (require 'setup-ui)
 (require 'setup-modeline)
@@ -258,8 +258,8 @@
 (require 'setup-vc)
 (require 'setup-shell)
 (require 'setup-writing)
-(require 'setup-citation)
 (require 'setup-notes)
+(require 'setup-citation)
 (require 'setup-projects)
 (require 'setup-programming)
 (require 'setup-pdf)
@@ -273,6 +273,7 @@
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-helm)
+
 
 
 ;;; Config Helper Functions

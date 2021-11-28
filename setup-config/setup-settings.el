@@ -362,6 +362,7 @@
      ["Describe"
       ("c" "Command" helpful-command)
       ("f" "Function" helpful-callable)
+      ("o" "Symbol"  helpful-symbol)
       ("v" "Variable" helpful-variable)
       ("k" "Key" helpful-key)
       ]
@@ -386,15 +387,15 @@
      ["Describe"
       ("s" "Symbol" helpful-symbol)
       ("." "At Point   " helpful-at-point)
-      ;; ("C-f" "Face" counsel-describe-face)
+      ("C-f" "Face" describe-face)
       ("w" "Where Is" where-is)
       ("=" "Position" what-cursor-position)
       ]
      ["Info Manuals"
       ("C-i" "Info" info)
       ("C-4" "Other Window " info-other-window)
-      ("C-e" "Emacs" info-emacs-manual)
-      ;; ("C-l" "Elisp" info-elisp-manual)
+      ("C-e" "Emacs" completing-read-info-emacs-manual)
+      ("C-l" "Elisp" completing-read-info-elisp-manual)
       ]
      ["Exit"
       ("q" "Quit" transient-quit-one)

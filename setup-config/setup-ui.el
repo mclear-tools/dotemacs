@@ -137,7 +137,8 @@ Font" "Consolas" "Monaco" "PT Mono")
   ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
   ;; Allow unicode
   (set-fontset-font t 'unicode "Symbola" nil 'prepend)
-
+  ;; font smoothing
+  (setq ns-use-thin-smoothing t)
   ;; ;; Allow font awesome fonts
   ;; (when (require 'all-the-icons nil 'noerror)
   ;;   (let ((fontset (face-attribute 'default :fontset)))
@@ -336,7 +337,7 @@ Font" "Consolas" "Monaco" "PT Mono")
   ("C-h k" #'helpful-key)
   ("C-h o" #'helpful-symbol)
   ("C-h v" #'helpful-variable)
-  ("C-c C-." #'helpful-at-point)
+  ("C-h C-." #'helpful-at-point)
   ("C-h C-l" #'find-library))
 
 ;; (advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
@@ -410,6 +411,14 @@ Font" "Consolas" "Monaco" "PT Mono")
   :custom
   ;; don't show cursor in inactive windows
   (cursor-in-non-selected-win dows nil))
+
+;;;; Reveal Mode
+;; Toggle uncloaking of invisible text near point (Reveal mode).
+(use-package reveal
+  :straight (:type built-in)
+  :defer 1
+  :config
+  (global-reveal-mode))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
