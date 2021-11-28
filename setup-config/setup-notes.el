@@ -21,7 +21,7 @@
 ;; Adapted from https://github.com/minad/consult/wiki/hrm-notes
 (use-package consult-notes
   :straight (:local-repo "/Users/roambot/.emacs.d/.local/elisp/consult-notes/")
-  :commands (consult-notes consult-notes-all-search)
+  :commands (consult-notes consult-notes-search-all)
   :config
   ;; Sources for file search
   (setq consult-notes-sources-data
@@ -76,7 +76,7 @@
                               :unnarrowed t))
           ("r" "reference note" plain "%?"
            :target (file+head "ref-notes/${citekey}.org"
-                              ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} ${year}: ${title}\n#+hugo_section: reading-notes\n\n- tags :: \n- bookends link :: bookends://sonnysoftware.com/${beref}\n- pdf :: [[${file}][pdf link]]\n\n#+begin_src emacs-lisp :results value latex\n (bibtex-actions-insert-bibtex '((\"${citekey}\")))\n#+end_src"))
+                              ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} ${year}: ${title}\n#+hugo_section: reading-notes\n\n- tags :: \n- bookends link :: bookends://sonnysoftware.com/${beref}\n- pdf :: [[${file}][pdf link]]\n\n(cpm-bibtex \"${citekey}\")"))
            :unnarrowed t)))
 
   ;; Filtering by subdirectory
@@ -133,6 +133,7 @@
 
 ;;   ;; we'll only start updating db if we've been idle for this many seconds
 ;;   (run-with-idle-timer 5 t #'org-roam-db-idle-update-files))
+
 
 
 
@@ -260,32 +261,6 @@
       (if (equal node next-node)
           (org-roam-node-visit node)
         (cpm/find-note-relation nil next-node (cons next-node (-map #'org-roam-backlink-source-node (org-roam-backlinks-get next-node))))))))
-
-;;;; Org Roam Bibtex
-;; If you installed via MELPA
-(use-package org-ref :straight (:host github :repo "jkitchin/org-ref") :after org-roam-bibtex)
-  (use-package org-roam-bibtex
-    :straight (:host github :repo "org-roam/org-roam-bibtex")
-    :after org-roam
-    :hook (org-mode . org-roam-bibtex-mode)
-    :config
-    (require 'org-ref)
-    ;; fix org-ref lag in typing
-    ;; see https://github.com/jkitchin/org-ref/issues/647
-    (setq org-ref-colorize-links nil)
-    (setq org-ref-show-broken-links nil)
-
-    (setq orb-process-file-keyword nil)
-    (setq orb-preformat-keywords '("citekey" "key" "entry-type" "year" "beref" "date" "pdf?" "note?" "file" "author" "editor" "author-abbrev" "editor-abbrev" "author-or-editor-abbrev")))
-
-;; :bind (:map org-mode-map
-;;        ("s-b" . orb-note-actions))
-;; :config
-;; (setq orb-templates
-;;       '(("b" "bib" plain (function org-roam-capture--get-point) ""
-;;          :file-name "${citekey}"
-;;          :head "#+TITLE: ${author-or-editor-abbrev} (${year}): ${title}\n#+ROAM_KEY: cite:${=citekey=}\n#+SETUPFILE: ./hugo_setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n#+begin_src bibtex\n (insert (org-ref-get-bibtex-entry \"${=key=}\"))\n#+end_src" ; <--
-;;          :unnarrowed t))))
 
 
 

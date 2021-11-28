@@ -6,7 +6,7 @@
 ;; Enable vertico for vertical completion
 ;; This and selectrum are great packages, but vertico is preferable if I can get feature parity with what I was using in selectrum
 (use-package vertico
-  :straight (:host github :repo "minad/vertico" :includes (vertico-repeat vertico-directory))
+  :straight (:host github :repo "minad/vertico" :includes (vertico-repeat vertico-directory vertico-quick))
   :general
   (:keymaps 'vertico-map
    "<escape>" #'minibuffer-keyboard-quit
@@ -23,24 +23,24 @@
   ;; Don't resize buffer
   (setq vertico-resize nil)
 
-  ;; Customize sorting based on completion category
+  ;; try the `completion-category-sort-function' first
+  (advice-add #'vertico--sort-function :before-until #'completion-category-sort-function)
+
+  (defun completion-category-sort-function ()
+    (alist-get (vertico--metadata-get 'category)
+               completion-category-sort-function-overrides))
+
   (defvar completion-category-sort-function-overrides
     '((file . directories-before-files))
     "Completion category-specific sorting function overrides.")
-
-  (defun completion-category-sort-function (metadata)
-    (alist-get (completion-metadata-get metadata 'category)
-               completion-category-sort-function-overrides))
 
   (defun directories-before-files (files)
     ;; Still sort by history position, length and alphabetically
     (setq files (vertico-sort-history-length-alpha files))
     ;; But then move directories first
     (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
-           (seq-remove (lambda (x) (string-suffix-p "/" x)) files)))
+           (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
 
-  ;; Try the `completion-category-sort-function' first
-  (advice-add #'vertico--sort-function :before-until #'completion-category-sort-function))
 
 ;; Vertico repeat last command
 (use-package vertico-repeat
@@ -155,6 +155,8 @@
 ;; Info about candidates pulled from metadata
 (use-package marginalia
   :straight (marginalia :type git :host github :repo "minad/marginalia")
+  :custom-face
+  (marginalia-documentation ((t (:inherit bespoke-faded))))
   :general
   (:keymaps 'minibuffer-local-map
    "C-M-a"  'marginalia-cycle)
@@ -199,6 +201,15 @@
   ;; Preview is manual and immediate
   ;; https://github.com/minad/consult#live-previews
   (setq consult-preview-key (kbd "C-f"))
+
+  ;; search settings
+  (setq consult-grep-args
+        "grep --null --line-buffered --color=never --ignore-case\
+   --exclude-dir=.git --line-number -I -R -S .")
+
+  (setq consult-ripgrep-args
+    "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
+   --smart-case --no-heading --line-number .")
 
   ;; Make consult locate work with macos spotlight
   (setq consult-locate-args "mdfind -name")
@@ -247,6 +258,8 @@
 (defun consult-line-symbol-at-point ()
   (interactive)
   (consult-line (thing-at-point 'symbol)))
+
+
 
 (use-package consult-flycheck
   :straight (:host github :repo "minad/consult-flycheck")
