@@ -159,6 +159,7 @@
 ;; Elisp hook
 (add-hook 'emacs-lisp-mode-hook (lambda ()
                                   (setq show-trailing-whitespace t)
+                                  (setq show-paren-context-when-offscreen t)
                                   (prettify-symbols-mode)
                                   (eldoc-mode)
                                   (yas-minor-mode)

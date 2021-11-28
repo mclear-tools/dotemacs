@@ -15,7 +15,7 @@
    "C-k"      #'vertico-previous
    "M-RET"    #'vertico-exit)
   :custom-face
-  (mini-popup-background ((t (:background ,bespoke-subtle))))
+  (mini-popup-default ((t (:background ,bespoke-subtle))))
   (mini-popup-border ((t (:background ,bespoke-subtle))))
   (child-frame-border ((t (:background ,bespoke-subtle))))
   :hook (after-init . mini-popup-mode)

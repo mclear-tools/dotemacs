@@ -1,4 +1,20 @@
 ;;; Useful Functions
+;;;; Uncheck Org boxes
+;;see https://www.reddit.com/r/emacs/comments/r107bg/comment/hlx54vf/?utm_source=share&utm_medium=web2x&context=3
+(defun cpm/copy-and-uncheck (start end)
+  "copy a region of regularly repeating checkbox items forward from
+one week to the next, unchecking them at the same time"
+  (interactive "r")
+  (kill-new (replace-regexp-in-string (rx "[X]") "[ ]" (buffer-substring start end)))
+  (setq deactivate-mark t))
+
+;;;; Insert Bibtex Source Entry
+
+(defun cpm-bibtex (key)
+  "insert bibtex entry"
+  (require 'org-ref)
+  (insert (concat "\n\n#+begin_src bibtex\n" (org-ref-get-bibtex-entry key) "\n#+end_src\n")))
+  ;; (citar--insert-bibtex key)
 
 ;;;; Jump to Minibuffer Window
 (defun cpm/goto-minibuffer-window ()
@@ -18,22 +34,22 @@
 
 (defun cpm/insert-commented-separator()
   "Insert a commented separator in your code. Like this in
-ELisp:
-;; ======================================================
-;; Title
-;; ======================================================
-Which makes code easier to read.
-"
+  ELisp:
+  ;; ======================================================
+  ;; Title
+  ;; ======================================================
+  Which makes code easier to read.
+  "
   (interactive)
   (let* ((line (make-string 54 (string-to-char "=")))
 	     (comment-start (if (member major-mode '(emacs-lisp-mode lisp-mode))
 			                ";; " comment-start))
-	     (seperator (concat comment-start line)))
-    (when (> (current-column) 0) (end-of-line) (newline))
-    (insert (format "%s\n%s\n%s"
-		            seperator comment-start seperator))
-    (previous-line)
-    ))
+  (seperator (concat comment-start line)))
+  (when (> (current-column) 0) (end-of-line) (newline))
+  (insert (format "%s\n%s\n%s"
+		          seperator comment-start seperator))
+  (previous-line)
+  ))
 
 ;;;; Delete Frame or Quit
 (defun cpm/delete-frame-or-quit ()

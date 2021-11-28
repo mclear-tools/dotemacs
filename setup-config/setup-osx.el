@@ -120,7 +120,12 @@ This will use the command `open' with the message URL."
   '(when (member window-system '(mac ns))
      (add-to-list 'auth-sources 'macos-keychain-internet)
      (add-to-list 'auth-sources 'macos-keychain-generic)))
-
+;;;; OSX Lib
+;; useful library of functions
+;; https://melpa.org/#/osx-lib
+(use-package osx-lib
+  :straight (:type git :host github :repo "raghavgautam/osx-lib")
+  :defer 1)
 
 ;;; End OSX Settings
 (provide 'setup-osx)
