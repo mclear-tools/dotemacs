@@ -58,7 +58,8 @@
    "g8" 'eyebrowse-switch-to-window-config-8
    "g9" 'eyebrowse-switch-to-window-config-9)
   (cpm/leader-keys
-    "w." 'hydra-eyebrowse/body
+    ;; "w." 'hydra-eyebrowse/body
+    "w." 'cpm-transient-workspace
     "ww" 'eyebrowse-switch-to-window-config
     "wr" 'eyebrowse-rename-window-config)
   :config
@@ -115,6 +116,33 @@
   ("r" eyebrowse-rename-window-config)
   ("w" eyebrowse-switch-to-window-config :exit t)
   ("q" nil))
+
+;;;; Eyebrowse Transient
+(with-eval-after-load 'transient
+(define-transient-command cpm-transient-workspace ()
+  "Transient for workspaces"
+  [["Navigation"
+    ("0" "Switch to workspace 0" eyebrowse-switch-to-window-config-0)
+    ("1" "Switch to workspace 1" eyebrowse-switch-to-window-config-1)
+    ("2" "Switch to workspace 2" eyebrowse-switch-to-window-config-2)
+    ("3" "Switch to workspace 3" eyebrowse-switch-to-window-config-3)
+    ("4" "Switch to workspace 4" eyebrowse-switch-to-window-config-4)
+    ("5" "Switch to workspace 5" eyebrowse-switch-to-window-config-5)
+    ("6" "Switch to workspace 6" eyebrowse-switch-to-window-config-6)
+    ("7" "Switch to workspace 7" eyebrowse-switch-to-window-config-7)
+    ("8" "Switch to workspace 8" eyebrowse-switch-to-window-config-8)
+    ("9" "Switch to workspace 9" eyebrowse-switch-to-window-config-9)
+    ("n" "Next workspace"        eyebrowse-next-window-config)
+    ("p" "Previous workspace"    eyebrowse-prev-window-config)
+    ("w" "Switch to workspace (completing-read)" eyebrowse-switch-to-window-config)
+    ("<tab>" "Switch to last workspace" eyebrowse-last-window-config)
+    ("TAB"   "Switch to last workspace" eyebrowse-last-window-config)]
+   ["Create/Modify"
+    ("c" "Create workspace" eyebrowse-create-window-config)
+    ("d" "Close workspace"  eyebrowse-close-window-config)
+    ("r" "Rename workspace" eyebrowse-rename-window-config)]
+   ["Exit"
+    ("q" "Quit" transient-quit-all)]]))
 
 ;;; Perspectives
 (use-package persp-mode
