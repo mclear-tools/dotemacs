@@ -143,7 +143,7 @@ Instead it's simpler to use bash."
 ;;; Org Show Markup/Pretty Entities
 ;; show markup at point -- this should be part of org!
 (use-package org-appear
-  :straight (:type git :host github :repo "awth13/org-appear")
+  :straight (:type git :host github :repo "awth13/org-appear" :branch "feature/org-fold-support")
   :commands (org-appear-mode)
   :hook (org-mode . org-appear-mode)
   :init

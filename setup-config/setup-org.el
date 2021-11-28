@@ -3,7 +3,8 @@
 ;;; New Org
 ;; Org package settings
 (use-package org
-  :straight t
+  :straight (:host github :repo "yantar92/org" :branch "feature/org-fold-universal-core"
+             :files (:defaults "contrib/lisp/*.el"))
   ;; see https://github.com/raxod502/straight.el/issues/766#issuecomment-892018314
   :commands (org-mode)
   :mode (("\\.org$" . org-mode))
@@ -52,8 +53,14 @@
                 org-html-postamble nil
                 ;; don't use caching (seems to be causing problems)
                 ;; see https://emacs.stackexchange.com/questions/42006/trouble-with-org-mode
-                org-element-use-cache nil
+                ;; org-element-use-cache nil
                 org-export-with-broken-links t)
+
+  ;; For use with org-fold branch
+  (push '(org-goto . lineage) org-fold-show-context-detail)
+  (setq-default org-element--cache-self-verify 'backtrace)
+  (setq-default org-element-use-cache nil)
+
 
 ;;;; Org Modules
   (with-eval-after-load 'org
