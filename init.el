@@ -235,6 +235,7 @@
 ;;;; Core Modules
 ;; These are the "can't live without" modules
 (require 'setup-libraries)
+(require 'setup-emacs-git-version)
 (require 'setup-keybindings)
 (require 'setup-functions-macros)
 (require 'setup-evil)
