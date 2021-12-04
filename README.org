@@ -1,9 +1,7 @@
-These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and either
-[[https://github.com/d12frosted/homebrew-emacs-plus][emacs-plus]] or [[https://github.com/daviderestivo/homebrew-emacs-head][emacs-head]], and built via [[https://brew.sh/][Homebrew]]. Right now I'm using this recipe:
-
-#+begin_src sh
-brew install emacs-plus@28 --with-no-frame-refocus --with-xwidgets --with-nobu417-big-sur-icon --with-native-comp
-#+end_src
+These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and a [[https://github.com/mclear-tools/build-emacs-macos][custom
+build script]]. I typically build from the master branch (currently: GNU Emacs
+29.0.50 (build 1, aarch64-apple-darwin21.1.0, NS appkit-2113.00 Version 12.0.1
+(Build 21A559), git sha1 b060c3844f) of 2021-12-03 ).
 
 The config files are updated/tweaked regularly. I use emacs primarily for all my
 academic work in the humanities (for discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]])
@@ -29,7 +27,7 @@ things in elisp files. The modules are organized thematically rather than packag
 package (e.g. the [[file:setup-config/setup-writing.el][writing module]] contains the config for spelling and markdown mode).
 Note that while I have an [[file:early-init.el][early-init]] file for use with emacs 27+, the configuration
 should work with emacs 26+ on MacOS (though I haven't tested this in awhile), with
-the latest release being best (I'm currently on emacs 28).
+the latest release being best.
 
 Some highlights of this emacs setup include:
 
