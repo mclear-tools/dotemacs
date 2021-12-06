@@ -11,7 +11,7 @@
   (setq maximum-scroll-margin 0.5
         scroll-margin 99999
         scroll-conservatively 0
-        scroll-preserve-screen-position t))
+        scroll-preserve-screen-position nil))
 
 (use-package mwheel
   :straight (:type built-in)
@@ -25,52 +25,65 @@
    mouse-wheel-follow-mouse 't
    ;; Completely disable mouse wheel acceleration to avoid speeding away.
    mouse-wheel-progressive-speed nil
+   mwheel-coalesce-scroll-events t
    ;; The most important setting of all! Make each scroll-event move 2 lines at
    ;; a time (instead of 5 at default). Simply hold down shift to move twice as
    ;; fast, or hold down control to move 3x as fast. Perfect for trackpads.
-   mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6))))
+   mouse-wheel-scroll-amount '(1 ((shift) . 1) ((meta)) ((control) . text-scale))))
+;; mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6)))
+
+
+;; Set precision scrolling (only emacs 29)
+(use-package pixel-scroll
+  :if (and (window-system) (version<= "29.0.50" emacs-version))
+  :straight (:type built-in)
+  :config
+  (setq pixel-resolution-fine-flag t)
+  (pixel-scroll-mode))
+
+
 
 ;;; Frames
 
 ;;;; Frame defaults
-(use-package frame
-  :straight (:type built-in)
-  :config
-  ;; Make a clean & minimalist frame
-  (setq-default default-frame-alist
-                (append (list
-	                     '(font . "SF Mono:style=normal:size=13")
-                         '(internal-border-width . 20)
-                         '(left-fringe    . 0)
-                         '(right-fringe   . 0)
-                         '(tool-bar-lines . 0)
-                         '(menu-bar-lines . 0)
-                         '(vertical-scroll-bars . nil)
-                         '(horizontal-scroll-bars . nil)
-                         '(height . 45)
-                         '(width . 85)
-                         )))
+  (use-package frame
+    :straight (:type built-in)
+    :config
+    ;; Make a clean & minimalist frame
+    (setq-default default-frame-alist
+                  (append (list
+	                       '(font . "SF Mono:style=normal:size=13")
+                           '(internal-border-width . 20)
+                           '(left-fringe    . 0)
+                           '(right-fringe   . 0)
+                           '(tool-bar-lines . 0)
+                           '(menu-bar-lines . 0)
+                           '(vertical-scroll-bars . nil)
+                           '(horizontal-scroll-bars . nil)
+                           '(height . 45)
+                           '(width . 85)
+                           )))
 
-  ;; maximize frame
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-  (setq-default window-resize-pixelwise t)
-  (setq-default frame-resize-pixelwise t)
+    ;; maximize frame
+    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+    (setq-default window-resize-pixelwise t)
+    (setq-default frame-resize-pixelwise t)
 
 ;;;; Frame titlebar
-  ;; No frame title
-  (setq-default frame-title-format nil)
-  ;; No frame icon
-  (setq ns-use-proxy-icon nil)
+    ;; No frame title
+    (setq-default frame-title-format nil)
+    ;; No frame icon
+    (setq ns-use-proxy-icon nil)
 
 ;;;; UI Elements
-  (unless (eq window-system 'ns)
-    (menu-bar-mode -1))
-  (when (fboundp 'tool-bar-mode)
-    (tool-bar-mode -1))
-  (when (fboundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-  (when (fboundp 'horizontal-scroll-bar-mode)
-    (horizontal-scroll-bar-mode -1)))
+    (unless (eq window-system 'ns)
+      (menu-bar-mode -1))
+    (when (fboundp 'tool-bar-mode)
+      (tool-bar-mode -1))
+    (when (fboundp 'scroll-bar-mode)
+      (scroll-bar-mode -1))
+    (when (fboundp 'horizontal-scroll-bar-mode)
+      (horizontal-scroll-bar-mode -1)))
 
 ;;;; Fix titlebar titling colors
 ;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
@@ -396,14 +409,24 @@ Font" "Consolas" "Monaco" "PT Mono")
   :hook (after-init . dimmer-mode)
   :config
   (setq mini-frame-create-lazy nil)
-  (setq dimmer-exclusion-predicates '(window-minibuffer-p))
+  (setq dimmer-prevent-dimming-predicates '(window-minibuffer-p))
   (setq dimmer-fraction 0.5)
   (setq dimmer-adjustment-mode :foreground)
   (setq dimmer-use-colorspace :rgb)
   (setq dimmer-watch-frame-focus-events nil)
   (dimmer-configure-which-key)
   (dimmer-configure-magit)
-  (dimmer-configure-posframe))
+  (dimmer-configure-posframe)
+  (dimmer-configure-vertico))
+
+(defun dimmer-configure-vertico ()
+  "Convenience settings for vertico-users."
+  (with-no-warnings
+    (add-to-list
+     'dimmer-exclusion-regexp-list "^ \\*Vertico\\*$")
+    (add-to-list
+     'dimmer-prevent-dimming-predicates #'vertico--popup-showing-p)))
+
 
 ;;; Cursor
 (use-package emacs
@@ -413,7 +436,7 @@ Font" "Consolas" "Monaco" "PT Mono")
   (cursor-in-non-selected-win dows nil))
 
 ;;;; Reveal Mode
-;; Toggle uncloaking of invisible text near point (Reveal mode).
+;; Toggle uncloaking of invisible text near point, including folded org headlines (Reveal mode).
 (use-package reveal
   :straight (:type built-in)
   :defer 1
