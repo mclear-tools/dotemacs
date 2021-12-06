@@ -1,7 +1,7 @@
 ;; Additions to org core functions
 ;; NOTE: some org-extensions are set in other setup files:
 ;; - org roam setup is in setup-notes
-;; - org citations setup is in setup-writing
+;; - org citations setup is in setup-citation
 ;; - some org export functions are in setup-teaching
 
 ;;; Org Babel
@@ -143,7 +143,10 @@ Instead it's simpler to use bash."
 ;;; Org Show Markup/Pretty Entities
 ;; show markup at point -- this should be part of org!
 (use-package org-appear
-  :straight (:type git :host github :repo "awth13/org-appear" :branch "feature/org-fold-support")
+  :straight (:type git :host github :repo "awth13/org-appear"
+             :branch "master")
+  ;; :branch "feature/org-fold-support")
+
   :commands (org-appear-mode)
   :hook (org-mode . org-appear-mode)
   :init
@@ -151,37 +154,6 @@ Instead it's simpler to use bash."
   (setq org-appear-autolinks nil)
   (setq org-appear-autosubmarkers t))
 
-;;; Org-Reveal
-(use-package ox-reveal
-  :disabled
-  :commands (org-reveal-export-current-subtree org-reveal-export-to-html-and-browse)
-  :custom
-  ;; no injecting notes into template alist
-  (org-reveal-note-key-char nil)
-  :after ox
-  :demand t
-  :load-path (lambda () (concat cpm-elisp-dir "ox-reveal"))
-  :config
-  (setq org-reveal-root (concat "file://" (getenv "HOME") "/bin/reveal.js")
-        org-reveal-theme "moon"
-        org-reveal-default-frag-style "roll-in"
-        org-reveal-hlevel 2
-        ))
-
-(defun cpm/narrowed-subtree-to-html ()
-  "export narrowed tree to html"
-  (interactive)
-  (org-reveal-export-current-subtree)
-  (org-narrow-to-subtree))
-
-(fset 'cpm/reveal-to-html-open
-      "\C-c\C-e\C-sRB")
-
-(defun cpm/reveal-to-pdf ()
-  "print reveal.js slides to pdf"
-  (interactive)
-  (async-shell-command "phantomjs ~/bin/print-pdf.js 'file:///Users/roambot/Dropbox/Work/projects/phil105/phil105-classplan.html?print-pdf'")
-  (delete-windows-on "*Async Shell Command*" t))
 
 
 
@@ -199,302 +171,6 @@ Instead it's simpler to use bash."
   (widen)
   (goto-char (point-min))
   (beginning-of-line))
-
-;; TODO: this isn't working
-(defun cpm/project-overview ()
-  (interactive)
-  (cpm/goto-projects.org)
-  (org-narrow-to-subtree)
-  (org-columns))
-;;set defaults to nothing
-(setq org-stuck-projects (quote ("" nil nil "")))
-
-;;;; Stuck Projects
-;; I'm following [[http://doc.norang.ca/org-mode.html#Projects][Bert Hansen's]] lead on this
-(defun cpm/list-stuck-projects-in-buffer ()
-  (interactive)
-  (bh/skip-non-stuck-projects)
-  (org-agenda nil "s" 'subtree))
-
-(defun cpm/list-all-stuck-projects ()
-  (interactive)
-  (org-agenda nil "s"))
-
-;;;;; Helper Functions
-(defun bh/is-project-p ()
-  "Any task with a todo keyword subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task has-subtask))))
-
-(defun bh/is-project-subtree-p ()
-  "Any task with a todo keyword that is in a project subtree.
-    Callers of this function already widen the buffer view."
-  (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
-                              (point))))
-    (save-excursion
-      (bh/find-project-task)
-      (if (equal (point) task)
-          nil
-        t))))
-
-(defun bh/is-task-p ()
-  "Any task with a todo keyword and no subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task (not has-subtask)))))
-
-(defun bh/is-subproject-p ()
-  "Any task which is a subtask of another project"
-  (let ((is-subproject)
-        (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-    (save-excursion
-      (while (and (not is-subproject) (org-up-heading-safe))
-        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-          (setq is-subproject t))))
-    (and is-a-task is-subproject)))
-
-(defun bh/list-sublevels-for-projects-indented ()
-  "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-    This is normally used by skipping functions where this variable is already local to the agenda."
-  (if (marker-buffer org-agenda-restrict-begin)
-      (setq org-tags-match-list-sublevels 'indented)
-    (setq org-tags-match-list-sublevels nil))
-  nil)
-
-(defun bh/list-sublevels-for-projects ()
-  "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-    This is normally used by skipping functions where this variable is already local to the agenda."
-  (if (marker-buffer org-agenda-restrict-begin)
-      (setq org-tags-match-list-sublevels t)
-    (setq org-tags-match-list-sublevels nil))
-  nil)
-
-(defvar bh/hide-scheduled-and-waiting-next-tasks t)
-
-(defun bh/toggle-next-task-display ()
-  (interactive)
-  (setq bh/hide-scheduled-and-waiting-next-tasks (not bh/hide-scheduled-and-waiting-next-tasks))
-  (when  (equal major-mode 'org-agenda-mode)
-    (org-agenda-redo))
-  (message "%s WAITING and SCHEDULED NEXT Tasks" (if bh/hide-scheduled-and-waiting-next-tasks "Hide" "Show")))
-
-(defun bh/skip-stuck-projects ()
-  "Skip trees that are not stuck projects"
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (if (bh/is-project-p)
-          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
-            (save-excursion
-              (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags))
-                  (setq has-next t))))
-            (if has-next
-                nil
-              next-headline)) ; a stuck project, has subtasks but no next task
-        nil))))
-
-(defun bh/skip-non-stuck-projects ()
-  "Skip trees that are not stuck projects"
-  ;; (bh/list-sublevels-for-projects-indented)
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (if (bh/is-project-p)
-          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
-            (save-excursion
-              (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags))
-                  (setq has-next t))))
-            (if has-next
-                next-headline
-              nil)) ; a stuck project, has subtasks but no next task
-        next-headline))))
-
-(defun bh/skip-non-projects ()
-  "Skip trees that are not projects"
-  ;; (bh/list-sublevels-for-projects-indented)
-  (if (save-excursion (bh/skip-non-stuck-projects))
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p)
-            nil)
-           ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
-            nil)
-           (t
-            subtree-end))))
-    (save-excursion (org-end-of-subtree t))))
-
-(defun bh/skip-non-tasks ()
-  "Show non-project tasks.
-    Skip project and sub-project tasks, habits, and project related tasks."
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((bh/is-task-p)
-        nil)
-       (t
-        next-headline)))))
-
-(defun bh/skip-project-trees-and-habits ()
-  "Skip trees that are projects"
-  (save-restriction
-    (widen)
-    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p)
-        subtree-end)
-       ((org-is-habit-p)
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-projects-and-habits-and-single-tasks ()
-  "Skip trees that are projects, tasks that are habits, single non-project tasks"
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((org-is-habit-p)
-        next-headline)
-       ((and bh/hide-scheduled-and-waiting-next-tasks
-             (member "WAITING" (org-get-tags)))
-        next-headline)
-       ((bh/is-project-p)
-        next-headline)
-       ((and (bh/is-task-p) (not (bh/is-project-subtree-p)))
-        next-headline)
-       (t
-        nil)))))
-
-(defun bh/skip-project-tasks-maybe ()
-  "Show tasks related to the current restriction.
-    When restricted to a project, skip project and sub project tasks, habits, NEXT tasks, and loose tasks.
-    When not restricted, skip project and sub-project tasks, habits, and project related tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-           (next-headline (save-excursion (or (outline-next-heading) (point-max))))
-           (limit-to-project (marker-buffer org-agenda-restrict-begin)))
-      (cond
-       ((bh/is-project-p)
-        next-headline)
-       ((org-is-habit-p)
-        subtree-end)
-       ((and (not limit-to-project)
-             (bh/is-project-subtree-p))
-        subtree-end)
-       ((and limit-to-project
-             (bh/is-project-subtree-p)
-             (member (org-get-todo-state) (list "NEXT")))
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-project-tasks ()
-  "Show non-project tasks.
-    Skip project and sub-project tasks, habits, and project related tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p)
-        subtree-end)
-       ((org-is-habit-p)
-        subtree-end)
-       ((bh/is-project-subtree-p)
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-non-project-tasks ()
-  "Show project tasks.
-    Skip project and sub-project tasks, habits, and loose non-project tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-           (next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((bh/is-project-p)
-        next-headline)
-       ((org-is-habit-p)
-        subtree-end)
-       ((and (bh/is-project-subtree-p)
-             (member (org-get-todo-state) (list "NEXT")))
-        subtree-end)
-       ((not (bh/is-project-subtree-p))
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-projects-and-habits ()
-  "Skip trees that are projects and tasks that are habits"
-  (save-restriction
-    (widen)
-    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p)
-        subtree-end)
-       ((org-is-habit-p)
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-non-subprojects ()
-  "Skip trees that are not projects"
-  (let ((next-headline (save-excursion (outline-next-heading))))
-    (if (bh/is-subproject-p)
-        nil
-      next-headline)))
-
-;;;; GTD Areas
-;; TODO: need to rethink this
-(defun cpm/go-to-areas ()
-  (interactive)
-  (find-file (concat org-directory "todo.org"))
-  (widen)
-  (goto-char (point-min))
-  (re-search-forward "* Areas")
-  (beginning-of-line))
-
-(defun cpm/areas-overview ()
-  (interactive)
-  (go-to-areas)
-  (org-narrow-to-subtree)
-  (org-columns))
-
-;;;; Random Notes
-;; FIXME: Need to fix the list of candidates...
-(use-package org-randomnote
-  :commands (org-randomnote org-randomnote--go-to-random-header org-randomnote--get-random-file org-randomnote--get-random-subtree))
 
 ;;; Org-Download
 ;; Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]].
@@ -525,23 +201,24 @@ Instead it's simpler to use bash."
   ;; https://emacs.stackexchange.com/a/46226/11934
   (customize-set-value 'org-latex-hyperref-template nil)
   ;; Export settings
-  (setq org-export-async-debug t)
-  (setq org-export-async-init-file nil);(concat cpm-elisp-dir "org-async-init.el"))
-  (setq org-export-backends '(ascii beamer html icalendar latex odt pandoc hugo md))
+  (setq org-export-with-smart-quotes t
+        org-export-with-broken-links t
+        org-export-async-debug t
+        org-export-async-init-file nil
+        org-export-backends '(ascii beamer html icalendar latex odt pandoc hugo md))
   ;; org v8 bundled with Emacs 24.4
   (setq org-odt-preferred-output-format "docx")
 
   ;; Only OSX need below setup
-  (defun my-setup-odt-org-convert-process ()
+  (defun cpm-setup-odt-org-convert-process ()
     (interactive)
     (let ((cmd "/Applications/LibreOffice.app/Contents/MacOS/soffice"))
       (when (and (eq system-type 'darwin) (file-exists-p cmd))
         ;; org v7
         (setq org-export-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i")))
         ;; org v8
-        (setq org-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i"))))
-      ))
-  (my-setup-odt-org-convert-process))
+        (setq org-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i"))))))
+  (cpm-setup-odt-org-convert-process))
 
 ;;;; Ox-Pandoc
 (use-package ox-pandoc
@@ -569,173 +246,134 @@ Instead it's simpler to use bash."
     ;;(?2 "to tei." org-pandoc-export-to-tei)
     ;;(?2 "to tei and open." org-pandoc-export-to-tei-and-open)
     ;;(?" "as tei." org-pandoc-export-as-tei)
-        ;;(?3 "to markdown_mmd." org-pandoc-export-to-markdown_mmd)
-        ;;(?3 "to markdown_mmd and open." org-pandoc-export-to-markdown_mmd-and-open)
-        ;;(?# "as markdown_mmd." org-pandoc-export-as-markdown_mmd)
-        ;;(?4 "to html5." org-pandoc-export-to-html5)
-        (?4 "to html5 and open." org-pandoc-export-to-html5-and-open)
-        (?$ "as html5." org-pandoc-export-as-html5)
-        (?5 "to html5-pdf and open." org-pandoc-export-to-html5-pdf-and-open)
-        (?% "to html5-pdf." org-pandoc-export-to-html5-pdf)
-        ;;(?6 "to markdown_phpextra." org-pandoc-export-to-markdown_phpextra)
-        ;;(?6 "to markdown_phpextra and open." org-pandoc-export-to-markdown_phpextra-and-open)
-        ;;(?& "as markdown_phpextra." org-pandoc-export-as-markdown_phpextra)
-        ;;(?7 "to markdown_strict." org-pandoc-export-to-markdown_strict)
-        ;;(?7 "to markdown_strict and open." org-pandoc-export-to-markdown_strict-and-open)
-        ;;(?' "as markdown_strict." org-pandoc-export-as-markdown_strict)
-        ;; (?8 "to opendocument." org-pandoc-export-to-opendocument)
-        ;; (?8 "to opendocument and open." org-pandoc-export-to-opendocument-and-open)
-        ;; (?( "as opendocument." org-pandoc-export-as-opendocument)
-        (?8 "to opml." org-pandoc-export-to-opml)
-        (?9 "to opml and open." org-pandoc-export-to-opml-and-open)
-        ;; (?* "as opml." org-pandoc-export-as-opml)
-        ;;(?: "to rst." org-pandoc-export-to-rst)
-        ;;(?: "to rst and open." org-pandoc-export-to-rst-and-open)
-        ;;(?* "as rst." org-pandoc-export-as-rst)
-        ;;(?< "to slideous." org-pandoc-export-to-slideous)
-        (?< "to slideous and open." org-pandoc-export-to-slideous-and-open)
-        (?, "as slideous." org-pandoc-export-as-slideous)
-        (?= "to ms-pdf and open." org-pandoc-export-to-ms-pdf-and-open)
-        (?- "to ms-pdf." org-pandoc-export-to-ms-pdf)
-        ;;(?> "to textile." org-pandoc-export-to-textile)
-        ;;(?> "to textile and open." org-pandoc-export-to-textile-and-open)
-        ;;(?. "as textile." org-pandoc-export-as-textile)
-        ;;(?a "to asciidoc." org-pandoc-export-to-asciidoc)
-        ;;(?a "to asciidoc and open." org-pandoc-export-to-asciidoc-and-open)
-        ;;(?A "as asciidoc." org-pandoc-export-as-asciidoc)
-        (?b "to beamer-pdf and open." org-pandoc-export-to-beamer-pdf-and-open)
-        (?B "to beamer-pdf." org-pandoc-export-to-beamer-pdf)
-        (?c "to context-pdf and open." org-pandoc-export-to-context-pdf-and-open)
-        (?C "to context-pdf." org-pandoc-export-to-context-pdf)
-        ;;(?d "to docbook5." org-pandoc-export-to-docbook5)
-        (?d "to docbook5 and open." org-pandoc-export-to-docbook5-and-open)
-        (?D "as docbook5." org-pandoc-export-as-docbook5)
-        (?e "to epub3 and open." org-pandoc-export-to-epub3-and-open)
-        (?E "to epub3." org-pandoc-export-to-epub3)
-        ;;(?f "to fb2." org-pandoc-export-to-fb2)
-        ;;(?f "to fb2 and open." org-pandoc-export-to-fb2-and-open)
-        ;;(?F "as fb2." org-pandoc-export-as-fb2)
-        ;;(?g "to gfm." org-pandoc-export-to-gfm)
-        (?g "to gfm and open." org-pandoc-export-to-gfm-and-open)
-        (?G "as gfm." org-pandoc-export-as-gfm)
-        ;;(?h "to html4." org-pandoc-export-to-html4)
-        (?h "to html4 and open." org-pandoc-export-to-html4-and-open)
-        (?H "as html4." org-pandoc-export-as-html4)
-        ;;(?i "to icml." org-pandoc-export-to-icml)
-        (?i "to icml and open." org-pandoc-export-to-icml-and-open)
-        (?I "as icml." org-pandoc-export-as-icml)
-        ;;(?j "to json." org-pandoc-export-to-json)
-        (?j "to json and open." org-pandoc-export-to-json-and-open)
-        (?J "as json." org-pandoc-export-as-json)
-        ;; (?k "to markdown." org-pandoc-export-to-markdown)
-        (?k "to markdown and open." org-pandoc-export-to-markdown-and-open)
-        (?K "as markdown." org-pandoc-export-as-markdown)
-        (?l "to latex-pdf and open." org-pandoc-export-to-latex-pdf-and-open)
-        (?L "to latex-pdf." org-pandoc-export-to-latex-pdf)
-        ;;(?m "to man." org-pandoc-export-to-man)
-        (?m "to man and open." org-pandoc-export-to-man-and-open)
-        (?M "as man." org-pandoc-export-as-man)
-        ;;(?n "to native." org-pandoc-export-to-native)
-        (?n "to native and open." org-pandoc-export-to-native-and-open)
-        (?N "as native." org-pandoc-export-as-native)
-        (?o "to odt and open." org-pandoc-export-to-odt-and-open)
-        (?O "to odt." org-pandoc-export-to-odt)
-        (?p "to pptx and open." org-pandoc-export-to-pptx-and-open)
-        (?P "to pptx." org-pandoc-export-to-pptx)
-        ;;(?q "to commonmark." org-pandoc-export-to-commonmark)
-        ;;(?q "to commonmark and open." org-pandoc-export-to-commonmark-and-open)
-        ;;(?Q "as commonmark." org-pandoc-export-as-commonmark)
-        ;;(?r "to rtf." org-pandoc-export-to-rtf)
-        (?r "to rtf and open." org-pandoc-export-to-rtf-and-open)
-        (?R "as rtf." org-pandoc-export-as-rtf)
-        ;;(?s "to s5." org-pandoc-export-to-s5)
-        ;;(?s "to s5 and open." org-pandoc-export-to-s5-and-open)
-        ;;(?S "as s5." org-pandoc-export-as-s5)
-        ;;(?t "to texinfo." org-pandoc-export-to-texinfo)
-        ;;(?t "to texinfo and open." org-pandoc-export-to-texinfo-and-open)
-        ;;(?T "as texinfo." org-pandoc-export-as-texinfo)
-        ;;(?u "to dokuwiki." org-pandoc-export-to-dokuwiki)
-        (?u "to dokuwiki and open." org-pandoc-export-to-dokuwiki-and-open)
-        (?U "as dokuwiki." org-pandoc-export-as-dokuwiki)
-        ;; (?v "to revealjs." org-pandoc-export-to-revealjs)
-        (?v "to revealjs and open." org-pandoc-export-to-revealjs-and-open)
-        (?V "as revealjs." org-pandoc-export-as-revealjs)
-        ;;(?w "to mediawiki." org-pandoc-export-to-mediawiki)
-        (?w "to mediawiki and open." org-pandoc-export-to-mediawiki-and-open)
-        (?W "as mediawiki." org-pandoc-export-as-mediawiki)
-        (?x "to docx and open." org-pandoc-export-to-docx-and-open)
-        (?X "to docx." org-pandoc-export-to-docx)
-        ;;(?y "to slidy." org-pandoc-export-to-slidy)
-        (?y "to slidy and open." org-pandoc-export-to-slidy-and-open)
-        (?Y "as slidy." org-pandoc-export-as-slidy)
-        ;;(?z "to dzslides." org-pandoc-export-to-dzslides)
-        (?z "to dzslides and open." org-pandoc-export-to-dzslides-and-open)
-        (?Z "as dzslides." org-pandoc-export-as-dzslides)
-        ;;(?{ "to muse." org-pandoc-export-to-muse)
-        ;;(?{ "to muse and open." org-pandoc-export-to-muse-and-open)
-        ;;(?[ "as muse." org-pandoc-export-as-muse)
-        ;;(?} "to zimwiki." org-pandoc-export-to-zimwiki)
-        ;;(?} "to zimwiki and open." org-pandoc-export-to-zimwiki-and-open)
-        ;;(?] "as zimwiki." org-pandoc-export-as-zimwiki)
-        ;;(?~ "to haddock." org-pandoc-export-to-haddock)
-        ;;(?~ "to haddock and open." org-pandoc-export-to-haddock-and-open)
-        ;;(?^ "as haddock." org-pandoc-export-as-haddock)
-        )
+    ;;(?3 "to markdown_mmd." org-pandoc-export-to-markdown_mmd)
+    ;;(?3 "to markdown_mmd and open." org-pandoc-export-to-markdown_mmd-and-open)
+    ;;(?# "as markdown_mmd." org-pandoc-export-as-markdown_mmd)
+    ;;(?4 "to html5." org-pandoc-export-to-html5)
+    (?4 "to html5 and open." org-pandoc-export-to-html5-and-open)
+    (?$ "as html5." org-pandoc-export-as-html5)
+    (?5 "to html5-pdf and open." org-pandoc-export-to-html5-pdf-and-open)
+    (?% "to html5-pdf." org-pandoc-export-to-html5-pdf)
+    ;;(?6 "to markdown_phpextra." org-pandoc-export-to-markdown_phpextra)
+    ;;(?6 "to markdown_phpextra and open." org-pandoc-export-to-markdown_phpextra-and-open)
+    ;;(?& "as markdown_phpextra." org-pandoc-export-as-markdown_phpextra)
+    ;;(?7 "to markdown_strict." org-pandoc-export-to-markdown_strict)
+    ;;(?7 "to markdown_strict and open." org-pandoc-export-to-markdown_strict-and-open)
+    ;;(?' "as markdown_strict." org-pandoc-export-as-markdown_strict)
+    ;; (?8 "to opendocument." org-pandoc-export-to-opendocument)
+    ;; (?8 "to opendocument and open." org-pandoc-export-to-opendocument-and-open)
+    ;; (?( "as opendocument." org-pandoc-export-as-opendocument)
+    (?8 "to opml." org-pandoc-export-to-opml)
+    (?9 "to opml and open." org-pandoc-export-to-opml-and-open)
+    ;; (?* "as opml." org-pandoc-export-as-opml)
+    ;;(?: "to rst." org-pandoc-export-to-rst)
+    ;;(?: "to rst and open." org-pandoc-export-to-rst-and-open)
+    ;;(?* "as rst." org-pandoc-export-as-rst)
+    ;;(?< "to slideous." org-pandoc-export-to-slideous)
+    (?< "to slideous and open." org-pandoc-export-to-slideous-and-open)
+    (?, "as slideous." org-pandoc-export-as-slideous)
+    (?= "to ms-pdf and open." org-pandoc-export-to-ms-pdf-and-open)
+    (?- "to ms-pdf." org-pandoc-export-to-ms-pdf)
+    ;;(?> "to textile." org-pandoc-export-to-textile)
+    ;;(?> "to textile and open." org-pandoc-export-to-textile-and-open)
+    ;;(?. "as textile." org-pandoc-export-as-textile)
+    ;;(?a "to asciidoc." org-pandoc-export-to-asciidoc)
+    ;;(?a "to asciidoc and open." org-pandoc-export-to-asciidoc-and-open)
+    ;;(?A "as asciidoc." org-pandoc-export-as-asciidoc)
+    (?b "to beamer-pdf and open." org-pandoc-export-to-beamer-pdf-and-open)
+    (?B "to beamer-pdf." org-pandoc-export-to-beamer-pdf)
+    (?c "to context-pdf and open." org-pandoc-export-to-context-pdf-and-open)
+    (?C "to context-pdf." org-pandoc-export-to-context-pdf)
+    ;;(?d "to docbook5." org-pandoc-export-to-docbook5)
+    (?d "to docbook5 and open." org-pandoc-export-to-docbook5-and-open)
+    (?D "as docbook5." org-pandoc-export-as-docbook5)
+    (?e "to epub3 and open." org-pandoc-export-to-epub3-and-open)
+    (?E "to epub3." org-pandoc-export-to-epub3)
+    ;;(?f "to fb2." org-pandoc-export-to-fb2)
+    ;;(?f "to fb2 and open." org-pandoc-export-to-fb2-and-open)
+    ;;(?F "as fb2." org-pandoc-export-as-fb2)
+    ;;(?g "to gfm." org-pandoc-export-to-gfm)
+    (?g "to gfm and open." org-pandoc-export-to-gfm-and-open)
+    (?G "as gfm." org-pandoc-export-as-gfm)
+    ;;(?h "to html4." org-pandoc-export-to-html4)
+    (?h "to html4 and open." org-pandoc-export-to-html4-and-open)
+    (?H "as html4." org-pandoc-export-as-html4)
+    ;;(?i "to icml." org-pandoc-export-to-icml)
+    (?i "to icml and open." org-pandoc-export-to-icml-and-open)
+    (?I "as icml." org-pandoc-export-as-icml)
+    ;;(?j "to json." org-pandoc-export-to-json)
+    (?j "to json and open." org-pandoc-export-to-json-and-open)
+    (?J "as json." org-pandoc-export-as-json)
+    ;; (?k "to markdown." org-pandoc-export-to-markdown)
+    (?k "to markdown and open." org-pandoc-export-to-markdown-and-open)
+    (?K "as markdown." org-pandoc-export-as-markdown)
+    (?l "to latex-pdf and open." org-pandoc-export-to-latex-pdf-and-open)
+    (?L "to latex-pdf." org-pandoc-export-to-latex-pdf)
+    ;;(?m "to man." org-pandoc-export-to-man)
+    (?m "to man and open." org-pandoc-export-to-man-and-open)
+    (?M "as man." org-pandoc-export-as-man)
+    ;;(?n "to native." org-pandoc-export-to-native)
+    (?n "to native and open." org-pandoc-export-to-native-and-open)
+    (?N "as native." org-pandoc-export-as-native)
+    (?o "to odt and open." org-pandoc-export-to-odt-and-open)
+    (?O "to odt." org-pandoc-export-to-odt)
+    (?p "to pptx and open." org-pandoc-export-to-pptx-and-open)
+    (?P "to pptx." org-pandoc-export-to-pptx)
+    ;;(?q "to commonmark." org-pandoc-export-to-commonmark)
+    ;;(?q "to commonmark and open." org-pandoc-export-to-commonmark-and-open)
+    ;;(?Q "as commonmark." org-pandoc-export-as-commonmark)
+    ;;(?r "to rtf." org-pandoc-export-to-rtf)
+    (?r "to rtf and open." org-pandoc-export-to-rtf-and-open)
+    (?R "as rtf." org-pandoc-export-as-rtf)
+    ;;(?s "to s5." org-pandoc-export-to-s5)
+    ;;(?s "to s5 and open." org-pandoc-export-to-s5-and-open)
+    ;;(?S "as s5." org-pandoc-export-as-s5)
+    ;;(?t "to texinfo." org-pandoc-export-to-texinfo)
+    ;;(?t "to texinfo and open." org-pandoc-export-to-texinfo-and-open)
+    ;;(?T "as texinfo." org-pandoc-export-as-texinfo)
+    ;;(?u "to dokuwiki." org-pandoc-export-to-dokuwiki)
+    (?u "to dokuwiki and open." org-pandoc-export-to-dokuwiki-and-open)
+    (?U "as dokuwiki." org-pandoc-export-as-dokuwiki)
+    ;; (?v "to revealjs." org-pandoc-export-to-revealjs)
+    (?v "to revealjs and open." org-pandoc-export-to-revealjs-and-open)
+    (?V "as revealjs." org-pandoc-export-as-revealjs)
+    ;;(?w "to mediawiki." org-pandoc-export-to-mediawiki)
+    (?w "to mediawiki and open." org-pandoc-export-to-mediawiki-and-open)
+    (?W "as mediawiki." org-pandoc-export-as-mediawiki)
+    (?x "to docx and open." org-pandoc-export-to-docx-and-open)
+    (?X "to docx." org-pandoc-export-to-docx)
+    ;;(?y "to slidy." org-pandoc-export-to-slidy)
+    (?y "to slidy and open." org-pandoc-export-to-slidy-and-open)
+    (?Y "as slidy." org-pandoc-export-as-slidy)
+    ;;(?z "to dzslides." org-pandoc-export-to-dzslides)
+    (?z "to dzslides and open." org-pandoc-export-to-dzslides-and-open)
+    (?Z "as dzslides." org-pandoc-export-as-dzslides)
+    ;;(?{ "to muse." org-pandoc-export-to-muse)
+    ;;(?{ "to muse and open." org-pandoc-export-to-muse-and-open)
+    ;;(?[ "as muse." org-pandoc-export-as-muse)
+    ;;(?} "to zimwiki." org-pandoc-export-to-zimwiki)
+    ;;(?} "to zimwiki and open." org-pandoc-export-to-zimwiki-and-open)
+    ;;(?] "as zimwiki." org-pandoc-export-as-zimwiki)
+    ;;(?~ "to haddock." org-pandoc-export-to-haddock)
+    ;;(?~ "to haddock and open." org-pandoc-export-to-haddock-and-open)
+    ;;(?^ "as haddock." org-pandoc-export-as-haddock)
+    )
   "Pandoc menu-entry."
   :group 'org-pandoc
   :type 'list)
 
 ;;;; Ox-Hugo
-;; [[https://github.com/kaushalmodi/ox-hugo][Export]] to Hugo with Org
+;; Export to Hugo with Org
+;; https://github.com/kaushalmodi/ox-hugo
 (use-package ox-hugo :after ox)
-;; (use-package ox-hugo-auto-export :after ox-hugo)
 
-;;;; Batch Export Files with Org-Hugo
+;;;;; Batch Export Files with Org-Hugo
 ;; mark files and then batch export them with this command
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-+")
     (lambda()
       (interactive)
       (diredp-do-apply/eval 'org-hugo-export-wim-to-md '(4)))))
-
-
-
-
-;;;; Export Top Level Trees to File
-;; From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
-(defun cpm/org-map-entries (org-file in-tags func)
-  (let ((tags (if (stringp in-tags)
-                  (list in-tags)
-                in-tags)))
-
-    (with-temp-buffer
-      (org-mode)
-      (insert-file-contents org-file-main)
-
-      ;; Execute func at each heading that matches tags.
-      (while (< (point) (point-max))
-
-        ;; If find a heading...
-        (and (search-forward-regexp "^\* " nil "end")
-
-             ;; ...that matches the given tags...
-             (seq-reduce
-              (lambda(a b) (and a b))
-              (mapcar
-               (lambda (tag)
-                 (beginning-of-line)
-                 (search-forward-regexp
-                  (concat ":" tag ":") (line-end-position) "end"))
-               tags)
-              t)
-
-             ;; ... then execute given function with cursor at beginning of
-             ;; heading.
-             (progn
-               (beginning-of-line)
-               (save-excursion
-                 (funcall func))
-               (end-of-line)))))))
 
 ;;; Org Miscellaneous Packages
 
@@ -757,27 +395,6 @@ Instead it's simpler to use bash."
   :straight nil
   :load-path "~/.emacs.d/.local/elisp/org-devonthink"
   :commands (org-insert-dtp-link org-dtp-store-link))
-
-
-;;; Org Outlook (Disabled)
-;; Open outlook message links in org
-;; from https://superuser.com/a/100084 and
-;; https://emacs.stackexchange.com/a/35916/11934
-
-;; (defun org-outlook-open (id)
-;;   "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
-;;   (shell-command-to-string (concat "open" id)))
-
-;; (with-eval-after-load 'org
-;;   (org-add-link-type "outlook" 'org-outlook-open)
-
-;;   (org-link-set-parameters
-;;    "outlook"
-;;    :follow (lambda (path) (org-outlook-open path))
-;;    :export (lambda (path desc backend)
-;;              (cond
-;;               ((eq 'html backend)
-;;                (format "<a href=\"outlook:%s\">%s</a>" path desc))))))
 
 ;;; Org Autolist (Smart Lists)
 ;; Better list behavior

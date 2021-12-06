@@ -3,30 +3,23 @@
 ;;; New Org
 ;; Org package settings
 (use-package org
-  :straight (:host github :repo "yantar92/org" :branch "feature/org-fold-universal-core"
-             :files (:defaults "contrib/lisp/*.el"))
-  ;; see https://github.com/raxod502/straight.el/issues/766#issuecomment-892018314
+  :straight t
+  ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
+  ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :commands (org-mode)
   :mode (("\\.org$" . org-mode))
   :init
 ;;; Org Settings
 ;;;; Org Directories
-  ;; (setq-default org-directory "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org-files/")
   (setq-default org-directory "~/Dropbox/org-files/")
   (setq-default org-default-notes-file (concat org-directory "inbox.org"))
   (setq-default org-agenda-files (list org-directory))
 
 ;;;; Org Config Settings
   :config
-  (setq org-stuck-projects (quote ("" nil nil "")))
-  (setq org-image-actual-width  500) ;; show all images at 500px using imagemagik
-  (setf org-export-with-smart-quotes t)
-  ;; remove obsolete file link settings
-  ;; https://www.reddit.com/r/emacs/comments/oggf1d/whats_the_difference_between_org_mode_link_types/h4l6l1r
-  (setq org-link-parameters (delq (assoc "file+sys" org-link-parameters) org-link-parameters))
-  (setq org-link-parameters (delq (assoc "file+emacs" org-link-parameters) org-link-parameters))
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-footnote-auto-adjust t ;; renumber footnotes
+                org-image-actual-width  500 ;; show all images at 500px using imagemagik
                 org-return-follows-link t ;; make RET follow links
                 org-list-allow-alphabetical t ;; allow alphabetical list
                 org-hide-emphasis-markers t  ;; hide markers
@@ -45,7 +38,7 @@
                 org-startup-indented t ;; start in indent mode
                 ;; prevent editing invisible area, and show an error message in echo area instead;
                 ;; additionally expand text and move focus to the expected point.
-                org-catch-invisible-edits 'show-and-error
+                org-catch-invisible-edits 'smart
                 org-use-fast-todo-selection 'expert ;; don't use popup window
                 org-imenu-depth 8
                 imenu-auto-rescan t
@@ -53,13 +46,7 @@
                 org-html-postamble nil
                 ;; don't use caching (seems to be causing problems)
                 ;; see https://emacs.stackexchange.com/questions/42006/trouble-with-org-mode
-                ;; org-element-use-cache nil
-                org-export-with-broken-links t)
-
-  ;; For use with org-fold branch
-  (push '(org-goto . lineage) org-fold-show-context-detail)
-  (setq-default org-element--cache-self-verify 'backtrace)
-  (setq-default org-element-use-cache nil)
+                org-element-use-cache nil)
 
 
 ;;;; Org Modules
@@ -67,9 +54,7 @@
     (add-to-list 'org-modules 'org-habit t)
     (add-to-list 'org-modules 'org-tempo t)
     (add-to-list 'org-modules 'org-protocol t)
-    (add-to-list 'org-modules 'org-mac-link t)
-    )
-
+    (add-to-list 'org-modules 'org-mac-link t))
 
 ;;;; Org ID
   (setq org-id-locations-file (concat cpm-cache-dir ".org-id-locations"))
@@ -92,7 +77,6 @@
   ;; Don't log the time a task was rescheduled or redeadlined.
   (setq org-log-redeadline nil)
   (setq org-log-reschedule nil)
-
   ;; Prefer rescheduling to future dates and times:
   (setq org-read-date-prefer-future 'time)
 
@@ -149,7 +133,7 @@
               ;; (centered-cursor-mode)
               (turn-on-auto-fill)
               (visual-line-mode)))
-  ;; (add-hook 'auto-save-hook 'org-save-all-org-buffers)
+  (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 ;;; Org Agenda
   ;; Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
@@ -214,9 +198,8 @@
 ;;;; Org Super-Agenda
   ;; Supercharge org-agenda: https://github.com/alphapapa/org-super-agenda
   ;; Settings courtesy of alphapapa: https://github.com/alphapapa/org-super-agenda/blob/master/examples.org#forward-looking
-
   (use-package org-super-agenda
-    :straight t
+    :straight (:type git :host github :repo "alphapapa/org-super-agenda")
     :commands org-super-agenda-mode
     :after org
     :general
@@ -496,15 +479,6 @@ _vr_ reset      ^^                       ^^                 ^^
   (defun cpm/org-journal ()
     (interactive) (org-capture nil "j"))
 
-  ;; (defun cpm/what-are-you-doing-capture ()
-  ;;   (interactive)
-  ;;   (make-frame '((name . "What are you doing?") (left . (+ 550)) (top . (+ 400)) (width . 100) (height . 24)))
-  ;;   (select-frame-by-name "What are you doing?")
-  ;;   (cpm/org-journal)
-  ;;   (delete-other-windows)
-  ;;   (cpm/insert-weather)
-  ;;   (goto-char (point-max)))
-
 ;;;; Alfred Capture Workflow
   ;; Help alfred and org-capture play nice.
   ;; Courtesy of http://orgmode.org/worg/org-contrib/alfred-org-capture.html with some slight modifications.
@@ -528,76 +502,6 @@ _vr_ reset      ^^                       ^^                 ^^
     "Advise org-refile to close the frame"
     (when (equal "capture" (frame-parameter nil 'name))
       (delete-frame)))
-
-
-;;;; Fix Org Capture Recentering Window problem
-  (eval-after-load "org-agenda"
-    '(defun org-agenda-redo (&optional all)
-       "Rebuild possibly ALL agenda view(s) in the current buffer."
-       (interactive "P")
-       (let* ((p (or (and (looking-at "\\'") (1- (point))) (point)))
-              (cpa (unless (eq all t) current-prefix-arg))
-              (org-agenda-doing-sticky-redo org-agenda-sticky)
-              (org-agenda-sticky nil)
-              (org-agenda-buffer-name (or org-agenda-this-buffer-name
-                                          org-agenda-buffer-name))
-              (org-agenda-keep-modes t)
-              (tag-filter org-agenda-tag-filter)
-              (tag-preset (get 'org-agenda-tag-filter :preset-filter))
-              (top-hl-filter org-agenda-top-headline-filter)
-              (cat-filter org-agenda-category-filter)
-              (cat-preset (get 'org-agenda-category-filter :preset-filter))
-              (re-filter org-agenda-regexp-filter)
-              (re-preset (get 'org-agenda-regexp-filter :preset-filter))
-              (effort-filter org-agenda-effort-filter)
-              (effort-preset (get 'org-agenda-effort-filter :preset-filter))
-              (org-agenda-tag-filter-while-redo (or tag-filter tag-preset))
-              (cols org-agenda-columns-active)
-              (line (org-current-line))
-              (window-line (- line (org-current-line (window-start))))
-              (lprops (get 'org-agenda-redo-command 'org-lprops))
-              (redo-cmd (get-text-property p 'org-redo-cmd))
-              (last-args (get-text-property p 'org-last-args))
-              (org-agenda-overriding-cmd (get-text-property p 'org-series-cmd))
-              (org-agenda-overriding-cmd-arguments
-               (unless (eq all t)
-                 (cond ((listp last-args)
-                        (cons (or cpa (car last-args)) (cdr last-args)))
-                       ((stringp last-args)
-                        last-args))))
-              (series-redo-cmd (get-text-property p 'org-series-redo-cmd)))
-         (put 'org-agenda-tag-filter :preset-filter nil)
-         (put 'org-agenda-category-filter :preset-filter nil)
-         (put 'org-agenda-regexp-filter :preset-filter nil)
-         (put 'org-agenda-effort-filter :preset-filter nil)
-         (and cols (org-columns-quit))
-         (message "Rebuilding agenda buffer...")
-         (if series-redo-cmd
-             (eval series-redo-cmd)
-           (org-let lprops redo-cmd))
-         (setq org-agenda-undo-list nil
-               org-agenda-pending-undo-list nil
-               org-agenda-tag-filter tag-filter
-               org-agenda-category-filter cat-filter
-               org-agenda-regexp-filter re-filter
-               org-agenda-effort-filter effort-filter
-               org-agenda-top-headline-filter top-hl-filter)
-         (message "Rebuilding agenda buffer...done")
-         (put 'org-agenda-tag-filter :preset-filter tag-preset)
-         (put 'org-agenda-category-filter :preset-filter cat-preset)
-         (put 'org-agenda-regexp-filter :preset-filter re-preset)
-         (put 'org-agenda-effort-filter :preset-filter effort-preset)
-         (let ((tag (or tag-filter tag-preset))
-               (cat (or cat-filter cat-preset))
-               (effort (or effort-filter effort-preset))
-               (re (or re-filter re-preset)))
-           (when tag (org-agenda-filter-apply tag 'tag t))
-           (when cat (org-agenda-filter-apply cat 'category))
-           (when effort (org-agenda-filter-apply effort 'effort))
-           (when re  (org-agenda-filter-apply re 'regexp)))
-         (and top-hl-filter (org-agenda-filter-top-headline-apply top-hl-filter))
-         (and cols (called-interactively-p 'any) (org-agenda-columns))
-         (org-goto-line line))))
 
 ;;; Org Archive
   ;; Tell org where to archive completed tasks
@@ -659,7 +563,7 @@ _vr_ reset      ^^                       ^^                 ^^
 ;;; Org Indirect Buffer
 (setq org-indirect-buffer-display 'current-window)
 ;; Some advice to automatically switch to a new indirect buffer upon creation
-;; (defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
+(defadvice org-tree-to-indirect-buffer (after org-tree-to-indirect-buffer-after activate) (other-window 1))
 
 ;;; Org Functions
 ;;;; Org Fill Functions
@@ -672,22 +576,22 @@ _vr_ reset      ^^                       ^^                 ^^
   "Calculate offset (in chars) on current level in org mode file."
   (* (or (org-current-level) 0) org-indent-indentation-per-level))
 
-(defun my-org-fill-paragraph (&optional JUSTIFY)
+(defun cpm-org-fill-paragraph (&optional JUSTIFY)
   "Calculate apt fill-column value and fill paragraph."
   (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
     (org-fill-paragraph JUSTIFY)))
 
-(defun my-org-auto-fill-function ()
+(defun cpm-org-auto-fill-function ()
   "Calculate apt fill-column value and do auto-fill"
   (let* ((fill-column (- fill-column (calc-offset-on-org-level))))
     (org-auto-fill-function)))
 
-(defun my-org-mode-hook ()
-  (setq fill-paragraph-function   'my-org-fill-paragraph
-        normal-auto-fill-function 'my-org-auto-fill-function))
+(defun cpm-org-mode-hook ()
+  (setq fill-paragraph-function   'cpm-org-fill-paragraph
+        normal-auto-fill-function 'cpm-org-auto-fill-function))
 
-;; (add-hook 'org-load-hook 'my-org-mode-hook)
-;; (add-hook 'org-mode-hook 'my-org-mode-hook)
+(add-hook 'org-load-hook 'cpm-org-mode-hook)
+(add-hook 'org-mode-hook 'cpm-org-mode-hook)
 
 ;;;; Narrow & Advance/Retreat
 ;; Functions to advance forwards or backwards through narrowed tree
@@ -825,6 +729,42 @@ _vr_ reset      ^^                       ^^                 ^^
            (unless export-file (org-delete-property "EXPORT_FILE_NAME"))
            (set-buffer-modified-p modifiedp)))
        "-noexport" 'region-start-level))))
+
+;;;; Export Top Level Trees to File
+;; From a useful [[https://emacs.stackexchange.com/questions/27226/how-to-export-top-level-trees-in-an-org-file-to-corresponding-files][stack exchange]] post
+(defun cpm/org-map-entries (org-file in-tags func)
+  (let ((tags (if (stringp in-tags)
+                  (list in-tags)
+                in-tags)))
+
+    (with-temp-buffer
+      (org-mode)
+      (insert-file-contents org-file-main)
+
+      ;; Execute func at each heading that matches tags.
+      (while (< (point) (point-max))
+
+        ;; If find a heading...
+        (and (search-forward-regexp "^\* " nil "end")
+
+             ;; ...that matches the given tags...
+             (seq-reduce
+              (lambda(a b) (and a b))
+              (mapcar
+               (lambda (tag)
+                 (beginning-of-line)
+                 (search-forward-regexp
+                  (concat ":" tag ":") (line-end-position) "end"))
+               tags)
+              t)
+
+             ;; ... then execute given function with cursor at beginning of
+             ;; heading.
+             (progn
+               (beginning-of-line)
+               (save-excursion
+                 (funcall func))
+               (end-of-line)))))))
 
 ;;;; Org demote/promote region
 (defun endless/demote-everything (number beg end)
