@@ -260,13 +260,13 @@
     (setq unread-command-events (append unread-command-events (list key 32)))))
 ;; (add-hook 'minibuffer-setup-hook #'consult-initial-narrow)
 
+;;;; Consult Search At Point
 ;; Search at point with consult
 (defun consult-line-symbol-at-point ()
   (interactive)
   (consult-line (thing-at-point 'symbol)))
 
-
-
+;;;; Consult Flycheck
 (use-package consult-flycheck
   :straight (:host github :repo "minad/consult-flycheck")
   :after flycheck

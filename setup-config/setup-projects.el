@@ -357,7 +357,8 @@
   "open a project as its own perspective"
   (interactive)
   (persp-switch "new-persp")
-  (projectile-switch-project)
+  (consult-projectile)
+  ;; (projectile-switch-project)
   ;; (setq frame-title-format
   ;;       '(""
   ;;         "%b"
