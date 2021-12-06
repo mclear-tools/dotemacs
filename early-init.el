@@ -17,6 +17,9 @@
 ;; Silence nativecomp warnings popping up on 28.0.50
 (setq native-comp-async-report-warnings-errors nil)
 
+;;;; Set C Directory
+(setq find-function-C-source-directory "/Applications/Emacs.app/Contents/Resources/src")
+
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
 ;; See https://blog.d46.us/advanced-emacs-startup/
