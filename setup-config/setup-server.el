@@ -7,6 +7,9 @@
   :config
   ;; t/nil for instructions
   (setq server-client-instructions nil)
+  ;; set server socket
+  ;; see https://emacs.stackexchange.com/a/43613/11934
+  (setq server-socket-dir (concat cpm-cache-dir "server-dir"))
   ;; avoid warning screen
   (or (server-running-p)
       (server-start)))
