@@ -6,7 +6,9 @@
 ;; Enable vertico for vertical completion
 ;; This and selectrum are great packages, but vertico is preferable if I can get feature parity with what I was using in selectrum
 (use-package vertico
-  :straight (:host github :repo "minad/vertico" :includes (vertico-repeat vertico-directory vertico-quick))
+  :straight (:host github :repo "minad/vertico"
+             :includes (vertico-repeat vertico-directory vertico-buffer)
+             :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-buffer.el" "extensions/vertico-repeat.el"))
   :general
   (:keymaps 'vertico-map
    "<escape>" #'minibuffer-keyboard-quit
@@ -42,15 +44,19 @@
            (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
 
 
+;; Use vertico in buffer
+(use-package vertico-buffer
+  :after vertico
+  :config
+  (vertico-buffer-mode 1))
+
 ;; Vertico repeat last command
 (use-package vertico-repeat
-  :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
   :hook (minibuffer-setup . vertico-repeat-save)
   :commands (vertico-repeat))
 
 ;; Configure directory extension
 (use-package vertico-directory
-  :load-path "/Users/roambot/.emacs.d/.local/straight/repos/vertico/extensions/"
   :after vertico
   ;; More convenient directory navigation commands
   :bind (:map vertico-map
