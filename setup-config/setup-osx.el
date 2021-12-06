@@ -89,9 +89,9 @@ Get it from:  <http://hasseg.org/trash/>"
                     (interactive)
                     (call-interactively (key-binding "\C-x\C-s"))))
   ;; (global-set-key (kbd "s-Z") 'undo-tree-redo)
-  (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
+  (global-set-key (kbd "C-s-f") 'ns-toggle-fullscreen)
   ;; Emacs sometimes registers C-s-f as this weird keycode
-  (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen))
+  (global-set-key (kbd "<C-s-268632070>") 'ns-toggle-fullscreen))
 
 ;;;; Reveal in Finder
 (use-package reveal-in-osx-finder
