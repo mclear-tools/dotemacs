@@ -1,4 +1,11 @@
 ;;; Useful Functions
+;;;; Archive region to setup-archive
+(defun cpm/setup-kill-and-archive-region ()
+  "Delete & append region to end of setup-archive.el"
+  (interactive)
+  (append-to-file (region-beginning) (region-end) (concat cpm-setup-dir "setup-archive.el"))
+  (delete-region (region-beginning) (region-end)))
+
 ;;;; Uncheck Org boxes
 ;;see https://www.reddit.com/r/emacs/comments/r107bg/comment/hlx54vf/?utm_source=share&utm_medium=web2x&context=3
 (defun cpm/copy-and-uncheck (start end)
@@ -44,12 +51,12 @@ one week to the next, unchecking them at the same time"
   (let* ((line (make-string 54 (string-to-char "=")))
 	     (comment-start (if (member major-mode '(emacs-lisp-mode lisp-mode))
 			                ";; " comment-start))
-  (seperator (concat comment-start line)))
-  (when (> (current-column) 0) (end-of-line) (newline))
-  (insert (format "%s\n%s\n%s"
-		          seperator comment-start seperator))
-  (previous-line)
-  ))
+         (seperator (concat comment-start line)))
+    (when (> (current-column) 0) (end-of-line) (newline))
+    (insert (format "%s\n%s\n%s"
+		            seperator comment-start seperator))
+    (previous-line)
+    ))
 
 ;;;; Delete Frame or Quit
 (defun cpm/delete-frame-or-quit ()
@@ -200,8 +207,8 @@ will be killed."
   (interactive)
   (start-process "Emacs" nil
                  ;; (executable-find "/usr/local/bin/emacs")))
-                 ;; (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
-                 (executable-find "Emacs")))
+                 (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
+;; (executable-find "Emacs")))
 
 ;;;; Clipboard to/from Buffer
 ;; http://stackoverflow.com/a/10216338/4869
@@ -414,14 +421,14 @@ will be killed."
 (defun cpm/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   (interactive)
-  ;; if in an org buffer use org-fill-paragraph
-  (if (derived-mode-p 'org-mode)
-      (org-fill-paragraph)
-    (let ((fill-column
-           (if (eq last-command 'cpm/fill-or-unfill)
-               (progn (setq this-command nil)
-                      (point-max))
-             fill-column)))
+  (let ((fill-column
+         (if (eq last-command 'cpm/fill-or-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    ;; if in an org buffer use org-fill-paragraph
+    (if (derived-mode-p 'org-mode)
+        (cpm-org-fill-paragraph)
       (call-interactively #'fill-paragraph))))
 
 (global-set-key [remap fill-paragraph]
