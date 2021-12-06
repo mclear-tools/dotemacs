@@ -27,10 +27,11 @@
   ;; Set the time delay (in seconds) for the which-key popup to appear.
   ;; make sure which-key doesn't show normally but refreshes quickly after it is
   ;; triggered.
-  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-delay .75)
   (setq which-key-idle-secondary-delay 0.05)
   ;; use widow
   (setq which-key-popup-type 'side-window)
+  (setq which-key-allow-imprecise-window-fit t)
   (setq which-key-side-window-location 'top)
   ;; use minibuffer
   ;; (which-key-setup-minibuffer)
