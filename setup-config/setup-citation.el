@@ -39,7 +39,6 @@
   :after org
   :config
   (setq org-cite-global-bibliography `(,cpm-bibliography))
-  ;; (setq org-cite-global-bibliography nil)
   (setq org-cite-export-processors
         '((beamer csl)
           (latex csl)
