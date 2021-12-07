@@ -238,7 +238,7 @@
 (require 'setup-emacs-git-version)
 (require 'setup-keybindings)
 (require 'setup-functions-macros)
-(require 'setup-evil)
+;; (require 'setup-evil)
 (require 'setup-settings)
 
 ;;;; Other Modules
