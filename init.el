@@ -236,10 +236,11 @@
 ;; These are the "can't live without" modules
 (require 'setup-libraries)
 (require 'setup-emacs-git-version)
-(require 'setup-keybindings)
 (require 'setup-functions-macros)
 ;; (require 'setup-evil)
 (require 'setup-settings)
+(require 'setup-keybindings)
+(require 'setup-theme)
 
 ;;;; Other Modules
 (require 'setup-splash)
@@ -252,7 +253,6 @@
 (require 'setup-windows-buffers)
 (require 'setup-ui)
 (require 'setup-modeline)
-(require 'setup-theme)
 (require 'setup-childframe)
 (require 'setup-navigation)
 (require 'setup-search)
@@ -278,7 +278,6 @@
 
 
 ;;; Config Helper Functions
-
 ;;;; Config Navigation
 ;; Function to navigate config files
 
@@ -309,10 +308,10 @@
   :straight (:type built-in)
   :hook (prog-mode . outline-minor-mode)
   :general
-  (:keymaps 'outline-minor-mode-map :states '(normal motion)
+  (:keymaps 'outline-minor-mode-map :states '(emacs)
    "<tab>" 'outline-cycle
    "S-<tab>" 'outline-cycle-buffer)
-  (:keymaps 'outline-minor-mode-map :states '(normal motion)
+  (:keymaps 'outline-minor-mode-map :states '(meow-normal)
    "gh"    'outline-previous-visible-heading
    "gj"    'outline-forward-same-level
    "gk"    'outline-backward-same-level

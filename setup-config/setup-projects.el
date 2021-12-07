@@ -147,12 +147,6 @@
 ;;; Perspectives
 (use-package persp-mode
   :hook (after-init . persp-mode)
-  :general
-  (:states '(insert normal motion emacs)
-   :keymaps 'override
-   "s-p" 'persp-switch
-   "s-]" 'persp-next
-   "s-[" 'persp-prev)
   :config
   (setq persp-reset-windows-on-nil-window-conf t
         persp-set-last-persp-for-new-frames nil
@@ -230,7 +224,7 @@
       (persp-add-buffer "*Org Agenda*"))))
 
 (general-define-key
- :states '(insert normal motion emacs)
+ :states '(emacs)
  :keymaps 'override
  "s-1" 'cpm/open-agenda-in-workspace)
 
@@ -255,7 +249,7 @@
     (magit-status-setup-buffer)))
 
 (general-define-key
- :states '(insert normal motion emacs)
+ :states '(emacs)
  :keymaps 'override
  "s-2" 'cpm/open-emacsd-in-workspace)
 
@@ -277,7 +271,7 @@
   (persp-add-buffer "content-org"))
 
 (general-define-key
- :states '(insert normal motion emacs)
+ :states '(emacs)
  :keymaps 'override
  "s-3" 'cpm/open-notes-in-workspace)
 
@@ -302,7 +296,7 @@
   )
 
 (general-define-key
- :states '(insert normal motion emacs)
+ :states '(emacs)
  :keymaps 'override
  "s-4" 'cpm/open-new-terminal-and-workspace)
 
@@ -323,7 +317,7 @@
       (persp-add-buffer "*mu4e-main*"))))
 
 (general-define-key
- :states '(insert normal motion emacs)
+ :states '(emacs)
  :keymaps 'override
  "s-5" 'cpm/open-email-in-workspace)
 
