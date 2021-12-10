@@ -1,9 +1,17 @@
 ;;; Useful Functions
+;;;; Create new buffer
+(defun cpm/create-new-buffer ()
+  (interactive)
+  (let ((buffer (generate-new-buffer "*new*")))
+    (set-window-buffer nil buffer)
+    (with-current-buffer buffer
+      (funcall (default-value 'major-mode)))))
+
 ;;;; Archive region to setup-archive
 (defun cpm/setup-kill-and-archive-region ()
   "Delete & append region to end of setup-archive.el"
   (interactive)
-  (append-to-file (region-beginning) (region-end) (concat cpm-setup-dir "setup-archive.el"))
+  (append-to-file (region-beginning) (region-end) (concat cpm-setup-dir "setup-files-archive/setup-archive.el"))
   (delete-region (region-beginning) (region-end)))
 
 ;;;; Uncheck Org boxes
@@ -31,7 +39,8 @@ one week to the next, unchecking them at the same time"
       (select-window (active-minibuffer-window))
     (error "Minibuffer is not active")))
 
-(general-def "C-c m" #'cpm/goto-minibuffer-window)
+;; (with-eval-after-load 'general
+;; (general-def "C-c m" #'cpm/goto-minibuffer-window))
 
 ;;;; Insert Comment Seperator
 ;; ======================================================
@@ -418,6 +427,19 @@ will be killed."
   (while t (eval (read (current-buffer)))))
 
 ;;;; Fill or Unfill
+;; See https://sachachua.com/dotemacs/
+;; and https://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
+(defun endless/fill-or-unfill ()
+  "Like `fill-paragraph', but unfill if used twice."
+  (interactive)
+  (let ((fill-column
+         (if (eq last-command 'endless/fill-or-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (call-interactively #'fill-paragraph)))
+
+;;FIXME: I can't get this to work properly in org-mode
 (defun cpm/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   (interactive)
@@ -426,23 +448,29 @@ will be killed."
              (progn (setq this-command nil)
                     (point-max))
            fill-column)))
-    ;; if in an org buffer use org-fill-paragraph
-    (if (derived-mode-p 'org-mode)
-        (cpm-org-fill-paragraph)
-      (call-interactively #'fill-paragraph))))
+    (call-interactively #'cpm/fill-paragraph)))
+
+(defun cpm/fill-paragraph ()
+  "if in an org buffer use org-fill-paragraph; else use fill-paragraph"
+  (interactive)
+  (if (derived-mode-p 'org-mode)
+      (call-interactively #'cpm-org-fill-paragraph)
+    (call-interactively #'fill-paragraph)))
 
 (global-set-key [remap fill-paragraph]
-                #'cpm/fill-or-unfill)
+                #'cpm/fill-paragraph)
+
 
 ;;;; Unfill
 ;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
-(defun unfill-paragraph (&optional region)
+(defun cpm/unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
   (let ((fill-column (point-max))
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
+(keymap-global-set "M-Q" #'cpm/unfill-paragraph)
 
 ;;;; Insert seconds
 (defun cpm/insert-time-string ()
@@ -1232,8 +1260,8 @@ with no seperation"
                 (cond ((and cmacs--local cmacs--keymaps)
                        (push `(lwarn 'cmacs-map :warning
                                      "Can't local bind '%s' key to a keymap; skipped"
-  ,key)
-  forms)
+                                     ,key)
+                             forms)
                        (throw 'skip 'local))
                       ((and cmacs--keymaps states)
                        (dolist (keymap cmacs--keymaps)
