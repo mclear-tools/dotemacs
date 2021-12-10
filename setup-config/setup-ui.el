@@ -229,7 +229,7 @@ Font" "Consolas" "Monaco" "PT Mono")
 (use-package hl-line+
   :straight t
   :custom-face
-  (hl-line ((t (:inherit highlight))))
+  (hl-line ((t (:inherit fringe))))
   :custom
   (global-hl-line-mode nil)
   (hl-line-flash-show-period 1.0)

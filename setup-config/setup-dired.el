@@ -9,10 +9,9 @@
   :commands (dired dired-jump dired-jump-other-window)
   :general
   (:keymaps 'dired-mode-map
-   :states '(normal motion)
    "l" #'dired-find-alternate-file
-   "h" #'cpm/dired-updirectory
-   "q" #'quit-window)
+   "h" #'cpm/dired-updirectory)
+  ;; "q" #'quit-window)
   :config
   ;; Function to move up a directory like in ranger
   (defun cpm/dired-updirectory ()

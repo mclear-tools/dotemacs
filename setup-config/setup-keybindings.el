@@ -1,14 +1,17 @@
-;; Keybindings for config
+;; Keybindings for config I put all keybindings here. This has its
+;; disadvantages (e.g. separating functions or packages from keybindings) but
+;; it also makes it the place to go to deal with all keybindings.
 
 ;;; General
 (use-package general
   :demand t
   :config
   (general-create-definer cpm-leader-def
-    ;; :prefix my-leader
-    ;; or without a variable
-    :prefix "C-c")
+    ;; Choose a prefix that won't likely conflict with other namespaced bindings
+    ;; See https://karl-voit.at/2018/07/08/emacs-key-bindings/
+    :prefix "C-c C-<SPC>")
   )
+
 ;;; Meow
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -16,22 +19,61 @@
    '("j" . meow-next)
    '("k" . meow-prev))
   (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
+   ;; here we create bindings for necessary, high frequency commands
+   ;; cheatsheet
+   '("?" . meow-cheatsheet)
+   ;; high frequency keybindings
+   '("e" . "C-x C-e")
+   '(")" . "C-)")
+   '("}" . "C-}")
+   '("." . "M-.")
+   '("," . "M-,")
+   '("y" . "C-c C-<SPC>") ;; my namespaced keybindings
+   ;; window management
+   '("h" . split-window-below-and-focus)
+   '("H" . split-window-below)
+   '("o" . delete-other-windows)
+   '("v" . split-window-right-and-focus)
+   '("V" . split-window-right)
+   '("w" . cpm/other-window)
+   '("W" . window-swap-states)
+   ;; high frequency commands
+   '(";" . comment-dwim)
+   '("\\" . multi-vterm-project)
    '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
+   '("?" . meow-cheatsheet)
+   '("[" . persp-prev)
+   '("]" . persp-next)
+   '("=" . hl-line-mode)
+   '("a" . execute-extended-command)
+   '("b" . cpm/persp-consult-buffer)
+   '("c" . cpm/find-files-setup-config-directory)
+   '("C" . cpm/search-setup-config-files)
+   '("d" . dired-jump-other-window)
+   '("D" . dired-jump)
+   '("f" . find-file)
+   '("F" . consult-recent-file)
+   '("g" . magit-status)
+   '("i" . ibuffer)
+   '("j" . cpm/jump-in-buffer)
+   '("J" . crux-top-join-line)
+   '("k" . kill-this-buffer)
+   '("l" . consult-locate)
+   '("m" . consult-mark)
+   '("n" . consult-notes)
+   '("N" . consult-notes-search-all)
+   '("p" . consult-projectile)
+   '("P" . persp-switch)
+   '("q" . cpm/delete-frame-or-quit)
+   '("Q" . restart-emacs)
+   '("r" . consult-recent-file)
+   '("s" . consult-line)
+   '("S" . cpm/search-in-input-dir)
+   ;; toggles
+   '("T" . toggle-dark-light-theme)
+   '("L" . linnum-mode)
+   '("A" . consult-org-agenda))
+
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
@@ -59,8 +101,8 @@
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
+   '("g" . beginning-of-buffer)
+   '("G" . end-of-buffer)
    '("h" . meow-left)
    '("H" . meow-left-expand)
    '("i" . meow-insert)
@@ -75,12 +117,13 @@
    '("n" . meow-search)
    '("o" . meow-block)
    '("O" . meow-to-block)
-   '("p" . meow-yank)
+   '("p" . meow-clipboard-yank)
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
-   '("R" . meow-swap-grab)
+   '("R" . overwrite-mode)
    '("s" . meow-kill)
+   '("S" . meow-swap-grab)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
@@ -89,40 +132,40 @@
    '("W" . meow-mark-symbol)
    '("x" . meow-line)
    '("X" . meow-goto-line)
-   '("y" . meow-save)
+   '("y" . meow-clipboard-save)
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
-   '("<escape>" . keyboard-quit)))
+   '("&" . meow-query-replace-regexp)
+   '("%" . meow-query-replace)
+   '("=" . meow-grab)
+   '("<right>" . cpm/next-user-buffer)
+   '("<left>" . cpm/previous-user-buffer)
+   '("<escape>" . meow-cancel-selection)))
 
 (use-package meow
   :straight (:type git :host github :repo "meow-edit/meow")
   :custom-face
+  ;; Make sure bespoke-theme is loaded prior to meow
   (meow-normal-cursor ((t (:background ,bespoke-yellow))))
   (meow-insert-cursor ((t (:background ,bespoke-critical))))
   (meow-keypad-cursor ((t (:background ,bespoke-brown))))
   (meow-motion-cursor ((t (:background ,bespoke-green))))
   (meow-kmacro-cursor ((t (:background ,bespoke-salient))))
+  (meow-beacon-fake-selection ((t (:background ,bespoke-modeline))))
   (meow-beacon-fake-cursor ((t (:background ,bespoke-yellow))))
   :config
   ;; FIXME: Would be nice to get this working with which-key
   (setq meow-keypad-describe-keymap-function 'meow-describe-keymap)
+  ;; Make sure delete char means delete char
+  ;; see https://github.com/meow-edit/meow/issues/112
+  (setq meow--kbd-delete-char "<deletechar>")
   (meow-setup)
   (meow-global-mode 1))
 
-;;; Bind Key
-;; (use-package bind-key
-;;   :straight nil
-;;   :bind (:prefix-map cpm-map
-;;          :prefix-docstring "My personal keyboard map"
-;;          :prefix "C-c c"
-;;          ("-" . text-scale-decrease)
-;;          ("+" . text-scale-increase)
-;;          ("=" . text-scale-increase)))
-
 ;;; Which Key
 (use-package which-key
-  :after general
+  ;; :after general
   :defer 1
   :diminish ""
   :config
@@ -142,6 +185,25 @@
   ;; separator
   (setq which-key-separator " → ")
   (which-key-mode))
+
+;;; Outline Bindings
+
+(general-define-key
+ :keymaps 'outline-minor-mode-map
+ "<tab>"   'outline-cycle
+ "S-<tab>" 'outline-cycle-buffer)
+
+(general-define-key
+ :keymaps 'outline-minor-mode-map
+ ;; "gh"    'outline-previous-visible-heading
+ ;; "gj"    'outline-forward-same-level
+ ;; "gk"    'outline-backward-same-level
+ ;; "gl"    'outline-next-visible-heading
+ ;; "gu"    'outline-up-heading
+ "M-j"   'outline-move-subtree-down
+ "M-k"   'outline-move-subtree-up
+ "M-h"   'outline-promote
+ "M-l"   'outline-demote)
 
 ;;; Namespaced Keybindings
 
@@ -488,6 +550,12 @@
   )
 
 ;;;;  Window Keybindings
+(defun cpm/other-window ()
+  (interactive)
+  (other-window 1))
+(general-def :keymaps 'override
+  "C-c C-o" 'cpm/other-window)
+
 (cpm-leader-def
   "0" 'winum-select-window-0
   "1" 'winum-select-window-1
@@ -516,17 +584,17 @@
   )
 
 ;;;; Zettelkasten/Notes/Wiki
-(cpm-leader-def
-  "n"    '(:ignore t :which-key "Notes")
-  "n c"  #'org-roam-capture
-  "n i"  #'org-roam-node-insert
-  "n f"  #'org-roam-node-find
-  "n g"  #'org-roam-graph
-  "n n"  #'consult-notes
-  "n N"  #'org-roam--new-file-named
-  "n r"  #'cpm/find-note-relation
-  "n s"  #'consult-notes-search-all
-  "n t"  #'org-roam-buffer-toggle)
+;; (cpm-leader-def
+;;   "n"    '(:ignore t :which-key "Notes")
+;;   "n c"  #'org-roam-capture
+;;   "n i"  #'org-roam-node-insert
+;;   "n f"  #'org-roam-node-find
+;;   "n g"  #'org-roam-graph
+;;   "n n"  #'consult-notes
+;;   "n N"  #'org-roam--new-file-named
+;;   "n r"  #'cpm/find-note-relation
+;;   "n s"  #'consult-notes-search-all
+;;   "n t"  #'org-roam-buffer-toggle)
 
 ;;; Markdown Keybindings
 ;; (cpm-leader-def

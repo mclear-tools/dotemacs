@@ -9,7 +9,8 @@
   (setq server-client-instructions nil)
   ;; set server socket
   ;; see https://emacs.stackexchange.com/a/43613/11934
-  (setq server-socket-dir (concat cpm-cache-dir "server-dir"))
+  ;; (setq server-socket-dir (concat cpm-cache-dir "server-dir"))
+  ;; (setq server-name "ec-client")
   ;; avoid warning screen
   (or (server-running-p)
       (server-start)))

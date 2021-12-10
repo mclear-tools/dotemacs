@@ -488,9 +488,9 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 (use-package company
   :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
   :general
-  (:states 'insert :keymaps 'company-mode-map
-   "C-/"   #'company-search-candidates
-   "C-M-/" #'company-filter-candidates
+  (:keymaps 'company-active-map
+   ;; "C-/"   #'company-search-candidates
+   ;; "C-M-/" #'company-filter-candidates
    "C-d"   #'company-show-doc-buffer
    "C-j"   #'company-select-next
    "C-k"   #'company-select-previous

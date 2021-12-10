@@ -13,9 +13,6 @@
 (add-hook 'before-make-frame-hook 'window-divider-mode)
 
 ;;; Window Movement
-;; Move to other window
-(general-define-key :states '(normal motion visual insert)
-  "C-c w" 'other-window)
 
 ;; Quickly switch windows in Emacs
 (use-package ace-window

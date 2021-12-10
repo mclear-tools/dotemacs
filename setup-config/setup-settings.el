@@ -238,7 +238,8 @@
   (format-date "%m-%d-%Y %H:%M:%S"))
 
 ;;;; Universal Argument
-(general-define-key "M-u" 'universal-argument)
+(with-eval-after-load 'general
+(general-define-key "M-u" 'universal-argument))
 
 ;;;; Emacs Profiling
 ;; might be worth checking this out more closely

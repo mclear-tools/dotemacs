@@ -122,8 +122,9 @@
   (setq vterm-term-environment-variable "xterm-256color")
   (add-hook 'vterm-mode-hook
             (lambda ()
-              (setq-local evil-insert-state-cursor '("chartreuse3" box))
-              (evil-insert-state))))
+              (meow-insert-mode))))
+              ;; (setq-local evil-insert-state-cursor '("chartreuse3" box))
+              ;; (evil-insert-state))))
 
   ;; Escape to vim mode in shell
   (defun cpm/vterm-escape-toggle ()

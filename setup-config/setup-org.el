@@ -425,7 +425,7 @@ _vr_ reset      ^^                       ^^                 ^^
            ((org-agenda-compact-blocks nil)))))
 ;;; Org Capture
 ;;;; Capture Settings
-  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+  ;; (add-hook 'org-capture-mode-hook 'evil-insert-state)
   ;; (general-define-key
   ;;  :states '(insert normal motion emacs)
   ;;  :keymaps 'override

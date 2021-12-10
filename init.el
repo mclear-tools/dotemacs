@@ -77,7 +77,6 @@
 ;; latter means package loading stays out of my way if I'm doing, e.g., a quick
 ;; restart-and-check of something in emacs.
 
-
 ;;;; Load Path
 ;; Add config files to load-path
 (eval-and-compile
@@ -237,10 +236,9 @@
 (require 'setup-libraries)
 (require 'setup-emacs-git-version)
 (require 'setup-functions-macros)
-;; (require 'setup-evil)
-(require 'setup-settings)
-(require 'setup-keybindings)
 (require 'setup-theme)
+(require 'setup-keybindings)
+(require 'setup-settings)
 
 ;;;; Other Modules
 (require 'setup-splash)
@@ -266,15 +264,14 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-teaching)
-(require 'setup-testing)
-
+;; (require 'setup-testing)
+;; (require 'setup-evil)
 ;; (require 'setup-ivy)
 ;; (require 'setup-nano)
 ;; (require 'setup-email)
 ;; (require 'setup-timer)
 ;; (require 'setup-dashboard)
 ;; (require 'setup-helm)
-
 
 
 ;;; Config Helper Functions
@@ -307,20 +304,6 @@
 (use-package outline
   :straight (:type built-in)
   :hook (prog-mode . outline-minor-mode)
-  :general
-  (:keymaps 'outline-minor-mode-map :states '(emacs)
-   "<tab>" 'outline-cycle
-   "S-<tab>" 'outline-cycle-buffer)
-  (:keymaps 'outline-minor-mode-map :states '(meow-normal)
-   "gh"    'outline-previous-visible-heading
-   "gj"    'outline-forward-same-level
-   "gk"    'outline-backward-same-level
-   "gl"    'outline-next-visible-heading
-   "gu"    'outline-up-heading
-   "M-j"   'outline-move-subtree-down
-   "M-k"   'outline-move-subtree-up
-   "M-h"   'outline-promote
-   "M-l"   'outline-demote)
   :config
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()

@@ -224,7 +224,7 @@
       (persp-add-buffer "*Org Agenda*"))))
 
 (general-define-key
- :states '(emacs)
+ ;; :states '(emacs)
  :keymaps 'override
  "s-1" 'cpm/open-agenda-in-workspace)
 
@@ -244,12 +244,11 @@
     ;;              (format " in [%s]" project-name))))))
     (find-file-other-window user-init-file)
     ;; Need to require evil-collection for proper keybindings
-    (require 'evil-collection)
+    ;; (require 'evil-collection)
     (require 'magit)
     (magit-status-setup-buffer)))
 
 (general-define-key
- :states '(emacs)
  :keymaps 'override
  "s-2" 'cpm/open-emacsd-in-workspace)
 
@@ -271,7 +270,7 @@
   (persp-add-buffer "content-org"))
 
 (general-define-key
- :states '(emacs)
+ ;; :states '(emacs)
  :keymaps 'override
  "s-3" 'cpm/open-notes-in-workspace)
 
@@ -296,7 +295,7 @@
   )
 
 (general-define-key
- :states '(emacs)
+ ;; :states '(emacs)
  :keymaps 'override
  "s-4" 'cpm/open-new-terminal-and-workspace)
 
@@ -317,7 +316,7 @@
       (persp-add-buffer "*mu4e-main*"))))
 
 (general-define-key
- :states '(emacs)
+ ;; :states '(emacs)
  :keymaps 'override
  "s-5" 'cpm/open-email-in-workspace)
 

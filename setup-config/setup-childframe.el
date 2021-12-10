@@ -147,16 +147,14 @@
   (mini-frame-show-parameters
    `((top    . 0.0)
      (left   . 0.5)
-     (width  . 0.855)
+     (width  . 0.90)
      (height . 11)
      (child-frame-border-width . 15)
      (internal-border-width . 0)
      (left-fringe . 20)
      (right-fringe . 20)
-     ;; set colors for bespoke theme
-     (foreground-color . ,bespoke-strong)
-     (background-color . ,bespoke-subtle)))
-  ;; (mini-frame-color-shift-step 7)
+     ))
+  (mini-frame-color-shift-step 7)
   (mini-frame-advice-functions '(read-from-minibuffer
                                  read-string
                                  completing-read))
@@ -175,13 +173,13 @@
   (posframe-delete-all)
   (load-library "setup-childframe")
   (custom-reevaluate-setting 'child-frame-border)
-  (custom-reevaluate-setting 'mini-popup-background)
-  (custom-reevaluate-setting 'mini-popup-border)
+  ;; (custom-reevaluate-setting 'mini-popup-background)
+  ;; (custom-reevaluate-setting 'mini-popup-border)
   (custom-reevaluate-setting 'which-key-posframe-border)
   (custom-reevaluate-setting 'which-key-posframe))
 
 ;; Add hook to reload child-frame colors on theme change
-(add-hook 'after-load-theme-hook 'cpm/reload-child-frame)
+;; (add-hook 'after-load-theme-hook 'cpm/reload-child-frame)
 
 
 ;;; End childframe

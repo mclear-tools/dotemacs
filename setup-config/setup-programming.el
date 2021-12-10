@@ -34,7 +34,18 @@
 (use-package rainbow-identifiers
   :commands rainbow-identifiers-mode)
 
-
+(use-package embrace
+  :straight (:type git :host github :repo "cute-jumper/embrace.el")
+  :config
+  (global-set-key (kbd "C-M-s-#") #'embrace-commander)
+  (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+  (defun embrace-markdown-mode-hook ()
+    (dolist (lst '((?* "*" . "*")
+                   (?\ "\\" . "\\")
+                   (?$ "$" . "$")
+                   (?/ "/" . "/")))
+      (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
+  (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
 
 ;;; Syntax Highlighting (Treesitter)
 ;; Better syntax highlight -- but doesn't have elisp right no :(
