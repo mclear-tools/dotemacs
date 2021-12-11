@@ -420,12 +420,12 @@ Font" "Consolas" "Monaco" "PT Mono")
   (dimmer-configure-vertico))
 
 (defun dimmer-configure-vertico ()
-  "Convenience settings for vertico-users."
+  "Convenience settings for vertico-buffer users."
   (with-no-warnings
     (add-to-list
-     'dimmer-exclusion-regexp-list "^ \\*Vertico\\*$")
+     'dimmer-buffer-exclusion-regexps "^ \\*Vertico\\*$")
     (add-to-list
-     'dimmer-prevent-dimming-predicates #'vertico--popup-showing-p)))
+     'dimmer-prevent-dimming-predicates #'vertico-buffer-mode)))
 
 
 ;;; Cursor
