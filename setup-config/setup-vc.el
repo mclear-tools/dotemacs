@@ -88,7 +88,12 @@
   (defun cpm/git-commit-auto-fill-everywhere ()
     "Ensures that the commit body does not exceed 80 characters."
     (setq fill-column 80)
-    (setq-local comment-auto-fill-only-comments nil)))
+    (setq-local comment-auto-fill-only-comments nil))
+  :config
+  (with-eval-after-load 'meow
+    (add-hook 'git-commit-mode-hook
+              (lambda ()
+                (meow-insert-mode)))))
 
 ;; add todos in magit
 (use-package magit-todos

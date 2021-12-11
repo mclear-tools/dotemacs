@@ -141,7 +141,8 @@
    '("=" . meow-grab)
    '("<right>" . cpm/next-user-buffer)
    '("<left>" . cpm/previous-user-buffer)
-   '("<escape>" . meow-cancel-selection)))
+   '("<escape>" . meow-cancel-selection)
+   '("<return>" . goto-address-at-point)))
 
 (use-package meow
   :straight (:type git :host github :repo "meow-edit/meow")

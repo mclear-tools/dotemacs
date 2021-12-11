@@ -150,7 +150,7 @@
     (switch-to-buffer "*straight*")
     (delete-other-windows)
     ;; this seems necessary to keep fetch from hanging/pausing
-    (run-with-idle-timer 15 2 (lambda () (evil-next-line)))
+    (run-with-idle-timer 15 2 (lambda () (next-line)))
     ;; run merge
     (run-with-idle-timer 30 2 (lambda () (straight-merge-all)))
     ;; build new packages
