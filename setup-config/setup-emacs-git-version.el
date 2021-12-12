@@ -17,7 +17,7 @@
 
 ;;; Code:
 
-(defconst emacs-version-git-commit "4434deaee2"
+(defconst emacs-version-git-commit "4b29468dbe"
   "String giving the git sha1 from which this Emacs was built.
 
 SHA1 of git commit that was used to compile this version of
