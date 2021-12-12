@@ -78,6 +78,12 @@
   (if (file-exists-p abbrev-file-name)
       (quietly-read-abbrev-file)))
 
+;;; Capitalization
+;; From https://karthinks.com/software/batteries-included-with-emacs/
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-dwim)
+(global-set-key (kbd "M-c") 'capitalize-dwim)
+
 ;;; Emacs Everywhere
 ;; Write with emacs everywhere
 ;; https://github.com/tecosaur/emacs-everywhere

@@ -39,7 +39,7 @@
    '("W" . window-swap-states)
    ;; high frequency commands
    '(";" . comment-dwim)
-   '("\\" . multi-vterm-project)
+   '("\\" . multi-vterm-dedicated-toggle)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
    '("[" . persp-prev)
@@ -71,7 +71,7 @@
    '("S" . cpm/search-in-input-dir)
    ;; toggles
    '("T" . toggle-dark-light-theme)
-   '("L" . linnum-mode)
+   '("L" . display-line-numbers-mode)
    '("A" . consult-org-agenda))
 
   (meow-normal-define-key
@@ -139,10 +139,10 @@
    '("&" . meow-query-replace-regexp)
    '("%" . meow-query-replace)
    '("=" . meow-grab)
-   '("<right>" . cpm/next-user-buffer)
-   '("<left>" . cpm/previous-user-buffer)
+   '("C-}" . cpm/next-user-buffer)
+   '("C-{" . cpm/previous-user-buffer)
    '("<escape>" . meow-cancel-selection)
-   '("<return>" . goto-address-at-point)))
+   '("<return>" . org-open-at-point-global)))
 
 (use-package meow
   :straight (:type git :host github :repo "meow-edit/meow")
@@ -161,6 +161,10 @@
   ;; Make sure delete char means delete char
   ;; see https://github.com/meow-edit/meow/issues/112
   (setq meow--kbd-delete-char "<deletechar>")
+
+  (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
+  (add-to-list 'meow-char-thing-table '(?a . angle))
+
   (meow-setup)
   (meow-global-mode 1))
 
