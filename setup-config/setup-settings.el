@@ -285,6 +285,7 @@
 
 ;;;; Miscellaneous
 (use-package remember
+  :straight (:type built-in)
   :commands (remember remember-notes)
   :config
   (setq remember-data-dir (concat cpm-cache-dir "remember")
