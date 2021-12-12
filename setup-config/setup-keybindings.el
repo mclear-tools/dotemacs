@@ -67,6 +67,7 @@
    '("q" . cpm/delete-frame-or-quit)
    '("Q" . restart-emacs)
    '("r" . consult-recent-file)
+   '("R" . vertico-repeat)
    '("s" . consult-line)
    '("S" . cpm/search-in-input-dir)
    ;; toggles
