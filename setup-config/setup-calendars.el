@@ -50,10 +50,10 @@
 (use-package excorporate
   :after org
   :disabled t
-  :config
+  ;; :config
   ;; configure excorporate
   ;; allow opening the exchange calendar with 'e' from calendar
-  (evil-define-key 'motion calendar-mode-map "e" #'exco-calendar-show-day)
+  ;; (evil-define-key 'motion calendar-mode-map "e" #'exco-calendar-show-day)
 
   (setq-default
    ;; configure email address and office 365 exchange server adddress for exchange web services

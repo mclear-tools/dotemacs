@@ -1,6 +1,7 @@
 
 ;;; Evil Mode
 (use-package evil
+  :disabled
   :straight t
   :init
   (setq evil-want-integration t
@@ -218,6 +219,7 @@
 ;; align gl: After pressing glip= (gl is the operator, ip text object paragraph, =
 ;; separator)
 (use-package evil-lion
+  :disabled
   :after evil
   :straight (:host github :repo "edkolev/evil-lion")
   :commands (evil-lion-left evil-lion-right))

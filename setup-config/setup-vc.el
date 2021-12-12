@@ -187,13 +187,13 @@
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 ;;; Diff Files with Vdiff
-(use-package vdiff
-  :general
-  (:states 'normal
-   :keymaps 'vdiff-mode-map
-   ",d" 'vdiff-mode-prefix-map)
-  :config
-  (evil-collection-init 'vdiff))
+;; (use-package vdiff
+;;   :general
+;;   (:states 'normal
+;;    :keymaps 'vdiff-mode-map
+;;    ",d" 'vdiff-mode-prefix-map)
+;;   :config
+;;   (evil-collection-init 'vdiff))
 
 (use-package vdiff-magit
   :defer t

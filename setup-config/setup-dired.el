@@ -74,7 +74,8 @@
    "j" #'peep-dired-next-file
    "k" #'peep-dired-prev-file
    "RET" #'cpm/peep-dired-open
-   "TAB" #'evil-window-next)
+   ;; "TAB" #'evil-window-next
+   )
   :config
   ;; helper function for opening files in full window
   (defun cpm/peep-dired-open ()
@@ -83,7 +84,7 @@
     (peep-dired-kill-buffers-without-window)
     (dired-find-file)
     (delete-other-windows))
-  (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+  ;; (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif"))
   (setq peep-dired-cleanup-eagerly nil)
   (setq peep-dired-enable-on-directories t)

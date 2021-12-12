@@ -340,11 +340,11 @@ Font" "Consolas" "Monaco" "PT Mono")
 ;; Much better lookup both in details and headings/aesthetics
 ;; Better help info
 (use-package helpful
-  :init
-  (setq evil-lookup-func #'helpful-at-point)
-  :config
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'helpful-mode 'motion))
+  ;; :init
+  ;; (setq evil-lookup-func #'helpful-at-point)
+  ;; :config
+  ;; (with-eval-after-load 'evil
+  ;;   (evil-set-initial-state 'helpful-mode 'motion))
   :general
   ("C-h f" #'helpful-function)
   ("C-h k" #'helpful-key)
@@ -408,7 +408,7 @@ Font" "Consolas" "Monaco" "PT Mono")
   :straight (:host github :repo "gonewest818/dimmer.el")
   :hook (after-init . dimmer-mode)
   :config
-  (setq mini-frame-create-lazy nil)
+  ;; (setq mini-frame-create-lazy nil)
   (setq dimmer-prevent-dimming-predicates '(window-minibuffer-p))
   (setq dimmer-fraction 0.5)
   (setq dimmer-adjustment-mode :foreground)
@@ -423,9 +423,9 @@ Font" "Consolas" "Monaco" "PT Mono")
   "Convenience settings for vertico-buffer users."
   (with-no-warnings
     (add-to-list
-     'dimmer-buffer-exclusion-regexps "^ \\*Vertico\\*$")
-    (add-to-list
-     'dimmer-prevent-dimming-predicates #'vertico-buffer-mode)))
+     'dimmer-buffer-exclusion-regexps "^ \\*Vertico\\*$")))
+    ;; (add-to-list
+     ;; 'dimmer-prevent-dimming-predicates #'vertico-buffer-mode)))
 
 
 ;;; Cursor

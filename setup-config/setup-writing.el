@@ -175,23 +175,23 @@
       (pandoc-main-hydra/body))
     (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
 
-  (defun cpm/pandoc-convert-to-pdf ()
-   (interactive)
-   (cond
-   ((eq major-mode 'org-mode)
-    (call-interactively 'org-pandoc-export-to-latex-pdf-and-open))
-   (t
-    (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open) (evil-window-prev 1))))
+    (defun cpm/pandoc-convert-to-pdf ()
+      (interactive)
+      (cond
+       ((eq major-mode 'org-mode)
+        (call-interactively 'org-pandoc-export-to-latex-pdf-and-open))
+       (t
+        (call-interactively 'pandoc-convert-to-pdf) (cpm/pandoc-pdf-open))))
 
-  (defun cpm/pandoc-command-line-convert-to-pdf ()
-   "convert to pdf"
-   (interactive)
-   (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=~/Dropbox/Work/bibfile.bib --template=~/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
+    ;; (defun cpm/pandoc-command-line-convert-to-pdf ()
+    ;;   "convert to pdf"
+    ;;   (interactive)
+    ;;   (evil-ex "!pandoc -s -N -V mainfont=Optima --pdf-engine=xelatex --bibliography=~/Dropbox/Work/bibfile.bib --template=~/.pandoc/pandoc-templates/default.latex -o '%.pdf' '%'"))
 
-  (defun cpm/pandoc-pdf-open ()
-   "Open created PDF file"
-   (interactive)
-   (find-file-other-window (concat (file-name-sans-extension buffer-file-name) ".pdf"))))
+    (defun cpm/pandoc-pdf-open ()
+      "Open created PDF file"
+      (interactive)
+      (find-file-other-window (concat (file-name-sans-extension buffer-file-name) ".pdf"))))
   :init
   (progn
     (setq pandoc-data-dir (concat cpm-local-dir "pandoc-mode/"))

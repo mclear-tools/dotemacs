@@ -57,10 +57,10 @@
 (setq tab-width 4)
 (setq-default fill-column 78)
 (setq fill-column 78)
-(setq-default evil-indent-convert-tabs nil)
+;; (setq-default evil-indent-convert-tabs nil)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(setq-default evil-shift-round nil)
+;; (setq-default evil-shift-round nil)
 (setq-default tab-always-indent t)
 
 ;;;;; UTF 8
@@ -172,7 +172,7 @@
   (setq savehist-save-minibuffer-history t)
   (setq history-length 100)
   (put 'minibuffer-history 'history-length 50)
-  (put 'evil-ex-history 'history-length 50)
+  ;; (put 'evil-ex-history 'history-length 50)
   (put 'kill-ring 'history-length 25)
   (savehist-mode 1))
 

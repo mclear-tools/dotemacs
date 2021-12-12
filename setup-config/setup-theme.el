@@ -25,7 +25,7 @@
   :straight (:local-repo "/Users/roambot/.emacs.d/.local/custom-themes/bespoke-themes/")
   :config
   ;; Set up evil cursor colors
-  (setq bespoke-set-evil-cursors t)
+  ;; (setq bespoke-set-evil-cursors t)
   ;; Set use of italics
   (setq bespoke-set-italic-comments t
         bespoke-set-italic-keywords t)
@@ -60,7 +60,7 @@
     (setq-default mode-line-format
                   '((:eval
                      (list
-                      evil-mode-line-tag
+                      ;; evil-mode-line-tag
                       "| "
                       "%b "
                       "%m "

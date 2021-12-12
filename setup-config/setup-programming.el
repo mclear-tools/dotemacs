@@ -1,16 +1,16 @@
 ;; Programming
 ;;; Alignment
 ;; https://github.com/edkolev/evil-lion : This package provides gl and gL align operators: gl MOTION CHAR and right-align gL MOTION CHAR
-(use-package evil-lion
- :defer t
- :config
- (general-define-key :states '(normal) :keymaps 'prog-mode-map
- "g l" 'evil-lion-left
- "g L" 'evil-lion-right)
+;; (use-package evil-lion
+;;  :defer t
+;;  :config
+;;  (general-define-key :states '(normal) :keymaps 'prog-mode-map
+;;  "g l" 'evil-lion-left
+;;  "g L" 'evil-lion-right)
 
- (general-define-key :states '(visual) :keymaps 'prog-mode-map
- "g l" 'evil-lion-left
- "g L" 'evil-lion-right))
+;;  (general-define-key :states '(visual) :keymaps 'prog-mode-map
+;;  "g l" 'evil-lion-left
+;;  "g L" 'evil-lion-right))
 
 ;;; Delimiters & Identifiers
 ;; https://github.com/Fanael/rainbow-delimiters Useful package that will highlight

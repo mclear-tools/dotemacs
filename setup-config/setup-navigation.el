@@ -13,10 +13,6 @@
   (setq save-place-file (concat cpm-cache-dir "saved-places"))
   (setq save-place-forget-unreadable-files nil))
 
-;;; Go To Change
-(use-package goto-chg
-  :commands goto-last-change goto-last-change-reverse)
-
 ;;; Treemacs
 (use-package treemacs
   :commands treemacs
@@ -65,13 +61,19 @@
 ;;       ("C-x t C-t" . treemacs-find-file)
 ;;       ("C-x t M-t" . treemacs-find-tag)))
 
-(use-package treemacs-evil
-  :after treemacs evil
-  )
+;; (use-package treemacs-evil
+;;   :after treemacs evil
+;;   )
 
 (use-package treemacs-projectile
   :after treemacs projectile
   )
+
+;;; Go To Change
+(use-package goto-last-change
+  :straight (:type git :host github :repo "camdez/goto-last-change.el")
+  :general
+  ("C-\"" 'goto-last-change))
 
 ;;; Centered Cursor
 (use-package centered-cursor-mode
@@ -87,7 +89,8 @@
                                  mouse-set-point
                                  widget-button-click
                                  scroll-bar-toolkit-scroll
-                                 evil-mouse-drag-region))))
+                                 ;; evil-mouse-drag-region
+                                 ))))
 
 ;;; Hydra
 (use-package hydra :defer 1)

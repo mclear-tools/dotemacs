@@ -168,6 +168,7 @@
     "Q" #'exit-recursive-edit))
 
 
+
 ;;;; Use-Package
 ;; install use package
 (straight-use-package 'use-package)
@@ -264,7 +265,9 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-teaching)
-;; (require 'setup-testing)
+(require 'setup-testing)
+
+
 ;; (require 'setup-evil)
 ;; (require 'setup-ivy)
 ;; (require 'setup-nano)

@@ -129,7 +129,7 @@
   ;; Escape to vim mode in shell
   (defun cpm/vterm-escape-toggle ()
     (interactive)
-    (evil-collection-vterm-toggle-send-escape)
+    ;; (evil-collection-vterm-toggle-send-escape)
     (vterm-send-key "<escape>"))
 
   ;; directory tracking
