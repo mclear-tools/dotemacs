@@ -197,8 +197,7 @@ mv -f *.pdf static/materials/handouts/"))
 (use-package org-tree-slide
   :straight t
   :general
-  (:states '(normal motion)
-   :keymaps 'org-tree-slide-mode-map
+  (:keymaps 'org-tree-slide-mode-map
    "C-j" 'org-tree-slide-move-next-tree
    "C-k" 'org-tree-slide-move-previous-tree
    "C-s C-c" 'org-tree-slide-content)

@@ -29,61 +29,50 @@
    ;; The most important setting of all! Make each scroll-event move 2 lines at
    ;; a time (instead of 5 at default). Simply hold down shift to move twice as
    ;; fast, or hold down control to move 3x as fast. Perfect for trackpads.
-   mouse-wheel-scroll-amount '(1 ((shift) . 1) ((meta)) ((control) . text-scale))))
-;; mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6)))
-
-
-;; Set precision scrolling (only emacs 29)
-(use-package pixel-scroll
-  :if (and (window-system) (version<= "29.0.50" emacs-version))
-  :straight (:type built-in)
-  :config
-  (setq pixel-resolution-fine-flag t)
-  (pixel-scroll-mode))
-
+   mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . 6))))
 
 
 ;;; Frames
 
 ;;;; Frame defaults
-  (use-package frame
-    :straight (:type built-in)
-    :config
-    ;; Make a clean & minimalist frame
-    (setq-default default-frame-alist
-                  (append (list
-	                       '(font . "SF Mono:style=normal:size=13")
-                           '(internal-border-width . 20)
-                           '(left-fringe    . 0)
-                           '(right-fringe   . 0)
-                           '(tool-bar-lines . 0)
-                           '(menu-bar-lines . 0)
-                           '(vertical-scroll-bars . nil)
-                           '(horizontal-scroll-bars . nil)
-                           '(height . 45)
-                           '(width . 85)
-                           )))
+(use-package frame
+  :straight (:type built-in)
+  :config
+  ;; Make a clean & minimalist frame
+  (setq-default default-frame-alist
+                (append (list
+	                     '(font . "SF Mono:style=normal:size=13")
+                         '(internal-border-width . 20)
+                         '(left-fringe    . 0)
+                         '(right-fringe   . 0)
+                         '(tool-bar-lines . 0)
+                         '(menu-bar-lines . 0)
+                         '(vertical-scroll-bars . nil)
+                         '(horizontal-scroll-bars . nil)
+                         '(height . 45)
+                         '(width . 85)
+                         )))
 
-    ;; maximize frame
-    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-    (setq-default window-resize-pixelwise t)
-    (setq-default frame-resize-pixelwise t)
+  ;; maximize frame
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  (setq-default window-resize-pixelwise t)
+  (setq-default frame-resize-pixelwise t)
 
 ;;;; Frame titlebar
-    ;; No frame title
-    (setq-default frame-title-format nil)
-    ;; No frame icon
-    (setq ns-use-proxy-icon nil)
+  ;; No frame title
+  (setq-default frame-title-format nil)
+  ;; No frame icon
+  (setq ns-use-proxy-icon nil)
 
 ;;;; UI Elements
-    (unless (eq window-system 'ns)
-      (menu-bar-mode -1))
-    (when (fboundp 'tool-bar-mode)
-      (tool-bar-mode -1))
-    (when (fboundp 'scroll-bar-mode)
-      (scroll-bar-mode -1))
-    (when (fboundp 'horizontal-scroll-bar-mode)
-      (horizontal-scroll-bar-mode -1)))
+  (unless (eq window-system 'ns)
+    (menu-bar-mode -1))
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+  (when (fboundp 'horizontal-scroll-bar-mode)
+    (horizontal-scroll-bar-mode -1)))
 
 ;;;; Fix titlebar titling colors
 ;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
@@ -331,20 +320,12 @@ Font" "Consolas" "Monaco" "PT Mono")
 (setq x-underline-at-descent-line t)
 
 
-;;; Delight
-(use-package delight
-  :straight t
-  :defer 1)
+
 
 ;;; Helpful Information
 ;; Much better lookup both in details and headings/aesthetics
 ;; Better help info
 (use-package helpful
-  ;; :init
-  ;; (setq evil-lookup-func #'helpful-at-point)
-  ;; :config
-  ;; (with-eval-after-load 'evil
-  ;;   (evil-set-initial-state 'helpful-mode 'motion))
   :general
   ("C-h f" #'helpful-function)
   ("C-h k" #'helpful-key)
@@ -435,12 +416,13 @@ Font" "Consolas" "Monaco" "PT Mono")
   ;; don't show cursor in inactive windows
   (cursor-in-non-selected-win dows nil))
 
-;;;; Reveal Mode
+;;; Reveal Mode
 ;; Toggle uncloaking of invisible text near point, including folded org headlines (Reveal mode).
 (use-package reveal
   :straight (:type built-in)
   :defer 1
   :config
+  (setq reveal-auto-hide nil)
   (global-reveal-mode))
 
 ;;; End UI

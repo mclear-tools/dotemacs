@@ -54,7 +54,6 @@
 (use-package dired-quick-sort
   :general
   (:keymaps 'dired-mode-map
-   :states '(normal motion)
    "s" #'hydra-dired-quick-sort/body))
 
 ;;;; Dired Colors
@@ -67,14 +66,12 @@
   :commands (peep-dired)
   :general
   (:keymaps 'dired-mode-map
-   :states '(normal)
    "p" #'peep-dired)
   (:keymaps 'peep-dired-mode-map
-   :states '(normal)
    "j" #'peep-dired-next-file
    "k" #'peep-dired-prev-file
    "RET" #'cpm/peep-dired-open
-   ;; "TAB" #'evil-window-next
+   "TAB" #'cpm/other-window
    )
   :config
   ;; helper function for opening files in full window
@@ -98,7 +95,6 @@
 (use-package dired-ranger
   :after dired
   :general (:keymaps 'dired-mode-map
-            :states '(normal motion)
             "s-c"  'dired-ranger-copy
             "s-m"  'dired-ranger-move
             "s-v"  'dired-ranger-paste))

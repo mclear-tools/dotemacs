@@ -66,6 +66,12 @@
     ("m" flyspell-mode)))
 
 
+;;;; Spelling Goto Next Error
+(defun cpm/flyspell-ispell-goto-next-error ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word))
 
 ;;; Abbrev
 (use-package abbrev
@@ -365,7 +371,35 @@
   (setq writegood-weasel-words
         (-concat writegood-weasel-words cpm/weasel-words)))
 
+;;; Narrow/Widen
+(defun cpm/narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+  Dwim means: region, org-src-block, org-subtree, markdown
+  subtree, or defun, whichever applies first. Narrowing to
+  org-src-block actually calls `org-edit-src-code'.
 
+  With prefix P, don't widen, just narrow even if buffer
+  is already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning)
+                           (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if
+         ;; you don't want it.
+         (cond ((ignore-errors (org-edit-src-code) t)
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'markdown-mode)
+         (markdown-narrow-to-subtree))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
 
+;;; End Setup Writing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-writing)

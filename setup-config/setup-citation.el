@@ -174,5 +174,14 @@ With prefix, rebuild the cache before offering candidates."
   (setq company-bibtex-org-citation-regex "-?@"))
 
 
+;;; Custom Functions
+;;;; Insert Bibtex Source Entry
+
+(defun cpm-bibtex (key)
+  "insert bibtex entry"
+  (require 'org-ref)
+  (insert (concat "\n\n#+begin_src bibtex\n" (org-ref-get-bibtex-entry key) "\n#+end_src\n")))
+;; (citar--insert-bibtex key)
+
 ;;; Provide File
 (provide 'setup-citation)

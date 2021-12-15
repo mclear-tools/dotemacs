@@ -21,6 +21,7 @@
   ;; make fonts look better with anti-aliasing
   (setq mac-allow-anti-aliasing t)
 
+;;;;; Delete to Trash
   ;; delete files by moving them to the trash
   ;; See https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
   (use-package emacs
@@ -38,20 +39,7 @@ Get it from:  <http://hasseg.org/trash/>"
                      nil ;; Name of output buffer
                      "*Trash Error Buffer*")))
 
-  ;; (use-package osx-trash
-  ;;   :straight t
-  ;;   :hook (after-init . osx-trash-setup)
-  ;;   :config
-  ;;   (setq delete-by-moving-to-trash t))
-
-  ;; ;; this might also work NOTE: not tested!
-  ;; ;; https://emacs.stackexchange.com/a/63342/11934
-  ;; (defun cpm/system-move-file-to-trash (filename)
-  ;;   "Move file or directory named FILENAME to the trash."
-  ;;   (ns-do-applescript
-  ;;    (format
-  ;;     "tell application \"Finder\" to delete POSIX file \"%s\""
-  ;;     filename)))
+;;;;; Frames & Fullscreen
 
   ;; (Do not) make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)
@@ -59,8 +47,7 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; fullscreen (disable for non-space full screen)
   (setq ns-use-native-fullscreen nil)
 
-  ;; disable emacs-mac smooth scrolling because it is seriously janky
-  (setq mac-mouse-wheel-smooth-scroll nil)
+;;;;; Keybindings
 
   ;; Set modifier keys
   (setq mac-option-modifier 'meta) ;; Bind meta to ALT
@@ -120,6 +107,7 @@ This will use the command `open' with the message URL."
   '(when (member window-system '(mac ns))
      (add-to-list 'auth-sources 'macos-keychain-internet)
      (add-to-list 'auth-sources 'macos-keychain-generic)))
+
 ;;;; OSX Lib
 ;; useful library of functions
 ;; https://melpa.org/#/osx-lib

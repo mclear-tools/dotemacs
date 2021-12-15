@@ -238,6 +238,7 @@
 (require 'setup-emacs-git-version)
 (require 'setup-functions-macros)
 (require 'setup-theme)
+(require 'setup-modeline)
 (require 'setup-keybindings)
 (require 'setup-settings)
 
@@ -251,22 +252,22 @@
 (require 'setup-osx)
 (require 'setup-windows-buffers)
 (require 'setup-ui)
-(require 'setup-modeline)
-(require 'setup-childframe)
 (require 'setup-navigation)
 (require 'setup-search)
 (require 'setup-vc)
+(require 'setup-projects)
+(require 'setup-teaching)
+
+;; TODO: Eval these and see if they need more clean-up!
+(require 'setup-childframe)
 (require 'setup-shell)
 (require 'setup-writing)
 (require 'setup-notes)
 (require 'setup-citation)
-(require 'setup-projects)
 (require 'setup-programming)
 (require 'setup-pdf)
 (require 'setup-calendars)
-(require 'setup-teaching)
 (require 'setup-testing)
-
 
 ;; (require 'setup-evil)
 ;; (require 'setup-ivy)

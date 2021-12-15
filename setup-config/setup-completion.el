@@ -214,51 +214,16 @@
    --exclude-dir=.git --line-number -I -R -S .")
 
   (setq consult-ripgrep-args
-    "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
+        "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
    --smart-case --no-heading --line-number .")
 
   ;; Make consult locate work with macos spotlight
   (setq consult-locate-args "mdfind -name")
 
-  ;; Optionally configure a function which returns the project root directory
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-root-function #'projectile-project-root)
   (setq consult-async-min-input 0))
 
 ;; Use consult-completing-read for enhanced interface.
 (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-
-;; Consult & Projectile
-(use-package consult-projectile
-  :straight (consult-projectile :type git :host gitlab
-                                :repo "OlMon/consult-projectile" :branch "master")
-  :commands (consult-projectile))
-
-;; Integrate consult and persp-mode
-(defun cpm/persp-consult-buffer ()
-  (interactive)
-  (with-persp-buffer-list () (consult-buffer)))
-
-;; See if this helps fix errors. See:
-;; https://github.com/Bad-ptr/persp-mode.el/issues/51
-;; https://github.com/Bad-ptr/persp-mode.el/issues/51#issuecomment-479634578
-(with-eval-after-load "persp-mode"
-  (defun toto (buffer-or-name)
-    (not (persp-get-buffer-or-null buffer-or-name)))
-  (add-to-list #'persp-buffer-list-restricted-filter-functions #'toto))
-
-(with-eval-after-load "persp-mode"
-  (setq persp-interactive-completion-function #'completing-read))
-
-;; Configure initial narrowing per command
-(defvar consult-initial-narrow-config
-  '((consult-projectile . ?p)))
-
-;; Add initial narrowing hook
-(defun consult-initial-narrow ()
-  (when-let (key (alist-get this-command consult-initial-narrow-config))
-    (setq unread-command-events (append unread-command-events (list key 32)))))
-;; (add-hook 'minibuffer-setup-hook #'consult-initial-narrow)
 
 ;;;; Consult Search At Point
 ;; Search at point with consult
@@ -280,10 +245,7 @@
              consult-dir-jump-file)
   :general
   (:keymaps 'vertico-map
-   "C-d" #'consult-dir)
-  :config
-  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs))
-
+   "C-d" #'consult-dir))
 
 ;;;; Completing-Read Info
 ;; Info search commands using completing-read
@@ -558,8 +520,6 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   :after (yasnippet)
   :custom
   (yasnippet-snippets-dir (concat cpm-local-dir "all-snippets/yasnippet-snippets")))
-
-
 
 
 ;;; Icons

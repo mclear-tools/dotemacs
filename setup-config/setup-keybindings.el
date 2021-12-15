@@ -30,23 +30,26 @@
    '("," . "M-,")
    '("y" . "C-c C-<SPC>") ;; my namespaced keybindings
    ;; window management
-   '("h" . split-window-below-and-focus)
+   '("h" . cpm/split-window-below-and-focus)
    '("H" . split-window-below)
    '("o" . delete-other-windows)
-   '("v" . split-window-right-and-focus)
+   '("v" . cpm/split-window-right-and-focus)
    '("V" . split-window-right)
    '("w" . cpm/other-window)
    '("W" . window-swap-states)
+   '("TAB" . tab-bar-switch-to-tab)
+   '("C-M-i" . tab-bar-new-tab)
    ;; high frequency commands
    '(";" . comment-dwim)
    '("\\" . multi-vterm-dedicated-toggle)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
-   '("[" . persp-prev)
-   '("]" . persp-next)
+   ;; '("[" . persp-prev)
+   ;; '("]" . persp-next)
    '("=" . hl-line-mode)
    '("a" . execute-extended-command)
-   '("b" . cpm/persp-consult-buffer)
+   '("b" . project-switch-to-buffer)
+   '("B" . consult-buffer)
    '("c" . cpm/find-files-setup-config-directory)
    '("C" . cpm/search-setup-config-files)
    '("d" . dired-jump-other-window)
@@ -58,12 +61,13 @@
    '("j" . cpm/jump-in-buffer)
    '("J" . crux-top-join-line)
    '("k" . kill-this-buffer)
+   '("K" . consult-yank-from-kill-ring)
    '("l" . consult-locate)
    '("m" . consult-mark)
    '("n" . consult-notes)
    '("N" . consult-notes-search-all)
-   '("p" . consult-projectile)
-   '("P" . persp-switch)
+   '("p" . cpm/open-existing-project-and-workspace)
+   ;; '("P" . tab-bar
    '("q" . cpm/delete-frame-or-quit)
    '("Q" . restart-emacs)
    '("r" . consult-recent-file)
@@ -142,8 +146,8 @@
    '("=" . meow-grab)
    '("C-}" . cpm/next-user-buffer)
    '("C-{" . cpm/previous-user-buffer)
-   '("<escape>" . meow-cancel-selection)
-   '("<return>" . org-open-at-point-global)))
+   '("<escape>" . meow-cancel-selection)))
+
 
 (use-package meow
   :straight (:type git :host github :repo "meow-edit/meow")
@@ -162,7 +166,7 @@
   ;; Make sure delete char means delete char
   ;; see https://github.com/meow-edit/meow/issues/112
   (setq meow--kbd-delete-char "<deletechar>")
-
+  (setq meow-use-clipboard t)
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
 
@@ -359,52 +363,53 @@
 
 ;;;; Project Keybindings
 (global-set-key (kbd "C-h C-c") 'finder-commentary)
-(cpm-leader-def
-  "p" '(:ignore t :which-key "Projects")
-  "p!"  'projectile-run-shell-command-in-root
-  "p&"  'projectile-run-async-shell-command-in-root
-  "pa"  'projectile-toggle-between-implementation-and-test
-  ;; "pb"  'projectile-switch-to-buffer
-  "pb"  'consult-projectile
-  ;; "pc"  'consult-projectile
-  "pc"  'projectile-compile-project
-  "pd"  'projectile-find-dir
-  "pD"  'projectile-dired
-  "pf"  'projectile-find-file
-  "pF"  'projectile-find-file-other-window
-  "pg"  'cpm/goto-projects
-  ;; "ph"  'projectile
-  "pi"  'consult-project-imenu
-  "pJ"  'bookmark
-  "pG"  'projectile-regenerate-tags
-  "pI"  'projectile-invalidate-cache
-  "pk"  'projectile-kill-buffers
-  "pn"  #'cpm/open-new-buffer-and-workspace
-  "pN"  #'cpm/create-new-project-and-workspace
-  "po"  #'cpm/open-existing-project-and-workspace
-  "pp"  'projectile-switch-project
-  "pr"  'recentf
-  "pR"  'projectile-replace
-  "ps"  #'projectile-ag
-  ;; "ps1" #'cpm/load-phil101
-  ;; "ps2" #'cpm/load-phil232
-  ;; "ps5" #'cpm/load-phil105
-  ;; "ps8" #'cpm/load-phil871
-  ;; "psa" #'cpm/load-kant-apperception-substance
-  ;; "psb" #'(:ignore t :which-key "Books")
-  ;; "psba" #'cpm/load-kant-agency-book
-  ;; "psbr" #'cpm/load-kant-rationality-book
-  ;; "psc" #'cpm/load-emacs-config
-  ;; "psf" #'cpm/load-kant-free-thought
-  ;; "psr" #'cpm/load-kant-reflection
-  ;; "pst" #'cpm/load-org-agenda-todo
-  ;; "psw" #'cpm/load-website
-  ;; "psz" #'cpm/load-zettelkasten
-  ;; "pt"  #'org-projectile-helm-template-or-project
-  "pT"  'projectile-find-test-file
-  "pV"  'projectile-vc
-  "py"  'projectile-find-tag
-  )
+
+;; (cpm-leader-def
+;;   "p" '(:ignore t :which-key "Projects")
+;;   "p!"  'projectile-run-shell-command-in-root
+;;   "p&"  'projectile-run-async-shell-command-in-root
+;;   "pa"  'projectile-toggle-between-implementation-and-test
+;;   ;; "pb"  'projectile-switch-to-buffer
+;;   "pb"  'consult-projectile
+;;   ;; "pc"  'consult-projectile
+;;   "pc"  'projectile-compile-project
+;;   "pd"  'projectile-find-dir
+;;   "pD"  'projectile-dired
+;;   "pf"  'projectile-find-file
+;;   "pF"  'projectile-find-file-other-window
+;;   "pg"  'cpm/goto-projects
+;;   ;; "ph"  'projectile
+;;   "pi"  'consult-project-imenu
+;;   "pJ"  'bookmark
+;;   "pG"  'projectile-regenerate-tags
+;;   "pI"  'projectile-invalidate-cache
+;;   "pk"  'projectile-kill-buffers
+;;   "pn"  #'cpm/open-new-buffer-and-workspace
+;;   "pN"  #'cpm/create-new-project-and-workspace
+;;   "po"  #'cpm/open-existing-project-and-workspace
+;;   "pp"  'projectile-switch-project
+;;   "pr"  'recentf
+;;   "pR"  'projectile-replace
+;;   "ps"  #'projectile-ag
+;;   ;; "ps1" #'cpm/load-phil101
+;;   ;; "ps2" #'cpm/load-phil232
+;;   ;; "ps5" #'cpm/load-phil105
+;;   ;; "ps8" #'cpm/load-phil871
+;;   ;; "psa" #'cpm/load-kant-apperception-substance
+;;   ;; "psb" #'(:ignore t :which-key "Books")
+;;   ;; "psba" #'cpm/load-kant-agency-book
+;;   ;; "psbr" #'cpm/load-kant-rationality-book
+;;   ;; "psc" #'cpm/load-emacs-config
+;;   ;; "psf" #'cpm/load-kant-free-thought
+;;   ;; "psr" #'cpm/load-kant-reflection
+;;   ;; "pst" #'cpm/load-org-agenda-todo
+;;   ;; "psw" #'cpm/load-website
+;;   ;; "psz" #'cpm/load-zettelkasten
+;;   ;; "pt"  #'org-projectile-helm-template-or-project
+;;   "pT"  'projectile-find-test-file
+;;   "pV"  'projectile-vc
+;;   "py"  'projectile-find-tag
+;;   )
 
 ;;;; Quit Keybindings
 (cpm-leader-def

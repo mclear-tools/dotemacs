@@ -627,9 +627,8 @@ _vr_ reset      ^^                       ^^                 ^^
 (defun cpm/goto-org-files ()
   "goto org-files directory"
   (interactive)
-  (require 'projectile)
-  (projectile-find-file-in-directory org-directory))
-;; (ido-find-file-in-dir org-directory))
+  (let ((default-directory org-directory))
+    (call-interactively 'find-file)))
 (defun cpm/goto-inbox.org ()
   "goto org-inbox"
   (interactive)
@@ -1351,6 +1350,98 @@ is non-nil."
                  (org-match-string-no-properties 1))))
           (apply 'delete-region remove)
           (insert description)))))
+
+;;;; Uncheck Org boxes
+;;see https://www.reddit.com/r/emacs/comments/r107bg/comment/hlx54vf/?utm_source=share&utm_medium=web2x&context=3
+(defun cpm/copy-and-uncheck (start end)
+  "copy a region of regularly repeating checkbox items forward from
+one week to the next, unchecking them at the same time"
+  (interactive "r")
+  (kill-new (replace-regexp-in-string (rx "[X]") "[ ]" (buffer-substring start end)))
+  (setq deactivate-mark t))
+
+;;;; Org Archive
+(defun cpm/org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (outline-previous-heading)))
+   "/DONE" 'agenda))
+
+;;;; Org Tree/Heading to New File
+(defun cpm/org-tree-to-new-file ()
+  (interactive)
+  "Move an org subtree to a new file"
+  (org-copy-subtree nil t)
+  (find-file-other-window
+   (read-file-name "Move subtree to file:" ))
+  (org-paste-subtree))
+
+;;;; Org Wrap in Block Template
+;; A helpful function I found for wrapping text in a block template.
+;; http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; function to wrap blocks of text in org templates                       ;;
+;; e.g. latex or src etc                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun org-block-wrap ()
+  "Make a template at point."
+  (interactive)
+  (if (org-at-table-p)
+      (call-interactively 'org-table-rotate-recalc-marks)
+    (let* ((choices '(
+                      ("a" . "ascii")
+                      ("c" . "comment")
+                      ("C" . "center")
+                      ("e" . "example")
+                      ("E" . "src emacs-lisp")
+                      ("h" . "html")
+                      ("l" . "laTeX")
+                      ("n" . "notes")
+                      ("q" . "quote")
+                      ("s" . "src")
+                      ("v" . "verse")
+                      ))
+           (key
+            (key-description
+             (vector
+              (read-key
+               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+                       (mapconcat (lambda (choice)
+                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
+                                            ": "
+                                            (cdr choice)))
+                                  choices
+                                  ", ")))))))
+      (let ((result (assoc key choices)))
+        (when result
+          (let ((choice (cdr result)))
+            (cond
+             ((region-active-p)
+              (let ((start (region-beginning))
+                    (end (region-end)))
+                (goto-char end)
+                (insert "#+end_" choice "\n")
+                (goto-char start)
+                (insert "#+begin_" choice "\n")))
+             (t
+              (insert "#+begin_" choice "\n")
+              (save-excursion (insert "#+end_" choice))))))))))
+
+
+;;;; Org Export Body to HTML Buffer
+(defun cpm/org-export-to-buffer-html-as-body (&optional async subtreep visible-only body-only ext-plist)
+  "Export org buffer body to html"
+  (interactive)
+  (org-export-to-buffer 'html "*Org HTML Export*"
+    async body-only ext-plist (lambda () (html-mode)))
+  (cpm/copy-whole-buffer-to-clipboard)
+  (delete-windows-on "*Org HTML Export*")
+  (message "HTML copied!"))
+;; (cpm/previous-user-buffer))
+
 
 ;;; Org Contrib
 (use-package org-contrib

@@ -102,8 +102,8 @@
   :config
   (setq consult--find-cmd '("mdfind" "-name"))
   ;; Optionally configure a function which returns the project root directory
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-root-function #'projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-root-function #'projectile-project-root)
   (setq consult-async-min-input 0)
   (setq consult-async-input-debounce 0.01)
 

@@ -123,67 +123,35 @@
   (add-hook 'vterm-mode-hook
             (lambda ()
               (meow-insert-mode))))
-              ;; (setq-local evil-insert-state-cursor '("chartreuse3" box))
-              ;; (evil-insert-state))))
 
-  ;; Escape to vim mode in shell
-  (defun cpm/vterm-escape-toggle ()
-    (interactive)
-    ;; (evil-collection-vterm-toggle-send-escape)
-    (vterm-send-key "<escape>"))
+;; Escape to vim mode in shell
+(defun cpm/vterm-escape-toggle ()
+  (interactive)
+  ;; (evil-collection-vterm-toggle-send-escape)
+  (vterm-send-key "<escape>"))
 
-  ;; directory tracking
-  (defun vterm--rename-buffer-as-title (title)
-    (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
-      (cd-absolute dir)
-      (rename-buffer (format "term %s" title) t)))
-  (add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
+;; directory tracking
+(defun vterm--rename-buffer-as-title (title)
+  (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
+    (cd-absolute dir)
+    (rename-buffer (format "term %s" title) t)))
+(add-hook 'vterm-set-title-functions 'vterm--rename-buffer-as-title)
 
-  ;; vterm frame
-  (defun vterm-frame ()
-    "Open a new terminal frame."
-    (interactive)
-    (let ((frame (selected-frame)))
-      (with-selected-frame frame
-        (progn
-          (vterm)
-          (set-frame-parameter frame 'name "terminal")))))
-
-  ;; vterm toggle
-  (use-package vterm-toggle
-    :disabled
-    :commands (vterm-toggle-forward vterm-toggle-backward vterm-toggle-cd vterm-toggle)
-    :config
-    (setq vterm-toggle-fullscreen-p nil)
-    ;; toggle window in bottom side
-    (add-to-list 'display-buffer-alist
-                 '("^v?term.*"
-                   (display-buffer-reuse-window display-buffer-at-bottom)
-                   ;;(display-buffer-reuse-window display-buffer-in-direction)
-                   ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                   ;;(direction . bottom)
-                   ;;(dedicated . t) ;dedicated is supported in emacs27
-                   (reusable-frames . visible)
-                   (window-height . 0.5))))
-
+;; vterm frame
+(defun vterm-frame ()
+  "Open a new terminal frame."
+  (interactive)
+  (let ((frame (selected-frame)))
+    (with-selected-frame frame
+      (progn
+        (vterm)
+        (set-frame-parameter frame 'name "terminal")))))
 
 ;;;; Multi-Vterm
 (use-package multi-vterm
   :commands (multi-vterm multi-vterm-projectile multi-vterm-dedicated-toggle))
 
-;;;; Shelldon
-;; Use the minibuffer to interact with async-shell
-(use-package shelldon
-  :straight (shelldon :type git
-                      :host github
-                      :repo "Overdr0ne/shelldon"
-                      :branch "master"
-                      :files ("shelldon.el"))
-  :config
-  ;; colors
-  (add-hook 'shelldon-mode-hook 'ansi-color-for-comint-mode-on)
-  (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
-  (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t))
+
 
 ;;; Virtualenvwrapper
 (use-package virtualenvwrapper
@@ -383,6 +351,18 @@
 ;; https://github.com/dieggsy/esh-autosuggest/
 (use-package esh-autosuggest
   :hook (eshell-mode . esh-autosuggest-mode))
+
+;;;; Open in iTerm
+(defun cpm/open-dir-in-iterm ()
+  "Open the current directory of the buffer in iTerm."
+  (interactive)
+  (let* ((iterm-app-path "/Applications/iTerm.app")
+         (iterm-brew-path "/opt/homebrew-cask/Caskroom/iterm2/2.1.4/iTerm.app")
+         (iterm-path (if (file-directory-p iterm-app-path)
+                         iterm-app-path
+                       iterm-brew-path)))
+    (shell-command (concat "open -a " iterm-path " ."))))
+(global-set-key (kbd "C-x t") 'open-dir-in-iterm)
 
 ;;;; End Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

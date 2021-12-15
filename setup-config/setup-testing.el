@@ -1,5 +1,10 @@
 ;;; Testing
 
+;;;; Consult Project
+(use-package consult-project
+  :straight (:local-repo "/Users/roambot/.emacs.d/.local/elisp/consult-project/")
+  :commands (consult-project))
+
 
 ;;;; Pretty Ligatures
 ;; https://www.reddit.com/r/emacs/comments/icem4s/emacs_271_freezes_when_using_font_ligatures/g23795b?utm_source=share&utm_medium=web2x&context=3

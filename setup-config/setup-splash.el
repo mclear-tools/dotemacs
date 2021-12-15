@@ -83,12 +83,6 @@
          (padding-center (- (/ height 2) 1))
          (padding-bottom (- height (/ height 2) 3)))
 
-    ;; If there are buffer associated with filenames,
-    ;;  we don't show splash screen.
-    ;; (if (eq 0 (length (cl-loop for buf in (buffer-list)
-    ;;                            if (buffer-file-name buf)
-    ;;                            collect (buffer-file-name buf))))
-
     (with-current-buffer splash-buffer
       (erase-buffer)
 
@@ -143,15 +137,9 @@
       (local-set-key [t]               'splash-screen-fade-to-default)
       (local-set-key (kbd "C-[")       'splash-screen-fade-to-default)
       (local-set-key (kbd "<escape>")  'splash-screen-fade-to-default)
-      ;; (evil-local-set-key 'normal (kbd "<escape>") 'splash-screen-fade-to-default)
       (local-set-key (kbd "q")         'splash-screen-fade-to-default)
-      ;; (evil-local-set-key 'normal (kbd "q") 'splash-screen-fade-to-default)
       (local-set-key (kbd "<mouse-1>") 'mouse-set-point)
       (local-set-key (kbd "<mouse-2>") 'operate-this-button)
-      ;; (local-set-key " "               'splash-screen-fade-to-default)
-      ;; (local-set-key "x"               'splash-screen-fade-to-default)
-      ;; (evil-local-set-key 'normal (kbd "<RET>")     'splash-screen-fade-to-default)
-      ;; (evil-local-set-key 'normal (kbd "<return>")  'splash-screen-fade-to-default)
       (display-buffer-same-window splash-buffer nil)
       (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default)))
   (switch-to-buffer "*splash*"))

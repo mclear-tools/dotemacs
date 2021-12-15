@@ -7,20 +7,20 @@
 ;;disable emacs vc for git; just use magit!
 ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
 (use-package vc
-  :straight nil
+  :straight (:type built-in)
   :hook (after-init . vc-mode)
   :custom (vc-follow-symlinks t))
 
 (use-package vc-git
-  :straight nil
+  :straight (:type built-in)
   :after vc
   :config
   (setq vc-git-diff-switches "--patch-with-stat")
   (setq vc-git-print-log-follow t))
 
 (use-package vc-annotate
+  :straight (:type built-in)
   :after vc
-  :straight nil
   :config
   (setq vc-annotate-display-mode 'scale))
 
@@ -37,37 +37,24 @@
   ;; Suppress the message we get about "Turning on
   ;; magit-auto-revert-mode" when loading Magit.
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
-  :custom-face
-  (magit-header-line ((t (:inherit header-line))))
   :config
   (setq magit-log-margin '(t "%Y-%m-%d.%H:%M:%S "  magit-log-margin-width nil 18))
-  (setq magit-refresh-verbose t)
-  ;; try to speed up magit
-  (setq magit-refresh-status-buffer nil)
+  (setq magit-refresh-status-buffer t)
   (setq magit-git-executable "/opt/homebrew/bin/git")
-  ;; don't automatically present diff on commit
-  ;; type C-c C-d to show the diff when needed
-  ;; (remove-hook 'server-switch-hook 'magit-commit-diff)
-  ;; remove some other slow processes
-  ;; see https://github.com/magit/magit/issues/2982#issuecomment-632453966
-  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
-  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
-  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
-  ;; (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
-
-  ;; make magit go fullscreen
-  ;; (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  ;; Fine grained diffs
   (setq magit-diff-refine-hunk t)
   ;; control magit initial visibility
   (setq magit-section-initial-visibility-alist
         '((stashes . hide) (untracked . hide) (unpushed . hide) ([unpulled status] . show)))
   (global-git-commit-mode t) ; use emacs as editor for git commits
-  (setq magit-push-always-verify nil)
-  ;; Fix Magit header line FIXME
+
+  ;; no magit header line as it conflicts w/bespoke-modeline
   (advice-add 'magit-set-header-line-format :override #'ignore)
+  ;; display magit setting
+  (setq magit-display-buffer-function #'magit-display-buffer-traditional)
   )
 
-;; display magit status in new frame
+;; optional: display magit status in new frame
 (defun magit-display-buffer-pop-up-frame (buffer)
   (if (with-current-buffer buffer (eq major-mode 'magit-status-mode))
       (display-buffer buffer
@@ -75,9 +62,6 @@
                          display-buffer-pop-up-frame)
                         (reusable-frames . t)))
     (magit-display-buffer-traditional buffer)))
-
-(setq magit-display-buffer-function #'magit-display-buffer-traditional)
-
 
 ;; settings for committing using magit
 (use-package git-commit
@@ -208,5 +192,7 @@
 ;;; Ediff
 ;; Don't open ediff in new frame
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;;; End Setup VC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-vc)
