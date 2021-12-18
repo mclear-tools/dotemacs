@@ -1,5 +1,7 @@
-;; Project Management This project workflow uses a single frame with
-;; different workspaces, using primarily only built-in packages such as project.el and tab-bar.el
+;; Project Management -- This project workflow uses a single frame with different
+;; "workspaces" (i.e. window/buffer sets), using primarily only built-in
+;; packages such as project.el and tab-bar.el
+
 
 ;;; Project
 ;; Use project to switch to, and search in, projects (replaces projectile)
@@ -20,6 +22,39 @@
 
 ;; Add to keymap
 (define-key (current-global-map) (kbd "C-x p G") #'project-magit-dir)
+
+;; Use fd
+;; See https://www.manueluberti.eu/emacs/2020/09/18/project/
+(with-eval-after-load 'el-patch
+  (el-patch-defun project--files-in-directory (dir ignores &optional files)
+    (el-patch-remove
+      (require 'find-dired)
+      (require 'xref)
+      (defvar find-name-arg))
+    (let* ((default-directory dir)
+           ;; Make sure ~/ etc. in local directory name is
+           ;; expanded and not left for the shell command
+           ;; to interpret.
+           (localdir (file-local-name (expand-file-name dir)))
+           (command (el-patch-swap
+                      (format "%s %s %s -type f %s -print0"
+                              find-program
+                              localdir
+                              (xref--find-ignores-arguments ignores localdir)
+                              (if files
+                                  (concat (shell-quote-argument "(")
+                                          " " find-name-arg " "
+                                          (mapconcat
+                                           #'shell-quote-argument
+                                           (split-string files)
+                                           (concat " -o " find-name-arg " "))
+                                          " "
+                                          (shell-quote-argument ")"))
+                                ""))
+                      (format "fd -t f -0 . %s" localdir))))
+      (project--remote-file-names
+       (sort (split-string (shell-command-to-string command) "\0" t)
+             #'string<)))))
 
 ;;; Tab Bar
 ;; Use tab-bar for window grouping and configuration within a project (replaces eyebrowse)
@@ -153,22 +188,13 @@ The default tab-bar name uses the buffer name."
 
 
 ;;;; Open & Create New Project in New Workspace
-;; Create a new git project in its own perspective & workspace and create some useful
+;; Create a new git project in its own workspace and create some useful
 ;; files
 (defun cpm/create-new-project-and-workspace ()
-  "create & open a project as its own perspective"
+  "create & open a project as its own workspace"
   (interactive)
-  ;; (eyebrowse-switch-to-window-config-1)
-  (persp-switch "new-project")
+  (tab-bar-switch-to-tab "New-project")
   (cpm/git-new-project)
-  ;; (setq frame-title-format
-  ;;       '(""
-  ;;         "%b"
-  ;;         (:eval
-  ;;          (let ((project-name (projectile-project-name)))
-  ;;            (unless (string= "-" project-name)
-  ;;              (format " in [%s]" project-name))))))
-  ;; (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) (projectile-project-name))
   (delete-other-windows)
   (find-file ".gitignore")
   (find-file "project-todo.org")
@@ -188,12 +214,12 @@ The default tab-bar name uses the buffer name."
 
 ;;; New Git Project
 (defun cpm/git-new-project ()
-  "Initializes a new git repo and adds it to projectile's known projects."
+  "Initializes a new git repo and adds it to project.el's known projects."
   (interactive)
   (let ((project-dir (expand-file-name
                       (read-directory-name "New project root:"))))
     (magit-init project-dir)
-    (projectile-add-known-project project-dir)
+    (project-remember-project project-dir)
     (setq default-directory project-dir)))
 
 ;;; Goto Projects
