@@ -589,9 +589,10 @@ _vr_ reset      ^^                       ^^                 ^^
 (defun cpm-org-mode-hook ()
   (setq fill-paragraph-function   'cpm-org-fill-paragraph
         normal-auto-fill-function 'cpm-org-auto-fill-function))
-
-(add-hook 'org-load-hook 'cpm-org-mode-hook)
-(add-hook 'org-mode-hook 'cpm-org-mode-hook)
+;; FIXME I think these functions might be causing org-cache problems
+;; of the kind: The error was: (error "rx ‘**’ range error")
+;; (add-hook 'org-load-hook 'cpm-org-mode-hook)
+;; (add-hook 'org-mode-hook 'cpm-org-mode-hook)
 
 ;;;; Narrow & Advance/Retreat
 ;; Functions to advance forwards or backwards through narrowed tree
