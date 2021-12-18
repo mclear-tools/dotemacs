@@ -43,12 +43,39 @@
     (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
            (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
 
-
+;;;; Vertico Packages
 ;; Use vertico in buffer
 (use-package vertico-buffer
   :after vertico
   :config
   (vertico-buffer-mode 1))
+
+;; No headerline in vertico-buffer
+(with-eval-after-load 'el-patch
+(el-patch-feature vertico-buffer)
+(with-eval-after-load 'vertico-buffer
+  (el-patch-defun vertico-buffer--setup()
+    "Setup minibuffer overlay, which pushes the minibuffer content down."
+    (add-hook 'window-selection-change-functions 'vertico-buffer--select nil 'local)
+    (add-hook 'minibuffer-exit-hook 'vertico-buffer--destroy nil 'local)
+    (setq-local cursor-type '(bar . 0))
+    (setq vertico-buffer--overlay (make-overlay (point-max) (point-max) nil t t))
+    (overlay-put vertico-buffer--overlay 'window (selected-window))
+    (overlay-put vertico-buffer--overlay 'priority 1000)
+    (overlay-put vertico-buffer--overlay 'before-string "\n\n")
+    (setq vertico-buffer--buffer (get-buffer-create
+                                  (if (= 1 (recursion-depth))
+                                      " *Vertico*"
+                                    (format " *Vertico-%s*" (1- (recursion-depth))))))
+    (with-current-buffer vertico-buffer--buffer
+      (add-hook 'window-selection-change-functions 'vertico-buffer--select nil 'local)
+      (setq-local display-line-numbers nil
+                  truncate-lines t
+                  show-trailing-whitespace nil
+                  buffer-read-only t
+                  (el-patch-add
+                    header-line-format nil)
+                  cursor-in-non-selected-windows 'box)))))
 
 ;; Vertico repeat last command
 (use-package vertico-repeat
