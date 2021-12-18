@@ -180,6 +180,14 @@
       use-package-expand-minimally nil
       use-package-always-ensure nil)
 
+;;;; El-Patch
+;; Package for helping advise/modify features of other packages
+
+(use-package el-patch
+  :straight t
+  :config
+  (setq el-patch-enable-use-package-integration t))
+
 ;;;; Security
 ;; Properly verify outgoing ssl connections.
 ;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
