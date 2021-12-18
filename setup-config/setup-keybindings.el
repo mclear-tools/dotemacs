@@ -28,6 +28,7 @@
    '("}" . "C-}")
    '("." . "M-.")
    '("," . "M-,")
+   '("'" . avy-goto-char-timer)
    '("y" . "C-c C-<SPC>") ;; my namespaced keybindings
    ;; window management
    '("h" . cpm/split-window-below-and-focus)
@@ -44,8 +45,8 @@
    '("\\" . multi-vterm-dedicated-toggle)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
-   ;; '("[" . persp-prev)
-   ;; '("]" . persp-next)
+   '("[" . tab-bar-switch-to-prev-tab)
+   '("]" . tab-bar-switch-to-next-tab)
    '("=" . hl-line-mode)
    '("a" . execute-extended-command)
    '("b" . project-switch-to-buffer)
@@ -67,7 +68,7 @@
    '("n" . consult-notes)
    '("N" . consult-notes-search-all)
    '("p" . cpm/open-existing-project-and-workspace)
-   ;; '("P" . tab-bar
+   '("P" . cpm/goto-projects)
    '("q" . cpm/delete-frame-or-quit)
    '("Q" . restart-emacs)
    '("r" . consult-recent-file)
@@ -161,6 +162,7 @@
   (meow-beacon-fake-selection ((t (:background ,bespoke-modeline))))
   (meow-beacon-fake-cursor ((t (:background ,bespoke-yellow))))
   :config
+  (setq meow-use-cursor-position-hack t)
   ;; FIXME: Would be nice to get this working with which-key
   (setq meow-keypad-describe-keymap-function 'meow-describe-keymap)
   ;; Make sure delete char means delete char
@@ -595,19 +597,27 @@
   )
 
 ;;;; Zettelkasten/Notes/Wiki
-;; (cpm-leader-def
-;;   "n"    '(:ignore t :which-key "Notes")
-;;   "n c"  #'org-roam-capture
-;;   "n i"  #'org-roam-node-insert
-;;   "n f"  #'org-roam-node-find
-;;   "n g"  #'org-roam-graph
-;;   "n n"  #'consult-notes
-;;   "n N"  #'org-roam--new-file-named
-;;   "n r"  #'cpm/find-note-relation
-;;   "n s"  #'consult-notes-search-all
-;;   "n t"  #'org-roam-buffer-toggle)
+(cpm-leader-def
+  "n"    '(:ignore t :which-key "Notes")
+  "n c"  #'org-roam-capture
+  "n i"  #'org-roam-node-insert
+  "n f"  #'org-roam-node-find
+  "n g"  #'org-roam-graph
+  "n n"  #'consult-notes
+  "n N"  #'org-roam--new-file-named
+  "n r"  #'cpm/find-note-relation
+  "n s"  #'consult-notes-search-all
+  "n t"  #'org-roam-buffer-toggle)
 
 ;;; Markdown Keybindings
+(general-define-key
+ :keymaps 'markdown-mode-map
+
+ "s-*"      #'markdown-insert-list-item
+ "s-b"      #'markdown-insert-bold
+ "s-i"      #'markdown-insert-italic
+ )
+
 ;; (cpm-leader-def
 ;;   ""   '(nil :which-key "Local Leader")
 ;;   "c"  '(:ignore t :which-key "command")
@@ -699,22 +709,10 @@
 ;;   "l]"    #'markdown-previous-link
 ;;   )
 
-;; (general-define-key
-;;  :states '(emacs)
-;;  :keymaps 'markdown-mode-map
 
-;;  "s-*"      #'markdown-insert-list-item
-;;  "s-b"      #'markdown-insert-bold
-;;  "s-i"      #'markdown-insert-italic
-
-;;  "M--"      #'markdown-insert-hr
-;;  "M-RET"    #'markdown-insert-header
-;;  )
 
 ;; (general-define-key
-;;  :states '(emacs)
 ;;  :keymaps 'markdown-mode-map
-
 ;;  "RET"    #'markdown-follow-thing-at-point)
 
 ;; ;; Show which-key top-level bindings
@@ -732,6 +730,17 @@
 
 
 ;;; Org Keybindings
+;;   ;; normal & insert state shortcuts.
+(general-define-key :keymaps 'org-mode-map
+  ;; easily emphasize text
+  ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+  "s-b" (lambda () (interactive) (er/mark-word) (org-emphasize ?\*))
+  "s-i" (lambda () (interactive) (er/mark-word) (org-emphasize ?\/))
+  "s-l" (lambda () (interactive) (er/mark-word) (org-emphasize ?\=))
+  ;; better pasting behavior in org-mode
+  "s-v" 'org-yank)
+
+
 ;; (general-define-key
 ;;  :states '(emacs)
 ;;  :keymaps 'org-mode-map
@@ -799,16 +808,6 @@
 ;; ;; (general-define-key :states '(normal insert visual) :keymaps 'org-mode-map
 ;; ;;   "M-q" #'cpm/fill-or-unfill
 ;; ;;   "C-t" #'transpose-chars)
-
-;; ;;   ;; normal & insert state shortcuts.
-;; (general-define-key :states '(emacs) :keymaps 'org-mode-map
-;;   ;; easily emphasize text
-;;   ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-;;   "s-b" (lambda () (interactive) (er/mark-word) (org-emphasize ?\*))
-;;   "s-i" (lambda () (interactive) (er/mark-word) (org-emphasize ?\/))
-;;   "s-l" (lambda () (interactive) (er/mark-word) (org-emphasize ?\=))
-;;   ;; better pasting behavior in org-mode
-;;   "s-v" 'org-yank)
 
 
 

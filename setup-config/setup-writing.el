@@ -41,9 +41,11 @@
   :straight t
   :after flyspell
   :general
-  (:states '(normal insert emacs) :keymaps 'flyspell-mode-map
+  (:keymaps 'flyspell-mode-map
    "C-;" 'flyspell-correct-wrapper
-   "C-:" 'flyspell-correct-at-point))
+   "C-:" 'flyspell-correct-at-point)
+  :custom
+  (flyspell-correct-interface #'flyspell-correct-completing-read))
 
 (with-eval-after-load 'hydra
   ;; keybinding is SPC-S
