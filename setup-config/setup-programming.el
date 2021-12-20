@@ -69,58 +69,6 @@
 (use-package rainbow-mode
   :commands rainbow-mode)
 
-;;; LSP Mode
-(use-package lsp-mode
-  :commands
-  (lsp lsp-deferred)
-  :hook
-  ((lsp-mode . (lambda () (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))
-   (lsp-mode . lsp-enable-which-key-integration))
-  :general
-  (cpm/local-leader-keys
-    :states 'normal
-    :keymaps 'lsp-mode-map
-    "i" '(:ignore t :which-key "import")
-    "i o" '(lsp-organize-imports :wk "optimize")
-    "l" '(:keymap lsp-command-map :wk "lsp")
-    "r" '(lsp-rename :wk "rename"))
-  (lsp-mode-map
-   :states 'normal
-   "gD" 'lsp-find-references)
-  :init
-  (setq lsp-restart 'ignore)
-  (setq lsp-eldoc-enable-hover nil)
-  (setq lsp-enable-file-watchers nil)
-  (setq lsp-signature-auto-activate nil)
-  (setq lsp-modeline-diagnostics-enable nil)
-  (setq lsp-keep-workspace-alive nil)
-  (setq lsp-auto-execute-action nil)
-  (setq lsp-before-save-edits nil)
-  (setq lsp-diagnostics-provider :flymake)
-  )
-
-(use-package lsp-ui
-  :hook
-  ((lsp-mode . lsp-ui-mode))
-  :general
-  (cpm/local-leader-keys
-    "h" 'lsp-ui-doc-show
-    "H" 'lsp-ui-doc-hide)
-  (lsp-ui-peek-mode-map
-   :states 'normal
-   "C-j" 'lsp-ui-peek--select-next
-   "C-k" 'lsp-ui-peek--select-prev)
-  (outline-mode-map
-   :states 'normal
-   "C-j" 'nil
-   "C-k" 'nil)
-  :init
-  (setq lsp-ui-doc-show-with-cursor nil)
-  (setq lsp-ui-doc-show-with-mouse nil)
-  (setq lsp-ui-peek-always-show t)
-  (setq lsp-ui-peek-fontify 'always)
-  )
-
 ;;; Languages
 ;;;; Applescript
 (use-package applescript-mode
