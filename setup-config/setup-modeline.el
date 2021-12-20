@@ -13,6 +13,8 @@
   (setq bespoke-modeline-cleaner t)
   ;; Use mode-line visual bell
   (setq bespoke-modeline-visual-bell t)
+  ;; Set vc symbol
+  (setq bespoke-modeline-vc-symbol "") ;; 
   :config
   (bespoke-modeline-mode))
 
