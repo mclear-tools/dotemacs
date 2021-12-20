@@ -18,9 +18,20 @@
 (use-package ace-window
   :commands (ace-window ace-swap-window aw-flip-window cpm/window-exchange))
 
+(defun cpm/other-window ()
+  (interactive)
+  (other-window 1))
+(bind-key* "C-c C-o" 'cpm/other-window)
+
 (use-package emacs-winum
   :straight (winum :type git :host github :repo "deb0ch/emacs-winum")
   :hook (after-init . winum-mode)
+  :bind (("0" . winum-select-window-0)
+         ("1" . winum-select-window-1)
+         ("2" . winum-select-window-2)
+         ("3" . winum-select-window-3)
+         ("4" . winum-select-window-4)
+         ("5" . winum-select-window-5))
   :custom
   ;; seems to require being set in custom to take effect
   (winum-auto-setup-mode-line nil)
@@ -33,67 +44,12 @@
         winum-ignored-buffers             '(" *which-key*")
         winum-ignored-buffers-regexp      '(" \\*Treemacs-.*")))
 
-
-;; Numbered window shortcuts for Emacs
-(use-package window-numbering
-  :disabled
-  :hook (after-init . window-numbering-mode)
-  :config
-  (defun window-numbering-install-mode-line (&optional position)
-    "Do nothing, the display is handled by the powerline.")
-  (setq window-numbering-auto-assign-0-to-minibuffer nil)
-
-  
-
-  ;; make sure imenu list is always 0
-  (defun cpm/window-numbering-assign ()
-    "Custom number assignment for imenu-list"
-    (when (and (boundp 'imenu-list-buffer-name)
-               (string= (buffer-name) imenu-list-buffer-name)
-               ;; in case there are two neotree windows. Example: when
-               ;; invoking a transient state from neotree window, the new
-               ;; window will show neotree briefly before displaying the TS,
-               ;; causing an error message. the error is eliminated by
-               ;; assigning 0 only to the top-left window
-               (eq (selected-window) (window-at 0 0)))
-      0))
-
-  ;; ;; make sure neotree is always 0
-  ;; (defun spacemacs//window-numbering-assign ()
-  ;;   "Custom number assignment for neotree."
-  ;;   (when (and (boundp 'neo-buffer-name)
-  ;;              (string= (buffer-name) neo-buffer-name)
-  ;;              ;; in case there are two neotree windows. Example: when
-  ;;              ;; invoking a transient state from neotree window, the new
-  ;;              ;; window will show neotree briefly before displaying the TS,
-  ;;              ;; causing an error message. the error is eliminated by
-  ;;              ;; assigning 0 only to the top-left window
-  ;;              (eq (selected-window) (window-at 0 0)))
-  ;;     0))
-
-  ;; using lambda to work-around a bug in window-numbering, see
-  ;; https://github.com/nschum/window-numbering.el/issues/10
-  (setq window-numbering-assign-func
-        (lambda () (cpm/window-numbering-assign))))
-
-;; Unset window keys
-;; A nice tip from Pragmatic emacs
-;; http://pragmaticemacs.com/emacs/use-your-digits-and-a-personal-key-map-for-super-shortcuts/
-;; unset C- and M- digit keys
-(dotimes (n 10)
-  (global-unset-key (kbd (format "C-%d" n)))
-  (global-unset-key (kbd (format "M-%d" n))))
-
 (use-package windmove
-  :after general
   :commands (windmove-up windmove-down windmove-left windmove-right)
-  ;; :general
-  ;; (cpm/leader-keys
-  ;;   "w"   #'(:ignore t :which-key "Windows")
-  ;;   "w l" #'windmove-right
-  ;;   "w h" #'windmove-left
-  ;;   "w j" #'windmove-down
-  ;;   "w k" #'windmove-up)
+  :bind (("H-l" . #'windmove-right)
+         ("H-j" . #'windmove-down)
+         ("H-h" . #'windmove-left)
+         ("H-k" . #'windmove-up))
   :config
   (windmove-default-keybindings))
 (defun cpm/split-window-right-and-focus ()
@@ -108,7 +64,6 @@
   (require 'windmove)
   (split-window-below)
   (windmove-down))
-
 
 ;;; Window Restore
 ;; Winner mode is a built-in package for restoring window configurations

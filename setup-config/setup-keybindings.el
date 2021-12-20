@@ -2,34 +2,241 @@
 ;; disadvantages (e.g. separating functions or packages from keybindings) but
 ;; it also makes it the place to go to deal with all keybindings.
 
-;;; General
-(use-package general
-  :demand t
+;;; Bind Key
+;; Note that bind-key comes with use-package
+(use-package bind-key
+  :straight nil
   :config
-  (general-create-definer cpm-leader-def
-    ;; Choose a prefix that won't likely conflict with other namespaced bindings
-    ;; See https://karl-voit.at/2018/07/08/emacs-key-bindings/
-    :prefix "C-c C-<SPC>")
-  )
+  (setq bind-key-describe-special-forms t))
 
-;;; Meow
+;;; Personal Keybindings
+(defvar cpm-prefix "C-c C-SPC"
+  "Prefix for all personal keybinds")
+
+;;;; Buffer Keys
+(bind-keys :prefix-map cpm+buffer-keys
+           :prefix (concat cpm-prefix " b")
+           ("a" . ibuffer)
+           ("b" . consult-buffer)
+           ("c" . cpm/copy-whole-buffer-to-clipboard )
+           ("d" . kill-buffer-and-window             )
+           ("e" . erase-buffer                       )
+           ("f" . reveal-in-osx-finder               )
+           ("i" . ibuffer-jump                       )
+           ("j" . cpm/jump-in-buffer                 )
+           ("k" . cpm/kill-this-buffer               )
+           ("K" . crux-kill-other-buffers            )
+           ("n" . cpm/create-new-buffer              )
+           ("N" . cpm/new-buffer-new-frame           )
+           ("p" . project-switch-to-buffer           )
+           ("r" . revert-buffer                      )
+           ("R" . crux-rename-buffer-and-file        )
+           ("s" . consult-buffer-other-window        )
+           ("t" . cpm/open-dir-in-iterm              ))
+
+;;;; Comment Keybindings
+(bind-keys :prefix-map cpm+comment-wrap-keys
+           :prefix (concat cpm-prefix " c")
+           ("o" . org-block-wrap)
+           ("y" . cpm/yaml-wrap)
+           ("c" . comment-dwim)
+           ("l" . comment-line))
+
+;;;; Config Keybindings
+(bind-keys :prefix-map cpm+config-keys
+           :prefix (concat cpm-prefix " C")
+           ("c" . goto-custom.el                        )
+           ("d" . goto-dotfiles.org                     )
+           ("D" . goto-emacs-dir                        )
+           ("E" . goto-cpm-elisp-dir                    )
+           ("e" . goto-early-init.el                    )
+           ("f" . cpm/find-files-setup-config-directory )
+           ("k" . cpm/byte-compile-dotemacs             )
+           ("K" . cpm/delete-byte-compiled-files        )
+           ("l" . load-config                           )
+           ("i" . goto-init.el                          )
+           ("I" . cpm/load-init-file                    )
+           ("o" . goto-org-files                        )
+           ("p" . goto-pandoc-config                    )
+           ("s" . cpm/search-setup-config-files         ))
+
+;;;; File Keybindings
+(bind-keys :prefix-map cpm+file-keys
+           :prefix (concat cpm-prefix " f")
+           ("b" . consult-bookmark                 )
+           ("f" . find-file                        )
+           ("l" . consult-locate                   )
+           ("o" . crux-open-with                   )
+           ("s" . save-buffer                      )
+           ("r" . consult-recent-file              )
+           ("y" . cpm/show-and-copy-buffer-filename))
+
+;;;; Compile Keybindings
+(bind-keys :prefix-map cpm+compile-keys
+           :prefix (concat cpm-prefix " M")
+           ("m"  . compile                  )
+           ("M"  . multi-compile-run        )
+           ("e"  . compile-goto-error       )
+           ("k"  . cpm/compile-next-makefile)
+           ("K"  . kill-compilation         )
+           ("r"  . recompile                )
+           ("v"  . cpm/make-move            ))
+
+;;;; Project Keybindings
+(global-set-key (kbd "C-h C-c") 'finder-commentary)
+(bind-keys :prefix-map cpm+project-keys
+           :prefix (concat cpm-prefix " p")
+           ("p" .  cpm/open-existing-project-and-workspace)
+           ("b" .  project-switch-to-buffer)
+           ("f" .  project-find-file)
+           ("g" .  cpm/goto-projects)
+           ("m" .  consult-bookmark)
+           ("r" .  project-remember-projects-under))
+
+
+;;;; Quit Keybindings
+(bind-keys :prefix-map cpm+quit-keys
+           :prefix (concat cpm-prefix " q")
+           ("d" . cpm/kill-emacs-capture-daemon)
+           ("q" . save-buffers-kill-emacs      )
+           ("Q" . cpm/kill-all-emacsen         )
+           ("r" . restart-emacs               ))
+
+;;;; Search Keybindings
+(bind-keys :prefix-map cpm+search-keys
+           :prefix (concat cpm-prefix " s")
+           ("a" . consult-org-agenda)
+           ;; search current buffer's directory
+           ("d" . affe-grep)
+           ;; search with directory input
+           ("D" . cpm/search-in-input-dir      )
+           ("b" . consult-multi-occur          )
+           ("f" . consult-line                 )
+           ("h" . consult-org-heading          )
+           ("j" . cpm/forward-or-backward-sexp )
+           ("k" . consult-yank-pop             )
+           ("l" . selectrum-repeat             )
+           ("n" . consult-notes-search-all     )
+           ("p" . consult-line-symbol-at-point )
+           ("r" . vr/query-replace             )
+           ("s" . consult-line                 )
+           ;; search for next spelling error
+           ("S" . cpm/flyspell-ispell-goto-next-error)
+           ("t" . cpm/hydra-todo/body))
+
+;;;; Toggle Keybindings
+(bind-keys :prefix-map cpm+toggle-keys
+           :prefix (concat cpm-prefix " t")
+           ("a" . company-mode                )
+           ("b" . buffer-line-mode            )
+           ("g" . git-gutter-mode             )
+           ("h" . hl-line-mode                )
+           ("H" . hidden-mode-line-mode       )
+           ("e" . toggle-indicate-empty-lines )
+           ("E" . eldoc-mode                  )
+           ("m" . cpm/toggle-display-markup   )
+           ("n" . display-line-numbers-mode   )
+           ("N" . org-numbers-overlay-mode    )
+           ("o" . imenu-list-smart-toggle     )
+           ("p" . smartparens-mode            )
+           ("P" . show-paren-mode             )
+           ("r" . rainbow-identifiers-mode    )
+           ("s" . flyspell-mode               )
+           ("S" . ispell-buffer               )
+           ("t" . toggle-dark-light-theme     )
+           ("T" . cpm/load-theme              )
+           ("w" . writeroom-mode              )
+           ("z" . zone                        ))
+
+;;;; User Keybindings
+(bind-keys :prefix-map cpm+user-keys
+           :prefix (concat cpm-prefix " u")
+           ("a" .  cpm/jump-to-org-super-agenda                 )
+           ("d" .  osx-dictionary-search-input                  )
+           ("m" .  cpm/org-to-markdown                          )
+           ("g" .  org-mac-grab-link                            )
+           ("h" .  cpm/org-export-to-buffer-html-as-body        )
+           ("i" .  cpm/org-goto-inbox                           )
+           ("k" .  kill-compilation                             )
+           ("l" .  desktop-read                                 )
+           ("o" .  cpm/markdown-to-org                          )
+           ("O" .  cpm/goto-org-files                           )
+           ("p" .  run-pandoc                                   )
+           ("P" .  cpm/pandoc-pdf-open                          )
+           ("s" .  sb-expand-current-file                       )
+           ("S" .  just-one-space                               )
+           ("t" .  cpm/jump-to-org-agenda-all-todos             )
+           ("j" .  cpm/goto-journal                             )
+           ("u" .  cpm/straight-update-packages-asynchronously  )
+           ("w" .  count-words                                  )
+           ("W" .  cpm/jump-to-week-agenda                      ))
+
+;;;; Version Control (Git) Keybindings
+(bind-keys :prefix-map  cpm+vc-keys
+           :prefix (concat cpm-prefix " g")
+           ("b" .  magit-blame                 )
+           ("c" .  magit-commit                )
+           ("d" .  magit-diff                  )
+           ("h" .  hydra-git-gutter/body       )
+           ("l" .  magit-log                   )
+           ;; show history of selected region
+           ("L" .  magit-log-buffer-file       )
+           ("n" .  git-gutter:next-hunk        )
+           ("p" .  git-gutter:previous-hunk    )
+           ("r" .  magit-reflog                )
+           ("s" .  magit-status                ))
+
+;;;; Window Keybindings
+(bind-keys :prefix-map cpm+window-keys
+           :prefix (concat cpm-prefix " w")
+           ("a" .  ace-window                      )
+           ("f" .  cpm/toggle-window-split         )
+           ("c" .  delete-window                   )
+           ("d" .  delete-window                   )
+           ("h" .  split-window-horizontally       )
+           ("m" .  delete-other-windows            )
+           ("r" .  cpm/rotate-windows              )
+           ("R" .  cpm/rotate-windows-backward     )
+           ("t" .  tear-off-window                 )
+           ("u" .  winner-undo                     )
+           ("U" .  winner-redo                     )
+           ("v" .  cpm/split-window-right-and-focus)
+           ("V" .  split-window-vertically         )
+           ("x" .  cpm/window-exchange-buffer      )
+           ("-" .  split-window-below              )
+           ("_" .  cpm/split-window-below-and-focus))
+
+;;;; Zettelkasten/Notes/Wiki
+(bind-keys :prefix-map cpm+notes-keys
+           :prefix (concat cpm-prefix " n")
+           ("c"  .  org-roam-capture        )
+           ("i"  .  org-roam-node-insert    )
+           ("f"  .  org-roam-node-find      )
+           ("g"  .  org-roam-graph          )
+           ("n"  .  consult-notes           )
+           ("N"  .  org-roam--new-file-named)
+           ("r"  .  cpm/find-note-relation  )
+           ("s"  .  consult-notes-search-all)
+           ("t"  .  org-roam-buffer-toggle))
+
+
+;;; Meow Setup
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev))
   (meow-leader-define-key
+   `("y" . ,cpm-prefix) ;; my namespaced keybindings
    ;; here we create bindings for necessary, high frequency commands
-   ;; cheatsheet
-   '("?" . meow-cheatsheet)
+   '("?" . consult-apropos)
    ;; high frequency keybindings
-   '("e" . "C-x C-e")
    '(")" . "C-)")
    '("}" . "C-}")
    '("." . "M-.")
    '("," . "M-,")
    '("'" . avy-goto-char-timer)
-   '("y" . "C-c C-<SPC>") ;; my namespaced keybindings
+   '("SPC" . execute-extended-command)
    ;; window management
    '("h" . cpm/split-window-below-and-focus)
    '("H" . split-window-below)
@@ -39,47 +246,46 @@
    '("w" . cpm/other-window)
    '("W" . window-swap-states)
    '("TAB" . tab-bar-switch-to-tab)
+   '("<backtab>" . crux-switch-to-previous-buffer)
    '("C-M-i" . tab-bar-new-tab)
    ;; high frequency commands
-   '(";" . comment-dwim)
+   '(";" . comment-line)
    '("\\" . multi-vterm-dedicated-toggle)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
-   '("[" . tab-bar-switch-to-prev-tab)
-   '("]" . tab-bar-switch-to-next-tab)
+   '("{" . tab-bar-switch-to-prev-tab)
+   '("}" . tab-bar-switch-to-next-tab)
+   '("[" . cpm/previous-user-buffer     )
+   '("]" . cpm/next-user-buffer         )
    '("=" . hl-line-mode)
    '("a" . execute-extended-command)
-   '("b" . project-switch-to-buffer)
-   '("B" . consult-buffer)
+   '("b" . cpm+buffer-keys)
    '("c" . cpm/find-files-setup-config-directory)
    '("C" . cpm/search-setup-config-files)
    '("d" . dired-jump-other-window)
    '("D" . dired-jump)
-   '("f" . find-file)
+   '("e" . cpm/email-save-and-kill)
+   '("E" . cpm/call-emacs)
+   '("f" . cpm+file-keys)
    '("F" . consult-recent-file)
-   '("g" . magit-status)
-   '("i" . ibuffer)
-   '("j" . cpm/jump-in-buffer)
-   '("J" . crux-top-join-line)
-   '("k" . kill-this-buffer)
-   '("K" . consult-yank-from-kill-ring)
+   '("g" . cpm+vc-keys)
+   '("j" . crux-top-join-line)
+   '("k" . consult-yank-from-kill-ring)
    '("l" . consult-locate)
    '("m" . consult-mark)
-   '("n" . consult-notes)
+   '("n" . cpm+notes-keys)
    '("N" . consult-notes-search-all)
-   '("p" . cpm/open-existing-project-and-workspace)
-   '("P" . cpm/goto-projects)
-   '("q" . cpm/delete-frame-or-quit)
-   '("Q" . restart-emacs)
-   '("r" . consult-recent-file)
-   '("R" . vertico-repeat)
+   '("p" . cpm+project-keys)
+   '("q" . cpm+quit-keys)
+   '("r" . vertico-repeat)
    '("s" . consult-line)
    '("S" . cpm/search-in-input-dir)
    ;; toggles
-   '("T" . toggle-dark-light-theme)
+   '("t" . cpm+toggle-keys)
    '("L" . display-line-numbers-mode)
    '("A" . consult-org-agenda))
-
+  (meow-motion-overwrite-define-key '("j" . meow-next)
+                                    '("k" . meow-prev))
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
@@ -150,6 +356,9 @@
    '("<escape>" . meow-cancel-selection)))
 
 
+
+
+;;; Meow
 (use-package meow
   :straight (:type git :host github :repo "meow-edit/meow")
   :custom-face
@@ -198,425 +407,8 @@
   (setq which-key-separator " → ")
   (which-key-mode))
 
-;;; Outline Bindings
-
-(general-define-key
- :keymaps 'outline-minor-mode-map
- "<tab>"   'outline-cycle
- "S-<tab>" 'outline-cycle-buffer)
-
-(general-define-key
- :keymaps 'outline-minor-mode-map
- ;; "gh"    'outline-previous-visible-heading
- ;; "gj"    'outline-forward-same-level
- ;; "gk"    'outline-backward-same-level
- ;; "gl"    'outline-next-visible-heading
- ;; "gu"    'outline-up-heading
- "M-j"   'outline-move-subtree-down
- "M-k"   'outline-move-subtree-up
- "M-h"   'outline-promote
- "M-l"   'outline-demote)
-
-;;; Namespaced Keybindings
-
-;;;; Application Keybindings
-(cpm-leader-def
-  "a"  '(:ignore t :which-key "Applications")
-  "ac" '(:ignore t :which-key "Cmus")
-  "ad" 'dired-jump
-  "ae" 'eshell
-  "am" 'multi-term
-  "ar" 'ranger
-  "as" 'vterm
-  "av" 'vterm-other-window
-  "aw" 'wttrin
-  )
-
-;;;; Buffer Keybindings
-(cpm-leader-def
-  "b"  '(:ignore t :which-key "Buffers")
-  "ba" 'ibuffer
-  "bb" 'cpm/persp-consult-buffer
-  ;; "bb" 'persp-switch-to-buffer
-  ;; "bb" 'helm-mini
-  "bc" 'cpm/copy-whole-buffer-to-clipboard
-  "bD" 'kill-buffer-and-window
-  "bd" 'cpm/kill-this-buffer
-  "be" 'erase-buffer
-  ;; "bf" 'cpm/browse-file-directory
-  "bf" 'reveal-in-osx-finder
-  "bi" 'ibuffer-jump
-  "bj" 'cpm/jump-in-buffer
-  "bk" 'evil-delete-buffer
-  "bK" 'crux-kill-other-buffers
-  "bm" 'helm-evil-markers
-  "bn" 'evil-buffer-new
-  "bN" 'cpm/new-buffer-new-frame
-  "bp" 'consult-projectile
-  "bP" 'persp-temporarily-display-buffer
-  "br" 'revert-buffer
-  "bR" 'crux-rename-buffer-and-file
-  "bs" 'consult-buffer-other-window
-  "bt" 'cpm/open-dir-in-iterm
-  )
-
-;;;; Comment Keybindings
-(cpm-leader-def
-  "c"   '(:ignore t :which-key "Commenting")
-  "cb"  '(nil :wk "Block Wrap")
-  "cbo" 'org-block-wrap
-  "cby" 'cpm/yaml-wrap
-  "cc"  'evil-commentary
-  "cl"  'evil-commentary-line
-  "cy"  'evil-commentary-yank-line
-  )
-
-;;;; Config Keybindings
-(cpm-leader-def
-  "C"  '(:ignore t :which-key "Config")
-  "Cc" 'goto-custom.el
-  "Cd" 'goto-dotfiles.org
-  "CD" 'goto-emacs-dir
-  "CE" 'goto-cpm-elisp-dir
-  "Ce" 'goto-early-init.el
-  "Cf" 'cpm/find-files-setup-config-directory
-  "Ck" 'cpm/byte-compile-dotemacs
-  "CK" 'cpm/delete-byte-compiled-files
-  "Cl" 'load-config
-  "Ci" 'goto-init.el
-  "CI" 'cpm/load-init-file
-  "Co" 'goto-org-files
-  "Cp" 'goto-pandoc-config
-  "Cs" 'cpm/search-setup-config-files
-  )
-
-;;;; File Keybindings
-(cpm-leader-def
-  "f"  '(:ignore t :which-key "Files")
-  "fb" 'consult-bookmark
-  ;; "fb" 'helm-bookmarks
-  "ff" 'find-file
-  ;; "ff" 'helm-find-files
-  "fl" 'consult-locate
-  ;; "fl" 'helm-locate
-  "fo" 'crux-open-with
-  "fs" 'save-buffer
-  "fr" 'consult-recent-file
-  ;; "fr" 'helm-recentf
-  "fy" 'cpm/show-and-copy-buffer-filename
-  )
-
-;;;; General Keybindings
-(cpm-leader-def
-  "A" 'consult-apropos
-  "?" 'consult-man
-  ;; "A" 'helm-apropos
-  ;; "B" #'cpm/dashboard
-  ;; "?" 'counsel-descbinds
-  ;; "?" 'helm-descbinds
-  "<SPC>" 'execute-extended-command
-  ;; "<SPC>" 'helm-M-x
-  ;; "d" #'deer
-  ;; "c" #'company-complete
-  "d" #'dired-jump
-  "D" #'dired-jump-other-window
-  ;; "D" #'cpm/deer-split-window
-  "E" 'cpm/call-emacs
-  ;; "e" 'server-edit
-  "e" 'cpm/email-save-and-kill
-  ;; "e" 'cpm/org-to-mail-rtf
-  "G" 'general-describe-keybindings
-  ;; "j" 'avy-goto-char
-  "k" 'consult-yank-pop
-  ;; "k" 'helm-show-kill-ring
-  "l" 'vertico-repeat
-  ;; "l" 'selectrum-repeat
-  ;; "l" 'helm-resume
-  ;; "N" 'research-notes
-  ;; "n" 'consult-notes
-  "r" 'cpm/resume-last-jump
-  "S" 'hydra-spelling/body
-  ;; "W" 'woman
-  "#" 'universal-argument
-  ;; "`" 'beacon-blink
-  ;; "'" 'shell-pop
-  ;; "\\" 'vterm-toggle-cd
-  "\\" 'multi-vterm-dedicated-toggle
-  "," 'recenter-top-bottom
-  "." 'quick-commit
-  ";" 'evil-commentary-line
-  "[" 'cpm/previous-user-buffer
-  "]" 'cpm/next-user-buffer
-  "TAB" 'switch-to-previous-buffer
-  ":" 'shell-command
-  )
-
-;;;; Compile Keybindings
-(cpm-leader-def
-  "M"   '(:ignore t :which-key "Make/Compile")
-  "Mm"  'compile
-  "MM"  'multi-compile-run
-  "Me"  'compile-goto-error
-  "Mk"  'cpm/compile-next-makefile
-  "MK"  'kill-compilation
-  "Mr"  'recompile
-  "Mv"  'cpm/make-move
-  )
-
-;;;; Project Keybindings
-(global-set-key (kbd "C-h C-c") 'finder-commentary)
-
-;; (cpm-leader-def
-;;   "p" '(:ignore t :which-key "Projects")
-;;   "p!"  'projectile-run-shell-command-in-root
-;;   "p&"  'projectile-run-async-shell-command-in-root
-;;   "pa"  'projectile-toggle-between-implementation-and-test
-;;   ;; "pb"  'projectile-switch-to-buffer
-;;   "pb"  'consult-projectile
-;;   ;; "pc"  'consult-projectile
-;;   "pc"  'projectile-compile-project
-;;   "pd"  'projectile-find-dir
-;;   "pD"  'projectile-dired
-;;   "pf"  'projectile-find-file
-;;   "pF"  'projectile-find-file-other-window
-;;   "pg"  'cpm/goto-projects
-;;   ;; "ph"  'projectile
-;;   "pi"  'consult-project-imenu
-;;   "pJ"  'bookmark
-;;   "pG"  'projectile-regenerate-tags
-;;   "pI"  'projectile-invalidate-cache
-;;   "pk"  'projectile-kill-buffers
-;;   "pn"  #'cpm/open-new-buffer-and-workspace
-;;   "pN"  #'cpm/create-new-project-and-workspace
-;;   "po"  #'cpm/open-existing-project-and-workspace
-;;   "pp"  'projectile-switch-project
-;;   "pr"  'recentf
-;;   "pR"  'projectile-replace
-;;   "ps"  #'projectile-ag
-;;   ;; "ps1" #'cpm/load-phil101
-;;   ;; "ps2" #'cpm/load-phil232
-;;   ;; "ps5" #'cpm/load-phil105
-;;   ;; "ps8" #'cpm/load-phil871
-;;   ;; "psa" #'cpm/load-kant-apperception-substance
-;;   ;; "psb" #'(:ignore t :which-key "Books")
-;;   ;; "psba" #'cpm/load-kant-agency-book
-;;   ;; "psbr" #'cpm/load-kant-rationality-book
-;;   ;; "psc" #'cpm/load-emacs-config
-;;   ;; "psf" #'cpm/load-kant-free-thought
-;;   ;; "psr" #'cpm/load-kant-reflection
-;;   ;; "pst" #'cpm/load-org-agenda-todo
-;;   ;; "psw" #'cpm/load-website
-;;   ;; "psz" #'cpm/load-zettelkasten
-;;   ;; "pt"  #'org-projectile-helm-template-or-project
-;;   "pT"  'projectile-find-test-file
-;;   "pV"  'projectile-vc
-;;   "py"  'projectile-find-tag
-;;   )
-
-;;;; Quit Keybindings
-(cpm-leader-def
-  "q"  '(:ignore t :which-key "Quit")
-  ;; "qq" 'cpm/save-desktop-save-buffers-kill-emacs
-  "qd" 'cpm/kill-emacs-capture-daemon
-  "qq" 'save-buffers-kill-emacs
-  "qQ" 'cpm/kill-all-emacsen
-  "qr" 'restart-emacs
-  )
-
-;;;; Search Keybindings
-(cpm-leader-def
-  "s" '(:ignore t :which-key "Search")
-  ;; "sa" 'helm-org-rifle-agenda-files
-  "sa" 'consult-org-agenda
-  "sd" 'affe-grep; search current buffer's directory
-  "sD" #'cpm/search-in-input-dir ; search with directory input
-  "sb" 'consult-multi-occur
-  ;; "sb" 'helm-ag-buffers
-  ;; "sf" 'helm-do-ag-this-file
-  "sf" 'consult-line
-  "sh" 'consult-org-heading
-  "sj" 'cpm/forward-or-backward-sexp
-  "sk" 'consult-yank-pop
-  "sl" 'selectrum-repeat
-  "sn" #'consult-notes-search-all
-  ;; "sn" #'cpm/search-all-notes
-  ;; "sk" 'helm-show-kill-ring
-  ;; "sl" 'cpm/helm-list-search-buffers
-  ;; "sm" 'swiper-mc
-  ;; "so" #'ivy-occur
-  ;; "so" 'helm-occur
-  ;; "sp" 'swiper-thing-at-point
-  "sp" #'consult-line-symbol-at-point
-  "sr" #'vr/query-replace
-  ;; "sR" 'helm-org-rifle
-  ;; "ss" #'swiper
-  "ss" 'consult-line
-  ;; "ss" #'counsel-grep-or-swiper ;; search with swiper in file
-  ;; "ss" 'helm-swoop-without-pre-input ;; search with swoop in file
-  "sS" #'cpm/flyspell-ispell-goto-next-error ;; search for next spelling error
-  "st" #'cpm/hydra-todo/body
-  ;; "st" #'cpm/search-file-todo-markers ;; search for TODOs in file w/helm-ag
-  ;; "sT" #'ivy-magit-todos  ;; search todos in git project
-  ;; "sT" #'cpm/search-todo-markers ;; search todo markers in directory w/helm-ag
-  )
-
-;;;; Toggle Keybindings
-(cpm-leader-def
-  "t"  '(:ignore t :which-key "Toggles")
-  "ta" 'company-mode
-  "tb" 'buffer-line-mode
-  "tB" 'beacon-mode
-  "tc" 'centered-cursor-mode
-  "tC" 'centered-window-mode
-  ;; "td" 'cpm/osx-toggle-menubar-theme
-  ;; "tf" 'toggle-serif
-  "tF" 'toggle-frame-maximized
-  "tg" 'git-gutter-mode
-  "tG" 'golden-ratio-mode
-  "th" 'hl-line-mode
-  "tH" 'hidden-mode-line-mode
-  "te" 'toggle-indicate-empty-lines
-  "tE" 'eldoc-mode
-  "tM" #'treemacs
-  "tm" #'cpm/toggle-display-markup
-  ;; "tn" 'nlinum-mode
-  "tn" 'display-line-numbers-mode
-  "tN" 'org-numbers-overlay-mode
-  "to" #'imenu-list-smart-toggle
-  ;; "to" 'org-toggle-link-display
-  ;; "tO" 'outline-toc-mode
-  "tp" 'smartparens-mode
-  "tP" 'show-paren-mode
-  "tr" 'rainbow-identifiers-mode
-  "ts" 'flyspell-mode
-  "tS" 'ispell-buffer
-  "tt" 'toggle-dark-light-theme
-  "tT" 'cpm/load-theme
-  ;; "tT" 'helm-themes
-  "tv" 'vterm-toggle-cd
-  "tw" 'writeroom-mode
-  "tz" 'zone
-  )
-
-;;;; User Keybindings
-(cpm-leader-def
-  "u"  '(:ignore t :which-key "User")
-  "uA" '(:ignore t :which-key "Agenda Files")
-  "uAa" #'cpm/goto-reading.org
-  "uAc" #'cpm/goto-conferences.org
-  "uAf" #'cpm/goto-org-files
-  "uAi" #'cpm/goto-inbox.org
-  "uAr" #'cpm/goto-reference.org
-  "uAR" #'cpm/goto-referee-reports.org
-  ;; "uAp" #'cpm/goto-projects.org
-  "uAs" #'cpm/goto-someday.org
-  "uAt" #'cpm/goto-todo.org
-  "uAT" #'cpm/goto-teaching.org
-  "uAw" #'cpm/goto-writing.org
-  "ua"  '(:ignore t :which-key "Agenda")
-  "uaa" 'cpm/jump-to-org-super-agenda
-  "uaw" 'cpm/jump-to-week-agenda
-  "um" 'cpm/org-to-markdown
-  ;; "uc" 'cpm/pandoc-convert-to-pdf
-  "ub" '(:ignore t :which-key "Beamer functions")
-  "ubp" #'cpm/org-export-beamer-presentation
-  "ubh" #'cpm/org-export-beamer-handout
-  "uc"  '(:ignore t :whichkey "Citations")
-  "uci" #'org-cite-insert
-  "ucn" #'citar-open-notes
-  "uce" #'citar-open-entry
-  ;; "uC" 'cpm/pandoc-command-line-convert-to-pdf
-  "ug" 'org-mac-grab-link
-  "uh" #'cpm/org-export-to-buffer-html-as-body
-  "ui" 'cpm/org-goto-inbox
-  "uk" 'kill-compilation
-  "ul" 'desktop-read
-  "uo" 'cpm/markdown-to-org
-  "up" 'run-pandoc
-  "uP" 'cpm/pandoc-pdf-open
-  "us" 'sb-expand-current-file
-  "uS" 'just-one-space
-  ;; "ut" 'cpm/org-goto-todo
-  "ut" 'cpm/jump-to-org-agenda-all-todos
-  "ud" 'distraction-free
-  "uD" 'my-desktop
-  "uj" 'cpm/goto-journal
-  ;; "op" 'pandoc-convert-to-pdf
-  "uu" #'cpm/straight-update-packages-asynchronously
-  "uw" 'count-words
-  "uW" 'osx-dictionary-search-input
-  )
-
-;;;; Version Control (Git) Keybindings
-(cpm-leader-def
-  "g"  '(:ignore t :which-key "Git")
-  "gb" 'magit-blame
-  "gc" 'magit-commit
-  "gd" 'magit-diff
-  "gh" #'hydra-git-gutter/body
-  "gl" 'magit-log
-  "gL" 'magit-log-buffer-file ;; show history of selected region
-  "gn" 'git-gutter:next-hunk
-  "gp" 'git-gutter:previous-hunk
-  "gr" 'magit-reflog
-  "gs" 'magit-status
-  )
-
-;;;;  Window Keybindings
-(defun cpm/other-window ()
-  (interactive)
-  (other-window 1))
-(general-def :keymaps 'override
-  "C-c C-o" 'cpm/other-window)
-
-(cpm-leader-def
-  "0" 'winum-select-window-0
-  "1" 'winum-select-window-1
-  "2" 'winum-select-window-2
-  "3" 'winum-select-window-3
-  "4" 'winum-select-window-4
-  "5" 'winum-select-window-5
-
-  "w"  '(:ignore t :which-key "Windows")
-  "wa" 'ace-window
-  "wf" 'cpm/toggle-window-split
-  "wc" 'delete-window
-  "wd" 'delete-window
-  "wh" 'split-window-horizontally
-  "wm" 'delete-other-windows
-  "wr" 'cpm/rotate-windows
-  "wR" 'cpm/rotate-windows-backward
-  "wt" 'tear-off-window
-  "wu" 'winner-undo
-  "wU" 'winner-redo
-  "wv" 'cpm/split-window-right-and-focus
-  "wV" 'split-window-vertically
-  "wx" 'cpm/window-exchange-buffer
-  "w-" 'split-window-below
-  "w_" 'cpm/split-window-below-and-focus
-  )
-
-;;;; Zettelkasten/Notes/Wiki
-(cpm-leader-def
-  "n"    '(:ignore t :which-key "Notes")
-  "n c"  #'org-roam-capture
-  "n i"  #'org-roam-node-insert
-  "n f"  #'org-roam-node-find
-  "n g"  #'org-roam-graph
-  "n n"  #'consult-notes
-  "n N"  #'org-roam--new-file-named
-  "n r"  #'cpm/find-note-relation
-  "n s"  #'consult-notes-search-all
-  "n t"  #'org-roam-buffer-toggle)
 
 ;;; Markdown Keybindings
-(general-define-key
- :keymaps 'markdown-mode-map
-
- "s-*"      #'markdown-insert-list-item
- "s-b"      #'markdown-insert-bold
- "s-i"      #'markdown-insert-italic
- )
 
 ;; (cpm-leader-def
 ;;   ""   '(nil :which-key "Local Leader")
@@ -731,14 +523,6 @@
 
 ;;; Org Keybindings
 ;;   ;; normal & insert state shortcuts.
-(general-define-key :keymaps 'org-mode-map
-  ;; easily emphasize text
-  ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
-  "s-b" (lambda () (interactive) (er/mark-word) (org-emphasize ?\*))
-  "s-i" (lambda () (interactive) (er/mark-word) (org-emphasize ?\/))
-  "s-l" (lambda () (interactive) (er/mark-word) (org-emphasize ?\=))
-  ;; better pasting behavior in org-mode
-  "s-v" 'org-yank)
 
 
 ;; (general-define-key

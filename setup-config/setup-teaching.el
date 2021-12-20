@@ -196,11 +196,10 @@ mv -f *.pdf static/materials/handouts/"))
 ;;; Org Tree Slides
 (use-package org-tree-slide
   :straight t
-  :general
-  (:keymaps 'org-tree-slide-mode-map
-   "C-j" 'org-tree-slide-move-next-tree
-   "C-k" 'org-tree-slide-move-previous-tree
-   "C-s C-c" 'org-tree-slide-content)
+  :bind (:map org-tree-slide-mode-map
+         ("C-j" . org-tree-slide-move-next-tree)
+         ("C-k" . org-tree-slide-move-previous-tree)
+         ("C-s C-c" . org-tree-slide-content))
   :config
   (setq org-tree-slide-activate-message "Presentation mode ON")
   (setq org-tree-slide-deactivate-message "Presentation mode OFF")

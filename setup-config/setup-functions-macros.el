@@ -468,18 +468,18 @@ with no seperation"
 ;; From the hydra wiki https://github.com/abo-abo/hydra/wiki/Emacs#transpose
 
 (with-eval-after-load 'hydra
-  (general-define-key "C-c t"
-                      (defhydra hydra-transpose (:color red)
-                        "Transpose"
-                        ("c" transpose-chars "characters")
-                        ("w" transpose-words "words")
-                        ("o" org-transpose-words "Org mode words")
-                        ("l" transpose-lines "lines")
-                        ("s" transpose-sentences "sentences")
-                        ("e" org-transpose-element "Org mode elements")
-                        ("p" transpose-paragraphs "paragraphs")
-                        ("t" org-table-transpose-table-at-point "Org mode table")
-                        ("q" nil "cancel" :color blue))))
+  (bind-key "C-c t"
+            (defhydra hydra-transpose (:color red)
+              "Transpose"
+              ("c" transpose-chars "characters")
+              ("w" transpose-words "words")
+              ("o" org-transpose-words "Org mode words")
+              ("l" transpose-lines "lines")
+              ("s" transpose-sentences "sentences")
+              ("e" org-transpose-element "Org mode elements")
+              ("p" transpose-paragraphs "paragraphs")
+              ("t" org-table-transpose-table-at-point "Org mode table")
+              ("q" nil "cancel" :color blue))))
 
 
 

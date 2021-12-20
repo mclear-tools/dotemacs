@@ -25,8 +25,7 @@
 
 (use-package embrace
   :straight (:type git :host github :repo "cute-jumper/embrace.el")
-  :general
-  ("C-M-s-#" #'embrace-commander)
+  :bind (("C-M-s-#" . embrace-commander))
   :config
   (add-hook 'org-mode-hook 'embrace-org-mode-hook)
   (defun embrace-markdown-mode-hook ()

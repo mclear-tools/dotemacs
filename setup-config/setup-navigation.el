@@ -18,9 +18,7 @@
 ;;; Go To Change
 (use-package goto-last-change
   :straight (:type git :host github :repo "camdez/goto-last-change.el")
-  :general
-  ("C-\"" 'goto-last-change))
-
+  :bind (("C-\"" . goto-last-change)))
 
 ;;; Hydra
 (use-package hydra :defer 1)
@@ -53,9 +51,9 @@
          (eshell-mode . goto-address-mode)
          (text-mode . goto-address-mode)
          (shell-mode . goto-address-mode))
-  :general (:keymaps 'goto-address-highlight-keymap
-            "<RET>"  'goto-address-at-point
-            "M-<RET>" 'newline)
+  :bind (:map goto-address-highlight-keymap
+         ("<RET>"  . goto-address-at-point)
+         ("M-<RET>" . newline))
   :commands (goto-address-prog-mode
              goto-address-mode))
 

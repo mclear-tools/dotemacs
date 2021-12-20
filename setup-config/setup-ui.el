@@ -326,13 +326,12 @@ Font" "Consolas" "Monaco" "PT Mono")
 ;; Much better lookup both in details and headings/aesthetics
 ;; Better help info
 (use-package helpful
-  :general
-  ("C-h f" #'helpful-function)
-  ("C-h k" #'helpful-key)
-  ("C-h o" #'helpful-symbol)
-  ("C-h v" #'helpful-variable)
-  ("C-h C-." #'helpful-at-point)
-  ("C-h C-l" #'find-library))
+  :bind* (("C-h f"   . #'helpful-function)
+          ("C-h k"   . #'helpful-key)
+          ("C-h o"   . #'helpful-symbol)
+          ("C-h v"   . #'helpful-variable)
+          ("C-h C-." . #'helpful-at-point)
+          ("C-h C-l" . #'find-library)))
 
 ;; (advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
 
@@ -374,9 +373,8 @@ Font" "Consolas" "Monaco" "PT Mono")
   :straight (:host github :repo "canatella/xwwp")
   :custom
   (xwwp-follow-link-completion-system 'default)
-  :general
-  (:keymaps 'xwidget-webkit-mode-map
-   "v"  'xwwp-follow-link))
+  :bind (:map xwidget-webkit-mode-map
+         ("v" . xwwp-follow-link)))
 
 ;;; Mode line
 ;;;; Hide Modeline

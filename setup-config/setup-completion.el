@@ -9,14 +9,13 @@
   :straight (:host github :repo "minad/vertico"
              :includes (vertico-repeat vertico-directory vertico-buffer)
              :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-buffer.el" "extensions/vertico-repeat.el"))
-  :general
-  (:keymaps 'vertico-map
-   "<escape>" #'minibuffer-keyboard-quit
-   "C-n"      #'vertico-next-group
-   "C-p"      #'vertico-previous-group
-   "C-j"      #'vertico-next
-   "C-k"      #'vertico-previous
-   "M-RET"    #'vertico-exit)
+  :bind ((:map vertico-map
+          ("<escape>" . #'minibuffer-keyboard-quit)
+          ("C-n"      . #'vertico-next-group      )
+          ("C-p"      . #'vertico-previous-group  )
+          ("C-j"      . #'vertico-next            )
+          ("C-k"      . #'vertico-previous        )
+          ("M-RET"    . #'vertico-exit)))
   :hook (after-init . vertico-mode)
   :config
   ;; Cycle through candidates
@@ -138,18 +137,20 @@
                        embark-isearch-highlight-indicator))
   ;; Use completing-read
   (embark-prompter 'embark-completing-read-prompter)
-  :general
-  ("C-S-o"   'embark-act
-   "C-h B"  'embark-bindings)
-  (:keymaps 'minibuffer-local-completion-map
-   "C-;" 'embark-act-noexit
-   "C-S-o" 'embark-act
-   "C-J" 'embark-switch-to-live-occur
-   "M-q" 'embark-occur-toggle-view)
-  (:keymaps 'completion-list-mode-map
-   ";"  'embark-act)
-  (:keymaps 'embark-file-map
-   "x"  'consult-file-externally)
+  :bind (("C-S-o" . embark-act)
+         ("C-h B" . embark-bindings)
+         :map minibuffer-local-completion-map
+         ("C-;"   . embark-act-noexit)
+         ("C-S-o" . embark-act)
+         ("C-J"   . embark-switch-to-live-occur)
+         ("M-q"   . embark-occur-toggle-view)
+         :map completion-list-mode-map
+         (";" . embark-act)
+         :map embark-file-map
+         ("x" . consult-file-externally)
+         ;; When using the Embark package, you can bind `marginalia-cycle' as an Embark action
+         :map embark-general-map
+         ("A"  . marginalia-cycle))
   :init
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
@@ -190,12 +191,8 @@
   :straight (marginalia :type git :host github :repo "minad/marginalia")
   :custom-face
   (marginalia-documentation ((t (:inherit bespoke-faded))))
-  :general
-  (:keymaps 'minibuffer-local-map
-   "C-M-a"  'marginalia-cycle)
-  ;; When using the Embark package, you can bind `marginalia-cycle' as an Embark action
-  (:keymaps 'embark-general-map
-   "A"  'marginalia-cycle)
+  :bind (:map minibuffer-local-map
+         ("C-M-a" . marginalia-cycle))
   :init
   (marginalia-mode)
   ;; ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations.
@@ -270,9 +267,8 @@
   :straight (:host github :repo "karthink/consult-dir")
   :commands (consult-dir
              consult-dir-jump-file)
-  :general
-  (:keymaps 'vertico-map
-   "C-d" #'consult-dir))
+  :bind (:map vertico-map
+         ("C-d" . consult-dir)))
 
 ;;;; Completing-Read Info
 ;; Info search commands using completing-read
@@ -466,7 +462,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   (completing-read-info "(org)"))
 
 ;; Bind keys for completing-read-info
-(general-define-key "C-h i" #'completing-read-info)
+(bind-key "C-h i" #'completing-read-info)
 
 ;;; In-Buffer Completion
 ;;;; Company
@@ -476,14 +472,13 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;; might be better off with cofu https://github.com/minad/corfu
 (use-package company
   :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
-  :general
-  (:keymaps 'company-active-map
-   ;; "C-/"   #'company-search-candidates
-   ;; "C-M-/" #'company-filter-candidates
-   "C-d"   #'company-show-doc-buffer
-   "C-j"   #'company-select-next
-   "C-k"   #'company-select-previous
-   "C-l"   #'company-complete-selection)
+  :bind (:map company-active-map
+         ;; "C-/"   #'company-search-candidates
+         ;; "C-M-/" #'company-filter-candidates
+         ("C-d" . company-show-doc-buffer)
+         ("C-j" . company-select-next)
+         ("C-k" . company-select-previous)
+         ("C-l" . company-complete-selection))
   :init
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 3

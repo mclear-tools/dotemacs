@@ -7,21 +7,44 @@
 ;; Use project to switch to, and search in, projects (replaces projectile)
 (use-package project
   :straight (:type built-in)
-  :commands (project-find-file project-switch-to-buffer project-switch-project)
+  :commands (project-find-file
+             project-switch-to-buffer
+             project-switch-project
+             project-switch-project-open-file)
   :config
-  (setq project-list-file (concat cpm-cache-dir "projects")))
+  (setq project-list-file (concat cpm-cache-dir "projects"))
+  (setq project-switch-commands '((project-find-file "Find file")
+                                  (project-find-regexp "Find regexp")
+                                  (project-find-dir "Find directory")
+                                  (project-vterm "Vterm shell")
+                                  (project-vc-dir "VC-Dir")
+                                  (project-magit-dir "Magit status"))))
 
 (defun cpm-project-name ()
   "return name of project without path"
   (file-name-nondirectory (directory-file-name (if (vc-root-dir) (vc-root-dir) "-"))))
 
+;; magit function for project
 (defun project-magit-dir ()
   "Run magit in the current project's root"
   (interactive)
   (magit-status))
-
 ;; Add to keymap
 (define-key (current-global-map) (kbd "C-x p G") #'project-magit-dir)
+
+;; vterm function for project
+(defun project-vterm ()
+  "Run vterm in the current project's root"
+  (interactive)
+  (let* ((default-directory (project-root (project-current t)))
+         (default-project-shell-name (project-prefixed-buffer-name "shell"))
+         (vterm (get-buffer default-project-shell-name)))
+    (if (and vterm (not current-prefix-arg))
+        (pop-to-buffer-same-window vterm)
+      (vterm (generate-new-buffer-name default-project-shell-name)))))
+
+;; Add to keymap
+(define-key (current-global-map) (kbd "C-x p s") #'project-vterm)
 
 ;; Use fd
 ;; See https://www.manueluberti.eu/emacs/2020/09/18/project/
@@ -84,6 +107,30 @@ The default tab-bar name uses the buffer name."
   (alist-get 'name (tab-bar--current-tab)))
 
 ;;; Project Functions
+
+;;;; Open project & file
+(with-eval-after-load 'project
+  (defun project-switch-project-open-file (dir)
+    "\"Switch\" to another project by running an Emacs command.
+Open file using project-find-file
+
+When called in a program, it will use the project corresponding
+to directory DIR."
+    (interactive (list (project-prompt-project-dir)))
+    (let ((default-directory dir)
+          (project-current-inhibit-prompt t))
+      (call-interactively 'project-find-file))))
+
+;;;; Open Project in New Workspace
+(defun cpm/open-existing-project-and-workspace ()
+  "open a project as its own tab"
+  (interactive)
+  (progn
+    (tab-bar-new-tab)
+    (call-interactively 'project-switch-project-open-file)
+    (tab-bar-rename-tab (cpm-project-name))
+    (project-magit-dir)))
+
 ;;;; Open agenda as workspace
 (defun cpm/open-agenda-in-workspace ()
   "open agenda in its own tab"
@@ -100,10 +147,7 @@ The default tab-bar name uses the buffer name."
       (require 'org-super-agenda)
       (cpm/jump-to-org-super-agenda))))
 
-(general-define-key
- ;; :states '(emacs)
- :keymaps 'override
- "s-1" 'cpm/open-agenda-in-workspace)
+(bind-key* "s-1" 'cpm/open-agenda-in-workspace)
 
 ;;;; Open emacs.d in workspace
 (defun cpm/open-emacsd-in-workspace ()
@@ -116,9 +160,7 @@ The default tab-bar name uses the buffer name."
       (find-file-other-window user-init-file)
       (project-magit-dir))))
 
-(general-define-key
- :keymaps 'override
- "s-2" 'cpm/open-emacsd-in-workspace)
+(bind-key* "s-2" 'cpm/open-emacsd-in-workspace)
 
 ;;;; Open Notes in workspace
 (defun cpm/open-notes-in-workspace ()
@@ -130,9 +172,7 @@ The default tab-bar name uses the buffer name."
       (tab-bar-switch-to-tab "Notes")
       (cpm/notebook))))
 
-(general-define-key
- :keymaps 'override
- "s-3" 'cpm/open-notes-in-workspace)
+(bind-key* "s-3" 'cpm/open-notes-in-workspace)
 
 ;;;; Terminal Workspace
 (defun cpm/vterm-home ()
@@ -151,9 +191,7 @@ The default tab-bar name uses the buffer name."
       (cpm/vterm-home)
       (delete-other-windows))))
 
-(general-define-key
- :keymaps 'override
- "s-4" 'cpm/open-new-terminal-and-workspace)
+(bind-key* "s-4" 'cpm/open-new-terminal-and-workspace)
 
 ;;;; Open New Buffer & Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
@@ -174,17 +212,6 @@ The default tab-bar name uses the buffer name."
     (setq default-directory cpm-project-temp-dir)
     (find-file (concat cpm-project-temp-dir "temp"))
     ))
-
-
-;;;; Open Project in New Workspace
-(defun cpm/open-existing-project-and-workspace ()
-  "open a project as its own tab"
-  (interactive)
-  (progn
-    (tab-bar-new-tab)
-    (call-interactively 'project-switch-project)
-    (tab-bar-rename-tab (cpm-project-name))
-    (project-magit-dir)))
 
 
 ;;;; Open & Create New Project in New Workspace

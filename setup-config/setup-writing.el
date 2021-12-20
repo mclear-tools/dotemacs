@@ -40,10 +40,9 @@
 (use-package flyspell-correct
   :straight t
   :after flyspell
-  :general
-  (:keymaps 'flyspell-mode-map
-   "C-;" 'flyspell-correct-wrapper
-   "C-:" 'flyspell-correct-at-point)
+  :bind (:map flyspell-mode-map
+         ("C-;" . flyspell-correct-wrapper)
+         ("C-:" . flyspell-correct-at-point))
   :custom
   (flyspell-correct-interface #'flyspell-correct-completing-read))
 
@@ -105,6 +104,10 @@
   :mode (("\\.markdown\\'" . markdown-mode)
          ("\\.md\\'"       . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
+  :bind (:map markdown-mode-map
+         ("s-*" . markdown-insert-list-item)
+         ("s-b" . markdown-insert-bold)
+         ("s-i" . markdown-insert-italic))
   :config
   (setq markdown-command
         (concat

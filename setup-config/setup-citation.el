@@ -165,9 +165,7 @@ With prefix, rebuild the cache before offering candidates."
 ;;;; Company-bibtex
 
 (use-package company-bibtex
-  :general
-  (:states 'insert
-   "<C-tab>" #'company-bibtex)
+  :bind (("<C-tab>" . company-bibtex))
   :config
   (add-to-list 'company-backends 'company-bibtex)
   (setq company-bibtex-bibliography cpm-bibliography)

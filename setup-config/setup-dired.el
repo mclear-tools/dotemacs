@@ -7,10 +7,9 @@
 (use-package dired
   :straight nil
   :commands (dired dired-jump dired-jump-other-window)
-  :general
-  (:keymaps 'dired-mode-map
-   "l" #'dired-find-alternate-file
-   "h" #'cpm/dired-updirectory)
+  :bind (:map dired-mode-map
+         ("l" . dired-find-alternate-file)
+         ("h" . cpm/dired-updirectory))
   ;; "q" #'quit-window)
   :config
   ;; Function to move up a directory like in ranger
@@ -47,14 +46,13 @@
 
 ;;;; Narrow Dired to Match Filter
 (use-package dired-narrow
-  :general (:keymaps 'dired-mode-map
-            "/"  'dired-narrow))
+  :bind (:map dired-mode-map
+         ("/" . dired-narrow)))
 
 ;;;; Dired Sort
 (use-package dired-quick-sort
-  :general
-  (:keymaps 'dired-mode-map
-   "s" #'hydra-dired-quick-sort/body))
+  :bind (:map dired-mode-map
+         ("s" . hydra-dired-quick-sort/body)))
 
 ;;;; Dired Colors
 (use-package diredfl
@@ -64,15 +62,13 @@
 ;;;; Peep Dired
 (use-package peep-dired
   :commands (peep-dired)
-  :general
-  (:keymaps 'dired-mode-map
-   "p" #'peep-dired)
-  (:keymaps 'peep-dired-mode-map
-   "j" #'peep-dired-next-file
-   "k" #'peep-dired-prev-file
-   "RET" #'cpm/peep-dired-open
-   "TAB" #'cpm/other-window
-   )
+  :bind (:map dired-mode-map
+         ("p" . peep-dired)
+         :map peep-dired-mode-map
+         ("j"    . peep-dired-next-file)
+         ("k"    . peep-dired-prev-file)
+         ("RET"  . cpm/peep-dired-open)
+         ("TAB"  . cpm/other-window))
   :config
   ;; helper function for opening files in full window
   (defun cpm/peep-dired-open ()
@@ -94,11 +90,10 @@
 ;; Note that to move first you need to copy the file and then go to the target directory and move
 (use-package dired-ranger
   :after dired
-  :general (:keymaps 'dired-mode-map
-            "s-c"  'dired-ranger-copy
-            "s-m"  'dired-ranger-move
-            "s-v"  'dired-ranger-paste))
-
+  :bind (:map dired-mode-map
+         ("s-c"  . dired-ranger-copy)
+         ("s-m"  . dired-ranger-move)
+         ("s-v"  . dired-ranger-paste)))
 
 ;;;; Cycle Dired Buffer
 ;;https://www.reddit.com/r/emacs/comments/qnthhw/comment/hjiv2uc/?utm_source=share&utm_medium=web2x&context=3

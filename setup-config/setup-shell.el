@@ -93,22 +93,17 @@
 ;; Better terminal function---way faster than ansi-term
 (use-package vterm
   :commands (vterm vterm-other-window)
-  :general
-  (:keymaps 'vterm-mode-map
-   ;; fix issue with fzf
-   ;; "C-c" #'vterm-send-C-c
-   "C-g" #'vterm--self-insert
-   "C-j" #'vterm-send-down
-   "C-k" #'vterm-send-up
-   "C-l" #'vterm-clear
-   "s-v" #'vterm-yank
-   "C-v" #'vterm-yank
-   ;; "<C-escape>" #'evil-collection-vterm-toggle-send-escape)
-   "<C-escape>" #'cpm/vterm-escape-toggle)
-  (:states '(normal)
-   :keymaps 'vterm-mode-map
-   "p" #'vterm-yank
-   "P" #'vterm-yank)
+  :bind ((:map vterm-mode-map
+          ;; fix issue with fzf
+          ;; "C-c" #'vterm-send-C-c
+          ("C-g" . #'vterm--self-insert)
+          ("C-j" . #'vterm-send-down   )
+          ("C-k" . #'vterm-send-up     )
+          ("C-l" . #'vterm-clear       )
+          ("s-v" . #'vterm-yank        )
+          ("C-v" . #'vterm-yank        )
+          ;; "<C-escape>" #'evil-collection-vterm-toggle-send-escape)
+          ("<C-escape>" . #'cpm/vterm-escape-toggle)))
   :custom (vterm-install t)
   :config
   (eval-when-compile
@@ -223,11 +218,11 @@
 ;; https://github.com/noctuid/general.el/issues/80
 (add-hook 'eshell-mode-hook
           (lambda ()
-            (general-define-key :states  '(normal insert emacs) :keymaps 'eshell-mode-map
-              "<down>" 'eshell-next-input
-              "<up>"   'eshell-previous-input
-              "C-k"    'eshell-next-input
-              "C-j"    'eshell-previous-input)))
+            (bind-keys :map eshell-mode-map
+              ("<down>" . eshell-next-input)
+              ("<up>"   . eshell-previous-input)
+              ("C-k"    . eshell-next-input)
+              ("C-j"    . eshell-previous-input))))
 
 ;;;; Eshell Prompt
 ;; A nicer eshell prompt https://gist.github.com/ekaschalk/f0ac91c406ad99e53bb97752683811a5
@@ -235,87 +230,87 @@
 ;; I've made just a few tiny modifications.
 
 (with-eval-after-load 'eshell
-(require 'dash)
-(require 's)
+  (require 'dash)
+  (require 's)
 
-(defmacro with-face (STR &rest PROPS)
-  "Return STR propertized with PROPS."
-  `(propertize ,STR 'face (list ,@PROPS)))
+  (defmacro with-face (STR &rest PROPS)
+    "Return STR propertized with PROPS."
+    `(propertize ,STR 'face (list ,@PROPS)))
 
-(defmacro esh-section (NAME ICON FORM &rest PROPS)
-  "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
-  `(setq ,NAME
-         (lambda () (when ,FORM
-                 (-> ,ICON
-                    (concat esh-section-delim ,FORM)
-                    (with-face ,@PROPS))))))
+  (defmacro esh-section (NAME ICON FORM &rest PROPS)
+    "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
+    `(setq ,NAME
+           (lambda () (when ,FORM
+                   (-> ,ICON
+                       (concat esh-section-delim ,FORM)
+                       (with-face ,@PROPS))))))
 
-(defun esh-acc (acc x)
-  "Accumulator for evaluating and concatenating esh-sections."
-  (--if-let (funcall x)
-      (if (s-blank? acc)
-          it
-        (concat acc esh-sep it))
-    acc))
+  (defun esh-acc (acc x)
+    "Accumulator for evaluating and concatenating esh-sections."
+    (--if-let (funcall x)
+        (if (s-blank? acc)
+            it
+          (concat acc esh-sep it))
+      acc))
 
-(defun esh-prompt-func ()
-  "Build `eshell-prompt-function'"
-  (concat esh-header
-          (-reduce-from 'esh-acc "" eshell-funcs)
-          "\n"
-          eshell-prompt-string))
+  (defun esh-prompt-func ()
+    "Build `eshell-prompt-function'"
+    (concat esh-header
+            (-reduce-from 'esh-acc "" eshell-funcs)
+            "\n"
+            eshell-prompt-string))
 
-(esh-section esh-dir
-             "\xf07c"  ;  (faicon folder)
-             (abbreviate-file-name (eshell/pwd))
-             '(:foreground "#268bd2" :underline t))
+  (esh-section esh-dir
+               "\xf07c"  ;  (faicon folder)
+               (abbreviate-file-name (eshell/pwd))
+               '(:foreground "#268bd2" :underline t))
 
-(esh-section esh-git
-             "\xe907"  ;  (git icon)
-             (with-eval-after-load 'magit
-             (magit-get-current-branch))
-             '(:foreground "#b58900"))
+  (esh-section esh-git
+               "\xe907"  ;  (git icon)
+               (with-eval-after-load 'magit
+                 (magit-get-current-branch))
+               '(:foreground "#b58900"))
 
-(esh-section esh-python
-             "\xe928"  ;  (python icon)
-             (with-eval-after-load "virtualenvwrapper"
-             venv-current-name))
+  (esh-section esh-python
+               "\xe928"  ;  (python icon)
+               (with-eval-after-load "virtualenvwrapper"
+                 venv-current-name))
 
-(esh-section esh-clock
-             "\xf017"  ;  (clock icon)
-             (format-time-string "%H:%M" (current-time))
-             '(:foreground "forest green"))
+  (esh-section esh-clock
+               "\xf017"  ;  (clock icon)
+               (format-time-string "%H:%M" (current-time))
+               '(:foreground "forest green"))
 
-;; Below I implement a "prompt number" section
-(setq esh-prompt-num 0)
-(add-hook 'eshell-exit-hook (lambda () (setq esh-prompt-num 0)))
-(advice-add 'eshell-send-input :before
-            (lambda (&rest args) (setq esh-prompt-num (cl-incf esh-prompt-num))))
+  ;; Below I implement a "prompt number" section
+  (setq esh-prompt-num 0)
+  (add-hook 'eshell-exit-hook (lambda () (setq esh-prompt-num 0)))
+  (advice-add 'eshell-send-input :before
+              (lambda (&rest args) (setq esh-prompt-num (cl-incf esh-prompt-num))))
 
-(esh-section esh-num
-             "\xf0c9"  ;  (list icon)
-             (number-to-string esh-prompt-num)
-             '(:foreground "brown"))
+  (esh-section esh-num
+               "\xf0c9"  ;  (list icon)
+               (number-to-string esh-prompt-num)
+               '(:foreground "brown"))
 
-;; Separator between esh-sections
-(setq esh-sep " | ")  ; or "  "
+  ;; Separator between esh-sections
+  (setq esh-sep " | ")  ; or "  "
 
-;; Separator between an esh-section icon and form
-(setq esh-section-delim " ")
+  ;; Separator between an esh-section icon and form
+  (setq esh-section-delim " ")
 
-;; Eshell prompt header
-(setq esh-header "\n┌─")  ; or "\n "
+  ;; Eshell prompt header
+  (setq esh-header "\n┌─")  ; or "\n "
 
-;; Eshell prompt regexp and string. Unless you are varying the prompt by eg.
-;; your login, these can be the same.
-(setq eshell-prompt-regexp "^└─>> ") ;; note the '^' to get regex working right
-(setq eshell-prompt-string "└─>> ")
+  ;; Eshell prompt regexp and string. Unless you are varying the prompt by eg.
+  ;; your login, these can be the same.
+  (setq eshell-prompt-regexp "^└─>> ") ;; note the '^' to get regex working right
+  (setq eshell-prompt-string "└─>> ")
 
-;; Choose which eshell-funcs to enable
-(setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num))
+  ;; Choose which eshell-funcs to enable
+  (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num))
 
-;; Enable the new eshell prompt
-(setq eshell-prompt-function 'esh-prompt-func))
+  ;; Enable the new eshell prompt
+  (setq eshell-prompt-function 'esh-prompt-func))
 
 ;;;; Clear Eshell
 ;; Make eshell act like a standard unix terminal.

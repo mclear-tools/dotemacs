@@ -8,6 +8,14 @@
   ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :commands (org-mode)
   :mode (("\\.org$" . org-mode))
+  :bind (:map org-mode-map
+         ;; easily emphasize text
+         ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
+         ("s-b" . (lambda () (interactive) (er/mark-word) (org-emphasize ?\*)))
+         ("s-i" . (lambda () (interactive) (er/mark-word) (org-emphasize ?\/)))
+         ("s-l" . (lambda () (interactive) (er/mark-word) (org-emphasize ?\=)))
+         ;; better pasting behavior in org-mode
+         ("s-v" . org-yank))
   :init
 ;;; Org Settings
 ;;;; Org Directories
@@ -19,6 +27,7 @@
   :config
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-footnote-auto-adjust t ;; renumber footnotes
+                org-adapt-indentation t
                 org-image-actual-width  500 ;; show all images at 500px using imagemagik
                 org-return-follows-link t ;; make RET follow links
                 org-list-allow-alphabetical t ;; allow alphabetical list
@@ -157,11 +166,11 @@
         ;; org-agenda-sticky t
         org-agenda-span 'day)
 
-  (general-define-key "C-c a" #'org-agenda)
-  (with-eval-after-load 'org-agenda
-    (general-define-key :keymaps 'org-agenda-mode-map
-      "j" 'org-agenda-next-item
-      "k" 'org-agenda-previous-item))
+  (bind-key "C-c a" #'org-agenda)
+  ;; (with-eval-after-load 'org-agenda
+  ;;   (:map org-agenda-mode-map
+  ;;    ("j" . org-agenda-next-item)
+  ;;    ("k" . org-agenda-previous-item)))
 
   ;; automatically refresh the agenda after adding a task
   (defun cpm/org-agenda-refresh ()
@@ -202,9 +211,8 @@
     :straight (:type git :host github :repo "alphapapa/org-super-agenda")
     :commands org-super-agenda-mode
     :after org
-    :general
-    (:states '(normal motion emacs) :keymaps 'org-agenda-keymap
-     ","  'cpm/hydra-org-agenda/body)
+    :bind (:map org-agenda-keymap
+           ("," . cpm/hydra-org-agenda/body))
     :config
     (org-super-agenda-mode)
     (setq org-super-agenda-date-format "%A, %e %b")

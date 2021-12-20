@@ -49,10 +49,8 @@
 ;;               file-path))))))))
 
 ;;;; Deadgrep
-(use-package deadgrep
-  :general
-  (cpm-leader-def
-    "sg" #'deadgrep))
+(use-package deadgrep)
+
 
 ;;;; Ripgrep
 (use-package rg :commands rg)

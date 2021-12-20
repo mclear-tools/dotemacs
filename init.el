@@ -162,11 +162,6 @@
   (interactive)
   (async-shell-command-no-window "emacs -no-splash --eval '(cpm--straight-update-packages)'"))
 
-;; Keybindings for use with updating packages interactively
-(with-eval-after-load 'general
-  (general-define-key :keymaps 'magit-log-mode-map
-    "Q" #'exit-recursive-edit))
-
 
 
 ;;;; Use-Package
@@ -316,6 +311,13 @@
 (use-package outline
   :straight (:type built-in)
   :hook (prog-mode . outline-minor-mode)
+  :bind (:map outline-minor-mode-map
+         ("<tab>"   . outline-cycle)
+         ("S-<tab>" . outline-cycle-buffer)
+         ("M-j"     . outline-move-subtree-down)
+         ("M-k"     . outline-move-subtree-up)
+         ("M-h"     . outline-promote)
+         ("M-l"     . outline-demote))
   :config
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
