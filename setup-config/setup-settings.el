@@ -237,10 +237,6 @@
   (interactive)
   (format-date "%m-%d-%Y %H:%M:%S"))
 
-;;;; Universal Argument
-(with-eval-after-load 'general
-(general-define-key "M-u" 'universal-argument))
-
 ;;;; Emacs Profiling
 ;; might be worth checking this out more closely
 ;; https://github.com/raxod502/radian/blob/c4246176155873d3937ff997965279048dabbc01/emacs/radian.el#L4423-L4476
@@ -349,10 +345,8 @@
 ;; A little more useful for calling help than just C-h (less info density)
 ;; see https://luca.cambiaghi.me/vanilla-emacs/readme.html#h:14F8ECDE-9E15-46F7-B903-ECE383251C48
 (use-package transient
-  :general
-  (cpm/leader-keys
-    "h" 'cpm/help-transient)
   :config
+  (bind-key (concat cpm-prefix " h") 'cpm/help-transient)
   (transient-define-prefix cpm/help-transient ()
     ["Help Commands"
      ["Mode & Bindings"
