@@ -36,33 +36,7 @@
       (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
   (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
 
-;;; Syntax Highlighting (Treesitter)
-;; Better syntax highlight -- but doesn't have elisp right no :(
-(use-package tree-sitter
-  :disabled
-  :straight t
-  :defer 3
-  :config
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
-(use-package tree-sitter-langs
-  :disabled
-  :straight t
-  :after tree-sitter)
-
-(use-package evil-textobj-treesitter
-  :disabled
-  :straight (:type git
-             :host github
-             :repo "meain/evil-textobj-treesitter"
-             :files (:defaults "queries"))
-  :after tree-sitter
-  :config
-  (define-key evil-outer-text-objects-map "f" (evil-textobj-treesitter-get-textobj "function.outer"))
-  (define-key evil-inner-text-objects-map "f" (evil-textobj-treesitter-get-textobj "function.inner"))
-  (define-key evil-outer-text-objects-map "c" (evil-textobj-treesitter-get-textobj "class.outer"))
-  (define-key evil-inner-text-objects-map "c" (evil-textobj-treesitter-get-textobj "class.inner")))
 
 ;;; Colors
 ;; https://github.com/emacsmirror/rainbow-mode Colorize color names in buffers
@@ -79,30 +53,54 @@
 ;;;; Elisp
 ;;;;; Lisp Packages
 (use-package lisp-mode
+  :straight (:type built-in)
   :commands lisp-mode
   :straight nil)
 
 (use-package emacs-lisp-mode
-  :straight nil
+  :straight (:type built-in)
   :mode (("\\.el$" . emacs-lisp-mode))
-  :interpreter (("emacs" . emacs-lisp-mode))
-  )
-
-(use-package elisp-slime-nav
-  :straight nil
-  :commands elisp-slime-nav-mode
-  :config
-  (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
-    (add-hook hook 'turn-on-elisp-slime-nav-mode)))
+  :interpreter (("emacs" . emacs-lisp-mode)))
 
 (use-package eldoc
-  :straight nil
+  :straight (:type built-in)
   :commands eldoc-mode
   :hook (emacs-lisp-mode . turn-on-eldoc-mode)
   :diminish eldoc-mode
   :config
   ;; Show ElDoc messages in the echo area immediately, instead of after 1/2 a second.
   (setq eldoc-idle-delay 0))
+
+;; better jump to definition
+(use-package elisp-def
+  :config
+  (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+    (add-hook hook #'elisp-def-mode)))
+
+;; Context aware Elisp editing
+(use-package paxedit
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'paxedit-mode)
+  (add-hook 'clojure-mode-hook 'paxedit-mode)
+  ;; keybindings
+  (progn (define-key paxedit-mode-map (kbd "M-<right>") 'paxedit-transpose-forward)
+         (define-key paxedit-mode-map (kbd "M-<left>") 'paxedit-transpose-backward)
+         (define-key paxedit-mode-map (kbd "M-<up>") 'paxedit-backward-up)
+         (define-key paxedit-mode-map (kbd "M-<down>") 'paxedit-backward-end)
+         (define-key paxedit-mode-map (kbd "M-b") 'paxedit-previous-symbol)
+         (define-key paxedit-mode-map (kbd "M-f") 'paxedit-next-symbol)
+         (define-key paxedit-mode-map (kbd "C-%") 'paxedit-copy)
+         (define-key paxedit-mode-map (kbd "C-&") 'paxedit-kill)
+         (define-key paxedit-mode-map (kbd "C-*") 'paxedit-delete)
+         (define-key paxedit-mode-map (kbd "C-^") 'paxedit-sexp-raise)
+         ;; Symbol backward/forward kill
+         (define-key paxedit-mode-map (kbd "C-w") 'paxedit-backward-kill)
+         (define-key paxedit-mode-map (kbd "M-w") 'paxedit-forward-kill)
+         ;; Symbol manipulation
+         (define-key paxedit-mode-map (kbd "M-u") 'paxedit-symbol-change-case)
+         (define-key paxedit-mode-map (kbd "C-@") 'paxedit-symbol-copy)
+         (define-key paxedit-mode-map (kbd "C-#") 'paxedit-symbol-kill)))
+
 
 ;; Elisp hook
 (add-hook 'emacs-lisp-mode-hook (lambda ()
@@ -112,7 +110,8 @@
                                   (eldoc-mode)
                                   (yas-minor-mode)
                                   (company-mode)
-                                  (rainbow-delimiters-mode)))
+                                  (rainbow-delimiters-mode)
+                                  (electric-pair-mode)))
 
 ;;;;; Elisp indentation
 ;; Fix the indentation of keyword lists in Emacs Lisp. See [1] and [2].
