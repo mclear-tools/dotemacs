@@ -326,6 +326,7 @@ Font" "Consolas" "Monaco" "PT Mono")
 ;; Much better lookup both in details and headings/aesthetics
 ;; Better help info
 (use-package helpful
+  :defer t
   :bind* (("C-h f"   . #'helpful-function)
           ("C-h k"   . #'helpful-key)
           ("C-h o"   . #'helpful-symbol)

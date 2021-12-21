@@ -49,7 +49,9 @@
 ;;               file-path))))))))
 
 ;;;; Deadgrep
-(use-package deadgrep)
+(use-package deadgrep
+  :bind (:map cpm+search-keys
+         ("D" . deadgrep)))
 
 
 ;;;; Ripgrep
