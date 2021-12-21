@@ -9,8 +9,16 @@
 ;;;; Native Comp
 ;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
 ;; https://akrl.sdf.org/gccemacs.html#org335c0de
+
+;; See if native-comp is available
+(if (and (fboundp 'native-comp-available-p)
+         (native-comp-available-p))
+    (message "Native compilation is available")
+  (message "Native complation is *not* available"))
+;; Settings
 (setq native-comp-speed 2
       native-comp-deferred-compilation t)
+;; Dir for eln-cache
 (when (boundp 'native-comp-eln-load-path)
   (setcar native-comp-eln-load-path
           (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))

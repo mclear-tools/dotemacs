@@ -9,10 +9,11 @@
   :config
   (setq bind-key-describe-special-forms t))
 
-;;; Personal Keybindings
+;;; Personal Keybindings Prefix
 (defvar cpm-prefix "C-c C-SPC"
   "Prefix for all personal keybinds")
 
+;;; Personal Keybindings by Group
 ;;;; Buffer Keys
 (bind-keys :prefix-map cpm+buffer-keys
            :prefix (concat cpm-prefix " b")

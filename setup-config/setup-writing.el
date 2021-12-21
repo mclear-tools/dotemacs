@@ -91,6 +91,12 @@
 (global-set-key (kbd "M-l") 'downcase-dwim)
 (global-set-key (kbd "M-c") 'capitalize-dwim)
 
+;;; Pairing
+;; Auto pair symbols, including quote marks
+(use-package elec-pair
+  :straight (:type built-in)
+  :hook (text-mode . elec-pair-mode))
+
 ;;; Emacs Everywhere
 ;; Write with emacs everywhere
 ;; https://github.com/tecosaur/emacs-everywhere

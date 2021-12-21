@@ -53,7 +53,6 @@
   :bind (:map cpm+search-keys
          ("D" . deadgrep)))
 
-
 ;;;; Ripgrep
 (use-package rg :commands rg)
 
