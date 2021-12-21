@@ -26,12 +26,6 @@
 (use-package emacs-winum
   :straight (winum :type git :host github :repo "deb0ch/emacs-winum")
   :hook (after-init . winum-mode)
-  :bind (("0" . winum-select-window-0)
-         ("1" . winum-select-window-1)
-         ("2" . winum-select-window-2)
-         ("3" . winum-select-window-3)
-         ("4" . winum-select-window-4)
-         ("5" . winum-select-window-5))
   :custom
   ;; seems to require being set in custom to take effect
   (winum-auto-setup-mode-line nil)
