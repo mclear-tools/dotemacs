@@ -166,11 +166,11 @@
         ;; org-agenda-sticky t
         org-agenda-span 'day)
 
-  (bind-key "C-c a" #'org-agenda)
-  ;; (with-eval-after-load 'org-agenda
-  ;;   (:map org-agenda-mode-map
-  ;;    ("j" . org-agenda-next-item)
-  ;;    ("k" . org-agenda-previous-item)))
+  ;; (bind-key "C-c a" #'org-agenda)
+  (with-eval-after-load 'org-agenda
+    (bind-keys* :map org-agenda-mode-map
+      ("j" . org-agenda-next-item)
+      ("k" . org-agenda-previous-item)))
 
   ;; automatically refresh the agenda after adding a task
   (defun cpm/org-agenda-refresh ()

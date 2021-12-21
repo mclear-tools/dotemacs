@@ -284,8 +284,7 @@
    '("t" . cpm+toggle-keys)
    '("L" . display-line-numbers-mode)
    '("A" . consult-org-agenda))
-  (meow-motion-overwrite-define-key '("j" . meow-next)
-                                    '("k" . meow-prev))
+
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
