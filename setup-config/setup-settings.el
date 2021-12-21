@@ -335,17 +335,15 @@
 
 ;;;; Transient Popups
 (use-package transient
-  :defer 2
+  :defer 1
   :custom
   (transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
   (transient-values-file (concat cpm-cache-dir "transient/values.el"))
-  (transient-history-file (concat cpm-cache-dir "transient/history.el")))
-
+  (transient-history-file (concat cpm-cache-dir "transient/history.el"))
 ;;;; Help Transient
-;; A little more useful for calling help than just C-h (less info density)
-;; see https://luca.cambiaghi.me/vanilla-emacs/readme.html#h:14F8ECDE-9E15-46F7-B903-ECE383251C48
-(use-package transient
   :config
+  ;; A little more useful for calling help than just C-h (less info density)
+  ;; see https://luca.cambiaghi.me/vanilla-emacs/readme.html#h:14F8ECDE-9E15-46F7-B903-ECE383251C48
   (bind-key (concat cpm-prefix " h") 'cpm/help-transient)
   (transient-define-prefix cpm/help-transient ()
     ["Help Commands"

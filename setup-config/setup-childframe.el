@@ -9,12 +9,13 @@
 (use-package transient-posframe
   :straight (:host github :repo "yanghaoxie/transient-posframe")
   :if (and (window-system) (version<= "26.1" emacs-version))
-  :hook (after-init . transient-posframe-mode)
+  :defer 1.5
   :config
   (setq transient-posframe-border-width 20
         transient-posframe-min-height (round (* (frame-height) 0.5))
-        transient-posframe-min-width (round (* (frame-width) 0.5))
-        transient-posframe-poshandler 'posframe-poshandler-frame-top-center))
+        transient-posframe-min-width (round (* (frame-width) 0.6))
+        transient-posframe-poshandler 'posframe-poshandler-frame-top-center)
+  (transient-posframe-mode))
 
 ;;; Company Posframe
 (use-package company-posframe
