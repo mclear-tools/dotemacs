@@ -248,6 +248,7 @@
 ;;;; Other Modules
 (require 'setup-splash)
 (require 'setup-server)
+(require 'setup-modal)
 (require 'setup-org)
 (require 'setup-org-extensions)
 (require 'setup-dired)
