@@ -1,6 +1,6 @@
 ;; Org Mode
 
-;;; New Org
+;;;; New Org
 ;; Org package settings
 (use-package org
   :straight t
@@ -9,6 +9,14 @@
   :commands (org-mode)
   :mode (("\\.org$" . org-mode))
   :bind (:map org-mode-map
+         ("M-k" .  org-metaup)
+         ("M-j" .  org-metadown)
+         ("M-l" . org-metaright)
+         ("M-h" . org-metaleft)
+         ("M-J" . org-shiftdown)
+         ("M-K" . org-shiftup)
+         ("M-L" . org-shiftright)
+         ("M-H" . org-shiftleft)
          ;; easily emphasize text
          ;; see https://emacs.stackexchange.com/questions/27645/unable-to-bind-emphasize-key-in-org-mode
          ("s-b" . (lambda () (interactive) (er/mark-word) (org-emphasize ?\*)))
