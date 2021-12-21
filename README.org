@@ -1,51 +1,64 @@
 These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and a [[https://github.com/mclear-tools/build-emacs-macos][custom
 build script]]. I typically build from the master branch (currently: GNU Emacs
-29.0.50 (build 1, aarch64-apple-darwin21.1.0, NS appkit-2113.00 Version 12.0.1
-(Build 21A559), git sha1 b060c3844f) of 2021-12-03 ).
+29.0.50 (GNU Emacs 29.0.50 (build 1, aarch64-apple-darwin21.1.0, NS
+appkit-2113.00 Version 12.0.1 (Build 21A559), git sha1 32d12840e6) of
+2021-12-11). 
 
 The config files are updated/tweaked regularly. I use emacs primarily for all my
 academic work in the humanities (for discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]])
 and the style of configuration tends in that direction (rather than opposed to, e.g.,
 a programming language emphasis). I've tried to provide enough commentary on the
 configuration so that it might be useful to those new to emacs or [[https://en.wikipedia.org/wiki/Text_editor][text-editors]]
-generally. One important thing to note is that the configuration uses [[http://www.vim.org][vim]]
-keybindings, as I used vim (or [[https://neovim.io][neovim]]) prior to emacs and I think modal bindings are
-best. If you like vim bindings but don't tend to want to think about configuring
-emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]] as a way of managing your
-configuration. For a more traditional emacs feel there are also the configurations of
-[[Https://github.com/purcell/emacs.d][Purcell]], [[https://github.com/bbatsov/prelude][Batsov (prelude)]], [[https://github.com/seagle0128/.emacs.d][Zhang (Centaur Emacs)]], and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally
-sane setup you might also look at some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. My configuration is
-influenced by [[https://github.com/rougier][Nicolas Rougier's]] work on [[https://github.com/rougier/elegant-emacs][elegant-emacs]] and [[https://github.com/rougier/nano-emacs][nano-emacs]]; see also the
-[[https://github.com/gilbertw1/bmacs][bmacs]] configuration of Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl
-Voit's]] config. Some other good emacs starter kits to look at include John Kitchen's
-[[https://github.com/jkitchin/scimax][scimax]] and Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
+generally.
 
-This config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please see
-that file and the various config "helper" functions for navigation. While many like
-to use a literate org-file for organizing their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring
-things in elisp files. The modules are organized thematically rather than package by
-package (e.g. the [[file:setup-config/setup-writing.el][writing module]] contains the config for spelling and markdown mode).
-Note that while I have an [[file:early-init.el][early-init]] file for use with emacs 27+, the configuration
-should work with emacs 26+ on MacOS (though I haven't tested this in awhile), with
-the latest release being best.
+One important thing to note is that the configuration uses [[https://wincent.com/wiki/Modal_editor][modal
+]]keybindings---specifically [[https://github.com/meow-edit/meow][meow]]. I used [[http://www.vim.org][vim]] (or [[https://neovim.io][neovim]]) prior to emacs and I
+think modal bindings are best. If you like vim bindings but don't tend to want
+to think about configuring emacs, I strongly recommend [[http://spacemacs.org][spacemacs]] or [[https://github.com/hlissner/doom-emacs][doom-emacs]]
+as a way of managing your configuration. For a more traditional emacs feel
+there are also the configurations of [[Https://github.com/purcell/emacs.d][Purcell]], [[https://github.com/bbatsov/prelude][Batsov (prelude)]], [[https://github.com/seagle0128/.emacs.d][Zhang (Centaur
+Emacs)]], and [[https://github.com/caisah/emacs.dz][many others]]. For a minimally sane setup you might also look at
+some [[https://github.com/hrs/sensible-defaults.el][sensible defaults]]. My configuration is influenced by [[https://github.com/rougier][Nicolas Rougier's]]
+work on [[https://github.com/rougier/elegant-emacs][elegant-emacs]] and [[https://github.com/rougier/nano-emacs][nano-emacs]]; see also the [[https://github.com/gilbertw1/bmacs][bmacs]] configuration of
+Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starter][literate starter kit]]) and [[https://github.com/novoid/dot-emacs][Karl Voit's]] config. Some
+other good emacs starter kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][scimax]] and
+Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
+
+The advantage of meow, as I see it, is that it allows for broadly vim-like
+modal editing without all the overhead of evil, or the tendency to override
+(often in a somewhat sloppy way) vanilla-emacs bindings. I've tried to make
+the current config "slimmer" than it has been in the past, in the sense of
+relying, where possible, on built-in features of emacs (or on small packages
+that leverage built-in emacs functions). For some useful tips on using some
+potentially neglected built-in packages see [[https://karthinks.com/software/batteries-included-with-emacs/][here]] and [[https://karthinks.com/software/more-batteries-included-with-emacs/][here]].  
+
+My config is based on a series of "[[file:setup-config/][modules]]" loaded in the [[file:init.el][init.el]] file. Please
+see the init file and the various config "helper" functions at the end for
+easy navigation. While many like to use a literate org-file for organizing
+their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring things in separate elisp files. The
+modules are organized thematically rather than package by package (e.g. the
+[[file:setup-config/setup-writing.el][writing module]] contains the config for spelling and markdown mode). Note that
+while I have an [[file:early-init.el][early-init]] file for use with emacs 27+, the configuration
+should work with emacs 26+ on MacOS (though I haven't tested this in awhile),
+with the latest release being best.
 
 Some highlights of this emacs setup include:
 
-1. Short start up time -- starts in roughly 1 sec (this may vary
+1. Short start up time -- starts in less than 1 sec (this may vary
    with your system)
 2. Uses [[https://github.com/raxod502/straight.el][straight.el]] for package management
-3. Comprehensive [[file:setup-config/setup-keybindings.el][keybindings]] using [[https://github.com/noctuid/general.el][general.el]] and spacebar as my leader key
-4. [[file:setup-config/setup-evil.el][Evil mode]]
+3. Modal editing with [[https://github.com/meow-edit/meow][meow]]
+4. Comprehensive [[file:setup-config/setup-keybindings.el][keybindings]] using [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] and [[https://github.com/meow-edit/meow][meow]], with spacebar as my leader key
 5. Sensible [[file:setup-config/setup-settings.el][defaults]]
-6. [[file:setup-config/setup-dired.el][Dired]] with good colors and evil keybindings
+6. [[file:setup-config/setup-dired.el][Dired]] with good colors 
 7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:setup-config/setup-completion.el][related packages]]
 8. Use of [[file:setup-config/setup-childframe.el][childframes]] in an integrated manner (integrated with the theme and made for
    easy viewing)
 9. My own [[https://github.com/mclear-tools/bespoke-themes][bespoke theme]] (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for dark/light mode &
    various other options)
-10. An attractive custom [[file:setup-config/setup-modeline.el][headerline]] (part of bespoke-themes, inspired by [[https://github.com/rougier/nano-modeline][nano-modeline]])
+10. An attractive custom [[file:setup-config/setup-modeline.el][mode-line]] (related to bespoke-themes)
 11. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
-12. Single frame [[file:setup-config/setup-projects.el][project]] workflow with [[https://github.com/wasamasa/eyebrowse][eyebrowse]], [[https://github.com/bbatsov/projectile][projectile]], and [[https://github.com/Bad-ptr/persp-mode.el][perspectives]]
+12. Single frame workspace [[file:setup-config/setup-projects.el][project]] workflow with project.el and tab-bar (both built-in) 
 13. A configurable [[file:setup-config/setup-splash.el][splash page]]
 14. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with great [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
     dedicated [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-notes.el][functions for notes]], and [[file:setup-config/setup-org.el][org-mode]]
