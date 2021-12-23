@@ -116,47 +116,16 @@ If FRAME is omitted or nil, use currently selected frame."
 (setq-default ns-use-srgb-colorspace t)
 ;;; Fonts
 
-(use-package faces
+(use-package fontset
   :straight (:type built-in)
-  :defer t
-  :custom
-  ;; (face-font-family-alternatives
-  ;;  '(("Monospace" "SF Mono" "InconsolataLGC Nerd Font" "Monaco")
-  ;;    ("Monospace Serif" "Roboto" "Monospace")
-  ;;    ("Serif" "Avenir" "serif")))
-  (face-font-family-alternatives '(
-                                   ("Monospace" "SF Mono" "InconsolataLGC Nerd Font Medium" "RobotoMono Nerd Font" "Victor Mono" "FiraCode Nerd Font" "Hasklug Nerd Font" "SauceCodePro Nerd
-Font" "Consolas" "Monaco" "PT Mono")
-                                   ("Monospace Serif" "Roboto" "Roboto Slab" "Courier 10 Pitch" "Monospace")
-                                   ("Serif" "Avenir" "Avenir Next" "Helvetica Neue" "Georgia" "Cambria" "Times New Roman" "DejaVu Serif" "serif")))
   :custom-face
-  (variable-pitch ((t (:family "Serif" :height 200))))
-  (fixed-pitch ((t (:family "Monospace Serif" :height 130))))
-  (default ((t (:family "Monospace" :height 130))))
+  (variable-pitch ((t (:family "Avenir" :height 200))))
   :config
-  ;; (set-face-attribute 'default nil :font "Roboto Mono Light" :height 150)
-  ;; (set-face-attribute 'fixed-pitch nil :font "Roboto Mono" :height 150)
-  ;; (set-face-attribute 'variable-pitch nil :font "Avenir Next" :height 200)
   ;; Allow unicode
   (set-fontset-font t 'unicode "Symbola" nil 'prepend)
-  ;; font smoothing
-  (setq ns-use-thin-smoothing t)
-  ;; ;; Allow font awesome fonts
-  ;; (when (require 'all-the-icons nil 'noerror)
-  ;;   (let ((fontset (face-attribute 'default :fontset)))
-  ;;     (set-fontset-font
-  ;;      fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append)))
-  ;; Allow emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font
-     t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend))
-  ;; Fall back font for glyph missing in Roboto
-  (defface fallback '((t :family "Fira Code"
-                         :inherit fringe)) "Fallback")
-  (set-display-table-slot standard-display-table 'truncation
-                          (make-glyph-code ?… 'fallback))
-  (set-display-table-slot standard-display-table 'wrap
-                          (make-glyph-code ?↩ 'fallback)))
+     t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend)))
 
 
 
@@ -395,6 +364,7 @@ Font" "Consolas" "Monaco" "PT Mono")
   (setq dimmer-use-colorspace :rgb)
   (setq dimmer-watch-frame-focus-events nil)
   (dimmer-configure-which-key)
+  (dimmer-configure-hydra)
   (dimmer-configure-magit)
   (dimmer-configure-posframe)
   (dimmer-configure-vertico))
