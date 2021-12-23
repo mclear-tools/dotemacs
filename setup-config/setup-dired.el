@@ -46,13 +46,13 @@
 
 ;;;; Narrow Dired to Match Filter
 (use-package dired-narrow
-  :bind (:map dired-mode-map
-         ("/" . dired-narrow)))
+  :bind* (:map dired-mode-map
+          ("/" . dired-narrow)))
 
 ;;;; Dired Sort
 (use-package dired-quick-sort
-  :bind (:map dired-mode-map
-         ("s" . hydra-dired-quick-sort/body)))
+  :bind* (:map dired-mode-map
+          ("s" . hydra-dired-quick-sort/body)))
 
 ;;;; Dired Colors
 (use-package diredfl
@@ -62,13 +62,13 @@
 ;;;; Peep Dired
 (use-package peep-dired
   :commands (peep-dired)
-  :bind (:map dired-mode-map
-         ("p" . peep-dired)
-         :map peep-dired-mode-map
-         ("j"    . peep-dired-next-file)
-         ("k"    . peep-dired-prev-file)
-         ("RET"  . cpm/peep-dired-open)
-         ("TAB"  . cpm/other-window))
+  :bind* (:map dired-mode-map
+          ("p" . peep-dired)
+          :map peep-dired-mode-map
+          ("j"    . peep-dired-next-file)
+          ("k"    . peep-dired-prev-file)
+          ("RET"  . cpm/peep-dired-open)
+          ("TAB"  . cpm/other-window))
   :config
   ;; helper function for opening files in full window
   (defun cpm/peep-dired-open ()
@@ -77,7 +77,6 @@
     (peep-dired-kill-buffers-without-window)
     (dired-find-file)
     (delete-other-windows))
-  ;; (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf" "gif"))
   (setq peep-dired-cleanup-eagerly nil)
   (setq peep-dired-enable-on-directories t)
@@ -112,6 +111,7 @@
                             (goto-line (count-lines
                                         (point-min)
                                         (point-max))))))))
+
 ;;; End Dired
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

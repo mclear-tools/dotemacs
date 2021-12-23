@@ -13,7 +13,7 @@
   :config
   (setq transient-posframe-border-width 20
         transient-posframe-min-height (round (* (frame-height) 0.5))
-        transient-posframe-min-width (round (* (frame-width) 0.6))
+        transient-posframe-min-width (round (* (frame-width) 0.5))
         transient-posframe-poshandler 'posframe-poshandler-frame-top-center)
   (transient-posframe-mode))
 

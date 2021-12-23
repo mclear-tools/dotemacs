@@ -95,7 +95,7 @@
 ;; Auto pair symbols, including quote marks
 (use-package elec-pair
   :straight (:type built-in)
-  :hook (text-mode . elec-pair-mode))
+  :hook (text-mode . electric-pair-mode))
 
 ;;; Emacs Everywhere
 ;; Write with emacs everywhere
