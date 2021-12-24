@@ -6,27 +6,6 @@
 
 ;;; Early Startup
 
-;;;; Native Comp
-;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
-;; https://akrl.sdf.org/gccemacs.html#org335c0de
-
-;; See if native-comp is available
-(if (and (fboundp 'native-comp-available-p)
-         (native-comp-available-p))
-    (message "Native compilation is available")
-  (message "Native complation is *not* available"))
-;; Settings
-(setq native-comp-speed 2
-      native-comp-deferred-compilation t)
-;; Dir for eln-cache
-(when (boundp 'native-comp-eln-load-path)
-  (setcar native-comp-eln-load-path
-          (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
-;; Silence nativecomp warnings popping up on 28.0.50
-(setq native-comp-async-report-warnings-errors nil)
-
-;;;; Set C Directory
-(setq find-function-C-source-directory "/Applications/Emacs.app/Contents/Resources/src")
 
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -68,6 +47,27 @@
                            (message "Garbage Collector has run for %.06fsec"
                                     (k-time (garbage-collect)))))))
 
+;;;; Native Comp
+;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
+;; https://akrl.sdf.org/gccemacs.html#org335c0de
+
+;; See if native-comp is available
+(if (and (fboundp 'native-comp-available-p)
+         (native-comp-available-p))
+    (message "Native compilation is available")
+  (message "Native complation is *not* available"))
+;; Settings
+(setq native-comp-speed 2
+      native-comp-deferred-compilation t)
+;; Dir for eln-cache
+(when (boundp 'native-comp-eln-load-path)
+  (setcar native-comp-eln-load-path
+          (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
+;; Silence nativecomp warnings popping up on 28.0.50
+(setq native-comp-async-report-warnings-errors nil)
+
+;;;; Set C Directory
+(setq find-function-C-source-directory "/Applications/Emacs.app/Contents/Resources/src")
 
 ;;;; Prefer Newer files
 ;; prefer newer versions
@@ -105,38 +105,36 @@
 (setq package-quickstart nil)
 
 ;;; Clean View
-;; Disable start-up screen
+;; UI - Disable visual cruft
+
 ;; Resizing the Emacs frame can be an expensive part of changing the
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
 ;; larger than the system default.
-
 (setq-default frame-title-format nil)
 (setq-default frame-inhibit-implied-resize t)
 (setq-default inhibit-startup-screen t)
+;; Disable start-up screen
 (setq-default inhibit-splash-screen t)
 (setq-default inhibit-startup-message t)
 (setq-default initial-scratch-message nil)
 
-
-;; UI - Disable visual cruft
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
-(tool-bar-mode 0)
-(tooltip-mode 0)
-(menu-bar-mode 0)
-(setq initial-major-mode 'fundamental-mode)
-(setq default-frame-alist
-      (append (list
-               '(internal-border-width . 20)
-               '(left-fringe    . 0)
-               '(right-fringe   . 0)
-               '(tool-bar-lines . 0)
-               '(menu-bar-lines . 0)
-               '(vertical-scroll-bars . nil)
-               '(horizontal-scroll-bars . nil)
-               '(height . 45)
-               '(width . 85)
-               )))
+;; Disable tool, menu, and scrollbars. these are just clutter (the scrollbar
+;; also impacts performance). I am intentionally not calling `menu-bar-mode',
+;; `tool-bar-mode', and `scroll-bar-mode' (see doom for inspiration) because
+;; they do extra and unnecessary work that can be more concisely and efficiently
+;; expressed with these six lines:
+(push '(menu-bar-lines . 0)   default-frame-alist)
+(push '(tool-bar-lines . 0)   default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+;; And set these to nil so users don't have to toggle the modes twice to
+;; reactivate them.
+(setq menu-bar-mode nil
+      tool-bar-mode nil
+      scroll-bar-mode nil)
 
+;; Fundamental mode at startup
+(setq initial-major-mode 'fundamental-mode)
 
 ;; ;; echo buffer
 ;; ;; Don't display any message
