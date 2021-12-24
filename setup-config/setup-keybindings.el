@@ -61,17 +61,6 @@
            ("p" . goto-pandoc-config                    )
            ("s" . cpm/search-setup-config-files         ))
 
-;;;; File Keybindings
-(bind-keys :prefix-map cpm+file-keys
-           :prefix (concat cpm-prefix " f")
-           ("b" . consult-bookmark                 )
-           ("f" . find-file                        )
-           ("l" . consult-locate                   )
-           ("o" . crux-open-with                   )
-           ("s" . save-buffer                      )
-           ("r" . consult-recent-file              )
-           ("y" . cpm/show-and-copy-buffer-filename))
-
 ;;;; Compile Keybindings
 (bind-keys :prefix-map cpm+compile-keys
            :prefix (concat cpm-prefix " M")
@@ -82,6 +71,27 @@
            ("K"  . kill-compilation         )
            ("r"  . recompile                )
            ("v"  . cpm/make-move            ))
+
+;;;; Eval Keybindings
+(bind-keys :prefix-map cpm+eval-keys
+           :prefix (concat cpm-prefix " e")
+           ("b"  . eval-buffer )
+           ("c"  . cpm/eval-current-form)
+           ("e"  . eval-last-sexp)
+           ("f"  . eval-defun)
+           ("r"  . eval-last-region))
+
+
+;;;; File Keybindings
+(bind-keys :prefix-map cpm+file-keys
+           :prefix (concat cpm-prefix " f")
+           ("b" . consult-bookmark                 )
+           ("f" . find-file                        )
+           ("l" . consult-locate                   )
+           ("o" . crux-open-with                   )
+           ("s" . save-buffer                      )
+           ("r" . consult-recent-file              )
+           ("y" . cpm/show-and-copy-buffer-filename))
 
 ;;;; Project Keybindings
 (global-set-key (kbd "C-h C-c") 'finder-commentary)

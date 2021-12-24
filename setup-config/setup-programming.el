@@ -36,7 +36,12 @@
       (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
   (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
 
-
+;;; Smartparens
+;; a superset of usual pairing modes, should work for a variety of languages
+(use-package smartparens
+  :straight (:type git :host github :repo "fuco1/smartparens")
+  :hook ((prog-mode . smartparens-mode)
+         (text-mode . smartparens-mode)))
 
 ;;; Colors
 ;; https://github.com/emacsmirror/rainbow-mode Colorize color names in buffers
@@ -77,31 +82,6 @@
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook #'elisp-def-mode)))
 
-;; Context aware Elisp editing
-(use-package paxedit
-  :config
-  (add-hook 'emacs-lisp-mode-hook 'paxedit-mode)
-  (add-hook 'clojure-mode-hook 'paxedit-mode)
-  ;; keybindings
-  (progn (define-key paxedit-mode-map (kbd "M-<right>") 'paxedit-transpose-forward)
-         (define-key paxedit-mode-map (kbd "M-<left>") 'paxedit-transpose-backward)
-         (define-key paxedit-mode-map (kbd "M-<up>") 'paxedit-backward-up)
-         (define-key paxedit-mode-map (kbd "M-<down>") 'paxedit-backward-end)
-         (define-key paxedit-mode-map (kbd "M-b") 'paxedit-previous-symbol)
-         (define-key paxedit-mode-map (kbd "M-f") 'paxedit-next-symbol)
-         (define-key paxedit-mode-map (kbd "C-%") 'paxedit-copy)
-         (define-key paxedit-mode-map (kbd "C-&") 'paxedit-kill)
-         (define-key paxedit-mode-map (kbd "C-*") 'paxedit-delete)
-         (define-key paxedit-mode-map (kbd "C-^") 'paxedit-sexp-raise)
-         ;; Symbol backward/forward kill
-         (define-key paxedit-mode-map (kbd "C-w") 'paxedit-backward-kill)
-         (define-key paxedit-mode-map (kbd "M-w") 'paxedit-forward-kill)
-         ;; Symbol manipulation
-         (define-key paxedit-mode-map (kbd "M-u") 'paxedit-symbol-change-case)
-         (define-key paxedit-mode-map (kbd "C-@") 'paxedit-symbol-copy)
-         (define-key paxedit-mode-map (kbd "C-#") 'paxedit-symbol-kill)))
-
-
 ;; Elisp hook
 (add-hook 'emacs-lisp-mode-hook (lambda ()
                                   (setq show-trailing-whitespace t)
@@ -111,7 +91,28 @@
                                   (yas-minor-mode)
                                   (company-mode)
                                   (rainbow-delimiters-mode)
-                                  (electric-pair-mode)))
+                                  (smartparens-strict-mode 1)))
+
+
+;;;;; Lisp Functions
+;; idea from http://www.reddit.com/r/emacs/comments/312ge1/i_created_this_function_because_i_was_tired_of/
+(defun cpm/eval-current-form ()
+  "Looks for the current def* or set* command then evaluates, unlike `eval-defun', does not go to topmost function"
+  (interactive)
+  (save-excursion
+    (search-backward-regexp "(def\\|(set")
+    (forward-list)
+    (call-interactively 'eval-last-sexp)))
+
+(defun cpm/nav-find-elisp-thing-at-point-other-window ()
+  "Find thing under point and go to it another window."
+  (interactive)
+  (let ((symb (variable-at-point)))
+    (if (and symb
+             (not (equal symb 0))
+             (not (fboundp symb)))
+        (find-variable-other-window symb)
+      (find-function-at-point))))
 
 ;;;;; Elisp indentation
 ;; Fix the indentation of keyword lists in Emacs Lisp. See [1] and [2].
