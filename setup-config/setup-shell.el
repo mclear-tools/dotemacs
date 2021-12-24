@@ -1,17 +1,27 @@
 ;; Shell
-;;; Compilation Buffer
-;;  Whenever I run ~compile~, the buffer stays even after a successful compilation.
-;;  Let's make it close automatically if the compilation is successful.
-(setq compilation-finish-functions
-      (lambda (buf str)
-        (if (null (string-match ".*exited abnormally.*" str))
-            ;;no errors, make the compilation window go away in a few seconds
-            (progn
-              (run-at-time "0.4 sec" nil
-                           (lambda ()
-                             (select-window (get-buffer-window (get-buffer-create "*compilation*")))
-                             (delete-window))))
-          (message "No Compilation Errors!"))))
+;;; Compilation
+(use-package compile
+  :straight (:type built-in)
+  :config
+  (setq compilation-always-kill t  ;; kill compilation process before starting another
+        compilation-ask-about-save nil ;; save all buffers on `compile'
+        compilation-scroll-output 'first-error)
+  ;; Automatically truncate compilation buffers so they don't accumulate too
+  ;; much data and bog down the rest of Emacs.
+  (autoload 'comint-truncate-buffer "comint" nil t)
+  (add-hook 'compilation-filter-hook #'comint-truncate-buffer)
+  ;;  Whenever I run ~compile~, the buffer stays even after a successful compilation.
+  ;;  Let's make it close automatically if the compilation is successful.
+  (setq compilation-finish-functions
+        (lambda (buf str)
+          (if (null (string-match ".*exited abnormally.*" str))
+              ;;no errors, make the compilation window go away in a few seconds
+              (progn
+                (run-at-time "0.4 sec" nil
+                             (lambda ()
+                               (select-window (get-buffer-window (get-buffer-create "*compilation*")))
+                               (delete-window))))
+            (message "No Compilation Errors!")))))
 
 ;;; Completion Buffer
 ;; Remove completion buffer when done
