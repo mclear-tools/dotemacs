@@ -4,14 +4,16 @@
 (use-package emacs
   :straight (:type built-in)
   :config
+  ;; Reduce cursor lag by a tiny bit by not auto-adjusting `window-vscroll'
+  ;; for tall lines.
   (setq auto-window-vscroll nil)
   ;; Settings for better cursor
   ;; see https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs
   ;;  (NOTE: A number of 101+ disables re-centering.)
-  (setq maximum-scroll-margin 0.5
-        scroll-margin 99999
-        scroll-conservatively 0
-        scroll-preserve-screen-position nil))
+  (setq maximum-scroll-margin 0.25
+        scroll-margin 0
+        scroll-conservatively 101
+        scroll-preserve-screen-position 1))
 
 (use-package mwheel
   :straight (:type built-in)
@@ -52,27 +54,15 @@
                          '(height . 45)
                          '(width . 85)
                          )))
-
   ;; maximize frame
   (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   (setq-default window-resize-pixelwise t)
   (setq-default frame-resize-pixelwise t)
-
-;;;; Frame titlebar
   ;; No frame title
   (setq-default frame-title-format nil)
   ;; No frame icon
-  (setq ns-use-proxy-icon nil)
+  (setq ns-use-proxy-icon nil))
 
-;;;; UI Elements
-  (unless (eq window-system 'ns)
-    (menu-bar-mode -1))
-  (when (fboundp 'tool-bar-mode)
-    (tool-bar-mode -1))
-  (when (fboundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-  (when (fboundp 'horizontal-scroll-bar-mode)
-    (horizontal-scroll-bar-mode -1)))
 
 ;;;; Fix titlebar titling colors
 ;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
@@ -114,6 +104,7 @@ If FRAME is omitted or nil, use currently selected frame."
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
+
 ;;; Fonts
 
 (use-package fontset
@@ -121,12 +112,15 @@ If FRAME is omitted or nil, use currently selected frame."
   :custom-face
   (variable-pitch ((t (:family "Avenir" :height 200))))
   :config
-  ;; Allow unicode
-  (set-fontset-font t 'unicode "Symbola" nil 'prepend)
+  ;; Use symbola for proper unicode
+  (when (member "Symbola" (font-family-list))
+    (set-fontset-font
+     t 'symbol "Symbola" nil 'prepend))
+  ;; Use Apple emoji
+  ;; NOTE that emoji here must be set to unicode to get color emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font
-     t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend)))
-
+     t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend)))
 
 
 ;;; Font Lock
@@ -187,6 +181,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package hl-line+
   :straight t
   :custom-face
+  ;; subtle highlighting
   (hl-line ((t (:inherit fringe))))
   :custom
   (global-hl-line-mode nil)
@@ -195,11 +190,6 @@ If FRAME is omitted or nil, use currently selected frame."
   (hl-line-when-idle-interval 2)
   :config
   (toggle-hl-line-when-idle 1 t))
-
-;; (use-package hl-line
-;;   :straight (:type built-in)
-;;   :commands (hl-line-mode))
-;;   ;; :hook (after-init . global-hl-line-mode))
 
 ;;;; Highlight Numbers & TODOS
 (use-package highlight-numbers
