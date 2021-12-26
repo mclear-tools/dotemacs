@@ -2,6 +2,7 @@
 ;;; Compilation
 (use-package compile
   :straight (:type built-in)
+  :defer 2
   :config
   (setq compilation-always-kill t  ;; kill compilation process before starting another
         compilation-ask-about-save nil ;; save all buffers on `compile'

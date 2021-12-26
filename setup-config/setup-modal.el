@@ -15,9 +15,9 @@
    '("," . "M-,")
    '("'" . avy-goto-char-timer)
    '("SPC" . execute-extended-command)
-   '("TAB" . tab-bar-switch-to-tab)
    '("<backtab>" . crux-switch-to-previous-buffer)
-   '("C-M-i" . tab-bar-new-tab)
+   '("TAB" . tab-bar-switch-to-tab)
+   '("C-M-t" . tab-bar-new-tab)
    ;; high frequency commands
    '(";" . comment-line)
    '("\\" . multi-vterm-dedicated-toggle)

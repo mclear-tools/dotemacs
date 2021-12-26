@@ -44,23 +44,21 @@ with the latest release being best.
 
 Some highlights of this emacs setup include:
 
-1. Short start up time -- starts in less than 1 sec (this may vary
-   with your system)
+1. Short start up time -- emacs-init-time < .4 sec (though this may vary with
+   your system)
 2. Uses [[https://github.com/raxod502/straight.el][straight.el]] for package management
 3. Modal editing with [[https://github.com/meow-edit/meow][meow]]
 4. Comprehensive [[file:setup-config/setup-keybindings.el][keybindings]] using [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] and [[https://github.com/meow-edit/meow][meow]], with spacebar as my leader key
 5. Sensible [[file:setup-config/setup-settings.el][defaults]]
-6. [[file:setup-config/setup-dired.el][Dired]] with good colors 
+6. [[file:setup-config/setup-dired.el][Dired]] with sensible colors 
 7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:setup-config/setup-completion.el][related packages]]
-8. Use of [[file:setup-config/setup-childframe.el][childframes]] in an integrated manner (integrated with the theme and made for
-   easy viewing)
-9. My own [[https://github.com/mclear-tools/bespoke-themes][bespoke theme]] (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for dark/light mode &
+8. My own [[https://github.com/mclear-tools/bespoke-themes][bespoke theme]] (inspired by [[https://github.com/rougier/nano-emacs][nano-emacs]], with toggles for dark/light mode &
    various other options)
-10. An attractive custom [[file:setup-config/setup-modeline.el][mode-line]] (related to bespoke-themes)
-11. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
-12. Single frame workspace [[file:setup-config/setup-projects.el][project]] workflow with project.el and tab-bar (both built-in) 
-13. A configurable [[file:setup-config/setup-splash.el][splash page]]
-14. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with great [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
+9. An attractive custom [[file:setup-config/setup-modeline.el][mode-line]] (related to bespoke-themes)
+10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
+11. Single frame workspace [[file:setup-config/setup-projects.el][project]] workflow with project.el and tab-bar (both built-in) 
+12. A configurable [[file:setup-config/setup-splash.el][splash page]]
+13. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with great [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
     dedicated [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-notes.el][functions for notes]], and [[file:setup-config/setup-org.el][org-mode]]
 
     

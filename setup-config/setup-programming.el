@@ -78,6 +78,7 @@
 
 ;; better jump to definition
 (use-package elisp-def
+  :commands (elisp-def elisp-def-mode)
   :config
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook #'elisp-def-mode)))
