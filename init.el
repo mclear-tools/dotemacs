@@ -238,7 +238,6 @@
 ;;;; Core Modules
 ;; These are the "can't live without" modules
 (require 'setup-libraries)
-(require 'setup-emacs-git-version)
 (require 'setup-functions-macros)
 (require 'setup-theme)
 (require 'setup-modeline)
@@ -272,6 +271,12 @@
 (require 'setup-pdf)
 (require 'setup-calendars)
 (require 'setup-testing)
+
+;; When built emacs has git-version patch
+;; include git sha1 in emacs-version string
+(setq site-lisp "/Applications/Emacs.app/Contents/Resources/site-lisp/")
+(when (file-exists-p (concat site-lisp "emacs-git-version.el"))
+  (require 'emacs-git-version))
 
 ;; (require 'setup-evil)
 ;; (require 'setup-ivy)
