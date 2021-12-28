@@ -46,35 +46,64 @@
 ;; Use vertico in buffer
 (use-package vertico-buffer
   :after vertico
+  :config/el-patch
+  ;; Use el-patch
+  ;; Set no headerline in vertico-buffer
+  (defun vertico-buffer--setup ()
+    "Setup minibuffer overlay, which pushes the minibuffer content down."
+    (add-hook 'pre-redisplay-functions 'vertico-buffer--redisplay nil 'local)
+    (let ((temp (generate-new-buffer "*vertico*")))
+      (setq vertico-buffer--window (display-buffer temp vertico-buffer-display-action))
+      (set-window-buffer vertico-buffer--window (current-buffer))
+      (kill-buffer temp))
+    (let ((sym (make-symbol "vertico-buffer--destroy"))
+          (depth (recursion-depth))
+          (now (window-parameter vertico-buffer--window 'no-other-window))
+          (ndow (window-parameter vertico-buffer--window 'no-delete-other-windows)))
+      (fset sym (lambda ()
+                  (when (= depth (recursion-depth))
+                    (with-selected-window (active-minibuffer-window)
+                      (when (window-live-p vertico-buffer--window)
+                        (set-window-parameter vertico-buffer--window 'no-other-window now)
+                        (set-window-parameter vertico-buffer--window 'no-delete-other-windows ndow))
+                      (when vertico-buffer-hide-prompt
+                        (set-window-vscroll nil 0))
+                      (remove-hook 'minibuffer-exit-hook sym)))))
+      ;; NOTE: We cannot use a buffer-local minibuffer-exit-hook here.
+      ;; The hook will not be called when abnormally exiting the minibuffer
+      ;; from another buffer via `keyboard-escape-quit'.
+      (add-hook 'minibuffer-exit-hook sym)
+      (set-window-parameter vertico-buffer--window 'no-other-window t)
+      (set-window-parameter vertico-buffer--window 'no-delete-other-windows t)
+      (when vertico-buffer-hide-prompt
+        (overlay-put vertico--candidates-ov 'window vertico-buffer--window)
+        (when vertico--count-ov
+          (overlay-put vertico--count-ov 'window vertico-buffer--window))
+        (setq vertico-buffer--overlay (make-overlay (point-max) (point-max) nil t t))
+        (overlay-put vertico-buffer--overlay 'window (selected-window))
+        (overlay-put vertico-buffer--overlay 'priority 1000)
+        (overlay-put vertico-buffer--overlay 'before-string "\n\n"))
+      (setq-local show-trailing-whitespace nil
+                  truncate-lines t
+                  header-line-format nil
+                  mode-line-format
+                  (list (format " %s "
+                                (propertize
+                                 (format (if (< depth 2) "*%s*" "*%s [%s]*")
+                                         (string-remove-suffix ": " (minibuffer-prompt)) depth)
+                                 'face 'mode-line-buffer-id))
+                        '(:eval (vertico--format-count)))
+                  cursor-in-non-selected-windows 'box
+                  vertico-count (- (/ (window-pixel-height vertico-buffer--window)
+                                      (default-line-height)) 2))))
+
   :config
+  (setq vertico-buffer-display-action
+        '(display-buffer-in-side-window
+          (window-height . 13)
+          (side . top)))
   (vertico-buffer-mode 1))
 
-;; No headerline in vertico-buffer
-(with-eval-after-load 'el-patch
-(el-patch-feature vertico-buffer)
-(with-eval-after-load 'vertico-buffer
-  (el-patch-defun vertico-buffer--setup()
-    "Setup minibuffer overlay, which pushes the minibuffer content down."
-    (add-hook 'window-selection-change-functions 'vertico-buffer--select nil 'local)
-    (add-hook 'minibuffer-exit-hook 'vertico-buffer--destroy nil 'local)
-    (setq-local cursor-type '(bar . 0))
-    (setq vertico-buffer--overlay (make-overlay (point-max) (point-max) nil t t))
-    (overlay-put vertico-buffer--overlay 'window (selected-window))
-    (overlay-put vertico-buffer--overlay 'priority 1000)
-    (overlay-put vertico-buffer--overlay 'before-string "\n\n")
-    (setq vertico-buffer--buffer (get-buffer-create
-                                  (if (= 1 (recursion-depth))
-                                      " *Vertico*"
-                                    (format " *Vertico-%s*" (1- (recursion-depth))))))
-    (with-current-buffer vertico-buffer--buffer
-      (add-hook 'window-selection-change-functions 'vertico-buffer--select nil 'local)
-      (setq-local display-line-numbers nil
-                  truncate-lines t
-                  show-trailing-whitespace nil
-                  buffer-read-only t
-                  (el-patch-add
-                    header-line-format nil)
-                  cursor-in-non-selected-windows 'box)))))
 
 ;; Vertico repeat last command
 (use-package vertico-repeat
