@@ -1,8 +1,7 @@
-These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and a [[https://github.com/mclear-tools/build-emacs-macos][custom
-build script]]. I typically build from the master branch (currently: GNU Emacs
-29.0.50 (GNU Emacs 29.0.50 (build 1, aarch64-apple-darwin21.1.0, NS
-appkit-2113.00 Version 12.0.1 (Build 21A559), git sha1 32d12840e6) of
-2021-12-11). 
+These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and a [[https://github.com/mclear-tools/build-emacs-macos][custom build
+script]]. I typically build from the master branch (currently: GNU Emacs 29.0.50
+(build 1, aarch64-apple-darwin21.2.0, NS appkit-2113.20 Version 12.1 (Build
+21C52), git sha1 b6b2f797d9) of 2021-12-28).
 
 The config files are updated/tweaked regularly. I use emacs primarily for all my
 academic work in the humanities (for discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]])
