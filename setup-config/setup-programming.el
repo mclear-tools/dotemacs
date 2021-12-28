@@ -36,6 +36,12 @@
       (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
   (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
 
+;;; Multiple Cursors
+(use-package iedit
+  :straight (:type git :host github :repo "victorhge/iedit")
+  :bind (:map cpm+search-keys
+         ("c" . iedit-mode)))
+
 ;;; Smartparens
 ;; a superset of usual pairing modes, should work for a variety of languages
 (use-package smartparens
@@ -92,7 +98,7 @@
                                   (yas-minor-mode)
                                   (company-mode)
                                   (rainbow-delimiters-mode)
-                                  (smartparens-strict-mode 1)))
+                                  (smartparens-mode 1)))
 
 
 ;;;;; Lisp Functions

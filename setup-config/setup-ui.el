@@ -10,8 +10,8 @@
   ;; Settings for better cursor
   ;; see https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs
   ;;  (NOTE: A number of 101+ disables re-centering.)
-  (setq maximum-scroll-margin 0.25
-        scroll-margin 0
+  (setq maximum-scroll-margin 0.5
+        scroll-margin 99999
         scroll-conservatively 101
         scroll-preserve-screen-position 1))
 

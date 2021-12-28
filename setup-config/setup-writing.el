@@ -295,7 +295,7 @@
 (defun schnouki/latex-auto-fill ()
   "Turn on auto-fill for LaTeX mode."
   (turn-on-auto-fill)
-  (set-fill-column 78)
+  (set-fill-column 80)
   (setq default-justification 'left))
 (add-hook 'LaTeX-mode-hook #'schnouki/latex-auto-fill)
 

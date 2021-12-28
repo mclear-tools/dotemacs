@@ -55,8 +55,8 @@
 ;; yes, both are needed!
 (setq default-tab-width 4)
 (setq tab-width 4)
-(setq-default fill-column 78)
-(setq fill-column 78)
+(setq-default fill-column 80)
+(setq fill-column 80)
 ;; (setq-default evil-indent-convert-tabs nil)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)

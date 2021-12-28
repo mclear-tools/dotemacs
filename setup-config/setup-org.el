@@ -462,6 +462,14 @@ _vr_ reset      ^^                       ^^                 ^^
            "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
+          ("s" "Music Review" entry  (file "~/music.org")
+           ,(concat "\n** Artist - Album :Artist:Genre: %?\n"
+	                "  - Date: %T\n"
+	                "  - Listened While: \n"
+	                "  - Suggested By: \n"
+	                "  - Standout Tracks: \n"
+	                "  - Rating: /10\n"
+	                "  - Thoughts: \n"))
           ("M" "UNL Merit Review" entry (file ,(concat org-directory "merit-reviews.org"))
            (file ,(concat org-directory "templates/merit-review-template.org")))
           ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
