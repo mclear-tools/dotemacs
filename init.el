@@ -61,19 +61,9 @@
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
-;; (defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
-;; (defconst usr-local-bin "/usr/local/bin")
-;; (defconst usr-local-sbin "/usr/local/sbin")
-;; (setenv "PATH" (concat usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
-;; (setq exec-path (append exec-path (list cpm-local-bin usr-local-sbin usr-local-bin)))
-
 ;;; Package Settings
-;; I tell use-package to always defer loading packages unless explicitly told
-;; otherwise. This speeds up initialization significantly as many packages are
-;; only loaded later when they are explicitly used. But it can also cause
-;; problems:
-;; https://github.com/jwiegley/use-package#loading-packages-in-sequence. I also
-;; put a lot of loading of packages off until after some number of seconds of idle. The
+;; I use straight and use-package to manage settings.
+;; I put a lot of loading of packages off until after some number of seconds of idle. The
 ;; latter means package loading stays out of my way if I'm doing, e.g., a quick
 ;; restart-and-check of something in emacs.
 
@@ -83,6 +73,7 @@
   (progn
     (push cpm-setup-dir load-path)))
 
+;; Set PATH properly for emacs
 (defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
 (defconst homebrew "/opt/homebrew/bin")
 (defconst usr-local-bin "/usr/local/bin")
@@ -193,18 +184,6 @@
   :init
   (setq gnutls-verify-error t
         gnutls-min-prime-bits 3072))
-;; (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem"))
-
-;; (setq gnutls-verify-error t
-;;       tls-checktrust gnutls-verify-error
-;;       tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-;;                         ;; compatibility fallbacks
-;;                         "gnutls-cli -p %p %h"
-;;                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof")
-;;       nsm-settings-file (expand-file-name "network-security.data" cpm-cache-dir))
-;; ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
-;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
 
 ;;;; Benchmark Init
 (use-package benchmark-init
@@ -260,8 +239,6 @@
 (require 'setup-vc)
 (require 'setup-projects)
 (require 'setup-teaching)
-
-;; TODO: Eval these and see if they need more clean-up!
 (require 'setup-childframe)
 (require 'setup-shell)
 (require 'setup-writing)
@@ -278,19 +255,9 @@
 (when (file-exists-p (concat site-lisp "emacs-git-version.el"))
   (require 'emacs-git-version))
 
-;; (require 'setup-evil)
-;; (require 'setup-ivy)
-;; (require 'setup-nano)
-;; (require 'setup-email)
-;; (require 'setup-timer)
-;; (require 'setup-dashboard)
-;; (require 'setup-helm)
-
-
 ;;; Config Helper Functions
 ;;;; Config Navigation
 ;; Function to navigate config files
-
 (defun cpm/find-files-setup-config-directory ()
   "find setup files"
   (interactive)
