@@ -113,7 +113,7 @@ This will use the command `open' with the message URL."
 ;; https://melpa.org/#/osx-lib
 (use-package osx-lib
   :straight (:type git :host github :repo "raghavgautam/osx-lib")
-  :defer 1)
+  :defer t)
 
 ;;; End OSX Settings
 (provide 'setup-osx)

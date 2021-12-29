@@ -182,7 +182,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :straight t
   :custom-face
   ;; subtle highlighting
-  (hl-line ((t (:inherit fringe))))
+  (hl-line ((t (:inherit highlight))))
   :custom
   (global-hl-line-mode nil)
   (hl-line-flash-show-period 1.0)

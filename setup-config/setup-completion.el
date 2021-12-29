@@ -72,7 +72,7 @@
       ;; NOTE: We cannot use a buffer-local minibuffer-exit-hook here.
       ;; The hook will not be called when abnormally exiting the minibuffer
       ;; from another buffer via `keyboard-escape-quit'.
-      (add-hook 'minibuffer-exit-hook sym)
+      ;; (add-hook 'minibuffer-exit-hook sym)
       (set-window-parameter vertico-buffer--window 'no-other-window t)
       (set-window-parameter vertico-buffer--window 'no-delete-other-windows t)
       (when vertico-buffer-hide-prompt
@@ -86,21 +86,13 @@
       (setq-local show-trailing-whitespace nil
                   truncate-lines t
                   header-line-format nil
-                  mode-line-format
-                  (list (format " %s "
-                                (propertize
-                                 (format (if (< depth 2) "*%s*" "*%s [%s]*")
-                                         (string-remove-suffix ": " (minibuffer-prompt)) depth)
-                                 'face 'mode-line-buffer-id))
-                        '(:eval (vertico--format-count)))
                   cursor-in-non-selected-windows 'box
                   vertico-count (- (/ (window-pixel-height vertico-buffer--window)
                                       (default-line-height)) 2))))
-
   :config
   (setq vertico-buffer-display-action
         '(display-buffer-in-side-window
-          (window-height . 13)
+          (window-height . 10)
           (side . top)))
   (vertico-buffer-mode 1))
 
