@@ -249,11 +249,20 @@
 (require 'setup-calendars)
 (require 'setup-testing)
 
+;;;; Emacs Build Version
 ;; When built emacs has git-version patch
-;; include git sha1 in emacs-version string
+;; to include git sha1 in emacs-version string
 (setq site-lisp "/Applications/Emacs.app/Contents/Resources/site-lisp/")
 (when (file-exists-p (concat site-lisp "emacs-git-version.el"))
   (require 'emacs-git-version))
+
+(defun cpm/emacs-version ()
+  "Print emacs-version and put emacs-version string on the kill ring"
+  (interactive)
+  (let ((emacs (emacs-version)))
+    (emacs-version)
+    (kill-new emacs)))
+
 
 ;;; Config Helper Functions
 ;;;; Config Navigation
