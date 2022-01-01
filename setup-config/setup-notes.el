@@ -40,6 +40,9 @@
 ;;;; Org Roam
 (use-package org-roam
   :straight (:host github :repo "mclear-tools/org-roam")
+  ;; other bindings are under cpm+notes-keys in keybindings.el
+  :bind (:map org-mode-map
+         ("C-M-i"    . completion-at-point))
   :commands (cpm/find-note-relation
              org-roam-node-find
              org-roam-node-insert
@@ -50,6 +53,7 @@
   ;; Configure dirs
   (org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
   (org-roam-db-location (concat org-roam-directory "org-roam.db"))
+  (org-roam-completion-everywhere t)
   :init
   ;; No warnings
   (setq org-roam-v2-ack t)

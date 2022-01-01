@@ -228,6 +228,7 @@
 (bind-keys :prefix-map cpm+notes-keys
            :prefix (concat cpm-prefix " n")
            ("c"  .  org-roam-capture        )
+           ("C"  .  citar-open-notes        )
            ("i"  .  org-roam-node-insert    )
            ("f"  .  org-roam-node-find      )
            ("g"  .  org-roam-graph          )
