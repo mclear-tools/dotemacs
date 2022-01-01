@@ -75,24 +75,29 @@
       ;; (add-hook 'minibuffer-exit-hook sym)
       (set-window-parameter vertico-buffer--window 'no-other-window t)
       (set-window-parameter vertico-buffer--window 'no-delete-other-windows t)
-      (when vertico-buffer-hide-prompt
-        (overlay-put vertico--candidates-ov 'window vertico-buffer--window)
-        (when vertico--count-ov
-          (overlay-put vertico--count-ov 'window vertico-buffer--window))
-        (setq vertico-buffer--overlay (make-overlay (point-max) (point-max) nil t t))
-        (overlay-put vertico-buffer--overlay 'window (selected-window))
-        (overlay-put vertico-buffer--overlay 'priority 1000)
-        (overlay-put vertico-buffer--overlay 'before-string "\n\n"))
+      (overlay-put vertico--candidates-ov 'window vertico-buffer--window)
+      (when (and vertico-buffer-hide-prompt vertico--count-ov)
+        (overlay-put vertico--count-ov 'window vertico-buffer--window))
       (setq-local show-trailing-whitespace nil
                   truncate-lines t
                   header-line-format nil
+                  mode-line-format
+                  (list (format " %s "
+                                (propertize
+                                 (format (if (< depth 2) "*%s*" "*%s [%s]*")
+                                         (replace-regexp-in-string
+                                          ":? *\\'" ""
+                                          (minibuffer-prompt))
+                                         depth)
+                                 'face 'mode-line-buffer-id))
+                        '(:eval (vertico--format-count)))
                   cursor-in-non-selected-windows 'box
                   vertico-count (- (/ (window-pixel-height vertico-buffer--window)
                                       (default-line-height)) 2))))
   :config
   (setq vertico-buffer-display-action
         '(display-buffer-in-side-window
-          (window-height . 10)
+          (window-height . 13)
           (side . top)))
   (vertico-buffer-mode 1))
 
@@ -176,8 +181,6 @@
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
-  (add-to-list 'embark-allow-edit-commands 'consult-imenu)
-
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
@@ -249,6 +252,9 @@
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
   :config
+  ;; (push 'embark--allow-edit
+  ;;       (alist-get 'consult-imenu embark-target-injection-hooks))
+
   ;; Preview is manual and immediate
   ;; https://github.com/minad/consult#live-previews
   (setq consult-preview-key (kbd "C-f"))
