@@ -24,14 +24,6 @@
 ;; Adjust garbage collection thresholds during startup, and thereafter
 ;; see http://akrl.sdf.org
 ;; https://gitlab.com/koral/gcmh
-;; NOTE: The system linked above generates too many GC pauses so I'm using my own mixed setup
-;; https://github.com/purcell/emacs.d/blob/3b1302f2ce3ef2f69641176358a38fd88e89e664/init.el#L24
-
-;; (let ((normal-gc-cons-threshold (* 20 1024 1024))
-;;       (init-gc-cons-threshold (* 128 1024 1024)))
-;;   (setq gc-cons-threshold init-gc-cons-threshold)
-;;   (add-hook 'emacs-startup-hook
-;;             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 (defmacro k-time (&rest body)
   "Measure and return the time it takes evaluating BODY."
@@ -52,19 +44,20 @@
 ;; https://akrl.sdf.org/gccemacs.html#org335c0de
 
 ;; See if native-comp is available
-(if (and (fboundp 'native-comp-available-p)
-         (native-comp-available-p))
-    (message "Native compilation is available")
+(when (not (and (fboundp 'native-comp-available-p)
+                (native-comp-available-p)))
   (message "Native complation is *not* available"))
-;; Settings
-(setq native-comp-speed 2
-      native-comp-deferred-compilation t)
 ;; Dir for eln-cache
 (when (boundp 'native-comp-eln-load-path)
   (setcar native-comp-eln-load-path
           (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
 ;; Silence nativecomp warnings popping up on 28.0.50
 (setq native-comp-async-report-warnings-errors nil)
+;; Settings
+(setq native-comp-speed 2
+      native-comp-deferred-compilation t
+      package-native-compile t)
+
 
 ;;;; Set C Directory
 (setq find-function-C-source-directory "/Applications/Emacs.app/Contents/Resources/src")

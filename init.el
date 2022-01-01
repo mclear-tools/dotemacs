@@ -260,7 +260,7 @@
   "Print emacs-version and put emacs-version string on the kill ring"
   (interactive)
   (let ((emacs (emacs-version)))
-    (emacs-version)
+    (message (emacs-version))
     (kill-new emacs)))
 
 
