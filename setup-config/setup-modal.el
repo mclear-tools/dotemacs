@@ -107,7 +107,7 @@
    '("r" . meow-replace)
    '("R" . overwrite-mode)
    '("s" . meow-kill)
-   '("S" . meow-swap-grab)
+   '("S" . embrace-commander)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
@@ -115,7 +115,7 @@
    '("w" . meow-mark-word)
    '("W" . meow-mark-symbol)
    '("x" . meow-line)
-   '("X" . meow-goto-line)
+   '("X" . meow-swap-grab)
    '("y" . meow-clipboard-save)
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
@@ -131,16 +131,9 @@
 ;;; Meow
 (use-package meow
   :straight (:type git :host github :repo "meow-edit/meow")
-  :custom-face
-  ;; Make sure bespoke-theme is loaded prior to meow
-  (meow-normal-cursor ((t (:background ,bespoke-yellow))))
-  (meow-insert-cursor ((t (:background ,bespoke-critical))))
-  (meow-keypad-cursor ((t (:background ,bespoke-brown))))
-  (meow-motion-cursor ((t (:background ,bespoke-green))))
-  (meow-kmacro-cursor ((t (:background ,bespoke-salient))))
-  (meow-beacon-fake-selection ((t (:background ,bespoke-modeline))))
-  (meow-beacon-fake-cursor ((t (:background ,bespoke-yellow))))
   :config
+  ;; set colors in bespoke theme
+  (setq meow-use-dynamic-face-color nil)
   (setq meow-use-cursor-position-hack t)
   ;; FIXME: Would be nice to get this working with which-key
   (setq meow-keypad-describe-keymap-function 'meow-describe-keymap)
