@@ -115,9 +115,21 @@
                           'face 'warning
                           'follow-link t)
       (center-line)(insert "\n")
+      (insert-text-button " mclear-tools/build-emacs-macos  "
+                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/build-emacs-macos"))
+                          'help-echo "Visit build-emacs-macos repo"
+                          'face 'warning
+                          'follow-link t)
+      (center-line)(insert "\n")
       (insert-text-button " mclear-tools/bespoke-themes  "
                           'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-themes"))
                           'help-echo "Visit bespoke-themes repo"
+                          'face 'warning
+                          'follow-link t)
+      (center-line)(insert "\n")
+      (insert-text-button " mclear-tools/bespoke-modeline  "
+                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-modeline"))
+                          'help-echo "Visit bespoke-modeline repo"
                           'face 'warning
                           'follow-link t)
       (center-line)(insert "\n")
