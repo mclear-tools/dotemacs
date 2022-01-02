@@ -51,6 +51,8 @@
         '((stashes . hide) (untracked . hide) (unpushed . hide) ([unpulled status] . show)))
   (global-git-commit-mode t) ; use emacs as editor for git commits
 
+  ;; refresh status buffer
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
   ;; no magit header line as it conflicts w/bespoke-modeline
   (advice-add 'magit-set-header-line-format :override #'ignore)
   ;; display magit setting
