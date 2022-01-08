@@ -18,7 +18,9 @@
                                   (project-find-dir "Find directory")
                                   (project-vterm "Vterm shell")
                                   (project-vc-dir "VC-Dir")
-                                  (project-magit-dir "Magit status"))))
+                                  (project-magit-dir "Magit status")))
+  ;; remove deleted projects from list
+  (project-forget-zombie-projects))
 
 (defun cpm-project-name ()
   "return name of project without path"
@@ -90,6 +92,24 @@
   (tab-bar-new-tab-to 'rightmost)
   (tab-bar-show nil)
   :config
+  ;; https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/
+  (defun cpm/tab-bar-select-tab-dwim ()
+    "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
+If no other tab exists, create one and switch to it.  If there is
+one other tab (so two in total) switch to it without further
+questions.  Else use completion to select the tab to switch to."
+    (interactive)
+    (let ((tabs (mapcar (lambda (tab)
+                          (alist-get 'name tab))
+                        (tab-bar--tabs-recent))))
+      (cond ((eq tabs nil)
+             (tab-new))
+            ((eq (length tabs) 1)
+             (tab-next))
+            (t
+             (tab-bar-switch-to-tab
+              (completing-read "Select tab: " tabs nil t))))))
+
   (setq tab-bar-tab-name-function #'cpm/name-tab-by-project-or-default)
   (setq tab-bar-mode t))
 
@@ -246,8 +266,10 @@ to directory DIR."
   (let ((project-dir (expand-file-name
                       (read-directory-name "New project root:"))))
     (magit-init project-dir)
-    (project-remember-project project-dir)
-    (setq default-directory project-dir)))
+    (setq default-directory project-dir)
+    ;; make sure project.el remembers new project
+    (let ((pr (project--find-in-directory default-directory)))
+      (project-remember-project pr))))
 
 ;;; Goto Projects
 (defun cpm/goto-projects ()
