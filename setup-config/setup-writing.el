@@ -353,6 +353,12 @@
   :config
   (typo-global-mode))
 
+;;; Word Repetition Finder
+;; Via https://irreal.org/blog/?p=10235
+(use-package repetition_error_finder
+  :straight (:type git :host github :repo "ioah86/repetition_error_finder")
+  :commands (find-reperr-whole-buffer find-reperr-from-point))
+
 ;;; Dictionary
 (use-package define-word
   :commands (define-word define-word-at-point))
@@ -360,6 +366,11 @@
 (use-package osx-dictionary
   :straight (:type git :host github :repo "xuchunyang/osx-dictionary.el")
   :commands (osx-dictionary-search-word-at-point osx-dictionary-search-input))
+
+(use-package sdcv-mode
+  :straight (:type git :host github :repo "gucong/emacs-sdcv")
+  :bind (:map cpm+search-keys
+         ("w" . sdcv-search)))
 
 ;;; Writegood Mode
 (use-package writegood-mode

@@ -250,6 +250,20 @@ If FRAME is omitted or nil, use currently selected frame."
   (push 'pulse-line window-selection-change-functions)
   )
 
+;;;; Crosshair Highlighting
+(use-package crosshairs
+  :straight t
+  :commands (crosshairs-highlight
+             crosshairs-mode
+             flash-crosshairs)
+  :bind (:map cpm+toggle-keys
+         ("c" . crosshairs-mode))
+  :custom-face
+  (col-highlight ((t (:inherit hl-line))))
+  :config
+  ;; same colors for both hlines
+  (setq col-highlight-vline-face-flag t))
+
 ;;; Icons
 (use-package all-the-icons
   :defer t)

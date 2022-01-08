@@ -175,16 +175,7 @@
             (lambda ()
               (ibuffer-vc-set-filter-groups-by-vc-root)
               (unless (eq ibuffer-sorting-mode 'alphabetic)
-                (ibuffer-do-sort-by-alphabetic))))
-  )
-
-;;; Bufler
-;; ;; A nicer ibuffer
-;; ;; https://github.com/alphapapa/bufler.el
-;; (use-package bufler
-;;   :straight (:host github :repo "alphapapa/bufler.el" :files (:defaults (:exclude "helm*")))
-;;   :commands (bufler bufler-switch-buffer))
-
+                (ibuffer-do-sort-by-alphabetic)))))
 
 
 ;;; Custom Functions
