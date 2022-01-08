@@ -29,16 +29,16 @@
   :config
   (setq recentf-save-file (concat cpm-cache-dir "recentf"))
   ;; remove agenda files from list.
-  (setq recentf-exclude '("writing.org"
-                          "inbox.org"
-                          "todo.org"
-                          "teaching.org"
-                          "someday.org"
-                          "bookmark"
+  (setq recentf-exclude '(org-agenda-files
+                          "bookmarks"
                           "elpa"
-                          "cache")
-        recentf-max-saved-items 300
-        recentf-max-menu-items 10))
+                          ".cache"
+                          ".cask"
+                          "cache"
+                          "recentf"
+                          "url"
+                          recentf-max-saved-items 300
+                          recentf-max-menu-items 10)))
 
 ;;; Goto Address
 ;; This package allows you to click or hit a key sequence while on a

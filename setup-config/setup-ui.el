@@ -43,7 +43,7 @@
   ;; Make a clean & minimalist frame
   (setq-default default-frame-alist
                 (append (list
-	                     '(font . "SF Mono:style=normal:size=13")
+                         '(font . "SF Mono:style=normal:size=13")
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
@@ -110,7 +110,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package fontset
   :straight (:type built-in)
   :custom-face
-  (variable-pitch ((t (:family "Avenir" :height 200))))
+  (variable-pitch ((t (:family "Avenir Next" :height 200))))
   :config
   ;; Use symbola for proper unicode
   (when (member "Symbola" (font-family-list))
