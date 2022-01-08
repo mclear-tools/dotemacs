@@ -1,4 +1,11 @@
 ;;; Useful Functions
+;;;; Get string from file
+(defun cpm/get-string-from-file (filePath)
+  "Read a file and return the contents as a string"
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
 ;;;; Archive region to setup-archive
 (defun cpm/setup-kill-and-archive-region ()
   "Delete & append region to end of setup-archive.el"

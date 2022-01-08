@@ -25,33 +25,9 @@
 ;;; Commentary:
 ;;
 ;;  An alternative splash screen:
-;;
-;;  +–—————————––––––––––––––––––––––––––––————————————————————+
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                       www.gnu.org                        |
-;;  |                  GNU Emacs version XX.Y                  |
-;;  |                   a free/libre editor                    |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |                                                          |
-;;  |        GNU Emacs comes with ABSOLUTELY NO WARRANTY       |
-;;  |     Copyright (C) 2020 Free Software Foundation, Inc.    |
-;;  |                                                          |
-;;  +––––––––––––––––––––––––––––––––––––––————————————————————+
-;;
-;; Features:
-;;
-;;  - No logo, no moddeline, no scrollbars
+
 ;;  - "q" or <esc> kills the splash screen
 ;;  - Any other key open the about-emacs buffer
-;;  - With emacs-mac (Mituharu), splash screen is faded out after 3 seconds
 ;;
 ;; Note: The screen is not shown if there are opened file buffers. For
 ;;       example, if you start emacs with a filename on the command
@@ -64,6 +40,42 @@
 ;;; Code:
 (require 'cl-lib)
 
+(defun point-calc-lines-offset (pt lines)
+  (save-excursion
+    (goto-char pt)
+    (forward-line lines)
+    (point)))
+
+;; See https://github.com/emacs-dashboard/emacs-dashboard/blob/master/dashboard-widgets.el
+(defun splash-insert-init-info ()
+  "Insert init info when `splash-set-init-info' is t."
+  (when splash-set-init-info
+    (let ((init-info (if (functionp splash-init-info)
+                         (funcall splash-init-info)
+                       splash-init-info)))
+      (splash-center-line init-info)
+      (insert (propertize init-info 'face 'font-lock-comment-face)))))
+
+(defcustom splash-set-init-info t
+  "When non nil, init info will be displayed under the banner."
+  :type 'boolean
+  :group 'splash)
+
+(defcustom splash-init-info
+  (lambda ()
+    (let ((package-count 0) (time (emacs-init-time)))
+      (when (bound-and-true-p package-alist)
+        (setq package-count (length package-activated-list)))
+      (when (boundp 'straight--profile-cache)
+        (setq package-count (+ (hash-table-size straight--profile-cache) package-count)))
+      (if (zerop package-count)
+          (format "Emacs started in %s" time)
+        (format "%d packages loaded in %s" package-count time))))
+  "Init info with packages loaded and init time."
+  :type '(function string)
+  :group 'splash)
+
+(setq splash-set-init-info t)
 
 (defun splash-screen ()
   "Emacs splash screen"
@@ -79,9 +91,11 @@
 
   (let* ((splash-buffer  (get-buffer-create "*splash*"))
          (height         (- (window-body-height nil) 1))
-         (width          (window-body-width nil))
+         (width          (window-body-width))
+         (center         (window-body-width))
          (padding-center (- (/ height 2) 1))
-         (padding-bottom (- height (/ height 2) 3)))
+         (padding-bottom (- height (/ height 2) 3))
+         (image          (cpm/get-string-from-file "~/.emacs.d/lambda-splash.txt")))
 
     (with-current-buffer splash-buffer
       (erase-buffer)
@@ -95,56 +109,44 @@
       (setq fill-column width)
       (face-remap-add-relative 'link :underline nil)
       (if (not (display-graphic-p)) (menu-bar-mode 0))
+      ;; Set padding
+      (setq-local left-margin-width 15 right-margin-width 0) ; Define new widths.
+      (set-window-buffer nil (current-buffer))
 
-      ;; Vertical padding to center
-      (insert-char ?\n padding-center)
+      ;; Add padding at top
+      (insert-char ?\n 5)
 
-      ;; Central text
-      (insert (concat
-               (propertize "Welcome to GNU Emacs"  'face 'bold)
-               " "
-               (propertize (format "%d.%d" emacs-major-version emacs-minor-version) 'face 'bold)))
-      (center-line) (insert "\n")
-      (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow))
-      (center-line) (insert "\n")
-      (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'shadow))
-      (center-line) (insert "\n") (insert "\n")
-      (insert-text-button " mclear-tools/dotemacs  "
-                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/dotemacs"))
-                          'help-echo "Visit dotemacs repo"
-                          'face 'warning
-                          'follow-link t)
-      (center-line)(insert "\n")
-      (insert-text-button " mclear-tools/build-emacs-macos  "
-                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/build-emacs-macos"))
-                          'help-echo "Visit build-emacs-macos repo"
-                          'face 'warning
-                          'follow-link t)
-      (center-line)(insert "\n")
-      (insert-text-button " mclear-tools/bespoke-themes  "
-                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-themes"))
-                          'help-echo "Visit bespoke-themes repo"
-                          'face 'warning
-                          'follow-link t)
-      (center-line)(insert "\n")
-      (insert-text-button " mclear-tools/bespoke-modeline  "
-                          'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-modeline"))
-                          'help-echo "Visit bespoke-modeline repo"
-                          'face 'warning
-                          'follow-link t)
-      (center-line)(insert "\n")
+      ;; Insert image
+      (insert (propertize image 'face 'shadow))
+
+      ;; Insert text
+      (goto-char center)
+      (save-excursion
+        (insert (concat
+                 (propertize "Welcome to GNU Emacs"  'face 'bold)
+                 " "
+                 (propertize (format "%d.%d" emacs-major-version emacs-minor-version) 'face 'bold))))
+
+      (goto-char 322)
+      (save-excursion (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow)))
+
+      (goto-char 492)
+      (save-excursion (let ((init-info (if (functionp splash-init-info)
+                                           (funcall splash-init-info)
+                                         splash-init-info)))
+                        (insert (propertize init-info 'face 'shadow))))
+
       ;; Vertical padding to bottom
-      (insert-char ?\n padding-bottom)
-
+      (goto-char (point-max))
 
       ;; Footer text
-      (insert (propertize
-               "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow))
       (center-line) (insert "\n")
+      (center-line) (insert "\n")
+      (save-excursion (insert (propertize
+                               "                        Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow)))
 
       (goto-char 0)
       (read-only-mode t)
-
 
       (local-set-key [t]               'splash-screen-fade-to-default)
       (local-set-key (kbd "C-[")       'splash-screen-fade-to-default)
@@ -153,14 +155,14 @@
       (local-set-key (kbd "<mouse-1>") 'mouse-set-point)
       (local-set-key (kbd "<mouse-2>") 'operate-this-button)
       (display-buffer-same-window splash-buffer nil)
-      (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default)))
-  (switch-to-buffer "*splash*"))
+      (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default))
+    (switch-to-buffer "*splash*"))
 
 
-;; Mac animation, only available from
-;;  https://bitbucket.org/mituharu/emacs-mac/src/master/
-;;  https://github.com/railwaycat/homebrew-emacsmacport
-(defvar mac-animation-locked-p nil)
+  ;; Mac animation, only available from
+  ;;  https://bitbucket.org/mituharu/emacs-mac/src/master/
+  ;;  https://github.com/railwaycat/homebrew-emacsmacport
+  (defvar mac-animation-locked-p nil))
 (defun mac-animation-toggle-lock ()
   (setq mac-animation-locked-p (not mac-animation-locked-p)))
 (defun mac-animation-fade-out (duration &rest args)
@@ -212,4 +214,36 @@
             inhibit-startup-echo-area-message t)))
 
 (provide 'setup-splash)
+
+
+;; (insert-text-button " mclear-tools/dotemacs  "
+;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/dotemacs"))
+;;                     'help-echo "Visit dotemacs repo"
+;;                     'face 'warning
+;;                     'follow-link t)
+;; (center-line)(insert "\n")
+;; (insert-text-button " mclear-tools/build-emacs-macos  "
+;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/build-emacs-macos"))
+;;                     'help-echo "Visit build-emacs-macos repo"
+;;                     'face 'warning
+;;                     'follow-link t)
+;; (center-line)(insert "\n")
+;; (insert-text-button " mclear-tools/bespoke-themes  "
+;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-themes"))
+;;                     'help-echo "Visit bespoke-themes repo"
+;;                     'face 'warning
+;;                     'follow-link t)
+;; (center-line)(insert "\n")
+;; (insert-text-button " mclear-tools/bespoke-modeline  "
+;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-modeline"))
+;;                     'help-echo "Visit bespoke-modeline repo"
+;;                     'face 'warning
+;;                     'follow-link t)
+;; )
+;; (center-line)
+
+;; (goto-char 493)
+;; (save-excursion (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'shadow)))
+
+
 ;;; setup-splash.el ends here
