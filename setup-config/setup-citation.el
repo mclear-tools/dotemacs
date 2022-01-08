@@ -14,10 +14,7 @@
   (setq org-cite-export-processors
         '((beamer csl)
           (latex csl)
-          (t csl)))
-  ;; Color citation links for bespoke-theme
-  (set-face-attribute 'org-cite nil :foreground bespoke-salient)
-  (set-face-attribute 'org-cite-key nil :foreground bespoke-green))
+          (t csl))))
 
 ;; Currently only using csl
 (use-package oc-csl
@@ -90,17 +87,6 @@ With prefix, rebuild the cache before offering candidates."
           (browse-url-default-browser link)
         (message "No ref found for %s" key-entry)))))
 
-
-
-;; (with-eval-after-load 'embark
-;;   (push '(15 . citar-open-beref) citar-map))
-
-;; (with-eval-after-load 'citar
-;;   (push '(define-key map (kbd "b") #'citar-open-beref) citar-citation-map)
-;;   (push '(define-key map (kbd "b") #'citar-open-beref) citar-map))
-;; (with-eval-after-load 'citar
-;;   (push '(define-key (kbd "b") (cons "open in bookends" #'citar-open-beref)) citar-citation-map)
-;;   (push '(define-key (kbd "b") (cons "open in bookends" #'citar-open-beref)) citar-map))
 
 ;;;; Company-bibtex
 
