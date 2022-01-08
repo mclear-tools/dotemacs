@@ -368,7 +368,7 @@
                          iterm-app-path
                        iterm-brew-path)))
     (shell-command (concat "open -a " iterm-path " ."))))
-(global-set-key (kbd "C-x t") 'open-dir-in-iterm)
+;; (global-set-key (kbd "C-x t") 'open-dir-in-iterm)
 
 ;;;; End Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

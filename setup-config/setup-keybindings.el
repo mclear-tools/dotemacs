@@ -194,6 +194,8 @@
            ("L" .  magit-log-buffer-file       )
            ("n" .  git-gutter:next-hunk        )
            ("p" .  git-gutter:previous-hunk    )
+           ;; quick commit file
+           ("q" .  vc-next-action              )
            ("r" .  magit-reflog                )
            ("s" .  magit-status                ))
 
