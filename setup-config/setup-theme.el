@@ -24,8 +24,6 @@
 (use-package bespoke-themes
   :straight (:local-repo "/Users/roambot/.emacs.d/.local/custom-themes/bespoke-themes/")
   :config
-  ;; Set up evil cursor colors
-  ;; (setq bespoke-set-evil-cursors t)
   ;; Set use of italics
   (setq bespoke-set-italic-comments t
         bespoke-set-italic-keywords t)
@@ -36,15 +34,6 @@
   ;; Load theme
   (load-theme 'bespoke t))
 
-;;; Nano Theme
-(use-package nano-theme
-  :defer t
-  :straight (:host github :repo "rougier/nano-theme"))
-
-(use-package nano-modeline
-  :defer t
-  :straight (:host github :repo "rougier/nano-modeline")
-  :commands (nano-modeline))
 
 ;;; Disable All Custom Themes
 (defun cpm/disable-all-themes ()
