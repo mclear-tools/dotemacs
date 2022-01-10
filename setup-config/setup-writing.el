@@ -156,6 +156,9 @@
   ;; markdown hooks
   (add-hook 'markdown-mode-hook 'cpm--markdown-settings)
 
+  ;; for use with meow point movement
+  (modify-syntax-entry ?@ "_" markdown-mode-syntax-table)
+
   )
 ;; remove strikout comment face
 ;; (set-face-attribute 'markdown-comment-face nil :weight 'bold :strike-through nil)

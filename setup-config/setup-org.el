@@ -33,6 +33,8 @@
 
 ;;;; Org Config Settings
   :config
+  ;; for use with meow movement
+  (modify-syntax-entry ?@ "_" org-mode-syntax-table)
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
                 org-footnote-auto-adjust t ;; renumber footnotes
                 org-adapt-indentation t
