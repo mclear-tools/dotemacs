@@ -43,7 +43,6 @@
   ;; Make a clean & minimalist frame
   (setq-default default-frame-alist
                 (append (list
-                         '(font . "SF Mono:style=normal:size=13")
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
@@ -120,7 +119,10 @@ If FRAME is omitted or nil, use currently selected frame."
   ;; NOTE that emoji here must be set to unicode to get color emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font
-     t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend)))
+     t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend))
+  ;; default font
+  (add-to-list 'default-frame-alist
+               '(font . "SF Mono-13")))
 
 
 ;;; Font Lock
