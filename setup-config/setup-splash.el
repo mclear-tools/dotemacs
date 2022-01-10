@@ -78,7 +78,7 @@
          (width         (window-body-width))
          (padding-center (- (/ height 2) 1))
          (padding-bottom (- height (/ height 2) 3))
-         (image          (cpm/get-string-from-file "~/.emacs.d/lambda-splash.txt")))
+         (image          (cpm/get-string-from-file (concat cpm-setup-dir "lambda-splash.txt"))))
 
     (with-current-buffer splash-buffer
       (erase-buffer)
