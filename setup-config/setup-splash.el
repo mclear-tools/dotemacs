@@ -47,20 +47,6 @@
     (point)))
 
 ;; See https://github.com/emacs-dashboard/emacs-dashboard/blob/master/dashboard-widgets.el
-(defun splash-insert-init-info ()
-  "Insert init info when `splash-set-init-info' is t."
-  (when splash-set-init-info
-    (let ((init-info (if (functionp splash-init-info)
-                         (funcall splash-init-info)
-                       splash-init-info)))
-      (splash-center-line init-info)
-      (insert (propertize init-info 'face 'font-lock-comment-face)))))
-
-(defcustom splash-set-init-info t
-  "When non nil, init info will be displayed under the banner."
-  :type 'boolean
-  :group 'splash)
-
 (defcustom splash-init-info
   (lambda ()
     (let ((package-count 0) (time (emacs-init-time)))
@@ -75,10 +61,8 @@
   :type '(function string)
   :group 'splash)
 
-(setq splash-set-init-info t)
-
 (defun splash-screen ()
-  "Emacs splash screen"
+  "A custom splash screen for Emacs"
 
   (interactive)
 
@@ -91,8 +75,7 @@
 
   (let* ((splash-buffer  (get-buffer-create "*splash*"))
          (height         (- (window-body-height nil) 1))
-         (width          (window-body-width))
-         (center         (window-body-width))
+         (width         (window-body-width))
          (padding-center (- (/ height 2) 1))
          (padding-bottom (- height (/ height 2) 3))
          (image          (cpm/get-string-from-file "~/.emacs.d/lambda-splash.txt")))
@@ -120,21 +103,19 @@
       (insert (propertize image 'face 'shadow))
 
       ;; Insert text
-      (goto-char center)
+      (goto-char width)
       (save-excursion
         (insert (concat
                  (propertize "Welcome to GNU Emacs"  'face 'bold)
                  " "
                  (propertize (format "%d.%d" emacs-major-version emacs-minor-version) 'face 'bold))))
 
-      (goto-char 322)
-      (save-excursion (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow)))
+      (goto-char (+ width 140))
+      (save-excursion (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'warning)))
 
-      (goto-char 492)
-      (save-excursion (let ((init-info (if (functionp splash-init-info)
-                                           (funcall splash-init-info)
-                                         splash-init-info)))
-                        (insert (propertize init-info 'face 'shadow))))
+      (goto-char (+ width 310))
+      (save-excursion (let ((init-info (funcall splash-init-info)))
+                        (insert (propertize init-info 'face 'warning))))
 
       ;; Vertical padding to bottom
       (goto-char (point-max))
