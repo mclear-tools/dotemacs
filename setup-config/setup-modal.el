@@ -1,9 +1,11 @@
 ;;; Meow Setup
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev))
+
   (meow-leader-define-key
    `("y" . ,cpm-prefix) ;; my namespaced keybindings
    ;; here we create bindings for necessary, high frequency commands
@@ -12,7 +14,7 @@
    '(")" . "C-)")
    '("}" . "C-}")
    '("." . "M-.")
-   '("," . "M-,")
+   '("," . "C-c")
    '("SPC" . execute-extended-command)
    '("<backtab>" . crux-switch-to-previous-buffer)
    '("TAB" . cpm/tab-bar-select-tab-dwim)
