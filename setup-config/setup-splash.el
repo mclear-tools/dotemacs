@@ -40,6 +40,10 @@
 ;;; Code:
 (require 'cl-lib)
 
+(defgroup emacs-splash nil
+  "Extensible splash screen."
+  :group 'applications)
+
 (defun point-calc-lines-offset (pt lines)
   (save-excursion
     (goto-char pt)
@@ -59,123 +63,151 @@
         (format "%d packages loaded in %s" package-count time))))
   "Init info with packages loaded and init time."
   :type '(function string)
-  :group 'splash)
+  :group 'emacs-splash)
 
-(defun splash-screen ()
+;;; Define Splash
+(defun emacs-splash-screen ()
   "A custom splash screen for Emacs"
 
   (interactive)
 
-  ;; Hide modeline before window-body-height is computed
-  (let* ((splash-buffer (get-buffer-create "*splash*")))
-    (with-current-buffer splash-buffer
-      (setq header-line-format nil)
-      (setq mode-line-format nil)))
-
-
-  (let* ((splash-buffer  (get-buffer-create "*splash*"))
-         (height         (- (window-body-height nil) 1))
-         (width         (window-body-width))
-         (padding-center (- (/ height 2) 1))
-         (padding-bottom (- height (/ height 2) 3))
-         (image          (cpm/get-string-from-file (concat cpm-setup-dir "lambda-splash.txt"))))
-
-    (with-current-buffer splash-buffer
-      (erase-buffer)
-
-      ;; Buffer local settings
-      (if (one-window-p)
-          (setq mode-line-format nil))
-      (setq cursor-type nil)
-      (setq vertical-scroll-bar nil)
-      (setq horizontal-scroll-bar nil)
-      (setq fill-column width)
-      (face-remap-add-relative 'link :underline nil)
-      (if (not (display-graphic-p)) (menu-bar-mode 0))
-      ;; Set padding
-      (setq-local left-margin-width 15 right-margin-width 0) ; Define new widths.
-      (set-window-buffer nil (current-buffer))
-
-      ;; Add padding at top
-      (insert-char ?\n 5)
-
-      ;; Insert image
-      (insert (propertize image 'face 'shadow))
-
-      ;; Insert text
-      (goto-char width)
-      (save-excursion
-        (insert (concat
-                 (propertize "Welcome to GNU Emacs"  'face 'bold)
-                 " "
-                 (propertize (format "%d.%d" emacs-major-version emacs-minor-version) 'face 'bold))))
-
-      (goto-char (+ width 140))
-      (save-excursion (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'warning)))
-
-      (goto-char (+ width 310))
-      (save-excursion (let ((init-info (funcall splash-init-info)))
-                        (insert (propertize init-info 'face 'warning))))
-
-      ;; Vertical padding to bottom
-      (goto-char (point-max))
-
-      ;; Footer text
-      (center-line) (insert "\n")
-      (center-line) (insert "\n")
-      (save-excursion (insert (propertize
-                               "                        Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow)))
-
-      (goto-char 0)
-      (read-only-mode t)
-
-      (local-set-key [t]               'splash-screen-fade-to-default)
-      (local-set-key (kbd "C-[")       'splash-screen-fade-to-default)
-      (local-set-key (kbd "<escape>")  'splash-screen-fade-to-default)
-      (local-set-key (kbd "q")         'splash-screen-fade-to-default)
-      (local-set-key (kbd "<mouse-1>") 'mouse-set-point)
-      (local-set-key (kbd "<mouse-2>") 'operate-this-button)
-      (display-buffer-same-window splash-buffer nil)
-      (run-with-idle-timer 10.0 nil    'splash-screen-fade-to-default))
-    (switch-to-buffer "*splash*"))
-
-
-  ;; Mac animation, only available from
-  ;;  https://bitbucket.org/mituharu/emacs-mac/src/master/
-  ;;  https://github.com/railwaycat/homebrew-emacsmacport
-  (defvar mac-animation-locked-p nil))
-(defun mac-animation-toggle-lock ()
-  (setq mac-animation-locked-p (not mac-animation-locked-p)))
-(defun mac-animation-fade-out (duration &rest args)
-  (unless mac-animation-locked-p
-    (mac-animation-toggle-lock)
-    (mac-start-animation nil :type 'fade-out :duration duration)
-    (run-with-timer duration nil 'mac-animation-toggle-lock)))
-
-(defun splash-screen-fade-to (about duration)
-  "Fade out current frame for duration and goes to command-or-bufffer"
-  (interactive)
-  (defalias 'mac-animation-fade-out-local
-    (apply-partially 'mac-animation-fade-out duration))
+  ;; check if splash exists and switch if so
   (if (get-buffer "*splash*")
-      (progn (if (and (display-graphic-p) (fboundp 'mac-start-animation))
-                 (advice-add 'set-window-buffer
-                             :before 'mac-animation-fade-out-local))
-             (if about (about-emacs))
-             (kill-buffer "*splash*")
-             (if (and (display-graphic-p) (fboundp 'mac-start-animation))
-                 (advice-remove 'set-window-buffer
-                                'mac-animation-fade-out-local)))))
-(defun splash-screen-fade-to-about ()
-  (interactive) (splash-screen-fade-to 1 1.0))
-(defun splash-screen-fade-to-default ()
-  (interactive) (splash-screen-fade-to nil 0.25))
+      (switch-to-buffer "*splash*")
+
+    ;; Otherwise create splash and go...
+    ;; Hide modeline before window-body-height is computed
+    (let* ((splash-buffer (get-buffer-create "*splash*")))
+      (with-current-buffer splash-buffer
+        (setq header-line-format nil)
+        (setq mode-line-format nil)))
+
+    (let* ((buffer-read-only)
+           (splash-buffer  (get-buffer-create "*splash*"))
+           (height         (- (window-body-height nil) 1))
+           (width          (+ (window-body-width) 5))
+           ;; ascii image from here:
+           ;; https://github.com/Triagle/emax/blob/master/boot.txt
+           (image          (cpm/get-string-from-file (concat cpm-setup-dir "lambda-splash.txt"))))
+
+
+      (with-current-buffer splash-buffer
+        (erase-buffer)
+
+        ;; Buffer local settings
+        (if (one-window-p)
+            (setq mode-line-format nil))
+        (setq cursor-type nil)
+        (setq vertical-scroll-bar nil)
+        (setq horizontal-scroll-bar nil)
+        (setq fill-column width)
+        (face-remap-add-relative 'link :underline nil)
+        (if (not (display-graphic-p)) (menu-bar-mode 0))
+        ;; Set padding
+        (setq-local left-margin-width 15 right-margin-width 0) ; Define new widths.
+        (set-window-buffer nil (current-buffer))
+
+        ;; Add padding at top
+        (insert-char ?\n 2)
+
+        ;; Insert image
+        (goto-char width)
+        (save-excursion
+          (insert (propertize image 'face 'shadow)))
+
+        ;; Insert text
+        (goto-char width)
+        (save-excursion
+          (insert (concat
+                   (propertize "Welcome to GNU Emacs"  'face 'bold)
+                   " "
+                   (propertize (format "%d.%d" emacs-major-version emacs-minor-version) 'face 'bold))))
+
+        (goto-char (+ width 140))
+        (save-excursion (insert (propertize "Bespoke elisp for your yak shaving pleasure" 'face 'shadow)))
+
+        (goto-char (+ width 310))
+        (save-excursion (let ((init-info (funcall splash-init-info)))
+                          (insert (propertize init-info 'face 'shadow))))
+
+        (goto-char (+ width 732))
+        ;; (goto-char (+ width 718))
+        (save-excursion (insert-text-button " [a] Agenda "
+                                            'action (lambda (_) (cpm/open-agenda-in-workspace))
+                                            'help-echo "Visit setup directory"
+                                            'face 'warning
+                                            'follow-link t))
+        (goto-char (+ width 868))
+        ;; (goto-char (+ width 729))
+        (save-excursion (insert-text-button " [c] Configure emacs "
+                                            'action (lambda (_) (cpm/open-emacsd-in-workspace))
+                                            'help-echo "Visit setup directory"
+                                            'face 'warning
+                                            'follow-link t))
+        (goto-char (+ width 1013))
+        ;; (goto-char (+ width 749))
+        (save-excursion (insert-text-button " [n] Notes "
+                                            'action (lambda (_)  (cpm/open-notes-in-workspace))
+                                            'help-echo "Visit setup directory"
+                                            'face 'warning
+                                            'follow-link t))
+        ;; Vertical padding to bottom
+        (goto-char (point-max))
+
+        ;; Footer text
+        (save-excursion (insert-char ?\n 4)
+                        (insert
+                         (propertize
+                          "                              Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden" 'face 'shadow)))
+
+        (goto-char (point-min))
+        (display-buffer-same-window splash-buffer nil))
+      (switch-to-buffer "*splash*")))
+  (emacs-splash-mode))
 
 (defun splash-screen-kill ()
   "Kill the splash screen buffer (immediately)."
   (interactive)
   (if (get-buffer "*splash*")
-      (kill-buffer "*splash*")))
+      (progn
+        (emacs-splash-mode)
+        (kill-buffer "*splash*"))))
+
+;;; Define Minor Mode
+;; Custom splash screen
+(defvar emacs-splash-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "a") 'cpm/open-agenda-in-workspace)
+    (define-key map (kbd "c") 'cpm/open-emacsd-in-workspace)
+    (define-key map (kbd "n") 'cpm/open-notes-in-workspace)
+    (define-key map (kbd "q") 'splash-screen-kill)
+    map)
+  "Keymap for emacs-splash-mode.")
+
+(define-minor-mode emacs-splash-mode
+  "Emacs minor mode for splash screen."
+  :global nil
+  :group 'emacs-splash
+  :require 'setup-splash.el
+
+  (buffer-disable-undo)
+  (whitespace-mode -1)
+  (linum-mode -1)
+  (setq-local cursor-type nil)
+  ;; cursor with meow
+  (meow-motion-mode 1)
+  (setq-local meow-cursor-type-motion nil)
+  (setq-local hl-line-mode nil)
+  (setq-local mode-line-format nil)
+  (setq-local header-line-format nil)
+  (when (>= emacs-major-version 26)
+    (display-line-numbers-mode -1))
+  (setq inhibit-startup-screen t
+        buffer-read-only t
+        truncate-lines nil
+        inhibit-startup-message t
+        inhibit-startup-echo-area-message t)
+  (goto-char (point-min)))
 
 ;; Suppress any startup message in the echo area
 (run-with-idle-timer 0.05 nil (lambda() (message nil)))
@@ -185,46 +217,15 @@
 (if (and (not (member "-no-splash"  command-line-args))
          (not (member "--file"      command-line-args))
          (not (member "--insert"    command-line-args))
-         (not (member "--find-file" command-line-args))
-         ;; (not inhibit-startup-screen)
-         )
-    (progn
-      (add-hook 'window-setup-hook 'splash-screen)
-      (setq inhibit-startup-screen t
-            inhibit-startup-message t
-            inhibit-startup-echo-area-message t)))
+         (not (member "--find-file" command-line-args)))
+    (add-hook 'window-setup-hook 'emacs-splash-screen))
 
+;; don't highlight when idle
+(add-hook 'emacs-splash-mode-hook (lambda () (when emacs-splash-mode (toggle-hl-line-when-idle))))
+
+
+;;; Provide Splash
 (provide 'setup-splash)
-
-
-;; (insert-text-button " mclear-tools/dotemacs  "
-;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/dotemacs"))
-;;                     'help-echo "Visit dotemacs repo"
-;;                     'face 'warning
-;;                     'follow-link t)
-;; (center-line)(insert "\n")
-;; (insert-text-button " mclear-tools/build-emacs-macos  "
-;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/build-emacs-macos"))
-;;                     'help-echo "Visit build-emacs-macos repo"
-;;                     'face 'warning
-;;                     'follow-link t)
-;; (center-line)(insert "\n")
-;; (insert-text-button " mclear-tools/bespoke-themes  "
-;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-themes"))
-;;                     'help-echo "Visit bespoke-themes repo"
-;;                     'face 'warning
-;;                     'follow-link t)
-;; (center-line)(insert "\n")
-;; (insert-text-button " mclear-tools/bespoke-modeline  "
-;;                     'action (lambda (_) (browse-url "https://github.com/mclear-tools/bespoke-modeline"))
-;;                     'help-echo "Visit bespoke-modeline repo"
-;;                     'face 'warning
-;;                     'follow-link t)
-;; )
-;; (center-line)
-
-;; (goto-char 493)
-;; (save-excursion (insert (propertize (format "Initialization time: %s" (emacs-init-time)) 'face 'shadow)))
 
 
 ;;; setup-splash.el ends here

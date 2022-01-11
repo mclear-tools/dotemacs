@@ -191,7 +191,8 @@ If FRAME is omitted or nil, use currently selected frame."
   (hl-line-inhibit-highlighting-for-modes '(dired-mode))
   (hl-line-when-idle-interval 2)
   :config
-  (toggle-hl-line-when-idle 1 t))
+  (toggle-hl-line-when-idle 1 t)
+  )
 
 ;;;; Highlight Numbers & TODOS
 (use-package highlight-numbers
