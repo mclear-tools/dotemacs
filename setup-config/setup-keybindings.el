@@ -116,9 +116,9 @@
 ;;;; Search Keybindings
 (bind-keys :prefix-map cpm+search-keys
            :prefix (concat cpm-prefix " s")
-           ("a" . consult-org-agenda)
+           ("a" . consult-org-agenda           )
            ;; search current buffer's directory
-           ("d" . affe-grep)
+           ("d" . consult-ripgrep              )
            ;; search with directory input
            ("D" . cpm/search-in-input-dir      )
            ("b" . consult-multi-occur          )

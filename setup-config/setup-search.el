@@ -30,49 +30,21 @@
     ;; reuse the same *ag* buffer for all your searches
     (setq ag-reuse-buffers t)
     ;; ;; To save buffer automatically when `wgrep-finish-edit'
-    (setq wgrep-auto-save-buffer t)
-    ))
-;; (with-eval-after-load 'projectile
-;;   ;; Override the default function to use the projectile function instead
-;;   (defun ag/project-root (file-path)
-;;     (let ((proj-name (projectile-project-root)))
-;;       (if proj-name
-;;           proj-name ; return `projectile-project-root' if non-nil
-;;         ;; Else condition is same as the `ag/project-root' definition
-;;         ;; from ag.el
-;;         (if ag-project-root-function
-;;             (funcall ag-project-root-function file-path)
-;;           (or (ag/longest-string
-;;                (vc-git-root file-path)
-;;                (vc-svn-root file-path)
-;;                (vc-hg-root file-path))
-;;               file-path))))))))
+    (setq wgrep-auto-save-buffer t)))
 
 ;;;; Deadgrep
 (use-package deadgrep
   :bind (:map cpm+search-keys
-         ("D" . deadgrep)))
+         ("g" . deadgrep)))
 
 ;;;; Ripgrep
 (use-package rg :commands rg)
-
-;;;; Affe (Fuzzy Search)
-(use-package affe
-  :straight (affe :type git :host github :repo "minad/affe")
-  :commands (affe-grep)
-  :after (orderless)
-  :config
-  ;; Orderless settings
-  (defun affe-orderless-regexp-compiler (input _type)
-    (setq input (orderless-pattern-compiler input))
-    (cons input (lambda (str) (orderless--highlight input str))))
-  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler))
 
 ;;;; Search given directory
 (defun cpm/search-in-input-dir ()
   "Grep for a string in the input directory using completing read function"
   (interactive)
-  (let ((current-prefix-arg '(4))) (call-interactively #'consult-grep)))
+  (let ((current-prefix-arg '(4))) (call-interactively #'consult-ripgrep)))
 
 ;;; End Setup Search
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
