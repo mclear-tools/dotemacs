@@ -136,23 +136,27 @@
 ;; Update packages
 (defun cpm--straight-update-packages ()
   "Wrapper for updating packages asynchronously with straight."
-  (with-eval-after-load 'straight-x
-    (straight-x-fetch-all)
+  (with-eval-after-load 'straight
     (switch-to-buffer "*straight*")
+    (erase-buffer)
     (delete-other-windows)
-    ;; this seems necessary to keep fetch from hanging/pausing
-    (run-with-idle-timer 15 2 (lambda () (next-line)))
-    ;; run merge
-    (run-with-idle-timer 30 2 (lambda () (straight-merge-all)))
-    ;; build new packages
-    (run-with-idle-timer 45 2 (lambda () (straight-check-all)))
+    (goto-char (point-max))
+    (setq straight-vc-git-auto-fast-forward t)
+    (straight-pull-all 1)
+    (straight-check-all)
+    (straight-freeze-versions)
+    (straight-prune-build)
+    (straight-remove-unused-repos t)
     ;; kill session
-    (run-with-idle-timer 240 nil (lambda () (kill-emacs)))))
+    (run-with-idle-timer 120 nil (lambda () (kill-emacs)))))
 
 (defun cpm/straight-update-packages-asynchronously ()
   (interactive)
-  (async-shell-command-no-window "emacs -no-splash --eval '(cpm--straight-update-packages)'"))
+  (async-shell-command-no-window "/Applications/Emacs.app/Contents/MacOS/emacs --no-splash --eval '(cpm--straight-update-packages)'"))
 
+;;;;; Straight Helper Functions
+;; delete .DS_Store before prune
+(advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash "/Users/roambot/.emacs.d/.local/straight/build/.DS_Store")))
 
 
 ;;;; Use-Package
