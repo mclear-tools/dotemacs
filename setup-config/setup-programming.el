@@ -344,15 +344,6 @@ Lisp function does not specify a special indentation."
   :config
   (package-lint-flymake-setup))
 
-;; (use-package flycheck
-;;   :defer 2
-;;   :init
-;;   (setq global-flycheck-mode 1)
-;;   :config
-;;   (setq-default flycheck-emacs-lisp-initialize-packages t
-;;                 flycheck-highlighting-mode 'symbols
-;;                 flycheck-check-syntax-automatically '(idle-change)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

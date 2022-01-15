@@ -214,7 +214,7 @@
 
 ;; Install hook after frame parameters have been applied and only if
 ;; no option on the command line
-(if (and (not (member "-no-splash"  command-line-args))
+(if (and (not (member "--no-splash" command-line-args))
          (not (member "--file"      command-line-args))
          (not (member "--insert"    command-line-args))
          (not (member "--find-file" command-line-args)))

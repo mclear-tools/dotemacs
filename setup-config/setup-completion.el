@@ -163,7 +163,8 @@
                        embark-isearch-highlight-indicator))
   ;; Use completing-read
   (embark-prompter 'embark-completing-read-prompter)
-  :bind (("C-S-o" . embark-act)
+  :bind (("C-." . embark-act)
+         ("M-." . embark-dwim)
          ("C-h B" . embark-bindings)
          :map minibuffer-local-completion-map
          ("C-;"   . embark-act-noexit)
@@ -244,7 +245,8 @@
              consult-goto-line
              consult-outline
              consult-org-agenda
-             consult-org-heading)
+             consult-org-heading
+             consult-flymake)
   :custom-face
   (consult-file ((t (:inherit bespoke-popout))))
   (consult-line-number ((t (:inherit bespoke-faded))))
@@ -281,12 +283,6 @@
 (defun consult-line-symbol-at-point ()
   (interactive)
   (consult-line (thing-at-point 'symbol)))
-
-;;;; Consult Flycheck
-(use-package consult-flycheck
-  :straight (:host github :repo "minad/consult-flycheck")
-  :after flycheck
-  :commands (consult-flycheck consult-flymake))
 
 ;;;; Consult Dir
 ;; Consult-dir allows you to easily select and switch between “active” directories.

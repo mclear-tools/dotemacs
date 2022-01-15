@@ -92,6 +92,11 @@
 ;; (magit-todos-mode))
 
 
+;;; Magit Forge (for Github)
+(use-package forge
+  :straight (:type git :host github :repo "magit/forge")
+  :after magit)
+
 ;;; Git Navigation
                                         ; Go back in Git time
 (use-package git-timemachine :commands git-timemachine)
