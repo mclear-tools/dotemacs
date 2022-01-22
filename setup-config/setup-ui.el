@@ -108,8 +108,6 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package fontset
   :straight (:type built-in)
-  :custom-face
-  (variable-pitch ((t (:family "Avenir Next" :height 200))))
   :config
   ;; Use symbola for proper unicode
   (when (member "Symbola" (font-family-list))
@@ -119,11 +117,23 @@ If FRAME is omitted or nil, use currently selected frame."
   ;; NOTE that emoji here must be set to unicode to get color emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font
-     t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend))
-  ;; default font
-  (add-to-list 'default-frame-alist
-               '(font . "SF Mono-13")))
+     t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend)))
 
+(use-package faces
+  :straight (:type built-in)
+  :config
+  (set-face-attribute 'default nil
+                      :font "SF Mono"
+                      :height 130
+                      :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+                      :font "Avenir Next"
+                      :height 200
+                      :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+                      :font "SF Mono"
+                      :height 130
+                      :weight 'normal))
 
 ;;; Font Lock
 (use-package font-lock
