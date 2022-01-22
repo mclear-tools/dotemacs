@@ -20,8 +20,8 @@
          ;; easily emphasize text
          ("s-b" . (lambda () (interactive) (org-emphasize-dwim ?*)))
          ("s-i" . (lambda () (interactive) (org-emphasize-dwim ?/)))
-         ("s-`" . org-emphasize-with-verbatim-dwim)
-         ("s-~" . org-emphasize-with-code-dwim)
+         ("s-M-`" . org-emphasize-with-verbatim-dwim)
+         ("s-M-~" . org-emphasize-with-code-dwim)
          ;; better pasting behavior in org-mode
          ("s-v" . org-yank))
   :init

@@ -141,6 +141,28 @@
   :straight (:host github :repo "vedang/pdf-tools")
   :mode (("\\.pdf$" . pdf-view-mode))
   :commands (pdf-view-mode)
+  :bind* (:map pdf-view-mode-map
+          ;; Navigation
+          ("j"  . pdf-view-next-line-or-next-page)
+          ("k"  . pdf-view-previous-line-or-previous-page)
+          ("l"  . pdf-view-next-page)
+          ("h"  . pdf-view-previous-page)
+          ("g"  . pdf-view-first-page)
+          ("G"  . pdf-view-last-page)
+          ("t"  . pdf-view-goto-page)
+          ("l"  . pdf-view-goto-label)
+          ;; Search
+          ("/"  . isearch-forward)
+          ("?"  . isearch-backward)
+          ;; Actions
+          ("-"  . pdf-view-shrink)
+          ("+"  . pdf-view-enlarge)
+          ("="  . pdf-view-fit-page-to-window)
+          ("r"  . pdf-view-revert-buffer)
+          ("o"  . pdf-links-action-perform)
+          ("O"  . pdf-outline)
+          ("!"  . bms/pdf-no-filter)
+          ("#"  . bms/pdf-midnight-original))
   :config
   ;; initialise
   (pdf-loader-install :no-query)
@@ -151,96 +173,56 @@
   ;; HiDPI
   (setq pdf-view-use-scaling t
         pdf-view-use-imagemagick nil)
-  (progn
-    ;; (evil-set-initial-state 'pdf-view-mode 'normal)
-    ;; (evil-set-initial-state 'pdf-outline-buffer-mode 'normal)
-    (bind-keys* :map pdf-view-mode-map
-      ;; Navigation
-      ("j"  . pdf-view-next-line-or-next-page)
-      ("k"  . pdf-view-previous-line-or-previous-page)
-      ("l"  . pdf-view-next-page)
-      ("h"  . pdf-view-previous-page)
-      ("J"  . image-forward-hscroll )
-      ("K"  . image-backward-hscroll)
-      ("g" . pdf-view-first-page   )
-      ("G"  . pdf-view-last-page    )
-      ("t" . pdf-view-goto-page    )
-      ("l" . pdf-view-goto-label   )
-      ("u"  . pdf-view-scroll-down-or-previous-page)
-      ("d"  . pdf-view-scroll-up-or-next-page      )
-      ("-"  . pdf-view-shrink                      )
-      ("+"  . pdf-view-enlarge                     )
-      ("="  . pdf-view-fit-page-to-window          )
-      ((kbd "C-u") 'pdf-view-scroll-down-or-previous-page)
-      ((kbd "C-d") 'pdf-view-scroll-up-or-next-page      )
-      ((kbd "``")  'pdf-history-backward                 )
-      ;; Search
-      ("/" 'isearch-forward)
-      ("?" 'isearch-backward)
-      ;; Actions
-      ("r"   'pdf-view-revert-buffer)
-      ("o"   'pdf-links-action-perform)
-      ("O"   'pdf-outline)
-      ("!"   'bms/pdf-no-filter)
-      ("#"   'bms/pdf-midnight-original)))
 
   ;; midnite mode
-  ;; (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
-  (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" )) ; nano values
+  (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" ))
 
 
   (defun bms/pdf-no-filter ()
     "View pdf without colour filter."
     (interactive)
-    (pdf-view-midnight-minor-mode -1)
-    )
+    (pdf-view-midnight-minor-mode -1))
 
-  ;; change midnite mode colours functions
-  (defun bms/pdf-midnite-original ()
+  ;; change midnight mode colours functions
+  (defun bms/pdf-midnight-original ()
     "Set pdf-view-midnight-colors to original colours."
     (interactive)
-    (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" )) ; nano values
-    ;; (setq pdf-view-midnight-colors '("#839496" . "#002b36" )) ; original values
-    (pdf-view-midnight-minor-mode)
-    )
+    (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" ))
+    (pdf-view-midnight-minor-mode))
 
-  (defun bms/pdf-midnite-amber ()
+  (defun bms/pdf-midnight-amber ()
     "Set pdf-view-midnight-colors to amber on dark slate blue."
     (interactive)
     (setq pdf-view-midnight-colors '("#ff9900" . "#0a0a12" )) ; amber
-    (pdf-view-midnight-minor-mode)
-    )
+    (pdf-view-midnight-minor-mode))
 
-  (defun bms/pdf-midnite-green ()
+  (defun bms/pdf-midnight-green ()
     "Set pdf-view-midnight-colors to green on black."
     (interactive)
     (setq pdf-view-midnight-colors '("#00B800" . "#000000" )) ; green
-    (pdf-view-midnight-minor-mode)
-    )
+    (pdf-view-midnight-minor-mode))
 
-  (defun bms/pdf-midnite-colour-schemes ()
+  (defun bms/pdf-midnight-colour-schemes ()
     "Midnight mode colour schemes bound to keys"
     (local-set-key (kbd "!") (quote bms/pdf-no-filter))
-    (local-set-key (kbd "@") (quote bms/pdf-midnite-amber))
-    (local-set-key (kbd "#") (quote bms/pdf-midnite-green))
-    (local-set-key (kbd "$") (quote bms/pdf-midnite-original))
-    )
+    (local-set-key (kbd "@") (quote bms/pdf-midnight-amber))
+    (local-set-key (kbd "#") (quote bms/pdf-midnight-green))
+    (local-set-key (kbd "$") (quote bms/pdf-midnight-original)))
 
   (defun cpm/pdf-color-theme ()
     (if (eq active-theme 'light-theme)
         (bms/pdf-no-filter)
-      (bms/pdf-midnite-original)))
+      (bms/pdf-midnight-original)))
 
   ;; tex hook
   ;; see https://github.com/politza/pdf-tools#auto-revert
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
   ;; other hooks
   (add-hook 'pdf-view-mode-hook (lambda ()
-                                        ; automatically turns on midnight-mode for pdfs
+                                  ;; automatically turns on midnight-mode for pdfs
                                   (pdf-view-midnight-minor-mode)
                                   (cpm/pdf-color-theme)
-                                  (bms/pdf-midnite-colour-schemes)
-                                        ; fixes blinking pdf in evil
+                                  (bms/pdf-midnight-colour-schemes)
                                   (blink-cursor-mode -1)
                                   (linum-mode -1)
                                   (line-number-mode -1)

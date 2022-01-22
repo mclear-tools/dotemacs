@@ -36,7 +36,7 @@
    '("C" . cpm/search-setup-config-files)
    '("d" . dired-jump-other-window)
    '("D" . dired-jump)
-   '("e" . cpm/email-save-and-kill)
+   '("e" . cpm+eval-keys)
    '("E" . cpm/call-emacs)
    '("f" . cpm+file-keys)
    '("F" . consult-recent-file)
