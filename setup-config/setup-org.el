@@ -123,11 +123,9 @@
 ;;;; Org Regex (Emphasis)
   (with-eval-after-load 'org
                                         ; chars for prematch
-    ;; (setcar org-emphasis-regexp-components " \t('\"{[:alpha:]")
-    (setcar org-emphasis-regexp-components            "     ('\"{“”\[\\\_\-")
+    (setcar org-emphasis-regexp-components            "     ('\"{“”\[\\")
                                         ; chars for postmatch
-    ;; (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
-    (setcar (nthcdr 1 org-emphasis-regexp-components) "\] -   .,!?;:''“”\")}/\\“”\_\-")
+    (setcar (nthcdr 1 org-emphasis-regexp-components) "\] -   .,!?;:''“”\")}/\\“”")
                                         ; forbidden chars
     (setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
                                         ; body
@@ -135,6 +133,18 @@
                                         ; max newlines
     (setcar (nthcdr 4 org-emphasis-regexp-components) 1)
     (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
+
+  ;; ;; chars for prematch
+  ;; (setcar org-emphasis-regexp-components            "-[:space:]('\"{\[\\")
+  ;; ;; chars for postmatch
+  ;; (setcar (nthcdr 1 org-emphasis-regexp-components) "\]-[:space:].,!?;'\")}/\\")
+  ;; ;; forbidden border chars
+  ;; (setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
+  ;; ;; body
+  ;; (setcar (nthcdr 3 org-emphasis-regexp-components) ".")
+  ;; ;; max newlines
+  ;; (setcar (nthcdr 4 org-emphasis-regexp-components) 1)
+  ;; (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 
 ;;;; Org Template Expansions
   (setq new-structure-template-alist
