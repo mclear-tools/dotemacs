@@ -149,6 +149,7 @@
 ;; From the hydra wiki https://github.com/abo-abo/hydra/wiki/Emacs#ediff
 
 (with-eval-after-load 'ediff
+  (with-eval-after-load 'hydra
   (defhydra hydra-ediff (:color blue :hint nil)
     "
   ^Buffers           Files           VC                     Ediff regions
@@ -165,7 +166,7 @@
     ("c" ediff-current-file)
     ("r" ediff-revision)
     ("l" ediff-regions-linewise)
-    ("w" ediff-regions-wordwise)))
+    ("w" ediff-regions-wordwise))))
 ;; esc quits
 
 ;;;; Quit All the Things!

@@ -178,6 +178,7 @@
 (use-package tramp
   :straight nil
   :defer 1)
+
 (use-package tramp-term :commands tramp-term)
 
 ;;; Eshell
@@ -209,12 +210,12 @@
         eshell-banner-message ""
         ;; eshell-banner-message (message "Emacs initialized in %.2fs \n\n" (float-time (time-subtract (current-time) my-start-time)))
         ;; eshell-banner-message "What would you like to do?\n\n"
-      )
-      ;; Visual commands
+        )
+  ;; Visual commands
   (setq eshell-visual-commands '("ranger" "vi" "screen" "top" "less" "more" "lynx"
-                                     "ncftp" "pine" "tin" "trn" "elm" "vim"
-                                     "nmtui" "alsamixer" "htop" "el" "elinks"
-                                     ))
+                                 "ncftp" "pine" "tin" "trn" "elm" "vim"
+                                 "nmtui" "alsamixer" "htop" "el" "elinks"
+                                 ))
   (setq eshell-visual-subcommands '(("git" "log" "diff" "show"))))
 
 (defun cpm/setup-eshell ()

@@ -1,6 +1,8 @@
 ;; Useful functions specifically for teaching or teaching-related work
 ;; Setup files for defined custom classes are in .local
 
+;;; Org Latex PDF Process
+
 ;;; Org Latex Classes
 (setq org-latex-classes '(("beamer" "\\documentclass[presentation]{beamer}"
                            ("\\section{%s}" . "\\section*{%s}")
@@ -24,6 +26,7 @@
                            ("\\section{%s}" . "\\section*{%s}")
                            ("\\subsection{%s}" . "\\subsection*{%s}")
                            ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+
                           ;; notes
                           ("org-notes" "\\documentclass[12pt]{article}
                            [NO-DEFAULT-PACKAGES]
@@ -34,6 +37,7 @@
                            ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                            ("\\paragraph{%s}" . "\\paragraph*{%s}")
                            ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
                           ;; beamer handout
                           ("beamer-handout" "\\documentclass[12pt]{article}
                            [NO-DEFAULT-PACKAGES]
@@ -44,6 +48,7 @@
                            ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                            ("\\paragraph{%s}" . "\\paragraph*{%s}")
                            ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+
                           ;; beamer presentation
                           ("beamer-presentation" "\\documentclass[presentation]{beamer}
                            [NO-DEFAULT-PACKAGES]
@@ -56,6 +61,7 @@
                            ("\\section{%s}" . "\\section*{%s}")
                            ("\\subsection{%s}" . "\\subsection*{%s}")
                            ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+
                           ;; beamer slides only
                           ("beamer-slides-no-notes" "\\documentclass[handout]{beamer}
                            [NO-DEFAULT-PACKAGES]
