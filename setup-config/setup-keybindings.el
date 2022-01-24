@@ -34,7 +34,15 @@
            ("r" . revert-buffer                      )
            ("R" . crux-rename-buffer-and-file        )
            ("s" . consult-buffer-other-window        )
-           ("t" . cpm/open-dir-in-iterm              ))
+           ("t" . cpm/open-dir-in-iterm              )
+           ("[" . cpm/previous-user-buffer           )
+           ("]" . cpm/next-user-buffer               )
+           ("{" . tab-bar-switch-to-prev-tab         )
+           ("}" . tab-bar-switch-to-next-tab         )
+           ("<backtab>" . crux-switch-to-previous-buffer)
+           ("TAB" . cpm/tab-bar-select-tab-dwim      )
+           ("C-M-t" . tab-bar-new-tab                )
+           )
 
 ;;;; Comment Keybindings
 (bind-keys :prefix-map cpm+comment-wrap-keys
@@ -164,6 +172,8 @@
 (bind-keys :prefix-map cpm+user-keys
            :prefix (concat cpm-prefix " u")
            ("a" .  cpm/jump-to-org-super-agenda                 )
+           ("c" . cpm/find-files-setup-config-directory         )
+           ("C" . cpm/search-setup-config-files                 )
            ("d" .  osx-dictionary-search-input                  )
            ("m" .  cpm/org-to-markdown                          )
            ("g" .  org-mac-grab-link                            )

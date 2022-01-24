@@ -81,6 +81,7 @@
        (sort (split-string (shell-command-to-string command) "\0" t)
              #'string<)))))
 
+
 ;;; Tab Bar
 ;; Use tab-bar for window grouping and configuration within a project (replaces eyebrowse)
 (use-package tab-bar

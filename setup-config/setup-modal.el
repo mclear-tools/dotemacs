@@ -7,33 +7,25 @@
    '("k" . meow-prev))
 
   (meow-leader-define-key
-   `("y" . ,cpm-prefix) ;; my namespaced keybindings
-   ;; here we create bindings for necessary, high frequency commands
-   '("?" . consult-apropos)
-   ;; high frequency keybindings
-   '(")" . "C-)")
-   '("}" . "C-}")
-   '("." . "M-.")
-   '("," . "C-c")
-   '("SPC" . execute-extended-command)
-   '("<backtab>" . crux-switch-to-previous-buffer)
-   '("TAB" . cpm/tab-bar-select-tab-dwim)
-   '("C-M-t" . tab-bar-new-tab)
-   ;; high frequency commands
-   '(";" . comment-line)
-   '("\\" . multi-vterm-dedicated-toggle)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
-   '("{" . tab-bar-switch-to-prev-tab)
-   '("}" . tab-bar-switch-to-next-tab)
-   '("[" . cpm/previous-user-buffer     )
-   '("]" . cpm/next-user-buffer         )
-   '("=" . hl-line-mode)
+
+   ;;  ;; here we create bindings for necessary, high frequency commands
+   ;;  '("?" . consult-apropos)
+   ;;  ;; high frequency keybindings
+   ;;  '(")" . "C-)")
+   ;;  '("}" . "C-}")
+   ;;  '("." . "M-.")
+   ;;  '("," . "C-c")
+   ;;  '("SPC" . execute-extended-command)
+   ;;  ;; high frequency commands
+   ;; '(";" . comment-line)
+   ;; '("/" . meow-keypad-describe-key)
+   ;; '("?" . meow-cheatsheet)
+   ;; '("=" . hl-line-mode)
+   ;; '("m" . consult-mark)
+
    '("a" . execute-extended-command)
    '("A" . consult-org-agenda)
    '("b" . cpm+buffer-keys)
-   '("c" . cpm/find-files-setup-config-directory)
-   '("C" . cpm/search-setup-config-files)
    '("d" . dired-jump-other-window)
    '("D" . dired-jump)
    '("e" . cpm+eval-keys)
@@ -45,7 +37,6 @@
    '("k" . consult-yank-from-kill-ring)
    '("l" . vertico-repeat)
    '("L" . consult-locate)
-   '("m" . consult-mark)
    '("n" . cpm+notes-keys)
    '("N" . consult-notes-search-all)
    '("p" . cpm+project-keys)
@@ -56,7 +47,9 @@
    '("t" . cpm+toggle-keys)
    '("u" . cpm+user-keys)
    '("v" . cpm+vc-keys)
+   '("V" . multi-vterm-dedicated-toggle)
    '("w" . cpm+window-keys)
+   `("y" . ,cpm-prefix) ;; my namespaced keybindings
    )
 
 
@@ -137,8 +130,6 @@
   ;; set colors in bespoke theme
   (setq meow-use-dynamic-face-color nil)
   (setq meow-use-cursor-position-hack t)
-  ;; FIXME: Would be nice to get this working with which-key
-  (setq meow-keypad-describe-keymap-function 'meow-describe-keymap)
   ;; Make sure delete char means delete char
   ;; see https://github.com/meow-edit/meow/issues/112
   (setq meow--kbd-delete-char "<deletechar>")

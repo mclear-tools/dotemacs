@@ -117,9 +117,10 @@
 (use-package crux
   :defer 1
   :bind
-  ("C-k" . crux-smart-kill-line)
-  ("C-c n" . crux-cleanup-buffer-or-region)
-  ("C-a" . crux-move-beginning-of-line))
+  (:map cpm+buffer-keys
+   ("C"    . crux-cleanup-buffer-or-region))
+  ("C-k"   . crux-smart-kill-line)
+  ("C-a"   . crux-move-beginning-of-line))
 
 
 
@@ -252,7 +253,7 @@ with no seperation"
   "Insert the integer number of seconds since the epoch."
   (interactive)
   (insert (format-time-string "%s")))
-(global-set-key (kbd "C-c e") 'cpm/insert-time-seconds-epoch)
+;; (global-set-key (kbd "C-c e") 'cpm/insert-time-seconds-epoch)
 
 
 
@@ -476,7 +477,7 @@ with no seperation"
 ;; From the hydra wiki https://github.com/abo-abo/hydra/wiki/Emacs#transpose
 
 (with-eval-after-load 'hydra
-  (bind-key "C-c t"
+  (bind-key (concat cpm-prefix " .")
             (defhydra hydra-transpose (:color red)
               "Transpose"
               ("c" transpose-chars "characters")
