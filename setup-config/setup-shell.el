@@ -155,9 +155,9 @@
 
 ;;;; Multi-Vterm
 (use-package multi-vterm
-  :commands (multi-vterm multi-vterm-projectile multi-vterm-dedicated-toggle))
-
-
+  :commands (multi-vterm
+             multi-vterm-projectile
+             multi-vterm-dedicated-toggle))
 
 ;;; Virtualenvwrapper
 (use-package virtualenvwrapper
@@ -177,7 +177,9 @@
 ;; An easy way to ssh
 (use-package tramp
   :straight nil
-  :defer 1)
+  :defer 1
+  :config
+  (setq tramp-persistency-file-name (concat cpm-cache-dir "tramp")))
 
 (use-package tramp-term :commands tramp-term)
 
