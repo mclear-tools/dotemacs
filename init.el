@@ -4,6 +4,11 @@
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
+;;; Personal Information
+;; Give emacs some personal info
+(setq user-full-name "Colin McLear"
+      user-mail-address "mclear@fastmail.com")
+
 ;;; Startup
 
 ;;;; Directory Variables
@@ -210,48 +215,24 @@
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
-;;; Personal Information
-;; Give emacs some personal info
-(setq user-full-name "Colin McLear"
-      user-mail-address "mclear@fastmail.com")
-
 ;;; Load Modules
-;; Load all the setup modules
 
-;;;; Core Modules
-;; These are the "can't live without" modules
-(require 'setup-libraries)
-(require 'setup-functions-macros)
-(require 'setup-theme)
-(require 'setup-modeline)
-(require 'setup-keybindings)
-(require 'setup-settings)
+;; Conditionally load modules
+;; This allows startup with a clean emacs that still recognizes straight
+;; Helpful for testing packages
+;; Use (straight-use-package) command to selectively load packages
+;; See https://emacs.stackexchange.com/a/34909/11934
+;; For function switch see https://stackoverflow.com/a/4065412/6277148
 
-;;;; Other Modules
-(require 'setup-splash)
-(require 'setup-server)
-(require 'setup-modal)
-(require 'setup-org)
-(require 'setup-org-extensions)
-(require 'setup-dired)
-(require 'setup-completion)
-(require 'setup-osx)
-(require 'setup-windows-buffers)
-(require 'setup-ui)
-(require 'setup-navigation)
-(require 'setup-search)
-(require 'setup-vc)
-(require 'setup-projects)
-(require 'setup-teaching)
-(require 'setup-childframe)
-(require 'setup-shell)
-(require 'setup-writing)
-(require 'setup-notes)
-(require 'setup-citation)
-(require 'setup-programming)
-(require 'setup-pdf)
-(require 'setup-calendars)
-(require 'setup-testing)
+(defun cpm--emacs-switches (switch)
+  "depending on command line argument, load emacs with minimal settings & no modules; useful for running tests"
+  (let ((found-switch (member switch command-line-args)))
+    (setq command-line-args (delete switch command-line-args))
+    found-switch))
+
+(unless (cpm--emacs-switches "-clean")
+  (message "Loading full config")
+  (require 'setup-modules))
 
 ;;;; Emacs Build Version
 ;; When built emacs has git-version patch
@@ -346,7 +327,7 @@
                                 ;; reset garbage collection
                                 (setq gc-cons-threshold 800000)
                                 ;; Startup time
-                                (message (format "Emacs ready in %.2f seconds with %d garbage collections."
+                                (message (format ";; ======================================================\n;; Emacs ready in %.2f seconds with %d garbage collections.\n;; ======================================================"
                                                  (float-time
                                                   (time-subtract after-init-time before-init-time)) gcs-done)
                                          (put 'narrow-to-page 'disabled nil))))
