@@ -22,7 +22,7 @@
   ;; remove deleted projects from list
   (project-forget-zombie-projects))
 
-(defun cpm-project-name ()
+(defun cpm--project-name ()
   "return name of project without path"
   (file-name-nondirectory (directory-file-name (if (vc-root-dir) (vc-root-dir) "-"))))
 
@@ -119,13 +119,36 @@ questions.  Else use completion to select the tab to switch to."
 (defun cpm/name-tab-by-project-or-default ()
   "Return project name if in a project, or default tab-bar name if not.
 The default tab-bar name uses the buffer name."
-  (if (string= "-" (cpm-project-name))
-      (tab-bar-tab-name-current)
-    (cpm-project-name)))
+  (let ((project-name (cpm--project-name)))
+    (if (string= "-" project-name)
+        (tab-bar-tab-name-current)
+      (cpm--project-name))))
 
 ;; Get the current tab name for use in some other display
 (defun cpm-current-tab-name ()
   (alist-get 'name (tab-bar--current-tab)))
+
+;; tab-bar version of separate buffer list filter
+;; https://github.com/wamei/elscreen-separate-buffer-list/issues/8
+;; https://github.com/kaz-yos/emacs/blob/master/init.d/200_tab-related.el#L74-L87
+
+;; TODO: get this working!
+(defun cpm--tab-bar-buffer-name-filter (buffer-names)
+  "Filter BUFFER-NAMES by the current tab's buffer list
+It should be used to filter a list of buffer names created by
+other functions, such as `helm-buffer-list'."
+  (let ((buffer-names-to-keep
+         ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-List.html
+         (append (mapcar #'buffer-name (alist-get 'wc-bl (tab-bar--tab)))
+                 (mapcar #'buffer-name (alist-get 'wc-bbl (tab-bar--tab))))))
+    (seq-filter (lambda (elt)
+                  (member elt buffer-names-to-keep))
+                buffer-names)))
+
+;; (advice-add 'buffer-list
+;;             :filter-return #'cpm--tab-bar-buffer-name-filter)
+
+
 
 ;;; Project Functions
 
@@ -149,7 +172,7 @@ to directory DIR."
   (progn
     (tab-bar-new-tab)
     (call-interactively 'project-switch-project-open-file)
-    (tab-bar-rename-tab (cpm-project-name))
+    (tab-bar-rename-tab (cpm/name-tab-by-project-or-default))
     (project-magit-dir)))
 
 ;;;; Open agenda as workspace
