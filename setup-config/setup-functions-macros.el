@@ -117,11 +117,10 @@
 (use-package crux
   :defer 1
   :bind
-  (:map cpm+buffer-keys
-   ("C"    . crux-cleanup-buffer-or-region))
   ("C-k"   . crux-smart-kill-line)
-  ("C-a"   . crux-move-beginning-of-line))
-
+  ("C-a"   . crux-move-beginning-of-line)
+  (:map cpm+buffer-keys
+   ("C"    . crux-cleanup-buffer-or-region)))
 
 
 ;;;; Delete Current File

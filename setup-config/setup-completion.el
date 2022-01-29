@@ -9,13 +9,13 @@
   :straight (:host github :repo "minad/vertico"
              :includes (vertico-repeat vertico-directory vertico-buffer)
              :files (:defaults "extensions/vertico-directory.el" "extensions/vertico-buffer.el" "extensions/vertico-repeat.el"))
-  :bind ((:map vertico-map
-          ("<escape>" . #'minibuffer-keyboard-quit)
-          ("C-n"      . #'vertico-next-group      )
-          ("C-p"      . #'vertico-previous-group  )
-          ("C-j"      . #'vertico-next            )
-          ("C-k"      . #'vertico-previous        )
-          ("M-RET"    . #'vertico-exit)))
+  :bind (:map vertico-map
+         ("<escape>" . #'minibuffer-keyboard-quit)
+         ("C-n"      . #'vertico-next-group      )
+         ("C-p"      . #'vertico-previous-group  )
+         ("C-j"      . #'vertico-next            )
+         ("C-k"      . #'vertico-previous        )
+         ("M-RET"    . #'vertico-exit))
   :hook (after-init . vertico-mode)
   :config
   ;; Cycle through candidates

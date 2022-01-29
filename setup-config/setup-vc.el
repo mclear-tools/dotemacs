@@ -92,15 +92,8 @@
 ;; (magit-todos-mode))
 
 
-;;; Magit Forge (for Github)
-(use-package forge
-  :straight (:type git :host github :repo "magit/forge")
-  :after magit
-  :config
-  (setq forge-database-file (concat cpm-cache-dir "forge-database.sqlite")))
-
 ;;; Git Navigation
-                                        ; Go back in Git time
+;; Go back in Git time
 (use-package git-timemachine :commands git-timemachine)
 
 ;; Give git projects branches the dired treatment
