@@ -130,27 +130,32 @@
         (save-excursion (let ((init-info (funcall splash-init-info)))
                           (insert (propertize init-info 'face 'shadow))))
 
-        (goto-char (+ width 732))
-        ;; (goto-char (+ width 718))
+        (goto-char (+ width 608))
         (save-excursion (insert-text-button " [a] Agenda "
                                             'action (lambda (_) (cpm/open-agenda-in-workspace))
                                             'help-echo "Visit setup directory"
                                             'face 'warning
                                             'follow-link t))
-        (goto-char (+ width 868))
-        ;; (goto-char (+ width 729))
-        (save-excursion (insert-text-button " [c] Configure emacs "
+        (goto-char (+ width 744))
+        (save-excursion (insert-text-button " [c] Config "
                                             'action (lambda (_) (cpm/open-emacsd-in-workspace))
                                             'help-echo "Visit setup directory"
                                             'face 'warning
                                             'follow-link t))
-        (goto-char (+ width 1013))
-        ;; (goto-char (+ width 749))
+        (goto-char (+ width 880))
         (save-excursion (insert-text-button " [n] Notes "
                                             'action (lambda (_)  (cpm/open-notes-in-workspace))
                                             'help-echo "Visit setup directory"
                                             'face 'warning
                                             'follow-link t))
+        (goto-char (+ width 1015))
+
+        (save-excursion (insert-text-button " [p] Projects "
+                                            'action (lambda (_)  (cpm/open-existing-project-and-workspace))
+                                            'help-echo "Open project & workspace"
+                                            'face 'warning
+                                            'follow-link t))
+
         ;; Vertical padding to bottom
         (goto-char (point-max))
 
@@ -180,6 +185,7 @@
     (define-key map (kbd "a") 'cpm/open-agenda-in-workspace)
     (define-key map (kbd "c") 'cpm/open-emacsd-in-workspace)
     (define-key map (kbd "n") 'cpm/open-notes-in-workspace)
+    (define-key map (kbd "p") 'cpm/open-existing-project-and-workspace)
     (define-key map (kbd "q") 'splash-screen-kill)
     map)
   "Keymap for emacs-splash-mode.")
