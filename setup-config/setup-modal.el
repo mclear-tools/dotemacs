@@ -66,6 +66,7 @@
    '("1" . meow-expand-1)
    '("-" . negative-argument)
    '(";" . meow-reverse)
+   '(":" . meow-goto-line)
    '("," . meow-inner-of-thing)
    '("." . meow-bounds-of-thing)
    '("[" . meow-beginning-of-thing)
@@ -98,7 +99,6 @@
    '("O" . meow-to-block)
    '("p" . meow-yank)
    '("q" . meow-quit)
-   '("Q" . meow-goto-line)
    '("r" . meow-replace)
    '("R" . overwrite-mode)
    '("s" . meow-kill)
@@ -134,6 +134,7 @@
   ;; see https://github.com/meow-edit/meow/issues/112
   (setq meow--kbd-delete-char "<deletechar>")
   (setq meow-use-clipboard t)
+  (setq meow-goto-line-function 'consult-goto-line)
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
 
