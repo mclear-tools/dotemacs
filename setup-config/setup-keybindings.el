@@ -158,7 +158,7 @@
            ("n" . display-line-numbers-mode   )
            ("N" . org-numbers-overlay-mode    )
            ("o" . imenu-list-smart-toggle     )
-           ("p" . smartparens-mode            )
+           ("p" . puni-global-mode            )
            ("P" . show-paren-mode             )
            ("r" . rainbow-identifiers-mode    )
            ("s" . flyspell-mode               )

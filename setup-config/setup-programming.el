@@ -1,7 +1,7 @@
 ;; Programming
 
-
 ;;; Delimiters & Identifiers
+;;;; Visualization of Delimiters
 ;; https://github.com/Fanael/rainbow-delimiters Useful package that will highlight
 ;; delimiters such as parentheses, brackets or braces according to their depth. Each
 ;; successive level is highlighted in a different color. This makes it easy to spot
@@ -23,6 +23,8 @@
 (use-package rainbow-identifiers
   :commands rainbow-identifiers-mode)
 
+;;;; Surround & Change Delimiters
+
 (use-package embrace
   :straight (:type git :host github :repo "cute-jumper/embrace.el")
   :bind (("C-M-s-#" . embrace-commander))
@@ -36,18 +38,20 @@
       (embrace-add-pair (car lst) (cadr lst) (cddr lst))))
   (add-hook 'markdown-mode-hook 'embrace-markdown-mode-hook))
 
+;;;; Edit & Traverse Delimiters
+
+(use-package puni
+  :straight (:type git :host github :repo "AmaiKinono/puni")
+  :hook ((prog-mode tex-mode org-mode markdown-mode
+                    eval-expression-minibuffer-setup) . puni-mode))
+
+
 ;;; Multiple Cursors
 (use-package iedit
   :straight (:type git :host github :repo "victorhge/iedit")
   :bind (:map cpm+search-keys
          ("c" . iedit-mode)))
 
-;;; Smartparens
-;; a superset of usual pairing modes, should work for a variety of languages
-(use-package smartparens
-  :straight (:type git :host github :repo "fuco1/smartparens")
-  :hook ((prog-mode . smartparens-mode)
-         (text-mode . smartparens-mode)))
 
 ;;; Colors
 ;; https://github.com/emacsmirror/rainbow-mode Colorize color names in buffers
@@ -97,8 +101,7 @@
                                   (eldoc-mode)
                                   (yas-minor-mode)
                                   (company-mode)
-                                  (rainbow-delimiters-mode)
-                                  (smartparens-mode 1)))
+                                  (rainbow-delimiters-mode)))
 
 
 ;;;;; Lisp Functions
