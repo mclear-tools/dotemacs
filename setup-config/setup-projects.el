@@ -128,6 +128,8 @@ The default tab-bar name uses the buffer name."
 (defun cpm-current-tab-name ()
   (alist-get 'name (tab-bar--current-tab)))
 
+
+;;;; Group Buffers By Tab
 ;; tab-bar version of separate buffer list filter
 ;; https://github.com/wamei/elscreen-separate-buffer-list/issues/8
 ;; https://github.com/kaz-yos/emacs/blob/master/init.d/200_tab-related.el#L74-L87
@@ -145,10 +147,20 @@ other functions, such as `helm-buffer-list'."
                   (member elt buffer-names-to-keep))
                 buffer-names)))
 
-;; (advice-add 'buffer-list
-;;             :filter-return #'cpm--tab-bar-buffer-name-filter)
+;;;; Tab Bar Echo
+(use-package tab-bar-echo-area
+  :straight (:type git :host github :repo "fritzgrabo/tab-bar-echo-area")
+  :bind (:map tab-prefix-map
+         ("c" . tab-bar-echo-area-display-tab-name)
+         ("a" . tab-bar-echo-area-display-tab-names))
+  :custom-face
+  (tab-bar-echo-area-tab ((t (:underline t :weight bold))))
+  (tab-bar-echo-area-tab-group-current ((t (:foreground ,bespoke-faded))))
+  :config
+  (tab-bar-echo-area-mode 1))
 
-
+;; display all tabs when idle
+(run-with-idle-timer 15 t (lambda () (message nil) (tab-bar-echo-area-display-tab-names)))
 
 ;;; Project Functions
 
