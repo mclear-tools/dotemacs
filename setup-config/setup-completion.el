@@ -157,12 +157,14 @@
   :straight (embark :type git :host github :repo "oantolin/embark")
   :commands (embark-act embark-keymap-help)
   :custom
+  ;; Use which-key
   ;; Don't display extra embark buffer
-  (embark-indicators '(embark-minimal-indicator
+  (embark-indicators '(embark-which-key-indicator
+                       embark-minimal-indicator
                        embark-highlight-indicator
                        embark-isearch-highlight-indicator))
-  ;; Use completing-read
-  (embark-prompter 'embark-completing-read-prompter)
+  ;; Use keymap -- completing-read on C-h
+  (embark-prompter 'embark-keymap-prompter)
   :bind (("C-." . embark-act)
          ("M-." . embark-dwim)
          ("C-h B" . embark-bindings)
@@ -198,7 +200,48 @@
   (defun cpm/consult-rg-here (file)
     "consult-ripgrep in this directory."
     (let ((default-directory (file-name-directory file)))
-      (consult-ripgrep))))
+      (consult-ripgrep)))
+
+  ;; Which-key integration
+  (defun embark-which-key-indicator ()
+    "An embark indicator that displays keymaps using which-key.
+The which-key help message will show the type and value of the
+current target followed by an ellipsis if there are further
+targets."
+    (lambda (&optional keymap targets prefix)
+      (if (null keymap)
+          (which-key--hide-popup-ignore-command)
+        (which-key--show-keymap
+         (if (eq (plist-get (car targets) :type) 'embark-become)
+             "Become"
+           (format "Act on %s '%s'%s"
+                   (plist-get (car targets) :type)
+                   (embark--truncate-target (plist-get (car targets) :target))
+                   (if (cdr targets) "…" "")))
+         (if prefix
+             (pcase (lookup-key keymap prefix 'accept-default)
+               ((and (pred keymapp) km) km)
+               (_ (key-binding prefix 'accept-default)))
+           keymap)
+         nil nil t (lambda (binding)
+                     (not (string-suffix-p "-argument" (cdr binding))))))))
+
+  (setq embark-indicators
+        '(embark-which-key-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
+
+  (defun embark-hide-which-key-indicator (fn &rest args)
+    "Hide the which-key indicator immediately when using the completing-read prompter."
+    (which-key--hide-popup-ignore-command)
+    (let ((embark-indicators
+           (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+
+  (advice-add #'embark-completing-read-prompter
+              :around #'embark-hide-which-key-indicator)
+
+  )
 
 (use-package embark-consult
   :straight t
@@ -220,15 +263,8 @@
          ("C-M-a" . marginalia-cycle))
   :init
   (marginalia-mode)
-  ;; ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations.
-  (advice-add #'marginalia-cycle :after
-              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
-  ;; Prefer richer, more heavy, annotations over the lighter default variant.
-  ;; E.g. M-x will show the documentation string additional to the keybinding.
-  ;; By default only the keybinding is shown as annotation.
-  ;; Note that there is the command `marginalia-cycle' to
-  ;; switch between the annotators.
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
+  :config
+  (setq marginalia-align 'center))
 
 ;;;; Consult
 ;; Example configuration for Consult
