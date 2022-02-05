@@ -13,13 +13,13 @@
     (require 'setup-modal)
     (require 'setup-settings)))
 
-  (if (cpm--emacs-switches "-core")
-      (progn
-        (message "Loading core modules only")
-        (cpm--config-core)
-        ;; start with built in vertical completion
-        (require 'setup-icomplete))
-    ;; Otherwise load entire config
+(if (cpm--emacs-switches "-core")
+    (progn
+      (message "Loading core modules only")
+      (cpm--config-core)
+      ;; start with built in vertical completion
+      (require 'setup-icomplete))
+  ;; Otherwise load entire config
   (progn
     (cpm--config-core)
 
@@ -48,6 +48,7 @@
     (require 'setup-programming)
     (require 'setup-pdf)
     (require 'setup-calendars)
+    ;; (require 'setup-email)
     (require 'setup-testing)
     ))
 
