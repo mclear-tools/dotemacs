@@ -231,7 +231,7 @@
     found-switch))
 
 (unless (cpm--emacs-switches "-clean")
-  (message "Loading full config")
+  (message "Loading config modules")
   (require 'setup-modules))
 
 ;;;; Emacs Build Version
