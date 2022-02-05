@@ -1,6 +1,8 @@
-;; Keybindings for config I put all keybindings here. This has its
-;; disadvantages (e.g. separating functions or packages from keybindings) but
-;; it also makes it the place to go to deal with all keybindings.
+;; Keybindings for config
+
+;; I put (nearly) all keybindings here. This has its disadvantages (e.g. separating
+;; functions or packages from keybindings) but it also makes it the place to go
+;; to deal with all keybindings.
 
 ;;; Bind Key
 ;; Note that bind-key comes with use-package

@@ -1,3 +1,12 @@
+;;; Personal Leader Key
+
+(defvar cpm+leader-map (make-sparse-keymap)
+  "An overriding keymap for <leader> key, for use with modal keybindings.")
+
+;; Use cpm-prefix as leader namespace
+(bind-keys :prefix-map cpm+leader-map
+           :prefix cpm-prefix)
+
 ;;; Meow Setup
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -6,26 +15,29 @@
    '("j" . meow-next)
    '("k" . meow-prev))
 
+  ;; Set leader
+  (add-to-list 'meow-keymap-alist (cons 'leader cpm+leader-map))
+
   (meow-leader-define-key
 
    ;;  ;; here we create bindings for necessary, high frequency commands
-   ;;  '("?" . consult-apropos)
-   ;;  ;; high frequency keybindings
-   ;;  '(")" . "C-)")
-   ;;  '("}" . "C-}")
-   ;;  '("." . "M-.")
-   ;;  '("," . "C-c")
-   ;;  '("SPC" . execute-extended-command)
-   ;;  ;; high frequency commands
-   ;; '(";" . comment-line)
-   ;; '("/" . meow-keypad-describe-key)
-   ;; '("?" . meow-cheatsheet)
-   ;; '("=" . hl-line-mode)
-   ;; '("m" . consult-mark)
-
-   '("a" . execute-extended-command)
-   '("A" . consult-org-agenda)
+   '("?" . consult-apropos)
+   ;; high frequency keybindings
+   '(")" . "C-)")
+   '("}" . "C-}")
+   '("." . "M-.")
+   '("[" . cpm/previous-user-buffer)
+   '("]" . cpm/next-user-buffer)
+   '("TAB" . cpm/tab-bar-select-tab-dwim)
+   '("SPC" . execute-extended-command)
+   ;; high frequency commands
+   '(";" . comment-line)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet)
+   '("=" . hl-line-mode)
+   '("a" . consult-org-agenda)
    '("b" . cpm+buffer-keys)
+   '("C" . cpm+config-keys)
    '("d" . dired-jump-other-window)
    '("D" . dired-jump)
    '("e" . cpm+eval-keys)
@@ -49,7 +61,7 @@
    '("v" . cpm+vc-keys)
    '("V" . multi-vterm-dedicated-toggle)
    '("w" . cpm+window-keys)
-   `("y" . ,cpm-prefix) ;; my namespaced keybindings
+   '("y" . yas-minor-mode-map)
    )
 
 
