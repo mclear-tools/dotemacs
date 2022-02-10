@@ -2,6 +2,8 @@
 ;; "workspaces" (i.e. window/buffer sets), using primarily only built-in
 ;; packages such as project.el and tab-bar.el
 
+;; TODO: create per-project buf list
+
 
 ;;; Project
 ;; Use project to switch to, and search in, projects (replaces projectile)
@@ -11,6 +13,12 @@
              project-switch-to-buffer
              project-switch-project
              project-switch-project-open-file)
+  :bind (:map project-prefix-map
+         ("p" .  cpm/open-existing-project-and-workspace)
+         ("P" .  project-switch-project)
+         ("G" .  cpm/goto-projects)
+         ("m" .  consult-bookmark)
+         ("R" .  project-remember-projects-under))
   :config
   (setq project-list-file (concat cpm-cache-dir "projects"))
   (setq project-switch-commands '((project-find-file "Find file")
@@ -161,6 +169,7 @@ other functions, such as `helm-buffer-list'."
 
 ;; display all tabs when idle
 (run-with-idle-timer 15 t (lambda () (message nil) (tab-bar-echo-area-display-tab-names)))
+
 
 ;;; Project Functions
 

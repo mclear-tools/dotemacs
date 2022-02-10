@@ -105,15 +105,15 @@
            ("y" . cpm/show-and-copy-buffer-filename))
 
 ;;;; Project Keybindings
-(global-set-key (kbd "C-h C-c") 'finder-commentary)
-(bind-keys :prefix-map cpm+project-keys
-           :prefix (concat cpm-prefix " p")
-           ("p" .  cpm/open-existing-project-and-workspace)
-           ("b" .  project-switch-to-buffer)
-           ("f" .  project-find-file)
-           ("g" .  cpm/goto-projects)
-           ("m" .  consult-bookmark)
-           ("r" .  project-remember-projects-under))
+;; (bind-keys :prefix-map
+;;            :prefix
+;;            ("p" .  cpm/open-existing-project-and-workspace)
+;;            ("b" .  project-switch-to-buffer)
+;;            ("f" .  project-find-file)
+;;            ("P" .  project-switch-project)
+;;            ("g" .  cpm/goto-projects)
+;;            ("m" .  consult-bookmark)
+;;            ("R" .  project-remember-projects-under))
 
 
 ;;;; Quit Keybindings
