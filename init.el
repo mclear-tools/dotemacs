@@ -11,6 +11,7 @@
 
 ;;; Startup
 
+
 ;;;; Directory Variables
 ;;  We're going to define a number of directories that are used throughout this
 ;;  configuration to store different types of files.
@@ -66,12 +67,6 @@
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
-;;; Package Settings
-;; I use straight and use-package to manage settings.
-;; I put a lot of loading of packages off until after some number of seconds of idle. The
-;; latter means package loading stays out of my way if I'm doing, e.g., a quick
-;; restart-and-check of something in emacs.
-
 ;;;; Load Path
 ;; Add config files to load-path
 (eval-and-compile
@@ -85,6 +80,12 @@
 (defconst usr-local-sbin "/usr/local/sbin")
 (setenv "PATH" (concat homebrew ":" usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
 (setq exec-path (append exec-path (list homebrew cpm-local-bin usr-local-sbin usr-local-bin)))
+
+;;; Package Settings
+;; I use straight and use-package to manage settings.
+;; I put a lot of loading of packages off until after some number of seconds of idle. The
+;; latter means package loading stays out of my way if I'm doing, e.g., a quick
+;; restart-and-check of something in emacs.
 
 ;;;; Straight
 ;;;;; Straight settings
@@ -320,6 +321,7 @@
   (byte-recompile-directory user-emacs-directory 0 t))
 
 ;;;; After Startup
+
 
 ;; reset file-name-handler-alist
 (add-hook 'emacs-startup-hook (lambda ()

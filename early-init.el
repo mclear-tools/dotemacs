@@ -5,7 +5,28 @@
 ;; for more information
 
 ;;; Early Startup
+;;;; Native Comp
 
+;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
+;; https://akrl.sdf.org/gccemacs.html#org335c0de
+;; https://github.com/emacscollective/no-littering/wiki/Setting-gccemacs'-eln-cache
+
+;; See if native-comp is available
+(when (not (and (fboundp 'native-comp-available-p)
+                (native-comp-available-p)))
+  (message "Native complation is *not* available"))
+
+;; Set eln-cache dir
+(when (boundp 'native-comp-eln-load-path)
+  (setcar native-comp-eln-load-path
+          (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
+
+;; Silence nativecomp warnings popping up
+(setq native-comp-async-report-warnings-errors nil)
+
+;; Settings
+(setq native-comp-speed 2
+      native-comp-deferred-compilation t)
 
 ;;;; Speed up startup
 ;; Help speed up emacs initialization
@@ -15,6 +36,7 @@
 
 (defvar cpm--file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
+
 
 ;;;; Garbage collection
 
@@ -38,26 +60,6 @@
                          (let ((inhibit-message t))
                            (message "Garbage Collector has run for %.06fsec"
                                     (k-time (garbage-collect)))))))
-
-;;;; Native Comp
-;; see https://github.com/jimeh/build-emacs-for-macos#native-comp
-;; https://akrl.sdf.org/gccemacs.html#org335c0de
-
-;; See if native-comp is available
-(when (not (and (fboundp 'native-comp-available-p)
-                (native-comp-available-p)))
-  (message "Native complation is *not* available"))
-;; Dir for eln-cache
-(when (boundp 'native-comp-eln-load-path)
-  (setcar native-comp-eln-load-path
-          (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
-;; Silence nativecomp warnings popping up on 28.0.50
-(setq native-comp-async-report-warnings-errors nil)
-;; Settings
-(setq native-comp-speed 2
-      native-comp-deferred-compilation t
-      package-native-compile t)
-
 
 ;;;; Set C Directory
 (setq find-function-C-source-directory "/Applications/Emacs.app/Contents/Resources/src")
