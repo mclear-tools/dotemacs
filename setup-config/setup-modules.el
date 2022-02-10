@@ -24,9 +24,9 @@
     (cpm--config-core)
 
 ;;;; Other Modules
-    (require 'setup-splash)
-    (require 'setup-theme)
     (require 'setup-modeline)
+    (require 'setup-theme)
+    (require 'setup-splash)
     (require 'setup-server)
     (require 'setup-org)
     (require 'setup-org-extensions)
