@@ -141,42 +141,37 @@
   :straight (:host github :repo "vedang/pdf-tools")
   :mode (("\\.pdf$" . pdf-view-mode))
   :commands (pdf-view-mode)
-  :bind* (:map pdf-view-mode-map
-          ;; Navigation
-          ("j"  . pdf-view-next-line-or-next-page)
-          ("k"  . pdf-view-previous-line-or-previous-page)
-          ("l"  . pdf-view-next-page)
-          ("h"  . pdf-view-previous-page)
-          ("g"  . pdf-view-first-page)
-          ("G"  . pdf-view-last-page)
-          ("t"  . pdf-view-goto-page)
-          ("l"  . pdf-view-goto-label)
-          ;; Search
-          ("/"  . isearch-forward)
-          ("?"  . isearch-backward)
-          ;; Actions
-          ("-"  . pdf-view-shrink)
-          ("+"  . pdf-view-enlarge)
-          ("="  . pdf-view-fit-page-to-window)
-          ("r"  . pdf-view-revert-buffer)
-          ("o"  . pdf-links-action-perform)
-          ("O"  . pdf-outline)
-          ("!"  . bms/pdf-no-filter)
-          ("#"  . bms/pdf-midnight-original))
-  :config
+  :init
   ;; initialise
   (pdf-loader-install :no-query)
-  ;; open pdfs scaled to fit page
-  (setq-default pdf-view-display-size 1.25)
-  ;; automatically annotate highlights
-  (setq pdf-annot-activate-created-annotations t)
+  :bind (:map pdf-view-mode-map
+         ;; Navigation
+         ("j"  . pdf-view-next-line-or-next-page)
+         ("k"  . pdf-view-previous-line-or-previous-page)
+         ("l"  . pdf-view-next-page-command)
+         ("h"  . pdf-view-previous-page-command)
+         ("g"  . pdf-view-first-page)
+         ("G"  . pdf-view-last-page)
+         ("t"  . pdf-view-goto-page)
+         ("l"  . pdf-view-goto-label)
+         ;; Search
+         ("/"  . isearch-forward)
+         ("?"  . isearch-backward)
+         ;; Actions
+         ("-"  . pdf-view-shrink)
+         ("+"  . pdf-view-enlarge)
+         ("="  . pdf-view-fit-page-to-window)
+         ("r"  . pdf-view-revert-buffer)
+         ("o"  . pdf-links-action-perform)
+         ("O"  . pdf-outline)
+         ("!"  . bms/pdf-no-filter)
+         ("#"  . bms/pdf-midnight-original)
+         )
+  :config
   ;; HiDPI
-  (setq pdf-view-use-scaling t
-        pdf-view-use-imagemagick nil)
-
+  (setq pdf-view-use-scaling t)
   ;; midnite mode
   (setq pdf-view-midnight-colors '("#ECEFF4" . "#434C5E" ))
-
 
   (defun bms/pdf-no-filter ()
     "View pdf without colour filter."
@@ -202,12 +197,12 @@
     (setq pdf-view-midnight-colors '("#00B800" . "#000000" )) ; green
     (pdf-view-midnight-minor-mode))
 
-  (defun bms/pdf-midnight-colour-schemes ()
-    "Midnight mode colour schemes bound to keys"
-    (local-set-key (kbd "!") (quote bms/pdf-no-filter))
-    (local-set-key (kbd "@") (quote bms/pdf-midnight-amber))
-    (local-set-key (kbd "#") (quote bms/pdf-midnight-green))
-    (local-set-key (kbd "$") (quote bms/pdf-midnight-original)))
+  ;; (defun bms/pdf-midnight-colour-schemes ()
+  ;;   "Midnight mode colour schemes bound to keys"
+  ;;   (local-set-key (kbd "!") (quote bms/pdf-no-filter))
+  ;;   (local-set-key (kbd "@") (quote bms/pdf-midnight-amber))
+  ;;   (local-set-key (kbd "#") (quote bms/pdf-midnight-green))
+  ;;   (local-set-key (kbd "$") (quote bms/pdf-midnight-original)))
 
   (defun cpm/pdf-color-theme ()
     (if (eq active-theme 'light-theme)
@@ -222,7 +217,7 @@
                                   ;; automatically turns on midnight-mode for pdfs
                                   (pdf-view-midnight-minor-mode)
                                   (cpm/pdf-color-theme)
-                                  (bms/pdf-midnight-colour-schemes)
+                                  ;; (bms/pdf-midnight-colour-schemes)
                                   (blink-cursor-mode -1)
                                   (linum-mode -1)
                                   (line-number-mode -1)
