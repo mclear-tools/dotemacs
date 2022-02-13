@@ -62,13 +62,13 @@
 ;;;; Peep Dired
 (use-package peep-dired
   :commands (peep-dired)
-  :bind* (:map dired-mode-map
-          ("p" . peep-dired)
-          :map peep-dired-mode-map
-          ("j"    . peep-dired-next-file)
-          ("k"    . peep-dired-prev-file)
-          ("RET"  . cpm/peep-dired-open)
-          ("TAB"  . cpm/other-window))
+  :bind (:map dired-mode-map
+         ("P" . peep-dired)
+         :map peep-dired-mode-map
+         ("j"    . peep-dired-next-file)
+         ("k"    . peep-dired-prev-file)
+         ("RET"  . cpm/peep-dired-open)
+         ("TAB"  . cpm/other-window))
   :config
   ;; helper function for opening files in full window
   (defun cpm/peep-dired-open ()
