@@ -39,6 +39,8 @@
     (require 'setup-search)
     (require 'setup-vc)
     (require 'setup-projects)
+    (require 'setup-tabs)
+    (require 'setup-workspaces)
     (require 'setup-teaching)
     (require 'setup-childframe)
     (require 'setup-shell)

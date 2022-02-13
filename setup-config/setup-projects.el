@@ -1,9 +1,5 @@
-;; Project Management -- This project workflow uses a single frame with different
-;; "workspaces" (i.e. window/buffer sets), using primarily only built-in
-;; packages such as project.el and tab-bar.el
-
-;; TODO: create per-project buf list
-
+;; -*- lexical-binding: t -*-
+;; Project Management -- using project.el, bookmarks, and git
 
 ;;; Project
 ;; Use project to switch to, and search in, projects (replaces projectile)
@@ -16,7 +12,7 @@
   :bind (:map project-prefix-map
          ("p" .  cpm/open-existing-project-and-workspace)
          ("P" .  project-switch-project)
-         ("G" .  cpm/goto-projects)
+         ("t" .  cpm/goto-projects)
          ("m" .  consult-bookmark)
          ("R" .  project-remember-projects-under))
   :config
@@ -89,94 +85,10 @@
        (sort (split-string (shell-command-to-string command) "\0" t)
              #'string<)))))
 
-
-;;; Tab Bar
-;; Use tab-bar for window grouping and configuration within a project (replaces eyebrowse)
-(use-package tab-bar
-  :straight (:type built-in)
-  :commands (tab-bar-switch-to-tab tab-bar-new-tab)
-  :custom
-  (tab-bar-new-tab-choice "*scratch*")
-  (tab-bar-select-tab-modifiers '(super))
-  (tab-bar-new-tab-to 'rightmost)
-  (tab-bar-show nil)
-  :config
-  ;; https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/
-  (defun cpm/tab-bar-select-tab-dwim ()
-    "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
-If no other tab exists, create one and switch to it.  If there is
-one other tab (so two in total) switch to it without further
-questions.  Else use completion to select the tab to switch to."
-    (interactive)
-    (let ((tabs (mapcar (lambda (tab)
-                          (alist-get 'name tab))
-                        (tab-bar--tabs-recent))))
-      (cond ((eq tabs nil)
-             (tab-new))
-            ((eq (length tabs) 1)
-             (tab-next))
-            (t
-             (tab-bar-switch-to-tab
-              (completing-read "Select tab: " tabs nil t))))))
-
-  (setq tab-bar-tab-name-function #'cpm/name-tab-by-project-or-default)
-  (setq tab-bar-mode t))
-
-;; See https://www.rousette.org.uk/archives/using-the-tab-bar-in-emacs/
-;; I've modified it to use project instead of projectile
-(defun cpm/name-tab-by-project-or-default ()
-  "Return project name if in a project, or default tab-bar name if not.
-The default tab-bar name uses the buffer name."
-  (let ((project-name (cpm--project-name)))
-    (if (string= "-" project-name)
-        (tab-bar-tab-name-current)
-      (cpm--project-name))))
-
-;; Get the current tab name for use in some other display
-(defun cpm-current-tab-name ()
-  (alist-get 'name (tab-bar--current-tab)))
-
-
-;;;; Group Buffers By Tab
-;; tab-bar version of separate buffer list filter
-;; https://github.com/wamei/elscreen-separate-buffer-list/issues/8
-;; https://github.com/kaz-yos/emacs/blob/master/init.d/200_tab-related.el#L74-L87
-
-;; TODO: get this working!
-(defun cpm--tab-bar-buffer-name-filter (buffer-names)
-  "Filter BUFFER-NAMES by the current tab's buffer list
-It should be used to filter a list of buffer names created by
-other functions, such as `helm-buffer-list'."
-  (let ((buffer-names-to-keep
-         ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-List.html
-         (append (mapcar #'buffer-name (alist-get 'wc-bl (tab-bar--tab)))
-                 (mapcar #'buffer-name (alist-get 'wc-bbl (tab-bar--tab))))))
-    (seq-filter (lambda (elt)
-                  (member elt buffer-names-to-keep))
-                buffer-names)))
-
-;;;; Tab Bar Echo
-(use-package tab-bar-echo-area
-  :straight (:type git :host github :repo "fritzgrabo/tab-bar-echo-area")
-  :bind (:map tab-prefix-map
-         ("c" . tab-bar-echo-area-display-tab-name)
-         ("a" . tab-bar-echo-area-display-tab-names))
-  :custom-face
-  (tab-bar-echo-area-tab ((t (:underline t :weight bold))))
-  (tab-bar-echo-area-tab-group-current ((t (:foreground ,bespoke-faded))))
-  :config
-  (tab-bar-echo-area-mode 1))
-
-;; display all tabs when idle
-(run-with-idle-timer 15 t (lambda () (message nil) (tab-bar-echo-area-display-tab-names)))
-
-
-;;; Project Functions
-
 ;;;; Open project & file
 (with-eval-after-load 'project
   (defun project-switch-project-open-file (dir)
-    "\"Switch\" to another project by running an Emacs command.
+    "Switch to another project by running an Emacs command.
 Open file using project-find-file
 
 When called in a program, it will use the project corresponding
@@ -186,111 +98,6 @@ to directory DIR."
           (project-current-inhibit-prompt t))
       (call-interactively 'project-find-file))))
 
-;;;; Open Project in New Workspace
-(defun cpm/open-existing-project-and-workspace ()
-  "open a project as its own tab"
-  (interactive)
-  (progn
-    (tab-bar-new-tab)
-    (call-interactively 'project-switch-project-open-file)
-    (tab-bar-rename-tab (cpm/name-tab-by-project-or-default))
-    (project-magit-dir)))
-
-;;;; Open agenda as workspace
-(defun cpm/open-agenda-in-workspace ()
-  "open agenda in its own tab"
-  (interactive)
-  (if (get-buffer "*Org Agenda*")
-      (progn
-        (tab-bar-switch-to-tab "Agenda")
-        (switch-to-buffer "*Org Agenda*")
-        (org-agenda-redo)
-        (delete-other-windows))
-    (progn
-      (tab-bar-switch-to-tab "Agenda")
-      (require 'org)
-      (require 'org-super-agenda)
-      (cpm/jump-to-org-super-agenda))))
-
-(bind-key* "s-1" 'cpm/open-agenda-in-workspace)
-
-;;;; Open emacs.d in workspace
-(defun cpm/open-emacsd-in-workspace ()
-  "open emacsd in its own tab"
-  (interactive)
-  (if (get-buffer "init.el")
-      (tab-bar-switch-to-tab "emacs.d")
-    (progn
-      (tab-bar-switch-to-tab "emacs.d")
-      (find-file-other-window user-init-file)
-      (project-magit-dir))))
-
-(bind-key* "s-2" 'cpm/open-emacsd-in-workspace)
-
-;;;; Open Notes in workspace
-(defun cpm/open-notes-in-workspace ()
-  "open notes dir in its own tab"
-  (interactive)
-  (if (get-buffer "content-org")
-      (tab-bar-switch-to-tab "Notes")
-    (progn
-      (tab-bar-switch-to-tab "Notes")
-      (cpm/notebook))))
-
-(bind-key* "s-3" 'cpm/open-notes-in-workspace)
-
-;;;; Terminal Workspace
-(defun cpm/vterm-home ()
-  (interactive)
-  (let ((default-directory "~/"))
-    (require 'multi-vterm)
-    (multi-vterm-next)))
-
-(defun cpm/open-new-terminal-and-workspace ()
-  "open an empty buffer in its own tab"
-  (interactive)
-  (if (get-buffer "*vterminal<1>*")
-      (tab-bar-switch-to-tab "Terminal")
-    (progn
-      (tab-bar-switch-to-tab "Terminal")
-      (cpm/vterm-home)
-      (delete-other-windows))))
-
-(bind-key* "s-4" 'cpm/open-new-terminal-and-workspace)
-
-;;;; Open New Buffer & Workspace
-;; This function is a bit weird; It creates a new buffer in a new workspace with a
-;; dummy git project to give the isolation of buffers typical with a git project
-;; I'm sure there is a more elegant way to do this but I don't know how :)
-(defun cpm/open-new-buffer-and-workspace ()
-  "open an empty buffer in its own tab"
-  (interactive)
-  (tab-bar-switch-to-tab "New project")
-  (let ((cpm-project-temp-dir "/tmp/temp-projects/"))
-    (progn
-      (when (not (file-exists-p cpm-project-temp-dir))
-        (make-directory cpm-project-temp-dir t))
-      (when (not (file-exists-p (concat cpm-project-temp-dir ".git/")))
-        (magit-init cpm-project-temp-dir))
-      (when (not (file-exists-p (concat cpm-project-temp-dir "temp")))
-        (with-temp-buffer (write-file (concat cpm-project-temp-dir "temp")))))
-    (setq default-directory cpm-project-temp-dir)
-    (find-file (concat cpm-project-temp-dir "temp"))
-    ))
-
-
-;;;; Open & Create New Project in New Workspace
-;; Create a new git project in its own workspace and create some useful
-;; files
-(defun cpm/create-new-project-and-workspace ()
-  "create & open a project as its own workspace"
-  (interactive)
-  (tab-bar-switch-to-tab "New-project")
-  (cpm/git-new-project)
-  (delete-other-windows)
-  (find-file ".gitignore")
-  (find-file "project-todo.org")
-  (magit-status-setup-buffer))
 
 ;;; Bookmarks
 (use-package bookmark
@@ -315,6 +122,44 @@ to directory DIR."
     ;; make sure project.el remembers new project
     (let ((pr (project--find-in-directory default-directory)))
       (project-remember-project pr))))
+
+;;; Clone a Git Repo from Clipboard
+;; http://xenodium.com/emacs-clone-git-repo-from-clipboard/
+(defun cpm/git-clone-clipboard-url ()
+  "Clone git URL in clipboard asynchronously and open in dired when finished."
+  (interactive)
+  (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
+  (let* ((url (current-kill 0))
+         (download-dir (expand-file-name "~/Downloads/"))
+         (project-dir (concat (file-name-as-directory download-dir)
+                              (file-name-base url)))
+         (default-directory download-dir)
+         (command (format "git clone %s" url))
+         (buffer (generate-new-buffer (format "*%s*" command)))
+         (proc))
+    (when (file-exists-p project-dir)
+      (if (y-or-n-p (format "%s exists. delete?" (file-name-base url)))
+          (delete-directory project-dir t)
+        (user-error "Bailed")))
+    (switch-to-buffer buffer)
+    (setq proc (start-process-shell-command (nth 0 (split-string command)) buffer command))
+    (with-current-buffer buffer
+      (setq default-directory download-dir)
+      (shell-command-save-pos-or-erase)
+      (require 'shell)
+      (shell-mode)
+      (view-mode +1))
+    (set-process-sentinel proc (lambda (process state)
+                                 (let ((output (with-current-buffer (process-buffer process)
+                                                 (buffer-string))))
+                                   (kill-buffer (process-buffer process))
+                                   (if (= (process-exit-status process) 0)
+                                       (progn
+                                         (message "finished: %s" command)
+                                         (dired project-dir))
+                                     (user-error (format "%s\n%s" command output))))))
+    (set-process-filter proc #'comint-output-filter)))
+
 
 ;;; Goto Projects
 (defun cpm/goto-projects ()
