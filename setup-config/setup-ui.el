@@ -109,7 +109,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package fontset
   :straight (:type built-in)
   :config
-  ;; Use symbola for proper unicode
+  ;; Use symbola for proper symbol glyphs
   (when (member "Symbola" (font-family-list))
     (set-fontset-font
      t 'symbol "Symbola" nil 'prepend))
@@ -123,17 +123,17 @@ If FRAME is omitted or nil, use currently selected frame."
   :straight (:type built-in)
   :config
   (set-face-attribute 'default nil
-                      :font "SF Mono"
+                      :font   "SF Mono"
                       :height 130
                       :weight 'normal)
   (set-face-attribute 'variable-pitch nil
                       :font "Avenir Next"
                       :height 200
-                      :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-                      :font "SF Mono"
-                      :height 130
                       :weight 'normal))
+
+;; Set default line spacing (in pixels)
+(setq-default line-spacing 0.05)
+
 
 ;;; Font Lock
 (use-package font-lock
@@ -146,8 +146,6 @@ If FRAME is omitted or nil, use currently selected frame."
 
 
 ;;; Scale Text
-;; Set default line spacing (in pixels)
-(setq-default line-spacing 0.05)
 ;; When using `text-scale-increase', this sets each 'step' to about one point size.
 (setq text-scale-mode-step 1.08)
 (global-set-key (kbd "s-=") 'text-scale-increase)
@@ -305,39 +303,44 @@ If FRAME is omitted or nil, use currently selected frame."
 ;;; Underline
 (setq x-underline-at-descent-line t)
 
-
-
-
 ;;; Helpful Information
 ;; Much better lookup both in details and headings/aesthetics
 ;; Better help info
+
+;; NOTE: emacs 29 has a breaking change so using el-patch to keep helpful working
+;; see https://github.com/Wilfred/helpful/pull/283
+
 (use-package helpful
   :defer t
-  :bind* (("C-h f"   . #'helpful-function)
-          ("C-h k"   . #'helpful-key)
-          ("C-h o"   . #'helpful-symbol)
-          ("C-h v"   . #'helpful-variable)
-          ("C-h C-." . #'helpful-at-point)
-          ("C-h C-l" . #'find-library)))
+  :bind (("C-h f"   . #'helpful-function)
+         ("C-h k"   . #'helpful-key)
+         ("C-h o"   . #'helpful-symbol)
+         ("C-h v"   . #'helpful-variable)
+         ("C-h C-." . #'helpful-at-point)
+         ("C-h C-l" . #'find-library))
+  :init
+  ;; HACK - see https://github.com/hlissner/doom-emacs/issues/6063
+  (defvar read-symbol-positions-list nil)
+  :config/el-patch
+  (defun helpful--autoloaded-p (sym buf)
+    "Return non-nil if function SYM is autoloaded."
+    (-when-let (file-name (buffer-file-name buf))
+      (setq file-name (s-chop-suffix ".gz" file-name))
+      (help-fns--autoloaded-p sym)))
 
-;; (advice-add 'describe-package-1 :after #'cpm/describe-package--add-melpa-link)
+  (defun helpful--skip-advice (docstring)
+    "Remove mentions of advice from DOCSTRING."
+    (let* ((lines (s-lines docstring))
+           (relevant-lines
+            (--take-while
+             (not (or (s-starts-with-p ":around advice:" it)
+                      (s-starts-with-p "This function has :around advice:" it)))
+             lines)))
+      (s-trim (s-join "\n" relevant-lines)))))
 
-;; Add melpa link to describe package info
-(defun cpm/describe-package--add-melpa-link (pkg)
-  (let* ((desc (if (package-desc-p pkg)
-                   pkg
-                 (cadr (assq pkg package-archive-contents))))
-         (name (if desc (package-desc-name desc) pkg))
-         (archive (if desc (package-desc-archive desc)))
-         (melpa-link (format "https://melpa.org/#/%s" name)))
-    (when (equal archive "melpa")
-      (save-excursion
-        (goto-char (point-min))
-        (when (re-search-forward "Summary:" nil t)
-          (forward-line 1)
-          (package--print-help-section "MELPA")
-          (help-insert-xref-button melpa-link 'help-url melpa-link)
-          (insert "\n"))))))
+;; Display file commentary section
+(global-set-key (kbd "C-h C-c") 'finder-commentary)
+
 
 ;;;; Helpful Demos
 (use-package elisp-demos
