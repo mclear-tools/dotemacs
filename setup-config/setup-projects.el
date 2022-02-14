@@ -27,7 +27,7 @@
   (project-forget-zombie-projects))
 
 (defun cpm--project-name ()
-  "return name of project without path"
+  "Return name of project without path"
   (file-name-nondirectory (directory-file-name (if (vc-root-dir) (vc-root-dir) "-"))))
 
 ;; magit function for project

@@ -1,5 +1,10 @@
-;; Workspaces
+;; Workspaces -*- lexical-binding: t; -*-
 ;; Leverage tab-bar.el and project.el to create workspaces
+;; NOTE that much of this code is from or is inspired by
+;; https://github.com/kaz-yos/emacs and
+;; https://github.com/wamei/elscreen-separate-buffer-list/issues/8 and
+;; https://www.rousette.org.uk/archives/using-the-tab-bar-in-emacs/ and
+;; https://github.com/minad/consult#multiple-sources
 
 ;;; Buffer Workspaces
 (defvar cpm-workspace-create-permitted-buffer-names
@@ -11,7 +16,7 @@
 
 ARG is directly passed to `tab-bar-new-tab'.
 Only buffers in `cpm--workspace-create-permitted-buffer-names'
-are kept kept in the `buffer-list' and `buried-buffer-list'.
+are kept in the `buffer-list' and `buried-buffer-list'.
 This is similar to `elscreen-create'."
   (interactive)
   (tab-bar-new-tab arg)
@@ -34,12 +39,33 @@ This is similar to `elscreen-create'."
 ;; NOTE: to clone tab/workspace with all buffers use tab-bar-duplicate-tab
 
 ;;; Filter Workspace Buffers
-;; filter buffers for switch-to-buffer
+
+;;;; Group Buffers By Tab
+;; tab-bar version of separate buffer list filter
+;; See https://github.com/wamei/elscreen-separate-buffer-list/issues/8
+;; https://github.com/kaz-yos/emacs/blob/master/init.d/200_tab-related.el#L74-L87
+
+(defun cpm--tab-bar-buffer-name-filter (buffer-names)
+  "Filter BUFFER-NAMES by the current tab's buffer list
+It should be used to filter a list of buffer names created by
+other functions, such as `helm-buffer-list'."
+  (let ((buffer-names-to-keep
+         ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-List.html
+         (append (mapcar #'buffer-name (alist-get 'wc-bl (tab-bar--tab)))
+                 (mapcar #'buffer-name (alist-get 'wc-bbl (tab-bar--tab))))))
+    (seq-filter (lambda (elt)
+                  (member elt buffer-names-to-keep))
+                buffer-names)))
+
+
+;;;; Filter Buffers for Switch-to-Buffer
+
 (advice-add #'internal-complete-buffer :filter-return #'cpm--tab-bar-buffer-name-filter)
 
-;; filter buffers for consult-buffer
+;;;; Filter Buffers for Consult-Buffer
+
 (with-eval-after-load 'consult
-  ;; hide full buffer list (available with "b")
+  ;; hide full buffer list (still available with "b")
   (consult-customize consult--source-buffer :hidden t :default nil)
   ;; set consult-workspace buffer list
   (defvar consult--source-workspace
@@ -61,11 +87,10 @@ This is similar to `elscreen-create'."
 ;;;; Startup Workspaces
 (defun cpm--workspace-setup ()
   "Set up worksapce at startup."
-  ;; Add *Messages* to Tab 1 to keep it in all tab
-  ;; through `my-workspace-create-permitted-buffer-names'.
+  ;; Add *Messages* and *splash* to Tab \`Home\'
   (progn
     (cpm/workspace-create)
-    (tab-bar-rename-tab "Default")
+    (tab-bar-rename-tab "Home")
     (when (get-buffer "*Messages*")
       (set-frame-parameter nil
                            'buffer-list
@@ -89,7 +114,7 @@ This is similar to `elscreen-create'."
     (tab-bar-rename-tab (cpm/name-tab-by-project-or-default))
     (project-magit-dir)))
 
-;;;; Open agenda as workspace
+;;;; Open Agenda as Workspace
 (defun cpm/open-agenda-in-workspace ()
   "Open agenda in its own workspace"
   (interactive)
@@ -108,7 +133,7 @@ This is similar to `elscreen-create'."
 
 (bind-key* "s-1" 'cpm/open-agenda-in-workspace)
 
-;;;; Open emacs.d in workspace
+;;;; Open emacs.d in Workspace
 (defun cpm/open-emacsd-in-workspace ()
   "Open emacs.d in its own workspace"
   (interactive)
@@ -122,7 +147,8 @@ This is similar to `elscreen-create'."
 
 (bind-key* "s-2" 'cpm/open-emacsd-in-workspace)
 
-;;;; Open Notes in workspace
+;;;; Open Notes in Workspace
+
 (defun cpm/open-notes-in-workspace ()
   "Open notes dir in its own workspace"
   (interactive)
@@ -136,8 +162,8 @@ This is similar to `elscreen-create'."
 (bind-key* "s-3" 'cpm/open-notes-in-workspace)
 
 ;;;; Terminal Workspace
-(defun cpm/vterm-home ()
-  "Open vterm in its own workspace"
+(defun cpm/vterm-workspace ()
+  "Open vterm in home dir in its own workspace"
   (interactive)
   (let ((default-directory "~/"))
     (require 'multi-vterm)
@@ -151,7 +177,7 @@ This is similar to `elscreen-create'."
     (progn
       (cpm/workspace-create)
       (tab-bar-rename-tab "Terminal")
-      (cpm/vterm-home)
+      (cpm/vterm-workspace)
       (delete-other-windows))))
 
 (bind-key* "s-4" 'cpm/open-new-terminal-and-workspace)

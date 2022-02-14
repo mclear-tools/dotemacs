@@ -226,7 +226,7 @@
 ;; For function switch see https://stackoverflow.com/a/4065412/6277148
 
 (defun cpm--emacs-switches (switch)
-  "depending on command line argument, load emacs with minimal settings & no modules; useful for running tests"
+  "Depending on command line argument, load emacs with minimal settings & no modules; useful for running tests"
   (let ((found-switch (member switch command-line-args)))
     (setq command-line-args (delete switch command-line-args))
     found-switch))

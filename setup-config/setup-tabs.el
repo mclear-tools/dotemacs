@@ -46,28 +46,11 @@ The default tab-bar name uses the buffer name."
       (cpm--project-name))))
 
 ;; Get the current tab name for use in some other display
-(defun cpm-current-tab-name ()
+(defun cpm--current-tab-name ()
   (alist-get 'name (tab-bar--current-tab)))
 
-
-;;;; Group Buffers By Tab
-;; tab-bar version of separate buffer list filter
-;; https://github.com/wamei/elscreen-separate-buffer-list/issues/8
-;; https://github.com/kaz-yos/emacs/blob/master/init.d/200_tab-related.el#L74-L87
-
-(defun cpm--tab-bar-buffer-name-filter (buffer-names)
-  "Filter BUFFER-NAMES by the current tab's buffer list
-It should be used to filter a list of buffer names created by
-other functions, such as `helm-buffer-list'."
-  (let ((buffer-names-to-keep
-         ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-List.html
-         (append (mapcar #'buffer-name (alist-get 'wc-bl (tab-bar--tab)))
-                 (mapcar #'buffer-name (alist-get 'wc-bbl (tab-bar--tab))))))
-    (seq-filter (lambda (elt)
-                  (member elt buffer-names-to-keep))
-                buffer-names)))
-
 ;;;; Tab Bar Echo
+;; Use echo area for tab name display
 (use-package tab-bar-echo-area
   :straight (:type git :host github :repo "fritzgrabo/tab-bar-echo-area")
   :bind (:map tab-prefix-map

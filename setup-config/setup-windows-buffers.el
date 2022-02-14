@@ -332,6 +332,7 @@ will be killed."
   (deactivate-mark))
 
 ;;;; Useful Buffers
+;; TODO: make this respect workspace buffers
 (defun cpm/user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
   Typically, if buffer name starts with *, it's not considered a user buffer.

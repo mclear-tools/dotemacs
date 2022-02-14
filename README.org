@@ -1,7 +1,7 @@
 These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and a [[https://github.com/mclear-tools/build-emacs-macos][custom build
 script]]. I typically build from the master branch (currently: GNU Emacs 29.0.50
-(build 1, aarch64-apple-darwin21.2.0, NS appkit-2113.20 Version 12.1 (Build
-21C52), git sha1 b6b2f797d9) of 2021-12-28).
+(build 1, aarch64-apple-darwin21.3.0, NS appkit-2113.30 Version 12.2 (Build
+21D49), git sha1 d64a1f7251) of 2022-02-10 ).
 
 The config files are updated/tweaked regularly. I use emacs primarily for all my
 academic work in the humanities (for discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]])
@@ -55,7 +55,8 @@ Some highlights of this emacs setup include:
    various other options)
 9. An attractive custom [[file:setup-config/setup-modeline.el][mode-line]] (related to bespoke-themes)
 10. Extensive [[file:setup-config/setup-osx.el][MacOS integration]]
-11. Single frame workspace [[file:setup-config/setup-projects.el][project]] workflow with project.el and tab-bar (both built-in) 
+11. Single frame, [[file:setup-config/setup-tabs.el][tab-based]], [[file:setup-config/setup-projects.el][project]] workflow leveraging project.el and tab-bar (both
+    built-in) with buffer-isolated [[file:setup-config/setup-workspaces.el][workspaces]]
 12. A configurable [[file:setup-config/setup-splash.el][splash page]]
 13. A [[file:setup-config/setup-writing.el][writing-centric]] configuration with great [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
     dedicated [[https://github.com/mclear-tools/dotemacs/blob/master/setup-config/setup-notes.el][functions for notes]], and [[file:setup-config/setup-org.el][org-mode]]
