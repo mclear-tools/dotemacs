@@ -1,4 +1,4 @@
-;; All packages related to narrowing and completion
+;; All packages related to narrowing and completion -*- lexical-binding: t; -*-
 
 ;;; Narrowing Completion
 
@@ -275,6 +275,7 @@ targets."
   :commands (consult-line
              consult-line-multi
              consult-buffer
+             consult-project-buffer
              consult-find
              consult-apropos
              consult-yank-pop
@@ -283,15 +284,43 @@ targets."
              consult-org-agenda
              consult-org-heading
              consult-flymake)
+  :bind (:map project-prefix-map
+         ("b" . consult-project-buffer)
+         ("m" .  consult-bookmark))
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI. You may want to also
+  ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
   :custom-face
   (consult-file ((t (:inherit bespoke-popout))))
   (consult-line-number ((t (:inherit bespoke-faded))))
+
   :init
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Optionally replace `completing-read-multiple' with an enhanced version.
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
+
   :config
-  ;; (push 'embark--allow-edit
-  ;;       (alist-get 'consult-imenu embark-target-injection-hooks))
+  ;; configure a function which returns the project root directory.
+  ;; project.el (project-roots)
+  (setq consult-project-root-function
+        (lambda ()
+          (when-let (project (project-current))
+            (car (project-roots project)))))
 
   ;; Preview is manual and immediate
   ;; https://github.com/minad/consult#live-previews
@@ -530,7 +559,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;; see setup-childframe.el
 ;; might be better off with cofu https://github.com/minad/corfu
 (use-package company
-  :hook ((markdown-mode org-mode prog-mode) . global-company-mode)
+  :hook ((markdown-mode org-mode prog-mode mu4e) . global-company-mode)
   :bind (:map company-active-map
          ;; "C-/"   #'company-search-candidates
          ;; "C-M-/" #'company-filter-candidates
@@ -539,7 +568,8 @@ If TOP-NODE is provided, then just select from its sub-nodes."
          ("C-k" . company-select-previous)
          ("C-l" . company-complete-selection))
   :init
-  (setq company-idle-delay 0.2
+  (setq company-idle-delay 0.05
+        company-echo-delay 0.05
         company-minimum-prefix-length 3
         company-require-match nil
         company-dabbrev-ignore-case nil
@@ -547,13 +577,19 @@ If TOP-NODE is provided, then just select from its sub-nodes."
         company-selection-wrap-around t
         company-search-regexp-function 'company-search-words-regexp
         company-show-numbers t
-        company-echo-truncate-lines nil)
+        company-echo-truncate-lines nil
+        company-tooltip-limit 10
+        )
   :config
   ;; Default backends
-  (setq company-backends '(company-elisp
+  (setq company-backends '(company-capf
                            company-keywords
+                           company-semantic
                            company-files
-                           company-semantic)))
+                           company-etags
+                           company-elisp
+                           company-yasnippet
+                           )))
 
 ;;;; Company Prescient
 
