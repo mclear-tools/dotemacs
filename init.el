@@ -72,6 +72,8 @@
 (eval-and-compile
   (progn
     (push cpm-setup-dir load-path)))
+;; Add mu4e to load-path
+(add-to-list 'load-path "/opt/homebrew/share/emacs/site-lisp/mu/mu4e/")
 
 ;; Set PATH properly for emacs
 (defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
@@ -234,6 +236,10 @@
 (unless (cpm--emacs-switches "-clean")
   (message "Loading config modules")
   (require 'setup-modules))
+
+;; Add easy switch for testing packages
+(when (cpm--emacs-switches "-test")
+  (require 'setup-test))
 
 ;;;; Emacs Build Version
 ;; When built emacs has git-version patch

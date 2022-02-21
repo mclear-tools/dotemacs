@@ -15,7 +15,7 @@
 
 (if (cpm--emacs-switches "-core")
     (progn
-      (message "Loading core modules only")
+      (message "Loading core modules")
       (cpm--config-core)
       ;; start with built in vertical completion
       (require 'setup-icomplete))
@@ -50,7 +50,8 @@
     (require 'setup-programming)
     (require 'setup-pdf)
     (require 'setup-calendars)
-    ;; (require 'setup-email)
+    (require 'setup-email)
+    ;; (require 'setup-mu4e)
     (require 'setup-testing)
     ))
 
