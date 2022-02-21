@@ -41,8 +41,9 @@
   :straight (:type built-in)
   :config
   ;; Make a clean & minimalist frame
-  (setq-default default-frame-alist
+  (setq-default initial-frame-alist
                 (append (list
+                         '(fullscreen . maximized)
                          '(internal-border-width . 20)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
@@ -53,15 +54,22 @@
                          '(height . 45)
                          '(width . 85)
                          )))
-  ;; maximize frame
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  (setq-default default-frame-alist
+                (append (list
+                         '(frame-title-format . nil)
+                         '(internal-border-width . 20)
+                         '(left-fringe    . 0)
+                         '(right-fringe   . 0)
+                         '(tool-bar-lines . 0)
+                         '(menu-bar-lines . 0)
+                         '(vertical-scroll-bars . nil)
+                         '(horizontal-scroll-bars . nil)
+                         )))
+  ;; Resize pixel-wise to avoid gaps
   (setq-default window-resize-pixelwise t)
   (setq-default frame-resize-pixelwise t)
-  ;; No frame title
-  (setq-default frame-title-format nil)
-  ;; No frame icon
-  (setq ns-use-proxy-icon nil))
-
+  ;; Don't show icon in frame
+  (setq-default ns-use-proxy-icon nil))
 
 ;;;; Fix titlebar titling colors
 ;; see also https://github.com/d12frosted/homebrew-emacs-plus/issues/55
