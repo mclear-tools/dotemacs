@@ -124,6 +124,16 @@
         (find-variable-other-window symb)
       (find-function-at-point))))
 
+;;;;; Fix Parentheses
+
+(defun cpm/fix-lonely-parens ()
+  "Move all closing parenthesis at start of indentation to previous line."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^\\s-*)" nil t)
+      (delete-indentation))))
+
 ;;;;; Elisp indentation
 ;; Fix the indentation of keyword lists in Emacs Lisp. See [1] and [2].
 ;;
