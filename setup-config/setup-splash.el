@@ -143,15 +143,20 @@
                                             'face 'warning
                                             'follow-link t))
         (goto-char (+ width 880))
+        (save-excursion (insert-text-button " [m] Mail "
+                                            'action (lambda (_)  (cpm/open-notes-in-workspace))
+                                            'help-echo "Open Email in Mu4e"
+                                            'face 'warning
+                                            'follow-link t))
+        (goto-char (+ width 1014))
         (save-excursion (insert-text-button " [n] Notes "
                                             'action (lambda (_)  (cpm/open-notes-in-workspace))
                                             'help-echo "Visit setup directory"
                                             'face 'warning
                                             'follow-link t))
-        (goto-char (+ width 1015))
-
+        (goto-char (+ width 1149))
         (save-excursion (insert-text-button " [p] Projects "
-                                            'action (lambda (_)  (cpm/open-existing-project-and-workspace))
+                                            'action (lambda (_)  (emacs-workspaces/open-existing-project-and-workspace))
                                             'help-echo "Open project & workspace"
                                             'face 'warning
                                             'follow-link t))
@@ -184,6 +189,7 @@
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "a") 'cpm/open-agenda-in-workspace)
     (define-key map (kbd "c") 'cpm/open-emacsd-in-workspace)
+    (define-key map (kbd "m") 'cpm/open-email-in-workspace)
     (define-key map (kbd "n") 'cpm/open-notes-in-workspace)
     (define-key map (kbd "p") 'cpm/open-existing-project-and-workspace)
     (define-key map (kbd "q") 'splash-screen-kill)

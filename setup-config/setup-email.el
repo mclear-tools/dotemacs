@@ -59,6 +59,9 @@
   ;; Use mu4e system-wide
   (setq mail-user-agent 'mu4e-user-agent)
 
+  ;; Compose in new frame
+  (setq mu4e-compose-in-new-frame t)
+
   ;; Don't keep message compose buffers around after sending:
   (setq message-kill-buffer-on-exit t)
   ;;; Make sure plain text mails flow correctly for recipients
@@ -71,6 +74,7 @@
   ;; https://www.djcbsoftware.nl/code/mu/mu4e/Writing-messages.html#How-can-I-avoid-Outlook-display-issues_003f
   (setq  message-citation-line-format "On %Y-%m-%d at %R %Z, %f wrote...")
 
+  ;; Check spelling
   (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
 ;;;; Sending Mail
@@ -175,7 +179,8 @@
   (setq mu4e-bookmarks '((:name "Inbox" :query "m:/UNL/inbox or m:/Fastmail/inbox" :key ?i)
                          (:name "Unread" :query "flag:unread AND NOT flag:trashed" :key ?u)
                          (:name "Drafts" :query "m:/UNL/drafts or m:/Fastmail/drafts" :key ?d)
-                         (:name "Sent Mail" :query "m:/UNL/sent or m:/Fastmail/sent" :key ?s)
+                         (:name "Sent Mail" :query "m:/UNL/sent or m:/Fastmail/sent" :key ?T)
+                         (:name "Trash" :query "m:/UNL/Trash or m:/Fastmail/Trash" :key ?s)
                          (:name "-----" :query "m:/UNL/inbox" :hide-unread t :key ?-)
                          (:name "Today" :query "date:today..now" :key ?t)
                          (:name "Yesterday" :query "date:2d..today and not date:today..now" :key ?y)
@@ -285,6 +290,7 @@
 
 ;;; Using Org & HTML (Org-MSG)
 (use-package org-msg
+  :disabled
   :straight (:type git :host github :repo "jeremy-compostella/org-msg")
   :after mu4e
   :config
@@ -297,6 +303,13 @@
 				                       (reply-to-html	. (text html))
 				                       (reply-to-text	. (text)))
 	    org-msg-convert-citation t)
+  (defun cpm/org-msg-hooks ()
+    "Hooks for org-msg"
+    (progn
+      (auto-fill-mode -1)
+      (hl-line-mode 1)
+      (company-mode 1)))
+  (add-hook 'org-msg-edit-mode-hook #'cpm/org-msg-hooks)
   (org-msg-mode))
 
 
