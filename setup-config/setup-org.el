@@ -162,7 +162,8 @@
               ;; (centered-cursor-mode)
               (turn-on-auto-fill)
               (visual-line-mode)))
-  (add-hook 'auto-save-hook 'org-save-all-org-buffers)
+  ;; this auto-save seems like overkill?
+  ;; (add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 ;;; Org Agenda
   ;; Settings for the [[http://orgmode.org/manual/Agenda-Views.html][agenda]].
@@ -470,11 +471,20 @@ _vr_ reset      ^^                       ^^                 ^^
           ;;  "* TODO %? :email: \n%(org-mac-outlook-message-get-links)")
           ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
           ;;  "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
-          ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-           "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
+          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
+          ;; "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
+
+          ("m" "Email Workflow")
+          ("mc" "Comment" entry (file+olp ,(concat org-directory "Mail.org") "Mail Task")
+           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n  %i")
+          ("mf" "Follow Up" entry (file+olp ,(concat org-directory "Mail.org") "Follow Up")
+           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n  %i" :immediate-finish t)
+          ("mr" "Read Later" entry (file+olp ,(concat org-directory "Mail.org") "Read Later")
+           "* TODO Read  %:subject\nSCHEDULED:%t\n%a\n\n  %i" :immediate-finish t)
+
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
-          ("s" "Music Review" entry  (file "~/music.org")
+          ("s" "Music Review" entry  (file ,(concat org-directory "music.org"))
            ,(concat "\n** Artist - Album :Artist:Genre: %?\n"
 	                "  - Date: %T\n"
 	                "  - Listened While: \n"

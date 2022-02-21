@@ -30,9 +30,10 @@
            ("j" . cpm/jump-in-buffer                 )
            ("k" . cpm/kill-this-buffer               )
            ("K" . crux-kill-other-buffers            )
+           ("m" . consult-global-mark                )
            ("n" . cpm/create-new-buffer              )
            ("N" . cpm/new-buffer-new-frame           )
-           ("p" . project-switch-to-buffer           )
+           ("p" . consult-project-buffer             )
            ("r" . revert-buffer                      )
            ("R" . crux-rename-buffer-and-file        )
            ("s" . consult-buffer-other-window        )
@@ -92,7 +93,6 @@
            ("f"  . eval-defun)
            ("r"  . eval-last-region))
 
-
 ;;;; File Keybindings
 (bind-keys :prefix-map cpm+file-keys
            :prefix (concat cpm-prefix " f")
@@ -103,18 +103,6 @@
            ("s" . save-buffer                      )
            ("r" . consult-recent-file              )
            ("y" . cpm/show-and-copy-buffer-filename))
-
-;;;; Project Keybindings
-;; (bind-keys :prefix-map
-;;            :prefix
-;;            ("p" .  cpm/open-existing-project-and-workspace)
-;;            ("b" .  project-switch-to-buffer)
-;;            ("f" .  project-find-file)
-;;            ("P" .  project-switch-project)
-;;            ("g" .  cpm/goto-projects)
-;;            ("m" .  consult-bookmark)
-;;            ("R" .  project-remember-projects-under))
-
 
 ;;;; Quit Keybindings
 (bind-keys :prefix-map cpm+quit-keys

@@ -10,10 +10,8 @@
              project-switch-project
              project-switch-project-open-file)
   :bind (:map project-prefix-map
-         ("p" .  cpm/open-existing-project-and-workspace)
          ("P" .  project-switch-project)
          ("t" .  cpm/goto-projects)
-         ("m" .  consult-bookmark)
          ("R" .  project-remember-projects-under))
   :config
   (setq project-list-file (concat cpm-cache-dir "projects"))
@@ -97,7 +95,6 @@ to directory DIR."
     (let ((default-directory dir)
           (project-current-inhibit-prompt t))
       (call-interactively 'project-find-file))))
-
 
 ;;; Bookmarks
 (use-package bookmark
