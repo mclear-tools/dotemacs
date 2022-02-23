@@ -99,73 +99,57 @@
 ;; Give git projects branches the dired treatment
 (use-package gited :commands (gited-list gited-list-branches))
 
-;;; Git Gutter
-;;Git gutter is great for giving visual feedback on changes, but it doesn't play well
-;;with org-mode using org-indent. So I don't use it globally.
-(use-package git-gutter
-  :hook ((markdown-mode . git-gutter-mode)
-         (prog-mode . git-gutter-mode)
-         (conf-mode . git-gutter-mode))
-  :init
-  :config
-  (setq git-gutter:disabled-modes '(org-mode asm-mode image-mode)
-        ;; git-gutter:update-interval 1
-        git-gutter:window-width nil
-        git-gutter:ask-p nil)
-  (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
-                              :hint nil)
-    "
- Git gutter:
-   _j_: next hunk        _s_tage hunk     _q_uit
-   _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
-   ^ ^                   _p_opup hunk
-   _h_: first hunk
-   _l_: last hunk        set start _R_evision
- "
-    ("j" git-gutter:next-hunk)
-    ("k" git-gutter:previous-hunk)
-    ("h" (progn (goto-char (point-min))
-                (git-gutter:next-hunk 1)))
-    ("l" (progn (goto-char (point-min))
-                (git-gutter:previous-hunk 1)))
-    ("s" git-gutter:stage-hunk)
-    ("r" git-gutter:revert-hunk)
-    ("p" git-gutter:popup-hunk)
-    ("R" git-gutter:set-start-revision)
-    ("q" nil :color blue)
-    ("Q" (progn (git-gutter-mode -1)
-                ;; git-gutter-fringe doesn't seem to
-                ;; clear the markup right away
-                (sit-for 0.1)
-                (git-gutter-mode))
-     :color blue)))
+;;; Git Gutter HL
+;; See https://www.reddit.com/r/emacs/comments/suxc9b/modern_gitgutter_in_emacs/
+;; And https://github.com/jimeh/.emacs.d/blob/master/modules/version-control/siren-diff-hl.el
 
-(use-package git-gutter-fringe
-  :straight t
-  :after git-gutter
-  :demand fringe-helper
+(use-package diff-hl
+  :hook
+  ((prog-mode . diff-hl-mode)
+   (text-mode . diff-hl-mode)
+   (dired-mode . diff-hl-dired-mode)
+   (magit-pre-refresh . diff-hl-magit-pre-refresh)
+   (magit-post-refresh . diff-hl-magit-post-refresh))
+  :custom
+  (diff-hl-fringe-bmp-function 'cpm--diff-hl-fringe-bmp-from-type)
+  (diff-hl-fringe-face-function 'cpm--diff-hl-fringe-face-from-type)
+  (diff-hl-margin-mode 1)
+  (diff-hl-margin-symbols-alist
+   '((insert . "┃")
+     (delete . "┃")
+     (change . "┃")
+     (unknown . "?")
+     (ignored . "i")))
+  :custom-face
+  (diff-hl-insert ((t (:slant normal :weight normal :inherit bespoke-salient))))
+  (diff-hl-change ((t (:slant normal :weight normal :inherit bespoke-popout))))
+  (diff-hl-delete ((t (:slant normal :weight normal :inherit bespoke-critical))))
+  :init
+  (defun cpm--diff-hl-fringe-face-from-type (type _pos)
+    (intern (format "cpm--diff-hl-%s" type)))
+
+  (defun cpm--diff-hl-fringe-bmp-from-type(type _pos)
+    (intern (format "cpm--diff-hl-%s" type)))
+
+  (defun cpm--diff-hl-set-render-mode ()
+    (diff-hl-margin-mode (if window-system -1 1)))
   :config
-  (require 'git-gutter-fringe)
-  (global-git-gutter-mode t)
-  ;; subtle diff indicators in the fringe
-  ;; places the git gutter outside the margins.
-  (setq-default fringes-outside-margins t)
-  (setq git-gutter-fr:side 'right-fringe)
-  ;; thin fringe bitmaps
-  (define-fringe-bitmap 'git-gutter-fr:added [224]
-    nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:modified [224]
-    nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
-    nil nil 'bottom))
+  (define-fringe-bitmap 'diff-hl-insert
+    [#b00000011] nil nil '(center repeated))
+  (define-fringe-bitmap 'diff-hl-change
+    [#b00000011] nil nil '(center repeated))
+  (define-fringe-bitmap 'diff-hl-delete
+    [#b00000011] nil nil '(center repeated))
+  (global-diff-hl-mode))
 
 ;;; Quick commits
 ;; Make a quick commit without opening magit. This is a version of a
 ;; workflow I used to use in Sublime Text. Perfect for short commit messages.
+;; FIXME: is there a way to make this work without evil?
 (defun quick-commit ()
   "make a quick commit from the mini-buffer"
   (interactive)
-  (evil-ex '"!Git add % && Git commit -m '" ))
+  (shell-command "Git add % && Git commit -m 'Revise file'"))
 
 ;;; Show Git Status in Dired
 (use-package diff-hl

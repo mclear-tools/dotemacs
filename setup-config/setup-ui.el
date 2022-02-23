@@ -103,11 +103,8 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package fringe
   :straight (:type built-in)
   :custom
-  ;; minimal fringe, right only
-  ;; set this only because of git-gutter-fringe
-  ;; if using on left alignment of cursor with header line is annoyingly off
-  (fringe-mode '(0 . 4)))
-
+  ;; minimal fringe
+  (fringe-mode '(0 . 0)))
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
