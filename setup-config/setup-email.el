@@ -31,8 +31,9 @@
         mu4e-headers-fields '((:empty          .   1)
                               (:flags          .   8)
                               (:human-date     .  22)
-                              (:from-or-to     .  45)
-                              (:subject        . 100)))
+                              (:from-or-to     .  40)
+                              (:subject        .  55)
+                              (:tags           .  15)))
   (setq mu4e-speedbar-support t)
   (setq mu4e-use-fancy-chars t)
   (setq mu4e-completing-read-function 'completing-read)
@@ -141,7 +142,7 @@
                   (mu4e-compose-signature . (concat
                                              "Colin McLear"))
                   (mu4e-drafts-folder  . "/Fastmail/Drafts")
-                  (mu4e-sent-folder  . "/Fastmail/Sent")
+                  (mu4e-sent-folder  . "/Fastmail/Sent Items")
                   (mu4e-refile-folder  . "/Fastmail/Archive")
                   (mu4e-trash-folder  . "/Fastmail/Trash")))))
 
@@ -179,8 +180,8 @@
   (setq mu4e-bookmarks '((:name "Inbox" :query "m:/UNL/inbox or m:/Fastmail/inbox" :key ?i)
                          (:name "Unread" :query "flag:unread AND NOT flag:trashed" :key ?u)
                          (:name "Drafts" :query "m:/UNL/drafts or m:/Fastmail/drafts" :key ?d)
-                         (:name "Sent Mail" :query "m:/UNL/sent or m:/Fastmail/sent" :key ?T)
-                         (:name "Trash" :query "m:/UNL/Trash or m:/Fastmail/Trash" :key ?s)
+                         (:name "Sent Mail" :query "m:/UNL/sent or m:/Fastmail/sent" :key ?s)
+                         (:name "Trash" :query "m:/UNL/Trash or m:/Fastmail/Trash" :key ?T)
                          (:name "-----" :query "m:/UNL/inbox" :hide-unread t :key ?-)
                          (:name "Today" :query "date:today..now" :key ?t)
                          (:name "Yesterday" :query "date:2d..today and not date:today..now" :key ?y)
@@ -280,6 +281,23 @@
         (setq msg (concat msg " Really send message?"))
         (or (y-or-n-p msg)
             (keyboard-quit)))))
+  ;; Add completing read
+  (add-to-list 'mu4e-marks
+               '(tag
+                 :char       ("g" . " ")
+                 :prompt     "gtag"
+                 :ask-target (lambda () (cpm/select-mail-tag))
+                 :action      (lambda (docid msg target)
+                                (mu4e-action-retag-message msg target))))
+  (mu4e~headers-defun-mark-for tag)
+  (define-key mu4e-headers-mode-map (kbd "G") 'mu4e-headers-mark-for-tag)
+  (define-key-after (lookup-key mu4e-headers-mode-map [menu-bar headers])
+    [mark-tag] '("Mark for tag" . mu4e-headers-mark-for-tag) 'mark-pattern)
+
+
+  ;; actions to add tags
+  (add-to-list 'mu4e-view-actions
+               '("add/remove tags" . mu4e-action-retag-message) t)
   :config
   ;; add words to check attachments & cc list
   (add-to-list 'mu4e-goodies-keywords '("[aA]ttached" . check-attach))
@@ -288,9 +306,23 @@
   (add-to-list 'mu4e-goodies-keywords '("CCd" . check-cc))
   (require 'mu4e-goodies))
 
+(defvar cpm-mail-tags
+  '("phil105"
+    "phil232"
+    "phil871"
+    "phil880"
+    "phil971"
+    "grad-admissions"
+    "referee-reports"
+    "publications"
+    ))
+
+(defun cpm/select-mail-tag ()
+  (interactive)
+  (completing-read "Select Tag (+/-): " cpm-mail-tags))
+
 ;;; Using Org & HTML (Org-MSG)
 (use-package org-msg
-  :disabled
   :straight (:type git :host github :repo "jeremy-compostella/org-msg")
   :after mu4e
   :config
@@ -303,46 +335,18 @@
 				                       (reply-to-html	. (text html))
 				                       (reply-to-text	. (text)))
 	    org-msg-convert-citation t)
+
   (defun cpm/org-msg-hooks ()
     "Hooks for org-msg"
     (progn
       (auto-fill-mode -1)
       (hl-line-mode 1)
-      (company-mode 1)))
+      (company-mode 1)
+      ;; FIXME: Try remove auto-save hook *locally* to avoid multiple saved drafts
+      (remove-hook 'auto-save-hook #'cpm/full-auto-save t)))
   (add-hook 'org-msg-edit-mode-hook #'cpm/org-msg-hooks)
+
   (org-msg-mode))
-
-
-;;; Mu4e Dashboard
-(use-package mu4e-dashboard
-  :straight (:host github :type git :repo "rougier/mu4e-dashboard")
-  :after mu4e)
-
-;;; SVG Tag Mode
-(use-package svg-tag-mode
-  :straight (:type git :host github :repo "rougier/svg-tag-mode")
-  :after mu4e)
-
-;;; Sidebar
-(use-package nano-sidebar
-  :commands (nano-sidebar-toggle)
-  :straight (:type git :host github :repo "rougier/nano-sidebar")
-  :config
-  (defun nano-sidebar-mu4e-init (frame sidebar)
-    (select-frame sidebar)
-    (find-file (concat cpm-elisp-dir "mu4e-dashboard.org"))
-    (mu4e-dashboard-mode)
-    (hl-line-mode)
-    (set-window-dedicated-p nil t)
-    (forward-char 8)
-    (setq header-line-format "")
-    (setq mode-line-format nil))
-
-;;; Automatic mu4e dashboard sidebar when open mu4e
-  (add-to-list 'nano-sidebar-properties
-               `("mu4e"    36 dark ,bespoke-background nano-sidebar-mu4e-init) t)
-  (set-frame-parameter nil 'name "mu4e")
-  (nano-sidebar-toggle))
 
 ;;; End Setup Email
 
