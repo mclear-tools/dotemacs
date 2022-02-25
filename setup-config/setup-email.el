@@ -119,7 +119,7 @@
                                              "Associate Professor\n"
                                              "Department of Philosophy\n"
                                              "University of Nebraska–Lincoln\n"
-                                             "https://www.colinmclear.net"))
+                                             "[[https://www.colinmclear.net]]"))
                   (mu4e-drafts-folder  . "/UNL/Drafts")
                   (mu4e-sent-folder  . "/UNL/Sent")
                   (mu4e-refile-folder  . "/UNL/Archive")
@@ -315,6 +315,9 @@
     "grad-admissions"
     "referee-reports"
     "publications"
+    "conferences"
+    "casrac"
+    "edited-volume"
     ))
 
 (defun cpm/select-mail-tag ()
@@ -347,6 +350,50 @@
   (add-hook 'org-msg-edit-mode-hook #'cpm/org-msg-hooks)
 
   (org-msg-mode))
+
+;;; Email Addressing
+;; function to return first name of email recipients
+;; used by yasnippet
+;; inspired by
+;;http://blog.binchen.org/posts/how-to-use-yasnippets-to-produce-email-templates-in-emacs.html
+;; http://pragmaticemacs.com/emacs/email-templates-in-mu4e-with-yasnippet/
+
+(defun cpm/mu4e-get-names-for-yasnippet ()
+  "Return comma separated string of names for an email"
+  (interactive)
+  (let ((email-name "") str email-string email-list email-name2 tmpname)
+    (save-excursion
+      (goto-char (point-min))
+      ;; first line in email could be some hidden line containing NO to field
+      (setq str (buffer-substring-no-properties (point-min) (point-max))))
+    ;; take name from TO field - match series of names
+    (when (string-match "^To: \"?\\(.+\\)" str)
+      (setq email-string (match-string 1 str)))
+    ;;split to list by comma
+    (setq email-list (split-string email-string " *, *"))
+    ;;loop over emails
+    (dolist (tmpstr email-list)
+      ;;get first word of email string
+      (setq tmpname (car (split-string tmpstr " ")))
+      ;;remove whitespace or ""
+      (setq tmpname (replace-regexp-in-string "[ \"]" "" tmpname))
+      ;;join to string
+      (setq email-name
+            (concat email-name ", " tmpname)))
+    ;;remove initial comma
+    (setq email-name (replace-regexp-in-string "^, " "" email-name))
+
+    ;;see if we want to use the name in the FROM field
+    ;;get name in FROM field if available, but only if there is only
+    ;;one name in TO field
+    (if (< (length email-list) 2)
+        (when (string-match "^\\([^ ,\n]+\\).+writes:$" str)
+          (progn (setq email-name2 (match-string 1 str))
+                 ;;prefer name in FROM field if TO field has "@"
+                 (when (string-match "@" email-name)
+                   (setq email-name email-name2))
+                 )))
+    email-name))
 
 ;;; End Setup Email
 
