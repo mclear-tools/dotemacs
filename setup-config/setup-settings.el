@@ -120,7 +120,7 @@
           `((".*" ,auto-save-files-dir t)))
     (when (not (file-exists-p auto-save-files-dir))
       (make-directory auto-save-files-dir t)))
-  ;; auto-save every buffer that visits a file but not *scratch* etc
+  ;; auto-save every file visiting buffer
   ;; see https://emacs.stackexchange.com/q/7729/11934
   (setq-default auto-save-default t)
   (setq-default
@@ -138,9 +138,6 @@
          kept-new-versions 10              ; newest versions to keep when a new numbered backup is made
          vc-make-backup-files t            ; backup versioned files, which Emacs does not do by default
          )
-  ;; save scratch buffer to auto-save dir
-  (progn (set-buffer "*scratch*")
-         (setq-local default-directory (concat cpm-cache-dir "auto-save-files/")))
 
   (defun cpm/full-auto-save ()
     (interactive)

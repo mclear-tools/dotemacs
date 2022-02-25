@@ -50,10 +50,11 @@
 ;;;; Comment Keybindings
 (bind-keys :prefix-map cpm+comment-wrap-keys
            :prefix (concat cpm-prefix " c")
-           ("o" . org-block-wrap)
-           ("y" . cpm/yaml-wrap)
            ("c" . comment-dwim)
-           ("l" . comment-line))
+           ("d" . crux-duplicate-and-comment-current-line-or-region)
+           ("l" . comment-line)
+           ("o" . org-block-wrap)
+           ("y" . cpm/yaml-wrap))
 
 ;;;; Config Keybindings
 (bind-keys :prefix-map cpm+config-keys

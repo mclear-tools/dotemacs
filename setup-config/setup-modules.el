@@ -27,6 +27,7 @@
     (require 'setup-modeline)
     (require 'setup-theme)
     (require 'setup-splash)
+    (require 'setup-scratch)
     (require 'setup-server)
     (require 'setup-org)
     (require 'setup-org-extensions)

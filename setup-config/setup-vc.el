@@ -113,7 +113,7 @@
   :custom
   (diff-hl-fringe-bmp-function 'cpm--diff-hl-fringe-bmp-from-type)
   (diff-hl-fringe-face-function 'cpm--diff-hl-fringe-face-from-type)
-  (diff-hl-margin-mode 1)
+  (diff-hl-margin-mode t)
   (diff-hl-margin-symbols-alist
    '((insert . "┃")
      (delete . "┃")

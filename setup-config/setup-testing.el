@@ -1,9 +1,9 @@
 ;;; Testing
 
-;;;; Consult Project
-(use-package consult-project
-  :straight (:local-repo "/Users/roambot/.emacs.d/.local/elisp/consult-project/")
-  :commands (consult-project))
+;; ;;;; Consult Project
+;; (use-package consult-project
+;;   :straight (:local-repo "/Users/roambot/.emacs.d/.local/elisp/consult-project/")
+;;   :commands (consult-project))
 
 
 ;;;; Pretty Ligatures

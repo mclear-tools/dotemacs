@@ -179,7 +179,21 @@
   :straight nil
   :defer 1
   :config
-  (setq tramp-persistency-file-name (concat cpm-cache-dir "tramp")))
+  (setq tramp-persistency-file-name (concat cpm-cache-dir "tramp")
+        ;; the most reliable tramp setup I have found (used at work every day...)
+        tramp-default-method "ssh"
+        tramp-copy-size-limit nil
+        tramp-use-ssh-controlmaster-options nil))
+
+;; I recommend the following ~/.ssh/config settings be used with the tramp settings in this cfg:
+;; Host *
+;; ForwardAgent yes
+;; AddKeysToAgent yes
+;; ControlMaster auto
+;; ControlPath ~/.ssh/master-%r@%h:%p
+;; ControlPersist yes
+;; ServerAliveInterval 10
+;; ServerAliveCountMax 10
 
 (use-package tramp-term :commands tramp-term)
 
