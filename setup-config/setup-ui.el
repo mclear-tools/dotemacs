@@ -45,8 +45,8 @@
                 (append (list
                          '(fullscreen . maximized)
                          '(internal-border-width . 10)
-                         '(left-fringe    . 0)
-                         '(right-fringe   . 0)
+                         '(left-fringe    . 2)
+                         '(right-fringe   . 2)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)
@@ -58,8 +58,8 @@
                 (append (list
                          '(frame-title-format . nil)
                          '(internal-border-width . 20)
-                         '(left-fringe    . 0)
-                         '(right-fringe   . 0)
+                         '(left-fringe    . 2)
+                         '(right-fringe   . 2)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)

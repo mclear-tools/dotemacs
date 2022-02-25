@@ -154,9 +154,6 @@ Instead it's simpler to use bash."
   (setq org-appear-autolinks nil)
   (setq org-appear-autosubmarkers t))
 
-
-
-
 ;;; Org GTD
 ;;;; GTD Project Functions
 (defun cpm/org-goto-todo ()
