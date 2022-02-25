@@ -5,7 +5,7 @@
 (use-package frame
   :straight (:type built-in)
   :custom
-  (window-divider-default-right-width 12)
+  (window-divider-default-right-width 10)
   (window-divider-default-bottom-width 1)
   (window-divider-default-places 'right-only)
   (window-divider-mode t))

@@ -44,7 +44,7 @@
   (setq-default initial-frame-alist
                 (append (list
                          '(fullscreen . maximized)
-                         '(internal-border-width . 20)
+                         '(internal-border-width . 10)
                          '(left-fringe    . 0)
                          '(right-fringe   . 0)
                          '(tool-bar-lines . 0)
