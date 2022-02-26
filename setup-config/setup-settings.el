@@ -330,6 +330,14 @@
 ;; Note that the default is x100), but this seems too high.
 (setq undo-outer-limit 1006632960)
 
+;;;; Multisession
+
+(use-package multisession
+  :straight (:type built-in)
+  :defer t
+  :config
+  (setq multisession-directory (concat cpm-cache-dir "multisession/")))
+
 ;;;; Transient Popups
 (use-package transient
   :defer 1
