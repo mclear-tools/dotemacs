@@ -37,6 +37,7 @@
    '("=" . hl-line-mode)
    '("a" . consult-org-agenda)
    '("b" . cpm+buffer-keys)
+   '("c" . cpm+comment-wrap-keys)
    '("C" . cpm+config-keys)
    '("d" . dired-jump)
    '("D" . dired-jump-other-window)

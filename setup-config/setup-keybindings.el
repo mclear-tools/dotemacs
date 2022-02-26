@@ -59,6 +59,7 @@
 ;;;; Config Keybindings
 (bind-keys :prefix-map cpm+config-keys
            :prefix (concat cpm-prefix " C")
+           ("a" . cpm/setup-kill-and-archive-region     )
            ("c" . goto-custom.el                        )
            ("d" . goto-dotfiles.org                     )
            ("D" . goto-emacs-dir                        )
