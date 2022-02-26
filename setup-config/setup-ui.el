@@ -419,6 +419,12 @@ If FRAME is omitted or nil, use currently selected frame."
   (setq reveal-auto-hide nil)
   (global-reveal-mode))
 
+;;; SVG Library (For Tags/Labels/etc.)
+  ;;; SVG Tag Mode
+(use-package svg-tag-mode
+  :straight (:type git :host github :repo "rougier/svg-tag-mode")
+  :defer t)
+
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-ui)

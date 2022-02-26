@@ -1,3 +1,9 @@
+;; Email settings
+;; Assembled from many sources
+;; I use mbsync and mu4e
+;; For styling resources see:
+;; https://github.com/rougier/nano-emacs/blob/master/nano-mu4e.el
+
 ;;; Mu4e
 (use-package mu4e
   ;; Tell straight to use homebrew mu4e
@@ -22,43 +28,164 @@
   (setq mu4e-attachments-dir "~/Downloads")
 
 ;;;; Viewing
+
+;;;;; Header View Functions
+  (defun mu4e-get-account (msg)
+    (let* ((maildir (mu4e-message-field msg :maildir))
+           (maildir (substring maildir 1)))
+      (nth 0 (split-string maildir "/"))))
+
+  (defun mu4e-get-maildir (msg)
+    (let* ((maildir (mu4e-message-field msg :maildir))
+           (maildir (substring maildir 1)))
+      (nth 0 (reverse (split-string maildir "/")))))
+
+  (defun mu4e-get-mailbox (msg)
+    (format "%s|%s" (mu4e-get-account msg) (mu4e-get-maildir msg)))
+
+  (defun mu4e-headers-tag (text tag face help query)
+    "Make a clickable button with specified FACE displaying TEXT.
+   When hovered, HELP is displayed. When clicked, mu4e QUERY is executed."
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map 'mu4e-headers-mode-map)
+      (define-key map [mouse-1] `(lambda ()
+                                   (interactive) (mu4e-headers-search ,query)))
+      (concat
+       (propertize text
+                   'display tag
+                   'face face
+                   'mouse-face `(:foreground ,bespoke-salient)
+                   'local-map map
+                   'help-echo `(lambda (window _object _point)
+                                 (let (message-log-max) (message ,help))))
+       " ")))
+
+  ;; Buttons
+  (defun mu4e-headers-button (text face help query)
+    "Make a clickable button with specified FACE displaying TEXT.
+   When hovered, HELP is displayed. When clicked, mu4e QUERY is executed."
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map 'mu4e-headers-mode-map)
+      (define-key map [mouse-1] `(lambda ()
+                                   (interactive) (mu4e-headers-search ,query)))
+      (propertize text
+                  'face face
+                  'mouse-face `(:foreground ,bespoke-background
+                                :background ,bespoke-faded)
+                  'local-map map
+                  'help-echo `(lambda (window _object _point)
+                                (let (message-log-max) (message ,help))))))
+
+  (defun mu4e-headers-date-button (date face)
+    (concat
+     (mu4e-headers-button (format-time-string "%d" date)
+                          face
+                          (format-time-string "Mails from %d %B %Y" date)
+                          (format-time-string "date:%Y%m%d" date))
+     (propertize "/" 'face face)
+     (mu4e-headers-button (format-time-string "%m" date)
+                          face
+                          (format-time-string "Mails from %B %Y" date)
+                          (format-time-string "date:%Y%m" date))
+     (propertize "/" 'face face)
+     (mu4e-headers-button (format-time-string "%Y" date)
+                          face
+                          (format-time-string "Mails from %Y" date)
+                          (format-time-string "date:%Y" date))))
+  ;; Relative dates
+  (defun mu4e-headers-is-today (date)
+    (= (- (time-to-days (current-time)) (time-to-days date)) 0))
+
+  (defun mu4e-headers-is-yesterday (date)
+    (= (- (time-to-days (current-time)) (time-to-days date)) 1))
+
+  (defun mu4e-headers-relative-date (msg)
+    (let* ((thread  (mu4e-message-field msg :thread))
+           (level (plist-get thread :level))
+           (empty-parent (and thread (plist-get thread :empty-parent)))
+           (child   (and thread (> (plist-get thread :level) 0)))
+           (unread  (memq 'unread  (mu4e-message-field msg :flags)))
+           (date (mu4e-msg-field msg :date))
+           (diff (- (time-to-days (current-time)) (time-to-days date)))
+           (face 'bespoke-salient))
+      (setq face 'bespoke-faded)
+      (cond ((mu4e-headers-is-today date)
+             (mu4e-headers-button (format-time-string "     %H:%M" date)
+                                  face
+                                  (format-time-string "Mails from today")
+                                  (format-time-string "date:%Y%m%d" date)))
+            ((mu4e-headers-is-yesterday date)
+             (mu4e-headers-button " Yesterday"
+                                  face
+                                  (format-time-string "Mails from yesterday")
+                                  (format-time-string "date:%Y%m%d" date)))
+            (t  (mu4e-headers-date-button date face)))))
+
+  ;; Style & determine what flags to show
+  (defun mu4e-headers-attach (msg)
+    (cond ((memq 'flagged  (mu4e-message-field msg :flags))
+           (propertize "!" 'face 'bespoke-strong))
+          ((memq 'attach  (mu4e-message-field msg :flags))
+           (propertize "" 'face 'bespoke-faded))
+          (t " ")))
+
+;;;;; Headers
   ;; Set headers
   (add-to-list 'mu4e-header-info-custom
                '(:empty . (:name "Empty"
                            :shortname ""
                            :function (lambda (msg) "  "))))
-  (setq mu4e-headers-date-format "%Y-%m-%d %H:%M:%S"
-        mu4e-headers-fields '((:empty          .   1)
-                              (:flags          .   8)
-                              (:human-date     .  22)
-                              (:from-or-to     .  40)
-                              (:subject        .  55)
-                              (:tags           .  15)))
-  (setq mu4e-speedbar-support t)
-  (setq mu4e-use-fancy-chars t)
-  (setq mu4e-completing-read-function 'completing-read)
 
-  ;; List of your email adresses:
-  (setq mu4e-user-mail-address-list '("mclear@fastmail.com"
-                                      "mclear@unl.edu"))
+  (add-to-list 'mu4e-header-info-custom
+               '(:relative-date . (:name "Relative date"
+                                   :shortname ""
+                                   :function mu4e-headers-relative-date)))
+
+  (add-to-list 'mu4e-header-info-custom
+               '(:mailbox-short . (:name "Mailbox"
+                                   :shortname ""
+                                   :function mu4e-get-mailbox)))
+
+  (add-to-list 'mu4e-header-info-custom
+               '(:attach . (:name "Attachment"
+                            :shortname ""
+                            :function mu4e-headers-attach)))
+
+
+  (setq mu4e-headers-date-format "%D";; "%Y-%m-%d %H:%M:%S"
+        mu4e-headers-fields '((:empty          .   1)
+                              (:relative-date  .  12)
+                              (:from-or-to     .  40)
+                              (:subject        .  90)
+                              (:tags           .  20)
+                              (:mailbox-short  .  17)
+                              (:attach         .   2)
+                              ))
 
   ;; how to handle html-formatted emails
+  ;; View in browser
+  (add-to-list 'mu4e-view-actions '("view in browser" . mu4e-action-view-in-browser) t)
+
+  ;; Other options for rendering
   ;; NOTE: superseded by xwidget support -- see mu4e-views below
   (setq mu4e-html2text-command "iconv -c -t utf-8 | pandoc -f html -t plain")
   ;; (setq mu4e-html2text-command 'mu4e-shr2text)
-
-  ;; View in browser
-  (add-to-list 'mu4e-view-actions '("view in browser" . mu4e-action-view-in-browser) t)
-  ;; Other options for rendering
   ;; (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
 
-
+  ;; other display settings
+  (setq mu4e-speedbar-support t)
+  (setq mu4e-use-fancy-chars t)
+  (setq mu4e-completing-read-function 'completing-read)
   (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
 
 ;;;; Composing Email
 
   ;; Use mu4e system-wide
   (setq mail-user-agent 'mu4e-user-agent)
+
+  ;; List of your email adresses:
+  (setq mu4e-user-mail-address-list '("mclear@fastmail.com"
+                                      "mclear@unl.edu"))
 
   ;; Compose in new frame
   (setq mu4e-compose-in-new-frame t)
@@ -193,7 +320,63 @@
                          (:name "Attachments" :query "flag:attach" :key ?A)
                          (:name "Messages with images" :query "mime:image/*" :key ?I)))
 
+;;;; Better Tagging/Marking
+
+  ;;--- Nicer actions display using emoji tags -----------------------------------
+  ;; (plist-put (cdr (assq 'refile   mu4e-marks)) :char "⨯")
+  (plist-put (cdr (assq 'refile   mu4e-marks)) :char "📂")
+  (plist-put (cdr (assq 'unread   mu4e-marks)) :char "📩")
+  (plist-put (cdr (assq 'trash    mu4e-marks)) :char "🗑️")
+  (plist-put (cdr (assq 'untrash  mu4e-marks)) :char " ")
+  (plist-put (cdr (assq 'delete   mu4e-marks)) :char "🧨")
+  (plist-put (cdr (assq 'flag     mu4e-marks)) :char "🚩")
+  (plist-put (cdr (assq 'unflag   mu4e-marks)) :char " ")
+  (plist-put (cdr (assq 'move     mu4e-marks)) :char "📂")
+  (plist-put (cdr (assq 'tag      mu4e-marks)) :char "👀")
+
+  (setq mu4e-headers-show-target nil)
+
+  (set-face-attribute 'mu4e-header-marks-face nil :inherit 'bold)
+
+  ;; Add SVG tags
+  ;; FIXME: unmarking doesn't remove SVG tags
+  (defun mu4e-mark-at-point-advice (mark target)
+    (interactive)
+    (require 'svg-tag-mode)
+    (let* ((msg (mu4e-message-at-point))
+           (docid (mu4e-message-field msg :docid))
+           (overlay (make-overlay (- (line-end-position) 10)
+                                  (- (line-end-position) 0))))
+      (save-excursion
+        ;; (remove-overlays (line-beginning-position) (line-end-position))
+        (delete-overlay (make-overlay (line-beginning-position) (line-end-position)))
+        (if (eql mark 'unmark)
+            (delete-overlay overlay)
+          (cond ((eql mark 'refile)
+                 (overlay-put overlay 'display (svg-tag-make "ARCHIVE" 'success 3 0)))
+                ((eql mark 'trash)
+                 (overlay-put overlay 'display (svg-tag-make "TRASH" 'error 5 0)))
+                ((eql mark 'untrash)
+                 (overlay-put overlay 'display (svg-tag-make "UNTRASH" 3 0)))
+                ((eql mark 'delete)
+                 (overlay-put overlay 'display (svg-tag-make "DELETE" 'error 4 0)))
+                ((eql mark 'unread)
+                 (overlay-put overlay 'display (svg-tag-make "UNREAD" 4 0)))
+                ((eql mark 'flag)
+                 (overlay-put overlay 'display (svg-tag-make "FLAG" 'warning 6 0)))
+                ((eql mark 'unflag)
+                 (overlay-put overlay 'display (svg-tag-make "UNFLAG" 4 0)))
+                ((eql mark 'move)
+                 (overlay-put overlay 'display (svg-tag-make "MOVE" 'success 6 0)))
+                ((eql mark 'tag)
+                 (overlay-put overlay 'display (svg-tag-make "TAG" 'shadow 7 0))))))))
+
+  (advice-add 'mu4e-mark-at-point :after #'mu4e-mark-at-point-advice)
+
+
 ;;;; Miscellaneous
+
+  (setq mu4e-completing-read-function 'completing-read)
 
   ;; Store link to message if in header view, not to header query
   (setq mu4e-org-link-query-in-headers-mode nil)
