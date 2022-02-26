@@ -326,13 +326,14 @@
   ;; (plist-put (cdr (assq 'refile   mu4e-marks)) :char "⨯")
   (plist-put (cdr (assq 'refile   mu4e-marks)) :char "📂")
   (plist-put (cdr (assq 'unread   mu4e-marks)) :char "📩")
+  (plist-put (cdr (assq 'read     mu4e-marks)) :char "👀")
   (plist-put (cdr (assq 'trash    mu4e-marks)) :char "🗑️")
-  (plist-put (cdr (assq 'untrash  mu4e-marks)) :char " ")
+  (plist-put (cdr (assq 'untrash  mu4e-marks)) :char "  ")
   (plist-put (cdr (assq 'delete   mu4e-marks)) :char "🧨")
   (plist-put (cdr (assq 'flag     mu4e-marks)) :char "🚩")
-  (plist-put (cdr (assq 'unflag   mu4e-marks)) :char " ")
+  (plist-put (cdr (assq 'unflag   mu4e-marks)) :char "  ")
   (plist-put (cdr (assq 'move     mu4e-marks)) :char "📂")
-  (plist-put (cdr (assq 'tag      mu4e-marks)) :char "👀")
+  (plist-put (cdr (assq 'tag      mu4e-marks)) :char "❗")
 
   (setq mu4e-headers-show-target nil)
 
