@@ -17,8 +17,8 @@
   (message "Native complation is *not* available"))
 
 ;; Set eln-cache dir
-(when (boundp 'native-comp-eln-load-path)
-  (startup-redirect-eln-cache (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))
+(when (fboundp 'startup-redirect-eln-cache)
+  (startup-redirect-eln-cache (convert-standard-filename (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory))))
 
 ;; Silence nativecomp warnings popping up
 (setq native-comp-async-report-warnings-errors nil)
