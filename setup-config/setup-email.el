@@ -8,7 +8,7 @@
 (use-package mu4e
   ;; Tell straight to use homebrew mu4e
   :straight (:local-repo "/opt/homebrew/share/emacs/site-lisp/mu/mu4e/" :type built-in)
-  :commands mu4e
+  :commands (mu4e mu4e-compose-new mu4e-update-mail-and-index)
   :config
   ;; Finding the binary (installed w/homebrew)
   (setq mu4e-mu-binary (executable-find "mu"))
@@ -20,9 +20,13 @@
   (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
   ;; Change filenames when moving
   ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  ;; i.e. makes sure that moving a message (like to Trash) causes the
+  ;; message to get a new file name.  This helps to avoid the
+  ;; dreaded "UID is N beyond highest assigned" error.
+  ;; See this link for more info: https://stackoverflow.com/a/43461973
   (setq mu4e-change-filenames-when-moving t)
-  ;; Refresh mail using mbsync every 5 minutes
-  (setq mu4e-update-interval (* 5 60))
+  ;; Refresh mail using mbsync every 3 minutes
+  (setq mu4e-update-interval (* 3 60))
 
 ;;;; Attachments
   (setq mu4e-attachments-dir "~/Downloads")
@@ -386,8 +390,40 @@
   (defun cpm/store-link-to-mu4e-query ()
     (interactive)
     (let ((org-mu4e-link-query-in-headers-mode t))
-      (call-interactively 'org-store-link))))
+      (call-interactively 'org-store-link)))
 
+  ;; Go to unread
+  (defvar cpm-mu4e-unread-query
+    "flag:unread")
+  (defun cpm/go-to-mail-unread ()
+    (interactive)
+    (if (member "Email" (emacs-workspaces--list-workspaces))
+        (progn
+          (tab-bar-switch-to-tab "Email")
+          (mu4e-headers-search cpm-mu4e-unread-query))
+      (progn
+        (emacs-workspaces/create-workspace)
+        (tab-bar-rename-tab "Email")
+        (find-file (concat org-directory "mail.org"))
+        (mu4e)
+        (mu4e-headers-search cpm-mu4e-unread-query))))
+
+  ;; Go to inbox
+  (defvar cpm-mu4e-inbox-query
+    "(maildir:/UNL/INBOX OR maildir:/Fastmail/INBOX)")
+  (defun cpm/go-to-mail-inbox ()
+    (interactive)
+    (if (member "Email" (emacs-workspaces--list-workspaces))
+        (progn
+          (tab-bar-switch-to-tab "Email")
+          (mu4e-headers-search cpm-mu4e-inbox-query))
+      (progn
+        (emacs-workspaces/create-workspace)
+        (tab-bar-rename-tab "Email")
+        (find-file (concat org-directory "mail.org"))
+        (mu4e)
+        (mu4e-headers-search cpm-mu4e-inbox-query))))
+  )
 
 ;;;; End Mu4e
 
