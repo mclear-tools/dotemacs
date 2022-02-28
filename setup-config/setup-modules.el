@@ -10,7 +10,6 @@
     (require 'setup-libraries)
     (require 'setup-functions-macros)
     (require 'setup-keybindings)
-    (require 'setup-modal)
     (require 'setup-settings)))
 
 (if (cpm--emacs-switches "-core")
@@ -52,7 +51,6 @@
     (require 'setup-pdf)
     (require 'setup-calendars)
     (require 'setup-email)
-    ;; (require 'setup-mu4e)
     (require 'setup-testing)
     ))
 
