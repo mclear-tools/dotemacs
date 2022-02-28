@@ -45,8 +45,6 @@
                 (append (list
                          '(fullscreen . maximized)
                          '(internal-border-width . 10)
-                         '(left-fringe    . 2)
-                         '(right-fringe   . 2)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)
@@ -58,8 +56,6 @@
                 (append (list
                          '(frame-title-format . nil)
                          '(internal-border-width . 20)
-                         '(left-fringe    . 2)
-                         '(right-fringe   . 2)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)
@@ -103,7 +99,7 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package fringe
   :straight (:type built-in)
   :custom
-  ;; minimal fringe
+  ;; no fringe
   (fringe-mode '(0 . 0)))
 
 ;;; Color

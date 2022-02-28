@@ -113,7 +113,6 @@
   :custom
   (diff-hl-fringe-bmp-function 'cpm--diff-hl-fringe-bmp-from-type)
   (diff-hl-fringe-face-function 'cpm--diff-hl-fringe-face-from-type)
-  (diff-hl-margin-mode t)
   (diff-hl-margin-symbols-alist
    '((insert . "┃")
      (delete . "┃")
@@ -121,9 +120,9 @@
      (unknown . "?")
      (ignored . "i")))
   :custom-face
-  (diff-hl-insert ((t (:slant normal :weight normal :inherit bespoke-salient))))
-  (diff-hl-change ((t (:slant normal :weight normal :inherit bespoke-popout))))
-  (diff-hl-delete ((t (:slant normal :weight normal :inherit bespoke-critical))))
+  (diff-hl-insert ((t (:family "SF Mono" :slant normal :weight normal :inherit bespoke-salient))))
+  (diff-hl-change ((t (:family "SF Mono" :slant normal :weight normal :inherit bespoke-popout))))
+  (diff-hl-delete ((t (:family "SF Mono" :slant normal :weight normal :inherit bespoke-critical))))
   :init
   (defun cpm--diff-hl-fringe-face-from-type (type _pos)
     (intern (format "cpm--diff-hl-%s" type)))
@@ -134,13 +133,13 @@
   (defun cpm--diff-hl-set-render-mode ()
     (diff-hl-margin-mode (if window-system -1 1)))
   :config
+  (diff-hl-margin-mode 1)
   (define-fringe-bitmap 'diff-hl-insert
     [#b00000011] nil nil '(center repeated))
   (define-fringe-bitmap 'diff-hl-change
     [#b00000011] nil nil '(center repeated))
   (define-fringe-bitmap 'diff-hl-delete
-    [#b00000011] nil nil '(center repeated))
-  (global-diff-hl-mode))
+    [#b00000011] nil nil '(center repeated)))
 
 ;;; Quick commits
 ;; Make a quick commit without opening magit. This is a version of a
