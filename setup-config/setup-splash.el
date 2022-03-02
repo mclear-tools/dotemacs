@@ -51,13 +51,12 @@
     (point)))
 
 ;; See https://github.com/emacs-dashboard/emacs-dashboard/blob/master/dashboard-widgets.el
+;; https://github.com/hlissner/doom-emacs/blob/eddaae40e84b5eb1f0136aaba23d918f71b6a986/core/core.el#L479
+
 (defcustom splash-init-info
   (lambda ()
     (let ((package-count 0) (time (emacs-init-time)))
-      (when (bound-and-true-p package-alist)
-        (setq package-count (length package-activated-list)))
-      (when (boundp 'straight--profile-cache)
-        (setq package-count (+ (hash-table-size straight--profile-cache) package-count)))
+      (setq package-count (- (length load-path) (length (get 'load-path 'initial-value))))
       (if (zerop package-count)
           (format "Emacs started in %s" time)
         (format "%d packages loaded in %s" package-count time))))
@@ -97,7 +96,7 @@
         ;; Buffer local settings
         (if (one-window-p)
             (setq mode-line-format nil))
-        (setq cursor-type nil)
+        (setq-local cursor-type nil)
         (setq vertical-scroll-bar nil)
         (setq horizontal-scroll-bar nil)
         (setq fill-column width)
