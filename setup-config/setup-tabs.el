@@ -63,10 +63,48 @@ questions.  Else use completion to select the tab to switch to."
   (tab-bar-echo-area-tab ((t (:underline t :weight bold))))
   (tab-bar-echo-area-tab-group-current ((t (:foreground ,bespoke-faded))))
   :config
+  (setq tab-bar-echo-area-trigger-display-functions nil)
   (tab-bar-echo-area-mode 1))
 
 ;; display all tabs when idle
-(run-with-idle-timer 5 t (lambda () (message nil) (tab-bar-echo-area-display-tab-names)))
+;; (run-with-idle-timer 5 t (lambda () (message nil) (tab-bar-echo-area-display-tab-names)))
+
+;;;; Echo-Bar
+;; Display info in the echo area -- using just for tabs/workspaces right now
+(use-package echo-bar
+  :straight (echo-bar :type git :host github :repo "qaiviq/echo-bar.el")
+  :config
+  (setq echo-bar-function #'cpm--echo-bar
+        echo-bar-minibuffer t)
+  (echo-bar-enable))
+
+(defun cpm--echo-bar ()
+  "Function for echo bar"
+  ;; Show tabs
+  (cpm-echo-bar/tabs))
+
+(defun cpm-echo-bar/tabs ()
+  "Display tab names in the echo area. Depends on `tab-bar-echo-area'"
+  (interactive)
+  (require 'tab-bar-echo-area)
+  (let* ((tab-bar-format (or tab-bar-echo-area-format (and (boundp 'tab-bar-format) tab-bar-format)))
+         (keymap (funcall tab-bar-echo-area-make-keymap-function))
+         (keymap-elements (seq-filter #'tab-bar-echo-area--keymap-element-type (cdr keymap))))
+    (if-let ((tab-names (tab-bar-echo-area--processed-tab-names keymap-elements))
+             (format-string (cond ((functionp tab-bar-echo-area-display-tab-names-format-string)
+                                   (funcall tab-bar-echo-area-display-tab-names-format-string keymap-elements))
+                                  ((stringp tab-bar-echo-area-display-tab-names-format-string)
+                                   tab-bar-echo-area-display-tab-names-format-string)
+                                  (t "%s"))))
+        (format "%s" (string-join tab-names)))))
+
+(defun echo-bar--list-workspaces ()
+  "Return a list of `tab-bar' tabs/workspaces."
+  (require 'tab-bar)
+  (let ((tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs))))
+    (mapconcat 'identity tab-names " ")))
+
+
 
 ;;; Provide Tabs
 (provide 'setup-tabs)
