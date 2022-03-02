@@ -1,4 +1,4 @@
-;; All packages related to narrowing and completion -*- lexical-binding: t; -*-
+;; All packages related to core narrowing and completion functions  -*- lexical-binding: t; -*-
 
 ;;; Narrowing Completion
 
@@ -149,7 +149,7 @@
   :init
   (setq completion-styles '(orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;;;; Embark
 ;; Actions on narrowed candidates
@@ -239,9 +239,7 @@ targets."
       (apply fn args)))
 
   (advice-add #'embark-completing-read-prompter
-              :around #'embark-hide-which-key-indicator)
-
-  )
+              :around #'embark-hide-which-key-indicator))
 
 (use-package embark-consult
   :straight t
@@ -553,57 +551,158 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 (bind-key "C-h i" #'completing-read-info)
 
 ;;; In-Buffer Completion
-;;;; Company
-;; complete anything http://company-mode.github.io
-;; completion in region; use child-frame for better visual performance
-;; see setup-childframe.el
-;; might be better off with cofu https://github.com/minad/corfu
-(use-package company
-  :hook ((markdown-mode org-mode prog-mode mu4e) . global-company-mode)
-  :bind (:map company-active-map
-         ;; "C-/"   #'company-search-candidates
-         ;; "C-M-/" #'company-filter-candidates
-         ("C-d" . company-show-doc-buffer)
-         ("C-j" . company-select-next)
-         ("C-k" . company-select-previous)
-         ("C-l" . company-complete-selection))
+;;;; Corfu
+(use-package corfu
+  :straight (:type git :host github :repo "minad/corfu")
+  :hook (after-init . corfu-global-mode)
+  :bind
+  (:map corfu-map
+   ("C-j"      . corfu-next)
+   ("C-k"      . corfu-previous)
+   ("M-d"      . corfu-show-documentation)
+   ("C-g"      . corfu-quit)
+   ("M-l"      . corfu-show-location)
+   ("<escape>" . corfu-quit)
+   ("<return>" . corfu-insert)
+   ;; Or use TAB
+   ("TAB" . corfu-next)
+   ([tab] . corfu-next)
+   ("S-TAB" . corfu-previous)
+   ([backtab] . corfu-previous))
+  :custom
+  ;; auto-complete
+  (corfu-auto t)
+
+  (corfu-min-width 60)
+  (corfu-max-width corfu-min-width)     ; Always have the same width
+  (corfu-count 10)
+  (corfu-scroll-margin 4)
+  (corfu-cycle t)
+  ;; TAB cycle if there are only few candidates
+  (completion-cycle-threshold 3)
+
+  (corfu-echo-documentation nil)        ; Use corfu-doc
+  (corfu-separator  ?_)
+  (corfu-quit-no-match 'separator)
+  (corfu-quit-at-boundary t)
+
+  (corfu-preview-current 'insert)       ; Preview current candidate?
+  (corfu-preselect-first t)           ; Preselect first candidate?
+  :config
+  (defun corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+    (unless (or (bound-and-true-p mct--active)
+                (bound-and-true-p vertico--input))
+      (setq-local corfu-auto t) ; Enable/disable auto completion
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
+
+;; Use dabbrev with Corfu!
+(use-package dabbrev
+  ;; Swap M-/ and C-M-/
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand)))
+
+
+;;;; Kind Icon (For Corfu)
+(use-package kind-icon
+  :straight (:type git :host github :repo "jdtsmith/kind-icon")
+  :after corfu
+  :custom
+  (kind-icon-use-icons t)
+  (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+  (kind-icon-blend-background nil)
+
+  ;; NOTE kind-icon' depends `svg-lib' which creates a cache directory that
+  ;; defaults to the `user-emacs-directory'. Here, I change that directory to
+  ;; the cache location.
+  (svg-lib-icons-dir (concat cpm-cache-dir  "svg-lib/cache/")) ; Change cache dir
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+
+  ;; Add hook to reset cache so the icon colors match my theme
+  ;; NOTE 2022-02-05: This is a hook which resets the cache whenever I switch
+  ;; the theme using my custom defined command for switching themes. If I don't
+  ;; do this, then the backgound color will remain the same, meaning it will not
+  ;; match the background color corresponding to the current theme. Important
+  ;; since I have a light theme and dark theme I switch between. This has no
+  ;; function unless you use something similar
+  (add-hook 'bespoke-after-load-theme-hook #'(lambda () (interactive) (kind-icon-reset-cache)))
+  )
+
+;;;; Corfu Doc
+(use-package corfu-doc
+  :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
+  :after corfu
+  ;; :hook   (corfu-mode . corfu-doc-mode)
+  :bind (:map corfu-map
+         ;; This is a manual toggle for the documentation window.
+         ([remap corfu-show-documentation] . corfu-doc-toggle) ; Remap the default doc command
+         ;; Scroll in the documentation window
+         ("M-p" . corfu-doc-scroll-up)
+         ("M-n" . corfu-doc-scroll-down))
+  :custom
+  (corfu-doc-max-width 70)
+  (corfu-doc-max-height 20)
+
+  ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+  ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+  ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+  (corfu-echo-documentation nil)
+  :config
+  ;; NOTE 2022-02-05: This is optional. Enabling the mode means that every corfu
+  ;; popup will have corfu-doc already enabled. This isn't desirable for me
+  ;; since (i) most of the time I do not need to see the documentation and (ii)
+  ;; when scrolling through many candidates, corfu-doc makes the corfu popup
+  ;; considerably laggy when there are many candidates. Instead, I rely on
+  ;; manual toggling via `corfu-doc-toggle'.
+  )
+
+;;;;; Corfu Extensions (Cape)
+
+;; Add extensions
+(use-package cape
+  :straight (:type git :host github :repo "minad/cape")
+  :after corfu
+  ;; Bind dedicated completion commands
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p i" . cape-ispell)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
   :init
-  (setq company-idle-delay 0.05
-        company-echo-delay 0.05
-        company-minimum-prefix-length 3
-        company-require-match nil
-        company-dabbrev-ignore-case nil
-        company-dabbrev-downcase nil
-        company-selection-wrap-around t
-        company-search-regexp-function 'company-search-words-regexp
-        company-show-numbers t
-        company-echo-truncate-lines nil
-        company-tooltip-limit 10
-        )
-  :config
-  ;; Default backends
-  (setq company-backends '(company-capf
-                           company-keywords
-                           company-semantic
-                           company-files
-                           company-etags
-                           company-elisp
-                           company-yasnippet
-                           )))
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-tex)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-symbol)
+  (add-to-list 'completion-at-point-functions #'cape-line)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-ispell)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dict)
+  )
 
-;;;; Company Prescient
-
-(use-package company-prescient
-  :disabled
-  :after company
-  :demand t
-  :config
-  (company-prescient-mode t))
+;;;; Company
+;; Install this just for the backends
+(use-package company
+  :defer t)
 
 ;;;; Company Org Block
 ;; Org block completion
 ;; https://github.com/xenodium/company-org-block
 (use-package company-org-block
+  :disabled t
   :straight (:host github :repo "xenodium/company-org-block")
   :after org
   :custom
@@ -611,8 +710,10 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   :config
   (require 'org-element)
   :hook ((org-mode . (lambda ()
-                       (setq-local company-backends '(company-org-block))
-                       (company-mode +1)))))
+                       ;; Use with corfu/cape
+                       (setq-local completion-at-point-functions
+                                   (mapcar #'cape-company-to-capf
+                                           (list #'company-org-block)))))))
 
 ;;;; Yasnippet
 (use-package yasnippet

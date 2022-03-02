@@ -57,11 +57,11 @@
 (setq tab-width 4)
 (setq-default fill-column 80)
 (setq fill-column 80)
-;; (setq-default evil-indent-convert-tabs nil)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-;; (setq-default evil-shift-round nil)
-(setq-default tab-always-indent t)
+(setq-default tab-always-indent 'complete)
+;; TAB cycle if there are only few candidates
+(setq-default completion-cycle-threshold 3)
 
 ;;;;; UTF 8
 (prefer-coding-system 'utf-8)

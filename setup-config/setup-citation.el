@@ -91,11 +91,14 @@ With prefix, rebuild the cache before offering candidates."
 ;;;; Company-bibtex
 
 (use-package company-bibtex
-  :bind (("<C-tab>" . company-bibtex))
+  :bind (("<C-tab>" . bibtex-capf))
+  :after cape
   :config
-  (add-to-list 'company-backends 'company-bibtex)
+  ;; use with corfu/cape
+  (defalias 'bibtex-capf (cape-interactive-capf (cape-company-to-capf 'company-bibtex)))
   (setq company-bibtex-bibliography cpm-bibliography)
   (setq company-bibtex-org-citation-regex "-?@"))
+
 
 
 ;;; Provide File

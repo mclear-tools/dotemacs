@@ -101,9 +101,6 @@
   :config
   (org-roam-db-autosync-mode 1)
 
-  ;; Add completion
-  (push 'company-capf company-backends)
-
   ;; Org Roam Templating
   ;; see https://org-roam.readthedocs.io/en/latest/templating/
   (setq org-roam-capture-templates
@@ -313,8 +310,7 @@
 (use-package org-roam-ui
   :straight (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
   :after org-roam
-  :commands (org-roam-ui-mode)
-  )
+  :commands (org-roam-ui-mode))
 
 ;;; Provide Setup-Notes
 (provide 'setup-notes)

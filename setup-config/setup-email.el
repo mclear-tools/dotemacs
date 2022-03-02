@@ -564,7 +564,7 @@
     (progn
       (auto-fill-mode -1)
       (hl-line-mode 1)
-      (company-mode 1)
+      ;; (company-mode 1)
       ;; FIXME: Try remove auto-save hook *locally* to avoid multiple saved drafts
       (remove-hook 'auto-save-hook #'cpm/full-auto-save t)))
   (add-hook 'org-msg-edit-mode-hook #'cpm/org-msg-hooks)

@@ -100,7 +100,7 @@
                                   (prettify-symbols-mode)
                                   (eldoc-mode)
                                   (yas-minor-mode)
-                                  (company-mode)
+                                  ;; (company-mode)
                                   (rainbow-delimiters-mode)))
 
 
