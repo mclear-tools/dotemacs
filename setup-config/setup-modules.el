@@ -14,7 +14,7 @@
 
 (if (cpm--emacs-switches "-core")
     (progn
-      (message "Loading core modules")
+      (message "Loading core modules only")
       (cpm--config-core)
       ;; start with built in vertical completion
       (require 'setup-icomplete))

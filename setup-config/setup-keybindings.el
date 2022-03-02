@@ -38,6 +38,8 @@
    '("." . "M-.")
    '("[" . cpm/previous-user-buffer)
    '("]" . cpm/next-user-buffer)
+   '("{" . tab-bar-switch-to-prev-tab)
+   '("}" . tab-bar-switch-to-next-tab)
    '("TAB" . cpm/tab-bar-select-tab-dwim)
    '("SPC" . execute-extended-command)
    ;; high frequency commands

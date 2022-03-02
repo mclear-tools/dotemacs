@@ -13,14 +13,14 @@
 
 (use-package vc-git
   :straight (:type built-in)
-  :after vc
+  :defer
   :config
   (setq vc-git-diff-switches "--patch-with-stat")
   (setq vc-git-print-log-follow t))
 
 (use-package vc-annotate
   :straight (:type built-in)
-  :after vc
+  :defer
   :config
   (setq vc-annotate-display-mode 'scale))
 
@@ -120,9 +120,9 @@
      (unknown . "?")
      (ignored . "i")))
   :custom-face
-  (diff-hl-insert ((t (:family "SF Mono" :slant normal :weight normal :inherit bespoke-salient))))
-  (diff-hl-change ((t (:family "SF Mono" :slant normal :weight normal :inherit bespoke-popout))))
-  (diff-hl-delete ((t (:family "SF Mono" :slant normal :weight normal :inherit bespoke-critical))))
+  (diff-hl-insert ((t (:slant normal :weight normal :inherit bespoke-salient))))
+  (diff-hl-change ((t (:slant normal :weight normal :inherit bespoke-popout))))
+  (diff-hl-delete ((t (:slant normal :weight normal :inherit bespoke-critical))))
   :init
   (defun cpm--diff-hl-fringe-face-from-type (type _pos)
     (intern (format "cpm--diff-hl-%s" type)))

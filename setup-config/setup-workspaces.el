@@ -144,7 +144,7 @@
 
 ;;;; Open Mu4e Email in Workspace
 (defun cpm/open-email-in-workspace ()
-  "Open mu4e email in its own perspective"
+  "Open mu4e email in its own workspace"
   (interactive)
   (if (member "Email" (emacs-workspaces--list-workspaces))
       (progn

@@ -37,20 +37,6 @@
          (org-mode . flyspell-mode)
          (prog-mode . flyspell-prog-mode)))
 
-
-;; Completion of misspelled words in buffer
-(use-package consult-flyspell
-  :straight (consult-flyspell :type git :host gitlab
-                              :repo "OlMon/consult-flyspell"
-                              :branch "master")
-  :config
-  (setq consult-flyspell-set-point-after-word t
-        consult-flyspell-always-check-buffer nil
-        ;; Apply flyspell-correct-at-point directly after selecting candidate
-        ;; and jump back to consult-flyspell.
-        consult-flyspell-select-function
-        (lambda () (flyspell-correct-at-point) (consult-flyspell))))
-
 ;; completion of spellings
 (use-package flyspell-correct
   :straight t
@@ -80,6 +66,21 @@
     ("d" ispell-change-dictionary)
     ("f" flyspell-buffer :color pink)
     ("m" flyspell-mode)))
+
+;; Completion of misspelled words in buffer
+(use-package consult-flyspell
+  :straight (consult-flyspell :type git :host gitlab
+                              :repo "OlMon/consult-flyspell"
+                              :branch "master")
+  :after flyspell
+  :config
+  (setq consult-flyspell-set-point-after-word t
+        consult-flyspell-always-check-buffer nil
+        ;; Apply flyspell-correct-at-point directly after selecting candidate
+        ;; and jump back to consult-flyspell.
+        consult-flyspell-select-function
+        (lambda () (flyspell-correct-at-point) (consult-flyspell))))
+
 
 
 ;;;; Spelling Goto Next Error

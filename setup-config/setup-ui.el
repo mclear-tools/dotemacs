@@ -44,7 +44,7 @@
   (setq-default initial-frame-alist
                 (append (list
                          '(fullscreen . maximized)
-                         '(internal-border-width . 10)
+                         '(internal-border-width . 13)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)
@@ -55,7 +55,7 @@
   (setq-default default-frame-alist
                 (append (list
                          '(frame-title-format . nil)
-                         '(internal-border-width . 20)
+                         '(internal-border-width . 13)
                          '(tool-bar-lines . 0)
                          '(menu-bar-lines . 0)
                          '(vertical-scroll-bars . nil)
@@ -109,16 +109,20 @@ If FRAME is omitted or nil, use currently selected frame."
 
 (use-package fontset
   :straight (:type built-in)
+  :custom
+  ;; Set this to nil to set symbols entirely separately
+  (use-default-font-for-symbols t)
   :config
   ;; Use symbola for proper symbol glyphs
   (when (member "Symbola" (font-family-list))
     (set-fontset-font
-     t 'symbol "Symbola" nil 'prepend))
+     t 'symbol "Symbola" nil))
   ;; Use Apple emoji
   ;; NOTE that emoji here must be set to unicode to get color emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font
-     t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend)))
+     t 'unicode (font-spec :family "Apple Color Emoji") nil 'append))
+  )
 
 (use-package faces
   :straight (:type built-in)
@@ -360,6 +364,15 @@ If FRAME is omitted or nil, use currently selected frame."
   (add-hook 'Info-selection-hook 'info-colors-fontify-node))
 
 ;;; Xwidget Browser
+(use-package xwidget
+  :straight (:type built-in)
+  :defer 1
+  :config
+  (defun xwidget-webkit-estimated-load-progress (session)
+    1.0)
+  (require 'xwidget)
+  (require 'xwidgets-reuse))
+
 (use-package xwwp-follow-link
   :straight (:host github :repo "canatella/xwwp")
   :custom
