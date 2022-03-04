@@ -10,10 +10,19 @@
   ;; Settings for better cursor
   ;; see https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs
   ;;  (NOTE: A number of 101+ disables re-centering.)
-  (setq maximum-scroll-margin 0.5
-        scroll-margin 99999
+  (setq scroll-preserve-screen-position t
         scroll-conservatively 101
-        scroll-preserve-screen-position 1))
+        maximum-scroll-margin 0.5
+        scroll-margin 25))
+
+(use-package pixel-scroll
+  :straight (:type built-in)
+  :custom
+  (pixel-scroll-precision-mode t)
+  (pixel-scroll-precision-interpolate-page t)
+  :config
+  (pixel-scroll-mode 1)
+  )
 
 (use-package mwheel
   :straight (:type built-in)
@@ -121,8 +130,7 @@ If FRAME is omitted or nil, use currently selected frame."
   ;; NOTE that emoji here must be set to unicode to get color emoji
   (when (member "Apple Color Emoji" (font-family-list))
     (set-fontset-font
-     t 'unicode (font-spec :family "Apple Color Emoji") nil 'append))
-  )
+     t 'unicode (font-spec :family "Apple Color Emoji") nil 'append)))
 
 (use-package faces
   :straight (:type built-in)
