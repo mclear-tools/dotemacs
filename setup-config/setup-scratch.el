@@ -23,7 +23,11 @@
     (if (file-exists-p scratch-file)
         (with-current-buffer (get-buffer "*scratch*")
           (delete-region (point-min) (point-max))
-          (insert-file-contents scratch-file)))))
+          (insert-file-contents scratch-file))))
+  ;; don't auto-save scratch in home dir
+  (with-current-buffer (get-buffer "*scratch*")
+    (setq-local default-directory "/tmp/")))
+
 
 (add-hook 'after-init-hook 'load-persistent-scratch)
 (add-hook 'kill-emacs-hook 'save-persistent-scratch)
