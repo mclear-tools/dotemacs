@@ -22,6 +22,10 @@
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
 
   (meow-motion-overwrite-define-key
+   '("s-[" . cpm/previous-user-buffer)
+   '("s-]" . cpm/next-user-buffer)
+   '("s-{" . tab-bar-switch-to-prev-tab)
+   '("s-}" . tab-bar-switch-to-next-tab)
    '("j" . meow-next)
    '("k" . meow-prev))
 
@@ -36,10 +40,6 @@
    '(")" . "C-)")
    '("}" . "C-}")
    '("." . "M-.")
-   '("[" . cpm/previous-user-buffer)
-   '("]" . cpm/next-user-buffer)
-   '("{" . tab-bar-switch-to-prev-tab)
-   '("}" . tab-bar-switch-to-next-tab)
    '("TAB" . cpm/tab-bar-select-tab-dwim)
    '("SPC" . execute-extended-command)
    ;; high frequency commands
@@ -147,8 +147,10 @@
    '("&" . meow-query-replace-regexp)
    '("%" . meow-query-replace)
    '("=" . meow-grab)
-   '("C-}" . cpm/next-user-buffer)
-   '("C-{" . cpm/previous-user-buffer)
+   '("s-[" . cpm/previous-user-buffer)
+   '("s-]" . cpm/next-user-buffer)
+   '("s-{" . tab-bar-switch-to-prev-tab)
+   '("s-}" . tab-bar-switch-to-next-tab)
    '("<escape>" . meow-cancel-selection)))
 
 ;;; Meow
@@ -206,8 +208,7 @@
            ("}" . tab-bar-switch-to-next-tab         )
            ("<backtab>" . crux-switch-to-previous-buffer)
            ("TAB" . cpm/tab-bar-select-tab-dwim      )
-           ("C-M-t" . tab-bar-new-tab                )
-           )
+           ("C-M-t" . tab-bar-new-tab                ))
 
 ;;;; Comment Keybindings
 (bind-keys :prefix-map cpm+comment-wrap-keys
