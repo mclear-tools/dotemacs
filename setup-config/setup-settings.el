@@ -124,8 +124,8 @@
   ;; see https://emacs.stackexchange.com/q/7729/11934
   (setq-default auto-save-default t)
   (setq-default
-   auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-   auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+   auto-save-timeout 30              ; number of seconds idle time before auto-save (default: 30)
+   auto-save-interval 300            ; number of keystrokes between auto-saves (default: 300)
    auto-save-visited-mode t
    delete-auto-save-files t
    create-lockfiles nil)
@@ -152,8 +152,7 @@
   ;; Save all buffers after idle time
   (run-with-idle-timer 5 t (lambda () (cpm/full-auto-save)))
   ;; Save on exit from insert state
-  ;; (add-hook 'evil-insert-state-exit-hook 'full-auto-save)
-  )
+  (add-hook 'meow-insert-exit-hook 'full-auto-save))
 
 (use-package backup-walker
   :commands backup-walker-start)
