@@ -26,10 +26,14 @@
   ;; See this link for more info: https://stackoverflow.com/a/43461973
   (setq mu4e-change-filenames-when-moving t)
   ;; Refresh mail using mbsync every 3 minutes
-  (setq mu4e-update-interval (* 3 60))
+  (setq mu4e-update-interval (* 5 60))
 
 ;;;; Attachments
-  (setq mu4e-attachments-dir "~/Downloads")
+  ;; Set default dir
+  (setq mu4e-attachment-dir (concat (getenv "HOME") "/Downloads/"))
+  ;; Save all attachments to specified dir without asking about each one
+  (setq mu4e-save-multiple-attachments-without-asking t)
+  (bind-key "e" #'mu4e-views-mu4e-save-all-attachments mu4e-headers-mode-map)
 
 ;;;; Viewing
 
@@ -179,7 +183,6 @@
   ;; other display settings
   (setq mu4e-speedbar-support t)
   (setq mu4e-use-fancy-chars t)
-  (setq mu4e-completing-read-function 'completing-read)
   (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
 
 ;;;; Composing Email
@@ -209,10 +212,12 @@
   ;; Check spelling
   (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
+
 ;;;; Sending Mail
 
   ;; Configure the function to use for sending mail
   (setq message-send-mail-function 'smtpmail-send-it)
+  (setq smtpmail-queue-dir (concat mu4e-maildir "/queued-mail/"))
 
   ;; NOTE: Only use this if you have set up a GPG key!
   ;; Automatically sign all outgoing mails
@@ -308,21 +313,51 @@
 
 ;;;; Mail Custom Bookmarks/Searches
 
-  (setq mu4e-bookmarks '((:name "Inbox" :query "m:/UNL/inbox or m:/Fastmail/inbox" :key ?i)
-                         (:name "Unread" :query "flag:unread AND NOT flag:trashed" :key ?u)
-                         (:name "Drafts" :query "m:/UNL/drafts or m:/Fastmail/drafts" :key ?d)
-                         (:name "Sent Mail" :query "m:/UNL/sent or m:/Fastmail/sent" :key ?s)
-                         (:name "Trash" :query "m:/UNL/Trash or m:/Fastmail/Trash" :key ?T)
-                         (:name "-----" :query "m:/UNL/inbox" :hide-unread t :key ?-)
-                         (:name "Today" :query "date:today..now" :key ?t)
-                         (:name "Yesterday" :query "date:2d..today and not date:today..now" :key ?y)
-                         (:name "Last Week" :query "date:7d..now" :key ?w)
-                         (:name "Last Month" :query "date:4w..now" :key ?m)
-                         (:name "-----" :query "m:/UNL/inbox" :hide-unread t :key ?-)
-                         (:name "Archive" :query "m:/UNL/archive or m:/Fastmail/archive" :key ?a)
-                         (:name "Important" :query "flag:flagged" :key ?!)
-                         (:name "Attachments" :query "flag:attach" :key ?A)
-                         (:name "Messages with images" :query "mime:image/*" :key ?I)))
+  (setq mu4e-bookmarks '((:name "Inbox"       :query "m:/UNL/inbox or m:/Fastmail/inbox"      :key ?i)
+                         (:name "Unread"      :query "flag:unread AND NOT flag:trashed"       :key ?u)
+                         (:name "Drafts"      :query "m:/UNL/drafts or m:/Fastmail/drafts"    :key ?d)
+                         (:name "Sent Mail"   :query "m:/UNL/sent or m:/Fastmail/sent"        :key ?s)
+                         (:name "Trash"       :query "m:/UNL/Trash or m:/Fastmail/Trash"      :key ?T)
+                         (:name "-----"       :query "m:/UNL/inbox" :hide-unread t            :key ?-)
+                         (:name "Today"       :query "date:today..now"                        :key ?t)
+                         (:name "Yesterday"   :query "date:2d..today and not date:today..now" :key ?y)
+                         (:name "Last Week"   :query "date:7d..now"                           :key ?w)
+                         (:name "Last Month"  :query "date:4w..now"                           :key ?m)
+                         (:name "-----"       :query "m:/UNL/inbox" :hide-unread t            :key ?-)
+                         (:name "Archive"     :query "m:/UNL/archive or m:/Fastmail/archive"  :key ?a)
+                         (:name "Important"   :query "flag:flagged"                           :key ?!)
+                         (:name "Attachments" :query "flag:attach"                            :key ?A)
+                         (:name "Images"      :query "mime:image/*"                           :key ?I)))
+
+
+;;;; Maildirs
+  ;; NOTE: Use maildir-extensions for now
+  ;; Eventually this will be incorporated into mu, but right now it doesn't show mail counts for some reason
+
+  ;; ;; ;; the maildirs you use frequently; access them with 'j' ('jump')
+  ;; (setq   mu4e-maildir-shortcuts
+  ;;         '((:maildir "/Fastmail/Archive"    :query "/Fastmail/Archive"    :key ?a)
+  ;;           (:maildir "/Fastmail/Inbox"      :query "/Fastmail/Inbox"      :key ?i)
+  ;;           (:maildir "/Fastmail/Starred"    :query "/Fastmail/Starred"    :key ?w)
+  ;;           (:maildir "/Fastmail/Sent Items" :query "/Fastmail/Sent Items" :key ?s)
+  ;;           (:maildir "/UNL/Inbox"           :query "/UNL/Inbox"           :key ?I)
+  ;;           (:maildir "/UNL/Archive"         :query "/UNL/Archive"         :key ?A)
+  ;;           (:maildir "/UNL/Archive1"        :query "/UNL/Archive1"        :key ?1)
+  ;;           (:maildir "/UNL/Sent"            :query "/UNL/Sent"            :key ?S)))
+
+  ;; ;; ;; the maildirs you use frequently; access them with 'j' ('jump')
+  ;; (setq   mu4e-maildir-shortcuts
+  ;;         '((:maildir "/Fastmail/Archive"    :key ?a)
+  ;;           (:maildir "/Fastmail/Inbox"      :key ?i)
+  ;;           (:maildir "/Fastmail/Starred"    :key ?w)
+  ;;           (:maildir "/Fastmail/Sent Items" :key ?s)
+  ;;           (:maildir "/UNL/Inbox"           :key ?I)
+  ;;           (:maildir "/UNL/Archive"         :key ?A)
+  ;;           (:maildir "/UNL/Archive1"        :key ?1)
+  ;;           (:maildir "/UNL/Sent"            :key ?S)))
+
+  ;; Show maildirs with 0 messages
+  (setq mu4e-main-hide-fully-read nil)
 
 ;;;; Better Tagging/Marking
 
@@ -379,8 +414,23 @@
   (advice-add 'mu4e-mark-at-point :after #'mu4e-mark-at-point-advice)
 
 
+;;;; Mu4e & Swiftbar
+
+  (defun cpm/swiftbar-email-update ()
+    "Update swiftbar mail plugin"
+    (interactive)
+    (call-process-shell-command "open -g 'swiftbar://refreshplugin?name=mail-mu'" nil 0))
+
+  (add-hook 'mu4e-index-updated-hook #'cpm/swiftbar-email-update)
+
 ;;;; Miscellaneous
 
+  ;; Updating
+  ;; FIXME: right now this causes an updating loop for some reason
+  ;; (add-hook 'mu4e-main-mode-hook #'mu4e-update-index)
+  (bind-key "u" #'mu4e-update-index mu4e-main-mode-map)
+
+  ;; Use completing-read
   (setq mu4e-completing-read-function 'completing-read)
 
   ;; Store link to message if in header view, not to header query
@@ -426,6 +476,17 @@
   )
 
 ;;;; End Mu4e
+
+;;; Mu4e Maildir-Extension
+(use-package mu4e-maildirs-extension
+  :straight (:type git :host github :repo "agpchil/mu4e-maildirs-extension")
+  :after mu4e
+  :custom
+  (mu4e-maildirs-extension-default-collapse-level 0)
+  (mu4e-maildirs-extension-action-key "")
+  (mu4e-maildirs-extension-action-text nil)
+  :config
+  (mu4e-maildirs-extension))
 
 ;;; Better Viewing – Mu4e Views
 ;; This makes mu4e render html emails in emacs via xwidgets.
