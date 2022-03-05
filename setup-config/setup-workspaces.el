@@ -149,10 +149,12 @@
   (if (member "Email" (emacs-workspaces--list-workspaces))
       (progn
         (tab-bar-switch-to-tab "Email")
-        (cond ((get-buffer " *mu4e-main*")
-               (switch-to-buffer " *mu4e-main*"))
-              ((get-buffer "*mu4e-headers*")
+        (cond ((get-buffer "*mu4e-headers*")
                (switch-to-buffer "*mu4e-headers*"))
+              ((get-buffer " *mu4e-main*")
+               (progn
+                 (switch-to-buffer " *mu4e-main*")
+                 (delete-other-windows)))
               (t (mu4e))))
     (progn
       (emacs-workspaces/create-workspace)
