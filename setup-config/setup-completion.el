@@ -554,7 +554,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;;;; Corfu
 (use-package corfu
   :straight (:type git :host github :repo "minad/corfu")
-  :hook (after-init . corfu-global-mode)
+  :defer 1
   :bind
   (:map corfu-map
    ("C-j"      . corfu-next)
@@ -595,7 +595,8 @@ If TOP-NODE is provided, then just select from its sub-nodes."
                 (bound-and-true-p vertico--input))
       (setq-local corfu-auto t) ; Enable/disable auto completion
       (corfu-mode 1)))
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
+  (corfu-global-mode 1))
 
 ;; Use dabbrev with Corfu!
 (use-package dabbrev
@@ -684,36 +685,29 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
-  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   (add-to-list 'completion-at-point-functions #'cape-line)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-ispell)
+  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
   ;; (add-to-list 'completion-at-point-functions #'cape-dict)
   )
 
-;;;; Company
-;; Install this just for the backends
-(use-package company
-  :defer t)
 
 ;;;; Company Org Block
 ;; Org block completion
 ;; https://github.com/xenodium/company-org-block
 (use-package company-org-block
-  :disabled t
   :straight (:host github :repo "xenodium/company-org-block")
   :after org
+  :bind (:map org-mode-map
+         ("C-'" . org-block-capf))
   :custom
   (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
   :config
   (require 'org-element)
-  :hook ((org-mode . (lambda ()
-                       ;; Use with corfu/cape
-                       (setq-local completion-at-point-functions
-                                   (mapcar #'cape-company-to-capf
-                                           (list #'company-org-block)))))))
+  (defalias 'org-block-capf (cape-interactive-capf (cape-company-to-capf 'company-org-block))))
 
 ;;;; Yasnippet
 (use-package yasnippet
@@ -747,7 +741,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
 ;;   (setq yasnippet-snippets-dir (concat cpm-local-dir "all-snippets/yasnippet-snippets")))
 
 
-;;; Icons
+;;; Completion Icons
 (use-package all-the-icons-completion
   :straight (:host github :repo "iyefrat/all-the-icons-completion")
   :if (display-graphic-p)
