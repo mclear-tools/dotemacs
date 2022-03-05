@@ -47,12 +47,14 @@
                 org-hide-leading-stars t
                 org-refile-use-cache t  ;; use cache for org refile
                 org-startup-folded t
+                org-special-ctrl-a/e t
                 org-yank-adjusted-subtrees t  ;; adjust subtrees to depth when yanked
                 org-yank-folded-subtrees t  ;; fold subtrees on yank
+                org-insert-heading-respect-content t
                 org-M-RET-may-split-line '((default . t))  ;; don't split line when creating a new headline, list item, or table field
                 org-fontify-quote-and-verse-blocks t ;; make quotes stand out
                 org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
-                ;; org-ellipsis "↷" ;; nicer elipses "↴" "▼"
+                org-ellipsis "…" ;; nicer elipses "↷" "↴" "▼"
                 org-cycle-separator-lines 0 ;; Give a more compact and consistent view
                 org-startup-indented t ;; start in indent mode
                 ;; prevent editing invisible area, and show an error message in echo area instead;

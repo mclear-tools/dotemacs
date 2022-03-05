@@ -60,7 +60,7 @@ questions.  Else use completion to select the tab to switch to."
          ("c" . tab-bar-echo-area-display-tab-name)
          ("a" . tab-bar-echo-area-display-tab-names))
   :custom-face
-  (tab-bar-echo-area-tab ((t (:underline t :weight bold))))
+  (tab-bar-echo-area-tab ((t (:foreground ,bespoke-faded :underline t :weight bold))))
   (tab-bar-echo-area-tab-group-current ((t (:foreground ,bespoke-faded))))
   :config
   (setq tab-bar-echo-area-trigger-display-functions nil)
