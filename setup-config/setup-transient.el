@@ -377,6 +377,40 @@ org-todo-keywords to a transient command."
     ("[" "Forward Node" Info-backward-node)
     ("]" "Backward Node" Info-forward-node)]])
 
+;;; Customize Transients
+
+(transient-define-prefix shk-customize-locals-menu ()
+  "A menu to manipulate file/dir local variables"
+  ["Local variables"
+   ["File"
+    ("fa" "add" add-file-local-variable)
+    ("fd" "delete" delete-file-local-variable)
+    ("*a" "add prop" add-file-local-variable-prop-line)
+    ("*d" "delete prop" delete-file-local-variable-prop-line)]
+   ["Dir"
+    ("da" "add" add-dir-local-variable)
+    ("dd" "delete" delete-dir-local-variable)]
+   ["Move"
+    ("df" "dir → file" copy-dir-locals-to-file-locals)
+    ("d*" "dir → prop" copy-dir-locals-to-file-locals-prop-line)
+    ("fd" "file → dir" copy-file-locals-to-dir-locals)]])
+
+(transient-define-prefix shk-customize-menu ()
+  "A menu to open customize options"
+  [["Custom"
+    ("," "List groups" customize)
+    ("/" "Search" customize-apropos)
+    ("r" "Rogue" customize-rogue)
+    ("s" "Saved" customize-saved)
+    ("S" "Unsaved" customize-unsaved)]
+   ["Settings"
+    ("o" "Option" customize-option)
+    ("g" "Group" customize-group)
+    ("f" "Face" customize-face)
+    ("l" "Local variables" shk-customize-locals-menu)]])
+
+;; (global-set-key (kbd "A-,") 'shk-customize-menu)
+;; (global-set-key (kbd "C-c ,") 'shk-customize-menu)
 
 
 ;;; Ideas for Further Development
