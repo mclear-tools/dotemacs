@@ -588,17 +588,20 @@
   (require 'mu4e-goodies))
 
 (defvar cpm-mail-tags
-  '("phil105"
+  '("casrac"
+    "conferences"
+    "edited-volume"
+    "ergo"
+    "grad-admissions"
+    "phil105"
     "phil232"
     "phil871"
     "phil880"
     "phil971"
-    "grad-admissions"
-    "referee-reports"
+    "placement"
     "publications"
-    "conferences"
-    "casrac"
-    "edited-volume"
+    "referee-reports"
+    "supervision"
     ))
 
 (defun cpm/select-mail-tag ()
@@ -675,6 +678,7 @@
                    (setq email-name email-name2))
                  )))
     email-name))
+
 
 ;;; End Setup Email
 
