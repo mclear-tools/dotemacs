@@ -31,6 +31,18 @@
   (setq-default org-default-notes-file (concat org-directory "inbox.org"))
   (setq-default org-agenda-files (list org-directory))
 
+;;;; Org Regex (Emphasis)
+  ;; Set regex boundaries for emphasis.
+  ;; See https://emacs.stackexchange.com/questions/54673/em-dash-before-italic-in-org-export
+  ;; https://emacs.stackexchange.com/questions/54632/org-mode-monospaces-more-than-it-should
+
+  (setq org-emphasis-regexp-components
+        '("-—[:space:]('\"{["
+          "\] - [:space:].,:!?;'\")}\\["
+          "[:space:]"
+          "."
+          1))
+
 ;;;; Org Config Settings
   :config
   ;; for use with meow movement
@@ -121,32 +133,6 @@
         '(("nec" "\Box" nil "◻" "" "" "◻")
           ("pos" "\Diamond" nil "◇" "" "" "◇")
           ("space" "~" nil "&nbsp;" " " " " " ")))
-
-;;;; Org Regex (Emphasis)
-  (with-eval-after-load 'org
-                                        ; chars for prematch
-    (setcar org-emphasis-regexp-components            "     ('\"{“”\[\\")
-                                        ; chars for postmatch
-    (setcar (nthcdr 1 org-emphasis-regexp-components) "\] -   .,!?;:''“”\")}/\\“”")
-                                        ; forbidden chars
-    (setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
-                                        ; body
-    (setcar (nthcdr 3 org-emphasis-regexp-components) ".")
-                                        ; max newlines
-    (setcar (nthcdr 4 org-emphasis-regexp-components) 1)
-    (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components))
-
-  ;; ;; chars for prematch
-  ;; (setcar org-emphasis-regexp-components            "-[:space:]('\"{\[\\")
-  ;; ;; chars for postmatch
-  ;; (setcar (nthcdr 1 org-emphasis-regexp-components) "\]-[:space:].,!?;'\")}/\\")
-  ;; ;; forbidden border chars
-  ;; (setcar (nthcdr 2 org-emphasis-regexp-components) "    \t\r\n,\"")
-  ;; ;; body
-  ;; (setcar (nthcdr 3 org-emphasis-regexp-components) ".")
-  ;; ;; max newlines
-  ;; (setcar (nthcdr 4 org-emphasis-regexp-components) 1)
-  ;; (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 
 ;;;; Org Template Expansions
   (setq new-structure-template-alist
@@ -465,27 +451,24 @@ _vr_ reset      ^^                       ^^                 ^^
         ;; Note the ` and , to get concat to evaluate properly
         `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
            "* TODO %?\n %i")
+
           ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "journal.org"))
            "**** %<%H:%M>\n%?")
+
           ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
            "* %? :link: \n%(grab-mac-link 'safari 'org)")
-          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-          ;;  "* TODO %? :email: \n%(org-mac-outlook-message-get-links)")
-          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-          ;;  "* TODO %? :email: \n%(grab-mac-link 'mail 'org)")
-          ;; ("m" "Mail-Task" entry (file ,(concat org-directory "inbox.org"))
-          ;; "* TODO %:description                         :email: \n[[message://%:link][Email link]] \n%? ")
 
-          ("m" "Email Workflow")
-          ("mc" "Comment" entry (file+olp ,(concat org-directory "Mail.org") "Mail Task")
-           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n  %i")
-          ("mf" "Follow Up" entry (file+olp ,(concat org-directory "Mail.org") "Follow Up")
-           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n  %i" :immediate-finish t)
-          ("mr" "Read Later" entry (file+olp ,(concat org-directory "Mail.org") "Read Later")
-           "* TODO Read  %:subject\nSCHEDULED:%t\n%a\n\n  %i" :immediate-finish t)
+          ("m" "eMail Workflow")
+          ("mc" "Comment" entry (file+olp ,(concat org-directory "Mail.org") "Mail Comment")
+           "* TODO Comment re: %:fromname about %:subject\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%?  %i")
+          ("mm" "Remember" entry (file+olp ,(concat org-directory "Mail.org") "Remember")
+           "* TODO %:subject\nSCHEDULED:%t\nFrom: %:from \nMessage: %a \n\n  %i" :immediate-finish t)
+          ("mr" "Respond" entry (file+olp ,(concat org-directory "Mail.org") "Respond")
+           "* TODO Respond to %:from | %:subject \nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t)
 
           ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
            "* %?")
+
           ("s" "Music Review" entry  (file ,(concat org-directory "music.org"))
            ,(concat "\n** Artist - Album :Artist:Genre: %?\n"
 	                "  - Date: %T\n"
@@ -494,10 +477,13 @@ _vr_ reset      ^^                       ^^                 ^^
 	                "  - Standout Tracks: \n"
 	                "  - Rating: /10\n"
 	                "  - Thoughts: \n"))
+
           ("M" "UNL Merit Review" entry (file ,(concat org-directory "merit-reviews.org"))
            (file ,(concat org-directory "templates/merit-review-template.org")))
+
           ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
            (file ,(concat org-directory "templates/weekly_review_template.org")))
+
           ("R" "Referee report" entry (file+datetree ,(concat org-directory "referee-reports.org"))
            (file ,(concat org-directory "templates/referee-report-template.org")))))
 
