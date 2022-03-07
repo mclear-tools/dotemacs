@@ -339,23 +339,45 @@ Lisp function does not specify a special indentation."
 
 
 ;;; Linting/Error Checking
-(use-package flymake
-  :straight (:type built-in)
-  :commands flymake-mode
+(use-package flycheck
+  :straight (:type git :host github :repo "flycheck/flycheck")
+  :hook ((emacs-lisp-mode
+	      latex-mode
+          markdown-mode
+	      org-mode
+	      php-mode
+	      sh-mode
+	      shell-mode
+	      shell-script-mode)
+         . flycheck-mode)
   :config
-  (setq flymake-fringe-indicator-position 'left-fringe)
-  (setq flymake-suppress-zero-counters t)
-  (setq flymake-start-on-flymake-mode t)
-  (setq flymake-no-changes-timeout nil)
-  (setq flymake-start-on-save-buffer t)
-  (setq flymake-proc-compilation-prevents-syntax-check t)
-  (setq flymake-wrap-around nil))
+  (setq flycheck-clang-language-standard nil)
+  (setq flycheck-gcc-language-standard nil))
 
-(use-package package-lint-flymake
-  :straight t
-  :after flymake
+;; For .el files which are intended to be packages
+(use-package flycheck-package
+  :after flycheck
   :config
-  (package-lint-flymake-setup))
+  (add-to-list 'flycheck-checkers 'flycheck-emacs-lisp-package)
+  (flycheck-package-setup))
+
+;; (use-package flymake
+;;   :straight (:type built-in)
+;;   :commands flymake-mode
+;;   :config
+;;   (setq flymake-fringe-indicator-position 'left-fringe)
+;;   (setq flymake-suppress-zero-counters t)
+;;   (setq flymake-start-on-flymake-mode t)
+;;   (setq flymake-no-changes-timeout nil)
+;;   (setq flymake-start-on-save-buffer t)
+;;   (setq flymake-proc-compilation-prevents-syntax-check t)
+;;   (setq flymake-wrap-around nil))
+
+;; (use-package package-lint-flymake
+;;   :straight t
+;;   :after flymake
+;;   :config
+;;   (package-lint-flymake-setup))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
