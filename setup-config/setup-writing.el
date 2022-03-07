@@ -391,8 +391,22 @@
   :bind (:map cpm+search-keys
          ("w" . sdcv-search)))
 
+;;; Prose Linting
+;; Uses vale and proselint
+(with-eval-after-load 'flycheck
+(flycheck-define-checker vale
+                         "A checker for prose"
+                         :command ("vale" "--output" "line"
+                                   source)
+                         :standard-input nil
+                         :error-patterns
+                         ((error line-start (file-name) ":" line ":" column ":" (id (one-or-more (not (any ":")))) ":" (message) line-end))
+                         :modes (markdown-mode org-mode text-mode)
+                         )
+(add-to-list 'flycheck-checkers 'vale 'append))
 ;;; Writegood Mode
 (use-package writegood-mode
+  :disabled
   :hook (markdown-mode . writegood-mode)
   :config
   (setq cpm/weasel-words
