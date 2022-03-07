@@ -304,13 +304,28 @@
           (org-roam-node-visit node)
         (cpm/find-note-relation nil next-node (cons next-node (-map #'org-roam-backlink-source-node (org-roam-backlinks-get next-node))))))))
 
-
-
 ;;;; Org Roam UI (Server/Web App)
 (use-package org-roam-ui
   :straight (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
   :after org-roam
   :commands (org-roam-ui-mode))
+
+;;;; Delve (Collections of Notes in Org-Roam)
+(use-package delve
+  :straight (:repo "publicimageltd/delve"
+             :host github
+             :type git)
+  :after org-roam
+  :bind
+  ;; the main entry point, offering a list of all stored collections
+  ;; and of all open Delve buffers:
+  (("<f12>" . delve))
+  :config
+  ;; set meaningful tag names for the dashboard query
+  (setq delve-dashboard-tags '("german-idealism" "kant" "hegel"))
+  (setq delve-store-directory (concat cpm-cache-dir "delve-store"))
+  ;; turn on delve-minor-mode when org roam file is opened:
+  (delve-global-minor-mode))
 
 ;;; Provide Setup-Notes
 (provide 'setup-notes)
