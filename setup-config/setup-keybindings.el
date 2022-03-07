@@ -6,7 +6,7 @@
 
 ;;; Personal Keybindings Prefix
 (defvar cpm-prefix "C-c C-SPC"
-  "Prefix for all personal keybinds")
+  "Prefix for all personal keybinds.")
 
 ;;; Personal Leader Key
 
@@ -40,6 +40,10 @@
    '(")" . "C-)")
    '("}" . "C-}")
    '("." . "M-.")
+   '("[" . cpm/previous-user-buffer)
+   '("]" . cpm/next-user-buffer)
+   '("{" . tab-bar-switch-to-prev-tab)
+   '("}" . tab-bar-switch-to-next-tab)
    '("TAB" . cpm/tab-bar-select-tab-dwim)
    '("SPC" . execute-extended-command)
    ;; high frequency commands
@@ -56,7 +60,7 @@
    '("e" . cpm+eval-keys)
    '("E" . restart-emacs-start-new-emacs)
    '("f" . cpm+file-keys)
-   '("F" . consult-recent-file)
+   `("F" . ,flycheck-keymap-prefix)
    '("i" . cpm/find-files-setup-config-directory)
    '("I" . cpm/search-setup-config-files)
    '("j" . avy-goto-char-timer)
@@ -70,6 +74,7 @@
    `("p" . ,project-prefix-map)
    '("q" . cpm+quit-keys)
    '("r" . consult-register)
+   '("R" . consult-recent-file)
    '("s" . cpm+search-keys)
    '("S" . cpm/search-in-input-dir)
    '("t" . cpm+toggle-keys)
@@ -313,6 +318,7 @@
            :prefix (concat cpm-prefix " t")
            ("a" . company-mode                )
            ("b" . buffer-line-mode            )
+           ("c" . flycheck-mode               )
            ("g" . git-gutter-mode             )
            ("h" . hl-line-mode                )
            ("H" . hidden-mode-line-mode       )
