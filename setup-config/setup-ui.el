@@ -271,8 +271,16 @@ If FRAME is omitted or nil, use currently selected frame."
                                        recenter-top-bottom other-window))
     (advice-add command :after #'pulse-line))
   ;; pulse on window change
-  (push 'pulse-line window-selection-change-functions)
-  )
+  (push 'pulse-line window-selection-change-functions))
+
+;; Pulse changes in buffer region
+(use-package goggles
+  :straight (:type git :host github :repo "minad/goggles")
+  :hook (after-init . goggles-mode)
+  :custom-face
+  (goggles-added   ((t (:background ,bespoke-green))))
+  (goggles-changed ((t (:background ,bespoke-blue))))
+  (goggles-removed ((t (:background ,bespoke-red)))))
 
 ;;;; Crosshair Highlighting
 (use-package crosshairs
