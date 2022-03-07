@@ -159,15 +159,14 @@
                             :shortname ""
                             :function mu4e-headers-attach)))
 
-
   (setq mu4e-headers-date-format "%D";; "%Y-%m-%d %H:%M:%S"
-        mu4e-headers-fields '((:empty          .   1)
+        mu4e-headers-fields '(
+                              (:flags          .  10)
                               (:relative-date  .  12)
                               (:from-or-to     .  40)
-                              (:subject        .  90)
+                              (:subject        .  85)
                               (:tags           .  20)
-                              (:mailbox-short  .  17)
-                              (:attach         .   2)
+                              (:mailbox-short  .  15)
                               ))
 
   ;; how to handle html-formatted emails
@@ -184,6 +183,117 @@
   (setq mu4e-speedbar-support t)
   (setq mu4e-use-fancy-chars t)
   (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
+
+;;;;; Mail Tagging
+  ;; See https://github.com/panjie/mu4e-goodies
+
+  ;; Helper functions/vars
+  ;;--------------------------------------------------
+  (defsubst cpm-mail~get-real-addr (addr)
+    "Parse addr which is the result of mu4e-message-fields to get
+the real email address"
+    (if (listp addr)       ;; already parsed by mu4e
+        (cdr (car addr))
+      (if (stringp addr)   ;; raw address like: "ABC <abc@abc.com>"
+          (car (mail-header-parse-address addr)))))
+
+  (defvar cpm-mail~header-handlers nil
+    "Internal handlers of header view for mu >= 1.5")
+
+  (defun cpm-mail~header-advice (orig-func &rest args)
+    "General advice for plugins for header view"
+    (let* ((str (apply orig-func args))
+           (msg (car args))
+           (field (cadr args)))
+      (dolist (func cpm-mail~header-handlers)
+        (setq str (funcall func msg field (mu4e-message-field msg field) str)))
+      str))
+
+  (when (functionp 'mu4e~headers-field-value) ; mu >= 1.5
+    (advice-add 'mu4e~headers-field-value :around #'cpm-mail~header-advice))
+
+  ;; Tags for emails (from info pages of mu4e)
+  ;;--------------------------------------------------
+  ;; Add completing read
+  (add-to-list 'mu4e-marks
+               '(tag
+                 :char       ("g" . " ")
+                 :prompt     "gtag"
+                 :ask-target (lambda () (cpm/select-mail-tag))
+                 :action      (lambda (docid msg target)
+                                (mu4e-action-retag-message msg target))))
+  (mu4e~headers-defun-mark-for tag)
+  (define-key mu4e-headers-mode-map (kbd "G") 'mu4e-headers-mark-for-tag)
+  (define-key-after (lookup-key mu4e-headers-mode-map [menu-bar headers])
+    [mark-tag] '("Mark for tag" . mu4e-headers-mark-for-tag) 'mark-pattern)
+
+
+  ;; Actions to add tags
+  ;;--------------------------------------------------
+  (add-to-list 'mu4e-view-actions
+               '("add/remove tags" . mu4e-action-retag-message) t)
+
+  ;; Tags & Completing read function
+  ;;--------------------------------------------------
+  (defvar cpm-mail-tags
+    '("casrac"
+      "conferences"
+      "edited-volume"
+      "ergo"
+      "grad-admissions"
+      "phil105"
+      "phil232"
+      "phil871"
+      "phil880"
+      "phil971"
+      "placement"
+      "publications"
+      "referee-reports"
+      "supervision"
+      ))
+
+  (defun cpm/select-mail-tag ()
+    (interactive)
+    (completing-read "Select Tag (+/-): " cpm-mail-tags))
+
+  ;; Quickly add/remove/search tag (named QT**) in header/message view
+  ;;--------------------------------------------------
+  (defvar cpm-mail~quick-tag "QT**"
+    "Quick tag.")
+
+  (defun cpm-mail-add-del-quick-tag ()
+    "Quickly add/del tags."
+    (interactive)
+    (let* ((msg (mu4e-message-at-point))
+           (oldtags (mu4e-message-field msg :tags)))
+      (if (member cpm-mail~quick-tag oldtags)
+          (mu4e-action-retag-message msg (concat "-" cpm-mail~quick-tag))
+        (mu4e-action-retag-message msg (concat "+" cpm-mail~quick-tag)))))
+
+  ;;
+  ;; Show tags in the header view
+  ;;--------------------------------------------------
+  ;;
+  (defun cpm-mail-header-add-tags-handler (msg field f-v str)
+    "Add tags to header view's subject field like: [TAG][TAG] subject..."
+    (let* ((val (or str f-v)))
+      (if (eq field :subject)
+          (let ((tags (mu4e-message-field msg :tags)))
+            (if tags
+                (setq val (concat
+                           (mapconcat (function (lambda (x) (propertize (concat "[" x "]") 'face 'fringe)))
+                                      tags "")
+                           " "
+                           val))
+              val))
+        val)))
+
+  (cond ((functionp 'mu4e~headers-field-value) ; for mu>=1.5
+         (add-to-list 'cpm-mail~header-handlers 'cpm-mail-header-add-tags-handler))
+        ((listp 'mu4e~headers-field-handler-functions) ; for mu<1.5
+         (add-to-list 'mu4e~headers-field-handler-functions (lambda (msg field val width)
+                                                              "" (cpm-mail-header-add-tags-handler msg field val nil))))
+        (t nil))
 
 ;;;; Composing Email
 
@@ -214,6 +324,7 @@
 
 
 ;;;; Sending Mail
+;;;;; Send Settings
 
   ;; Configure the function to use for sending mail
   (setq message-send-mail-function 'smtpmail-send-it)
@@ -229,6 +340,102 @@
   ;; (fset 'cpm--email-move-to-trash "mTrash")
   ;; (define-key mu4e-headers-mode-map (kbd "d") 'cpm--email-move-to-trash)
   ;; (define-key mu4e-view-mode-map (kbd "d") 'cpm--email-move-to-trash)
+
+;;;;; Check Attachments
+  ;; See https://github.com/panjie/mu4e-goodies
+
+  (require 'hi-lock)
+
+  (defvar cpm-mail-rule-func
+    '((check-attach . cpm-mail-draft-attach-p)
+      (check-cc . cpm-mail-draft-cc-p)))
+
+  (defvar cpm-mail-keywords
+    '(("[aA]ttachment" . check-attach)
+      ("[aA]ttached" . check-attach)
+      ("[cC]c'd" . check-cc)
+      ("C[cC]'d" . check-cc)
+      ("CCd" . check-cc))
+    "Keywords to be alerted. An alist like:
+\( (regexp-of-keywords . rules-for-keywords) ... )")
+
+  (defun cpm-mail-draft-attach-p ()
+    "Check if current email draft has at least one attachment."
+    (save-excursion
+      (goto-char (point-min))
+      (re-search-forward "\<#part .*filename=.*" (point-max) t)))
+
+  (defun cpm-mail-draft-cc-p ()
+    "Check if current email draft has cc field."
+    (message-fetch-field "Cc"))
+
+  (defun cpm-mail-search-body-subject (keyword &optional start)
+    "Search for keyword in the current mail's subject and body. Return
+the pos of the keyword which is a cons cell, nil if not found."
+    ;; check for subject
+    (save-excursion
+      (if (and start (<= start (point-max)))
+          (goto-char start)
+        (message-goto-subject))
+      (if (re-search-forward keyword (point-max) t)
+          ;; check if the keyword is found in a cited line
+          (let ((current-pos (point)))
+            (beginning-of-line)
+            (if (or (search-forward message-yank-prefix
+                                    (+ (point) (length message-yank-prefix))
+                                    t)
+                    (search-forward message-yank-cited-prefix
+                                    (+ (point) (length message-yank-cited-prefix))
+                                    t))
+                (cpm-mail-search-body-subject keyword current-pos)
+              (cons (match-beginning 0) (match-end 0))))
+        nil)))
+
+  (add-hook 'message-send-hook
+            (defun cpm-mail-check-keywords ()
+              (interactive "P")
+              (let ((it (car cpm-mail-keywords))
+                    (list (cdr cpm-mail-keywords))
+                    (key-pos)
+                    (msg))
+                (while (and (not key-pos) it)
+                  (unless (and (setq key-pos (cpm-mail-search-body-subject (car it)))
+                               (not (funcall (cdr (assoc (cdr it) cpm-mail-rule-func)))))
+                    (setq key-pos nil)
+                    (setq it (car list)
+                          list (cdr list))))
+                (when key-pos
+                  (goto-char (car key-pos))
+                  (overlay-put (make-overlay (car key-pos) (cdr key-pos)) 'face 'hi-yellow)
+                  (cond
+                   ((eq (cdr it) 'check-attach) (setq msg "You may forget your attachment!"))
+                   ((eq (cdr it) 'check-cc) (setq msg "You may forget your Cc!")))
+                  (setq msg (concat msg " Really send message?"))
+                  (or (y-or-n-p msg)
+                      (keyboard-quit))))))
+
+  (defun cpm-mail-check-keywords ()
+    (interactive "P")
+    (let ((it (car cpm-mail-keywords))
+          (list (cdr cpm-mail-keywords))
+          (key-pos)
+          (msg))
+      (while (and (not key-pos) it)
+        (unless (and (setq key-pos (cpm-mail-search-body-subject (car it)))
+                     (not (funcall (cdr (assoc (cdr it) cpm-mail-rule-func)))))
+          (setq key-pos nil)
+          (setq it (car list)
+                list (cdr list))))
+      (when key-pos
+        (goto-char (car key-pos))
+        (overlay-put (make-overlay (car key-pos) (cdr key-pos)) 'face 'hi-yellow)
+        (cond
+         ((eq (cdr it) 'check-attach) (setq msg "You may have forgotten your attachment!"))
+         ((eq (cdr it) 'check-cc) (setq msg "You may have forgotten your Cc!")))
+        (setq msg (concat msg " Really send message?"))
+        (or (y-or-n-p msg)
+            (keyboard-quit)))))
+
 
 ;;;; Contexts
 
@@ -289,27 +496,37 @@
 
   ;; Helpful discussion at
   ;; https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Mail-05.org
-  (defun cpm/capture-mail-follow-up (msg)
+  (defun cpm/capture-mail-comment (msg)
     "Capture for message follow-up"
     (interactive)
     (call-interactively 'org-store-link)
-    (org-capture nil "mf"))
+    (org-capture nil "mc"))
 
-  (defun cpm/capture-mail-read-later (msg)
-    "Capture for message read-later"
+  (defun cpm/capture-mail-respond (msg)
+    "Capture for message follow-up"
     (interactive)
     (call-interactively 'org-store-link)
     (org-capture nil "mr"))
 
+  (defun cpm/capture-mail-remind (msg)
+    "Capture for message read-later"
+    (interactive)
+    (call-interactively 'org-store-link)
+    (org-capture nil "mm"))
+
   ;; Add custom actions for our capture templates
   (add-to-list 'mu4e-headers-actions
-               '("follow up" . cpm/capture-mail-follow-up) t)
+               '("Comment on" . cpm/capture-mail-comment) t)
   (add-to-list 'mu4e-view-actions
-               '("follow up" . cpm/capture-mail-follow-up) t)
+               '("Comment on" . cpm/capture-mail-comment) t)
   (add-to-list 'mu4e-headers-actions
-               '("read later" . cpm/capture-mail-read-later) t)
+               '("respond" . cpm/capture-mail-respond) t)
   (add-to-list 'mu4e-view-actions
-               '("read later" . cpm/capture-mail-read-later) t)
+               '("respond" . cpm/capture-mail-respond) t)
+  (add-to-list 'mu4e-headers-actions
+               '("Remind" . cpm/capture-mail-remind) t)
+  (add-to-list 'mu4e-view-actions
+               '("Remind" . cpm/capture-mail-remind) t)
 
 ;;;; Mail Custom Bookmarks/Searches
 
@@ -334,51 +551,137 @@
   ;; NOTE: Use maildir-extensions for now
   ;; Eventually this will be incorporated into mu, but right now it doesn't show mail counts for some reason
 
-  ;; ;; ;; the maildirs you use frequently; access them with 'j' ('jump')
-  ;; (setq   mu4e-maildir-shortcuts
-  ;;         '((:maildir "/Fastmail/Archive"    :query "/Fastmail/Archive"    :key ?a)
-  ;;           (:maildir "/Fastmail/Inbox"      :query "/Fastmail/Inbox"      :key ?i)
-  ;;           (:maildir "/Fastmail/Starred"    :query "/Fastmail/Starred"    :key ?w)
-  ;;           (:maildir "/Fastmail/Sent Items" :query "/Fastmail/Sent Items" :key ?s)
-  ;;           (:maildir "/UNL/Inbox"           :query "/UNL/Inbox"           :key ?I)
-  ;;           (:maildir "/UNL/Archive"         :query "/UNL/Archive"         :key ?A)
-  ;;           (:maildir "/UNL/Archive1"        :query "/UNL/Archive1"        :key ?1)
-  ;;           (:maildir "/UNL/Sent"            :query "/UNL/Sent"            :key ?S)))
-
-  ;; ;; ;; the maildirs you use frequently; access them with 'j' ('jump')
-  ;; (setq   mu4e-maildir-shortcuts
-  ;;         '((:maildir "/Fastmail/Archive"    :key ?a)
-  ;;           (:maildir "/Fastmail/Inbox"      :key ?i)
-  ;;           (:maildir "/Fastmail/Starred"    :key ?w)
-  ;;           (:maildir "/Fastmail/Sent Items" :key ?s)
-  ;;           (:maildir "/UNL/Inbox"           :key ?I)
-  ;;           (:maildir "/UNL/Archive"         :key ?A)
-  ;;           (:maildir "/UNL/Archive1"        :key ?1)
-  ;;           (:maildir "/UNL/Sent"            :key ?S)))
+  ;; ;; the maildirs you use frequently; access them with 'j' ('jump')
+  (setq mu4e-maildir-shortcuts '((:maildir "/Fastmail/Archive"    :key ?a)
+                                 (:maildir "/Fastmail/Inbox"      :key ?i)
+                                 (:maildir "/Fastmail/Starred"    :key ?w)
+                                 (:maildir "/Fastmail/Sent Items" :key ?s)
+                                 (:maildir "/UNL/Inbox"           :key ?I)
+                                 (:maildir "/UNL/Archive"         :key ?A)
+                                 (:maildir "/UNL/Archive1"        :key ?1)
+                                 (:maildir "/UNL/Sent"            :key ?S)))
 
   ;; Show maildirs with 0 messages
   (setq mu4e-main-hide-fully-read nil)
 
-;;;; Better Tagging/Marking
 
-  ;;--- Nicer actions display using emoji tags -----------------------------------
-  ;; (plist-put (cdr (assq 'refile   mu4e-marks)) :char "⨯")
-  (plist-put (cdr (assq 'refile   mu4e-marks)) :char "📂")
-  (plist-put (cdr (assq 'unread   mu4e-marks)) :char "📩")
-  (plist-put (cdr (assq 'read     mu4e-marks)) :char "👀")
-  (plist-put (cdr (assq 'trash    mu4e-marks)) :char "🗑️")
-  (plist-put (cdr (assq 'untrash  mu4e-marks)) :char "  ")
-  (plist-put (cdr (assq 'delete   mu4e-marks)) :char "🧨")
-  (plist-put (cdr (assq 'flag     mu4e-marks)) :char "🚩")
-  (plist-put (cdr (assq 'unflag   mu4e-marks)) :char "  ")
-  (plist-put (cdr (assq 'move     mu4e-marks)) :char "📂")
-  (plist-put (cdr (assq 'tag      mu4e-marks)) :char "❗")
+;;;; Better Marking (w/Icons & SVG Tags)
 
+;;;;; Unicode icons for marking
+
+  ;;--- Nicer actions display using unicode tags -----------------------------------
+  ;; (setq mu4e-headers-unread-mark    '("u" . "📩 "))
+  ;; (setq mu4e-headers-draft-mark     '("D" . "🚧 "))
+  ;; (setq mu4e-headers-flagged-mark   '("F" . "🚩 "))
+  ;; (setq mu4e-headers-new-mark       '("N" . "✨ "))
+  ;; (setq mu4e-headers-passed-mark    '("P" . "↪ "))
+  ;; (setq mu4e-headers-replied-mark   '("R" . "↩ "))
+  ;; (setq mu4e-headers-seen-mark      '("S" . " "))
+  ;; (setq mu4e-headers-trashed-mark   '("T" . "🗑️"))
+  ;; (setq mu4e-headers-attach-mark    '("a" . "📎 "))
+  ;; (setq mu4e-headers-encrypted-mark '("x" . "🔑 "))
+  ;; (setq mu4e-headers-signed-mark    '("s" . "🖊 "))
+
+;;;;; All-the-icons for marking
+  ;; Use all-the-icons
+  ;;https://github.com/emacsmirror/mu4e-marker-icons
+  ;;https://github.com/djcb/mu/issues/1795
+
+  ;; Depends on all-the-icons
+  (when (featurep 'all-the-icons)
+    (require 'all-the-icons)
+
+    (defgroup mu4e-marker-icons nil
+      "Display icons for mu4e markers."
+      :group 'mu4e-marker-icons)
+
+    (defvar mu4e-marker-icons-marker-alist
+      '((mu4e-headers-seen-mark      . mu4e-marker-icons-saved-headers-seen-mark)
+        (mu4e-headers-new-mark       . mu4e-marker-icons-saved-headers-new-mark)
+        (mu4e-headers-unread-mark    . mu4e-marker-icons-saved-headers-unread-mark)
+        (mu4e-headers-signed-mark    . mu4e-marker-icons-saved-headers-signed-mark)
+        (mu4e-headers-encrypted-mark . mu4e-marker-icons-saved-headers-encrypted-mark)
+        (mu4e-headers-draft-mark     . mu4e-marker-icons-saved-headers-draft-mark)
+        (mu4e-headers-attach-mark    . mu4e-marker-icons-saved-headers-attach-mark)
+        (mu4e-headers-passed-mark    . mu4e-marker-icons-saved-headers-passed-mark)
+        (mu4e-headers-flagged-mark   . mu4e-marker-icons-saved-headers-flagged-mark)
+        (mu4e-headers-replied-mark   . mu4e-marker-icons-saved-headers-replied-mark)
+        (mu4e-headers-trashed-mark   . mu4e-marker-icons-saved-headers-trashed-mark))
+      "An alist of markers used in mu4e.")
+
+    (defun mu4e-marker-icons--store (l)
+      "Store mu4e header markers value from L."
+      (mapcar (lambda (x) (set (cdr x) (symbol-value (car x)))) l))
+
+    (defun mu4e-marker-icons--restore (l)
+      "Restore mu4e header markers value from L."
+      (let ((lrev (mapcar (lambda (x) (cons (cdr x) (car x))) l)))
+        (mu4e-marker-icons--store lrev)))
+
+    (defun mu4e-marker-icons-enable ()
+      "Enable mu4e-marker-icons."
+      (mu4e-marker-icons--store mu4e-marker-icons-marker-alist)
+      (setq mu4e-use-fancy-chars t)
+      (setq mu4e-headers-precise-alignment t)
+      (setq mu4e-headers-seen-mark       `("S" . ,(propertize
+                                                   (all-the-icons-material "mail_outline")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground ,(face-background 'default))))
+            mu4e-headers-new-mark        `("N" . ,(propertize
+                                                   (all-the-icons-material "markunread")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground ,(face-background 'default))))
+            mu4e-headers-unread-mark     `("u" . ,(propertize
+                                                   (all-the-icons-material "notifications_none")
+                                                   'face 'mu4e-unread-face))
+            mu4e-headers-draft-mark      `("D" . ,(propertize
+                                                   (all-the-icons-material "drafts")
+                                                   'face 'mu4e-draft-face))
+            mu4e-headers-attach-mark     `("a" . ,(propertize
+                                                   (all-the-icons-material "attachment")
+                                                   'face 'mu4e-attach-number-face))
+            mu4e-headers-passed-mark     `("P" . ,(propertize ; ❯ (I'm participated in thread)
+                                                   (all-the-icons-material "center_focus_weak")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground ,bespoke-yellow)))
+            mu4e-headers-flagged-mark    `("F" . ,(propertize
+                                                   (all-the-icons-material "flag")
+                                                   'face 'mu4e-flagged-face))
+            mu4e-headers-replied-mark    `("R" . ,(propertize
+                                                   (all-the-icons-material "reply_all")
+                                                   'face 'mu4e-replied-face))
+            mu4e-headers-trashed-mark    `("T" . ,(propertize
+                                                   (all-the-icons-material "delete_forever")
+                                                   'face 'mu4e-trashed-face))
+            mu4e-headers-encrypted-mark `("x" . ,(propertize
+                                                  (all-the-icons-material "enhanced_encryption")
+                                                  'face `(:family ,(all-the-icons-material-family)
+                                                          :foreground ,bespoke-blue)))
+            mu4e-headers-signed-mark     `("s" . ,(propertize
+                                                   (all-the-icons-material "check")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground ,bespoke-green)))))
+
+    (defun mu4e-marker-icons-disable ()
+      "Disable mu4e-marker-icons."
+      (mu4e-marker-icons--restore mu4e-marker-icons-marker-alist))
+
+    (define-minor-mode mu4e-marker-icons-mode
+      "Display icons for mu4e markers."
+      :require 'mu4e-marker-icons-mode
+      :init-value nil
+      :global t
+      (if mu4e-marker-icons-mode
+          (mu4e-marker-icons-enable)
+        (mu4e-marker-icons-disable)))
+
+    (with-eval-after-load 'mu4e
+      (mu4e-marker-icons-mode)))
+
+;;;;; Add SVG tags
+  ;; Don't show refile target; use svg instead
   (setq mu4e-headers-show-target nil)
 
-  (set-face-attribute 'mu4e-header-marks-face nil :inherit 'bold)
-
-  ;; Add SVG tags
   ;; FIXME: unmarking doesn't remove SVG tags
   (defun mu4e-mark-at-point-advice (mark target)
     (interactive)
@@ -473,20 +776,11 @@
         (find-file (concat org-directory "mail.org"))
         (mu4e)
         (mu4e-headers-search cpm-mu4e-inbox-query))))
+
   )
 
 ;;;; End Mu4e
 
-;;; Mu4e Maildir-Extension
-(use-package mu4e-maildirs-extension
-  :straight (:type git :host github :repo "agpchil/mu4e-maildirs-extension")
-  :after mu4e
-  :custom
-  (mu4e-maildirs-extension-default-collapse-level 0)
-  (mu4e-maildirs-extension-action-key "")
-  (mu4e-maildirs-extension-action-text nil)
-  :config
-  (mu4e-maildirs-extension))
 
 ;;; Better Viewing – Mu4e Views
 ;; This makes mu4e render html emails in emacs via xwidgets.
@@ -526,87 +820,8 @@
   (interactive)
   (let ((view (mu4e-views--get-current-viewing-method-name)))
     (if (string= "text" view)
-        (mu4e-views-view-current-msg-with-method "html")
+        (mu4e-views-view-current-msg-with-method "html-nonblock")
       (mu4e-views-view-current-msg-with-method "text"))))
-
-;;; Mu4e Icons
-;; Use nice icons
-(use-package mu4e-marker-icons
-  :straight t
-  :after mu4e
-  :init (mu4e-marker-icons-mode 1))
-
-;;; Mu4e Goodies
-(use-package mu4e-goodies
-  :straight (:type git :host github :repo "panjie/mu4e-goodies")
-  :after mu4e
-  :config/el-patch
-  (defun mu4e-goodies-check-keywords ()
-    (interactive "P")
-    (let ((it (car mu4e-goodies-keywords))
-          (list (cdr mu4e-goodies-keywords))
-          (key-pos)
-          (msg))
-      (while (and (not key-pos) it)
-        (unless (and (setq key-pos (mu4e-goodies-search-body-subject (car it)))
-                     (not (funcall (cdr (assoc (cdr it) mu4e-goodies-rule-func)))))
-          (setq key-pos nil)
-          (setq it (car list)
-                list (cdr list))))
-      (when key-pos
-        (goto-char (car key-pos))
-        (overlay-put (make-overlay (car key-pos) (cdr key-pos)) 'face 'hi-yellow)
-        (cond
-         ((eq (cdr it) 'check-attach) (setq msg "You may have forgotten your attachment!"))
-         ((eq (cdr it) 'check-cc) (setq msg "You may have forgotten your Cc!")))
-        (setq msg (concat msg " Really send message?"))
-        (or (y-or-n-p msg)
-            (keyboard-quit)))))
-  ;; Add completing read
-  (add-to-list 'mu4e-marks
-               '(tag
-                 :char       ("g" . " ")
-                 :prompt     "gtag"
-                 :ask-target (lambda () (cpm/select-mail-tag))
-                 :action      (lambda (docid msg target)
-                                (mu4e-action-retag-message msg target))))
-  (mu4e~headers-defun-mark-for tag)
-  (define-key mu4e-headers-mode-map (kbd "G") 'mu4e-headers-mark-for-tag)
-  (define-key-after (lookup-key mu4e-headers-mode-map [menu-bar headers])
-    [mark-tag] '("Mark for tag" . mu4e-headers-mark-for-tag) 'mark-pattern)
-
-
-  ;; actions to add tags
-  (add-to-list 'mu4e-view-actions
-               '("add/remove tags" . mu4e-action-retag-message) t)
-  :config
-  ;; add words to check attachments & cc list
-  (add-to-list 'mu4e-goodies-keywords '("[aA]ttached" . check-attach))
-  (add-to-list 'mu4e-goodies-keywords '("[cC]c'd" . check-cc))
-  (add-to-list 'mu4e-goodies-keywords '("C[cC]'d" . check-cc))
-  (add-to-list 'mu4e-goodies-keywords '("CCd" . check-cc))
-  (require 'mu4e-goodies))
-
-(defvar cpm-mail-tags
-  '("casrac"
-    "conferences"
-    "edited-volume"
-    "ergo"
-    "grad-admissions"
-    "phil105"
-    "phil232"
-    "phil871"
-    "phil880"
-    "phil971"
-    "placement"
-    "publications"
-    "referee-reports"
-    "supervision"
-    ))
-
-(defun cpm/select-mail-tag ()
-  (interactive)
-  (completing-read "Select Tag (+/-): " cpm-mail-tags))
 
 ;;; Using Org & HTML (Org-MSG)
 (use-package org-msg
