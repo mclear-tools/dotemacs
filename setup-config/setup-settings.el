@@ -152,7 +152,8 @@
   ;; Save all buffers after idle time
   (run-with-idle-timer 5 t (lambda () (cpm/full-auto-save)))
   ;; Save on exit from insert state
-  (add-hook 'meow-insert-exit-hook #'cpm/full-auto-save))
+  ;; (add-hook 'meow-insert-exit-hook #'cpm/full-auto-save)
+  )
 
 (use-package backup-walker
   :commands backup-walker-start)
