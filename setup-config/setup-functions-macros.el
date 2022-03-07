@@ -13,8 +13,6 @@
   (append-to-file (region-beginning) (region-end) (concat cpm-setup-dir "setup-files-archive/setup-archive.el"))
   (delete-region (region-beginning) (region-end)))
 
-
-
 ;;;; Insert Comment Seperator
 ;; ======================================================
 ;; Insert commented seperator like this line
@@ -49,12 +47,6 @@
           (error (save-buffers-kill-emacs))))
   (select-frame-set-input-focus (selected-frame)))
 
-
-
-
-
-
-
 ;;;; Insert Weather
 ;; From [[https://www.baty.blog/2019/insert-weather-into-emacs-buffer][Jack Baty]] with some slight modifications for formatting. See also [[https://github.com/chubin/wttr.in][wttr.in]]. 
 (defun cpm/insert-weather ()
@@ -64,11 +56,6 @@
                        (split-string w "\n")
                        "\n")))
   (newline))
-
-
-
-
-
 
 ;;;; Built-in Functions
 ;; These are useful built-in functions, but you have to enable them
@@ -91,11 +78,6 @@
                  ;; (executable-find "/usr/local/bin/emacs")))
                  (executable-find "/Applications/Emacs.app/Contents/MacOS/Emacs")))
 ;; (executable-find "Emacs")))
-
-
-
-
-
 
 ;;;; Formatted Copy
 (defun formatted-copy ()
@@ -194,7 +176,6 @@
 (global-set-key [escape] 'evil-exit-emacs-state))
 
 
-
 ;;;; Fill or Unfill
 ;; See https://sachachua.com/dotemacs/
 ;; and https://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
@@ -254,10 +235,6 @@ with no seperation"
   (insert (format-time-string "%s")))
 ;; (global-set-key (kbd "C-c e") 'cpm/insert-time-seconds-epoch)
 
-
-
-
-
 ;;;; Jump to sexp
 
 (defun cpm/forward-or-backward-sexp (&optional arg)
@@ -268,10 +245,6 @@ with no seperation"
         ;; Now, try to succeed from inside of a bracket
         ((looking-at "\\s)") (forward-char) (backward-sexp arg))
         ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
-
-
-
-
 
 ;;;; Make Parent Directory
 ;;  Create a directory – or a hierarchy of them – while finding a file in a
@@ -292,17 +265,6 @@ with no seperation"
     (call-interactively #'write-file)
     (when old-location
       (delete-file old-location))))
-
-
-
-
-
-
-
-
-
-
-
 
 
 ;;;; Clipboard Transforms Using Pandoc
@@ -399,21 +361,6 @@ with no seperation"
   (save-buffer)
   (server-edit))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ;;;; Smart Yanking
 ;;Courtesy of Marcin Borkowski http://mbork.pl/2018-07-02_Smart_yanking
 
@@ -468,10 +415,6 @@ with no seperation"
 ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00975.html
 
 
-
-
-
-
 ;;;; Transpose hydra
 ;; From the hydra wiki https://github.com/abo-abo/hydra/wiki/Emacs#transpose
 
@@ -513,10 +456,6 @@ with no seperation"
     (insert "---" "\n")
     (goto-char start)
     (insert "---" "\n")))
-
-
-
-
 
 ;;;; Quit Function
 (defun doom-quit-p (&optional prompt)
