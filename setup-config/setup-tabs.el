@@ -34,23 +34,7 @@ questions.  Else use completion to select the tab to switch to."
             (t
              (tab-bar-switch-to-tab
               (completing-read "Select tab: " tabs nil t))))))
-
-  ;; (setq tab-bar-tab-name-function #'cpm/name-tab-by-project-or-default)
   (setq tab-bar-mode t))
-
-;; ;; See https://www.rousette.org.uk/archives/using-the-tab-bar-in-emacs/
-;; ;; I've modified it to use project instead of projectile
-;; (defun cpm/name-tab-by-project-or-default ()
-;;   "Return project name if in a project, or default tab-bar name if not.
-;; The default tab-bar name uses the buffer name."
-;;   (let ((project-name (cpm--project-name)))
-;;     (if (string= "-" project-name)
-;;         (tab-bar-tab-name-current)
-;;       (cpm--project-name))))
-
-;; ;; Get the current tab name for use in some other display
-;; (defun cpm--current-tab-name ()
-;;   (alist-get 'name (tab-bar--current-tab)))
 
 ;;;; Tab Bar Echo
 ;; Use echo area for tab name display
@@ -104,7 +88,12 @@ questions.  Else use completion to select the tab to switch to."
   (let ((tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs))))
     (mapconcat 'identity tab-names " ")))
 
-
+;;;; Tab Bookmark
+;; Bookmark window configurations in a tab
+;; NOTE: would be good to get this working with emacs-workspaces
+(use-package tab-bookmark
+  :straight (:type git :host github :repo "minad/tab-bookmark")
+  :commands (tab-bookmark tab-bookmark-open))
 
 ;;; Provide Tabs
 (provide 'setup-tabs)
