@@ -573,7 +573,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   ;; auto-complete
   (corfu-auto t)
 
-  (corfu-min-width 60)
+  (corfu-min-width 90)
   (corfu-max-width corfu-min-width)     ; Always have the same width
   (corfu-count 10)
   (corfu-scroll-margin 4)
@@ -586,7 +586,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   (corfu-quit-no-match 'separator)
   (corfu-quit-at-boundary t)
 
-  (corfu-preview-current 'insert)       ; Preview current candidate?
+  (corfu-preview-current nil)       ; Preview current candidate?
   (corfu-preselect-first t)           ; Preselect first candidate?
   :config
   (defun corfu-enable-always-in-minibuffer ()
@@ -603,7 +603,6 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   ;; Swap M-/ and C-M-/
   :bind (("M-/" . dabbrev-completion)
          ("C-M-/" . dabbrev-expand)))
-
 
 ;;;; Kind Icon (For Corfu)
 (use-package kind-icon
@@ -628,8 +627,7 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   ;; match the background color corresponding to the current theme. Important
   ;; since I have a light theme and dark theme I switch between. This has no
   ;; function unless you use something similar
-  (add-hook 'bespoke-after-load-theme-hook #'(lambda () (interactive) (kind-icon-reset-cache)))
-  )
+  (add-hook 'after-load-theme-hook #'kind-icon-reset-cache))
 
 ;;;; Corfu Doc
 (use-package corfu-doc
@@ -660,7 +658,6 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   )
 
 ;;;;; Corfu Extensions (Cape)
-
 ;; Add extensions
 (use-package cape
   :straight (:type git :host github :repo "minad/cape")
@@ -683,16 +680,15 @@ If TOP-NODE is provided, then just select from its sub-nodes."
          ("C-c p r" . cape-rfc1345))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   (add-to-list 'completion-at-point-functions #'cape-line)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
-  ;; (add-to-list 'completion-at-point-functions #'cape-dict)
-  )
+  (add-to-list 'completion-at-point-functions #'cape-abbrev))
 
 
 ;;;; Company Org Block
@@ -731,7 +727,6 @@ If TOP-NODE is provided, then just select from its sub-nodes."
   (with-eval-after-load 'company-mode
     (add-to-list 'company-backends '(company-yasnippet)))
   (yas-global-mode 1))
-
 
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
 ;; (use-package yasnippet-snippets
