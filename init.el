@@ -4,15 +4,17 @@
 ;; in org style) to navigate through sections, and "imenu" to locate individual
 ;; use-package definition.
 
-;;; Personal Information
-;; Give emacs some personal info
+;;; Code:
+;;;; Personal Information
+
+;; Give Emacs some personal info
 (setq user-full-name "Colin McLear"
       user-mail-address "mclear@fastmail.com")
 
-;;; Startup
+;;;; Startup
 
 
-;;;; Directory Variables
+;;;;; Directory Variables
 ;;  We're going to define a number of directories that are used throughout this
 ;;  configuration to store different types of files.
 
@@ -52,7 +54,7 @@
   (setcar comp-eln-load-path
           (expand-file-name "cache/eln-cache/" cpm-cache-dir)))
 
-;;;; System Variables
+;;;;; System Variables
 (defconst sys/macp
   (eq system-type 'darwin)
   "Are we running on a Mac system?")
@@ -61,13 +63,13 @@
   (and (display-graphic-p) sys/macp)
   "Are we running under X on a Mac system?")
 
-;;;; Path Settings
+;;;;; Path Settings
 ;; Directory paths
 (dolist (dir (list cpm-local-dir cpm-etc-dir cpm-cache-dir cpm-elisp-dir cpm-setup-dir))
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
-;;;; Load Path
+;;;;; Load Path
 ;; Add config files to load-path
 (eval-and-compile
   (progn
@@ -159,6 +161,7 @@
     (run-with-idle-timer 120 nil (lambda () (kill-emacs)))))
 
 (defun cpm/straight-update-packages-asynchronously ()
+  "Update packages in a separate process."
   (interactive)
   (async-shell-command-no-window "/Applications/Emacs.app/Contents/MacOS/emacs --no-splash --eval '(cpm--straight-update-packages)'"))
 
@@ -228,7 +231,7 @@
 ;; For function switch see https://stackoverflow.com/a/4065412/6277148
 
 (defun cpm--emacs-switches (switch)
-  "Depending on command line argument, load emacs with minimal settings & no modules; useful for running tests"
+  "Depending on command line argument SWITCH, load Emacs with minimal settings & no modules; useful for testing."
   (let ((found-switch (member switch command-line-args)))
     (setq command-line-args (delete switch command-line-args))
     found-switch))
@@ -339,4 +342,3 @@
                                                  (float-time
                                                   (time-subtract after-init-time before-init-time)) gcs-done)
                                          (put 'narrow-to-page 'disabled nil))))
-

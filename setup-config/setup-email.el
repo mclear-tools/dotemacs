@@ -25,7 +25,7 @@
   ;; dreaded "UID is N beyond highest assigned" error.
   ;; See this link for more info: https://stackoverflow.com/a/43461973
   (setq mu4e-change-filenames-when-moving t)
-  ;; Refresh mail using mbsync every 3 minutes
+  ;; Refresh mail using mbsync every 5 minutes
   (setq mu4e-update-interval (* 5 60))
 
 ;;;; Attachments
