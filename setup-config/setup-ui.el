@@ -108,8 +108,8 @@ If FRAME is omitted or nil, use currently selected frame."
 (use-package fringe
   :straight (:type built-in)
   :custom
-  ;; no fringe
-  (fringe-mode '(0 . 0)))
+  ;; allow fringe indicators
+  (fringe-mode '(10 . 10)))
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
@@ -276,11 +276,13 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; Pulse changes in buffer region
 (use-package goggles
   :straight (:type git :host github :repo "minad/goggles")
-  :hook (after-init . goggles-mode)
+  :defer 1
   :custom-face
   (goggles-added   ((t (:background ,bespoke-green))))
   (goggles-changed ((t (:background ,bespoke-blue))))
-  (goggles-removed ((t (:background ,bespoke-red)))))
+  (goggles-removed ((t (:background ,bespoke-red))))
+  :config
+  (goggles-mode 1))
 
 ;;;; Crosshair Highlighting
 (use-package crosshairs
