@@ -93,7 +93,9 @@ questions.  Else use completion to select the tab to switch to."
 ;; NOTE: would be good to get this working with emacs-workspaces
 (use-package tab-bookmark
   :straight (:type git :host github :repo "minad/tab-bookmark")
-  :commands (tab-bookmark tab-bookmark-open))
+  :commands (tab-bookmark tab-bookmark-open)
+  :bind (:map project-prefix-map
+         ("m" . tab-bookmark)))
 
 ;;; Provide Tabs
 (provide 'setup-tabs)
