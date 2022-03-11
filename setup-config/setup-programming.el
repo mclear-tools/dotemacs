@@ -338,28 +338,52 @@ Lisp function does not specify a special indentation."
                 highlight-indent-guides-auto-enabled t))
 
 
-;;; Linting/Error Checking
+;;; Linting/Error Checking (Flycheck)
 (use-package flycheck
   :straight (:type git :host github :repo "flycheck/flycheck")
+  :bind (:map cpm+flycheck-keys
+         ("b"   . flycheck-buffer)
+         ("C"   . flycheck-clear)
+         ("m" . flycheck-compile)
+         ("n"   . flycheck-next-error)
+         ("p"   . flycheck-previous-error)
+         ("l"   . flycheck-list-errors)
+         ("w"   . flycheck-copy-errors-as-kill)
+         ("s"   . flycheck-select-checker)
+         ("?"   . flycheck-describe-checker)
+         ("h"   . flycheck-display-error-at-point)
+         ("e"   . flycheck-explain-error-at-point)
+         ("H"   . display-local-help)
+         ("i"   . flycheck-manual)
+         ("V"   . flycheck-version)
+         ("v"   . flycheck-verify-setup)
+         ("x"   . flycheck-disable-checker))
   :hook ((emacs-lisp-mode
-	      latex-mode
-          markdown-mode
-	      org-mode
 	      php-mode
 	      sh-mode
 	      shell-mode
 	      shell-script-mode)
          . flycheck-mode)
   :config
-  (setq flycheck-clang-language-standard nil)
-  (setq flycheck-gcc-language-standard nil))
+  ;; don't limit reported errors
+  (setq flycheck-checker-error-threshold nil)
+  ;; Settings
+  (setq-default flycheck-emacs-lisp-initialize-packages 'auto
+                flycheck-emacs-lisp-load-path 'inherit
+                flycheck-highlighting-mode 'lines
+                flycheck-check-syntax-automatically '(save)))
 
-;; For .el files which are intended to be packages
-(use-package flycheck-package
-  :after flycheck
-  :config
-  (add-to-list 'flycheck-checkers 'flycheck-emacs-lisp-package)
-  (flycheck-package-setup))
+  ;; For .el files which are intended to be packages
+  (use-package flycheck-package
+    :after flycheck
+    :config
+    (add-to-list 'flycheck-checkers 'flycheck-emacs-lisp-package)
+    (flycheck-package-setup))
+
+(use-package consult-flycheck
+  :straight (:type git :host github :repo "minad/consult-flycheck")
+  :bind (:map cpm+flycheck-keys
+         ("c" . consult-flycheck)))
 
 ;; (use-package flymake
 ;;   :straight (:type built-in)

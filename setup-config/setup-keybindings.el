@@ -4,6 +4,13 @@
 ;; functions or packages from keybindings) but it also makes it the place to go
 ;; to deal with all keybindings.
 
+;;; Bind Key
+;; Note that bind-key comes with use-package
+(use-package bind-key
+  :straight nil
+  :config
+  (setq bind-key-describe-special-forms t))
+
 ;;; Personal Keybindings Prefix
 (defvar cpm-prefix "C-c C-SPC"
   "Prefix for all personal keybinds.")
@@ -29,8 +36,18 @@
    '("j" . meow-next)
    '("k" . meow-prev))
 
-  ;; Set leader
+  ;; Set leader This isn't the sanctioned way to do this, but it seems to be the
+  ;; only way to get `leader' to properly display keys from
+  ;; `meow-leader-define-key' and my personal keymap in `cpm+leader-map' I think
+  ;; the preferred way is via (setq meow-keypad-leader-dispatch "...") but
+  ;; that doesn't work as i want it to
   (add-to-list 'meow-keymap-alist (cons 'leader cpm+leader-map))
+  ;; Keypad prefixes hijack personal keybinds so disable them
+  ;; See https://github.com/meow-edit/meow/issues/206
+  (setq meow-keypad-meta-prefix nil
+        meow-keypad-ctrl-meta-prefix nil
+        meow-keypad-literal-prefix nil
+        meow-keypad-start-keys nil)
 
   (meow-leader-define-key
 
@@ -60,7 +77,7 @@
    '("e" . cpm+eval-keys)
    '("E" . restart-emacs-start-new-emacs)
    '("f" . cpm+file-keys)
-   `("F" . ,flycheck-keymap-prefix)
+   '("F" . cpm+flycheck-keys)
    '("i" . cpm/find-files-setup-config-directory)
    '("I" . cpm/search-setup-config-files)
    '("j" . avy-goto-char-timer)
@@ -177,13 +194,6 @@
   (meow-setup)
   (meow-global-mode 1))
 
-;;; Bind Key
-;; Note that bind-key comes with use-package
-(use-package bind-key
-  :straight nil
-  :config
-  (setq bind-key-describe-special-forms t))
-
 ;;; Personal Keybindings by Group
 ;;;; Buffer Keys
 (bind-keys :prefix-map cpm+buffer-keys
@@ -197,6 +207,7 @@
            ("f" . reveal-in-osx-finder               )
            ("i" . ibuffer-jump                       )
            ("j" . cpm/jump-in-buffer                 )
+           ("J" . consult-imenu                      )
            ("k" . cpm/kill-this-buffer               )
            ("K" . crux-kill-other-buffers            )
            ("m" . consult-global-mark                )
@@ -274,6 +285,10 @@
            ("r" . consult-recent-file              )
            ("y" . cpm/show-and-copy-buffer-filename))
 
+;;;; Linting (Flycheck)
+(bind-keys :prefix-map cpm+flycheck-keys
+           :prefix (concat cpm-prefix " F"))
+
 ;;;; Mail Keybindings
 (bind-keys :prefix-map cpm+mail-keys
            :prefix (concat cpm-prefix " m")
@@ -316,14 +331,13 @@
 ;;;; Toggle Keybindings
 (bind-keys :prefix-map cpm+toggle-keys
            :prefix (concat cpm-prefix " t")
-           ("a" . company-mode                )
            ("b" . buffer-line-mode            )
-           ("c" . flycheck-mode               )
            ("g" . git-gutter-mode             )
            ("h" . hl-line-mode                )
            ("H" . hidden-mode-line-mode       )
            ("e" . toggle-indicate-empty-lines )
            ("E" . eldoc-mode                  )
+           ("F" . flycheck-mode               )
            ("m" . cpm/toggle-display-markup   )
            ("n" . display-line-numbers-mode   )
            ("N" . org-numbers-overlay-mode    )
@@ -411,13 +425,12 @@
 ;;;; Workspace Keybindings
 (bind-keys :prefix-map cpm+workspace-keys
            :prefix (concat cpm-prefix " W")
-           ("c"  .  emacs-workspaces/close-workspace                    )
-           ("C"  .  emacs-workspaces/create-workspace                   )
+           ("c"  .  emacs-workspaces/create-workspace                   )
+           ("d"  .  emacs-workspaces/close-workspace                    )
            ("k"  .  emacs-workspaces/kill-buffers-close-workspace       )
+           ("n"  .  emacs-workspaces/create-new-project-and-workspace   )
            ("p"  .  emacs-workspaces/project-switch-project-open-file   )
-           ("P"  .  emacs-workspaces/create-new-project-and-workspace   )
-           ("s"  .  emacs-workspaces/switch-workspace                   )
-           ("S"  .  emacs-workspaces/switch-to-or-create-workspace      )
+           ("s"  .  emacs-workspaces/switch-to-or-create-workspace      )
            ("w"  .  emacs-workspaces/open-existing-project-and-workspace))
 
 ;;;; Zettelkasten/Notes/Wiki
@@ -459,6 +472,36 @@
   (setq which-key-separator " → ")
   (which-key-mode))
 
+;;; Hydras
+;;;; Hydra Rectangle
+(with-eval-after-load 'hydra
+  (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+                             :color pink
+                             :hint nil
+                             :post (deactivate-mark))
+    "
+  ^_k_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
+_h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
+  ^_j_^       _d_ kill      _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
+^^^^          _u_ndo        _g_ quit     ^ ^                     '---''(./..)-'(_\_)
+"
+    ("k" rectangle-previous-line)
+    ("j" rectangle-next-line)
+    ("h" rectangle-backward-char)
+    ("l" rectangle-forward-char)
+    ("d" kill-rectangle)                    ;; C-x r k
+    ("y" yank-rectangle)                    ;; C-x r y
+    ("w" copy-rectangle-as-kill)            ;; C-x r M-w
+    ("o" open-rectangle)                    ;; C-x r o
+    ("t" string-rectangle)                  ;; C-x r t
+    ("c" clear-rectangle)                   ;; C-x r c
+    ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
+    ("N" rectangle-number-lines)            ;; C-x r N
+    ("r" (if (region-active-p)
+             (deactivate-mark)
+           (rectangle-mark-mode 1)))
+    ("u" undo nil)
+    ("g" nil)))
 
 ;;; Markdown Keybindings
 
