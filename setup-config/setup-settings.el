@@ -69,6 +69,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
+(set-language-environment "UTF-8")
 
 (setq-default buffer-file-coding-system 'utf-8)
 (setq coding-system-for-read 'utf-8)
@@ -345,6 +346,12 @@
   (transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
   (transient-values-file (concat cpm-cache-dir "transient/values.el"))
   (transient-history-file (concat cpm-cache-dir "transient/history.el"))
+  ;; set transient popop to top of window
+  (transient-display-buffer-action '(display-buffer-in-side-window
+                                     (side . top)
+                                     (dedicated . t)
+                                     (inhibit-same-window . t)
+                                     (window-parameters (no-other-window . t))))
 ;;;; Help Transient
   :config
   ;; A little more useful for calling help than just C-h (less info density)
