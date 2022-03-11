@@ -83,9 +83,19 @@ Instead it's simpler to use bash."
     (add-hook 'org-babel-post-tangle-hook #'delete-trailing-whitespace)
     (add-hook 'org-babel-post-tangle-hook #'save-buffer :append)))
 
+;;; Org Modern (Display properties, bullets, etc)
+;; A nicer set of default display options
+(use-package org-modern
+  :straight (:type git :host github :repo "minad/org-modern")
+  :hook (org-mode . org-modern-mode)
+  :custom
+  (org-modern-star ["⦶" "⦷" "⦹" "⊕" "⍟" "⊛"]) ; "①" "②" "③" "④" "⑤" "⑥" "⑦"
+  )
+
 ;;; Org Bullets
 ;; Replace org-bullets since it is no longer maintained
 (use-package org-superstar
+  :disabled
   :hook (org-mode . org-superstar-mode)
   :config
   (setq org-superstar-headline-bullets-list '("●" "◉" "⁂" "❖" "🟊" "🞷" "🞻" "✸"))
@@ -115,27 +125,29 @@ Instead it's simpler to use bash."
   "Beautify org mode keywords."
   (setq prettify-symbols-alist
         (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                '(("#+header:" . "☰")
-                  ("#+begin_src" . "╦")
-                  ("#+end_src"   . "╩")
-                  ("#+begin_comment" . "✎")
-                  ("#+end_comment" . "✎")
-                  ("#+begin_notes" . "➤")
-                  ("#+end_notes" . "➤")
-                  ("#+begin_quote" . "»")
-                  ("#+end_quote" . "«")
-                  ("[ ]" . "")
-                  ("[X]" . "")
-                  ("[-]" . "")
+                '(
+                  ;; ("#+header:" . "☰")
+                  ;; ("#+begin_src" . "╦")
+                  ;; ("#+end_src"   . "╩")
+                  ;; ("#+begin_comment" . "✎")
+                  ;; ("#+end_comment" . "✎")
+                  ;; ("#+begin_notes" . "➤")
+                  ;; ("#+end_notes" . "➤")
+                  ;; ("#+begin_quote" . "»")
+                  ;; ("#+end_quote" . "«")
+                  ;; ("[ ]" . "")
+                  ;; ("[X]" . "")
+                  ;; ("[-]" . "")
                   ;; (":PROPERTIES:" . "")
                   ;; (":END:" . "―")
                   ;; ("#+STARTUP:" . "")
                   ("#+ROAM_TAGS:" . "")
                   ("#+FILETAGS:" . "")
-                  ("SCHEDULED:" . "")
-                  ("DEADLINE:" . "")
-                  ("CLOSED:"  . "")
-                  (":logbook:" . ""))))
+                  ;; ("SCHEDULED:" . "")
+                  ;; ("DEADLINE:" . "")
+                  ;; ("CLOSED:"  . "")
+                  ;; (":logbook:" . "")
+                  )))
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook #'cpm/org-icons)
 

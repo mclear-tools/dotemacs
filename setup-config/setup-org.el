@@ -4,13 +4,11 @@
 ;; Org package settings
 (use-package org
   :straight t
-  ;; :straight (:host github :repo "yantar92/org" :branch "feature/org-fold"
-  ;;            :files (:defaults "contrib/lisp/*.el")) ;; fixes org-folding
   :commands (org-mode)
   :mode (("\\.org$" . org-mode))
   :bind (:map org-mode-map
-         ("M-k" .  org-metaup)
-         ("M-j" .  org-metadown)
+         ("M-k" . org-metaup)
+         ("M-j" . org-metadown)
          ("M-l" . org-metaright)
          ("M-h" . org-metaleft)
          ("M-J" . org-shiftdown)
@@ -48,8 +46,12 @@
   ;; for use with meow movement
   (modify-syntax-entry ?@ "_" org-mode-syntax-table)
   (setq-default org-footnote-section nil ;; place footnotes locally rather than in own section
+                org-cycle-separator-lines 0 ;; no empty lines in collapsed view
+                org-auto-align-tags nil ;; don't auto-align
+                org-tags-column 0 ;; place tags directly next to headline text
                 org-footnote-auto-adjust t ;; renumber footnotes
-                org-adapt-indentation t
+                org-startup-indented nil ;; don't start in indent mode
+                org-adapt-indentation nil ;; don't adapt indentation
                 org-image-actual-width  500 ;; show all images at 500px using imagemagik
                 org-return-follows-link t ;; make RET follow links
                 org-list-allow-alphabetical t ;; allow alphabetical list
@@ -68,7 +70,6 @@
                 org-table-export-default-format "orgtbl-to-csv" ;; export for org-tables to csv
                 org-ellipsis "…" ;; nicer elipses "↷" "↴" "▼"
                 org-cycle-separator-lines 0 ;; Give a more compact and consistent view
-                org-startup-indented t ;; start in indent mode
                 ;; prevent editing invisible area, and show an error message in echo area instead;
                 ;; additionally expand text and move focus to the expected point.
                 org-catch-invisible-edits 'smart
@@ -164,9 +165,7 @@
       (search category-keep))))
 
   ;; Display properties
-  (setq org-cycle-separator-lines 0
-        org-tags-column 0
-        org-agenda-tags-column org-tags-column
+  (setq org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'only-window
         org-agenda-restore-windows-after-quit t
         org-agenda-todo-ignore-scheduled nil
