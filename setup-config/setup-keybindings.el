@@ -296,6 +296,7 @@
            ("c" .  mu4e-compose-new           )
            ("i" .  cpm/go-to-mail-inbox       )
            ("s" .  mu4e-update-mail-and-index )
+           ("S" .  cpm/swiftbar-email-update  )
            ("u" .  cpm/go-to-mail-unread      ))
 
 ;;;; Quit Keybindings
