@@ -42,7 +42,6 @@
     (require 'setup-tabs)
     (require 'setup-workspaces)
     (require 'setup-teaching)
-    (require 'setup-childframe)
     (require 'setup-shell)
     (require 'setup-writing)
     (require 'setup-notes)
