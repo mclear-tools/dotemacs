@@ -7,6 +7,16 @@
   (interactive)
   (find-file (concat (getenv "HOME") "/Dropbox/Work/projects/notebook/content-org")))
 
+;;; Remember Notes
+(use-package remember
+  :straight (:type built-in)
+  :commands (remember remember-notes)
+  :config
+  (setq remember-data-dir (concat cpm-cache-dir "remember")
+        remember-data-file (concat cpm-cache-dir "remember/notes"))
+  (unless (file-directory-p remember-data-dir)
+    (make-directory remember-data-dir t)))
+
 ;;; Search Notes
 ;;;; Zettelkasten Search
 

@@ -425,8 +425,9 @@ If FRAME is omitted or nil, use currently selected frame."
   (with-no-warnings
     (add-to-list
      'dimmer-buffer-exclusion-regexps "^ \\*Vertico\\*$")))
-    ;; (add-to-list
-     ;; 'dimmer-prevent-dimming-predicates #'vertico-buffer-mode)))
+;; (add-to-list
+;; 'dimmer-prevent-dimming-predicates #'vertico-buffer-mode)))
+
 
 
 ;;; Cursor
@@ -434,7 +435,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :straight (:type built-in)
   :custom
   ;; don't show cursor in inactive windows
-  (cursor-in-non-selected-win dows nil))
+  (cursor-in-non-selected-windows nil))
 
 ;;; Reveal Mode
 ;; Toggle uncloaking of invisible text near point, including folded org headlines (Reveal mode).
@@ -459,6 +460,83 @@ If FRAME is omitted or nil, use currently selected frame."
           ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'shadow  :inverse t ))))
           ("FIXME" . ((lambda (tag) (svg-tag-make "FIXME" :face 'error :inverse t))))
           ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'warning :inverse t)))))))
+
+;;; Transient Popups
+(use-package transient
+  :defer 1
+  :custom
+  (transient-levels-file (concat cpm-cache-dir "transient/levels.el"))
+  (transient-values-file (concat cpm-cache-dir "transient/values.el"))
+  (transient-history-file (concat cpm-cache-dir "transient/history.el"))
+  ;; set transient popop to top of window
+  (transient-display-buffer-action '(display-buffer-in-side-window
+                                     (side . top)
+                                     (dedicated . t)
+                                     (inhibit-same-window . t)
+                                     (window-parameters (no-other-window . t))))
+
+;;;; Help Transient
+:config
+;; A little more useful for calling help than just C-h (less info density)
+;; see https://luca.cambiaghi.me/vanilla-emacs/readme.html#h:14F8ECDE-9E15-46F7-B903-ECE383251C48
+(bind-key (concat cpm-prefix " h") 'cpm/help-transient)
+(transient-define-prefix cpm/help-transient ()
+  ["Help Commands"
+   ["Mode & Bindings"
+    ("m" "Mode" describe-mode)
+    ("b" "Major Bindings" which-key-show-full-major-mode)
+    ("B" "Minor Bindings" which-key-show-full-minor-mode-keymap)
+    ("d" "Descbinds" describe-bindings)
+    ]
+   ["Describe"
+    ("c" "Command" helpful-command)
+    ("f" "Function" helpful-callable)
+    ("o" "Symbol"  helpful-symbol)
+    ("v" "Variable" helpful-variable)
+    ("k" "Key" helpful-key)
+    ]
+   ["Info on"
+    ("C-c" "Emacs Command" Info-goto-emacs-command-node)
+    ("C-f" "Function" info-lookup-symbol)
+    ("C-v" "Variable" info-lookup-symbol)
+    ("C-k" "Emacs Key" Info-goto-emacs-key-command-node)
+    ]
+   ["Goto Source"
+    ("L" "Library" find-library)
+    ("F" "Function" find-function)
+    ("V" "Variable" find-variable)
+    ("K" "Key" find-function-on-key)
+    ]
+   ]
+  [
+   ["Internals"
+    ("e" "Echo Messages" view-echo-area-messages)
+    ("l" "Lossage" view-lossage)
+    ]
+   ["Describe"
+    ("s" "Symbol" helpful-symbol)
+    ("." "At Point   " helpful-at-point)
+    ("C-f" "Face" describe-face)
+    ("w" "Where Is" where-is)
+    ("=" "Position" what-cursor-position)
+    ]
+   ["Info Manuals"
+    ("C-i" "Info" info)
+    ("C-4" "Other Window " info-other-window)
+    ("C-e" "Emacs" completing-read-info-emacs-manual)
+    ("C-l" "Elisp" completing-read-info-elisp-manual)
+    ]
+   ["Exit"
+    ("q" "Quit" transient-quit-one)
+    ("<escape>" "Quit" transient-quit-one)
+    ]
+   ]
+  [
+   ["External"
+    ("W" "Dictionary" dictionary-lookup-definition)
+    ]
+   ]
+  ))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
