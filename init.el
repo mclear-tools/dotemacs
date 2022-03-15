@@ -13,7 +13,6 @@
 
 ;;;; Startup
 
-
 ;;;;; Directory Variables
 ;;  We're going to define a number of directories that are used throughout this
 ;;  configuration to store different types of files.
@@ -22,31 +21,22 @@
   "The path to the emacs.d directory.")
 
 (defconst cpm-local-dir (concat cpm-emacs-dir ".local/")
-  "Root directory for local Emacs files. Use this as permanent
-  storage for files that are safe to share across systems (if
-  this config is symlinked across several computers).")
+  "The root directory for local Emacs files. Use this as permanent storage for files that are safe to share across systems (if this config is symlinked across several computers).")
 
 (defconst cpm-temp-dir (concat cpm-local-dir "temp/")
-  "Directory for non-essential file storage. Used by
-  `cpm-etc-dir' and `cpm-cache-dir'.")
+  "The directory for non-essential file storage. Used by `cpm-etc-dir' and `cpm-cache-dir'.")
 
 (defconst cpm-etc-dir (concat cpm-temp-dir "etc/")
-  "Directory for non-volatile storage. These are not deleted or
-  tampered with by emacs functions. Use this for dependencies
-  like servers or config files that are stable (i.e. it should be
-  unlikely that you need to delete them if something goes
-  wrong).")
+  "The directory for non-volatile storage. These are not deleted or tampered with by emacs functions. Use this for dependencies like servers or config files that are stable (i.e. it should be unlikely that you need to delete them if something goes wrong).")
 
 (defconst cpm-cache-dir (concat cpm-temp-dir "cache/")
-  "Directory for volatile storage. Use this for transient files
-  that are generated on the fly like caches and temporary files.
-  Anything that may need to be cleared if there are problems.")
+  "The directory for volatile storage. Use this for transient files that are generated on the fly like caches and temporary files. Anything that may need to be cleared if there are problems.")
 
 (defconst cpm-elisp-dir (concat cpm-local-dir "elisp/")
-  "Where personal elisp packages and scripts are stored.")
+  "Storage for personal elisp packages and scripts.")
 
 (defconst cpm-setup-dir (concat cpm-emacs-dir "setup-config/")
-  "Where the setup-init files are stored.")
+  "The storage location of the setup-init files.")
 
 ;; dir for  natively compiled *.eln files
 ;; https://github.com/jimeh/build-emacs-for-macos#configuration
