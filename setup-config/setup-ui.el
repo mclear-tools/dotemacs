@@ -315,11 +315,10 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; No ugly button for checkboxes
 (setq widget-image-enable nil)
 
-
 ;;; Emoji
 (use-package emojify
   :commands (emojify-mode emojify-apropos-emoji)
-  ;; :hook ((prog-mode markdown-mode) . emojify-mode)
+  :hook ((prog-mode markdown-mode org-mode) . emojify-mode)
   :config
   (setq emojify-emojis-dir (concat cpm-etc-dir "emojis")))
 
@@ -450,7 +449,16 @@ If FRAME is omitted or nil, use currently selected frame."
   ;;; SVG Tag Mode
 (use-package svg-tag-mode
   :straight (:type git :host github :repo "rougier/svg-tag-mode")
-  :defer t)
+  :hook (prog-mode . svg-tag-mode)
+  :config
+  (setq svg-tag-tags
+        '(;; Replaces any occurence of :XXX: with a dynamic SVG tag displaying XXX
+          ("\\(:[A-Z]+:\\)" . ((lambda (tag)
+                                 (svg-tag-make tag :face 'success :inverse t :beg 1 :end -1))))
+          ;; other tags
+          ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'shadow  :inverse t ))))
+          ("FIXME" . ((lambda (tag) (svg-tag-make "FIXME" :face 'error :inverse t))))
+          ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'warning :inverse t)))))))
 
 ;;; End UI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
