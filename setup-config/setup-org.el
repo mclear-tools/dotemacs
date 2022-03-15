@@ -741,9 +741,9 @@ _vr_ reset      ^^                       ^^                 ^^
 ;; FIXME: neither of these functions work right now for some reason.
 (defun cpm/org-export-headlines-to-docx ()
   "Export all subtrees that are *not* tagged with :noexport: to
-    separate files.
+    separate docx files.
 
-    Subtrees ;TODO: hat do not have the :EXPORT_FILE_NAME: property set
+    Subtrees that do not have the :EXPORT_FILE_NAME: property set
     are exported to a filename derived from the headline text."
   (interactive)
   (save-buffer)
@@ -769,7 +769,7 @@ _vr_ reset      ^^                       ^^                 ^^
 
 (defun cpm/org-export-headlines-to-pdf ()
   "Export all subtrees that are *not* tagged with :noexport: to
-    separate files.
+    separate pdf files.
 
     Subtrees that do not have the :EXPORT_FILE_NAME: property set
     are exported to a filename derived from the headline text."
@@ -851,7 +851,7 @@ _vr_ reset      ^^                       ^^                 ^^
 ;; From [[https://www.reddit.com/r/emacs/comments/9htd0r/how_to_completely_hide_the_properties_drawer_in/e6fehiw][Reddit]]
 
 (defun org-toggle-properties ()
-  ;; toggle visibility of properties in current header if it exists
+  "Toggle visibility of properties in current header if it exists."
   (save-excursion
     (when (not (org-at-heading-p))
       (org-previous-visible-heading 1))
