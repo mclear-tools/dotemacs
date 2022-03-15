@@ -174,6 +174,17 @@
 ;;          (load-theme 'dracula t)))
 
 
+(use-package emms-setup
+  :straight (:type git :host github :repo "emacsmirror/emms")
+  :commands (emms emms-start)
+  :init
+  (add-hook 'emms-player-started-hook 'emms-show)
+  (setq emms-show-format "Playing: %s")
+  :config
+  (emms-standard)
+  (emms-default-players))
+
+
 ;;; End Testing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-testing)
