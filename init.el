@@ -91,7 +91,7 @@
 ;; latter means package loading stays out of my way if I'm doing, e.g., a quick
 ;; restart-and-check of something in emacs.
 
-;;;; Straight
+;;; Straight
 ;;;;; Straight settings
 ;; use straight.el to install all packages
 ;; https://github.com/raxod502/straight.el
@@ -169,6 +169,23 @@
 ;; delete .DS_Store before prune
 (advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash "/Users/roambot/.emacs.d/.local/straight/build/.DS_Store")))
 
+
+;;;;; Straight Embark Commands
+(with-eval-after-load #'embark
+(embark-define-keymap embark-straight-map
+                      ("u" straight-visit-package-website)
+                      ("r" straight-get-recipe)
+                      ("i" straight-use-package)
+                      ("c" straight-check-package)
+                      ("F" straight-pull-package)
+                      ("f" straight-fetch-package)
+                      ("p" straight-push-package)
+                      ("n" straight-normalize-package)
+                      ("m" straight-merge-package))
+
+(add-to-list 'embark-keymap-alist '(straight . embark-straight-map))
+
+(add-to-list 'marginalia-prompt-categories '("recipe\\|package" . straight)))
 
 ;;;; Use-Package
 ;; install use package
