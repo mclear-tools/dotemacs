@@ -1,7 +1,7 @@
 ;; Programming
 
 ;;; Delimiters & Identifiers
-;;;; Visualization of Delimiters
+;;;; Visualization of Delimiters (Rainbow Delimiters)
 ;; https://github.com/Fanael/rainbow-delimiters Useful package that will highlight
 ;; delimiters such as parentheses, brackets or braces according to their depth. Each
 ;; successive level is highlighted in a different color. This makes it easy to spot
@@ -9,23 +9,8 @@
 ;; a given depth.
 (use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
-  :custom-face
-  (rainbow-delimiters-depth-1-face ((t :foreground ,bespoke-critical)))
-  (rainbow-delimiters-depth-2-face ((t :foreground ,bespoke-green)))
-  (rainbow-delimiters-depth-3-face ((t :foreground ,bespoke-brown)))
-  (rainbow-delimiters-depth-4-face ((t :foreground ,bespoke-blue)))
-  (rainbow-delimiters-depth-5-face ((t :foreground ,bespoke-yellow)))
-  (rainbow-delimiters-depth-6-face ((t :foreground ,bespoke-popout)))
-  (rainbow-delimiters-depth-7-face ((t :foreground ,bespoke-inactive)))
-  (rainbow-delimiters-depth-8-face ((t :foreground ,bespoke-salient)))
-  (rainbow-delimiters-depth-9-face ((t :foreground ,bespoke-strong)))
   :init
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-;; :config
-;; (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-;;        :foreground "red"
-;;        :inherit 'error
-;;        :box t))
 
 ;; https://github.com/Fanael/rainbow-identifiers Rainbow identifiers mode is an Emacs
 ;; minor mode providing highlighting of identifiers based on their names. Each
