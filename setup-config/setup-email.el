@@ -295,6 +295,10 @@ the real email address"
                                                               "" (cpm-mail-header-add-tags-handler msg field val nil))))
         (t nil))
 
+;;;;; Searching
+  ;; Don't limit searches
+  (setq mu4e-headers-results-limit -1)
+
 ;;;; Composing Email
 
   ;; Use mu4e system-wide
@@ -476,14 +480,15 @@ the pos of the keyword which is a cons cell, nil if not found."
             (when msg
               (string-prefix-p "/Fastmail" (mu4e-message-field msg :maildir))))
           :vars '((user-mail-address . "mclear@fastmail.com")
-                  (user-full-name    . "Colin McLear Fastmail")
+                  (user-full-name    . "Colin McLear")
                   (smtpmail-smtp-server  . "smtp.fastmail.com")
                   (smtpmail-smtp-service . 465)
                   (smtpmail-stream-type  . ssl)
                   ;; use keychain for credentials
                   (smtp-auth-credentials "security find-generic-password -s mbsync-fastmail-password -w")
                   (mu4e-compose-signature . (concat
-                                             "Colin McLear"))
+                                             "Colin McLear\n"
+                                             "[[https://www.colinmclear.net]]"))
                   (mu4e-drafts-folder  . "/Fastmail/Drafts")
                   (mu4e-sent-folder  . "/Fastmail/Sent Items")
                   (mu4e-refile-folder  . "/Fastmail/Archive")
@@ -566,21 +571,6 @@ the pos of the keyword which is a cons cell, nil if not found."
 
 
 ;;;; Better Marking (w/Icons & SVG Tags)
-
-;;;;; Unicode icons for marking
-
-  ;;--- Nicer actions display using unicode tags -----------------------------------
-  ;; (setq mu4e-headers-unread-mark    '("u" . "📩 "))
-  ;; (setq mu4e-headers-draft-mark     '("D" . "🚧 "))
-  ;; (setq mu4e-headers-flagged-mark   '("F" . "🚩 "))
-  ;; (setq mu4e-headers-new-mark       '("N" . "✨ "))
-  ;; (setq mu4e-headers-passed-mark    '("P" . "↪ "))
-  ;; (setq mu4e-headers-replied-mark   '("R" . "↩ "))
-  ;; (setq mu4e-headers-seen-mark      '("S" . " "))
-  ;; (setq mu4e-headers-trashed-mark   '("T" . "🗑️"))
-  ;; (setq mu4e-headers-attach-mark    '("a" . "📎 "))
-  ;; (setq mu4e-headers-encrypted-mark '("x" . "🔑 "))
-  ;; (setq mu4e-headers-signed-mark    '("s" . "🖊 "))
 
 ;;;;; All-the-icons for marking
   ;; Use all-the-icons
@@ -728,6 +718,10 @@ the pos of the keyword which is a cons cell, nil if not found."
 
 ;;;; Miscellaneous
 
+  ;; :TEST: Try a fix for encoding issues with sentmail especially
+  (setq message-default-charset 'utf-8)
+  (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64))
+
   ;; Updating
   ;; FIXME: right now this causes an updating loop for some reason
   ;; (add-hook 'mu4e-main-mode-hook #'mu4e-update-index)
@@ -843,7 +837,6 @@ the pos of the keyword which is a cons cell, nil if not found."
     (progn
       (auto-fill-mode -1)
       (hl-line-mode 1)
-      ;; (company-mode 1)
       ;; FIXME: Try remove auto-save hook *locally* to avoid multiple saved drafts
       (remove-hook 'auto-save-hook #'cpm/full-auto-save t)))
   (add-hook 'org-msg-edit-mode-hook #'cpm/org-msg-hooks)
