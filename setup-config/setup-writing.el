@@ -48,7 +48,7 @@
   (flyspell-correct-interface #'flyspell-correct-completing-read))
 
 (with-eval-after-load 'hydra
-  ;; keybinding is SPC-S
+  ;; keybinding is SPC-b S
   (defhydra hydra-spelling (:color blue)
     "
   ^

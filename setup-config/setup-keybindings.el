@@ -217,6 +217,7 @@
            ("r" . revert-buffer                      )
            ("R" . crux-rename-buffer-and-file        )
            ("s" . consult-buffer-other-window        )
+           ("S" . hydra-spelling/body                )
            ("t" . cpm/open-dir-in-iterm              )
            ("[" . cpm/previous-user-buffer           )
            ("]" . cpm/next-user-buffer               )
