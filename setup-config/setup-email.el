@@ -1,10 +1,31 @@
-;; Email settings
-;; Assembled from many sources
-;; I use mbsync and mu4e
-;; For styling resources see:
-;; https://github.com/rougier/nano-emacs/blob/master/nano-mu4e.el
+;;; setup-email.el --- summary -*- lexical-binding: t -*-
 
-;;; Mu4e
+;; Author: Colin McLear
+;; This file is not part of GNU Emacs
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+;;;; Commentary:
+
+;; Email settings; assembled from many sources. I use mbsync and mu4e. For
+;; styling resources see: https://github.com/rougier/nano-emacs/blob/master/nano-mu4e.el
+
+;;; Code:
+
+
+;;;; Mu4e
 (use-package mu4e
   ;; Tell straight to use homebrew mu4e
   :straight (:local-repo "/opt/homebrew/share/emacs/site-lisp/mu/mu4e/" :type built-in)
@@ -13,7 +34,7 @@
   ;; Finding the binary (installed w/homebrew)
   (setq mu4e-mu-binary (executable-find "mu"))
 
-;;;; Syncing
+;;;;; Syncing
   ;; Maildir
   (setq mu4e-maildir "~/.maildir")
   ;; Sync imap servers w/mbsync (via isync installed w/homebrew):
@@ -28,16 +49,16 @@
   ;; Refresh mail using mbsync every 5 minutes
   (setq mu4e-update-interval (* 5 60))
 
-;;;; Attachments
+;;;;; Attachments
   ;; Set default dir
   (setq mu4e-attachment-dir (concat (getenv "HOME") "/Downloads/"))
   ;; Save all attachments to specified dir without asking about each one
   (setq mu4e-save-multiple-attachments-without-asking t)
   (bind-key "e" #'mu4e-views-mu4e-save-all-attachments mu4e-headers-mode-map)
 
-;;;; Viewing
+;;;;; Viewing
 
-;;;;; Header View Functions
+;;;;;; Header View Functions
   (defun mu4e-get-account (msg)
     (let* ((maildir (mu4e-message-field msg :maildir))
            (maildir (substring maildir 1)))
@@ -137,7 +158,7 @@
            (propertize "" 'face 'bespoke-faded))
           (t " ")))
 
-;;;;; Headers
+;;;;;; Headers
   ;; Set headers
   (add-to-list 'mu4e-header-info-custom
                '(:empty . (:name "Empty"
@@ -184,7 +205,7 @@
   (setq mu4e-use-fancy-chars t)
   (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
 
-;;;;; Mail Tagging
+;;;;;; Mail Tagging
   ;; See https://github.com/panjie/mu4e-goodies
 
   ;; Helper functions/vars
@@ -295,11 +316,11 @@ the real email address"
                                                               "" (cpm-mail-header-add-tags-handler msg field val nil))))
         (t nil))
 
-;;;;; Searching
+;;;;;; Searching
   ;; Don't limit searches
   (setq mu4e-headers-results-limit -1)
 
-;;;; Composing Email
+;;;;; Composing Email
 
   ;; Use mu4e system-wide
   (setq mail-user-agent 'mu4e-user-agent)
@@ -327,8 +348,8 @@ the real email address"
   (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
 
-;;;; Sending Mail
-;;;;; Send Settings
+;;;;; Sending Mail
+;;;;;; Send Settings
 
   ;; Configure the function to use for sending mail
   (setq message-send-mail-function 'smtpmail-send-it)
@@ -345,7 +366,7 @@ the real email address"
   ;; (define-key mu4e-headers-mode-map (kbd "d") 'cpm--email-move-to-trash)
   ;; (define-key mu4e-view-mode-map (kbd "d") 'cpm--email-move-to-trash)
 
-;;;;; Check Attachments
+;;;;;; Check Attachments
   ;; See https://github.com/panjie/mu4e-goodies
 
   (require 'hi-lock)
@@ -441,7 +462,7 @@ the pos of the keyword which is a cons cell, nil if not found."
             (keyboard-quit)))))
 
 
-;;;; Contexts
+;;;;; Contexts
 
   (setq mu4e-contexts
         (list
@@ -497,7 +518,7 @@ the pos of the keyword which is a cons cell, nil if not found."
   ;; Ask for context if none is set
   (setq mu4e-context-policy 'pick-first)
 
-;;;; Quick Actions
+;;;;; Quick Actions
 
   ;; Helpful discussion at
   ;; https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Mail-05.org
@@ -533,7 +554,7 @@ the pos of the keyword which is a cons cell, nil if not found."
   (add-to-list 'mu4e-view-actions
                '("Remind" . cpm/capture-mail-remind) t)
 
-;;;; Mail Custom Bookmarks/Searches
+;;;;; Mail Custom Bookmarks/Searches
 
   (setq mu4e-bookmarks '((:name "Inbox"       :query "m:/UNL/inbox or m:/Fastmail/inbox"      :key ?i)
                          (:name "Unread"      :query "flag:unread AND NOT flag:trashed"       :key ?u)
@@ -552,7 +573,7 @@ the pos of the keyword which is a cons cell, nil if not found."
                          (:name "Images"      :query "mime:image/*"                           :key ?I)))
 
 
-;;;; Maildirs
+;;;;; Maildirs
   ;; NOTE: Use maildir-extensions for now
   ;; Eventually this will be incorporated into mu, but right now it doesn't show mail counts for some reason
 
@@ -570,9 +591,9 @@ the pos of the keyword which is a cons cell, nil if not found."
   (setq mu4e-main-hide-fully-read nil)
 
 
-;;;; Better Marking (w/Icons & SVG Tags)
+;;;;; Better Marking (w/Icons & SVG Tags)
 
-;;;;; All-the-icons for marking
+;;;;;; All-the-icons for marking
   ;; Use all-the-icons
   ;;https://github.com/emacsmirror/mu4e-marker-icons
   ;;https://github.com/djcb/mu/issues/1795
@@ -668,7 +689,7 @@ the pos of the keyword which is a cons cell, nil if not found."
     (with-eval-after-load 'mu4e
       (mu4e-marker-icons-mode)))
 
-;;;;; Add SVG tags
+;;;;;; Add SVG tags
   ;; Don't show refile target; use svg instead
   (setq mu4e-headers-show-target nil)
 
@@ -707,7 +728,7 @@ the pos of the keyword which is a cons cell, nil if not found."
   (advice-add 'mu4e-mark-at-point :after #'mu4e-mark-at-point-advice)
 
 
-;;;; Mu4e & Swiftbar
+;;;;; Mu4e & Swiftbar
 
   (defun cpm/swiftbar-email-update ()
     "Update swiftbar mail plugin"
@@ -716,7 +737,7 @@ the pos of the keyword which is a cons cell, nil if not found."
 
   (add-hook 'mu4e-index-updated-hook #'cpm/swiftbar-email-update)
 
-;;;; Miscellaneous
+;;;;; Miscellaneous
 
   ;; :TEST: Try a fix for encoding issues with sentmail especially
   (setq message-default-charset 'utf-8)
@@ -773,10 +794,10 @@ the pos of the keyword which is a cons cell, nil if not found."
 
   )
 
-;;;; End Mu4e
+;;;;; End Mu4e
 
 
-;;; Better Viewing – Mu4e Views
+;;;; Better Viewing – Mu4e Views
 ;; This makes mu4e render html emails in emacs via xwidgets.
 ;; It basically reproduces a modern email client experience. Depends on compiling emacs with xwidgets
 ;; to check that exwidgets are installed
@@ -817,7 +838,7 @@ the pos of the keyword which is a cons cell, nil if not found."
         (mu4e-views-view-current-msg-with-method "html-nonblock")
       (mu4e-views-view-current-msg-with-method "text"))))
 
-;;; Using Org & HTML (Org-MSG)
+;;;; Using Org & HTML (Org-MSG)
 (use-package org-msg
   :straight (:type git :host github :repo "jeremy-compostella/org-msg")
   :after mu4e
@@ -843,7 +864,7 @@ the pos of the keyword which is a cons cell, nil if not found."
 
   (org-msg-mode))
 
-;;; Email Addressing
+;;;; Email Addressing
 ;; function to return first name of email recipients
 ;; used by yasnippet
 ;; inspired by
@@ -888,6 +909,6 @@ the pos of the keyword which is a cons cell, nil if not found."
     email-name))
 
 
-;;; End Setup Email
 
 (provide 'setup-email)
+;;; setup-email.el ends here

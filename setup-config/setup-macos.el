@@ -1,4 +1,28 @@
-;;; OSX Settings
+;;; setup-macos.el --- summary -*- lexical-binding: t -*-
+
+;; Author: Colin McLear
+;; This file is not part of GNU Emacs
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+;;; Commentary:
+
+;; Settings for use with macos
+
+;;; Code:
+
 ;;;; Clipboad
 
 ;; Integrate with MacOS clipboard
@@ -21,7 +45,7 @@
   ;; make fonts look better with anti-aliasing
   (setq mac-allow-anti-aliasing t)
 
-;;;;; Delete to Trash
+;;;; Delete to Trash
   ;; delete files by moving them to the trash
   ;; See https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
   (use-package emacs
@@ -39,7 +63,7 @@ Get it from:  <http://hasseg.org/trash/>"
                      nil ;; Name of output buffer
                      "*Trash Error Buffer*")))
 
-;;;;; Frames & Fullscreen
+;;;; Frames & Fullscreen
 
   ;; (Do not) make new frames when opening a new file with Emacs unless on scratch buffer
   (setq ns-pop-up-frames nil)
@@ -47,7 +71,7 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; fullscreen (disable for non-space full screen)
   (setq ns-use-native-fullscreen nil)
 
-;;;;; Keybindings
+;;;; Keybindings
 
   ;; Set modifier keys
   (setq mac-option-modifier 'meta) ;; Bind meta to ALT
@@ -115,5 +139,6 @@ This will use the command `open' with the message URL."
   :straight (:type git :host github :repo "raghavgautam/osx-lib")
   :defer t)
 
-;;; End OSX Settings
-(provide 'setup-osx)
+
+(provide 'setup-macos)
+;;; setup-macos.el ends here
