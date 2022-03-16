@@ -32,7 +32,7 @@
     (require 'setup-org-extensions)
     (require 'setup-dired)
     (require 'setup-completion)
-    (require 'setup-osx)
+    (require 'setup-macos)
     (require 'setup-buffers)
     (require 'setup-windows)
     (require 'setup-ui)
@@ -51,10 +51,10 @@
     (require 'setup-pdf)
     (require 'setup-calendars)
     (require 'setup-email)
-    (require 'setup-testing)
+    (require 'setup-debug)
+    (require 'setup-try)
     ))
 
 ;;; Provide
 (provide 'setup-modules)
-
-;;; Setup Config Modules ends here
+;;; setup-modules.el ends here

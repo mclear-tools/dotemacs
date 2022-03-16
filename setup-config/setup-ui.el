@@ -376,15 +376,14 @@ If FRAME is omitted or nil, use currently selected frame."
 ;; Better looking info pages
 (use-package info-colors
   :straight (:host github :repo "ubolonton/info-colors")
-  :defer t
-  :config
-  (add-hook 'Info-selection-hook 'info-colors-fontify-node))
+  :hook (Info-selection . info-colors-fontify-node))
 
 ;;; Xwidget Browser
 (use-package xwidget
   :straight (:type built-in)
   :defer 1
   :config
+  ;; NOTE Fix load progress error
   (defun xwidget-webkit-estimated-load-progress (session)
     1.0)
   (require 'xwidget)
@@ -459,6 +458,8 @@ If FRAME is omitted or nil, use currently selected frame."
           ;; other tags
           ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'shadow  :inverse t ))))
           ("FIXME" . ((lambda (tag) (svg-tag-make "FIXME" :face 'error :inverse t))))
+          ("HACK"  .  ((lambda (tag) (svg-tag-make "HACK" :face 'bespoke-red :inverse t))))
+          ("NOTE" . ((lambda (tag) (svg-tag-make "NOTE" :face 'bespoke-yellow :inverse t))))
           ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'warning :inverse t)))))))
 
 ;;; Transient Popups

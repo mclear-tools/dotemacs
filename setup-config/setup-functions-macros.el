@@ -497,6 +497,40 @@ with no seperation"
 (remove-hook 'kill-emacs-query-functions #'doom-quit-p)
 (add-hook 'kill-emacs-query-functions #'+doom|quit)
 
+;;;; Toggle macro
+
+(defun deftoggle-var-doc (name)
+  (concat "Non-nil if " name " is enabled.\n\n"
+          "See " name
+          " command for a description of this toggle."))
+(defun deftoggle-fun-doc (name doc)
+  (concat "Toggle " name " on or off.\n\n" doc))
+(defmacro deftoggle (name doc enabler disabler)
+  `(progn
+     (defvar ,name nil ,(deftoggle-var-doc (symbol-name name)))
+     (defun ,name (&optional enable)
+       ,(deftoggle-fun-doc (symbol-name name) doc)
+       (interactive)
+       (if (called-interactively-p 'interactive)
+           (progn
+             (if ,name
+                 ,disabler
+               ,enabler)
+             (setq ,name (not ,name)))
+         (progn
+           (if enable
+               ,enabler
+             ,disabler)
+           (setq ,name enable))))))
+;; It's very similar to define-minor-mode, but with all the hooks, keymaps, and lighters stripped out, so it's less verbose. Here I use it to toggle my theme for example:
+;; (deftoggle sam-toggle-theme
+;;   "Toggle theme between light and dark."
+;;   (progn (disable-theme 'dracula)
+;;          (load-theme 'spacemacs-light t))
+;;   (progn (disable-theme 'spacemacs-light)
+;;          (load-theme 'dracula t)))
+
+
 ;;; End Funtions-Macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'setup-functions-macros)

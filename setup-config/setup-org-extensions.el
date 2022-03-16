@@ -385,6 +385,20 @@ Instead it's simpler to use bash."
       (interactive)
       (diredp-do-apply/eval 'org-hugo-export-wim-to-md '(4)))))
 
+;;;;; Org-Hugo Links
+;; New link type for Org-Hugo internal links
+(defun org-hugo-link-complete ()
+  "Create link with Hugo ref shortcode"
+  (concat "{{% ref " (file-relative-name (read-file-name "File: ")) " %}}"))
+
+(defun org-hugo-follow (link)
+  (find-file (expand-file-name link)))
+
+(with-eval-after-load 'org
+  (org-link-set-parameters "hugo"
+                           :complete 'org-hugo-link-complete
+                           :follow 'org-hugo-follow))
+
 ;;; Org Miscellaneous Packages
 
 (use-package htmlize :commands (htmlize-buffer))
