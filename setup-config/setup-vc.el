@@ -99,7 +99,7 @@
 ;; Give git projects branches the dired treatment
 (use-package gited :commands (gited-list gited-list-branches))
 
-;;; Git Gutter HL
+;;; Git Gutter HL (Diff-HL)
 ;; See https://www.reddit.com/r/emacs/comments/suxc9b/modern_gitgutter_in_emacs/
 ;; And https://github.com/jimeh/.emacs.d/blob/master/modules/version-control/siren-diff-hl.el
 
@@ -111,6 +111,7 @@
    (magit-pre-refresh . diff-hl-magit-pre-refresh)
    (magit-post-refresh . diff-hl-magit-post-refresh))
   :custom
+  (diff-hl-side 'right)
   (diff-hl-fringe-bmp-function 'cpm--diff-hl-fringe-bmp-from-type)
   (diff-hl-fringe-face-function 'cpm--diff-hl-fringe-face-from-type)
   (diff-hl-margin-symbols-alist

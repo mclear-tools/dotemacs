@@ -112,13 +112,13 @@
               (setq bespoke-set-theme 'light)
               (load-theme 'bespoke t)
               (setq active-theme 'light-theme)
-              (posframe-delete-all)
+              ;; (posframe-delete-all)
               ))
     ('dark (progn
              (setq bespoke-set-theme 'dark)
              (load-theme 'bespoke t)
              (setq active-theme 'dark-theme)
-             (posframe-delete-all)
+             ;; (posframe-delete-all)
              ))))
 
 (add-hook 'ns-system-appearance-change-functions #'cpm/system-apply-theme)

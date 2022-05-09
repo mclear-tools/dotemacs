@@ -359,6 +359,8 @@ Lisp function does not specify a special indentation."
 	      shell-mode
 	      shell-script-mode)
          . flycheck-mode)
+  :custom
+  (flycheck-indication-mode nil)
   :config
   ;; don't limit reported errors
   (setq flycheck-checker-error-threshold nil)

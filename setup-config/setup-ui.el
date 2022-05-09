@@ -109,7 +109,7 @@ If FRAME is omitted or nil, use currently selected frame."
   :straight (:type built-in)
   :custom
   ;; allow fringe indicators
-  (fringe-mode '(10 . 10)))
+  (fringe-mode '(0 . 8)))
 
 ;;; Color
 (setq-default ns-use-srgb-colorspace t)
@@ -383,6 +383,8 @@ If FRAME is omitted or nil, use currently selected frame."
   :straight (:type built-in)
   :defer 1
   :config
+  ;; No query on kill
+  (remove-hook 'kill-buffer-query-functions #'xwidget-kill-buffer-query-function)
   ;; NOTE Fix load progress error
   (defun xwidget-webkit-estimated-load-progress (session)
     1.0)
@@ -456,11 +458,11 @@ If FRAME is omitted or nil, use currently selected frame."
           ("\\(:[A-Z]+:\\)" . ((lambda (tag)
                                  (svg-tag-make tag :face 'success :inverse t :beg 1 :end -1))))
           ;; other tags
-          ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'shadow  :inverse t ))))
-          ("FIXME" . ((lambda (tag) (svg-tag-make "FIXME" :face 'error :inverse t))))
-          ("HACK"  .  ((lambda (tag) (svg-tag-make "HACK" :face 'bespoke-red :inverse t))))
-          ("NOTE" . ((lambda (tag) (svg-tag-make "NOTE" :face 'bespoke-yellow :inverse t))))
-          ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'warning :inverse t)))))))
+          ("DONE"  . ((lambda (tag) (svg-tag-make "DONE:"  :face 'shadow  :inverse t ))))
+          ("FIXME" . ((lambda (tag) (svg-tag-make "FIXME:" :face 'error :inverse t))))
+          ("HACK"  . ((lambda (tag) (svg-tag-make "HACK:"  :face 'bespoke-red :inverse t))))
+          ("NOTE"  . ((lambda (tag) (svg-tag-make "NOTE:"  :face 'bespoke-yellow :inverse t))))
+          ("TODO"  . ((lambda (tag) (svg-tag-make "TODO:"  :face 'warning :inverse t)))))))
 
 ;;; Transient Popups
 (use-package transient
