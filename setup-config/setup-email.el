@@ -159,7 +159,7 @@
           (t " ")))
 
 ;;;;;; Headers
-  ;; Set headers
+  ;; Add some custom headers
   (add-to-list 'mu4e-header-info-custom
                '(:empty . (:name "Empty"
                            :shortname ""
@@ -179,7 +179,7 @@
                '(:attach . (:name "Attachment"
                             :shortname ""
                             :function mu4e-headers-attach)))
-
+  ;; Set headers
   (setq mu4e-headers-date-format "%D";; "%Y-%m-%d %H:%M:%S"
         mu4e-headers-fields '(
                               (:flags          .  10)
@@ -190,7 +190,7 @@
                               (:mailbox-short  .  15)
                               ))
 
-  ;; how to handle html-formatted emails
+  ;; Handle html-formatted emails
   ;; View in browser
   (add-to-list 'mu4e-view-actions '("view in browser" . mu4e-action-view-in-browser) t)
 
@@ -206,6 +206,7 @@
   (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
 
 ;;;;;; Mail Tagging
+  ;; Tag mail messages
   ;; See https://github.com/panjie/mu4e-goodies
 
   ;; Helper functions/vars
@@ -271,7 +272,8 @@ the real email address"
       "publications"
       "referee-reports"
       "supervision"
-      ))
+      )
+    "List of email tags")
 
   (defun cpm/select-mail-tag ()
     (interactive)
@@ -791,6 +793,24 @@ the pos of the keyword which is a cons cell, nil if not found."
         (find-file (concat org-directory "mail.org"))
         (mu4e)
         (mu4e-headers-search cpm-mu4e-inbox-query))))
+
+  (defun cpm/mu-kill-server ()
+    "Forcefully kill the mu server process. This is especially
+useful when mu4e-quit doesn't kill the server and the whole
+things ends up hanging. See also this issue:
+https://github.com/djcb/mu/issues/2198"
+    (interactive)
+    (let* ((buf (get-buffer mu4e~proc-name))
+           (proc (and (buffer-live-p buf) (get-buffer-process buf))))
+      (when proc
+        (let ((delete-exited-processes t))
+          (mu4e~call-mu '(quit)))
+        ;; try sending SIGKILL to process, so it can exit gracefully
+        (ignore-errors
+          (signal-process proc 'SIGKILL))))
+    (setq
+     mu4e~proc-process nil
+     mu4e~proc-buf nil))
 
   )
 
