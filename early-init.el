@@ -18,7 +18,12 @@
 
 ;; Set eln-cache dir
 (when (fboundp 'startup-redirect-eln-cache)
-  (startup-redirect-eln-cache (convert-standard-filename (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory))))
+  (if (version< emacs-version "29")
+      (add-to-list 'native-comp-eln-load-path ((convert-standard-filename (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory))))
+    (startup-redirect-eln-cache (convert-standard-filename (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory)))))
+
+;; (when (fboundp 'startup-redirect-eln-cache)
+;; (startup-redirect-eln-cache (convert-standard-filename (expand-file-name ".local/temp/cache/eln-cache/" user-emacs-directory))))
 
 ;; Silence nativecomp warnings popping up
 (setq native-comp-async-report-warnings-errors nil)
