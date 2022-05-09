@@ -40,7 +40,6 @@ transient*
 /.local/elisp/hercules.el/
 .local/quelpa
 /.local/elisp/private.el
-.local/*
 *old*
 *bak*
 *archive*
