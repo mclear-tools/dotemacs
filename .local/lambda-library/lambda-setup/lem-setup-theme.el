@@ -146,10 +146,6 @@
       (t
        (load-theme 'lambda-light t)))
 
-;; kind-icon needs to have its cache flushed after theme change
-(with-eval-after-load 'kind-icon
-  (add-hook 'lambda-themes-after-load-theme-hook #'kind-icon-reset-cache))
-
 ;;; Provide
 (provide 'lem-setup-theme)
 ;;; lem-setup-theme.el ends here

@@ -32,7 +32,7 @@
   (lambda-line-hspace "  ")
   (lambda-line-prefix t)
   (lambda-line-prefix-padding nil)
-  (lambda-line-status-invert nil)
+  (lambda-line-status-invert  nil)
   (lambda-line-gui-ro-symbol  " ⨂")  ;; ⬤◯⨂
   (lambda-line-gui-mod-symbol " ⬤") ;; ⨀⬤
   (lambda-line-gui-rw-symbol  " ◯")  ;; ◉ ◎ ⬤◯

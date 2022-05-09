@@ -191,15 +191,15 @@
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
   (meow-setup)
-  (meow-global-mode 1))
+  (add-hook 'after-init-hook (lambda () (meow-global-mode 1)))
+  )
 
 ;; Cooperate with splash page
 (defun meow-lem-splash ()
   ;; Set no cursor with meow
   (meow-motion-mode 1)
   (setq-local meow-cursor-type-motion nil)
-  ;; (revert-buffer)
-  )
+  (revert-buffer))
 (add-hook 'lem-splash-mode-hook #'meow-lem-splash)
 
 (provide 'cpm-setup-meow)

@@ -241,7 +241,7 @@
   (whitespace-mode -1)
   (linum-mode -1)
   (setq-local buffer-read-only t)
-  (setq-local cursor-type -1)
+  (setq-local cursor-type nil)
   (setq-local hl-line-mode -1)
   (setq-local mode-line-format nil)
   (setq-local header-line-format nil)
