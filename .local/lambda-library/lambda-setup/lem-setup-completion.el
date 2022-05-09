@@ -381,11 +381,8 @@ targets."
    ("M-SPC" . corfu-insert-separator)
    ("<escape>" . corfu-quit)
    ("<return>" . corfu-insert)
-   ;; Or use TAB
-   ("TAB" . corfu-next)
-   ([tab] . corfu-next)
-   ("S-TAB" . corfu-previous)
-   ([backtab] . corfu-previous))
+   ("TAB" . corfu-insert)
+   ([tab] . corfu-insert))
   :custom
   ;; auto-complete
   (corfu-auto t)
@@ -427,8 +424,8 @@ targets."
          ;;        ;; This is a manual toggle for the documentation window.
          ;;        ([remap corfu-show-documentation] . corfu-doc-toggle) ; Remap the default doc command
          ;; Scroll in the documentation window
-         ("C-k" . corfu-doc-scroll-up)
-         ("C-j" . corfu-doc-scroll-down))
+         ("M-k" . corfu-doc-scroll-up)
+         ("M-j" . corfu-doc-scroll-down))
   :custom
   (corfu-doc-max-width 70)
   (corfu-doc-max-height 20))
@@ -470,7 +467,7 @@ targets."
 ;;;;; Kind Icon (For Corfu)
 (use-package kind-icon
   :straight (:type git :host github :repo "jdtsmith/kind-icon")
-  :after corfu
+  :defer 1
   :custom
   (kind-icon-use-icons t)
   (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
@@ -489,6 +486,8 @@ targets."
   ;; This hook is already set in the `lem-setup-themes.el' file, but you could
   ;; set it here if you prefer:
   ;; e.g. (add-hook 'after-load-theme-hook #'kind-icon-reset-cache)
+  ;; kind-icon needs to have its cache flushed after theme change
+  (add-hook 'lambda-themes-after-load-theme-hook #'kind-icon-reset-cache)
   )
 
 ;;;;; Yasnippet
