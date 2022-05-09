@@ -1,109 +1,146 @@
-;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
+;;; init.el  -*- lexical-binding: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
 ;;; Commentary:
-;; Base init file to load config. Use "bicycle-cycle" (<Tab> and <S-Tab>
-;; in org style) to navigate through sections, and "imenu" to locate individual
-;; use-package definition.
+;; This is the base init file to load the entire emacs config. For ease of
+;; navigation use outline-mode to cycle headlines open and closed (<Tab> and
+;; <S-Tab>) to navigate through sections, and "imenu" to locate individual
+;; use-package definitions.
 
 ;;; Code:
-;;;; Personal Information
-
-;; Give Emacs some personal info
-(setq user-full-name "Colin McLear"
-      user-mail-address "mclear@fastmail.com")
 
 ;;;; Startup
+;;;;; System Variables
+;; Check the system used
+(defconst sys-linux   (eq system-type 'gnu/linux))
+(defconst sys-mac     (eq system-type 'darwin))
+(defconst sys-bsd     (or sys-mac (eq system-type 'berkeley-unix)))
+(defconst sys-win     (memq system-type '(cygwin windows-nt ms-dos)))
 
 ;;;;; Directory Variables
 ;;  We're going to define a number of directories that are used throughout this
-;;  configuration to store different types of files.
+;;  configuration to store different types of files. This is a bit like the
+;;  `no-littering' package, and allows us to keep `user-emacs-directory' tidy.
 
-(defconst cpm-emacs-dir (expand-file-name user-emacs-directory)
+(defconst lem-emacs-dir (expand-file-name user-emacs-directory)
   "The path to the emacs.d directory.")
 
-(defconst cpm-local-dir (concat cpm-emacs-dir ".local/")
-  "The root directory for local Emacs files. Use this as permanent storage for files that are safe to share across systems (if this config is symlinked across several computers).")
+(defconst lem-local-dir (concat lem-emacs-dir ".local/")
+  "The root directory for local Emacs files.
+This contains all elisp libraries as well as non-essential and/or
+ephemeral files. There are two main directories --
+lem-library-dir, which contains all libraries and packages, and
+lem-temp-dir, which contains non-essential files and emphemera.")
 
-(defconst cpm-temp-dir (concat cpm-local-dir "temp/")
-  "The directory for non-essential file storage. Used by `cpm-etc-dir' and `cpm-cache-dir'.")
+(defconst lem-library-dir (concat lem-local-dir "lambda-library/")
+  "The directory for 𝛌-Emacs Lisp libraries.
+This will house all setup libraries and external libraries or packages.")
 
-(defconst cpm-etc-dir (concat cpm-temp-dir "etc/")
-  "The directory for non-volatile storage. These are not deleted or tampered with by emacs functions. Use this for dependencies like servers or config files that are stable (i.e. it should be unlikely that you need to delete them if something goes wrong).")
+(defconst lem-user-dir (concat lem-library-dir "lambda-user/")
+  "Storage for personal elisp, scripts, and any other private files.")
 
-(defconst cpm-cache-dir (concat cpm-temp-dir "cache/")
-  "The directory for volatile storage. Use this for transient files that are generated on the fly like caches and temporary files. Anything that may need to be cleared if there are problems.")
-
-(defconst cpm-elisp-dir (concat cpm-local-dir "elisp/")
-  "Storage for personal elisp packages and scripts.")
-
-(defconst cpm-setup-dir (concat cpm-emacs-dir "setup-config/")
+(defconst lem-setup-dir (concat lem-library-dir "lambda-setup/")
   "The storage location of the setup-init files.")
 
-;; dir for  natively compiled *.eln files
-;; https://github.com/jimeh/build-emacs-for-macos#configuration
-(when (boundp 'comp-eln-load-path)
-  (setcar comp-eln-load-path
-          (expand-file-name "cache/eln-cache/" cpm-cache-dir)))
+(defconst lem-temp-dir (concat lem-local-dir "temp/")
+  "The directory for non-essential file storage.
+Used by `lem-etc-dir' and `lem-cache-dir'.")
 
-;;;;; System Variables
-(defconst sys/macp
-  (eq system-type 'darwin)
-  "Are we running on a Mac system?")
+(defconst lem-etc-dir (concat lem-temp-dir "etc/")
+  "The directory for non-volatile storage.
+These are not deleted or tampered with by emacs functions. Use
+this for dependencies like servers or config files that are
+stable (i.e. it should be unlikely that you need to delete them
+if something goes wrong).")
 
-(defconst sys/mac-x-p
-  (and (display-graphic-p) sys/macp)
-  "Are we running under X on a Mac system?")
+(defconst lem-cache-dir (concat lem-temp-dir "cache/")
+  "The directory for volatile storage.
+Use this for transient files that are generated on the fly like
+caches and ephemeral/temporary files. Anything that may need to
+be cleared if there are problems.")
+
+;;;;; User Configuration Variables
+;; Find the user configuration file
+(defconst lem-config-file (expand-file-name "config.el" lem-user-dir)
+  "The user's configuration file.")
+
+;; These next two variables are both optional, but maybe convenient.
+;; They are used with the functions `lem-goto-projects' and `lem-goto-elisp-library'.
+
+;; Set user project directory
+(defcustom lem-project-dir nil "Set the directory for user projects."
+  :group 'lambda-emacs
+  :type 'string)
+
+;; Set user elisp project dir
+(defcustom lem-user-elisp-dir nil
+  "Directory for personal elisp projects."
+  :group 'lambda-emacs
+  :type 'string)
 
 ;;;;; Path Settings
 ;; Directory paths
-(dolist (dir (list cpm-local-dir cpm-etc-dir cpm-cache-dir cpm-elisp-dir cpm-setup-dir))
+(dolist (dir (list lem-local-dir lem-library-dir lem-etc-dir lem-cache-dir lem-user-dir lem-setup-dir))
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
 ;;;;; Load Path
-;; Add config files to load-path
+;; Add all configuration files to load-path
 (eval-and-compile
   (progn
-    (push cpm-setup-dir load-path)))
-;; Add mu4e to load-path
-(add-to-list 'load-path "/opt/homebrew/share/emacs/site-lisp/mu/mu4e/")
+    (push lem-setup-dir load-path)
+    (push lem-user-dir load-path)))
 
-;; Set PATH properly for emacs
-(defconst cpm-local-bin (concat (getenv "HOME") "/bin") "Local execs.")
-(defconst homebrew "/opt/homebrew/bin")
-(defconst usr-local-bin "/usr/local/bin")
-(defconst usr-local-sbin "/usr/local/sbin")
-(setenv "PATH" (concat homebrew ":" usr-local-bin ":" usr-local-sbin ":" (getenv "PATH") ":" cpm-local-bin))
-(setq exec-path (append exec-path (list homebrew cpm-local-bin usr-local-sbin usr-local-bin)))
+;;;;; Exec Path
+;; Set PATH properly for emacs. This should make a package like
+;; `exec-path-from-shell' unnecessary
 
-;;; Package Settings
-;; I use straight and use-package to manage settings.
-;; I put a lot of loading of packages off until after some number of seconds of idle. The
-;; latter means package loading stays out of my way if I'm doing, e.g., a quick
+;; Set local (i.e. current user) bin path, if it exists
+(when (file-directory-p (concat (getenv "HOME") "/bin"))
+  (defconst lem-local-bin (concat (getenv "HOME") "/bin") "Local execs."))
+
+;; If on a mac using homebrew set path correctly
+;; NOTE: the location of homebrew depends on whether we're on mac silicon
+(when (shell-command-to-string "command -v brew")
+  (defconst homebrew (if (string= (shell-command-to-string "arch") "arm64") "/opt/homebrew/bin/" "/usr/local/bin/") "Path to homebrew packages."))
+
+;; Define the system local bins
+(defconst usr-local-bin "/usr/local/bin" "System bin.")
+(defconst usr-local-sbin "/usr/local/sbin" "System sbin.")
+
+;; Set paths
+(setenv "PATH" (concat homebrew ":" (getenv "PATH") ":" lem-local-bin ":" usr-local-bin ":" usr-local-sbin))
+(setq exec-path (append exec-path (list homebrew lem-local-bin usr-local-bin usr-local-sbin)))
+
+;;;;; Package Settings
+;; Use straight to manage package installation and use-package to manage
+;; settings. Defer package loading as much as possible to either the
+;; after-init-hook or after some number of seconds of idle. This should produce
+;; shorter startup times, which helps especially when doing, e.g., a quick
 ;; restart-and-check of something in emacs.
 
-;;; Straight
-;;;;; Straight settings
-;; use straight.el to install all packages
+;;;;; Straight
+;;;;;; Straight settings
+;; Use straight.el to install all packages
 ;; https://github.com/raxod502/straight.el
 ;; Don't check packages on startup
-(setq straight-check-for-modifications '(check-on-save find-when-checking))
-;; set branch
-(setq straight-repository-branch "develop")
-;; set dir
-(setq straight-base-dir cpm-local-dir)
-;; use use-package
-(setq straight-use-package-by-default t)
+(customize-set-variable 'straight-check-for-modifications '(check-on-save find-when-checking))
+;; Set branch
+(customize-set-variable 'straight-repository-branch "develop")
+;; Set dir
+(customize-set-variable 'straight-base-dir lem-library-dir)
+;; Use use-package
+(customize-set-variable 'straight-use-package-by-default t)
 ;; Check updates manually
-(setq straight-vc-git-auto-fast-forward nil)
-;; see https://github.com/raxod502/straight.el/issues/757
-(setq native-comp-deferred-compilation-deny-list nil)
+(customize-set-variable 'straight-vc-git-auto-fast-forward nil)
+;; Avoid problems with straight building with native-comp
+;; See https://github.com/raxod502/straight.el/issues/757
+(customize-set-variable 'native-comp-deferred-compilation-deny-list nil)
 ;; Tell straight.el about the profiles we are going to be using.
-(setq straight-profiles
-      '((nil . "default.el")
-        ;; Packages which are pinned to a specific commit.
-        (pinned . "pinned.el")))
+(customize-set-variable 'straight-profiles
+                        '((nil . "default.el")
+                          ;; Packages which are pinned to a specific commit.
+                          (pinned . "pinned.el")))
 
-;;;;; Bootstrap straight
+;;;;;; Bootstrap straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" straight-base-dir))
@@ -117,8 +154,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;;;;; Straight-X
-;; use experimental straight commands
+;;;;;; Straight-X
+;; Use experimental straight commands
 (require 'straight-x)
 ;; https://github.com/raxod502/straight.el#how-do-i-pin-package-versions-or-use-only-tagged-releases
 (autoload #'straight-x-freeze-versions "straight-x")
@@ -129,169 +166,96 @@
 ;; async fetch
 (autoload #'straight-x-fetch-all "straight-x")
 
-;;;;; Straight Update Packages
-;; ;; automatically update packages every week
-;; (run-at-time "10:00pm" 604800 'straight-x-pull-all)
-
-;; Update packages
-(defun cpm--straight-update-packages ()
-  "Wrapper for updating packages asynchronously with straight."
-  (with-eval-after-load 'straight
-    (switch-to-buffer "*straight*")
-    (erase-buffer)
-    (delete-other-windows)
-    (goto-char (point-max))
-    (setq straight-vc-git-auto-fast-forward t)
-    (straight-pull-all 1)
-    (straight-check-all)
-    (straight-freeze-versions)
-    (straight-prune-build)
-    (straight-remove-unused-repos t)
-    ;; kill session
-    (run-with-idle-timer 120 nil (lambda () (kill-emacs)))))
-
-(defun cpm/straight-update-packages-asynchronously ()
-  "Update packages in a separate process."
-  (interactive)
-  (async-shell-command-no-window "/Applications/Emacs.app/Contents/MacOS/emacs --no-splash --eval '(cpm--straight-update-packages)'"))
-
-;;;;; Straight Helper Functions
-;; delete .DS_Store before prune
-(advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash "/Users/roambot/.emacs.d/.local/straight/build/.DS_Store")))
-
-
-;;;;; Straight Embark Commands
-(with-eval-after-load #'embark
-(embark-define-keymap embark-straight-map
-                      ("u" straight-visit-package-website)
-                      ("r" straight-get-recipe)
-                      ("i" straight-use-package)
-                      ("c" straight-check-package)
-                      ("F" straight-pull-package)
-                      ("f" straight-fetch-package)
-                      ("p" straight-push-package)
-                      ("n" straight-normalize-package)
-                      ("m" straight-merge-package))
-
-(add-to-list 'embark-keymap-alist '(straight . embark-straight-map))
-
-(add-to-list 'marginalia-prompt-categories '("recipe\\|package" . straight)))
-
-;;;; Use-Package
-;; install use package
+;;;;; Use-Package
+;; Install use package
 (straight-use-package 'use-package)
-;; settings
-(setq use-package-always-defer nil
-      use-package-verbose t
-      use-package-minimum-reported-time 0
-      use-package-enable-imenu-support t
-      use-package-expand-minimally nil
-      use-package-always-ensure nil)
+;; Settings
+(use-package use-package
+  :custom
+  (use-package-always-defer nil)
+  (use-package-verbose t)
+  ;; This is really helpful for profiling
+  (use-package-minimum-reported-time 0)
+  (use-package-enable-imenu-support t)
+  (use-package-expand-minimally nil)
+  ;; Let straight handle package install
+  (use-package-always-ensure nil))
 
-;;;; El-Patch
+;;;;; El-Patch
 ;; Package for helping advise/modify features of other packages
-
 (use-package el-patch
   :straight t
-  :config
-  (setq el-patch-enable-use-package-integration t))
+  :custom
+  (el-patch-enable-use-package-integration t))
 
-;;;; Security
+;;;;; Security
 ;; Properly verify outgoing ssl connections.
 ;; See https://glyph.twistedmatrix.com/2015/11/editor-malware.html
-
 (use-package gnutls
   :straight nil
   :defer 1
-  :init
-  (setq gnutls-verify-error t
-        gnutls-min-prime-bits 3072))
+  :custom
+  (gnutls-verify-error t)
+  (gnutls-min-prime-bits 3072))
 
-;;;; Benchmark Init
-(use-package benchmark-init
-  ;; demand when using
-  ;; :demand t
-  :defer t
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'emacs-startup-hook 'benchmark-init/deactivate))
-
-;;;; Auto-compile
+;;;;; Auto-compile
 ;; Automatically byte-recompile changed elisp libraries
 (use-package auto-compile
   :defer 1
+  :custom
+  (auto-compile-display-buffer nil)
+  (auto-compile-mode-line-counter nil)
+  (auto-compile-use-mode-line nil)
+  (auto-compile-update-autoloads t)
   :config
-  (setq auto-compile-display-buffer nil)
-  (setq auto-compile-mode-line-counter nil)
-  (setq auto-compile-use-mode-line nil)
-  (setq auto-compile-update-autoloads t)
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
-;;; Load Modules
+;;;;; Command Line Switches
 
-;; Conditionally load modules
-;; This allows startup with a clean emacs that still recognizes straight
-;; Helpful for testing packages
-;; Use (straight-use-package) command to selectively load packages
+;; Conditionally load parts of config depending on command line switches.
+;; This allows startup with a clean emacs that still recognizes straight.
+;; Helpful for testing packages.
+;; Use (straight-use-package) command to selectively load packages.
 ;; See https://emacs.stackexchange.com/a/34909/11934
 ;; For function switch see https://stackoverflow.com/a/4065412/6277148
 
-(defun cpm--emacs-switches (switch)
+;; NOTE: The variable here doesn't really do anything. It is just useful to keep
+;; for a record of switches.
+(defvar lem-config-switches
+  '("basic"
+    "clean"
+    "core"
+    "test")
+  "Custom switches for conditional loading from command line.
+`clean' loads only the `init.el' file w/no personal config; `core'
+loads the set of modules set in `lem-core-modules'; `test' loads
+only a `lem-setup-test.el' file for easy testing.")
+
+(defun lem--emacs-switches (switch)
   "Depending on command line argument SWITCH, load Emacs with minimal settings & no modules; useful for testing."
   (let ((found-switch (member switch command-line-args)))
     (setq command-line-args (delete switch command-line-args))
     found-switch))
 
-(unless (cpm--emacs-switches "-clean")
-  (message "Loading config modules")
-  (require 'setup-modules))
-
-;; Add easy switch for testing packages
-(when (cpm--emacs-switches "-test")
-  (require 'setup-test))
-
-;;;; Emacs Build Version
-;; When built emacs has git-version patch
-;; to include git sha1 in emacs-version string
+;;;;; Emacs Build Version
+;; When built with https://github.com/mclear-tools/build-emacs-macos, Emacs has
+;; git-version patch to include git sha1 in emacs-version string.
 (setq site-lisp "/Applications/Emacs.app/Contents/Resources/site-lisp/")
 (when (file-exists-p (concat site-lisp "emacs-git-version.el"))
   (require 'emacs-git-version))
 
-(defun cpm/emacs-version ()
-  "Print emacs-version and put emacs-version string on the kill ring"
+(defun lem-emacs-version ()
+  "A convenience function to print the emacs-version in the echo-area/*messages* buffer and put
+emacs-version string on the kill ring."
   (interactive)
   (let ((emacs (emacs-version)))
     (message (emacs-version))
     (kill-new emacs)))
 
-
-;;; Config Helper Functions
-;;;; Config Navigation
-;; Function to navigate config files
-(defun cpm/find-files-setup-config-directory ()
-  "find setup files"
-  (interactive)
-  (let ((default-directory cpm-setup-dir))
-    (call-interactively 'find-file)))
-
-;; Function to search in config files
-(defun cpm/search-setup-config-files ()
-  "async fuzzy search with ripgrep for all config files"
-  (interactive)
-  ;; (affe-grep cpm-setup-dir))
-  (consult-ripgrep cpm-setup-dir))
-
-;; Load init file
-(defun cpm/load-init-file ()
-  "load the base init file"
-  (interactive)
-  (load-file (concat user-emacs-directory "init.el")))
-
-;;;; Outline Navigation
-;; Packages to help with navigating
-;; I used to use outshine.el but it was overkill -- these packages are much smaller/simpler
-
+;;;;; Outline Navigation
+;; Navigate elisp files easily. Outline is a built-in library and we can easily
+;; configure it to treat elisp comments as headings.
 (use-package outline
   :straight (:type built-in)
   :hook (prog-mode . outline-minor-mode)
@@ -317,31 +281,140 @@
                             (";;;;;; " . 4)
                             (";;;;;;; " . 5))))))
 
-;; Make outline faces look better
-(use-package outline-minor-faces
-  :after outline
-  :config (add-hook 'outline-minor-mode-hook
-                    'outline-minor-faces-add-font-lock-keywords))
+;;;;; Measure Time Macro
+;; Useful macro to wrap functions in for testing
+;; See https://stackoverflow.com/q/23622296
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "*Elapsed time: %.06f*" (float-time (time-since time)))))
 
-;;;; Byte Compile Config Files
-;; https://emacsredux.com/blog/2013/06/25/boost-performance-by-leveraging-byte-compilation/
-(defun cpm/delete-byte-compiled-files ()
-  "Delete byte-compiled files"
-  (interactive)
-  (shell-command-to-string "trash ~/.emacs.d/*.elc && trash ~/.emacs.d/setup-config/*.elc"))
+;;;;; Load Configuration Modules
+;; Lambda-Emacs loads a series of lisp-libraries or 'modules'. Which modules are
+;; loaded is left to the user to set in `config.el', though if there is no
+;; `config.el' file a default set of modules will be loaded.
 
-(defun cpm/byte-compile-dotemacs ()
-  "Byte compile all files in the .emacs.d base directory"
-  (interactive)
-  (cpm/delete-byte-compiled-files)
-  (byte-recompile-directory user-emacs-directory 0 t))
+(defun lem--default-modules ()
+  "Load a default configuration for 𝛌-Emacs."
+  (message "*Loading default setup of 𝛌-Emacs Modules*")
+  (measure-time
+   (cl-dolist (mod (list
+                    ;; Core modules
+                    'lem-setup-libraries
+                    'lem-setup-settings
+                    'lem-setup-functions
+                    'lem-setup-server
+                    'lem-setup-scratch
+
+                    ;; UI modules
+                    'lem-setup-frames
+                    'lem-setup-windows
+                    'lem-setup-buffers
+                    'lem-setup-fonts
+                    'lem-setup-faces
+                    'lem-setup-colors
+                    'lem-setup-completion
+                    'lem-setup-keybindings
+                    'lem-setup-help
+                    'lem-setup-modeline
+                    'lem-setup-theme
+                    'lem-setup-splash
+
+                    ;; Navigation & Search modules
+                    'lem-setup-navigation
+                    'lem-setup-dired
+                    'lem-setup-search
+
+                    ;; Project & Tab/Workspace modules
+                    'lem-setup-vc
+                    'lem-setup-projects
+                    'lem-setup-tabs
+
+                    ;; Writing modules
+                    'lem-setup-writing
+                    'lem-setup-notes
+                    'lem-setup-citation
+
+                    ;; Programming modules
+                    'lem-setup-programming
+                    'lem-setup-debug
+                    'lem-setup-shell
+
+                    ;; Org modules
+                    ;; 'lem-setup-org
+                    ;; 'lem-setup-org-extensions
+
+                    ;; Productivity
+                    'lem-setup-pdf))
+     (require mod))))
+
+(defun lem--minimal-modules ()
+  "Load 𝛌-Emacs with a minimal set of modules."
+  (message "*Loading 𝛌-Emacs, with minimal modules*")
+  (measure-time
+   (cl-dolist (mod (list
+                    ;; Core modules
+                    'lem-setup-libraries
+                    'lem-setup-settings
+                    'lem-setup-functions
+                    'lem-setup-server
+                    'lem-setup-scratch
+
+                    ;; UI modules
+                    'lem-setup-frames
+                    'lem-setup-windows
+                    'lem-setup-buffers
+                    'lem-setup-completion
+                    'lem-setup-keybindings
+                    'lem-setup-help
+                    'lem-setup-modeline
+                    'lem-setup-splash
+
+                    ;; Navigation & Search modules
+                    'lem-setup-navigation
+                    'lem-setup-dired
+                    'lem-setup-search))
+     (require mod))))
+
+;; Conditionally load configuration files based on command-line switches,
+;; presence of user-config file, or the default set of modules.
+(cond
+ ;; Load a subset of modules only, ignore other configuration.
+ ((lem--emacs-switches "-minimal")
+  (message "*Loading a subset of 𝛌-Emacs modules *only*, ignoring personal user configuration.*")
+  (lem--minimal-modules))
+ ;; Load test module only. This is useful for testing a specific package
+ ;; against vanilla/default emacs settings.
+ ((lem--emacs-switches "-test")
+  (message "*Loading test module only*")
+  (require 'lem-setup-test))
+ ;; Load no libraries other than the built-in icomplete, for better completion.
+ ((lem--emacs-switches "-vanilla")
+  (message "*Do not load 𝛌-Emacs setup files. Loading a clean vanilla setup plus icomplete*")
+  (require 'lem-setup-icomplete))
+ ;; Load user's personal config file (if it exists) and hasn't been bypassed
+ ;; by a command-line switch to load the default libraries.
+ ((and (not (lem--emacs-switches "-default"))
+       (file-exists-p lem-config-file))
+  (message "*Loading 𝛌-Emacs & user config*")
+  (load lem-config-file 'noerror))
+ ;; Load default modules
+ (t
+  (message "*Loading 𝛌-Emacs default configuration files.*")
+  (lem--default-modules)
+  ;; MacOS settings - defer load until after init.
+  (when sys-mac
+    (message "*Load MacOS settings...*")
+    (measure-time
+     (run-with-idle-timer 1 nil
+                          (function require)
+                          'lem-setup-macos nil t)))))
 
 ;;;; After Startup
-
-
 ;; reset file-name-handler-alist
 (add-hook 'emacs-startup-hook (lambda ()
-                                (setq file-name-handler-alist cpm--file-name-handler-alist)
+                                (setq file-name-handler-alist lem-file-name-handler-alist)
                                 ;; reset garbage collection
                                 (setq gc-cons-threshold 800000)
                                 ;; Startup time
