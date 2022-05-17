@@ -260,8 +260,7 @@
 (use-package reftex
   :commands turn-on-reftex
   :init
-  (progn
-    (setq reftex-plug-into-AUCTeX t)))
+  (setq reftex-plug-into-AUCTeX t))
 
 (use-package bibtex
   :defer t

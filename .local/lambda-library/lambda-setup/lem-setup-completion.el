@@ -387,7 +387,7 @@ targets."
   ;; auto-complete
   (corfu-auto t)
   (corfu-min-width 25)
-  (corfu-max-width 70)
+  (corfu-max-width 90)
   (corfu-count 10)
   (corfu-scroll-margin 4)
   (corfu-cycle t)
@@ -472,7 +472,6 @@ targets."
   (kind-icon-use-icons t)
   (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
   (kind-icon-blend-background nil)
-
   ;; NOTE kind-icon' depends on `svg-lib' which creates a cache directory that
   ;; defaults to the `user-emacs-directory'. Here, I change that directory to
   ;; the cache location.
