@@ -21,7 +21,6 @@
 (defun cpm-go-home ()
   (interactive)
   (tab-bar-switch-to-tab "Home"))
-(bind-key* "s-1" #'cpm-go-home)
 
 ;;;;; Open Project in New Workspace
 (defun cpm-open-existing-project-and-workspace ()
@@ -48,9 +47,8 @@
       (tab-bar-rename-tab "Agenda")
       (require 'org)
       (require 'org-super-agenda)
+      (require 'mu4e)
       (lem-jump-to-org-super-agenda))))
-
-(bind-key* "s-A" 'cpm-open-agenda-in-workspace)
 
 ;;;;; Open emacs.d in Workspace
 (defun cpm-open-emacsd-in-workspace ()
@@ -66,8 +64,6 @@
       (other-window 1)
       (project-magit-dir))))
 
-(bind-key* "s-2" 'cpm-open-emacsd-in-workspace)
-
 ;;;;; Open Notes in Workspace
 
 (defun cpm-open-notes-in-workspace ()
@@ -79,8 +75,6 @@
       (tab-bar-new-tab)
       (tab-bar-rename-tab "Notes")
       (lem-notebook))))
-
-(bind-key* "s-3" 'cpm-open-notes-in-workspace)
 
 ;;;;; Terminal Workspace
 (defun cpm-vterm-workspace ()
@@ -100,8 +94,6 @@
       (tab-bar-rename-tab "Terminal")
       (cpm-vterm-workspace)
       (delete-other-windows))))
-
-(bind-key* "s-4" 'cpm-open-new-terminal-and-workspace)
 
 ;;;;; Open Mu4e Email in Workspace
 (defun cpm-open-email-in-workspace ()
@@ -125,8 +117,6 @@
       (mu4e)
       (switch-to-buffer " *mu4e-main*"))))
 
-(bind-key* "s-5" 'cpm-open-email-in-workspace)
-
 ;;;;; Open New Buffer & Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
 ;; dummy git project to give the isolation of buffers typical with a git project
@@ -147,8 +137,6 @@
     (setq default-directory lem-project-temp-dir)
     (find-file (concat lem-project-temp-dir "temp"))))
 
-(bind-key "N" #'cpm-open-new-buffer-and-workspace 'project-prefix-map)
-
 ;;;; Workspace Shortcuts (Splash)
 ;; Rebind splash keys to personal functions
 (bind-keys :map lem-splash-mode-map
@@ -160,6 +148,25 @@
   ("q" . splash-screen-bury)
   ("esc" . splash-screen-bury)
   ("k" . splash-screen-kill))
+
+;;;; Workspace Keybindings
+
+(bind-keys :map lem+leader-map
+  ("1" . cpm-go-home)
+  ("2" . cpm-open-emacsd-in-workspace)
+  ("3" . cpm-open-agenda-in-workspace)
+  ("4" . cpm-open-notes-in-workspace)
+  ("6" . cpm-open-new-terminal-and-workspace)
+  ("5" . cpm-open-email-in-workspace))
+(bind-key "N" #'cpm-open-new-buffer-and-workspace 'project-prefix-map)
+
+;; (bind-key* (concat lem-prefix " 1") #'cpm-go-home)
+;; (bind-key* (concat lem-prefix " 2") #'cpm-open-emacsd-in-workspace)
+;; (bind-key* (concat lem-prefix " 3") #'cpm-open-agenda-in-workspace)
+;; (bind-key* (concat lem-prefix " 4") #'cpm-open-notes-in-workspace)
+;; (bind-key* (concat lem-prefix " 6") #'cpm-open-new-terminal-and-workspace)
+;; (bind-key* (concat lem-prefix " 5") #'cpm-open-email-in-workspace)
+
 
 ;;;;; Mail Keybindings
 (bind-keys :prefix-map lem+mail-keys
