@@ -92,7 +92,7 @@
    '("r" . consult-register)
    '("R" . consult-recent-file)
    '("s" . lem+search-keys)
-   '("S" . lem-search-in-input-dir)
+   '("S" . lem+spelling-keys)
    '("t" . lem+toggle-keys)
    '("u" . lem+user-keys)
    '("v" . lem+vc-keys)

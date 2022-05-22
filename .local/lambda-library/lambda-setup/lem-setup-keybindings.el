@@ -175,6 +175,14 @@
            ("Q" . lem-kill-all-emacsen         )
            ("r" . restart-emacs                ))
 
+;;;;; Spelling Keybindings
+(bind-keys :prefix-map lem+spelling-keys
+           :prefix (concat lem-prefix " S")
+           ("b" . consult-flyspell          )
+           ("h" . hydra-spelling/body       )
+           ("n" . flyspell-correct-next     )
+           ("p" . flyspell-correct-previous ))
+
 ;;;;; Search Keybindings
 (bind-keys :prefix-map lem+search-keys
            :prefix (concat lem-prefix " s")
