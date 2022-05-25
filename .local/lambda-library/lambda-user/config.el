@@ -199,9 +199,9 @@
 ;; workflow I used to use in Sublime Text. Perfect for short commit messages.
 ;; FIXME: is there a way to make this work without evil?
 (defun quick-commit ()
-  "Make a quick commit from the mini-buffer."
+  "Quickly commit the current file-visiting buffer from the mini-buffer."
   (interactive)
-  (shell-command "Git add % && Git commit -m 'Revise file'"))
+  (shell-command (concat "Git add " (buffer-file-name) " && Git commit -m '" (read-string "Enter commit message: ") "'")))
 
 ;;;;; Save Buffer & Exit Emacsclient
 (defun lem-email-save-and-kill ()
