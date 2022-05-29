@@ -22,7 +22,8 @@
      t 'symbol "Symbola" nil))
   ;; Use Apple emoji
   ;; NOTE that emoji here must be set to unicode to get color emoji
-  (when (member "Apple Color Emoji" (font-family-list))
+  (when (and (>= emacs-major-version 28)
+             (member "Apple Color Emoji" (font-family-list)))
     (set-fontset-font t 'emoji
                       '("Apple Color Emoji" . "iso10646-1") nil 'prepend))
   ;; Fall back font for missing glyph

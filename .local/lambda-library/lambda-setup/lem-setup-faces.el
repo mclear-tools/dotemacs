@@ -63,6 +63,7 @@
 ;;;; SVG Library (For Tags/Labels/etc.)
   ;;; SVG Tag Mode
 (use-package svg-tag-mode
+  :when (image-type-available-p 'svg)
   :straight (:type git :host github :repo "rougier/svg-tag-mode")
   :hook (prog-mode . svg-tag-mode)
   :config
