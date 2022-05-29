@@ -490,7 +490,8 @@ targets."
   )
 
 ;;;;; Yasnippet
-(defvar lem-all-snippets-dir (concat lem-etc-dir "all-snippets/") "DIR for all snippet files.")
+(defcustom lem-all-snippets-dir (concat lem-etc-dir "all-snippets/") "DIR for all snippet files."
+  :group 'lambda-emacs)
 
 (use-package yasnippet
   :straight (:type git :host github :repo "joaotavora/yasnippet")
@@ -510,6 +511,8 @@ targets."
     (setq-local yas-buffer-local-condition
                 '(not (org-in-src-block-p t))))
   (add-hook 'org-mode-hook #'lem-yas-org-mode-hook)
+  ;; suppress warnings when expanding
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
   (yas-global-mode 1))
 
 ;; the official snippet collection https://github.com/AndreaCrotti/yasnippet-snippets
