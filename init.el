@@ -51,6 +51,7 @@ this for dependencies like servers or config files that are
 stable (i.e. it should be unlikely that you need to delete them
 if something goes wrong).")
 
+
 (defconst lem-cache-dir (concat lem-temp-dir "cache/")
   "The directory for volatile storage.
 Use this for transient files that are generated on the fly like
@@ -349,7 +350,7 @@ emacs-version string on the kill ring."
                     'lem-setup-pdf))
      (require mod))))
 
-(defun lem--minimal-modules ()
+(defun lem--default-config-modules ()
   "Load 𝛌-Emacs with a minimal set of modules."
   (message "*Loading 𝛌-Emacs, with minimal modules*")
   (measure-time
@@ -369,12 +370,23 @@ emacs-version string on the kill ring."
                     'lem-setup-keybindings
                     'lem-setup-help
                     'lem-setup-modeline
+                    'lem-setup-theme
                     'lem-setup-splash
+
+                    ;; Project & Tab/Workspace modules
+                    'lem-setup-vc
+                    'lem-setup-projects
+                    'lem-setup-tabs
+                    'lem-setup-workspaces
 
                     ;; Navigation & Search modules
                     'lem-setup-navigation
                     'lem-setup-dired
-                    'lem-setup-search))
+                    'lem-setup-search
+
+                    ;; Programming modules
+                    'lem-setup-programming
+                    ))
      (require mod))))
 
 ;; Conditionally load configuration files based on command-line switches,
