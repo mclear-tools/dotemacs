@@ -83,8 +83,7 @@
                   'lem-setup-shell
 
                   ;; Org modules
-                  'lem-setup-org
-                  'lem-setup-org-extensions
+                  'lem-setup-org-base
 
                   ;; Productivity
                   'lem-setup-pdf
@@ -92,6 +91,7 @@
                   ;; Personal modules
                   'cpm-setup-email
                   'cpm-setup-meow
+                  'cpm-setup-org
                   'cpm-setup-workspaces
                   'cpm-setup-calendars
                   'cpm-setup-teaching))
@@ -135,24 +135,64 @@
 (defvar hugo-notebook-setup-file "~/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org"
   "Variable for notebook setup using hugo.")
 
-(setq lem-zettelkasten  "~/Dropbox/Work/projects/notebook/content-org")
-
-(setq consult-notes-sources-data
-      '(("Zettel"          ?z "~/Dropbox/Work/projects/notebook/content-org/")
-        ("Org"             ?o "~/Dropbox/org-files/")
-        ("Lecture Notes"   ?l "~/Dropbox/Work/projects/notebook/content-org/lectures/")
-        ("Reference Notes" ?r "~/Dropbox/Work/projects/notebook/content-org/ref-notes/")
-        ("Org Refile"      ?R "~/Dropbox/Work/projects/notebook/org-refile/")))
-
-(setq consult-notes-all-notes "~/Dropbox/Work/projects/notes-all/")
+(setq lem-notes-dir "~/Dropbox/Work/projects/notes-all/")
 
 (setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
+(setq lem-zettelkasten  "~/Dropbox/Work/projects/notebook/content-org")
+(setq consult-notes-data-dirs
+      '(("Org"             ?o "~/Dropbox/org-files/")
+        ("Org Refile"      ?R "~/Dropbox/Work/projects/notebook/org-refile/")))
 
+
+(with-eval-after-load 'consult-notes
+  (defun consult-notes-org-roam-cited (reference)
+    "Return a list of notes that cite the REFERENCE."
+    (interactive (list (citar-select-ref
+                        :rebuild-cache current-prefix-arg
+                        :filter (citar-has-note))))
+    (let* ((ids
+            (org-roam-db-query [:select * :from citations
+                                :where (= cite-key $s1)]
+                               (car reference)))
+           (anodes
+            (mapcar (lambda (id)
+                      (org-roam-node-from-id (car id)))
+                    ids))
+           (template
+            (org-roam-node--process-display-format org-roam-node-display-template))
+           (bnodes
+            (mapcar (lambda (node)
+                      (org-roam-node-read--to-candidate node template)) anodes))
+           (node (completing-read
+                  "Node: "
+                  (lambda (string pred action)
+                    (if (eq action 'metadata)
+                        `(metadata
+                          ;; get title using annotation function
+                          (annotation-function
+                           . ,(lambda (title)
+                                (funcall org-roam-node-annotation-function
+                                         (get-text-property 0 'node title))))
+                          (category . org-roam-node))
+                      (complete-with-action action bnodes string pred)))))
+           (fnode
+            (cdr (assoc node bnodes))))
+      (if ids
+          ;; Open node in other window
+          (org-roam-node-open fnode)
+        (message "No notes cite this reference.")))))
+
+;; Old sources
+;; ("Zettel"          ?z "~/Dropbox/Work/projects/notebook/content-org/")
+;; ("Lecture Notes"   ?l "~/Dropbox/Work/projects/notebook/content-org/lectures/")
+;; ("Reference Notes" ?r "~/Dropbox/Work/projects/notebook/content-org/ref-notes/")
+
+(setq consult-notes-all-notes "~/Dropbox/Work/projects/notes-all/")
 ;;;;; Org Directories
 (with-eval-after-load 'org
-  (setq-default org-directory "~/Dropbox/org-files/")
-  (setq-default org-default-notes-file (concat org-directory "inbox.org"))
-  (setq-default org-agenda-files (list org-directory)))
+  (setq org-directory "~/Dropbox/org-files/"
+        org-default-notes-file (concat org-directory "inbox.org")
+        org-agenda-files (list org-directory)))
 
 ;;;;; Straight Package Manager
 ;; Don't walk straight repos

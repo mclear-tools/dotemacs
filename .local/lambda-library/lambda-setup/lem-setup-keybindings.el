@@ -296,14 +296,15 @@
 ;;;;; Zettelkasten/Notes/Wiki
 (bind-keys :prefix-map lem+notes-keys
            :prefix (concat lem-prefix " n")
+           ("a"  .  consult-notes           )
            ("c"  .  org-roam-capture        )
-           ("C"  .  citar-open-notes        )
            ("i"  .  org-roam-node-insert    )
            ("f"  .  org-roam-node-find      )
            ("g"  .  org-roam-graph          )
            ("n"  .  consult-notes           )
            ("N"  .  org-roam--new-file-named)
-           ("r"  .  lem-find-note-relation  )
+           ("r"  .  citar-open-notes        )
+           ("R"  .  consult-notes-org-roam-cited)
            ("s"  .  consult-notes-search-all)
            ("t"  .  org-roam-buffer-toggle))
 

@@ -2,7 +2,9 @@
 
 (defun lem-notebook ()
   (interactive)
-  (find-file org-roam-directory))
+  (let ((vertico-buffer-display-action
+         '(display-buffer-reuse-window)))
+    (consult-notes)))
 
 ;;; Remember Notes
 (use-package remember
@@ -27,10 +29,12 @@
 ;; Adapted from https://github.com/minad/consult/wiki/hrm-notes
 (use-package consult-notes
   :straight (:local-repo "/Users/roambot/bin/lisp-projects/consult-notes")
-  :commands (consult-notes consult-notes-search-all)
+  :commands (consult-notes
+             consult-notes-search-all
+             consult-notes-org-roam-find-node
+             consult-notes-org-roam-find-node-relation)
   :config
-  (defvar consult-notes-sources-data nil "Sources for file search.")
-  (defvar consult-notes-all-notes nil "Dir for search of all notes."))
+  (consult-notes-org-roam-mode))
 
 ;;; Org Roam (Wiki & Notes)
 ;; Good notes package but a lot is still in flux
@@ -118,158 +122,13 @@
                               ,(concat (concat "#+SETUPFILE:" hugo-notebook-setup-file) "\n#+TITLE: ${author-or-editor-abbrev} ${year}: ${title}\n#+hugo_section: reading-notes\n\n- tags :: \n- bookends link :: bookends://sonnysoftware.com/${beref}\n- pdf :: [[${file}][pdf link]]\n\n(lem-bibtex \"${citekey}\")"))
            :unnarrowed t)))
 
-  ;; Filtering by subdirectory
-  (cl-defmethod org-roam-node-directories ((node org-roam-node))
-    (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-        (format "(%s)" (string-join (f-split dirs) "/"))
-      ""))
 
-  ;; Use dashes rather than underscores in your slugs
-  ;; Need to redefine function (no customization available)
-  ;; See https://github.com/org-roam/org-roam/pull/1544
-  ;; Done in personal repo
+  ;; org-roam-node-annotation-function
+  ;; (lambda (node) (org-roam-node-backlinkscount (org-roam-node-from-id "20210718T005905.129456"))))
 
-  ;; Showing the number of backlinks for each node in org-roam-node-find
-  ;; https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2
 
-  (cl-defmethod org-roam-node-directories ((node org-roam-node))
-    (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-        (format "(%s)" (car (f-split dirs)))
-      ""))
+  )
 
-  (cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-    (let* ((count (caar (org-roam-db-query
-                         [:select (funcall count source)
-                          :from links
-                          :where (= dest $s1)
-                          :and (= type "id")]
-                         (org-roam-node-id node)))))
-      (format "[%d]" count))))
-
-;;;; Fancy Node Icons
-;; Fancy org-roam-node-find with icons and overlays (which allow for better searching whilst keeping the icons
-;; From https://github.com/hieutkt/.doom.d/blob/master/config.el#L690-L745 or
-;; https://orgroam.slack.com/archives/CV20S23C0/p1626662183035800
-(with-eval-after-load 'org-roam
-  (require 'all-the-icons)
-
-  ;; Define var for special tags
-  (defvar lem-spec-tags nil)
-  ;; Set template disply in find-node
-  (setq org-roam-node-display-template (concat "${backlinkscount:16} " "${functiontag:16} " "${othertags:13} " "${hierarchy:183}"))
-
-  (cl-defmethod org-roam-node-filetitle ((node org-roam-node))
-    "Return the file TITLE for the node."
-    (org-roam-get-keyword "TITLE" (org-roam-node-file node))
-    )
-
-  (cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-    (let* ((count (caar (org-roam-db-query
-                         [:select (funcall count source)
-                          :from links
-                          :where (= dest $s1)
-                          :and (= type "id")]
-                         (org-roam-node-id node))))
-           )
-      (if (> count 0)
-          (concat (propertize "=has:backlinks=" 'display (all-the-icons-material "link" :face 'all-the-icons-dblue :height 0.9)) (format "%d" count))
-        (concat (propertize "=not-backlinks=" 'display (all-the-icons-material "link" :face 'org-roam-dim :height 0.9))  " ")
-        )
-      ))
-
-  (cl-defmethod org-roam-node-functiontag ((node org-roam-node))
-    "The first tag of notes are used to denote note type"
-    (let* ((specialtags lem-spec-tags)
-           (tags (seq-filter (lambda (tag) (not (string= tag "ATTACH"))) (org-roam-node-tags node)))
-           (functiontag (seq-intersection specialtags tags 'string=))
-           )
-      (concat
-       ;; (if functiontag
-       ;;     (propertize "=has:functions=" 'display (all-the-icons-octicon "gear" :face 'all-the-icons-silver :v-adjust 0.02 :height 0.8))
-       ;;   (propertize "=not-functions=" 'display (all-the-icons-octicon "gear" :face 'org-roam-dim :v-adjust 0.02 :height 0.8))
-       ;;   )
-       (if functiontag
-           (propertize "=@=" 'display (all-the-icons-faicon "tags" :face 'all-the-icons-dgreen :v-adjust 0.02 :height 0.7))
-         (propertize "= =" 'display (all-the-icons-faicon "tags" :face 'all-the-icons-dgreen :v-adjust 0.02 :height 0.7))
-         )
-       " "
-       (string-join functiontag ", "))
-      ))
-
-  (cl-defmethod org-roam-node-othertags ((node org-roam-node))
-    "Return the file TITLE for the node."
-    (let* ((tags (seq-filter (lambda (tag) (not (string= tag "ATTACH"))) (org-roam-node-tags node)))
-           (specialtags lem-spec-tags)
-           (othertags (seq-difference tags specialtags 'string=))
-           )
-      (concat
-       ;; " "
-       ;; (if othertags
-       ;;     (propertize "=has:tags=" 'display (all-the-icons-faicon "tags" :face 'all-the-icons-dgreen :v-adjust 0.02 :height 0.8))
-       ;;   (propertize "=not-tags=" 'display (all-the-icons-faicon "tags" :face 'all-the-icons-dgreen :v-adjust 0.02 :height 0.8))
-       ;;   )
-       ;; " "
-       (if othertags
-           (propertize "=@=" 'display "")
-         (propertize "= =" 'display "")
-         )
-       (propertize (string-join othertags ", ") 'face 'all-the-icons-dgreen))
-      ))
-
-  (cl-defmethod org-roam-node-hierarchy ((node org-roam-node))
-    "Return the hierarchy for the node."
-    (let* ((title (org-roam-node-title node))
-           (olp (mapcar (lambda (s) (if (> (length s) 10) (concat (substring s 0 10)  "...") s)) (org-roam-node-olp node)))
-           (level (org-roam-node-level node))
-           (filetitle (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
-           (shortentitle (if (> (length filetitle) 20) (concat (substring filetitle 0 20)  "...") filetitle))
-           (separator (concat " " (all-the-icons-material "chevron_right") " "))
-           )
-      (cond
-       ((>= level 1) (concat (propertize (format "=level:%d=" level) 'display (all-the-icons-material "list" :face 'all-the-icons-blue))
-                             " "
-                             (propertize shortentitle 'face 'org-roam-dim)
-                             (propertize separator 'face 'org-roam-dim)
-                             title))
-       (t (concat (propertize (format "=level:%d=" level) 'display (all-the-icons-material "insert_drive_file" :face 'all-the-icons-yellow))
-                  " "
-                  title))
-       )
-      )))
-
-;;;; Find Org-Roam nodes by relation
-;; https://ag91.github.io/blog/2021/03/12/find-org-roam-notes-via-their-relations/
-(with-eval-after-load 'org-roam
-  (defun lem-find-note-relation (arg &optional node choices)
-    "Navigate org-roam notes by link. With universal ARG tries to use only to navigate the tags of the current note. Optionally takes a selected NOTE and filepaths CHOICES."
-    (interactive "P")
-    (let* ((depth (if (numberp arg) arg 1))
-           (choices
-            (or choices
-                (when arg
-                  (-map #'org-roam-backlink-target-node (org-roam-backlinks-get (org-roam-node-from-id (or (ignore-errors (org-roam-node-id node))
-                                                                                                           (org-id-get-create))))))))
-           (all-notes (org-roam-node-read--completions))
-           (completions
-            (or (--filter (-contains-p choices (cdr it)) all-notes) all-notes))
-           (next-node
-            ;; taken from org-roam-node-read
-            (let* ((nodes completions)
-                   (node (completing-read
-                          "Node: "
-                          (lambda (string pred action)
-                            (if (eq action 'metadata)
-                                '(metadata
-                                  (annotation-function . (lambda (title)
-                                                           (funcall org-roam-node-annotation-function
-                                                                    (get-text-property 0 'node title))))
-                                  (category . org-roam-node))
-                              (complete-with-action action nodes string pred))))))
-              (or (cdr (assoc node nodes))
-                  (org-roam-node-create :title node)))))
-      (if (equal node next-node)
-          (org-roam-node-visit node)
-        (lem-find-note-relation nil next-node (cons next-node (-map #'org-roam-backlink-source-node (org-roam-backlinks-get next-node))))))))
 
 ;;;; Org Roam UI (Server/Web App)
 (use-package org-roam-ui
