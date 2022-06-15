@@ -65,7 +65,8 @@
 
 ;;;; Citar
 (use-package citar
-  :straight (:host github :repo "bdarcus/citar")
+  ;; :straight (:host github :repo "bdarcus/citar")
+  :straight (:local-repo "/Users/roambot/bin/lisp-projects/citar" :files ("*.el"))
   :commands (citar-open-beref
              citar-open-notes
              citar-insert-citation)
@@ -79,7 +80,7 @@
   (org-cite-activate-processor 'citar)
   :config
   ;; use consult-completing-read for enhanced interface
-  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+  ;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   ;; use embark with at-point
   (setq citar-at-point-function 'embark-act)
   (setq citar-default-action 'citar-open-beref)
@@ -91,48 +92,68 @@
           (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
           (note . ,lem-citar-note)))
   (setq citar-symbols
-        `((file ,(all-the-icons-octicon "file-pdf" :face 'bespoke-red) . " ")
-          (note ,(all-the-icons-octicon "file-text" :face 'bespoke-brown) . " ")
-          (link ,(all-the-icons-octicon "link-external" :face 'bespoke-green) . " ")))
+        `((file ,(all-the-icons-octicon "file-pdf"      :face 'error) . " ")
+          (note ,(all-the-icons-octicon "file-text"     :face 'warning) . " ")
+          (link ,(all-the-icons-octicon "link-external" :face 'org-link) . " ")))
   ;; edit notes
-  (setq citar-notes-paths `(,lem-bib-notes)))
+  (setq citar-notes-paths `(,lem-bib-notes))
 
-;; Citar & Bookends
-(defun citar-get-beref (entry)
-  (let* ((field (citar-has-a-value '(beref) entry))
-         (base-url (pcase field
-                     ('beref "bookends://sonnysoftware.com/"))))
-    (when field
-      (concat base-url (citar-get-value field entry)))))
+  ;; Citar & Bookends
+  (defun citar-get-beref (entry)
+    (let* ((field (citar-has-a-value '(beref) entry))
+           (base-url (pcase field
+                       ('beref "bookends://sonnysoftware.com/"))))
+      (when field
+        (concat base-url (citar-get-value field entry)))))
 
-(defun citar-open-beref (keys-entries)
-  "Open bookends link associated with the KEYS-ENTRIES in bookends.
+  (defun citar-open-beref (keys-entries)
+    "Open bookends link associated with the KEYS-ENTRIES in bookends.
 
 With prefix, rebuild the cache before offering candidates."
-  (interactive (list (citar-select-refs
-                      :rebuild-cache current-prefix-arg)))
-  (dolist (key-entry keys-entries)
-    (let ((link (citar-get-beref (cdr key-entry))))
-      (if link
-          (browse-url-default-browser link)
-        (message "No ref found for %s" key-entry)))))
+    (interactive (list (citar-select-refs
+                        :rebuild-cache current-prefix-arg)))
+    (dolist (key-entry keys-entries)
+      (let ((link (citar-get-beref (cdr key-entry))))
+        (if link
+            (browse-url-default-browser link)
+          (message "No ref found for %s" key-entry))))))
 
 ;;;; Citar-Capf
-(use-package citar-capf
-  :straight (:local-repo "/Users/roambot/bin/lisp-projects/citar-capf")
-  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . citar-capf-mode))
+;; (use-package citar-capf
+;;   :straight (:local-repo "/Users/roambot/bin/lisp-projects/citar-capf")
+;;   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . citar-capf-mode))
+
+;; Add hooks
+(defun lem--add-citation-hooks (function hooks)
+  (mapc (lambda (hook)
+          (add-hook hook function))
+        hooks))
+
+(defun lem--citar-capf-hooks ()
+  (add-hook 'completion-at-point-functions #'citar-capf -90 t)
+  (add-to-list 'completion-at-point-functions #'citar-capf))
+
+(lem--add-citation-hooks
+ 'lem--citar-capf-hooks
+ '(markdown-mode-hook
+   org-mode-hook
+   LaTeX-mode-hook
+   latex-mode-hook
+   tex-mode-hook))
+
 
 (defun capf-citar-test ()
   (interactive)
   (progn
     (splash-screen-kill)
-    (require 'org)
-    (require 'citar-capf)
-    (markdown-mode)
+    ;; (require 'org)
+    ;; (require 'citar-capf)
     (switch-to-buffer "*scratch*")
-    (call-interactively #'citar-open)
-    (minibuffer-keyboard-quit)
-    (keyboard-quit)
+    (markdown-mode)
+    (require 'citar)
+    ;; (call-interactively #'citar-open)
+    ;; (minibuffer-keyboard-quit)
+    ;; (keyboard-quit)
     ))
 
 (provide 'lem-setup-citation)
