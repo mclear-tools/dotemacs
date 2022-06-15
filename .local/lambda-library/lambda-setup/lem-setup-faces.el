@@ -102,6 +102,26 @@
   :config
   (toggle-hl-line-when-idle 1 t))
 
+;;;;; LIN (Make HL Line Better)
+(use-package lin
+  :straight t
+  :config
+  (setq lin-mode-hooks
+        '(dired-mode-hook
+          elfeed-search-mode-hook
+          git-rebase-mode-hook
+          grep-mode-hook
+          ibuffer-mode-hook
+          ilist-mode-hook
+          log-view-mode-hook
+          magit-log-mode-hook
+          mu4e-headers-mode
+          occur-mode-hook
+          org-agenda-mode-hook
+          proced-mode-hook
+          tabulated-list-mode-hook))
+  (lin-global-mode 1))
+
 ;;;;; Highlight Numbers & TODOS
 (use-package highlight-numbers
   :defer t
