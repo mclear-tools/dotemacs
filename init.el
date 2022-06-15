@@ -343,8 +343,8 @@ emacs-version string on the kill ring."
                     'lem-setup-shell
 
                     ;; Org modules
-                    ;; 'lem-setup-org
-                    ;; 'lem-setup-org-extensions
+                    ;; NOTE: other modules are enabled in org-base
+                    'lem-setup-org-base
 
                     ;; Productivity
                     'lem-setup-pdf))
