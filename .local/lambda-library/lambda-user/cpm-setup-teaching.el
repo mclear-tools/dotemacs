@@ -142,7 +142,7 @@
   (let ((org-export-exclude-tags '("slides")))
     (save-excursion
       (goto-char (point-min))
-      (org-beamer-export-to-pdf t nil nil nil '(:latex-class "beamer-slides-no-notes")))))
+      (org-beamer-export-to-pdf nil nil nil nil '(:latex-class "beamer-slides-no-notes")))))
 
 
 ;;; Handouts

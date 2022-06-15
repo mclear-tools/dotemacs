@@ -1,17 +1,45 @@
-;; Additions to org core functions
+;; Additions & modifications to org functionality
 ;; NOTE: some org-extensions are set in other setup files:
 ;; - org roam setup is in setup-notes
 ;; - org citations setup is in setup-citation
 ;; - some org export functions are in setup-teaching
 
-;;; Org Babel
-;; org babel source block settings
-(setq org-src-fontify-natively t
-      org-src-window-setup 'other-window
-      org-src-tab-acts-natively nil
-      org-confirm-babel-evaluate nil
-      org-src-strip-leading-and-trailing-blank-lines t)
+;;; Org Appearance
+;;;; Org-Appear (Show Markup/Pretty Entities)
+;; show markup at point -- this should be part of org!
+(use-package org-appear
+  :straight (:type git :host github :repo "awth13/org-appear"
+             :branch "master")
+  ;; :branch "feature/org-fold-support")
 
+  :commands (org-appear-mode)
+  :hook (org-mode . org-appear-mode)
+  :init
+  (setq org-appear-autoemphasis  t)
+  (setq org-appear-autolinks nil)
+  (setq org-appear-autosubmarkers t))
+
+;;;; Org Modern (Display properties, bullets, etc)
+;; A nicer set of default display options
+(use-package org-modern
+  :straight (:type git :host github :repo "minad/org-modern")
+  :custom-face
+  (org-modern-label ((t (:height 1.1))))
+  :custom
+  ;; Note that these stars allow differentiation of levels
+  (org-modern-star ["⦶" "⦷" "⦹" "⊕" "⍟" "⊛" "⏣" "❂"]) ; "①" "②" "③" "④" "⑤" "⑥" "⑦"
+  ;; Customize this per your font
+  (org-modern-label-border 4.80)
+  :config
+  (global-org-modern-mode))
+
+;;; Org Autolist (Smart Lists)
+;; Better list behavior
+(use-package org-auto-list
+  :straight (:type git :host github :repo "calvinwyoung/org-autolist")
+  :hook (org-mode . org-autolist-mode))
+
+;;; Org Babel
 ;; Avoid `org-babel-do-load-languages' since it does an eager require.
 (use-package ob-python
   :straight nil
@@ -83,158 +111,40 @@ Instead it's simpler to use bash."
     (add-hook 'org-babel-post-tangle-hook #'delete-trailing-whitespace)
     (add-hook 'org-babel-post-tangle-hook #'save-buffer :append)))
 
-;;; Org Menu
-(use-package org-menu
-  :straight (:type git :host github :repo "sheijk/org-menu")
-  :bind* (:map org-mode-map
-          ("C-c m" . org-menu)))
-
-;;; Org Modern (Display properties, bullets, etc)
-;; A nicer set of default display options
-(use-package org-modern
-  :straight (:type git :host github :repo "minad/org-modern")
-  :hook ((org-mode . org-modern-mode)
-         ;; (org-agenda-finalize . org-modern-agenda)
-         )
-  :custom-face
-  (org-modern-label ((t (:height 1.1))))
-  :custom
-  (org-modern-star ["⦶" "⦷" "⦹" "⊕" "⍟" "⊛" "⏣" "❂"]) ; "①" "②" "③" "④" "⑤" "⑥" "⑦"
-  (org-agenda-block-separator ?─)
-  (org-modern-label-border 4.80))
-
-;; Demote sequence for list bullets
-(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
-;; Increase sub-item indentation
-(setq org-list-indent-offset 1)
-
-;;; Org Prettify Source Blocks
-;; See discussion in https://www.reddit.com/r/emacs/comments/o04it0/share_your_prettifysymbolsalist/
-(defun lem-org-icons ()
-  (interactive)
-  "Beautify org mode keywords."
-  (setq prettify-symbols-alist
-        (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                '(
-                  ;; ("#+header:" . "☰")
-                  ;; ("#+begin_src" . "╦")
-                  ;; ("#+end_src"   . "╩")
-                  ;; ("#+begin_comment" . "✎")
-                  ;; ("#+end_comment" . "✎")
-                  ;; ("#+begin_notes" . "➤")
-                  ;; ("#+end_notes" . "➤")
-                  ;; ("#+begin_quote" . "»")
-                  ;; ("#+end_quote" . "«")
-                  ;; ("[ ]" . "")
-                  ;; ("[X]" . "")
-                  ;; ("[-]" . "")
-                  ;; (":PROPERTIES:" . "")
-                  ;; (":END:" . "―")
-                  ;; ("#+STARTUP:" . "")
-                  ("#+ROAM_TAGS:" . "")
-                  ("#+FILETAGS:" . "")
-                  ;; ("SCHEDULED:" . "")
-                  ;; ("DEADLINE:" . "")
-                  ;; ("CLOSED:"  . "")
-                  ;; (":logbook:" . "")
-                  )))
-  (prettify-symbols-mode 1))
-(add-hook 'org-mode-hook #'lem-org-icons)
-
-
-;;; Org Show Markup/Pretty Entities
-;; show markup at point -- this should be part of org!
-(use-package org-appear
-  :straight (:type git :host github :repo "awth13/org-appear"
-             :branch "master")
-  ;; :branch "feature/org-fold-support")
-
-  :commands (org-appear-mode)
-  :hook (org-mode . org-appear-mode)
-  :init
-  (setq org-appear-autoemphasis  t)
-  (setq org-appear-autolinks nil)
-  (setq org-appear-autosubmarkers t))
-
-;;; Org GTD
-;;;; GTD Project Functions
-(defun lem-org-goto-todo ()
-  (interactive)
-  (find-file (concat org-directory "todo.org"))
-  (widen)
-  (goto-char (point-min)))
-
-(defun lem-org-goto-inbox ()
-  (interactive)
-  (find-file (concat org-directory "inbox.org"))
-  (widen)
-  (goto-char (point-min))
-  (beginning-of-line))
-
 ;;; Org-Download
-;; Drag and drop images to Emacs org-mode. Courtesy of [[https://github.com/abo-abo/org-download][abo-abo]].
+;; Drag and drop images to Emacs org-mode. Courtesy of abo-abo.
+;; https://github.com/abo-abo/org-download.
+
 (use-package org-download
   :commands (org-download-yank org-download-screenshot org-download-image)
-  :config
-  (setq org-download-method 'directory
-        org-download-image-dir (concat org-directory "org-pictures/")
-        org-download-image-latex-width 500
-        org-download-timestamp "%Y-%m-%d"))
+  :custom
+  (org-download-method 'directory)
+  (org-download-image-dir (concat org-directory "org-pictures/"))
+  (org-download-image-latex-width 500)
+  (org-download-timestamp "%Y-%m-%d"))
 
-;;; Org Pomodoro
-;; Helps with time tracking
-(use-package org-pomodoro
-  :commands org-pomodoro
-  :init
-  (progn
-    (setq org-pomodoro-audio-player "/usr/bin/afplay")))
+;;; Org Devonthink Integration
+(use-package org-devonthink
+  :when sys-mac
+  :straight (:type git :host github :repo "lasvice/org-devonthink")
+  :commands (org-insert-dtp-link org-dtp-store-link))
 
-;;; Org Export
-;; Some useful settings
-;;;; Setup export
-(use-package ox
-  :straight (:type built-in)
-  :after org
-  :config
-  ;; Don't use bad hyperref value
-  ;; https://emacs.stackexchange.com/a/46226/11934
-  (customize-set-value 'org-latex-hyperref-template nil)
-  ;; Export settings
-  (setq org-export-with-smart-quotes t
-        org-export-with-broken-links t
-        org-export-async-debug t
-        org-export-async-init-file nil
-        org-export-backends '(ascii beamer html icalendar latex odt pandoc hugo md))
-  ;; org v8 bundled with Emacs 24.4
-  (setq org-odt-preferred-output-format "docx")
-
-  ;; Only OSX need below setup
-  (defun lem-setup-odt-org-convert-process ()
-    (interactive)
-    (let ((cmd "/Applications/LibreOffice.app/Contents/MacOS/soffice"))
-      (when (and (eq system-type 'darwin) (file-exists-p cmd))
-        ;; org v7
-        (setq org-export-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i")))
-        ;; org v8
-        (setq org-odt-convert-processes '(("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i"))))))
-  (lem-setup-odt-org-convert-process))
-
+;;; Org Export Extensions
 ;;;; Ox-Pandoc
+;; Export w/pandoc
 (use-package ox-pandoc
   :straight (:type git :host github :repo "a-fent/ox-pandoc")
   :after ox
-  :config
-  ;; default options for all output formats
-  (setq org-pandoc-command (expand-file-name "pandoc" homebrew))
-  (setq org-pandoc-options '((standalone . t)))
-  ;; cancel above settings only for 'docx' format
-  (setq org-pandoc-options-for-docx '((standalone . nil)))
-  ;; special settings for beamer-pdf and latex-pdf exporters
-  (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
-  (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
-  (setq org-pandoc-format-extensions '(org+smart)))
+  :custom
+  (org-pandoc-command (expand-file-name "pandoc" homebrew))
+  (org-pandoc-options '((standalone .  t)))
+  (org-pandoc-options-for-docx '((standalone . nil)))
+  (org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+  (org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
+  (org-pandoc-format-extensions '(org+smart)))
 
-;;;;; Ox-Pandoc Export Menu Options
+;;;; Ox-Pandoc Export Menu Options
+;; Set pandoc export options
 (setq org-pandoc-menu-entry
       '(
         ;;(?0 "to jats." org-pandoc-export-to-jats)
@@ -358,6 +268,7 @@ Instead it's simpler to use bash."
         ;;(?^ "as haddock." org-pandoc-export-as-haddock)
         ))
 
+
 ;;;; Ox-Hugo
 ;; Export to Hugo with Org
 ;; https://github.com/kaushalmodi/ox-hugo
@@ -385,32 +296,25 @@ Instead it's simpler to use bash."
                            :complete 'org-hugo-link-complete
                            :follow 'org-hugo-follow))
 
-;;; Org Miscellaneous Packages
+;;; Org Html Conversion
+(use-package htmlize
+  :commands (htmlize-buffer))
 
-(use-package htmlize :commands (htmlize-buffer))
+;;; Org Menu
+;; A menu for editing org-mode documents and exploring it’s features in a
+;; discoverable way via transient menus.
+(use-package org-menu
+  :straight (:type git :host github :repo "sheijk/org-menu")
+  :bind* (:map org-mode-map
+          ("C-c m" . org-menu)))
 
-(use-package org-inlinetask :straight nil :commands org-inlinetask-insert-task)
-
-;; ignore export of headlines marked with :ignore: tag
-(use-package ox-extra
-  ;; :straight (org-plus-contrib)
-  :straight nil
-  :after ox
-  :demand t
-  :config
-  (ox-extras-activate '(ignore-headlines)))
-
-;; Devonthink integration
-(use-package org-devonthink
-  :straight nil
-  :load-path "~/bin/lisp-projects/org-devonthink"
-  :commands (org-insert-dtp-link org-dtp-store-link))
-
-;;; Org Autolist (Smart Lists)
-;; Better list behavior
-(use-package org-auto-list
-  :straight (:type git :host github :repo "calvinwyoung/org-autolist")
-  :hook (org-mode . org-autolist-mode))
+;;; Org Pomodoro
+;; Helps with time tracking
+(use-package org-pomodoro
+  :commands org-pomodoro
+  :init
+  (progn
+    (setq org-pomodoro-audio-player "/usr/bin/afplay")))
 
 ;;; Provide Org Extensions
 (provide 'lem-setup-org-extensions)
