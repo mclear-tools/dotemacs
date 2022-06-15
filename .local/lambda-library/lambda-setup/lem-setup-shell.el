@@ -58,7 +58,6 @@
 (defun my-term-hook ()
   (progn
     (goto-address-mode)
-    (cpm-meow-force-insert)
     (hl-line-mode 0)
     (setq comint-buffer-maximum-size most-positive-fixnum)))
 

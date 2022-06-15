@@ -195,13 +195,8 @@
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
   (meow-setup)
   (add-hook 'after-init-hook (lambda () (meow-global-mode 1)))
-  )
-
-(defun cpm-meow-force-insert ()
-  "Force meow to insert mode.
-Use this with mode hooks so as to imitate start-in-insert-mode
-like in evil."
-  (run-with-timer 0.01 nil #'meow-insert-mode))
+  ;; start vterm in insert
+  (add-to-list 'meow-mode-state-list '(vterm-mode . insert)))
 
 ;; Cooperate with splash page
 (defun meow-lem-splash ()
