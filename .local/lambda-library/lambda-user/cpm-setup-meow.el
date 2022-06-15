@@ -190,9 +190,18 @@
   (setq meow--kbd-delete-char "<deletechar>")
   (meow-thing-register 'angle '(regexp "<" ">") '(regexp "<" ">"))
   (add-to-list 'meow-char-thing-table '(?a . angle))
+  (with-eval-after-load 'org
+    ;; for use with meow movement
+    (modify-syntax-entry ?@ "_" org-mode-syntax-table))
   (meow-setup)
   (add-hook 'after-init-hook (lambda () (meow-global-mode 1)))
   )
+
+(defun cpm-meow-force-insert ()
+  "Force meow to insert mode.
+Use this with mode hooks so as to imitate start-in-insert-mode
+like in evil."
+  (run-with-timer 0.01 nil #'meow-insert-mode))
 
 ;; Cooperate with splash page
 (defun meow-lem-splash ()

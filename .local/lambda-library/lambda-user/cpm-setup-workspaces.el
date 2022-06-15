@@ -46,9 +46,8 @@
       (tab-bar-new-tab)
       (tab-bar-rename-tab "Agenda")
       (require 'org)
-      (require 'org-super-agenda)
       (require 'mu4e)
-      (lem-jump-to-org-super-agenda))))
+      (lem-jump-to-org-dashboard))))
 
 ;;;;; Open emacs.d in Workspace
 (defun cpm-open-emacsd-in-workspace ()
@@ -74,7 +73,9 @@
     (progn
       (tab-bar-new-tab)
       (tab-bar-rename-tab "Notes")
-      (lem-notebook))))
+      (dired lem-notes-dir)
+      (lem-notebook)
+      )))
 
 ;;;;; Terminal Workspace
 (defun cpm-vterm-workspace ()

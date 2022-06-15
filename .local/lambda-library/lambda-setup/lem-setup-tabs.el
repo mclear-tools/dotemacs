@@ -111,9 +111,8 @@ questions.  Otherwise use completion to select the tab."
   ;; Add some functions to the project map
   :bind (:map project-prefix-map
          ("p" . tabspaces-open-or-create-project-and-workspace))
-  :init
-  (setq tabspaces-key-prefix "C-c C-w")
   :custom
+  (tabspaces-keymap-prefix "C-c TAB")
   (tabspaces-use-filtered-buffers-as-default t)
   (tabspaces-default-tab "Home")
   :config
@@ -141,7 +140,7 @@ questions.  Otherwise use completion to select the tab."
           :state    #'consult--buffer-state
           :default  t
           :items    (lambda () (consult--buffer-query
-                           :predicate #'tabspaces-local-buffer-p
+                           :predicate #'tabspaces--local-buffer-p
                            :sort 'visibility
                            :as #'buffer-name)))
     "Set workspace buffer list for consult-buffer."))

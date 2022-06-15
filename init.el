@@ -185,7 +185,7 @@ be cleared if there are problems.")
 ;;;;; El-Patch
 ;; Package for helping advise/modify features of other packages
 (use-package el-patch
-  :straight t
+  :straight (:type git :host github :repo "radian-software/el-patch")
   :custom
   (el-patch-enable-use-package-integration t))
 

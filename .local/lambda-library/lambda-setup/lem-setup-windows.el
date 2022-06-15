@@ -25,6 +25,7 @@
 
 ;;;; Window Setup
 (use-package window
+  :disabled
   :straight (:type built-in)
   :custom
   ;; Emacs often opens buffers in new windows. Make window splitting and

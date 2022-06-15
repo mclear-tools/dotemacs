@@ -50,7 +50,7 @@
   :straight t
   :after flyspell
   :bind (:map flyspell-mode-map
-         ("C-;" . consult-flyspell)
+         ("C-;" . flyspell-correct-previous)
          ("C-:" . flyspell-correct-at-point))
   :custom
   (flyspell-correct-interface #'flyspell-correct-completing-read))
