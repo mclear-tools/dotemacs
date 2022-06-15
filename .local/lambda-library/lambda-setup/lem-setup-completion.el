@@ -323,7 +323,7 @@ targets."
   (advice-add #'register-preview :override #'consult-register-window)
 
   ;; Optionally replace `completing-read-multiple' with an enhanced version.
-  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+  ;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
 
   ;; Replace `multi-occur' with `consult-multi-occur', which is a drop-in replacement.
   (fset 'multi-occur #'consult-multi-occur)
@@ -347,7 +347,7 @@ targets."
   (setq consult-async-min-input 0))
 
 ;; Use consult-completing-read for enhanced interface.
-(advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
 
 ;;;;; Consult Search At Point
 ;; Search at point with consult
@@ -393,7 +393,7 @@ targets."
   (corfu-cycle t)
   ;; TAB cycle if there are only few candidates
   (completion-cycle-threshold 3)
-  (corfu-echo-documentation nil)
+  (corfu-echo-documentation t)
   (corfu-separator  ?_)
   (corfu-quit-no-match 'separator)
   (corfu-quit-at-boundary t)
