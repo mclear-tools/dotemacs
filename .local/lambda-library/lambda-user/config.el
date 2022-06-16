@@ -253,7 +253,7 @@
 ;;;; User Keybindings
 (bind-keys :prefix-map lem+user-keys
            :prefix (concat lem-prefix " u")
-           ("a" .  lem-jump-to-org-super-agenda                 )
+           ("a" .  lem-jump-to-org-dashboard                    )
            ("c" .  lem-find-files-setup-config-directory        )
            ("C" .  lem-search-setup-config-files                )
            ("d" .  osx-dictionary-search-input                  )

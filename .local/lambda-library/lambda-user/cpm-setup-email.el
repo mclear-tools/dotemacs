@@ -593,7 +593,6 @@ the pos of the keyword which is a cons cell, nil if not found."
   ;; Show maildirs with 0 messages
   (setq mu4e-main-hide-fully-read nil)
 
-
 ;;;;; Better Marking (w/Icons & SVG Tags)
 
 ;;;;;; All-the-icons for marking

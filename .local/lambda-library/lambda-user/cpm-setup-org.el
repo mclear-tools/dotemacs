@@ -122,14 +122,6 @@
     (when (equal "capture" (frame-parameter nil 'name))
       (delete-frame)))
 
-;;; Org Hooks
-  (defun cpm-org-mode-hooks ()
-    "Functions to add to org-mode-hook."
-    (add-to-list 'completion-at-point-functions #'citar-capf)
-    (visual-line-mode 1))
-
-  (add-hook 'org-mode-hook #'cpm-org-mode-hooks)
-
 ;;; Org Indirect Buffer
   (setq org-indirect-buffer-display 'current-window)
   ;; Some advice to automatically switch to a new indirect buffer upon creation
@@ -214,6 +206,66 @@ This can be used by non-qwerty users who don't use hjkl.")
                                                  (org-eval-in-calendar '(calendar-forward-year 1))))))
 
   (add-hook 'org-mode-hook #'cpm-setup-org--populate-calendar-bindings)
+
+;;; Org Hooks
+  (defun cpm-org-mode-hooks ()
+    "Functions to add to org-mode-hook."
+    (add-to-list 'completion-at-point-functions #'citar-capf)
+    (visual-line-mode 1))
+
+  (add-hook 'org-mode-hook #'cpm-org-mode-hooks)
+
+  ;; Make agenda more readable
+  (defun cpm-setup-org-agenda--set-line-spacing ()
+    (setq-local default-text-properties '(line-spacing 0.20 line-height 1.20)))
+  (add-hook 'org-agenda-mode-hook #'cpm-setup-org-agenda--set-line-spacing)
+  (add-hook 'org-agenda-mode-hook #'cpm-org--set-extra-faces)
+
+  (defun cpm-org--set-extra-faces ()
+    "Make prop, etc., faces smaller."
+    (mapc ;; This sets the fonts to a smaller size
+     (lambda (face)
+       (set-face-attribute face nil :height 0.8))
+     (list
+      'org-drawer
+      'org-special-keyword
+      'org-property-value
+      )))
+
+;;; Delete Empty Blocks
+  (defun org-agenda-delete-empty-blocks ()
+    "Remove empty agenda blocks.
+  A block is identified as empty if there are fewer than 2
+  non-empty lines in the block (excluding the line with
+  `org-agenda-block-separator' characters)."
+    (when org-agenda-compact-blocks
+      (user-error "Cannot delete empty compact blocks"))
+    (setq buffer-read-only nil)
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((blank-line-re "^\\s-*$")
+             (content-line-count (if (looking-at-p blank-line-re) 0 1))
+             (start-pos (point))
+             (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
+        (while (and (not (eobp)) (forward-line))
+          (cond
+           ((looking-at-p block-re)
+            (when (< content-line-count 2)
+              (delete-region start-pos (1+ (point-at-bol))))
+            (setq start-pos (point))
+            (forward-line)
+            (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
+           ((not (looking-at-p blank-line-re))
+            (setq content-line-count (1+ content-line-count)))))
+        (when (< content-line-count 2)
+          (delete-region start-pos (point-max)))
+        (goto-char (point-min))
+        ;; The above strategy can leave a separator line at the beginning
+        ;; of the buffer.
+        (when (looking-at-p block-re)
+          (delete-region (point) (1+ (point-at-eol))))))
+    (setq buffer-read-only t))
+  (add-hook 'org-agenda-finalize-hook #'org-agenda-delete-empty-blocks)
 
 ;;; End load of personal org
   )
