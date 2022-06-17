@@ -393,7 +393,7 @@ targets."
   (corfu-cycle t)
   ;; TAB cycle if there are only few candidates
   (completion-cycle-threshold 3)
-  (corfu-echo-documentation t)
+  (corfu-echo-documentation nil) ;; use corfu doc
   (corfu-separator  ?_)
   (corfu-quit-no-match 'separator)
   (corfu-quit-at-boundary t)
@@ -456,11 +456,11 @@ targets."
   (add-to-list 'completion-at-point-functions #'cape-tex)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
+  (add-to-list 'completion-at-point-functions #'cape-ispell)
   ;; (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-line)
-  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
   )
 
 
