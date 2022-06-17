@@ -25,14 +25,16 @@
   :custom-face
   (org-modern-label ((t (:height 1.1))))
   :custom
-  (org-modern-hide-stars nil)
+  (org-modern-hide-stars nil) ;; compatibility w/org-indent
+  ;; don't use other faces
   (org-modern-priority nil)
   (org-modern-todo nil)
   (org-modern-tag nil)
-  ;; Note that these stars allow differentiation of levels
-  (org-modern-star ["⦶" "⦷" "⦹" "⊕" "⍟" "⊛" "⏣" "❂"]) ; "①" "②" "③" "④" "⑤" "⑥" "⑦"
   ;; Customize this per your font
-  (org-modern-label-border 4))
+  (org-modern-label-border 4.25)
+  ;; Note that these stars allow differentiation of levels
+  ;; "①" "②" "③" "④" "⑤" "⑥" "⑦"
+  (org-modern-star ["⦶" "⦷" "⦹" "⊕" "⍟" "⊛" "⏣" "❂"]))
 
 ;;;; Org Modern Indent
 ;; Make org-modern work better with org-indent
