@@ -104,6 +104,7 @@
 
 ;;;;; LIN (Make HL Line Better)
 (use-package lin
+  :disabled
   :straight t
   :config
   (setq lin-mode-hooks
