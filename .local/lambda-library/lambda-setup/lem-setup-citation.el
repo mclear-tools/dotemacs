@@ -65,8 +65,8 @@
 
 ;;;; Citar
 (use-package citar
-  ;; :straight (:host github :repo "bdarcus/citar")
-  :straight (:local-repo "/Users/roambot/bin/lisp-projects/citar" :files ("*.el"))
+  ;; :straight (:host github :repo "bdarcus/citar" :files (:defaults (:exclude ("citar-capf.el"))))
+  :straight (:host github :repo "bdarcus/citar")
   :commands (citar-open-beref
              citar-open-notes
              citar-insert-citation)
@@ -79,8 +79,6 @@
   (org-cite-follow-processor 'citar)
   (org-cite-activate-processor 'citar)
   :config
-  ;; use consult-completing-read for enhanced interface
-  ;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
   ;; use embark with at-point
   (setq citar-at-point-function 'embark-act)
   (setq citar-default-action 'citar-open-beref)
@@ -119,9 +117,10 @@ With prefix, rebuild the cache before offering candidates."
           (message "No ref found for %s" key-entry))))))
 
 ;;;; Citar-Capf
-;; (use-package citar-capf
-;;   :straight (:local-repo "/Users/roambot/bin/lisp-projects/citar-capf")
-;;   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . citar-capf-mode))
+(use-package citar-capf
+  ;; :straight   (:local-repo "/Users/roambot/bin/lisp-projects/citar-capf")
+  :straight (:type git :host github :repo "mclear-tools/citar-capf")
+  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . citar-capf-mode))
 
 ;; Add hooks
 (defun lem--add-citation-hooks (function hooks)
@@ -133,13 +132,13 @@ With prefix, rebuild the cache before offering candidates."
   (add-hook 'completion-at-point-functions #'citar-capf -90 t)
   (add-to-list 'completion-at-point-functions #'citar-capf))
 
-(lem--add-citation-hooks
- 'lem--citar-capf-hooks
- '(markdown-mode-hook
-   org-mode-hook
-   LaTeX-mode-hook
-   latex-mode-hook
-   tex-mode-hook))
+;; (lem--add-citation-hooks
+;;  'lem--citar-capf-hooks
+;;  '(markdown-mode-hook
+;;    org-mode-hook
+;;    LaTeX-mode-hook
+;;    latex-mode-hook
+;;    tex-mode-hook))
 
 
 (defun capf-citar-test ()
