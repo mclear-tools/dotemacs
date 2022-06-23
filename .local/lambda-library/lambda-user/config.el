@@ -137,11 +137,14 @@
 
 (setq lem-notes-dir "~/Dropbox/Work/projects/notes-all/")
 
-(setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org/")
+(setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org")
 (setq lem-zettelkasten  "~/Dropbox/Work/projects/notebook/content-org")
-(setq consult-notes-data-dirs
-      '(("Org"             ?o "~/Dropbox/org-files/")
-        ("Org Refile"      ?R "~/Dropbox/Work/projects/notebook/org-refile/")))
+(setq consult-notes-sources
+      '(("Org"             ?o "~/Dropbox/org-files")
+        ("Org Refile"      ?R "~/Dropbox/Work/projects/notebook/org-refile")
+        ("Zettel"          ?z "~/Dropbox/Work/projects/notebook/content-org/")
+        ("Lecture Notes"   ?l "~/Dropbox/Work/projects/notebook/content-org/lectures/")
+        ("Reference Notes" ?r "~/Dropbox/Work/projects/notebook/content-org/ref-notes/")))
 
 
 (with-eval-after-load 'consult-notes

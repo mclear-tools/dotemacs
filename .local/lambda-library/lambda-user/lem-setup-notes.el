@@ -30,11 +30,9 @@
 (use-package consult-notes
   :straight (:local-repo "/Users/roambot/bin/lisp-projects/consult-notes")
   :commands (consult-notes
-             consult-notes-search-all
+             consult-notes-search-in-all-notes
              consult-notes-org-roam-find-node
-             consult-notes-org-roam-find-node-relation)
-  :config
-  (consult-notes-org-roam-mode))
+             consult-notes-org-roam-find-node-relation))
 
 ;;; Org Roam (Wiki & Notes)
 ;; Good notes package but a lot is still in flux
@@ -87,6 +85,11 @@
                              )))
       (cl-flet* ((nonspacing-mark-p (char)
                                     (memq char slug-trim-chars))
+
+
+
+
+
                  (strip-nonspacing-marks (s)
                                          (string-glyph-compose
                                           (apply #'string (seq-remove #'nonspacing-mark-p

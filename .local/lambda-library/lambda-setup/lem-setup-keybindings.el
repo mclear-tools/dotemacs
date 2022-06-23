@@ -305,7 +305,7 @@
            ("N"  .  org-roam--new-file-named)
            ("r"  .  citar-open-notes        )
            ("R"  .  consult-notes-org-roam-cited)
-           ("s"  .  consult-notes-search-all)
+           ("s"  .  consult-notes-search-in-all-notes)
            ("t"  .  org-roam-buffer-toggle))
 
 ;;;; Which Key
