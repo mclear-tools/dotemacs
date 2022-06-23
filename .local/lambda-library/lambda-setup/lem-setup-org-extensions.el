@@ -29,7 +29,7 @@
   ;; don't use other faces
   (org-modern-priority nil)
   (org-modern-todo nil)
-  (org-modern-tag nil)
+  (org-modern-tag t)
   ;; Customize this per your font
   (org-modern-label-border 4.25)
   ;; Note that these stars allow differentiation of levels
