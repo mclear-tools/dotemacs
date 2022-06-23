@@ -298,6 +298,15 @@
   ;; turn on delve-minor-mode when org roam file is opened:
   (delve-global-minor-mode))
 
+;;; Denote
+
+(use-package denote
+  :straight (:type git :host github :repo "protesilaos/denote")
+  :custom
+  (denote-directory lem-notes-dir)
+  (denote-file-type nil) ;; use org
+  )
+
 ;;; Provide
 (provide 'config)
 ;;; config.el ends here
