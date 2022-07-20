@@ -110,12 +110,11 @@
 ;;;;; Set Fonts
 (custom-set-variables
  '(lem-ui-default-font
-   '(:font "SF Mono" :weight normal :height 130)))
+   '(:font "SF Mono" :height 130)))
 
 (custom-set-variables
  '(lem-ui-variable-width-font
-   '(:font "Avenir Next" :weight normal :height 140)))
-
+   '(:font "Avenir Next" :height 140)))
 ;;;;; Set User Elisp Dir
 (setq lem-user-elisp-dir "~/bin/lisp-projects/")
 
@@ -135,67 +134,35 @@
 (defvar hugo-notebook-setup-file "~/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org"
   "Variable for notebook setup using hugo.")
 
-(setq lem-notes-dir "~/Dropbox/Work/projects/notes-all/")
+;; Denote settings
+(customize-set-variable 'lem-notes-dir (concat (getenv "HOME") "/Documents/notes/"))
+(customize-set-variable 'denote-directory lem-notes-dir)
+(customize-set-variable 'denote-known-keywords '("emacs" "teaching" "unl" "workbook"))
+(customize-set-variable 'denote-prompts '(title keywords subdirectory))
 
-(setq org-roam-directory "~/Dropbox/Work/projects/notebook/content-org")
-(setq lem-zettelkasten  "~/Dropbox/Work/projects/notebook/content-org")
 (setq consult-notes-sources
-      '(("Org"             ?o "~/Dropbox/org-files")
-        ("Org Refile"      ?R "~/Dropbox/Work/projects/notebook/org-refile")
-        ("Zettel"          ?z "~/Dropbox/Work/projects/notebook/content-org/")
-        ("Lecture Notes"   ?l "~/Dropbox/Work/projects/notebook/content-org/lectures/")
-        ("Reference Notes" ?r "~/Dropbox/Work/projects/notebook/content-org/ref-notes/")))
+      `(("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
+        ("Lecture Notes"   ?l ,(concat lem-notes-dir "lecture-notes/"))
+        ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
+        ("Org"             ?o "~/Dropbox/org-files/")
+        ("Workbook"        ?w ,(concat lem-notes-dir "workbook/"))
+        ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))
+        ))
 
-
-(with-eval-after-load 'consult-notes
-  (defun consult-notes-org-roam-cited (reference)
-    "Return a list of notes that cite the REFERENCE."
-    (interactive (list (citar-select-ref
-                        :rebuild-cache current-prefix-arg
-                        :filter (citar-has-note))))
-    (let* ((ids
-            (org-roam-db-query [:select * :from citations
-                                :where (= cite-key $s1)]
-                               (car reference)))
-           (anodes
-            (mapcar (lambda (id)
-                      (org-roam-node-from-id (car id)))
-                    ids))
-           (template
-            (org-roam-node--process-display-format org-roam-node-display-template))
-           (bnodes
-            (mapcar (lambda (node)
-                      (org-roam-node-read--to-candidate node template)) anodes))
-           (node (completing-read
-                  "Node: "
-                  (lambda (string pred action)
-                    (if (eq action 'metadata)
-                        `(metadata
-                          ;; get title using annotation function
-                          (annotation-function
-                           . ,(lambda (title)
-                                (funcall org-roam-node-annotation-function
-                                         (get-text-property 0 'node title))))
-                          (category . org-roam-node))
-                      (complete-with-action action bnodes string pred)))))
-           (fnode
-            (cdr (assoc node bnodes))))
-      (if ids
-          ;; Open node in other window
-          (org-roam-node-open fnode)
-        (message "No notes cite this reference.")))))
+;; Org-Roam Notes
+(require 'lem-setup-org-roam)
+(setq org-roam-directory lem-notes-dir)
+;; (consult-notes-org-roam-mode)
 
 ;; Old sources
 ;; ("Zettel"          ?z "~/Dropbox/Work/projects/notebook/content-org/")
 ;; ("Lecture Notes"   ?l "~/Dropbox/Work/projects/notebook/content-org/lectures/")
 ;; ("Reference Notes" ?r "~/Dropbox/Work/projects/notebook/content-org/ref-notes/")
 
-(setq consult-notes-all-notes "~/Dropbox/Work/projects/notes-all/")
 ;;;;; Org Directories
-(with-eval-after-load 'org
-  (setq org-directory "~/Dropbox/org-files/"
-        org-default-notes-file (concat org-directory "inbox.org")
-        org-agenda-files (list org-directory)))
+(setq org-directory "~/Dropbox/org-files/"
+      org-default-notes-file (concat org-directory "inbox.org")
+      org-agenda-files (list org-directory))
 
 ;;;;; Straight Package Manager
 ;; Don't walk straight repos
@@ -280,32 +247,7 @@
            ("x" .  citar-insert-citation                        ))
 
 ;;;; User Packages
-;;;;; Delve (Collections of Notes in Org-Roam)
-(use-package delve
-  :disabled
-  :straight (:repo "publicimageltd/delve"
-             :host github
-             :type git)
-  :after org-roam
-  :bind
-  ;; the main entry point, offering a list of all stored collections
-  ;; and of all open Delve buffers:
-  (("<f12>" . delve))
-  :config
-  ;; set meaningful tag names for the dashboard query
-  (setq delve-dashboard-tags '("german-idealism" "kant" "hegel"))
-  (setq delve-store-directory (concat lem-cache-dir "delve-store"))
-  ;; turn on delve-minor-mode when org roam file is opened:
-  (delve-global-minor-mode))
 
-;;; Denote
-
-(use-package denote
-  :straight (:type git :host github :repo "protesilaos/denote")
-  :custom
-  (denote-directory lem-notes-dir)
-  (denote-file-type nil) ;; use org
-  )
 
 ;;; Provide
 (provide 'config)

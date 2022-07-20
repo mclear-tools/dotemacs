@@ -71,29 +71,10 @@
              citar-insert-citation)
   :bind (:map citar-map
          ("b" .  #'citar-open-beref))
-  :init
-  ;; Citar Capf
-  ;; Add hooks
-  (defun lem--add-citation-hooks (function hooks)
-    (mapc (lambda (hook)
-            (add-hook hook function))
-          hooks))
-
-  (defun lem--citar-capf-hooks ()
-    (add-hook 'completion-at-point-functions #'citar-capf -90 t)
-    (add-to-list 'completion-at-point-functions #'citar-capf))
-
-  ;; Add capf hooks
-  (lem--add-citation-hooks
-   'lem--citar-capf-hooks
-   '(markdown-mode-hook
-     org-mode-hook
-     LaTeX-mode-hook
-     latex-mode-hook
-     tex-mode-hook))
   :custom
-  (citar-bibliography `(,lem-bibliography))
+  ;; Use with org citation
   (org-cite-global-bibliography `(,lem-bibliography))
+  (citar-bibliography `(,lem-bibliography))
   (org-cite-insert-processor 'citar)
   (org-cite-follow-processor 'citar)
   (org-cite-activate-processor 'citar)
@@ -136,29 +117,13 @@ With prefix, rebuild the cache before offering candidates."
             (browse-url-default-browser link)
           (message "No ref found for %s" key-entry))))))
 
-;;;; Citar-Capf
-;; (use-package citar-capf
-;;   ;; :straight   (:local-repo "/Users/roambot/bin/lisp-projects/citar-capf")
-;;   :straight (:type git :host github :repo "mclear-tools/citar-capf")
-;;   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . citar-capf-mode))
-
-
-
-
-
-(defun capf-citar-test ()
-  (interactive)
-  (progn
-    (splash-screen-kill)
-    ;; (require 'org)
-    ;; (require 'citar-capf)
-    (switch-to-buffer "*scratch*")
-    (markdown-mode)
-    (require 'citar)
-    ;; (call-interactively #'citar-open)
-    ;; (minibuffer-keyboard-quit)
-    ;; (keyboard-quit)
-    ))
+;;;; Capf-bibtex
+(use-package capf-bibtex
+  :straight (:local-repo "/Users/roambot/bin/lisp-projects/capf-bibtex")
+  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
+  :custom
+  (capf-bibtex-bibliography
+   '("/Users/roambot/Dropbox/Work/bibfile.bib")))
 
 (provide 'lem-setup-citation)
 ;;; lem-setup-citation.el ends here
