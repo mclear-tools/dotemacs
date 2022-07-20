@@ -77,8 +77,12 @@ Use a plist with the same key names as accepted by `set-face-attribute'."
            (when (and val (not (eq val prev-val)))
              (lem-ui--set-variable-width-font val)))))
 
-;; Set default line spacing (in pixels)
-(setq-default line-spacing 0.05)
+;; Set default line spacing. If the value is an integer, it indicates
+;; the number of pixels below each line. A decimal number is a scaling factor
+;; relative to the current window's default line height. The setq-default
+;; function sets this for all buffers. Otherwise, it only applies to the current
+;; open buffer
+(setq-default line-spacing 0.1)
 
 ;;;;; Font Lock
 (use-package font-lock
