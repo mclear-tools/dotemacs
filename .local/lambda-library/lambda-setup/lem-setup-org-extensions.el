@@ -23,7 +23,7 @@
   :straight (:type git :host github :repo "minad/org-modern")
   :hook (org-mode . org-modern-mode)
   :custom-face
-  (org-modern-label ((t (:height 1.1))))
+  (org-modern-label ((t (:height 1.0 :inherit ,(if lambda-themes-set-variable-pitch 'variable-pitch 'default)))))
   :custom
   (org-modern-hide-stars nil) ;; compatibility w/org-indent
   ;; don't use other faces
@@ -31,7 +31,7 @@
   (org-modern-todo nil)
   (org-modern-tag t)
   ;; Customize this per your font
-  (org-modern-label-border 4.25)
+  (org-modern-label-border .25)
   ;; Note that these stars allow differentiation of levels
   ;; "①" "②" "③" "④" "⑤" "⑥" "⑦"
   (org-modern-star ["⦶" "⦷" "⦹" "⊕" "⍟" "⊛" "⏣" "❂"]))
