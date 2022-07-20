@@ -389,6 +389,34 @@ emacs-version string on the kill ring."
                     ))
      (require mod))))
 
+(defun lem--minimal-modules ()
+  "Load 𝛌-Emacs with a minimal set of modules."
+  (message "*Loading 𝛌-Emacs, with minimal modules*")
+  (measure-time
+   (cl-dolist (mod (list
+                    ;; Core modules
+                    'lem-setup-libraries
+                    'lem-setup-settings
+                    'lem-setup-functions
+                    'lem-setup-server
+                    'lem-setup-scratch
+
+                    ;; UI modules
+                    'lem-setup-frames
+                    'lem-setup-windows
+                    'lem-setup-buffers
+                    'lem-setup-completion
+                    'lem-setup-keybindings
+                    'lem-setup-help
+                    'lem-setup-modeline
+                    'lem-setup-splash
+
+                    ;; Navigation & Search modules
+                    'lem-setup-navigation
+                    'lem-setup-dired
+                    'lem-setup-search))
+     (require mod))))
+
 ;; Conditionally load configuration files based on command-line switches,
 ;; presence of user-config file, or the default set of modules.
 (cond
