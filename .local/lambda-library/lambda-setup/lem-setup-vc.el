@@ -53,8 +53,8 @@
 
   ;; refresh status buffer
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
-  ;; no magit header line as it conflicts w/bespoke-modeline
-  (advice-add 'magit-set-header-line-format :override #'ignore)
+  ;; no magit header line as it conflicts w/lambda-modeline
+  ;; (advice-add 'magit-set-header-line-format :override #'ignore)
   ;; display magit setting
   (setq magit-display-buffer-function #'lem-display-magit-in-other-window)
   ;; (setq magit-display-buffer-function #'lem-magit-display-buffer-pop-up-frame)
