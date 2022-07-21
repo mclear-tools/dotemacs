@@ -43,6 +43,7 @@
 ;;;;; Agenda Settings
 (use-package org-agenda
   :straight nil
+  :commands (org-agenda)
   :custom
   ;; Agenda logging
   (org-agenda-start-with-log-mode t)
@@ -284,12 +285,13 @@ _vr_ reset      ^^                       ^^                 ^^
 
 
 ;;;; Org Modules
+(with-eval-after-load 'org
 ;; Load additional org modules
 (add-to-list 'org-modules 'org-habit t)
 (add-to-list 'org-modules 'org-tempo t)
 (add-to-list 'org-modules 'org-protocol t)
 (when sys-mac
-  (add-to-list 'org-modules 'org-mac-link t))
+  (add-to-list 'org-modules 'org-mac-link t)))
 
 ;;;; Org TODO Keywords
 (customize-set-variable 'org-todo-keywords

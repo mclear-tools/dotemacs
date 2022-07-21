@@ -271,7 +271,7 @@ targets."
   ;; if you want to have consult previews as you move around an
   ;; auto-updating embark collect buffer
   :hook
-  (embark-collect-mode . embark-consult-preview-minor-mode))
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;;;;; Marginalia
 ;; Enable richer annotations using the Marginalia package
