@@ -5,7 +5,8 @@ script]]. I typically build from the master branch (currently: GNU Emacs 29.0.50
 
 You are welcome to use any part of this configuration as you please, but the
 config really only makes sense if you look at [[https://github.com/Lambda-Emacs/lambda-emacs][Lambda-Emacs]], which is the
-framework on which this config is built.
+framework on which this config is built. In that context, this configuration
+exists in the =lambda-user= directory, as part of the user-created configuration.
 
 I use Emacs primarily for all my academic work in the humanities (for
 discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]]) and the style of configuration
