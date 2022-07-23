@@ -71,8 +71,7 @@ better ways of implementing many elements of this config. Suggestions are
 welcome!
 
 *** Screenshots
-Some of these are out of date. I will update them soon. But for now check out
-[[https://github.com/Lambda-Emacs/lambda-line][Lambda-line]] and [[https://github.com/Lambda-Emacs/lambda-themes][Lambda-themes]] for more recent(ish) pics.
+These screenshots also feature [[https://github.com/Lambda-Emacs/lambda-line][Lambda-line]] and [[https://github.com/Lambda-Emacs/lambda-themes][Lambda-themes]]. 
 
 #+ATTR_HTML: :width 45% :align left
 [[file:screenshots/dark-dired.png]]
