@@ -74,29 +74,11 @@ welcome!
 Some of these are out of date. I will update them soon. But for now check out
 [[https://github.com/Lambda-Emacs/lambda-line][Lambda-line]] and [[https://github.com/Lambda-Emacs/lambda-themes][Lambda-themes]] for more recent(ish) pics.
 
-#+BEGIN_HTML
-<div>
-<p>Splash</p>
-<img src="./screenshots/light-splash.png" width=47.5%/>
-<img src="./screenshots/dark-splash.png" width=47.5%/>
-</div>
-
-<div>
-<p>Colors</p>
-<img src="./screenshots/light-colors.png" width=47.5%/>
-<img src="./screenshots/dark-colors.png"  width=47.5%/>
-</div>
-
-<div>
-<p>Agenda</p>
-<img src="./screenshots/light-agenda.png" width=47.5%/>
-<img src="./screenshots/dark-agenda.png"  width=47.5%/>
-</div>
-
-<div>
-<p>Org</p>
-<img src="./screenshots/light-org.png" width=47.5%/>
-<img src="./screenshots/dark-org.png"  width=47.5%/>
-</div>
-
-#+END_HTML
+#+ATTR_HTML: :width 45% :align left
+[[file:screenshots/dark-dired.png]]
+#+ATTR_HTML: :width 45% :align right
+[[file:screenshots/light-dired.png]]
+#+ATTR_HTML: :width 45% :align left
+[[file:screenshots/dark-org.png]]
+#+ATTR_HTML: :width 45% :align right
+[[file:screenshots/light-magit.png]]

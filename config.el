@@ -36,6 +36,10 @@
 
 ;;;; User Vars
 
+;;;;; Shell
+(setq-default shell-file-name "/opt/homebrew/bin/zsh")
+(setq explicit-shell-file-name "/opt/homebrew/bin/zsh")
+
 ;;;;; Set Fonts
 (custom-set-variables
  '(lem-ui-default-font
