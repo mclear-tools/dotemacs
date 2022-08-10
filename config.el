@@ -104,6 +104,14 @@
 (customize-set-variable 'denote-known-keywords '("emacs" "teaching" "unl" "workbook"))
 (customize-set-variable 'denote-prompts '(title keywords subdirectory))
 
+;; Provide nicer spacing for note front matter
+(setq denote-org-front-matter
+      "#+title:     %s
+#+date:    %s
+#+filetags:    %s
+#+identifier: %s
+\n")
+
 (setq consult-notes-sources
       `(("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
         ("Lecture Notes"   ?l ,(concat lem-notes-dir "lecture-notes/"))
@@ -280,6 +288,11 @@
 
 ;;;; User Packages
 
+;;;; Elfeed
+
+;; Set elfeed feeds
+(customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
+                                        ("https://planet.emacslife.com/atom.xml" emacs)))
 
 ;;; Provide
 (provide 'config)
