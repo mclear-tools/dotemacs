@@ -260,6 +260,7 @@
                   'lem-setup-programming
                   'lem-setup-debug
                   'lem-setup-shell
+                  'lem-setup-skeleton
 
                   ;; Org modules
                   'lem-setup-org-base
@@ -268,6 +269,7 @@
 
                   ;; Productivity
                   'lem-setup-pdf
+                  'lem-setup-elfeed
 
                   ;; Personal modules
                   'cpm-setup-email
