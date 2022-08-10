@@ -163,56 +163,6 @@
        " --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib"
        ))
 
-;;;; User Keybindings
-(customize-set-variable 'lem-prefix "C-c C-SPC")
-(bind-keys :prefix-map lem+user-keys
-           :prefix (concat lem-prefix " u")
-           ("a" .  lem-jump-to-org-dashboard                    )
-           ("c" .  lem-find-files-setup-config-directory        )
-           ("C" .  lem-search-setup-config-files                )
-           ("d" .  osx-dictionary-search-input                  )
-           ("m" .  lem-org-to-markdown                          )
-           ("g" .  org-mac-grab-link                            )
-           ("h" .  lem-org-export-to-buffer-html-as-body        )
-           ("i" .  lem-org-goto-inbox                           )
-           ("k" .  kill-compilation                             )
-           ("l" .  desktop-read                                 )
-           ("o" .  lem-markdown-to-org                          )
-           ("O" .  lem-goto-org-files                           )
-           ("p" .  run-pandoc                                   )
-           ("P" .  lem-pandoc-pdf-open                          )
-           ("s" .  sb-expand-current-file                       )
-           ("S" .  just-one-space                               )
-           ("t" .  lem-jump-to-org-agenda-all-todos             )
-           ("j" .  lem-goto-journal                             )
-           ("u" .  lem-straight-update-packages-asynchronously  )
-           ("w" .  count-words                                  )
-           ("W" .  lem-jump-to-week-agenda                      )
-           ("x" .  citar-insert-citation                        ))
-
-;;;; User Functions
-
-;;;;; User Goto Functions
-(defun goto-dotfiles.org ()
-  "Open dotfiles.org file."
-  (interactive)
-  (find-file "~/dotfiles/dotfiles.org"))
-
-(defun goto-pandoc-config ()
-  "Open pandoc metadata file."
-  (interactive)
-  (find-file "~/.pandoc/metadata.yml"))
-
-;;;;; Save Buffer & Exit Emacsclient
-(defun lem-save-and-kill-emacsclient ()
-  "Save buffer and exit emacsclient."
-  (interactive)
-  (save-buffer)
-  (server-edit))
-
-;; Disable emacs vc for git; just use magit!
-;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
-
 ;;;; Load Modules
 
 ;; Load modules
@@ -295,6 +245,57 @@
 ;; Set elfeed feeds
 (customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
                                         ("https://planet.emacslife.com/atom.xml" emacs)))
+
+
+;;;; User Keybindings
+(customize-set-variable 'lem-prefix "C-c C-SPC")
+(bind-keys :prefix-map lem+user-keys
+           :prefix (concat lem-prefix " u")
+           ("a" .  lem-jump-to-org-dashboard                    )
+           ("c" .  lem-find-files-setup-config-directory        )
+           ("C" .  lem-search-setup-config-files                )
+           ("d" .  osx-dictionary-search-input                  )
+           ("m" .  lem-org-to-markdown                          )
+           ("g" .  org-mac-grab-link                            )
+           ("h" .  lem-org-export-to-buffer-html-as-body        )
+           ("i" .  lem-org-goto-inbox                           )
+           ("k" .  kill-compilation                             )
+           ("l" .  desktop-read                                 )
+           ("o" .  lem-markdown-to-org                          )
+           ("O" .  lem-goto-org-files                           )
+           ("p" .  run-pandoc                                   )
+           ("P" .  lem-pandoc-pdf-open                          )
+           ("s" .  sb-expand-current-file                       )
+           ("S" .  just-one-space                               )
+           ("t" .  lem-jump-to-org-agenda-all-todos             )
+           ("j" .  lem-goto-journal                             )
+           ("u" .  lem-straight-update-packages-asynchronously  )
+           ("w" .  count-words                                  )
+           ("W" .  lem-jump-to-week-agenda                      )
+           ("x" .  citar-insert-citation                        ))
+
+;;;; User Functions
+
+;;;;; User Goto Functions
+(defun goto-dotfiles.org ()
+  "Open dotfiles.org file."
+  (interactive)
+  (find-file "~/dotfiles/dotfiles.org"))
+
+(defun goto-pandoc-config ()
+  "Open pandoc metadata file."
+  (interactive)
+  (find-file "~/.pandoc/metadata.yml"))
+
+;;;;; Save Buffer & Exit Emacsclient
+(defun lem-save-and-kill-emacsclient ()
+  "Save buffer and exit emacsclient."
+  (interactive)
+  (save-buffer)
+  (server-edit))
+
+;; Disable emacs vc for git; just use magit!
+;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
 
 ;;; Provide
 (provide 'config)
