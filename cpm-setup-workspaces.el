@@ -77,6 +77,18 @@
       (lem-notebook)
       )))
 
+;;;;; Elfeed Workspace
+(defun cpm-open-elfeed-in-workspace ()
+  "Open Elfeed in its own workspace."
+  (interactive)
+  (cond ((member "Elfeed" (tabspaces--list-tabspaces))
+         (tab-bar-switch-to-tab "Elfeed"))
+        (t
+         (tab-bar-new-tab)
+         (tab-bar-rename-tab "Elfeed")
+         (elfeed)
+         (elfeed-update))))
+
 ;;;;; Terminal Workspace
 (defun cpm-vterm-workspace ()
   "Open vterm in home dir in its own workspace"
@@ -141,6 +153,7 @@
 (bind-keys :map lem-splash-mode-map
   ("a" . cpm-open-agenda-in-workspace)
   ("c" . cpm-open-emacsd-in-workspace)
+  ("e" . cpm-open-elfeed-in-workspace)
   ("m" . cpm-open-email-in-workspace)
   ("n" . cpm-open-notes-in-workspace)
   ("p" . cpm-open-existing-project-and-workspace)
@@ -155,8 +168,9 @@
   ("2" . cpm-open-emacsd-in-workspace)
   ("3" . cpm-open-agenda-in-workspace)
   ("4" . cpm-open-notes-in-workspace)
+  ("5" . cpm-open-email-in-workspace)
   ("6" . cpm-open-new-terminal-and-workspace)
-  ("5" . cpm-open-email-in-workspace))
+  ("7" . cpm-open-elfeed-in-workspace))
 (bind-key "N" #'cpm-open-new-buffer-and-workspace 'project-prefix-map)
 
 ;; (bind-key* (concat lem-prefix " 1") #'cpm-go-home)
