@@ -158,7 +158,7 @@
   ("n" . cpm-open-notes-in-workspace)
   ("p" . cpm-open-existing-project-and-workspace)
   ("q" . splash-screen-bury)
-  ("esc" . splash-screen-bury)
+  ("[esc]" . splash-screen-bury)
   ("k" . splash-screen-kill))
 
 ;;;; Workspace Keybindings
