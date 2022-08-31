@@ -238,14 +238,8 @@
                         (function require)
                         'lem-setup-macos nil t)))
 
-;;;; User Packages
-
-;;;; Elfeed
-
-;; Set elfeed feeds
-(customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
-                                        ("https://planet.emacslife.com/atom.xml" emacs)))
-
+;;;;; Scratch Directory
+(customize-set-variable 'lem-scratch-default-dir lem-scratch-save-dir)
 
 ;;;; User Keybindings
 (customize-set-variable 'lem-prefix "C-c C-SPC")
