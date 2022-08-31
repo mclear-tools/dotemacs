@@ -245,11 +245,11 @@ the real email address"
                  :ask-target (lambda () (lem-select-mail-tag))
                  :action      (lambda (docid msg target)
                                 (mu4e-action-retag-message msg target))))
+
   (mu4e~headers-defun-mark-for tag)
   (define-key mu4e-headers-mode-map (kbd "G") 'mu4e-headers-mark-for-tag)
   (define-key-after (lookup-key mu4e-headers-mode-map [menu-bar headers])
     [mark-tag] '("Mark for tag" . mu4e-headers-mark-for-tag) 'mark-pattern)
-
 
   ;; Actions to add tags
   ;;--------------------------------------------------
@@ -822,7 +822,7 @@ https://github.com/djcb/mu/issues/2198"
 ;; NOTE: need to add something about not loading remote images (mu4e-view-show-images ?)
 
 (use-package mu4e-views
-  :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views")
+  :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views" :branch "master")
   :after mu4e
   :defer nil
   :bind (:map mu4e-headers-mode-map
