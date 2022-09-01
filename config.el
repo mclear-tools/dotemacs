@@ -36,10 +36,6 @@
 
 ;;;; User Vars
 
-;;;;; Shell
-(setq-default shell-file-name "/opt/homebrew/bin/zsh")
-(setq explicit-shell-file-name "/opt/homebrew/bin/zsh")
-
 ;;;;; Set Fonts
 (custom-set-variables
  '(lem-ui-default-font
@@ -48,6 +44,10 @@
 (custom-set-variables
  '(lem-ui-variable-width-font
    '(:font "Avenir Next" :height 140)))
+
+;;;;; Shell
+(setq-default shell-file-name "/opt/homebrew/bin/zsh")
+(setq explicit-shell-file-name "/opt/homebrew/bin/zsh")
 
 ;;;;; Set User Elisp Dir
 (setq lem-user-elisp-dir "~/bin/lisp-projects/")
@@ -209,7 +209,6 @@
                   ;; Programming modules
                   'lem-setup-programming
                   'lem-setup-debug
-                  'lem-setup-shell
                   'lem-setup-skeleton
 
                   ;; Org modules
@@ -227,7 +226,11 @@
                   'cpm-setup-org
                   'cpm-setup-workspaces
                   'cpm-setup-calendars
-                  'cpm-setup-teaching))
+                  'cpm-setup-teaching
+
+                  'cpm-setup-shell
+                  'cpm-setup-eshell
+                  ))
    (require mod)))
 
 ;; MacOS settings - defer load until after init.
@@ -249,6 +252,7 @@
            ("c" .  lem-find-files-setup-config-directory        )
            ("C" .  lem-search-setup-config-files                )
            ("d" .  osx-dictionary-search-input                  )
+           ("e" .  eshell                                       )
            ("m" .  lem-org-to-markdown                          )
            ("g" .  org-mac-grab-link                            )
            ("h" .  lem-org-export-to-buffer-html-as-body        )
@@ -267,6 +271,31 @@
            ("w" .  count-words                                  )
            ("W" .  lem-jump-to-week-agenda                      )
            ("x" .  citar-insert-citation                        ))
+
+;;;; User Packages
+
+(with-eval-after-load 'popper
+  ;; Match eshell, shell, term and/or vterm buffers
+  (setq popper-reference-buffers
+        (append popper-reference-buffers
+                '("^\\*eshell.*\\*$" eshell-mode ;eshell as a popup
+                  "^\\*shell.*\\*$"  shell-mode  ;shell as a popup
+                  "^\\*term.*\\*$"   term-mode   ;term as a popup
+                  "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
+                  ))))
+
+;;;;; Command log mode
+  (use-package command-log-mode
+    :straight (:type git :host github :repo "lewang/command-log-mode")
+    :commands (command-log-mode))
+
+;;;;; Elfeed
+
+;; Set elfeed feeds
+(customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
+                                        ("https://planet.emacslife.com/atom.xml" emacs)
+                                        ("https://tilde.town/~ramin_hal9001/atom.xml" emacs)))
+
 
 ;;;; User Functions
 

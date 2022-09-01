@@ -196,7 +196,9 @@
   (meow-setup)
   (add-hook 'after-init-hook (lambda () (meow-global-mode 1)))
   ;; start vterm in insert
-  (add-to-list 'meow-mode-state-list '(vterm-mode . insert)))
+  (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
+  ;; start eshell in insert
+  (add-to-list 'meow-mode-state-list '(eshell-mode . insert)))
 
 ;; Cooperate with splash page
 (defun meow-lem-splash ()
