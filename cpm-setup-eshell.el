@@ -291,20 +291,6 @@ PWD is not in a git repo (or the git command is not found)."
 (defalias 'eshell/range #'number-sequence)
 (defalias 'range #'number-sequence)
 
-
-;;;; Eshell Toggle
-(use-package eshell-toggle
-  :straight (:type git :host github :repo "4da/eshell-toggle")
-  :disabled
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-run-command nil)
-  (eshell-toggle-window-side 'above)
-  (eshell-toggle-use-projectile-root nil)
-  :bind
-  ("M-\\" . eshell-toggle))
-
-
 ;;;; End Shell
 
 ;;; Provide Eshell
