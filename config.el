@@ -142,7 +142,7 @@
 (advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash "/Users/roambot/.emacs.d/.local/straight/build/.DS_Store")))
 
 ;;;;; Set Splash Footer
-(setq lem-splash-footer  "                              Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
+(setq lem-splash-footer  "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
 
 ;;;;; Markdown Command
 (setq markdown-command
@@ -188,7 +188,7 @@
                   'lem-setup-help
                   'lem-setup-modeline
                   'lem-setup-theme
-                  'lem-setup-splash
+                  'cpm-setup-splash
 
                   ;; Navigation & Search modules
                   'lem-setup-navigation
@@ -229,6 +229,7 @@
 
                   'cpm-setup-shell
                   'cpm-setup-eshell
+
                   ))
    (require mod)))
 
