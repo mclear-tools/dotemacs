@@ -139,6 +139,7 @@ So if we're connected with sudo to 'remotehost'
 
 (use-package eshell-up
   :straight t
+  :commands (eshell-up)
   :config
   (defalias 'eshell/up #'eshell-up))
 
