@@ -49,7 +49,6 @@
         meow-keypad-start-keys nil)
 
   (meow-leader-define-key
-
    ;;  ;; here we create bindings for necessary, high frequency commands
    '("?" . consult-apropos)
    ;; high frequency keybindings

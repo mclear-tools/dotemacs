@@ -118,8 +118,7 @@
         ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
         ("Org"             ?o "~/Dropbox/org-files/")
         ("Workbook"        ?w ,(concat lem-notes-dir "workbook/"))
-        ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))
-        ))
+        ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))))
 
 ;; Org-Roam Notes
 ;; (require 'lem-setup-org-roam)

@@ -201,10 +201,14 @@
   ;; (setq mu4e-html2text-command 'mu4e-shr2text)
   ;; (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
 
+  ;; Don't show all related emails
+  (setq mu4e-headers-include-related nil)
+
   ;; other display settings
   (setq mu4e-speedbar-support t)
   (setq mu4e-use-fancy-chars t)
   (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
+
 
 ;;;;;; Mail Tagging
   ;; Tag mail messages
@@ -271,6 +275,7 @@ the real email address"
       "phil971"
       "placement"
       "publications"
+      "rationality-book"
       "referee-reports"
       "supervision"
       )
