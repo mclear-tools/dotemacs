@@ -250,7 +250,7 @@
           ;; Footer text
           (defvar lem-splash-footer "   " "Footer text.")
           (save-excursion (insert-char ?\n 2)
-                          (insert-char ?\s right-margin-width)
+                          (insert-char ?\s (- (/ (window-width) 4) 10))
                           (insert
                            (propertize lem-splash-footer 'face 'lem-splash-footer-face)))
 
