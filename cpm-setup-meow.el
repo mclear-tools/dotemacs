@@ -182,7 +182,7 @@
   (meow-use-clipboard t)
   (meow-goto-line-function 'consult-goto-line)
   :config
-  ;; set colors in bespoke theme
+  ;; set colors in theme
   (setq meow-use-dynamic-face-color nil)
   ;; Make sure delete char means delete char
   ;; see https://github.com/meow-edit/meow/issues/112
@@ -192,8 +192,7 @@
   (with-eval-after-load 'org
     ;; for use with meow movement
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
-  (meow-setup)
-  (add-hook 'after-init-hook (lambda () (meow-global-mode 1)))
+  (add-hook 'after-init-hook (lambda () (meow-setup) (meow-global-mode 1)))
   ;; start vterm in insert
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
   ;; start eshell in insert
@@ -202,10 +201,11 @@
 ;; Cooperate with splash page
 (defun meow-lem-splash ()
   ;; Set no cursor with meow
-  (meow-motion-mode 1)
-  (setq-local meow-cursor-type-motion nil)
-  (revert-buffer))
-(add-hook 'lem-splash-mode-hook #'meow-lem-splash)
+  (with-eval-after-load 'meow
+    (meow-motion-mode 1)
+    (setq-local meow-cursor-type-motion nil)
+    (revert-buffer)))
+  (add-hook 'lem-splash-mode-hook #'meow-lem-splash)
 
 (provide 'cpm-setup-meow)
 ;;; cpm-setup-meow.el ends here
