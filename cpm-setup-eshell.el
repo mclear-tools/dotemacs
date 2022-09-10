@@ -143,19 +143,6 @@ So if we're connected with sudo to 'remotehost'
   :config
   (defalias 'eshell/up #'eshell-up))
 
-(defun lem-setup-eshell ()
-  (interactive)
-  ;; Use imenu to jump prompts
-  ;; https://xenodium.com/imenu-on-emacs-eshell/
-  (setq-local imenu-generic-expression
-              '(("Prompt" " λ \\(.*\\)" 1)))
-  ;; turn off semantic-mode in eshell buffers
-  (semantic-mode -1)
-  ;; turn off hl-line-mode
-  (hl-line-mode -1))
-
-(add-hook 'eshell-mode-hook #'lem-setup-eshell)
-
 ;;;; Eshell Prompt
 ;; See http://www.modernemacs.com/post/custom-eshell/
 ;; https://github.com/zwild/eshell-prompt-extras
@@ -272,10 +259,6 @@ PWD is not in a git repo (or the git command is not found)."
     (erase-buffer)
     (eshell-send-input)))
 
-(add-hook 'eshell-mode-hook
-          #'(lambda()
-              (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
-
 ;;;; Open in iTerm
 (defun eshell/iterm ()
   "Open the current directory of the eshell buffer in iTerm."
@@ -287,11 +270,52 @@ PWD is not in a git repo (or the git command is not found)."
                        iterm-brew-path)))
     (shell-command (concat "open -a " iterm-path " ."))))
 
+;;;; Jump to Project Root
+(defun eshell/cg () (interactive) (eshell/cd (vc-git-root ".")))
+
+;;;; Jump Directories (w/Consult & Consult-Dir)
+(defun eshell/z (&optional regexp)
+  "Navigate to a previously visited directory in eshell, or to
+any directory proferred by `consult-dir'."
+  (let ((eshell-dirs (delete-dups
+                      (mapcar 'abbreviate-file-name
+                              (ring-elements eshell-last-dir-ring)))))
+    (cond
+     ((and (not regexp) (featurep 'consult-dir))
+      (let* ((consult-dir--source-eshell `(:name "Eshell"
+                                           :narrow ?e
+                                           :category file
+                                           :face consult-file
+                                           :items ,eshell-dirs))
+             (consult-dir-sources (cons consult-dir--source-eshell
+                                        consult-dir-sources)))
+        (eshell/cd (substring-no-properties
+                    (consult-dir--pick "Switch directory: ")))))
+     (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
+                     (completing-read "cd: " eshell-dirs)))))))
+
 ;;;; Aliases
 ;; It's nicer to type (range 0 3) in eshell.
 (defalias 'eshell/range #'number-sequence)
 (defalias 'range #'number-sequence)
 
+;;;; Setup Hooks
+(defun lem-setup-eshell ()
+  (interactive)
+  ;; Clear eshell keybind
+  (local-set-key (kbd "C-l") 'eshell-clear-buffer)
+  ;; Better colors
+  (setenv "TERM" "xterm-256color")
+  ;; Use imenu to jump prompts
+  ;; https://xenodium.com/imenu-on-emacs-eshell/
+  (setq-local imenu-generic-expression
+              '(("Prompt" " λ \\(.*\\)" 1)))
+  ;; Turn off semantic-mode in eshell buffers
+  (semantic-mode -1)
+  ;; Turn off hl-line-mode
+  (hl-line-mode -1))
+
+(add-hook 'eshell-mode-hook #'lem-setup-eshell)
 ;;;; End Shell
 
 ;;; Provide Eshell
