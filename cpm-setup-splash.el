@@ -183,7 +183,9 @@
           ;; Add padding at top
           (insert-char ?\n padding-top)
 
-          (insert (propertize lem-splash-banner 'face 'lem-splash-image-face))
+          (when (and (> (window-width) 59)
+                     (> (window-height) 44))
+            (insert (propertize lem-splash-banner 'face 'lem-splash-image-face)))
 
           ;; Position point
           (goto-char (point-min))
