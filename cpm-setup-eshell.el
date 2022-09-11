@@ -42,11 +42,12 @@ So if we're connected with sudo to 'remotehost'
        (tramp-make-tramp-file-name
         method user nil host nil (or directory "") hop)))))
 
-(use-package em-alias
+(use-package em-ls
   :straight (:type built-in)
   :after eshell
   :custom
-  (eshell-aliases-file (concat lem-etc-dir "eshell/alias")))
+  (eshell-ls-use-colorls t)
+  (eshell-ls-use-in-dired nil))
 
 (use-package em-cmpl
   :straight (:type built-in)
@@ -299,13 +300,284 @@ any directory proferred by `consult-dir'."
 (defalias 'eshell/range #'number-sequence)
 (defalias 'range #'number-sequence)
 
+;; Don't auto-write our aliases! Let us manage our own `eshell-aliases-file'
+;; or configure `lem-eshell-aliases' via elisp.
+(advice-add #'eshell-write-aliases-list :override #'ignore)
+
+(defvar lem-eshell-aliases
+  '(;; Git
+    ("g" "git --no-pager $*")
+    ("gg" "magit-status")
+    ("gd" "git diff --color $*")
+    ("gl" "vc-print-root-log")
+    ("gsh" "git stash")
+    ("gbr" "git branch $*")
+    ("gco" "git checkout $*")
+    ("gs" "git status")
+    ("grb" "git rebase $*")
+    ("grh" "git reset --hard")
+
+    ;; Homebrew
+    ("bi" "brew info")
+    ("bs" "brew search")
+    ("bu" "brew update && brew outdated && brew upgrade && brew cleanup && brew doctor")
+
+    ;; Listing
+    ("l"  "ls $*")
+    ("la" "ls -lah $*")
+    ("ll" "ls -lah $*")
+
+    ;; Navigation
+    ("bb" "consult-buffer")
+    ("bd" "eshell-up $1")
+    ("d" "dired $1")
+    ("e" "find-file $1")
+    ("ec" "find-file $1")
+    ("ed" (eshell/cd "~/.emacs.d"))
+    ("emacs" "find-file $1")
+    ("ff" "find-file $1")
+    ("fo" "find-file-other-window $1")
+    ("fr" (consult-recent-file))
+    ("pd" (eshell/cd "~/projects"))
+    ("pg" "goto-projects")
+    ("pp" "project-switch-project")
+
+    ;; Search
+    ("rg" "rg --color=always $*")
+
+    ;; Quitting
+    ("ex" "exit")
+    ("x" "exit")
+    ("q"  "exit")
+    ("qr" "restart-emacs")
+    ("qq" "save-buffers-kill-emacs")
+    ) ; more sensible than default
+  "An alist of default eshell aliases, meant to emulate useful shell utilities,
+like fasd and bd. Note that you may overwrite these in your
+`eshell-aliases-file'. This is here to provide an alternative, elisp-centric way
+to define your aliases.
+You should use `lem-set-eshell-alias' to change this.")
+
+;; Define a var to backup aliases that may already exist
+(defvar lem-eshell--default-aliases nil)
+
+;;;###autodef
+(defun lem-set-eshell-alias (&rest aliases)
+  "Define aliases for eshell.
+ALIASES is a flat list of alias -> command pairs. e.g.
+  (set-eshell-alias!
+    \"hi\"  \"echo hello world\"
+    \"bye\" \"echo goodbye world\")"
+  (or (cl-evenp (length aliases))
+      (signal 'wrong-number-of-arguments (list 'even (length aliases))))
+  (after! em-alias
+          (while aliases
+            (let ((alias (pop aliases))
+                  (command (pop aliases)))
+              (if-let* ((oldval (assoc alias lem-eshell-aliases)))
+                  (setcdr oldval (list command))
+                (push (list alias command) lem-eshell-aliases))))
+          (when (boundp 'eshell-command-aliases-list)
+            (if lem-eshell--default-aliases
+                (setq eshell-command-aliases-list
+                      (append lem-eshell--default-aliases
+                              lem-eshell-aliases))
+              (setq eshell-command-aliases-list lem-eshell-aliases)))))
+
+(use-package em-alias
+  :straight (:type built-in)
+  :after eshell
+  :custom
+  (eshell-aliases-file (concat lem-etc-dir "eshell/alias"))
+  :config
+  ;; See https://github.com/doomemacs/doomemacs/blob/master/modules/term/eshell/
+  (setq lem-eshell--default-aliases eshell-command-aliases-list
+        eshell-command-aliases-list
+        (append eshell-command-aliases-list
+                lem-eshell-aliases))
+
+
+
+
+  )
+
+;;;; Git Status
+;; Used as an eshell/alias, the current directory isn't registered, so we must
+;; use a function.
+(defun eshell/gst (&rest args)
+  (magit-status (pop args) nil)
+  (eshell/echo)) ;; The echo command suppresses output
+
+
+;;;; Colors
+
+(use-package xterm-color
+  :straight t
+  :defer t)
+
+(defun eshell-enable-256-colors ()
+  (interactive)
+  (progn
+    (require 'xterm-color)
+    (setq xterm-color-preserve-properties t)
+    (setenv "TERM" "xterm-256color")
+    (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+
+    (setq eshell-output-filter-functions
+          (remove 'eshell-handle-ansi-color eshell-output-filter-functions))))
+
+;;;; Syntax Highlighting
+
+(use-package eshell-syntax-highlighting
+  :after eshell
+  :straight t
+  :config
+  ;; Enable in all Eshell buffers.
+  (eshell-syntax-highlighting-global-mode +1))
+
+;;;; Icons
+;; Requires `exa` be installed
+;; https://github.com/ogham/exa
+;; (with-eval-after-load 'eshell
+;;   (eshell/alias "ls"  "exa --group-directories-first --icons --color=always           ")
+;;   (eshell/alias "ll"  "exa -a -l --group-directories-first --git --icons --color=always")
+;;   (eshell/alias "lsa" "exa -a --group-directories-first --icons --color=always        ")
+;;   (eshell/alias "lsd" "exa -D -a -l --git --icons --color=always                      "))
+
+;;;; Better File Listing (ls)
+;; https://github.com/mnewt/dotemacs/blob/master/init.el
+
+(defun eshell-ls-file-at-point ()
+  "Get the full path of the Eshell listing at point."
+  (get-text-property (point) 'file-name))
+
+(defun eshell-ls-find-file ()
+  "Open the Eshell listing at point."
+  (interactive)
+  (find-file (eshell-ls-file-at-point)))
+
+(defun eshell-ls-delete-file ()
+  "Delete the Eshell listing at point."
+  (interactive)
+  (let ((file (eshell-ls-file-at-point)))
+    (when (yes-or-no-p (format "Delete file %s?" file))
+      (delete-file file 'trash))))
+
+(defvar eshell-ls-file-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "RET") #'eshell-ls-find-file)
+    (define-key map (kbd "<return>") #'eshell-ls-find-file)
+    (define-key map [mouse-1] #'eshell-ls-find-file)
+    (define-key map (kbd "D") #'eshell-ls-delete-file)
+    map)
+  "Keys in effect when point is over a file from `eshell/ls'.")
+
+(defface all-the-icons-eshell-dir-face
+  '((((background dark)) :foreground "white")
+    (((background light)) :foreground "black"))
+  "Face for the directory icon"
+  :group 'all-the-icons-faces)
+
+(defcustom all-the-icons-eshell-v-adjust 0.01
+  "The default vertical adjustment of the icon in the eshell buffer."
+  :group 'all-the-icons
+  :type 'number)
+
+(defcustom all-the-icons-eshell-monochrome t
+  "Whether to show the icons as the same color as the text on the same line."
+  :group 'all-the-icons
+  :type 'boolean)
+
+(defun eshell-ls-decorated-name-improved (f file)
+  "Add features to listings in `eshell/ls' output.
+The features are:
+1. Add decoration like 'ls -F':
+ * Mark directories with a `/'
+ * Mark executables with a `*'
+2. Make each listing into a clickable link to open the
+corresponding file or directory.
+3. Add icons (requires `all-the-icons`)
+This function is meant to be used as advice around
+`eshell-ls-decorated-name', where F is `eshell-ls-decorated-name'
+and FILE is the cons describing the file."
+  (let* ((name (funcall f file))
+         (icon (if (eq (cadr file) t)
+                   (all-the-icons-icon-for-dir (car file))
+                 (all-the-icons-icon-for-file (car file))))
+         (suffix
+          (cond
+           ;; Directory
+           ((eq (cadr file) t)
+            "/")
+           ;; Executable
+           ((and (/= (user-uid) 0) ; root can execute anything
+                 (eshell-ls-applicable (cdr file) 3 #'file-executable-p (car file)))
+            "*"))))
+    (concat
+     icon
+     (propertize name
+                 'keymap eshell-ls-file-keymap
+                 'mouse-face 'highlight
+                 'file-name (expand-file-name (substring-no-properties (car file)) default-directory))
+     (when (and suffix (not (string-suffix-p suffix name)))
+       (propertize suffix 'face 'shadow)))))
+
+(advice-add 'eshell-ls-decorated-name :around #'eshell-ls-decorated-name-improved)
+
+;;;; Useful Functions
+(defun eshell/info (subject)
+  "Read the Info manual on SUBJECT."
+  (let ((buf (current-buffer)))
+    (Info-directory)
+    (let ((node-exists (ignore-errors (Info-menu subject))))
+      (if node-exists
+	      0
+	    ;; We want to switch back to *eshell* if the requested
+	    ;; Info manual doesn't exist.
+	    (switch-to-buffer buf)
+	    (eshell-print (format "There is no Info manual on %s.\n"
+			                  subject))
+	    1))))
+
+(defun lem-eshell-view-file (file)
+  "A version of `view-file' which properly respects the eshell prompt."
+  (interactive "fView file: ")
+  (unless (file-exists-p file) (error "%s does not exist" file))
+  (let ((had-a-buf (get-file-buffer file))
+	    (buffer (find-file-noselect file)))
+    (if (eq (with-current-buffer buffer (get major-mode 'mode-class))
+	        'special)
+	    (progn
+	      (switch-to-buffer buffer)
+	      (message "Not using View mode because the major mode is special"))
+      (let ((undo-window (list (window-buffer) (window-start)
+			                   (+ (window-point)
+				                  (length (funcall eshell-prompt-function))))))
+	    (switch-to-buffer buffer)
+	    (view-mode-enter (cons (selected-window) (cons nil undo-window))
+			             'kill-buffer)))))
+(defun eshell/less (&rest args)
+  "Invoke `view-file' on a file. \"less +42 foo\" will go to line 42 in
+      the buffer for foo."
+  (while args
+    (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+	    (let* ((line (string-to-number (match-string 1 (pop args))))
+	           (file (pop args)))
+	      (lem-eshell-view-file file)
+	      (goto-line line))
+      (lem-eshell-view-file (pop args)))))
+(defalias 'eshell/more 'eshell/less)
+
+(defun eshell/mkdir-and-cd (dir)
+  "Create a directory then cd into it."
+  (make-directory dir t)
+  (eshell/cd dir))
+
 ;;;; Setup Hooks
 (defun lem-setup-eshell ()
   (interactive)
   ;; Clear eshell keybind
   (local-set-key (kbd "C-l") 'eshell-clear-buffer)
-  ;; Better colors
-  (setenv "TERM" "xterm-256color")
   ;; Use imenu to jump prompts
   ;; https://xenodium.com/imenu-on-emacs-eshell/
   (setq-local imenu-generic-expression
@@ -313,9 +585,20 @@ any directory proferred by `consult-dir'."
   ;; Turn off semantic-mode in eshell buffers
   (semantic-mode -1)
   ;; Turn off hl-line-mode
-  (hl-line-mode -1))
+  (hl-line-mode -1)
+  ;; 256 Colors
+  (eshell-enable-256-colors)
+  ;; Remove fringe
+  (set-window-fringes nil 0 0)
+  (set-window-margins nil 1 nil)
+  ;; Scrolling
+  (setq hscroll-margin 0)
+  ;; Text wrapping
+  (visual-line-mode +1)
+  (set-display-table-slot standard-display-table 0 ?\ ))
 
 (add-hook 'eshell-mode-hook #'lem-setup-eshell)
+
 ;;;; End Shell
 
 ;;; Provide Eshell
