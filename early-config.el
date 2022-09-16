@@ -37,6 +37,7 @@
 
 ;; No modeline at startup
 (setq mode-line-format nil)
+(setq header-line-format nil)
 
 
 ;;; early-config.el ends here
