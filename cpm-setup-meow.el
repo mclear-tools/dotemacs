@@ -25,8 +25,7 @@
 
 ;;;; Meow Setup
 (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-
+  "Setup meow bindings."
   (meow-motion-overwrite-define-key
    '("s-[" . lem-previous-user-buffer)
    '("s-]" . lem-next-user-buffer)
@@ -192,11 +191,12 @@
   (with-eval-after-load 'org
     ;; for use with meow movement
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
-  (add-hook 'after-init-hook (lambda () (meow-setup) (meow-global-mode 1)))
   ;; start vterm in insert
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
   ;; start eshell in insert
-  (add-to-list 'meow-mode-state-list '(eshell-mode . insert)))
+  (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
+  (meow-global-mode 1)
+  (meow-setup))
 
 ;; Cooperate with splash page
 (defun meow-lem-splash ()
