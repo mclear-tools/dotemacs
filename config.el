@@ -54,7 +54,6 @@
 
 ;;;;; Compilation
 ;; Multi-compile settings
-
 (customize-set-variable 'multi-compile-alist '((org-mode .
                                                          (("pandoc-docx & Open" . "pandoc -s -C -f org+smart --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --reference-doc=/Users/Roambot/.pandoc/custom-reference.docx   --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua -o %file-sans.docx %file-name && open %file-sans.docx")
                                                           ("pandoc-pdf & Open" . "pandoc -s -C -f org+smart --pdf-engine=xelatex --bibliography=/Users/Roambot/Dropbox/Work/bibfile.bib --template=/Users/roambot/dotfiles/pandoc/pandoc-templates/default.latex --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua -o %file-sans.pdf %file-name && open %file-sans.pdf")
@@ -159,13 +158,15 @@
        ;; " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
        " --metadata=reference-section-title:References"
        " --citeproc"
-       " --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib"
-       ))
+       " --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib"))
 
 ;;;; Load Modules
+;; Load modules in stages for a shorter init time. We load core modules first,
+;; then more expensive modules after init, with the rest loaded after startup
+;; has completed.
 
-;; Load modules
-(message "*Loading 𝛌-Emacs User Modules*")
+;;;;; Load base modules
+(message "*Loading 𝛌-Emacs Core & UI Modules*")
 (measure-time
  (cl-dolist (mod (list
                   ;; Core modules
@@ -173,104 +174,141 @@
                   'lem-setup-settings
                   'lem-setup-functions
                   'lem-setup-macros
-                  'lem-setup-server
                   'lem-setup-scratch
 
-                  ;; UI modules
-                  'lem-setup-frames
+                  ;; Basic UI modules
                   'lem-setup-windows
                   'lem-setup-buffers
                   'lem-setup-fonts
                   'lem-setup-faces
-                  'lem-setup-colors
-                  'lem-setup-completion
-                  'lem-setup-keybindings
-                  'lem-setup-help
-                  'lem-setup-modeline
-                  'lem-setup-theme
-                  'cpm-setup-splash
-
-                  ;; Navigation & Search modules
-                  'lem-setup-navigation
-                  'lem-setup-dired
-                  'lem-setup-search
-
-                  ;; Project & Tab/Workspace modules
-                  'lem-setup-vc
-                  'lem-setup-projects
-                  'lem-setup-tabs
-
-                  ;; Writing modules
-                  'lem-setup-writing
-                  'lem-setup-notes
-                  'lem-setup-citation
-
-                  ;; Programming modules
-                  'lem-setup-programming
-                  'lem-setup-debug
-                  'lem-setup-skeleton
-
-                  ;; Org modules
-                  'lem-setup-org-base
-                  'lem-setup-org-settings
-                  'lem-setup-org-extensions
-
-                  ;; Productivity
-                  'lem-setup-pdf
-                  'lem-setup-elfeed
-
-                  ;; Personal modules
-                  'cpm-setup-email
-                  'cpm-setup-meow
-                  'cpm-setup-org
-                  'cpm-setup-workspaces
-                  'cpm-setup-calendars
-                  'cpm-setup-teaching
-
-                  'cpm-setup-shell
-                  'cpm-setup-eshell
-
-                  ))
+                  'lem-setup-theme))
    (require mod)))
 
-;; MacOS settings - defer load until after init.
-(when sys-mac
-  (message "*Load MacOS settings...*")
-  (measure-time
-   (run-with-idle-timer 1 nil
-                        (function require)
-                        'lem-setup-macos nil t)))
+;;;;; Load After-Init Modules
+(defun lem-user-config-after-init ()
+  "Modules loaded after init."
+  (message "*Loading 𝛌-Emacs after-init Modules*")
+  (measure-time (cl-dolist (mod (list
+                                 ;; Splash/Dashboard
+                                 'lem-setup-splash
+
+                                 ;; Other UI modules
+                                 'cpm-setup-frames
+                                 'lem-setup-completion
+                                 'lem-setup-keybindings
+                                 'lem-setup-help
+                                 'lem-setup-colors
+                                 'cpm-setup-modeline
+
+                                 ;; Navigation & Search modules
+                                 'lem-setup-navigation
+                                 'lem-setup-dired
+                                 'lem-setup-search
+
+                                 ;; Modal
+                                 'cpm-setup-meow
+
+                                 ;; Project & Tab/Workspace modules
+                                 'lem-setup-vc
+                                 'lem-setup-projects
+                                 'lem-setup-tabs
+                                 'cpm-setup-workspaces))
+                  (require mod))))
+
+(add-hook 'after-init-hook #'lem-user-config-after-init)
+
+;;;;; Load After-Startup Modules
+(defun lem-user-config-after-startup ()
+  "Modules loaded after Emacs startup."
+  (message "*Loading 𝛌-Emacs after-startup Modules*")
+  (measure-time (cl-dolist (mod (list
+
+                                 ;; Server
+                                 'lem-setup-server
+
+                                 ;; Writing modules
+                                 'lem-setup-writing
+                                 'lem-setup-notes
+                                 'lem-setup-citation
+
+                                 ;; Programming modules
+                                 'lem-setup-programming
+                                 'lem-setup-debug
+                                 'lem-setup-skeleton
+
+                                 ;; Shell & Terminal
+                                 'lem-setup-shell
+                                 'lem-setup-eshell
+
+                                 ;; Org modules
+                                 'lem-setup-org-base
+                                 'lem-setup-org-settings
+                                 'lem-setup-org-extensions
+
+                                 ;; Productivity
+                                 'lem-setup-pdf
+                                 'lem-setup-elfeed
+
+                                 ;; OS settings
+                                 ;; load only if on macos
+                                 (when sys-mac
+                                   'lem-setup-macos)
+
+                                 ;; Personal modules
+                                 'cpm-setup-email
+                                 'cpm-setup-org
+                                 'cpm-setup-calendars
+                                 'cpm-setup-teaching))
+                  (require mod))))
+
+(add-hook 'emacs-startup-hook #'lem-user-config-after-startup)
 
 ;;;;; Scratch Directory
 (customize-set-variable 'lem-scratch-default-dir lem-scratch-save-dir)
 
 ;;;; User Keybindings
 (customize-set-variable 'lem-prefix "C-c C-SPC")
-(bind-keys :prefix-map lem+user-keys
-           :prefix (concat lem-prefix " u")
-           ("a" .  lem-jump-to-org-dashboard                    )
-           ("c" .  lem-find-files-setup-config-directory        )
-           ("C" .  lem-search-setup-config-files                )
-           ("d" .  osx-dictionary-search-input                  )
-           ("e" .  eshell                                       )
-           ("m" .  lem-org-to-markdown                          )
-           ("g" .  org-mac-grab-link                            )
-           ("h" .  lem-org-export-to-buffer-html-as-body        )
-           ("i" .  lem-org-goto-inbox                           )
-           ("k" .  kill-compilation                             )
-           ("l" .  desktop-read                                 )
-           ("o" .  lem-markdown-to-org                          )
-           ("O" .  lem-goto-org-files                           )
-           ("p" .  run-pandoc                                   )
-           ("P" .  lem-pandoc-pdf-open                          )
-           ("s" .  sb-expand-current-file                       )
-           ("S" .  just-one-space                               )
-           ("t" .  lem-jump-to-org-agenda-all-todos             )
-           ("j" .  lem-goto-journal                             )
-           ("u" .  lem-straight-update-packages-asynchronously  )
-           ("w" .  count-words                                  )
-           ("W" .  lem-jump-to-week-agenda                      )
-           ("x" .  citar-insert-citation                        ))
+
+;; Make sure to load these after general keybindings
+(with-eval-after-load 'lem-setup-keybindings
+  (bind-keys :prefix-map lem+user-keys
+             :prefix (concat lem-prefix " u"               )
+             ;; Workspaces
+             ("a" . cpm-open-agenda-in-workspace           )
+             ("c" . cpm-open-emacsd-in-workspace           )
+             ("e" . cpm-open-new-eshell-and-workspace      )
+             ("h" . cpm-go-home                            )
+             ("f" . cpm-open-elfeed-in-workspace           )
+             ("m" . cpm-open-email-in-workspace            )
+             ("n" . cpm-open-notes-in-workspace            )
+             ("t" . cpm-open-new-terminal-and-workspace    )
+
+             ;; Pandoc
+             ("p" .  run-pandoc                            )
+             ("P" .  lem-pandoc-pdf-open                   )
+
+             ;; Citation
+             ("x" .  citar-insert-citation                 ))
+
+  (bind-keys :prefix-map lem+jump-to
+             :prefix (concat lem-prefix " u" " j"          )
+             ;; Jump to
+             ("a" .  lem-jump-to-org-dashboard             )
+             ("W" .  lem-jump-to-week-agenda               )
+             ("t" .  lem-jump-to-org-agenda-all-todos      )
+             ("j" .  lem-goto-journal                      )
+             ("i" .  lem-org-goto-inbox                    )
+             ("O" .  lem-goto-org-files                    ))
+
+  (bind-keys :prefix-map lem+text
+             :prefix (concat lem-prefix " u" " T"          )
+             ;; Text manipulation
+             ("S" .  just-one-space                        )
+             ("h" .  lem-org-export-to-buffer-html-as-body )
+             ("d" .  osx-dictionary-search-input           )
+             ("w" .  count-words                           )
+             ("o" .  lem-markdown-to-org                   )
+             ("m" .  lem-org-to-markdown                   )))
 
 ;;;; User Packages
 
@@ -278,24 +316,30 @@
   ;; Match eshell, shell, term and/or vterm buffers
   (setq popper-reference-buffers
         (append popper-reference-buffers
-                '("^\\*eshell.*\\*$" eshell-mode ;eshell as a popup
-                  "^\\*shell.*\\*$"  shell-mode  ;shell as a popup
-                  "^\\*term.*\\*$"   term-mode   ;term as a popup
-                  "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
-                  ))))
+                '(;; make all shell/terminals popups
+                  "^\\*eshell.*\\*$" eshell-mode
+                  "^\\*shell.*\\*$"  shell-mode
+                  "^\\*term.*\\*$"   term-mode
+                  "^\\*vterm.*\\*$"  vterm-mode))))
 
 ;;;;; Command log mode
-  (use-package command-log-mode
-    :straight (:type git :host github :repo "lewang/command-log-mode")
-    :commands (command-log-mode))
+(use-package command-log-mode
+  :straight (:type git :host github :repo "lewang/command-log-mode")
+  :commands (command-log-mode))
 
 ;;;;; Elfeed
 
 ;; Set elfeed feeds
-(customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
-                                        ("https://planet.emacslife.com/atom.xml" emacs)
-                                        ("https://tilde.town/~ramin_hal9001/atom.xml" emacs)))
+(with-eval-after-load 'elfeed
+  (customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
+                                          ("https://planet.emacslife.com/atom.xml" emacs)
+                                          ("https://tilde.town/~ramin_hal9001/atom.xml" emacs))))
 
+;;;;; Eshell Aliases
+(with-eval-after-load 'eshell
+  (lem-set-eshell-alias
+   "pg" "goto-projects"
+   "pd" "cd ~/projects"))
 
 ;;;; User Functions
 
