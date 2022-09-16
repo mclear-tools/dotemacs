@@ -166,7 +166,10 @@
 ;; has completed.
 
 ;;;;; Load base modules
-(message "*Loading 𝛌-Emacs Core & UI Modules*")
+(message "
+;; ======================================================
+;; *Loading 𝛌-Emacs Core & UI Modules*
+;; ======================================================")
 (measure-time
  (cl-dolist (mod (list
                   ;; Core modules
@@ -187,7 +190,10 @@
 ;;;;; Load After-Init Modules
 (defun lem-user-config-after-init ()
   "Modules loaded after init."
-  (message "*Loading 𝛌-Emacs after-init Modules*")
+  (message "
+  ;; ======================================================
+  ;; *Loading 𝛌-Emacs after-init Modules*
+  ;; ======================================================")
   (measure-time (cl-dolist (mod (list
                                  ;; Splash/Dashboard
                                  'lem-setup-splash
@@ -220,7 +226,10 @@
 ;;;;; Load After-Startup Modules
 (defun lem-user-config-after-startup ()
   "Modules loaded after Emacs startup."
-  (message "*Loading 𝛌-Emacs after-startup Modules*")
+  (message "
+  ;; ======================================================
+  ;; *Loading 𝛌-Emacs after-startup Modules*
+  ;; ======================================================")
   (measure-time (cl-dolist (mod (list
 
                                  ;; Server
