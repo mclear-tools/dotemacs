@@ -111,7 +111,6 @@
       (delete-other-windows))))
 
 ;;;;; Eshell Workspace
-;;;;; Terminal Workspace
 (defun cpm-open-new-eshell-and-workspace ()
   "Open an empty buffer in its own workspace"
   (interactive)
@@ -188,19 +187,7 @@
 ;;;; Workspace Keybindings
 
 ;; See user config for keybinds
-
-;; (bind-keys :map lem+leader-map
-;;   ("1" . cpm-go-home)
-;;   ("2" . cpm-open-emacsd-in-workspace)
-;;   ("3" . cpm-open-agenda-in-workspace)
-;;   ("4" . cpm-open-notes-in-workspace)
-;;   ("5" . cpm-open-email-in-workspace)
-;;   ("6" . cpm-open-new-terminal-and-workspace)
-;;   ("7" . cpm-open-elfeed-in-workspace))
-
 (bind-key "N" #'cpm-open-new-buffer-and-workspace 'project-prefix-map)
-
-
 
 ;;;;; Mail Keybindings
 (bind-keys :prefix-map lem+mail-keys
