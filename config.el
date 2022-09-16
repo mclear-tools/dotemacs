@@ -168,11 +168,11 @@
 ;;;;; Load base modules
 (message "
 ;; ======================================================
-;; *Loading 𝛌-Emacs Core & UI Modules*
+;; *Loading 𝛌-Emacs Base Modules*
 ;; ======================================================")
 (measure-time
  (cl-dolist (mod (list
-                  ;; Core modules
+                  ;; Base modules
                   'lem-setup-libraries
                   'lem-setup-settings
                   'lem-setup-functions
@@ -198,13 +198,9 @@
                                  ;; Splash/Dashboard
                                  'lem-setup-splash
 
-                                 ;; Other UI modules
-                                 'cpm-setup-frames
+                                 ;; Completion & Keybinds
                                  'lem-setup-completion
                                  'lem-setup-keybindings
-                                 'lem-setup-help
-                                 'lem-setup-colors
-                                 'cpm-setup-modeline
 
                                  ;; Navigation & Search modules
                                  'lem-setup-navigation
@@ -220,7 +216,6 @@
                                  'lem-setup-tabs
                                  'cpm-setup-workspaces))
                   (require mod))))
-
 (add-hook 'after-init-hook #'lem-user-config-after-init)
 
 ;;;;; Load After-Startup Modules
@@ -231,6 +226,11 @@
   ;; *Loading 𝛌-Emacs after-startup Modules*
   ;; ======================================================")
   (measure-time (cl-dolist (mod (list
+                                 ;; Other UI/UX
+                                 'cpm-setup-frames
+                                 'lem-setup-help
+                                 'lem-setup-colors
+                                 'cpm-setup-modeline
 
                                  ;; Server
                                  'lem-setup-server
@@ -269,7 +269,6 @@
                                  'cpm-setup-calendars
                                  'cpm-setup-teaching))
                   (require mod))))
-
 (add-hook 'emacs-startup-hook #'lem-user-config-after-startup)
 
 ;;;;; Scratch Directory
