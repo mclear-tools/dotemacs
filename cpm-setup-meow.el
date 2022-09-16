@@ -204,7 +204,8 @@
   (with-eval-after-load 'meow
     (meow-motion-mode 1)
     (setq-local meow-cursor-type-motion nil)
-    (revert-buffer)))
+    (ignore-errors
+      (revert-buffer))))
   (add-hook 'lem-splash-mode-hook #'meow-lem-splash)
 
 (provide 'cpm-setup-meow)
