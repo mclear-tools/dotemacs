@@ -17,8 +17,10 @@
                            (cons (get-buffer "*splash*")
                                  (frame-parameter nil 'buffer-list))))))
 
-(add-hook 'after-init-hook #'cpm--workspace-setup)
+(add-hook 'emacs-startup-hook #'cpm--workspace-setup)
+
 (defun cpm-go-home ()
+  "Go to home tab."
   (interactive)
   (tab-bar-switch-to-tab "Home"))
 
@@ -108,6 +110,22 @@
       (cpm-vterm-workspace)
       (delete-other-windows))))
 
+;;;;; Eshell Workspace
+;;;;; Terminal Workspace
+(defun cpm-open-new-eshell-and-workspace ()
+  "Open an empty buffer in its own workspace"
+  (interactive)
+  (let ((popper--reference-modes '(vterm-mode term-mode shell-mode compilation-mode help-mode))
+        (popper--reference-names '("^\\*vterm.*\\*$" "^\\*term.*\\*$" "^\\*shell.*\\*$" "\\*Async Shell Command\\*" "Output\\*$" "\\*Messages\\*")))
+    (if (member "Eshell" (tabspaces--list-tabspaces))
+        (tab-bar-switch-to-tab "Eshell")
+      (progn
+        (tab-bar-new-tab)
+        (tab-bar-rename-tab "Eshell")
+        (lem-eshell-home)
+        (rename-buffer "eshell-workspace")
+        (delete-other-windows)))))
+
 ;;;;; Open Mu4e Email in Workspace
 (defun cpm-open-email-in-workspace ()
   "Open mu4e email in its own workspace"
@@ -148,6 +166,12 @@
     (setq default-directory lem-project-temp-dir)
     (find-file (concat lem-project-temp-dir "temp"))))
 
+;;;; Workspace Hooks
+;; (advice-add 'tab-bar-rename-tab :after #'lem-tabs--create-scratch-tab)
+(defun lem-tabs--create-scratch-tab ()
+  "Create a scratch buffer for every tab workspace."
+  (get-buffer-create (concat "*scratch-" (string-trim (tabspaces--name-tab-by-project-or-default) "[\\*]" "[\\*]") "*")))
+
 ;;;; Workspace Shortcuts (Splash)
 ;; Rebind splash keys to personal functions
 (bind-keys :map lem-splash-mode-map
@@ -157,28 +181,25 @@
   ("m" . cpm-open-email-in-workspace)
   ("n" . cpm-open-notes-in-workspace)
   ("p" . cpm-open-existing-project-and-workspace)
-  ("q" . splash-screen-bury)
-  ("[esc]" . splash-screen-bury)
-  ("k" . splash-screen-kill))
+  ("q" . lem-splash-screen-bury)
+  ("[esc]" . lem-splash-screen-bury)
+  ("k" . lem-splash-screen-kill))
 
 ;;;; Workspace Keybindings
 
-(bind-keys :map lem+leader-map
-  ("1" . cpm-go-home)
-  ("2" . cpm-open-emacsd-in-workspace)
-  ("3" . cpm-open-agenda-in-workspace)
-  ("4" . cpm-open-notes-in-workspace)
-  ("5" . cpm-open-email-in-workspace)
-  ("6" . cpm-open-new-terminal-and-workspace)
-  ("7" . cpm-open-elfeed-in-workspace))
+;; See user config for keybinds
+
+;; (bind-keys :map lem+leader-map
+;;   ("1" . cpm-go-home)
+;;   ("2" . cpm-open-emacsd-in-workspace)
+;;   ("3" . cpm-open-agenda-in-workspace)
+;;   ("4" . cpm-open-notes-in-workspace)
+;;   ("5" . cpm-open-email-in-workspace)
+;;   ("6" . cpm-open-new-terminal-and-workspace)
+;;   ("7" . cpm-open-elfeed-in-workspace))
+
 (bind-key "N" #'cpm-open-new-buffer-and-workspace 'project-prefix-map)
 
-;; (bind-key* (concat lem-prefix " 1") #'cpm-go-home)
-;; (bind-key* (concat lem-prefix " 2") #'cpm-open-emacsd-in-workspace)
-;; (bind-key* (concat lem-prefix " 3") #'cpm-open-agenda-in-workspace)
-;; (bind-key* (concat lem-prefix " 4") #'cpm-open-notes-in-workspace)
-;; (bind-key* (concat lem-prefix " 6") #'cpm-open-new-terminal-and-workspace)
-;; (bind-key* (concat lem-prefix " 5") #'cpm-open-email-in-workspace)
 
 
 ;;;;; Mail Keybindings
@@ -193,6 +214,7 @@
            ("s" . mu4e-update-mail-and-index )
            ("S" . lem-swiftbar-email-update  )
            ("u" . lem-go-to-mail-unread      ))
+
 
 
 (provide 'cpm-setup-workspaces)
