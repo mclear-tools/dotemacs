@@ -151,6 +151,7 @@
                   'lem-setup-scratch
 
                   ;; Basic UI modules
+                  'cpm-setup-frames
                   'lem-setup-windows
                   'lem-setup-buffers
                   'lem-setup-fonts
@@ -199,7 +200,6 @@
   ;; ======================================================")
   (measure-time (cl-dolist (mod (list
                                  ;; Other UI/UX
-                                 'cpm-setup-frames
                                  'lem-setup-help
                                  'lem-setup-colors
                                  'cpm-setup-modeline

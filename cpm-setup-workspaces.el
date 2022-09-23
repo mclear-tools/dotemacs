@@ -173,16 +173,17 @@
 
 ;;;; Workspace Shortcuts (Splash)
 ;; Rebind splash keys to personal functions
-(bind-keys :map lem-splash-mode-map
-  ("a" . cpm-open-agenda-in-workspace)
-  ("c" . cpm-open-emacsd-in-workspace)
-  ("e" . cpm-open-elfeed-in-workspace)
-  ("m" . cpm-open-email-in-workspace)
-  ("n" . cpm-open-notes-in-workspace)
-  ("p" . cpm-open-existing-project-and-workspace)
-  ("q" . lem-splash-screen-bury)
-  ("[esc]" . lem-splash-screen-bury)
-  ("k" . lem-splash-screen-kill))
+(with-eval-after-load 'lem-setup-splash
+  (bind-keys :map lem-splash-mode-map
+    ("a" . cpm-open-agenda-in-workspace)
+    ("c" . cpm-open-emacsd-in-workspace)
+    ("e" . cpm-open-elfeed-in-workspace)
+    ("m" . cpm-open-email-in-workspace)
+    ("n" . cpm-open-notes-in-workspace)
+    ("p" . cpm-open-existing-project-and-workspace)
+    ("q" . lem-splash-screen-bury)
+    ("[esc]" . lem-splash-screen-bury)
+    ("k" . lem-splash-screen-kill)))
 
 ;;;; Workspace Keybindings
 
