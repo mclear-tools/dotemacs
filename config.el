@@ -45,6 +45,10 @@
  '(lem-ui-variable-width-font
    '(:font "Avenir Next" :height 140)))
 
+;;;;; Fullscreen Frame
+;; Need to do this after startup to avoid flashing the screen for some reason
+(push '(fullscreen . maximized) initial-frame-alist)
+
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
 (setq explicit-shell-file-name "/opt/homebrew/bin/zsh")
@@ -151,7 +155,7 @@
                   'lem-setup-scratch
 
                   ;; Basic UI modules
-                  'cpm-setup-frames
+                  'lem-setup-frames
                   'lem-setup-windows
                   'lem-setup-buffers
                   'lem-setup-fonts
