@@ -4,29 +4,21 @@
 ;; Author: Colin McLear <mclear@unl.edu>
 ;; Keywords: tools, convenience
 
-;; Make a clean & minimalist frame
-;; Better to do this in early-init so that you don't get frame resizing at startup
+;; ;; Set colors correctly so there is no flash at startup
+;; (cond ((string= (shell-command-to-string "dark-mode status") "on\n")
+;;        (push '(background-color . "#141414") initial-frame-alist)
+;;        (setq active-theme 'dark-theme))
+;;       (t
+;;        (push '(background-color . "#FFFEFD") initial-frame-alist)
+;;        (setq active-theme 'light-theme)))
+
 (setq-default initial-frame-alist
               (append (list
-                       '(fullscreen . maximized)
-                       ;; '(width . 175)
-                       ;; '(height . 60)
-                       ;; Don't flash startup background
-                       (if (string= (shell-command-to-string "dark-mode status") "on\n")
-                           '(background-color . "#141414")
-                         '(background-color . "#FFFEFD"))
-                       '(internal-border-width . 12)
-                       '(tool-bar-lines . 0)
-                       '(vertical-scroll-bars . nil)
-                       '(horizontal-scroll-bars . nil))))
-(setq-default default-frame-alist
-              (append (list
-                       '(frame-title-format . nil)
                        '(internal-border-width . 12)
                        '(tool-bar-lines . 0)
                        '(vertical-scroll-bars . nil)
                        '(horizontal-scroll-bars . nil)
-                       )))
+                       '(undecorated . t))))
 
 ;; Resize pixel-wise to avoid gaps
 (setq-default window-resize-pixelwise t)
