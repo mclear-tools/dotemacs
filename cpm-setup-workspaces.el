@@ -76,8 +76,7 @@
       (tab-bar-new-tab)
       (tab-bar-rename-tab "Notes")
       (dired lem-notes-dir)
-      (lem-notebook)
-      )))
+      (lem-notebook))))
 
 ;;;;; Elfeed Workspace
 (defun cpm-open-elfeed-in-workspace ()
