@@ -176,19 +176,19 @@
                                    :shortname ""
                                    :function mu4e-get-mailbox)))
 
-  (add-to-list 'mu4e-header-info-custom
-               '(:attach . (:name "Attachment"
-                            :shortname ""
-                            :function mu4e-headers-attach)))
-  ;; Set headers
+  ;; (add-to-list 'mu4e-header-info-custom
+  ;;              '(:attach . (:name "Attachment"
+  ;;                           :shortname ""
+  ;;                           :function mu4e-headers-attach)))
+  ;; ;; Set headers
   (setq mu4e-headers-date-format "%D";; "%Y-%m-%d %H:%M:%S"
         mu4e-headers-fields '(
-                              (:flags          .  10)
-                              (:relative-date  .  12)
-                              (:from-or-to     .  40)
-                              (:subject        .  85)
-                              (:tags           .  20)
-                              (:mailbox-short  .  15)
+                              (:flags          .  6)
+                              (:mailbox-short  .  10)
+                              (:relative-date  .  11)
+                              (:tags           .  12)
+                              (:from-or-to     .  20)
+                              (:subject        .  120)
                               ))
 
   ;; Handle html-formatted emails
@@ -818,6 +818,12 @@ https://github.com/djcb/mu/issues/2198"
 
 ;;;;; End Mu4e
 
+;;;; Column Faces
+;; requires mu 1.8+
+(use-package mu4e-column-faces
+  :disabled
+  :after mu4e
+  :config (mu4e-column-faces-mode))
 
 ;;;; Better Viewing – Mu4e Views
 ;; This makes mu4e render html emails in emacs via xwidgets.
