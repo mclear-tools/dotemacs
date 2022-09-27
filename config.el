@@ -256,6 +256,7 @@
 
 ;; Make sure to load these after general keybindings
 (with-eval-after-load 'lem-setup-keybindings
+  (bind-key (concat lem-prefix " \\")  #'lem-call-eshell)
   (bind-keys :prefix-map lem+user-keys
              :prefix (concat lem-prefix " u"               )
              ;; Workspaces
