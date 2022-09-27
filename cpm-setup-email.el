@@ -598,140 +598,53 @@ the pos of the keyword which is a cons cell, nil if not found."
   ;; Show maildirs with 0 messages
   (setq mu4e-main-hide-fully-read nil)
 
-;;;;; Better Marking (w/Icons & SVG Tags)
+;;;;; Better Marking w/SVG Tags)
 
-;;;;;; All-the-icons for marking
-  ;; Use all-the-icons
-  ;;https://github.com/emacsmirror/mu4e-marker-icons
-  ;;https://github.com/djcb/mu/issues/1795
+;;;;;; Default Mark Sign
+  ;; --- Nicer actions display using SVG tags -----------------------------------
+  (plist-put (cdr (assq 'refile   mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'trash    mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'untrash  mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'unread   mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'delete   mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'flag     mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'unflag   mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'move     mu4e-marks)) :char "×")
+  (plist-put (cdr (assq 'tag      mu4e-marks)) :char "×")
 
-  ;; Depends on all-the-icons
-  (when (featurep 'all-the-icons)
-    (require 'all-the-icons)
-
-    (defgroup mu4e-marker-icons nil
-      "Display icons for mu4e markers."
-      :group 'mu4e-marker-icons)
-
-    (defvar mu4e-marker-icons-marker-alist
-      '((mu4e-headers-seen-mark      . mu4e-marker-icons-saved-headers-seen-mark)
-        (mu4e-headers-new-mark       . mu4e-marker-icons-saved-headers-new-mark)
-        (mu4e-headers-unread-mark    . mu4e-marker-icons-saved-headers-unread-mark)
-        (mu4e-headers-signed-mark    . mu4e-marker-icons-saved-headers-signed-mark)
-        (mu4e-headers-encrypted-mark . mu4e-marker-icons-saved-headers-encrypted-mark)
-        (mu4e-headers-draft-mark     . mu4e-marker-icons-saved-headers-draft-mark)
-        (mu4e-headers-attach-mark    . mu4e-marker-icons-saved-headers-attach-mark)
-        (mu4e-headers-passed-mark    . mu4e-marker-icons-saved-headers-passed-mark)
-        (mu4e-headers-flagged-mark   . mu4e-marker-icons-saved-headers-flagged-mark)
-        (mu4e-headers-replied-mark   . mu4e-marker-icons-saved-headers-replied-mark)
-        (mu4e-headers-trashed-mark   . mu4e-marker-icons-saved-headers-trashed-mark))
-      "An alist of markers used in mu4e.")
-
-    (defun mu4e-marker-icons--store (l)
-      "Store mu4e header markers value from L."
-      (mapcar (lambda (x) (set (cdr x) (symbol-value (car x)))) l))
-
-    (defun mu4e-marker-icons--restore (l)
-      "Restore mu4e header markers value from L."
-      (let ((lrev (mapcar (lambda (x) (cons (cdr x) (car x))) l)))
-        (mu4e-marker-icons--store lrev)))
-
-    (defun mu4e-marker-icons-enable ()
-      "Enable mu4e-marker-icons."
-      (mu4e-marker-icons--store mu4e-marker-icons-marker-alist)
-      (setq mu4e-use-fancy-chars t)
-      (setq mu4e-headers-precise-alignment t)
-      (setq mu4e-headers-seen-mark       `("S" . ,(propertize
-                                                   (all-the-icons-material "mail_outline")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground ,(face-background 'default))))
-            mu4e-headers-new-mark        `("N" . ,(propertize
-                                                   (all-the-icons-material "markunread")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground ,(face-background 'default))))
-            mu4e-headers-unread-mark     `("u" . ,(propertize
-                                                   (all-the-icons-material "notifications_none")
-                                                   'face 'mu4e-unread-face))
-            mu4e-headers-draft-mark      `("D" . ,(propertize
-                                                   (all-the-icons-material "drafts")
-                                                   'face 'mu4e-draft-face))
-            mu4e-headers-attach-mark     `("a" . ,(propertize
-                                                   (all-the-icons-material "attachment")
-                                                   'face 'mu4e-attach-number-face))
-            mu4e-headers-passed-mark     `("P" . ,(propertize ; ❯ (I'm participating in thread)
-                                                   (all-the-icons-material "center_focus_weak")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground lambda-focus)))
-            mu4e-headers-flagged-mark    `("F" . ,(propertize
-                                                   (all-the-icons-material "flag")
-                                                   'face 'mu4e-flagged-face))
-            mu4e-headers-replied-mark    `("R" . ,(propertize
-                                                   (all-the-icons-material "reply_all")
-                                                   'face 'mu4e-replied-face))
-            mu4e-headers-trashed-mark    `("T" . ,(propertize
-                                                   (all-the-icons-material "delete_forever")
-                                                   'face 'mu4e-trashed-face))
-            mu4e-headers-encrypted-mark `("x" . ,(propertize
-                                                  (all-the-icons-material "enhanced_encryption")
-                                                  'face `(:family ,(all-the-icons-material-family)
-                                                          :foreground lambda-blue)))
-            mu4e-headers-signed-mark     `("s" . ,(propertize
-                                                   (all-the-icons-material "check")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground lambda-green)))))
-
-    (defun mu4e-marker-icons-disable ()
-      "Disable mu4e-marker-icons."
-      (mu4e-marker-icons--restore mu4e-marker-icons-marker-alist))
-
-    (define-minor-mode mu4e-marker-icons-mode
-      "Display icons for mu4e markers."
-      :require 'mu4e-marker-icons-mode
-      :init-value nil
-      :global t
-      (if mu4e-marker-icons-mode
-          (mu4e-marker-icons-enable)
-        (mu4e-marker-icons-disable)))
-
-    (with-eval-after-load 'mu4e
-      (mu4e-marker-icons-mode)))
-
-;;;;;; Add SVG tags
   ;; Don't show refile target; use svg instead
   (setq mu4e-headers-show-target nil)
 
-  ;; FIXME: unmarking doesn't remove SVG tags
+;;;;;; Add SVG Icon Overlays
   (defun mu4e-mark-at-point-advice (mark target)
     (interactive)
     (require 'svg-tag-mode)
     (let* ((msg (mu4e-message-at-point))
            (docid (mu4e-message-field msg :docid))
-           (overlay (make-overlay (- (line-end-position) 10)
-                                  (- (line-end-position) 0))))
-      (save-excursion
-        ;; (remove-overlays (line-beginning-position) (line-end-position))
-        (delete-overlay (make-overlay (line-beginning-position) (line-end-position)))
-        (if (eql mark 'unmark)
-            (delete-overlay overlay)
-          (cond ((eql mark 'refile)
-                 (overlay-put overlay 'display (svg-tag-make "ARCHIVE" 'success 3 0)))
-                ((eql mark 'trash)
-                 (overlay-put overlay 'display (svg-tag-make "TRASH" 'error 5 0)))
-                ((eql mark 'untrash)
-                 (overlay-put overlay 'display (svg-tag-make "UNTRASH" 3 0)))
-                ((eql mark 'delete)
-                 (overlay-put overlay 'display (svg-tag-make "DELETE" 'error 4 0)))
-                ((eql mark 'unread)
-                 (overlay-put overlay 'display (svg-tag-make "UNREAD" 4 0)))
-                ((eql mark 'flag)
-                 (overlay-put overlay 'display (svg-tag-make "FLAG" 'warning 6 0)))
-                ((eql mark 'unflag)
-                 (overlay-put overlay 'display (svg-tag-make "UNFLAG" 4 0)))
-                ((eql mark 'move)
-                 (overlay-put overlay 'display (svg-tag-make "MOVE" 'success 6 0)))
-                ((eql mark 'tag)
-                 (overlay-put overlay 'display (svg-tag-make "TAG" 'shadow 7 0))))))))
-
+           (obeg  (+ (line-beginning-position) 9))
+           (oend  (+ (line-beginning-position) 21))
+           (overlay (make-overlay obeg oend)))
+      (cond ((eql mark 'refile)
+             (overlay-put overlay 'display (svg-tag-make "ARCHIVE" :face 'success :inverse t 3 0)))
+            ((eql mark 'trash)
+             (overlay-put overlay 'display (svg-tag-make "TRASH"   :face 'error   :inverse t 5 0)))
+            ((eql mark 'untrash)
+             (overlay-put overlay 'display (svg-tag-make "UNTRASH" :face 'warning :inverse t 3 0)))
+            ((eql mark 'delete)
+             (overlay-put overlay 'display (svg-tag-make "DELETE"  :face 'error   :inverse t 4 0)))
+            ((eql mark 'unread)
+             (overlay-put overlay 'display (svg-tag-make "UNREAD"  :face 'warning :inverse t 4 0)))
+            ((eql mark 'flag)
+             (overlay-put overlay 'display (svg-tag-make "FLAG"    :face 'warning :inverse t 6 0)))
+            ((eql mark 'unflag)
+             (overlay-put overlay 'display (svg-tag-make "UNFLAG"  :face 'warning :inverse t 4 0)))
+            ((eql mark 'move)
+             (overlay-put overlay 'display (svg-tag-make "MOVE"    :face 'warning :inverse t 6 0)))
+            ((eql mark 'tag)
+             (overlay-put overlay 'display (svg-tag-make "TAG"     :face 'region  :inverse nil 7 0)))
+            ((eql mark 'unmark)
+             (save-excursion
+               (remove-overlays (line-beginning-position) (line-end-position)))))))
   (advice-add 'mu4e-mark-at-point :after #'mu4e-mark-at-point-advice)
 
 
@@ -739,7 +652,7 @@ the pos of the keyword which is a cons cell, nil if not found."
   (defun lem-swiftbar-email-update ()
     "Update swiftbar mail plugin"
     (interactive)
-    (call-process-shell-command "open -g 'swiftbar://refreshplugin?name=mail-mu'" nil 0))
+    (eshell-command "open -g 'swiftbar://refreshplugin?name=mail-mu'" nil 0))
 
   (add-hook 'mu4e-index-updated-hook #'lem-swiftbar-email-update)
 
