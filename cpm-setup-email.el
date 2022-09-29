@@ -748,7 +748,7 @@ the pos of the keyword which is a cons cell, nil if not found."
   (defun lem-swiftbar-email-update ()
     "Update swiftbar mail plugin"
     (interactive)
-    (eshell-command "open -g 'swiftbar://refreshplugin?name=mail-mu'" nil 0))
+    (eshell-command "open -g 'swiftbar://refreshplugin?name=mail-mu'"))
 
   (add-hook 'mu4e-index-updated-hook #'lem-swiftbar-email-update)
 
