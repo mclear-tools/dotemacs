@@ -598,6 +598,102 @@ the pos of the keyword which is a cons cell, nil if not found."
   ;; Show maildirs with 0 messages
   (setq mu4e-main-hide-fully-read nil)
 
+;;;;; Better Icons
+  ;; All-the-icons for marking
+  ;; Use all-the-icons
+  ;;https://github.com/emacsmirror/mu4e-marker-icons
+  ;;https://github.com/djcb/mu/issues/1795
+
+  ;; Depends on all-the-icons
+  (when (featurep 'all-the-icons)
+    (require 'all-the-icons)
+
+    (defgroup mu4e-marker-icons nil
+      "Display icons for mu4e markers."
+      :group 'mu4e-marker-icons)
+
+    (defvar mu4e-marker-icons-marker-alist
+      '((mu4e-headers-seen-mark      . mu4e-marker-icons-saved-headers-seen-mark)
+        (mu4e-headers-new-mark       . mu4e-marker-icons-saved-headers-new-mark)
+        (mu4e-headers-unread-mark    . mu4e-marker-icons-saved-headers-unread-mark)
+        (mu4e-headers-signed-mark    . mu4e-marker-icons-saved-headers-signed-mark)
+        (mu4e-headers-encrypted-mark . mu4e-marker-icons-saved-headers-encrypted-mark)
+        (mu4e-headers-draft-mark     . mu4e-marker-icons-saved-headers-draft-mark)
+        (mu4e-headers-attach-mark    . mu4e-marker-icons-saved-headers-attach-mark)
+        (mu4e-headers-passed-mark    . mu4e-marker-icons-saved-headers-passed-mark)
+        (mu4e-headers-flagged-mark   . mu4e-marker-icons-saved-headers-flagged-mark)
+        (mu4e-headers-replied-mark   . mu4e-marker-icons-saved-headers-replied-mark)
+        (mu4e-headers-trashed-mark   . mu4e-marker-icons-saved-headers-trashed-mark))
+      "An alist of markers used in mu4e.")
+
+    (defun mu4e-marker-icons--store (l)
+      "Store mu4e header markers value from L."
+      (mapcar (lambda (x) (set (cdr x) (symbol-value (car x)))) l))
+
+    (defun mu4e-marker-icons--restore (l)
+      "Restore mu4e header markers value from L."
+      (let ((lrev (mapcar (lambda (x) (cons (cdr x) (car x))) l)))
+        (mu4e-marker-icons--store lrev)))
+
+    (defun mu4e-marker-icons-enable ()
+      "Enable mu4e-marker-icons."
+      (mu4e-marker-icons--store mu4e-marker-icons-marker-alist)
+      (setq mu4e-use-fancy-chars t)
+      (setq mu4e-headers-precise-alignment t)
+      (setq mu4e-headers-seen-mark       `("S" . ,(propertize
+                                                   (all-the-icons-material "mail_outline")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground ,(face-background 'default))))
+            mu4e-headers-new-mark        `("N" . ,(propertize
+                                                   (all-the-icons-material "markunread")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground ,(face-background 'default))))
+            mu4e-headers-unread-mark     `("u" . ,(propertize
+                                                   (all-the-icons-material "notifications_none")
+                                                   'face 'mu4e-unread-face))
+            mu4e-headers-draft-mark      `("D" . ,(propertize
+                                                   (all-the-icons-material "drafts")
+                                                   'face 'mu4e-draft-face))
+            mu4e-headers-attach-mark     `("a" . ,(propertize
+                                                   (all-the-icons-material "attachment")
+                                                   'face 'mu4e-attach-number-face))
+            mu4e-headers-passed-mark     `("P" . ,(propertize ; ❯ (I'm participating in thread)
+                                                   (all-the-icons-material "center_focus_weak")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground lambda-focus)))
+            mu4e-headers-flagged-mark    `("F" . ,(propertize
+                                                   (all-the-icons-material "flag")
+                                                   'face 'mu4e-flagged-face))
+            mu4e-headers-replied-mark    `("R" . ,(propertize
+                                                   (all-the-icons-material "reply_all")
+                                                   'face 'mu4e-replied-face))
+            mu4e-headers-trashed-mark    `("T" . ,(propertize
+                                                   (all-the-icons-material "delete_forever")
+                                                   'face 'mu4e-trashed-face))
+            mu4e-headers-encrypted-mark `("x" . ,(propertize
+                                                  (all-the-icons-material "enhanced_encryption")
+                                                  'face `(:family ,(all-the-icons-material-family)
+                                                          :foreground lambda-blue)))
+            mu4e-headers-signed-mark     `("s" . ,(propertize
+                                                   (all-the-icons-material "check")
+                                                   'face `(:family ,(all-the-icons-material-family)
+                                                           :foreground lambda-green)))))
+
+    (defun mu4e-marker-icons-disable ()
+      "Disable mu4e-marker-icons."
+      (mu4e-marker-icons--restore mu4e-marker-icons-marker-alist))
+
+    (define-minor-mode mu4e-marker-icons-mode
+      "Display icons for mu4e markers."
+      :require 'mu4e-marker-icons-mode
+      :init-value nil
+      :global t
+      (if mu4e-marker-icons-mode
+          (mu4e-marker-icons-enable)
+        (mu4e-marker-icons-disable)))
+
+    (with-eval-after-load 'mu4e
+      (mu4e-marker-icons-mode)))
 ;;;;; Better Marking w/SVG Tags)
 
 ;;;;;; Default Mark Sign
