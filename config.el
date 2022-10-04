@@ -350,6 +350,38 @@
 ;; Disable emacs vc for git; just use magit!
 ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
 
+;;;;; Davmail & Mu4e
+(defun cpm-start-davmail ()
+  "Start a headless Davmail process in verm."
+  (interactive)
+  (let ((tname (cdr (assoc 'name (tab-bar--current-tab)))))
+    (cond ((not (get-buffer "*davmail*"))
+           (lem-run-in-vterm "davmail")
+           (if (string= tname "Home")
+               (switch-to-buffer "*splash*")
+             (lem-previous-user-buffer))
+           (message "Davmail started."))
+          (t
+           (message "Davmail process is already running!")))))
+
+(defun cpm-stop-davmail ()
+  "Kill davmail headless server."
+  (interactive)
+  (cond ((kill-buffer "*davmail*")
+         (message "Davmail stopped."))
+        (t
+         (message "There is no Davmail process!"))))
+
+;; Startup & quit hooks
+(with-eval-after-load 'mu4e
+  (progn
+    ;; initiate davmail process
+    (cpm-start-davmail)
+    ;; add to popper buffer
+    (add-to-list 'popper-reference-buffers '("\\*davmail\\*" . hide))))
+;; Kill davmail on quit
+(add-hook 'kill-emacs-hook #'cpm-stop-davmail)
+
 ;;; Provide
 (provide 'config)
 ;;; config.el ends here
