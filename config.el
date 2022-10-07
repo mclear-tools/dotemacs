@@ -69,6 +69,7 @@
 (customize-set-variable 'denote-known-keywords '("emacs" "teaching" "unl" "workbook"))
 (customize-set-variable 'denote-prompts '(title keywords subdirectory))
 
+
 ;; Provide nicer spacing for note front matter
 (setq denote-org-front-matter
       "#+title:     %s
@@ -101,10 +102,11 @@
       org-agenda-files (list org-directory))
 
 ;;;;; Straight Package Manager
+(with-eval-after-load 'straight
 ;; Don't walk straight repos
 (push "straight" vc-directory-exclusion-list)
 ;; Delete .DS_Store before prune
-(advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash (concat lem-var-dir "straight/build/.DS_Store"))))
+(advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash (concat lem-var-dir "straight/build/.DS_Store")))))
 
 ;;;;; Set Splash Footer
 (setq lem-splash-footer  "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
@@ -151,7 +153,8 @@
                   'lem-setup-buffers
                   'lem-setup-fonts
                   'lem-setup-faces
-                  'lem-setup-theme))
+                  'lem-setup-theme
+                  ))
    (require mod)))
 
 ;;;;; Load After-Init Modules
@@ -217,9 +220,9 @@
                                  'lem-setup-eshell
 
                                  ;; Org modules
-                                 'lem-setup-org-base
-                                 'lem-setup-org-settings
-                                 'lem-setup-org-extensions
+                                 ;; 'lem-setup-org-base
+                                 ;; 'lem-setup-org-settings
+                                 ;; 'lem-setup-org-extensions
 
                                  ;; Productivity
                                  'lem-setup-pdf
@@ -299,9 +302,99 @@
                   "^\\*term.*\\*$"   term-mode
                   "^\\*vterm.*\\*$"  vterm-mode))))
 
+;;;;; Homebrew
+(use-package homebrew
+  :disabled
+  :when sys-mac
+  ;; :straight (homebrew :host github :repo "jdormit/homebrew.el")
+  :commands
+  (homebrew-install homebrew-upgrade homebrew-update homebrew-edit homebrew-info homebrew-package-info))
+
+
+;;;;; Dictionary
+(use-package sdcv-mode
+  :disabled
+  ;; :straight (:type git :host github :repo "gucong/emacs-sdcv")
+  :bind (:map lem+search-keys
+         ("w" . sdcv-search)))
+
+;;;;; Capf-bibtex
+(use-package capf-bibtex
+  ;; :straight (:type git :host github :repo "mclear-tools/capf-bibtex")
+  :disabled
+  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
+  :custom
+  (capf-bibtex-bibliography
+   '("/Users/roambot/Dropbox/Work/bibfile.bib")))
+
+;;;;; Word Repetition Finder
+;; Via https://irreal.org/blog/?p=10235
+(use-package repetition_error_finder
+  ;; :straight (:type git :host github :repo "ioah86/repetition_error_finder")
+  :disabled
+  :commands (find-reperr-whole-buffer find-reperr-from-point))
+
+;;;;; Bookmark+
+(use-package bookmark+
+  :disabled
+  :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
+  :config
+  (setq bmkp-last-as-first-bookmark-file (concat lem-cache-dir "bookmarks")))
+;;;;; Highlight Lines
+;; Highlight lines. You can toggle this off
+(use-package hl-line+
+  :disabled
+  :hook
+  ;; https://tech.toryanderson.com/2021/09/24/replacing-beacon.el-with-hl-line-flash/
+  (window-scroll-functions . hl-line-flash)
+  (focus-in . hl-line-flash)
+  (post-command . hl-line-flash)
+  :custom-face
+  ;; subtle highlighting
+  (hl-line ((t (:inherit highlight))))
+  :custom
+  (global-hl-line-mode nil)
+  (hl-line-flash-show-period 0.5)
+  ;; (hl-line-inhibit-highlighting-for-modes '(dired-mode))
+  ;; (hl-line-overlay-priority -100) ;; sadly, seems not observed by diredfl
+  (hl-line-when-idle-interval 5)
+  (hl-line-inhibit-highlighting-for-modes '(eshell-mode lem-splash-mode))
+  :config
+  (toggle-hl-line-when-idle 1 t))
+
+;;;;; Crosshair Highlighting
+;; Highlight cursor vertically and horizontally
+(use-package crosshairs
+  :disabled
+  :commands (crosshairs-highlight
+             crosshairs-mode
+             flash-crosshairs)
+  :bind (:map lem+toggle-keys
+         ("c" . crosshairs-mode))
+  :custom-face
+  (col-highlight ((t (:inherit hl-line))))
+  :config
+  ;; same colors for both hlines
+  (setq col-highlight-vline-face-flag t))
+
+
+;;;;; Pulsing Cursor
+(use-package pulsing-cursor
+  :load-path (lambda () (concat lem-user-elisp-dir "pulsing-cursor/"))
+  ;; :straight (:type git :host github :repo "jasonjckn/pulsing-cursor")
+  :defer 1
+  :custom-face
+  (pulsing-cursor-overlay-face1 ((t (:inherit match))))
+  :custom
+  (pulsing-cursor-delay 1.0)
+  (pulsing-cursor-interval .5)
+  (pulsing-cursor-blinks 5)
+  :config (pulsing-cursor-mode +1))
+
+
 ;;;;; Command log mode
 (use-package command-log-mode
-  :straight (:type git :host github :repo "lewang/command-log-mode")
+  ;; :straight (:type git :host github :repo "lewang/command-log-mode")
   :commands (command-log-mode))
 
 ;;;;; Elfeed

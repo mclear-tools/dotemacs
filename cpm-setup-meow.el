@@ -175,7 +175,6 @@
 ;;;; Meow
 ;; Note load Meow before loading personal keybindings, otherwise some might get clobbered
 (use-package meow
-  :straight (:type git :host github :repo "meow-edit/meow")
   :custom
   (meow-use-cursor-position-hack t)
   (meow-use-clipboard t)

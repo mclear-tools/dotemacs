@@ -199,7 +199,6 @@
 
 ;;; Org Tree Slides
 (use-package org-tree-slide
-  :straight t
   :bind (:map org-tree-slide-mode-map
          ("C-j" . org-tree-slide-move-next-tree)
          ("C-k" . org-tree-slide-move-previous-tree)

@@ -26,8 +26,10 @@
 
 ;;;; Mu4e
 (use-package mu4e
-  ;; Tell straight to use homebrew mu4e
-  :straight nil
+  ;; Tell package system to use homebrew mu4e. NOTE: This means that the user
+  ;; must install mu & mu4e, which comes with it, on their system independently
+  ;; of emacs.
+  :ensure nil
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu/mu4e"
   :commands (mu4e mu4e-compose-new mu4e-update-mail-and-index)
   :config
@@ -846,7 +848,7 @@ https://github.com/djcb/mu/issues/2198"
 ;; NOTE: need to add something about not loading remote images (mu4e-view-show-images ?)
 
 (use-package mu4e-views
-  :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views" :branch "master")
+  ;; :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views" :branch "master")
   :after mu4e
   :defer nil
   :bind (:map mu4e-headers-mode-map
@@ -860,7 +862,7 @@ https://github.com/djcb/mu/issues/2198"
   :config
   (setq mu4e-views-completion-method 'default) ;; use default completion
   (setq mu4e-views-default-view-method "text") ;; make text the default
-  (mu4e-views-mu4e-use-view-msg-method "text") ;; select the default
+  (setq mu4e-views-mu4e-use-view-msg-method "text") ;; select the default
   ;; when pressing n and p stay in the current window
   (setq mu4e-views-next-previous-message-behaviour 'stick-to-current-window)
   ;; automatically open messages when moving in the headers view
@@ -881,7 +883,7 @@ https://github.com/djcb/mu/issues/2198"
 
 ;;;; Using Org & HTML (Org-MSG)
 (use-package org-msg
-  :straight (:type git :host github :repo "jeremy-compostella/org-msg")
+  ;; :straight (:type git :host github :repo "jeremy-compostella/org-msg")
   :after mu4e
   :config
   (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} ':t toc:nil author:nil email:nil \\n:t"
