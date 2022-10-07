@@ -113,16 +113,14 @@
 (defun cpm-open-new-eshell-and-workspace ()
   "Open an empty buffer in its own workspace"
   (interactive)
-  (let ((popper--reference-modes '(vterm-mode term-mode shell-mode compilation-mode help-mode))
-        (popper--reference-names '("^\\*vterm.*\\*$" "^\\*term.*\\*$" "^\\*shell.*\\*$" "\\*Async Shell Command\\*" "Output\\*$" "\\*Messages\\*")))
-    (if (member "Eshell" (tabspaces--list-tabspaces))
-        (tab-bar-switch-to-tab "Eshell")
-      (progn
-        (tab-bar-new-tab)
-        (tab-bar-rename-tab "Eshell")
-        (lem-eshell-home)
-        (rename-buffer "eshell-workspace")
-        (delete-other-windows)))))
+  (if (member "Eshell" (tabspaces--list-tabspaces))
+      (tab-bar-switch-to-tab "Eshell")
+    (progn
+      (tab-bar-new-tab)
+      (tab-bar-rename-tab "Eshell")
+      (lem-eshell-home)
+      (rename-buffer "eshell-workspace")
+      (delete-other-windows))))
 
 ;;;;; Open Mu4e Email in Workspace
 (defun cpm-open-email-in-workspace ()
@@ -192,17 +190,16 @@
 
 ;;;;; Mail Keybindings
 (bind-keys :prefix-map lem+mail-keys
-           :prefix (concat lem-prefix " m")
-           ("a" . mu4e-view-save-attachment-multi)
-           ("c" . mu4e-compose-new           )
-           ("e" . lem-email-save-and-kill    )
-           ("i" . lem-go-to-mail-inbox       )
-           ("k" . lem-mu-kill-server         )
-           ("m" . cpm-open-email-in-workspace)
-           ("s" . mu4e-update-mail-and-index )
-           ("S" . lem-swiftbar-email-update  )
-           ("u" . lem-go-to-mail-unread      ))
-
+:prefix (concat lem-prefix " m")
+("a" . mu4e-view-save-attachment-multi)
+("c" . mu4e-compose-new           )
+("e" . lem-email-save-and-kill    )
+("i" . lem-go-to-mail-inbox       )
+("k" . lem-mu-kill-server         )
+("m" . cpm-open-email-in-workspace)
+("s" . mu4e-update-mail-and-index )
+("S" . lem-swiftbar-email-update  )
+("u" . lem-go-to-mail-unread      ))
 
 
 (provide 'cpm-setup-workspaces)

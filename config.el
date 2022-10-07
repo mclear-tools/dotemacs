@@ -354,7 +354,9 @@
   (interactive)
   (let ((tname (cdr (assoc 'name (tab-bar--current-tab)))))
     (cond ((not (get-buffer "*davmail*"))
+           ;; need to use vterm otherwise output speed is too slow
            (lem-run-in-vterm "davmail")
+           ;; (ansi-term "davmail" "davmail")
            (if (string= tname "Home")
                (switch-to-buffer "*splash*")
              (lem-previous-user-buffer))
@@ -365,18 +367,20 @@
 (defun cpm-stop-davmail ()
   "Kill davmail headless server."
   (interactive)
-  (cond ((kill-buffer "*davmail*")
+  (cond ((get-buffer "*davmail*")
+         (kill-buffer "*davmail*")
          (message "Davmail stopped."))
         (t
          (message "There is no Davmail process!"))))
 
-;; Startup & quit hooks
+;; ;; Startup & quit hooks
 (with-eval-after-load 'mu4e
   (progn
     ;; initiate davmail process
     (cpm-start-davmail)
     ;; add to popper buffer
-    (add-to-list 'popper-reference-buffers '("\\*davmail\\*" . hide))))
+    (add-to-list 'popper-reference-buffers '("\\*davmail\\*" . hide))
+    ))
 ;; Kill davmail on quit
 (add-hook 'kill-emacs-hook #'cpm-stop-davmail)
 
