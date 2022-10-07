@@ -36,13 +36,6 @@
 
 ;;;; User Vars
 
-;;;;; Set Fonts
-(customize-set-variable 'lem-ui-default-font
-   '(:font "SF Mono" :height 130))
-
-(customize-set-variable 'lem-ui-variable-width-font
-   '(:font "Avenir Next" :height 140))
-
 ;;;;; Fullscreen Frame
 ;; Need to do this after startup to avoid flashing the screen for some reason
 (push '(fullscreen . maximized) initial-frame-alist)
@@ -347,6 +340,22 @@
 
 ;; Disable emacs vc for git; just use magit!
 ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
+
+;;;;; Set Fonts
+;; Set the default face. The default face is the basis for most other
+;; faces used in Emacs. A "face" is a configuration including font,
+;; font size, foreground and background colors and other attributes.
+;; The fixed-pitch and fixed-pitch-serif faces are monospace faces
+;; generally used as the default face for code. The variable-pitch
+;; face is used when `variable-pitch-mode' is turned on, generally
+;; whenever a non-monospace face is preferred.
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (custom-set-faces
+             `(default ((t (:font "SF Mono 13"))))
+             `(fixed-pitch ((t (:inherit (default)))))
+             `(fixed-pitch-serif ((t (:inherit (default)))))
+             `(variable-pitch ((t (:font "Avenir Next 14")))))))
 
 ;;;;; Davmail & Mu4e
 (defun cpm-start-davmail ()
