@@ -365,6 +365,9 @@
     (cond ((not (get-buffer "*davmail*"))
            ;; need to use vterm otherwise output speed is too slow
            (lem-run-in-vterm "davmail")
+           (switch-to-buffer "*davmail*")
+           ;; don't use goto address mode in davmail buffer
+           (goto-address-mode -1)
            ;; (ansi-term "davmail" "davmail")
            (if (string= tname "Home")
                (switch-to-buffer "*splash*")
