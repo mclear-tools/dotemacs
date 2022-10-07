@@ -37,13 +37,11 @@
 ;;;; User Vars
 
 ;;;;; Set Fonts
-(custom-set-variables
- '(lem-ui-default-font
-   '(:font "SF Mono" :height 130)))
+(customize-set-variable 'lem-ui-default-font
+   '(:font "SF Mono" :height 130))
 
-(custom-set-variables
- '(lem-ui-variable-width-font
-   '(:font "Avenir Next" :height 140)))
+(customize-set-variable 'lem-ui-variable-width-font
+   '(:font "Avenir Next" :height 140))
 
 ;;;;; Fullscreen Frame
 ;; Need to do this after startup to avoid flashing the screen for some reason
