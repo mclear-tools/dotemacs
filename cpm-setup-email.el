@@ -850,7 +850,7 @@ https://github.com/djcb/mu/issues/2198"
 (use-package mu4e-views
   ;; :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views" :branch "master")
   :after mu4e
-  :defer nil
+  :demand t
   :bind (:map mu4e-headers-mode-map
 	     ("v" . mu4e-views-mu4e-select-view-msg-method) ;; select viewing method
          ("C-v" . lem-mu4e-text-view-toggle)

@@ -108,6 +108,127 @@
 ;; Delete .DS_Store before prune
 (advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash (concat lem-var-dir "straight/build/.DS_Store")))))
 
+;;;;; Package.el
+;; Explicitly set packages for download/install or removal
+(customize-set-variable 'package-selected-packages '(ace-window
+                                                     ag
+                                                     aggressive-indent
+                                                     all-the-icons-completion
+                                                     all-the-icons-dired
+                                                     anaphora
+                                                     applescript-mode
+                                                     auctex
+                                                     auto-compile
+                                                     backup-walker
+                                                     bug-hunter
+                                                     command-log-mode
+                                                     citar
+                                                     cape
+                                                     consult-dir
+                                                     consult-flyspell
+                                                     consult-notes
+                                                     corfu-doc
+                                                     crux
+                                                     define-word
+                                                     deadgrep
+                                                     denote
+                                                     diff-hl
+                                                     dimmer
+                                                     dired-narrow
+                                                     dired-quick-sort
+                                                     dired-ranger
+                                                     diredfl
+                                                     el-patch
+                                                     elfeed-tube
+                                                     elisp-def
+                                                     elisp-demos
+                                                     embark-consult
+                                                     embrace
+                                                     esh-help
+                                                     eshell-syntax-highlighting
+                                                     eshell-up
+                                                     esup
+                                                     flymake-collection
+                                                     flyspell-correct
+                                                     git-timemachine
+                                                     gnutls
+                                                     gited
+                                                     goggles
+                                                     goto-last-change
+                                                     grab-mac-link
+                                                     haskell-mode
+                                                     helpful
+                                                     hide-mode-line
+                                                     highlight-indent-guides
+                                                     highlight-numbers
+                                                     ibuffer-vc
+                                                     iedit
+                                                     imenu-list
+                                                     info-colors
+                                                     kind-icon
+                                                     lorem-ipsum
+                                                     lua-mode
+                                                     macrostep
+                                                     magit-todos
+                                                     marginalia
+                                                     markdown-toc
+                                                     meow
+                                                     mu4e-views
+                                                     multi-compile
+                                                     multi-vterm
+                                                     ns-auto-titlebar
+                                                     orderless
+                                                     org-appear
+                                                     org-autolist
+                                                     org-contrib
+                                                     org-download
+                                                     org-modern
+                                                     org-msg
+                                                     org-noter
+                                                     org-pomodoro
+                                                     org-tree-slide
+                                                     osx-dictionary
+                                                     osx-lib
+                                                     outline-minor-faces
+                                                     ox-hugo
+                                                     ox-pandoc
+                                                     package-lint
+                                                     palimpsest
+                                                     pandoc-mode
+                                                     pcmpl-args
+                                                     pcmpl-git
+                                                     pcmpl-homebrew
+                                                     pcomplete-extension
+                                                     pdf-tools
+                                                     peep-dired
+                                                     php-mode
+                                                     popper
+                                                     puni
+                                                     rainbow-delimiters
+                                                     rainbow-identifiers
+                                                     rainbow-mode
+                                                     restart-emacs
+                                                     reveal-in-osx-finder
+                                                     revert-buffer-all
+                                                     rg
+                                                     svg-tag-mode
+                                                     tabspaces
+                                                     tldr
+                                                     tramp-term
+                                                     use-package
+                                                     vdiff-magit
+                                                     vertico
+                                                     vimrc-mode
+                                                     virtualenvwrapper
+                                                     visual-regexp-steroids
+                                                     web-mode
+                                                     which-key
+                                                     winum
+                                                     writeroom-mode
+                                                     ws-butler
+                                                     yaml-mode
+                                                     yasnippet-snippets))
+
 ;;;;; Set Splash Footer
 (setq lem-splash-footer  "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
 
@@ -153,8 +274,7 @@
                   'lem-setup-buffers
                   'lem-setup-fonts
                   'lem-setup-faces
-                  'lem-setup-theme
-                  ))
+                  'lem-setup-theme))
    (require mod)))
 
 ;;;;; Load After-Init Modules
@@ -220,9 +340,9 @@
                                  'lem-setup-eshell
 
                                  ;; Org modules
-                                 ;; 'lem-setup-org-base
-                                 ;; 'lem-setup-org-settings
-                                 ;; 'lem-setup-org-extensions
+                                 'lem-setup-org-base
+                                 'lem-setup-org-settings
+                                 'lem-setup-org-extensions
 
                                  ;; Productivity
                                  'lem-setup-pdf
@@ -391,6 +511,31 @@
   (pulsing-cursor-blinks 5)
   :config (pulsing-cursor-mode +1))
 
+;;; Org Menu
+;; A menu for editing org-mode documents and exploring it’s features in a
+;; discoverable way via transient menus.
+(use-package org-menu
+  :disabled
+  ;; :straight (:type git :host github :repo "sheijk/org-menu")
+  :bind* (:map org-mode-map
+          ("C-c m" . org-menu)))
+
+
+;;;;; Org Modern Indent
+;; Make org-modern work better with org-indent
+(use-package org-modern-indent
+  :load-path (lambda () (concat lem-user-elisp-dir "org-modern-indent"))
+  ;; :straight (:type git :host github :repo "jdtsmith/org-modern-indent")
+  :hook (org-indent-mode . org-modern-indent-mode)
+  :custom-face
+  (org-modern-indent-line ((t (:height 1.0 :inherit lem-ui-default-font :inherit lambda-meek)))))
+
+;;;;; Org Devonthink Integration
+(use-package org-devonthink
+  :when sys-mac
+  :load-path (lambda () (concat lem-user-elisp-dir "org-devonthink"))
+  ;; :straight (:type git :host github :repo "lasvice/org-devonthink")
+  :commands (org-insert-dtp-link org-dtp-store-link))
 
 ;;;;; Command log mode
 (use-package command-log-mode
@@ -442,13 +587,15 @@
 ;; generally used as the default face for code. The variable-pitch
 ;; face is used when `variable-pitch-mode' is turned on, generally
 ;; whenever a non-monospace face is preferred.
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (custom-set-faces
-             `(default ((t (:font "SF Mono 13"))))
-             `(fixed-pitch ((t (:inherit (default)))))
-             `(fixed-pitch-serif ((t (:inherit (default)))))
-             `(variable-pitch ((t (:font "Avenir Next 14")))))))
+(defun lem-user-fonts ()
+  "Set user fonts."
+  (cond ((and (lem-font-available-p "SF Mono")
+              (lem-font-available-p "Avenir Next"))
+         (set-face-attribute 'default           nil :font "SF Mono-13")
+         (set-face-attribute 'fixed-pitch       nil :inherit 'default)
+         (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
+         (set-face-attribute 'variable-pitch    nil :font "Avenir Next-14"))))
+(add-hook 'emacs-startup-hook #'lem-user-fonts)
 
 ;;;;; Davmail & Mu4e
 (defun cpm-start-davmail ()

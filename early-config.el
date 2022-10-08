@@ -32,11 +32,17 @@
 (setq mode-line-format nil)
 (setq header-line-format nil)
 
-
 ;;; Package settings
 ;; The default package system is 'package.
 ;; This can be overridden in `early-config.el'.
 (setq lem-package-system 'package)
 (lem-package-bootstrap lem-package-system)
+
+;; Initialise installed packages
+(setq package-enable-at-startup t)
+(defvar package-quickstart)
+;; Allow loading from the package cache
+(setq package-quickstart t)
+
 
 ;;; early-config.el ends here
