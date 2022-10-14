@@ -38,6 +38,129 @@
 (setq lem-package-system 'package)
 (lem-package-bootstrap lem-package-system)
 
+;; Explicitly set packages for download/install or removal
+;; Needs to be set before package initialization
+;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
+(customize-set-variable 'package-selected-packages '(ace-window
+                                                     ag
+                                                     aggressive-indent
+                                                     all-the-icons-completion
+                                                     all-the-icons-dired
+                                                     anaphora
+                                                     applescript-mode
+                                                     auctex
+                                                     auto-compile
+                                                     backup-walker
+                                                     ;; bug-hunter
+                                                     command-log-mode
+                                                     citar
+                                                     cape
+                                                     consult-dir
+                                                     consult-flyspell
+                                                     consult-notes
+                                                     corfu-doc
+                                                     crux
+                                                     define-word
+                                                     deadgrep
+                                                     denote
+                                                     diff-hl
+                                                     dimmer
+                                                     dired-narrow
+                                                     dired-quick-sort
+                                                     dired-ranger
+                                                     diredfl
+                                                     el-patch
+                                                     elfeed-tube
+                                                     elisp-def
+                                                     elisp-demos
+                                                     embark-consult
+                                                     embrace
+                                                     esh-help
+                                                     eshell-syntax-highlighting
+                                                     eshell-up
+                                                     ;; esup
+                                                     flymake-collection
+                                                     flyspell-correct
+                                                     ;; git-timemachine
+                                                     gnutls
+                                                     ;; gited
+                                                     goggles
+                                                     goto-last-change
+                                                     grab-mac-link
+                                                     haskell-mode
+                                                     helpful
+                                                     hide-mode-line
+                                                     highlight-indent-guides
+                                                     highlight-numbers
+                                                     ibuffer-vc
+                                                     iedit
+                                                     imenu-list
+                                                     info-colors
+                                                     kind-icon
+                                                     lorem-ipsum
+                                                     lua-mode
+                                                     macrostep
+                                                     magit-todos
+                                                     marginalia
+                                                     markdown-toc
+                                                     meow
+                                                     mu4e-views
+                                                     multi-compile
+                                                     multi-vterm
+                                                     ns-auto-titlebar
+                                                     orderless
+                                                     org-appear
+                                                     org-autolist
+                                                     org-contrib
+                                                     org-download
+                                                     org-modern
+                                                     org-msg
+                                                     org-noter
+                                                     org-pomodoro
+                                                     org-tree-slide
+                                                     osx-dictionary
+                                                     osx-lib
+                                                     outline-minor-faces
+                                                     ox-hugo
+                                                     ox-pandoc
+                                                     package-lint
+                                                     palimpsest
+                                                     pandoc-mode
+                                                     paradox
+                                                     pcmpl-args
+                                                     pcmpl-git
+                                                     pcmpl-homebrew
+                                                     pcomplete-extension
+                                                     pdf-tools
+                                                     peep-dired
+                                                     php-mode
+                                                     popper
+                                                     puni
+                                                     rainbow-delimiters
+                                                     rainbow-identifiers
+                                                     rainbow-mode
+                                                     restart-emacs
+                                                     reveal-in-osx-finder
+                                                     revert-buffer-all
+                                                     rg
+                                                     svg-tag-mode
+                                                     tabspaces
+                                                     tldr
+                                                     tramp-term
+                                                     use-package
+                                                     vdiff-magit
+                                                     vertico
+                                                     vimrc-mode
+                                                     virtualenvwrapper
+                                                     visual-regexp-steroids
+                                                     web-mode
+                                                     which-key
+                                                     winum
+                                                     writeroom-mode
+                                                     ws-butler
+                                                     yaml-mode
+                                                     yasnippet-snippets))
+
 ;; Initialise installed packages
 (setq package-enable-at-startup t)
 (defvar package-quickstart)
