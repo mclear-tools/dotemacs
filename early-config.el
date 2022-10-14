@@ -19,7 +19,7 @@
                        '(tool-bar-lines . 0)
                        '(vertical-scroll-bars . nil)
                        '(horizontal-scroll-bars . nil)
-                       '(undecorated . t))))
+                       '(undecorated . nil))))
 
 ;; Resize pixel-wise to avoid gaps
 (setq-default window-resize-pixelwise t)
