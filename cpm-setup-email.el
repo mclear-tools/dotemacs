@@ -831,8 +831,6 @@ https://github.com/djcb/mu/issues/2198"
 
 ;;;;; End Mu4e
 
-
-
 ;;;; Column Faces
 ;; requires mu 1.8+
 (use-package mu4e-column-faces
@@ -841,14 +839,14 @@ https://github.com/djcb/mu/issues/2198"
   :config (mu4e-column-faces-mode))
 
 ;;;; Better Viewing – Mu4e Views
-;; This makes mu4e render html emails in emacs via xwidgets.
-;; It basically reproduces a modern email client experience. Depends on compiling emacs with xwidgets
-;; to check that exwidgets are installed
-;; evaluate (xwidget-webkit-browse-url "https://www.gnu.org/")
-;; NOTE: need to add something about not loading remote images (mu4e-view-show-images ?)
+;; This makes mu4e render html emails in emacs via xwidgets. It basically
+;; reproduces a modern email client experience. Depends on compiling emacs with
+;; xwidgets to check that exwidgets are installed evaluate
+;; (xwidget-webkit-browse-url "https://www.gnu.org/") NOTE: need to add
+;; something about not loading remote images (mu4e-view-show-images ?)
 
 (use-package mu4e-views
-  ;; :straight (mu4e-views :type git :host github :repo "lordpretzel/mu4e-views" :branch "master")
+  :load-path (lambda () (concat lem-user-elisp-dir "mu4e-views"))
   :after mu4e
   :demand t
   :bind (:map mu4e-headers-mode-map
