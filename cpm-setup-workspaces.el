@@ -41,8 +41,10 @@
   (if (member "Agenda" (tabspaces--list-tabspaces))
       (progn
         (tab-bar-switch-to-tab "Agenda")
-        (switch-to-buffer "*Org Agenda*")
-        (org-agenda-redo)
+        (if (get-buffer "*Org Agenda*")
+            (switch-to-buffer "*Org Agenda*")
+          (org-agenda nil "d"))
+        (org-agenda-redo t)
         (delete-other-windows))
     (progn
       (tab-bar-new-tab)
