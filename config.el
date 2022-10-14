@@ -607,9 +607,9 @@
     (cond ((not (get-buffer "*davmail*"))
            ;; need to use vterm otherwise output speed is too slow
            (lem-run-in-vterm "davmail")
-           (switch-to-buffer "*davmail*")
-           ;; don't use goto address mode in davmail buffer
-           (goto-address-mode -1)
+           (with-current-buffer "*davmail*"
+             ;; don't use goto address mode in davmail buffer
+             (goto-address-mode -1))
            ;; (ansi-term "davmail" "davmail")
            (if (string= tname "Home")
                (switch-to-buffer "*splash*")
@@ -626,6 +626,17 @@
          (message "Davmail stopped."))
         (t
          (message "There is no Davmail process!"))))
+
+(defun cpm-restart-davmail ()
+  (interactive)
+  (progn
+    (get-buffer "*davmail*")
+    (kill-buffer "*davmail*")
+    (lem-run-in-vterm "davmail")
+    (with-current-buffer "*davmail*"
+      (goto-address-mode -1))
+    (message "Davmail restarted.")))
+
 
 ;; ;; Startup & quit hooks
 (with-eval-after-load 'mu4e
