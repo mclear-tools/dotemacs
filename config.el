@@ -213,7 +213,7 @@
 
                                  ;; Programming modules
                                  'lem-setup-programming
-                                 'lem-setup-debug
+                                 ;; 'lem-setup-debug
                                  'lem-setup-skeleton
 
                                  ;; Shell & Terminal
@@ -302,6 +302,22 @@
                   "^\\*shell.*\\*$"  shell-mode
                   "^\\*term.*\\*$"   term-mode
                   "^\\*vterm.*\\*$"  vterm-mode))))
+
+;;;;; Capf-Bibtex
+(use-package capf-bibtex
+  :load-path (lambda () (concat lem-user-elisp-dir "capf-bibtex"))
+  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
+  :custom
+  (capf-bibtex-bibliography
+   '("~/Dropbox/Work/bibfile.bib")))
+
+;;;;; Package Management (Paradox)
+(use-package paradox
+  :commands (paradox-list-packages)
+  :custom
+  (paradox-github-token nil)
+  :config
+  (paradox-enable))
 
 ;;;;; Homebrew
 (use-package homebrew
