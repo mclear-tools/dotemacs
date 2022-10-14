@@ -40,6 +40,8 @@
 ;; Need to do this after startup to avoid flashing the screen for some reason
 (push '(fullscreen . maximized) initial-frame-alist)
 
+;;;;; Exec Path & User Bin
+(setq exec-path (append exec-path (list "~/bin")))
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
 (setq explicit-shell-file-name "/opt/homebrew/bin/zsh")
