@@ -38,12 +38,15 @@
 (setq lem-package-system 'package)
 (lem-package-bootstrap lem-package-system)
 
+
+;;; Package List
 ;; Explicitly set packages for download/install or removal
 ;; Needs to be set before package initialization
 ;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
 (customize-set-variable 'package-selected-packages '(ace-window
                                                      ag
                                                      aggressive-indent
+                                                     all-the-icons
                                                      all-the-icons-completion
                                                      all-the-icons-dired
                                                      anaphora
@@ -57,7 +60,8 @@
                                                      cape
                                                      consult-dir
                                                      consult-flyspell
-                                                     consult-notes
+                                                     ;; consult-notes
+                                                     corfu
                                                      corfu-doc
                                                      crux
                                                      define-word
@@ -131,7 +135,7 @@
                                                      pcmpl-git
                                                      pcmpl-homebrew
                                                      pcomplete-extension
-                                                     pdf-tools
+                                                     ;; pdf-tools
                                                      peep-dired
                                                      php-mode
                                                      popper
@@ -161,9 +165,31 @@
                                                      yaml-mode
                                                      yasnippet-snippets))
 
-;; Initialise installed packages
+;; Auto install the required packages
+;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
+;; http://toumorokoshi.github.io/emacs-from-scratch-part-2-package-management.html
+;; https://github.com/kaushalmodi/.emacs.d
+(defvar lem-missing-packages '()
+  "List populated at startup containing packages needing installation.")
+
+;; Check packages
+(dolist (p package-selected-packages)
+  (unless (package-installed-p p)
+    (add-to-list 'lem-missing-packages p :append)))
+
+;; Install packages
+(when lem-missing-packages
+  (message "Emacs is now refreshing its package database...")
+  (package-refresh-contents)
+  ;; Install the missing packages
+  (dolist (p lem-missing-packages)
+    (message "Installing `%s' .." p)
+    (package-install p))
+  (setq lem-missing-packages '()))
+
+;; Don't initialize installed packages at startup
 (setq package-enable-at-startup t)
-(defvar package-quickstart)
+
 ;; Allow loading from the package cache
 (setq package-quickstart t)
 
