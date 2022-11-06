@@ -488,11 +488,14 @@
   "Set user fonts."
   (cond ((and (lem-font-available-p "SF Mono")
               (lem-font-available-p "Avenir Next"))
-         (set-face-attribute 'default           nil :font "SF Mono-13")
+         (set-face-attribute 'default           nil :font "SF Mono-13.5")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
-         (set-face-attribute 'variable-pitch    nil :font "Avenir Next-14"))))
+         (set-face-attribute 'variable-pitch    nil :font "Avenir Next-14.5"))))
 (add-hook 'emacs-startup-hook #'lem-user-fonts)
+
+;;;;; SHR Rendering
+(setq shr-use-fonts nil)
 
 ;;;;; Davmail & Mu4e
 (defun cpm-start-davmail ()
