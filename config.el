@@ -528,21 +528,25 @@
 (defun cpm-restart-davmail ()
   (interactive)
   (progn
-    (get-buffer "*davmail*")
-    (kill-buffer "*davmail*")
-    (lem-run-in-vterm "davmail")
-    (with-current-buffer "*davmail*"
-      (goto-address-mode -1))
+    (cpm-stop-davmail)
+    (cpm-start-davmail)
+    ;; (get-buffer "*davmail*")
+    ;; (kill-buffer "*davmail*")
+    ;; (lem-run-in-vterm "davmail")
+    ;; (with-current-buffer "*davmail*"
+    ;;   (goto-address-mode -1))
     (message "Davmail restarted.")))
 
-
-;; ;; Startup & quit hooks
+;; Startup & quit hooks
 (with-eval-after-load 'mu4e
   (progn
     ;; initiate davmail process
     (cpm-start-davmail)
+    (do-applescript "tell application \"Emacs\"
+activate
+end tell")
     ;; add to popper buffer
-    (add-to-list 'popper-reference-buffers '("\\*davmail\\*" . hide))
+    ;; (add-to-list 'popper-reference-buffers '("\\*davmail\\*" . hide))
     ))
 ;; Kill davmail on quit
 (add-hook 'kill-emacs-hook #'cpm-stop-davmail)
