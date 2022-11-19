@@ -35,15 +35,16 @@ relying, where possible, on built-in features of emacs (or on small packages
 that leverage built-in emacs functions). For some useful tips on using some
 potentially neglected built-in packages see [[https://karthinks.com/software/batteries-included-with-emacs/][here]] and [[https://karthinks.com/software/more-batteries-included-with-emacs/][here]].  
 
-My config is based on a series of "[[file:.local/lambda-library/lambda-setup/][modules]]" loaded in the [[file:init.el][init.el]] file. Please
-see the init file and the various config "helper" functions at the end for
-easy navigation. While many like to use a literate org-file for organizing
-their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring things in separate elisp files. The
-modules are organized thematically rather than package by package (e.g. the
-[[file:.local/lambda-library/lambda-setup/lem-setup-writing.el][writing module]] contains the config for spelling and markdown mode). Note that
-while I have an [[file:early-init.el][early-init]] file for use with emacs 27+, the configuration
-should work with emacs 26+ on MacOS (though I haven't tested this in awhile),
-with the latest release (currently 28.1) being best.
+My config is based on a series of "[[file:~/.emacs.d/lambda-library/lambda-setup/][modules]]" loaded in the [[file:config.el][config.el]] file. Please
+see [[https://github.com/Lambda-Emacs/lambda-emacs][Lambda-Emacs]] for the init file and the various config "helper" functions I
+use to search for things and for easy navigation. While many like to use a
+literate org-file for organizing their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring
+things in separate elisp files. The modules are organized thematically rather
+than package by package (e.g. the writing module contains the config for
+spelling and markdown mode). Note that while I have an early-init file for use
+with emacs 27+, the configuration should work with emacs 26+ on MacOS (though I
+haven't tested this in awhile), with the latest release (currently 28.1) being
+best.
 
 Some highlights of this emacs setup include:
 
