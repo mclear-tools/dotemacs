@@ -28,7 +28,7 @@
 (setq user-full-name "Colin McLear"
       user-mail-address "mclear@fastmail.com")
 
-;;;;; Private File
+;;;; Private File
 ;; where to store private or "secret" info
 (let ((private (expand-file-name "private.el" lem-user-dir)))
   (if (file-exists-p private)
@@ -36,12 +36,19 @@
 
 ;;;; User Vars
 
+;;;;; Tab workspaces
+
+(with-eval-after-load 'tabspaces
+  (customize-set-variable 'tabspaces-session-mode t)
+  (customize-set-variable 'tabspaces-session-file (concat lem-cache-dir "tabsession.el")))
+
 ;;;;; Fullscreen Frame
 ;; Need to do this after startup to avoid flashing the screen for some reason
 (push '(fullscreen . maximized) initial-frame-alist)
 
 ;;;;; Exec Path & User Bin
 (setq exec-path (append exec-path (list "~/bin")))
+
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
 (setq explicit-shell-file-name "/opt/homebrew/bin/zsh")
@@ -70,6 +77,7 @@
 (customize-set-variable 'denote-directory lem-notes-dir)
 (customize-set-variable 'denote-known-keywords '("emacs" "teaching" "unl" "workbook"))
 (customize-set-variable 'denote-prompts '(title keywords subdirectory))
+(customize-set-variable 'consult-notes-denote-display-id t)
 
 
 ;; Provide nicer spacing for note front matter
@@ -80,13 +88,19 @@
 #+identifier: %s
 \n")
 
+;; Use Consult-notes with Denote
+(with-eval-after-load 'consult-notes
+  (require 'consult-notes-denote)
+  (consult-notes-denote-mode))
+
 (setq consult-notes-sources
-      `(("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
-        ("Lecture Notes"   ?l ,(concat lem-notes-dir "lecture-notes/"))
-        ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
+      `(;; ("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
+        ;; ("Lecture Notes"   ?l ,(concat lem-notes-dir "lecture-notes/"))
+        ;; ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
         ("Org"             ?o "~/Dropbox/org-files/")
-        ("Workbook"        ?w ,(concat lem-notes-dir "workbook/"))
-        ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))))
+        ;; ("Workbook"        ?w ,(concat lem-notes-dir "workbook/"))
+        ;; ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))
+        ))
 
 ;; Org-Roam Notes
 ;; (require 'lem-setup-org-roam)
@@ -172,7 +186,6 @@
                                  ;; Completion & Keybinds
                                  'lem-setup-completion
                                  'lem-setup-keybindings
-
                                  ;; Navigation & Search modules
                                  'lem-setup-navigation
                                  'lem-setup-dired
@@ -213,12 +226,13 @@
 
                                  ;; Programming modules
                                  'lem-setup-programming
-                                 ;; 'lem-setup-debug
+                                 'lem-setup-debug
                                  'lem-setup-skeleton
 
                                  ;; Shell & Terminal
                                  'lem-setup-shell
                                  'lem-setup-eshell
+                                 'cpm-setup-iterm
 
                                  ;; Org modules
                                  'lem-setup-org-base
@@ -293,6 +307,34 @@
 
 ;;;; User Packages
 
+;;;;; Zotero Org Zotxt Inferface
+
+(use-package zotxt
+  ;; :straight (:type git :host github :repo "zotxt")
+  :commands (org-zotxt-insert-reference-link
+             org-zotxt-open-attachment
+             rg-zotxt-update-reference-link-at-point)
+  :config
+  (add-hook 'org-mode #'org-zotxt-mode))
+
+
+;;;;; Doc-Tools
+(use-package doc-tools
+  :disabled
+  :load-path (lambda () (concat lem-user-elisp-dir "doc-tools/"))
+  ;; :commands (doc-scroll-minor-mode)
+  :config
+  (load (concat lem-user-elisp-dir "doc-tools/doc-backend-mupdf.el"))
+  (load (concat lem-user-elisp-dir "doc-tools/doc-scroll.el")))
+
+;; :config
+;; (require 'doc-backend-mupdf))
+;; :commands (doc-tools-mode)
+
+
+
+;;;;; Popper Shells
+
 (with-eval-after-load 'popper
   ;; Match eshell, shell, term and/or vterm buffers
   (setq popper-reference-buffers
@@ -303,19 +345,9 @@
                   "^\\*term.*\\*$"   term-mode
                   "^\\*vterm.*\\*$"  vterm-mode))))
 
-;;;;; Capf-Bibtex
-(use-package capf-bibtex
-  :load-path (lambda () (concat lem-user-elisp-dir "capf-bibtex"))
-  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
-  :custom
-  (capf-bibtex-bibliography
-   '("~/Dropbox/Work/bibfile.bib")))
-
 ;;;;; Package Management (Paradox)
 (use-package paradox
   :commands (paradox-list-packages)
-  :custom
-  (paradox-github-token nil)
   :config
   (paradox-enable))
 
@@ -327,7 +359,6 @@
   :commands
   (homebrew-install homebrew-upgrade homebrew-update homebrew-edit homebrew-info homebrew-package-info))
 
-
 ;;;;; Dictionary
 (use-package sdcv-mode
   :disabled
@@ -338,7 +369,7 @@
 ;;;;; Capf-bibtex
 (use-package capf-bibtex
   ;; :straight (:type git :host github :repo "mclear-tools/capf-bibtex")
-  :disabled
+  :load-path (lambda () (concat lem-user-elisp-dir "capf-bibtex"))
   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
   :custom
   (capf-bibtex-bibliography
@@ -357,6 +388,7 @@
   :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
   :config
   (setq bmkp-last-as-first-bookmark-file (concat lem-cache-dir "bookmarks")))
+
 ;;;;; Highlight Lines
 ;; Highlight lines. You can toggle this off
 (use-package hl-line+
@@ -394,7 +426,6 @@
   ;; same colors for both hlines
   (setq col-highlight-vline-face-flag t))
 
-
 ;;;;; Pulsing Cursor
 (use-package pulsing-cursor
   :load-path (lambda () (concat lem-user-elisp-dir "pulsing-cursor/"))
@@ -416,7 +447,6 @@
   ;; :straight (:type git :host github :repo "sheijk/org-menu")
   :bind* (:map org-mode-map
           ("C-c m" . org-menu)))
-
 
 ;;;;; Org Modern Indent
 ;; Make org-modern work better with org-indent
@@ -445,7 +475,9 @@
 (with-eval-after-load 'elfeed
   (customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
                                           ("https://planet.emacslife.com/atom.xml" emacs)
-                                          ("https://tilde.town/~ramin_hal9001/atom.xml" emacs))))
+                                          ("https://tilde.town/~ramin_hal9001/atom.xml" emacs)
+                                          ("https://www.mail-archive.com/emacs-devel@gnu.org/maillist.xml" emacs)
+                                          ("https://karthinks.com/index.xml" emacs))))
 
 ;;;;; Eshell Aliases
 (with-eval-after-load 'eshell
@@ -454,6 +486,76 @@
    "pd" "cd ~/projects"))
 
 ;;;; User Functions
+
+;;;;; Kill Process
+;; https://xenodium.com/emacs-quick-kill-process/
+(use-package proced
+  :functions cpm-proced--hook-fun
+  :commands (proced cpm-quick-kill-process)
+  :hook (proced-mode . cpm-proced--hook-fun)
+  :config
+  (defun cpm-proced--hook-fun ()
+    (setq proced-auto-update-flag t))
+
+  (require 'map)
+  (require 'proced)
+  (require 'seq)
+
+  (defun cpm-quick-kill-process ()
+    (interactive)
+    (let* ((pid-width 5)
+           (comm-width 25)
+           (user-width 10)
+           (processes (proced-process-attributes))
+           (candidates
+            (mapcar (lambda (attributes)
+                      (let* ((process (cdr attributes))
+                             (pid (format (format "%%%ds" pid-width) (map-elt process 'pid)))
+                             (user (format (format "%%-%ds" user-width)
+                                           (truncate-string-to-width
+                                            (map-elt process 'user) user-width nil nil t)))
+                             (comm (format (format "%%-%ds" comm-width)
+                                           (truncate-string-to-width
+                                            (map-elt process 'comm) comm-width nil nil t)))
+                             (args-width (- (window-width) (+ pid-width user-width comm-width 3)))
+                             (args (map-elt process 'args)))
+                        (cons (if args
+                                  (format "%s %s %s %s" pid user comm (truncate-string-to-width args args-width nil nil t))
+                                (format "%s %s %s" pid user comm))
+                              process)))
+                    processes))
+           (selection (map-elt candidates
+                               (completing-read "kill process: "
+                                                (seq-sort
+                                                 (lambda (p1 p2)
+                                                   (string-lessp (nth 2 (split-string (string-trim (car p1))))
+                                                                 (nth 2 (split-string (string-trim (car p2))))))
+                                                 candidates) nil t)))
+           (prompt-title (format "%s %s %s"
+                                 (map-elt selection 'pid)
+                                 (map-elt selection 'user)
+                                 (map-elt selection 'comm))))
+      (when (y-or-n-p (format "Kill? %s" prompt-title))
+        (if (eq (signal-process (map-elt selection 'pid) 9) 0)
+            (message "killed: %s" prompt-title)
+          (message "error: could not kill %s" prompt-title))))))
+
+;;;;; Recenter Buffer
+;; https://www.n16f.net/blog/eye-level-window-centering-in-emacs/
+;; NOTE: As value approaches 1 "center" goes to the bottom of the screen
+;; A value between.15 and .25 seems best
+(defcustom lem-recenter-buffer-eye-level 0.25  "The relative position of the line considered as eye level in the
+current window, as a ratio between 0 and 1.")
+
+(defun lem-recenter-buffer ()
+  "Scroll the window so that the current line is at eye level."
+  (interactive)
+  (let ((line (round (* (window-height) lem-recenter-buffer-eye-level))))
+    (recenter line)
+    (pulse-line)))
+
+(global-set-key (kbd "C-l") 'lem-recenter-buffer)
+(global-set-key (kbd "C-S-l") 'recenter-top-bottom)
 
 ;;;;; User Goto Functions
 (defun goto-dotfiles.org ()
@@ -487,11 +589,11 @@
 (defun lem-user-fonts ()
   "Set user fonts."
   (cond ((and (lem-font-available-p "SF Mono")
-              (lem-font-available-p "Avenir Next"))
-         (set-face-attribute 'default           nil :font "SF Mono-13.5")
+              (lem-font-available-p "SF Pro Text"))
+         (set-face-attribute 'default           nil :font "SF Mono-13")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
-         (set-face-attribute 'variable-pitch    nil :font "Avenir Next-14.5"))))
+         (set-face-attribute 'variable-pitch    nil :font "SF Pro Text-14"))))
 (add-hook 'emacs-startup-hook #'lem-user-fonts)
 
 ;;;;; SHR Rendering
@@ -499,28 +601,56 @@
 
 ;;;;; Davmail & Mu4e
 (defun cpm-start-davmail ()
-  "Start a headless Davmail process in verm."
+  "Start a headless Davmail process in iterm."
   (interactive)
-  (let ((tname (cdr (assoc 'name (tab-bar--current-tab)))))
-    (cond ((not (get-buffer "*davmail*"))
-           ;; need to use vterm otherwise output speed is too slow
-           (lem-run-in-vterm "davmail")
-           (with-current-buffer "*davmail*"
-             ;; don't use goto address mode in davmail buffer
-             (goto-address-mode -1))
-           ;; (ansi-term "davmail" "davmail")
-           (if (string= tname "Home")
-               (switch-to-buffer "*splash*")
-             (lem-previous-user-buffer))
-           (message "Davmail started."))
-          (t
-           (message "Davmail process is already running!")))))
+  (cond ((not (string> (shell-command-to-string "jps -v | grep davmail") ""))
+         (do-applescript "
+tell application \"iTerm\"
+	delay 0.35
+	if (count of windows) = 0 then
+		create window with default profile
+	else
+		tell current window
+			create tab with default profile
+		end tell
+	end if
+	tell current session of current tab of current window
+		write text \"davmail\"
+	end tell
+end tell")
+         (do-applescript "tell application \"Emacs\"
+activate
+end tell")
+         ;; (async-shell-command-no-window "open -a iterm")
+         ;; (shell-command "sleep .5")
+         ;; (iterm-send-string "davmail")
+
+         ;; (let ((tname (cdr (assoc 'name (tab-bar--current-tab)))))
+         ;;   (cond ((not (get-buffer "*davmail*"))
+         ;;          ;; need to use vterm otherwise output speed is too slow
+         ;;          (lem-run-in-vterm "davmail")
+         ;;          (with-current-buffer "*davmail*"
+         ;;            ;; don't use goto address mode in davmail buffer
+         ;;            (goto-address-mode -1))
+         ;;          ;; (ansi-term "davmail" "davmail")
+         ;;          (if (string= tname "Home")
+         ;;              (switch-to-buffer "*splash*")
+         ;;            (lem-previous-user-buffer))
+         (message "Davmail started."))
+        (t
+         (message "Davmail process is already running!"))))
 
 (defun cpm-stop-davmail ()
   "Kill davmail headless server."
   (interactive)
-  (cond ((get-buffer "*davmail*")
-         (kill-buffer "*davmail*")
+  (cond ((string> (shell-command-to-string "jps -v | grep davmail") "")
+         ;; (shell-command "osascript -e 'quit app \"iterm2\"'")
+         (shell-command "jps -v | grep davmail | awk {'print $1'} | xargs kill")
+         ;; (get-buffer "*davmail*")
+         ;; (kill-buffer "*davmail*")
+         (do-applescript "tell application \"Emacs\"
+activate
+end tell")
          (message "Davmail stopped."))
         (t
          (message "There is no Davmail process!"))))
