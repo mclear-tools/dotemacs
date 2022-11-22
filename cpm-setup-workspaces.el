@@ -142,7 +142,6 @@
          (require 'org) ; need this for loading?
          (find-file (concat org-directory "mail.org"))
          (mu4e)
-         (switch-to-buffer "*davmail*")
          (switch-to-buffer " *mu4e-main*"))))
 
 ;;;;; Open New Buffer & Workspace
