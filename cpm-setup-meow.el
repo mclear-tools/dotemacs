@@ -194,6 +194,8 @@
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
   ;; start eshell in insert
   (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
+  ;; start helpful in normal
+  (add-to-list 'meow-mode-state-list '(helpful-mode . normal))
   (meow-global-mode 1)
   (meow-setup))
 
