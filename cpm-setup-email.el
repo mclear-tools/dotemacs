@@ -185,7 +185,7 @@
   ;; ;; Set headers
   (setq mu4e-headers-date-format "%D";; "%Y-%m-%d %H:%M:%S"
         mu4e-headers-fields '(
-                              (:flags          .  6)
+                              (:flags          .  8)
                               (:mailbox-short  .  10)
                               (:relative-date  .  11)
                               (:tags           .  12)
@@ -341,9 +341,12 @@ the real email address"
 
   ;; Compose in new frame
   (setq mu4e-compose-in-new-frame t)
+  (add-hook 'message-send-mail-hook (lambda () (delete-frame)))
+  (add-hook 'mail-send-hook (lambda () (delete-frame)))
 
   ;; Don't keep message compose buffers around after sending:
   (setq message-kill-buffer-on-exit t)
+
   ;;; Make sure plain text mails flow correctly for recipients
   (setq mu4e-compose-format-flowed t)
 
