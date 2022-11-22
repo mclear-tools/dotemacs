@@ -15,6 +15,7 @@
 
 (setq-default initial-frame-alist
               (append (list
+                       '(fullscreen . maximized)
                        '(internal-border-width . 12)
                        '(tool-bar-lines . 0)
                        '(vertical-scroll-bars . nil)
@@ -37,6 +38,7 @@
 ;; This can be overridden in `early-config.el'.
 (setq lem-package-system 'package)
 (lem-package-bootstrap lem-package-system)
+(setq lem-package-ensure-packages nil)
 
 
 ;;; Package List
@@ -77,6 +79,7 @@
                                                      elfeed-tube
                                                      elisp-def
                                                      elisp-demos
+                                                     embark
                                                      embark-consult
                                                      embrace
                                                      esh-help
@@ -135,7 +138,7 @@
                                                      pcmpl-git
                                                      pcmpl-homebrew
                                                      pcomplete-extension
-                                                     ;; pdf-tools
+                                                     pdf-tools
                                                      peep-dired
                                                      php-mode
                                                      popper
@@ -163,7 +166,8 @@
                                                      writeroom-mode
                                                      ws-butler
                                                      yaml-mode
-                                                     yasnippet-snippets))
+                                                     yasnippet-snippets
+                                                     zotxt))
 
 ;; Auto install the required packages
 ;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
@@ -175,7 +179,7 @@
 ;; Check packages
 (dolist (p package-selected-packages)
   (unless (package-installed-p p)
-    (add-to-list 'lem-missing-packages p :append)))
+    (add-to-list 'lem-missing-packages p 'append)))
 
 ;; Install packages
 (when lem-missing-packages
@@ -188,7 +192,7 @@
   (setq lem-missing-packages '()))
 
 ;; Don't initialize installed packages at startup
-(setq package-enable-at-startup t)
+(setq package-enable-at-startup nil)
 
 ;; Allow loading from the package cache
 (setq package-quickstart t)
