@@ -32,6 +32,14 @@
 ;;; Org Capture
 ;;;; Capture Settings
 
+  ;; This is an unwieldy check but it works!
+  ;; https://apple.stackexchange.com/questions/313454/applescript-find-the-users-set-default-browser
+  (defun cpm-capture-browser ()
+    "Check which browser---firefox or safari---is default and set grab link accordingly."
+    (if (string= (shell-command-to-string "defaults read ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure | awk -F'\"' '/http;/{print window[(NR)-1]}{window[NR]=$2}'") "org.mozilla.firefox\n")
+        (grab-mac-link 'firefox 'org)
+      (grab-mac-link 'safari 'org)))
+
   (setq org-capture-templates
         ;; Note the ` and , to get concat to evaluate properly
         `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
@@ -41,7 +49,7 @@
            "**** %<%H:%M>\n%?" :empty-lines 1)
 
           ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
-           "* %? :link: \n%(grab-mac-link 'safari 'org)"  :empty-lines 1)
+           "* %? :link: \n%(cpm-capture-browser)"  :empty-lines 1)
 
           ("m" "eMail Workflow")
           ("mc" "Comment" entry (file+olp ,(concat org-directory "Mail.org") "Mail Comment")
