@@ -65,7 +65,7 @@
 
 ;; Set citar library path
 (with-eval-after-load 'citar
-  (setq citar-library-paths '("/Users/roambot/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library")))
+  (setq citar-library-paths '("~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library")))
 
 ;;;;; Notes
 ;; I use hugo so define a setup file variable
@@ -74,7 +74,7 @@
 
 ;; Denote settings
 (customize-set-variable 'lem-notes-dir (concat (getenv "HOME") "/Documents/notes/"))
-(customize-set-variable 'denote-directory lem-notes-dir)
+(customize-set-variable 'denote-directory (concat lem-notes-dir "denotes/"))
 (customize-set-variable 'denote-known-keywords '("emacs" "teaching" "unl" "workbook"))
 (customize-set-variable 'denote-prompts '(title keywords subdirectory))
 (customize-set-variable 'consult-notes-denote-display-id t)
@@ -88,29 +88,48 @@
 #+identifier: %s
 \n")
 
-;; Use Consult-notes with Denote
-(with-eval-after-load 'consult-notes
-  (require 'consult-notes-denote)
-  (consult-notes-denote-mode))
 
-(setq consult-notes-sources
-      `(;; ("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
-        ;; ("Lecture Notes"   ?l ,(concat lem-notes-dir "lecture-notes/"))
-        ;; ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
-        ("Org"             ?o "~/Dropbox/org-files/")
-        ;; ("Workbook"        ?w ,(concat lem-notes-dir "workbook/"))
-        ;; ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))
-        ))
+
+;; Consult Notes Setup
+(with-eval-after-load 'consult-notes
+
+  (customize-set-variable 'consult-notes-file-dir-sources
+                          `(("Agenda Files"    ?a ,(car org-agenda-files))
+                            ("Refile Notes"    ?r ,(concat lem-notes-dir "refile-notes/"))))
+
+  (customize-set-variable
+   'consult-notes-org-headings-files '("~/Dropbox/org-files/inbox.org"
+                                       "~/Dropbox/org-files/reading.org"
+                                       "~/Dropbox/org-files/writing.org"
+                                       "~/Dropbox/org-files/reference.org"
+                                       "~/Dropbox/org-files/music.org"))
+
+  (defun cpm-consult-notes--file-dir-annotate (name dir cand)
+    "Annotate file CAND with its directory DIR, size, and modification time."
+    (let* ((file  (concat dir cand))
+           (attrs (file-attributes file))
+           (fsize (file-size-human-readable (file-attribute-size attrs)))
+           (ftime (consult-notes--time (file-attribute-modification-time attrs))))
+      (put-text-property 0 (length dir)  'face 'consult-notes-name dir)
+      (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
+      (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
+      (format "%8s %12s" fsize ftime)))
+
+  (customize-set-variable 'consult-notes-file-dir-annotate-function #'cpm-consult-notes--file-dir-annotate)
+
+  (consult-notes-denote-mode)
+  (consult-notes-org-headings-mode))
+
+;; Old sources
+;; ("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
+;; ("Lecture Notes"   ?l ,(concat lem-notes-dir "lecture-notes/"))
+;; ("Workbook"        ?w ,(concat lem-notes-dir "workbook/"))
+;; ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
+;; ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))
 
 ;; Org-Roam Notes
 ;; (require 'lem-setup-org-roam)
 ;; (setq org-roam-directory lem-notes-dir)
-
-
-;; Old sources
-;; ("Zettel"          ?z "~/Dropbox/Work/projects/notebook/content-org/")
-;; ("Lecture Notes"   ?l "~/Dropbox/Work/projects/notebook/content-org/lectures/")
-;; ("Reference Notes" ?r "~/Dropbox/Work/projects/notebook/content-org/ref-notes/")
 
 ;;;;; Org Directories
 (setq org-directory "~/Dropbox/org-files/"
@@ -119,10 +138,10 @@
 
 ;;;;; Straight Package Manager
 (with-eval-after-load 'straight
-;; Don't walk straight repos
-(push "straight" vc-directory-exclusion-list)
-;; Delete .DS_Store before prune
-(advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash (concat lem-var-dir "straight/build/.DS_Store")))))
+  ;; Don't walk straight repos
+  (push "straight" vc-directory-exclusion-list)
+  ;; Delete .DS_Store before prune
+  (advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash (concat lem-var-dir "straight/build/.DS_Store")))))
 
 ;;;;; Set Splash Footer
 (setq lem-splash-footer  "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
@@ -133,16 +152,16 @@
        "/usr/local/bin/pandoc"
        " --from=markdown --to=html"
        " --standalone --mathjax --highlight-style=pygments"
-       " --css=/Users/roambot/.pandoc/pandoc.css"
+       " --css=~/.pandoc/pandoc.css"
        " --quiet"
        " --number-sections"
-       " --lua-filter=/Users/roambot/dotfiles/pandoc/cutsection.lua"
-       " --lua-filter=/Users/roambot/dotfiles/pandoc/cuthead.lua"
-       " --lua-filter=/Users/roambot/dotfiles/pandoc/date.lua"
-       ;; " --metadata-file=/Users/roambot/dotfiles/pandoc/metadata.yml"
+       " --lua-filter=~/dotfiles/pandoc/cutsection.lua"
+       " --lua-filter=~/dotfiles/pandoc/cuthead.lua"
+       " --lua-filter=~/dotfiles/pandoc/date.lua"
+       ;; " --metadata-file=~/dotfiles/pandoc/metadata.yml"
        " --metadata=reference-section-title:References"
        " --citeproc"
-       " --bibliography=/Users/roambot/Dropbox/Work/bibfile.bib"))
+       " --bibliography=~/Dropbox/Work/bibfile.bib"))
 
 ;;;; Load Modules
 ;; Load modules in stages for a shorter init time. We load core modules first,
