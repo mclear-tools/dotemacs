@@ -30,7 +30,7 @@
   (interactive)
   (progn
     (tab-bar-new-tab)
-    (call-interactively 'project-switch-project-open-file)
+    (call-interactively #'tabspaces-project-switch-project-open-file)
     (tab-bar-rename-tab (tabspaces--name-tab-by-project-or-default))
     (project-magit-dir)))
 
@@ -78,7 +78,7 @@
       (tab-bar-new-tab)
       (tab-bar-rename-tab "Notes")
       (dired lem-notes-dir)
-      (lem-notebook))))
+      (consult-notes))))
 
 ;;;;; Elfeed Workspace
 (defun cpm-open-elfeed-in-workspace ()
@@ -179,7 +179,7 @@
     ("e" . cpm-open-elfeed-in-workspace)
     ("m" . cpm-open-email-in-workspace)
     ("n" . cpm-open-notes-in-workspace)
-    ("p" . cpm-open-existing-project-and-workspace)
+    ("p" . tabspaces-open-or-create-project-and-workspace)
     ("q" . lem-splash-screen-bury)
     ("[esc]" . lem-splash-screen-bury)
     ("k" . lem-splash-screen-kill)))
