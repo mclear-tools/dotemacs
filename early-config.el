@@ -40,134 +40,194 @@
 (lem-package-bootstrap lem-package-system)
 (setq lem-package-ensure-packages nil)
 
-
 ;;; Package List
 ;; Explicitly set packages for download/install or removal
 ;; Needs to be set before package initialization
 ;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
-(customize-set-variable 'package-selected-packages '(ace-window
-                                                     ag
-                                                     aggressive-indent
-                                                     all-the-icons
-                                                     all-the-icons-completion
-                                                     all-the-icons-dired
-                                                     anaphora
-                                                     applescript-mode
-                                                     auctex
-                                                     auto-compile
+(customize-set-variable 'package-selected-packages '(;; libraries
+                                                     async
+                                                     dash
+                                                     s
+                                                     f
+
+                                                     ;; settings
+                                                     visual-regexp
+                                                     ws-butler
                                                      backup-walker
-                                                     ;; bug-hunter
-                                                     command-log-mode
-                                                     citar
-                                                     cape
-                                                     consult-dir
-                                                     consult-flyspell
-                                                     ;; consult-notes
-                                                     corfu
-                                                     corfu-doc
+                                                     expand-region
+
+                                                     ;; functions
                                                      crux
-                                                     define-word
-                                                     deadgrep
-                                                     denote
-                                                     diff-hl
+
+                                                     ;; macros
+                                                     anaphora
+
+                                                     ;; frames
+                                                     ns-auto-titlebar
+
+                                                     ;; windows
+                                                     ace-window
+
+                                                     ;; buffers
+                                                     revert-buffer-all
+                                                     ibuffer-vc
+                                                     popper
+
+                                                     ;; fonts
+                                                     all-the-icons
+                                                     all-the-icons-dired
+                                                     all-the-icons-completion
+
+                                                     ;; faces
+                                                     outline-minor-faces
                                                      dimmer
-                                                     dired-narrow
-                                                     dired-quick-sort
-                                                     dired-ranger
-                                                     diredfl
-                                                     el-patch
-                                                     elfeed-tube
-                                                     elisp-def
-                                                     elisp-demos
+                                                     svg-tag-mode
+                                                     lin
+                                                     highlight-numbers
+                                                     hl-todo
+                                                     goggles
+
+                                                     ;; completion
+                                                     consult
+                                                     consult-dir
+                                                     vertico
+                                                     orderless
                                                      embark
                                                      embark-consult
-                                                     embrace
-                                                     esh-help
-                                                     eshell-syntax-highlighting
-                                                     eshell-up
-                                                     ;; esup
-                                                     flymake-collection
-                                                     flyspell-correct
-                                                     ;; git-timemachine
-                                                     gnutls
-                                                     ;; gited
-                                                     goggles
-                                                     goto-last-change
-                                                     grab-mac-link
-                                                     haskell-mode
-                                                     helpful
-                                                     hide-mode-line
-                                                     highlight-indent-guides
-                                                     highlight-numbers
-                                                     ibuffer-vc
-                                                     iedit
-                                                     imenu-list
-                                                     info-colors
-                                                     kind-icon
-                                                     lorem-ipsum
-                                                     lua-mode
-                                                     macrostep
-                                                     magit-todos
                                                      marginalia
-                                                     markdown-toc
+                                                     corfu
+                                                     corfu-doc
+                                                     cape
+                                                     kind-icon
+                                                     yasnippet
+                                                     yasnippet-snippets
+
+                                                     ;; keybindings
+                                                     which-key
+
+                                                     ;; navigation
+                                                     imenu-list
+                                                     goto-last-change
+
+                                                     ;; dired
+                                                     dired-narrow
+                                                     dired-quick-sort
+                                                     diredfl
+                                                     peep-dired
+                                                     dired-ranger
+
+                                                     ;; search
+                                                     ag
+                                                     deadgrep
+                                                     ripgrep
+                                                     visual-regexp-steroids
+
+                                                     ;; modal
                                                      meow
-                                                     mu4e-views
+
+                                                     ;; vc
+                                                     magit
+                                                     git-commit
+                                                     diff-hl
+                                                     vdiff-magit
+
+                                                     ;; tabs
+                                                     tabspaces
+
+                                                     ;; help
+                                                     hydra
+                                                     helpful
+                                                     elisp-demos
+                                                     info-colors
+
+                                                     ;; colors
+                                                     rainbow-mode
+
+                                                     ;; modeline
+                                                     hide-mode-line
+
+                                                     ;; writing
+                                                     binder
+                                                     consult-flyspell
+                                                     flyspell-correct
+                                                     markdown-mode
+                                                     markdown-toc
+                                                     writeroom-mode
+                                                     lorem-ipsum
+                                                     palimpsest
+                                                     auctex
+                                                     define-word
+                                                     osx-dictionary
+                                                     visual-fill-column
+
+                                                     ;; notes
+                                                     denote
+                                                     citar-denote
+                                                     consult-notes
+
+                                                     ;; citation
+                                                     citeproc
+                                                     citar
+
+                                                     ;; programming
+                                                     aggressive-indent
+                                                     flymake-collection
+                                                     elisp-def
+                                                     embrace
+                                                     highlight-indent-guides
+                                                     iedit
                                                      multi-compile
+                                                     package-lint
+                                                     rainbow-delimiters
+                                                     puni
+
+                                                     ;; debug
+                                                     bug-hunter
+                                                     esup
+
+                                                     ;; shell
+                                                     vterm
                                                      multi-vterm
-                                                     ns-auto-titlebar
-                                                     orderless
-                                                     org-appear
+                                                     virtualenvwrapper
+                                                     tramp-term
+                                                     exec-path-from-shell
+
+                                                     ;; eshell
+                                                     pcmpl-homebrew
+                                                     pcmpl-git
+                                                     pcmpl-args
+                                                     pcomplete-extension
+                                                     esh-help
+                                                     eshell-up
+                                                     eshell-syntax-highlighting
+
+                                                     ;; org extensions
+                                                     htmlize
                                                      org-autolist
+                                                     org-appear
                                                      org-contrib
                                                      org-download
                                                      org-modern
-                                                     org-msg
-                                                     org-noter
                                                      org-pomodoro
-                                                     org-tree-slide
-                                                     osx-dictionary
-                                                     osx-lib
-                                                     outline-minor-faces
-                                                     ox-hugo
                                                      ox-pandoc
-                                                     package-lint
-                                                     palimpsest
-                                                     pandoc-mode
-                                                     paradox
-                                                     pcmpl-args
-                                                     pcmpl-git
-                                                     pcmpl-homebrew
-                                                     pcomplete-extension
+                                                     ox-hugo
+
+                                                     ;; pdf
                                                      pdf-tools
-                                                     peep-dired
-                                                     php-mode
-                                                     popper
-                                                     puni
-                                                     rainbow-delimiters
-                                                     rainbow-identifiers
-                                                     rainbow-mode
-                                                     restart-emacs
+                                                     org-noter
+
+                                                     ;; elfeed
+                                                     elfeed
+                                                     elfeed-tube
+
+                                                     ;; macos
                                                      reveal-in-osx-finder
-                                                     revert-buffer-all
-                                                     rg
-                                                     svg-tag-mode
-                                                     tabspaces
-                                                     tldr
-                                                     tramp-term
-                                                     use-package
-                                                     vdiff-magit
-                                                     vertico
-                                                     vimrc-mode
-                                                     virtualenvwrapper
-                                                     visual-regexp-steroids
-                                                     web-mode
-                                                     which-key
-                                                     winum
-                                                     writeroom-mode
-                                                     ws-butler
-                                                     yaml-mode
-                                                     yasnippet-snippets
-                                                     zotxt))
+                                                     grab-mac-link
+                                                     osx-lib
+
+                                                     ;; mail
+                                                     mu4e-views
+                                                     org-msg))
 
 ;; Auto install the required packages
 ;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
@@ -176,23 +236,32 @@
 (defvar lem-missing-packages '()
   "List populated at startup containing packages needing installation.")
 
-;; Check packages
-(dolist (p package-selected-packages)
-  (unless (package-installed-p p)
-    (add-to-list 'lem-missing-packages p 'append)))
+(defun lem-check-and-install-packages ()
+  "Check if packages are installed.
+If missing, install packages."
+  ;; Check packages
+  (message "%s" "Checking for missing packages.")
+  (dolist (p package-selected-packages)
+    (unless (package-installed-p p)
+      (add-to-list 'lem-missing-packages p 'append)))
 
-;; Install packages
-(when lem-missing-packages
-  (message "Emacs is now refreshing its package database...")
-  (package-refresh-contents)
-  ;; Install the missing packages
-  (dolist (p lem-missing-packages)
-    (message "Installing `%s' .." p)
-    (package-install p))
-  (setq lem-missing-packages '()))
+  ;; Install packages
+  (if lem-missing-packages
+      (progn
+        (message "Emacs is now refreshing its package database...")
+        (package-refresh-contents)
+        ;; Install the missing packages
+        (dolist (p lem-missing-packages)
+          (message "Installing `%s' .." p)
+          (package-install p))
+        (setq lem-missing-packages '()))
+    (message "%s" "No missing packages.")))
 
-;; Don't initialize installed packages at startup
-(setq package-enable-at-startup nil)
+;; Check for missing packages & install if necessary
+(lem-check-and-install-packages)
+
+;; Initialize installed packages at startup
+(setq package-enable-at-startup t)
 
 ;; Allow loading from the package cache
 (setq package-quickstart t)
