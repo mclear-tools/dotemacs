@@ -72,7 +72,7 @@
    '("d" . dired-jump)
    '("D" . dired-jump-other-window)
    '("e" . lem+eval-keys)
-   '("E" . restart-emacs-start-new-emacs)
+   '("E" . lem-call-emacs)
    '("f" . lem+file-keys)
    '("F" . lem+flymake-keys)
    '("i" . lem-find-lambda-file)
