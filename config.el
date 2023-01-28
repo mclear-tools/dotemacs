@@ -47,12 +47,9 @@
 (push '(fullscreen . maximized) initial-frame-alist)
 
 ;;;;; User Paths
-;; Use exec-path-from-shell -- it's easier.
-(when (memq window-system '(mac ns))
-  (setopt exec-path-from-shell-variables
-          '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
-  (add-hook 'emacs-startup-hook
-            #'exec-path-from-shell-initialize))
+;; Set exec-path-from-shell
+(setopt exec-path-from-shell-variables
+        '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
 
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
@@ -491,18 +488,6 @@
   :init
   (unless (package-installed-p 'command-log-mode)
     (package-vc-install "https://github.com/lewang/command-log-mode.git")))
-
-;;;;; EAT (Emulate a terminal)
-(use-package eat
-  :hook (eshell-load . eat-eshell-mode)
-  :config
-  (setq eat-kill-buffer-on-exit t
-        eat-enable-yank-to-terminal t
-        eat-enable-directory-tracking t
-        eat-enable-shell-command-history t
-        eat-enable-shell-prompt-annotation t
-        eat-term-scrollback-size nil))
-
 
 ;;;; User Functions
 
