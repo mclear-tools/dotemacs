@@ -6,16 +6,15 @@
 
 ;;; Frame & Colors
 ;; ;; Set colors correctly so there is no flash at startup
-;; (cond ((string= (shell-command-to-string "dark-mode status") "on\n")
-;;        (push '(background-color . "#141414") initial-frame-alist)
-;;        (setq active-theme 'dark-theme))
-;;       (t
-;;        (push '(background-color . "#FFFEFD") initial-frame-alist)
-;;        (setq active-theme 'light-theme)))
+(cond ((string= (shell-command-to-string "dark-mode status") "on\n")
+       (push '(background-color . "#141414") initial-frame-alist)
+       (setq active-theme 'dark-theme))
+      (t
+       (push '(background-color . "#FFFEFD") initial-frame-alist)
+       (setq active-theme 'light-theme)))
 
 (setq-default initial-frame-alist
               (append (list
-                       '(fullscreen . maximized)
                        '(internal-border-width . 12)
                        '(tool-bar-lines . 0)
                        '(vertical-scroll-bars . nil)
@@ -49,6 +48,7 @@
                                                      dash
                                                      s
                                                      f
+                                                     el-patch
 
                                                      ;; settings
                                                      visual-regexp
@@ -96,7 +96,7 @@
                                                      embark-consult
                                                      marginalia
                                                      corfu
-                                                     corfu-doc
+                                                     ;; corfu-doc
                                                      cape
                                                      kind-icon
                                                      yasnippet
@@ -191,6 +191,7 @@
                                                      virtualenvwrapper
                                                      tramp-term
                                                      exec-path-from-shell
+                                                     eat
 
                                                      ;; eshell
                                                      pcmpl-homebrew
