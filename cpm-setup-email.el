@@ -32,6 +32,27 @@
   :ensure nil
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu/mu4e"
   :commands (mu4e mu4e-compose-new mu4e-update-mail-and-index)
+  :config/el-patch
+  ;; Open mu org links in Email tab
+  ;; :TEST: Is redefining the function the best way or should I use advice?
+  (defun mu4e-org-open (link)
+    "Open the org LINK in `Email' tab.
+Open the mu4e message (for links starting with 'msgid:') or run
+the query (for links starting with 'query:')."
+    (require 'mu4e)
+    (require 'tabspaces)
+    (cond
+     ((string-match "^msgid:\\(.+\\)" link)
+      (if (member "Email" (tabspaces--list-tabspaces))
+          (tab-bar-switch-to-tab "Email")
+        (cpm-open-email-in-workspace))
+      (mu4e-view-message-with-message-id (match-string 1 link)))
+     ((string-match "^query:\\(.+\\)" link)
+      (if (member "Email" (tabspaces--list-tabspaces))
+          (tab-bar-switch-to-tab "Email")
+        (cpm-open-email-in-workspace))
+      (mu4e-headers-search (match-string 1 link) current-prefix-arg))
+     (t (mu4e-error "Unrecognized link type '%s'" link))))
   :config
   ;; Finding the binary (installed w/homebrew)
   (setq mu4e-mu-binary (executable-find "mu"))
@@ -786,12 +807,12 @@ the pos of the keyword which is a cons cell, nil if not found."
     "flag:unread")
   (defun lem-go-to-mail-unread ()
     (interactive)
-    (if (member "Email" (workspaces--list-workspaces))
+    (if (member "Email" (tabspaces--list-tabspaces))
         (progn
           (tab-bar-switch-to-tab "Email")
           (mu4e-headers-search lem-mu4e-unread-query))
       (progn
-        (workspaces-create-workspace)
+        (tabspaces-switch-or-create-workspace)
         (tab-bar-rename-tab "Email")
         (find-file (concat org-directory "mail.org"))
         (mu4e)
@@ -802,12 +823,12 @@ the pos of the keyword which is a cons cell, nil if not found."
     "(maildir:/UNL/INBOX OR maildir:/Fastmail/INBOX)")
   (defun lem-go-to-mail-inbox ()
     (interactive)
-    (if (member "Email" (workspaces--list-workspaces))
+    (if (member "Email" (tabspaces--list-tabspaces))
         (progn
           (tab-bar-switch-to-tab "Email")
           (mu4e-headers-search lem-mu4e-inbox-query))
       (progn
-        (workspaces-create-workspace)
+        (tabspaces-switch-or-create-workspace)
         (tab-bar-rename-tab "Email")
         (find-file (concat org-directory "mail.org"))
         (mu4e)
@@ -833,6 +854,7 @@ https://github.com/djcb/mu/issues/2198"
     (shell-command-to-string "pkill -2 -u $UID mu")))
 
 ;;;;; End Mu4e
+
 
 ;;;; Column Faces
 ;; requires mu 1.8+
