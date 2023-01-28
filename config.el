@@ -46,8 +46,13 @@
 ;; Need to do this after startup to avoid flashing the screen for some reason
 (push '(fullscreen . maximized) initial-frame-alist)
 
-;;;;; Exec Path & User Bin
-(setq exec-path (append exec-path (list "~/bin")))
+;;;;; User Paths
+;; Use exec-path-from-shell -- it's easier.
+(when (memq window-system '(mac ns))
+  (setopt exec-path-from-shell-variables
+          '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
+  (add-hook 'emacs-startup-hook
+            #'exec-path-from-shell-initialize))
 
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
@@ -127,7 +132,7 @@
 ;; ("Reference Notes" ?r ,(concat lem-notes-dir "ref-notes/"))
 ;; ("Refile"          ?R ,(concat lem-notes-dir "refile-notes/"))
 
-;; Org-Roam Notes
+;; ;; Org-Roam Notes
 ;; (require 'lem-setup-org-roam)
 ;; (setq org-roam-directory lem-notes-dir)
 
@@ -168,7 +173,7 @@
 ;; then more expensive modules after init, with the rest loaded after startup
 ;; has completed.
 
-;;;;; Load base modules
+;;;;; Load Base Modules
 (message "
 ;; ======================================================
 ;; *Loading 𝛌-Emacs Base Modules*
@@ -199,12 +204,13 @@
   ;; *Loading 𝛌-Emacs after-init Modules*
   ;; ======================================================")
   (measure-time (cl-dolist (mod (list
-                                 ;; Splash/Dashboard
+                                 ;; Splash
                                  'lem-setup-splash
 
                                  ;; Completion & Keybinds
                                  'lem-setup-completion
                                  'lem-setup-keybindings
+
                                  ;; Navigation & Search modules
                                  'lem-setup-navigation
                                  'lem-setup-dired
@@ -251,7 +257,6 @@
                                  ;; Shell & Terminal
                                  'lem-setup-shell
                                  'lem-setup-eshell
-                                 'cpm-setup-iterm
 
                                  ;; Org modules
                                  'lem-setup-org-base
@@ -263,7 +268,7 @@
                                  'lem-setup-elfeed
 
                                  ;; OS settings
-                                 ;; load only if on macos
+                                 ;; loads only if on macos
                                  (when sys-mac
                                    'lem-setup-macos)
 
@@ -277,14 +282,15 @@
 (add-hook 'emacs-startup-hook #'lem-user-config-after-startup)
 
 ;;;;; Scratch Directory
-(customize-set-variable 'lem-scratch-default-dir lem-scratch-save-dir)
+(with-eval-after-load 'lem-setup-scratch
+  (customize-set-variable 'lem-scratch-default-dir lem-scratch-save-dir))
 
 ;;;; User Keybindings
 (customize-set-variable 'lem-prefix "C-c C-SPC")
 
 ;; Make sure to load these after general keybindings
 (with-eval-after-load 'lem-setup-keybindings
-  (bind-key (concat lem-prefix " \\")  #'lem-call-eshell)
+  (bind-key (concat lem-prefix " \\")  #'lem-toggle-eshell)
   (bind-keys :prefix-map lem+user-keys
              :prefix (concat lem-prefix " u"               )
              ;; Workspaces
@@ -326,31 +332,73 @@
 
 ;;;; User Packages
 
-;;;;; Zotero Org Zotxt Inferface
+;; Here's a list of packages that I may want to install...
+;; macrostep
+;; tldr
 
-(use-package zotxt
-  ;; :straight (:type git :host github :repo "zotxt")
-  :commands (org-zotxt-insert-reference-link
-             org-zotxt-open-attachment
-             rg-zotxt-update-reference-link-at-point)
+;;;;; Programming Modes
+
+;;;;;; Applescript
+(use-package applescript-mode
+  :mode (("\\.scpt\\'" . applescript-mode)
+         ("\\.applescript\\'"       . applescript-mode))
+  :commands (applescript-mode))
+
+;;;;;; Haskell
+(use-package haskell-mode
+  :commands haskell-mode)
+
+;;;;;; HTML
+(use-package web-mode
+  :commands (web-mode)
+  :mode ("\\.html$" . web-mode)
   :config
-  (add-hook 'org-mode #'org-zotxt-mode))
+  (setq web-mode-enable-auto-pairing t
+        web-mode-enable-auto-expanding t
+        web-mode-enable-css-colorization t
+        web-mode-enable-auto-closing t
+        web-mode-enable-auto-quoting t))
 
+;;;;;; Lua
+(use-package lua-mode
+  :commands lua-mode
+  :init
+  (dolist (pattern '("\\.lua\\'"))
+    (add-to-list 'auto-mode-alist (cons pattern 'lua-mode))))
 
-;;;;; Doc-Tools
-(use-package doc-tools
-  :disabled
-  :load-path (lambda () (concat lem-user-elisp-dir "doc-tools/"))
-  ;; :commands (doc-scroll-minor-mode)
+;;;;;; PHP
+(use-package php-mode
+  :commands php-mode
+  :init
+  (dolist (pattern '("\\.php\\'"))
+    (add-to-list 'auto-mode-alist (cons pattern 'php-mode))))
+
+;;;;;; YAML
+(use-package yaml-mode
+  :commands yaml-mode
+  :mode (("\\.yml$" . yaml-mode)
+         ("\\.yaml$" . yaml-mode))
   :config
-  (load (concat lem-user-elisp-dir "doc-tools/doc-backend-mupdf.el"))
-  (load (concat lem-user-elisp-dir "doc-tools/doc-scroll.el")))
+  (add-hook 'yaml-mode-hook (lambda () (run-hooks 'prog-mode-hook))))
 
-;; :config
-;; (require 'doc-backend-mupdf))
-;; :commands (doc-tools-mode)
+;;;;;; Plist
+(use-package plist-mode
+  ;; :straight nil
+  :load-path "~/bin/lisp-projects/plist-mode"
+  :commands (plist-mode))
 
+;;;;;; Vim
+(use-package vimrc-mode
+  :commands vimrc-mode)
 
+;;;;; Documentation
+(use-package tldr
+  :commands (tldr tldr-update-docs)
+  :init
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'tldr-mode 'emacs))
+  :config
+  (setq tldr-directory-path (expand-file-name "tldr/" lem-etc-dir)))
 
 ;;;;; Popper Shells
 
@@ -364,129 +412,6 @@
                   "^\\*term.*\\*$"   term-mode
                   "^\\*vterm.*\\*$"  vterm-mode))))
 
-;;;;; Package Management (Paradox)
-(use-package paradox
-  :commands (paradox-list-packages)
-  :config
-  (paradox-enable))
-
-;;;;; Homebrew
-(use-package homebrew
-  :disabled
-  :when sys-mac
-  ;; :straight (homebrew :host github :repo "jdormit/homebrew.el")
-  :commands
-  (homebrew-install homebrew-upgrade homebrew-update homebrew-edit homebrew-info homebrew-package-info))
-
-;;;;; Dictionary
-(use-package sdcv-mode
-  :disabled
-  ;; :straight (:type git :host github :repo "gucong/emacs-sdcv")
-  :bind (:map lem+search-keys
-         ("w" . sdcv-search)))
-
-;;;;; Capf-bibtex
-(use-package capf-bibtex
-  ;; :straight (:type git :host github :repo "mclear-tools/capf-bibtex")
-  :load-path (lambda () (concat lem-user-elisp-dir "capf-bibtex"))
-  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
-  :custom
-  (capf-bibtex-bibliography
-   '("/Users/roambot/Dropbox/Work/bibfile.bib")))
-
-;;;;; Word Repetition Finder
-;; Via https://irreal.org/blog/?p=10235
-(use-package repetition_error_finder
-  ;; :straight (:type git :host github :repo "ioah86/repetition_error_finder")
-  :disabled
-  :commands (find-reperr-whole-buffer find-reperr-from-point))
-
-;;;;; Bookmark+
-(use-package bookmark+
-  :disabled
-  :commands (bmkp-switch-bookmark-file-create bmkp-set-desktop-bookmark)
-  :config
-  (setq bmkp-last-as-first-bookmark-file (concat lem-cache-dir "bookmarks")))
-
-;;;;; Highlight Lines
-;; Highlight lines. You can toggle this off
-(use-package hl-line+
-  :disabled
-  :hook
-  ;; https://tech.toryanderson.com/2021/09/24/replacing-beacon.el-with-hl-line-flash/
-  (window-scroll-functions . hl-line-flash)
-  (focus-in . hl-line-flash)
-  (post-command . hl-line-flash)
-  :custom-face
-  ;; subtle highlighting
-  (hl-line ((t (:inherit highlight))))
-  :custom
-  (global-hl-line-mode nil)
-  (hl-line-flash-show-period 0.5)
-  ;; (hl-line-inhibit-highlighting-for-modes '(dired-mode))
-  ;; (hl-line-overlay-priority -100) ;; sadly, seems not observed by diredfl
-  (hl-line-when-idle-interval 5)
-  (hl-line-inhibit-highlighting-for-modes '(eshell-mode lem-splash-mode))
-  :config
-  (toggle-hl-line-when-idle 1 t))
-
-;;;;; Crosshair Highlighting
-;; Highlight cursor vertically and horizontally
-(use-package crosshairs
-  :disabled
-  :commands (crosshairs-highlight
-             crosshairs-mode
-             flash-crosshairs)
-  :bind (:map lem+toggle-keys
-         ("c" . crosshairs-mode))
-  :custom-face
-  (col-highlight ((t (:inherit hl-line))))
-  :config
-  ;; same colors for both hlines
-  (setq col-highlight-vline-face-flag t))
-
-;;;;; Pulsing Cursor
-(use-package pulsing-cursor
-  :load-path (lambda () (concat lem-user-elisp-dir "pulsing-cursor/"))
-  ;; :straight (:type git :host github :repo "jasonjckn/pulsing-cursor")
-  :defer 1
-  :custom-face
-  (pulsing-cursor-overlay-face1 ((t (:inherit match))))
-  :custom
-  (pulsing-cursor-delay 1.0)
-  (pulsing-cursor-interval .5)
-  (pulsing-cursor-blinks 5)
-  :config (pulsing-cursor-mode +1))
-
-;;; Org Menu
-;; A menu for editing org-mode documents and exploring it’s features in a
-;; discoverable way via transient menus.
-(use-package org-menu
-  :disabled
-  ;; :straight (:type git :host github :repo "sheijk/org-menu")
-  :bind* (:map org-mode-map
-          ("C-c m" . org-menu)))
-
-;;;;; Org Modern Indent
-;; Make org-modern work better with org-indent
-(use-package org-modern-indent
-  :load-path (lambda () (concat lem-user-elisp-dir "org-modern-indent"))
-  ;; :straight (:type git :host github :repo "jdtsmith/org-modern-indent")
-  :hook (org-indent-mode . org-modern-indent-mode)
-  :custom-face
-  (org-modern-indent-line ((t (:height 1.0 :inherit lem-ui-default-font :inherit lambda-meek)))))
-
-;;;;; Org Devonthink Integration
-(use-package org-devonthink
-  :when sys-mac
-  :load-path (lambda () (concat lem-user-elisp-dir "org-devonthink"))
-  ;; :straight (:type git :host github :repo "lasvice/org-devonthink")
-  :commands (org-insert-dtp-link org-dtp-store-link))
-
-;;;;; Command log mode
-(use-package command-log-mode
-  ;; :straight (:type git :host github :repo "lewang/command-log-mode")
-  :commands (command-log-mode))
 
 ;;;;; Elfeed
 
@@ -501,10 +426,137 @@
 ;;;;; Eshell Aliases
 (with-eval-after-load 'eshell
   (lem-set-eshell-alias
-   "pg" "goto-projects"
-   "pd" "cd ~/projects"))
+   "pg" "lem-goto-projects"
+   "pd" "cd ~/Dropbox/Work/projects"))
+
+
+;;;;; Zotero Org Zotxt Inferface
+(use-package zotxt
+  :commands (org-zotxt-insert-reference-link
+             org-zotxt-open-attachment
+             rg-zotxt-update-reference-link-at-point)
+  :init
+  (unless (package-installed-p 'zotxt-emacs)
+    (package-vc-install "https://github.com/egh/zotxt-emacs.git"))
+  (add-hook 'org-mode #'org-zotxt-mode))
+
+;;;;; Capf-bibtex
+
+(use-package capf-bibtex
+  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
+  :custom
+  (capf-bibtex-bibliography
+   '("~/Dropbox/Work/bibfile.bib"))
+  :init
+  (unless (package-installed-p 'capf-bibtex)
+    (package-vc-install "https://github.com/mclear-tools/capf-bibtex.git")))
+
+;;;;; Pulsing Cursor
+
+(use-package pulsing-cursor
+  :defer 1
+  :custom-face
+  (pulsing-cursor-overlay-face1 ((t (:inherit match))))
+  :custom
+  (pulsing-cursor-delay 1.0)
+  (pulsing-cursor-interval .5)
+  (pulsing-cursor-blinks 5)
+  :init
+  (unless (package-installed-p 'pulsing-cursor)
+    (package-vc-install "https://github.com/jasonjckn/pulsing-cursor"))
+  :config
+  (pulsing-cursor-mode +1))
+
+;;;;; Org Modern Indent
+;; Make org-modern work better with org-indent
+(use-package org-modern-indent
+  :hook (org-indent-mode . org-modern-indent-mode)
+  :custom-face
+  (org-modern-indent-line ((t (:height 1.0 :inherit lem-ui-default-font :inherit lambda-meek))))
+  :init
+  (unless (package-installed-p 'org-modern-indent)
+    (package-vc-install "https://github.com/jdtsmith/org-modern-indent.git")))
+
+;;;;; Org Devonthink Integration
+(use-package org-devonthink
+  :when sys-mac
+  :commands (org-insert-dtp-link org-dtp-store-link)
+  :init
+  (unless (package-installed-p 'org-devonthink)
+    (package-vc-install "https://github.com/lasvice/org-devonthink")))
+
+;;;;; Command log mode
+(use-package command-log-mode
+  :commands (command-log-mode)
+  :init
+  (unless (package-installed-p 'command-log-mode)
+    (package-vc-install "https://github.com/lewang/command-log-mode.git")))
+
+;;;;; EAT (Emulate a terminal)
+(use-package eat
+  :hook (eshell-load . eat-eshell-mode)
+  :config
+  (setq eat-kill-buffer-on-exit t
+        eat-enable-yank-to-terminal t
+        eat-enable-directory-tracking t
+        eat-enable-shell-command-history t
+        eat-enable-shell-prompt-annotation t
+        eat-term-scrollback-size nil))
+
 
 ;;;; User Functions
+
+;;;;; Tab Numbers In Tab-Bar
+;; Tab bar numbers
+(defface lem-tab-bar-numbers
+  '((t
+     :inherit lambda-strong
+     :height 1.1))
+  "Face for tab numbers in both active and inactive tabs.")
+
+(defvar lem-box-numbers-alist
+  '((1 . "􀃊")
+    (2 . "􀃌")
+    (3 . "􀃎")
+    (4 . "􀘙")
+    (5 . "􀃒")
+    (6 . "􀑵")
+    (7 . "􀃖")
+    (8 . "􀃘")
+    (9 . "􀑷")
+    (0 . "􀃈"))
+  "Alist of integers to strings of SF Symbols with numbers in boxes.")
+
+(defvar lem-filled-box-numbers-alist
+  '((1 . "􀃋")
+    (2 . "􀃍")
+    (3 . "􀃏")
+    (4 . "􀘚")
+    (5 . "􀃓")
+    (6 . "􀑶")
+    (7 . "􀃗")
+    (8 . "􀃙")
+    (9 . "􀑸")
+    (0 . "􀃉"))
+  "Alist of integers to strings of SF Symbols with numbers in filled boxes.")
+
+(defun lem-tab-bar-tab-name-format (tab i)
+  (let* ((current-p (eq (car tab) 'current-tab))
+         (tab-num (when (and tab-bar-tab-hints (< i 9))
+                    (alist-get i (if current-p lem-filled-box-numbers-alist lem-box-numbers-alist)))))
+    (concat
+     " "
+     (if current-p (propertize tab-num 'face 'lem-tab-bar-numbers) tab-num)
+     " "
+     (if current-p (propertize (alist-get 'name tab) 'face '(:inherit lambda-fg :underline t))
+       (alist-get 'name tab))
+     (or (and tab-bar-close-button-show
+              (not (eq tab-bar-close-button-show
+                       (if current-p 'non-selected 'selected)))
+              tab-bar-close-button)
+         ""))))
+
+(customize-set-variable 'tab-bar-tab-name-format-function #'lem-tab-bar-tab-name-format)
 
 ;;;;; Kill Process
 ;; https://xenodium.com/emacs-quick-kill-process/
@@ -613,7 +665,8 @@ current window, as a ratio between 0 and 1.")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
          (set-face-attribute 'variable-pitch    nil :font "SF Pro Text-14"))))
-(add-hook 'emacs-startup-hook #'lem-user-fonts)
+(with-eval-after-load 'lem-setup-functions
+  (add-hook 'emacs-startup-hook #'lem-user-fonts))
 
 ;;;;; SHR Rendering
 (setq shr-use-fonts nil)
@@ -700,6 +753,56 @@ end tell")
 ;; Kill davmail on quit
 (add-hook 'kill-emacs-hook #'cpm-stop-davmail)
 
+
+;;;;; Package.el Helper Functions
+
+;; Show Packages Ready for Updating
+;; See https://emacs.stackexchange.com/questions/38206/upgrading-packages-automatically
+(defun package-list-upgradable-packages ()
+  "Refresh and list upgradable packages."
+  (interactive)
+  (save-window-excursion
+    (let (package-menu-async)
+      (package-list-packages)))
+  (pop-to-buffer "*Packages*")
+  (delete-other-windows)
+  (package-menu-filter-upgradable))
+
+;; Show Package vc log
+(defun package-browse-vc-log (desc)
+  "Open a magit log buffer in popper window for package under point.
+DESC must be a `package-desc' object and must have a link to a recognized repo host."
+  (interactive (list (package--query-desc))
+               package-menu-mode)
+  (require 'popper)
+  (unless desc
+    (user-error "No package here"))
+  (let* ((url (cdr (assoc :url (package-desc-extras desc))))
+         (tmp "/tmp/")
+         (tmpd (concat tmp "tmpdir/"))
+         (vc-log-short-style '(file))
+         (vc-git-root-log-format '("%ad: %d%h - %s" "\\(?1:[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\): \\(?2: ([^)]+)\\)?\\(?3:[0-9a-z]+\\)"
+                                   ((1 'change-log-date)
+                                    (2 'change-log-list nil lax)
+                                    (3 'log-view-message)))))
+    ;; checks
+    (cond ((not url) ;; check that there is a link
+           (user-error "No website for %s" (package-desc-name desc)))
+          ;; check that link is to a recognized repo
+          ((not (and url (alist-get url package-vc-heuristic-alist
+                                    nil nil #'string-match-p)))
+           (user-error "No repository available for %s" (package-desc-name desc)))
+          ;; proceed to clone repo
+          (t
+           (shell-command (concat "rm -rf " tmpd))
+           (shell-command (concat "cd " tmp " && git clone --filter=blob:none --no-checkout " url " tmpdir && cd tmpdir"))
+           (when-let ((default-directory tmpd))
+             (vc-print-log nil 15))
+           ;; move buffer window to popper (optional)
+           (popper-toggle-type "*vc-change-log*")))))
+(bind-key "l" #'package-browse-vc-log 'package-menu-mode-map)
+
 ;;; Provide
+
 (provide 'config)
 ;;; config.el ends here
