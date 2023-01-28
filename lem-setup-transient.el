@@ -1,5 +1,7 @@
 ;; setup-transient.el --- -*- lexical-binding: t -*-
 ;; https://github.com/olivertaylor/dotfiles/blob/master/emacs/init.el
+;; https://magit.vc/manual/transient.html
+;; https://github.com/positron-solutions/transient-showcase
 ;; and https://www.reddi 1t.com/r/emacs/comments/mujxm7/weekly_tipstricketc_thread/gv8jxz5?utm_source=share&utm_medium=web2x&context=3
 
 
@@ -16,7 +18,7 @@
 ;;; General Purpose Transients
 
 
-(define-transient-command oht-transient-general ()
+(transient-define-prefix oht-transient-general ()
   "General-purpose transient.
 
 I use this transient command as a jumping-off point. Many of the
@@ -57,7 +59,7 @@ wherever you need to go."
     ("t [" "Previous" tab-bar-switch-to-prev-tab)]])
 
 
-(define-transient-command oht-transient-dispatch ()
+(transient-define-prefix oht-transient-dispatch ()
   "Jump directly to your most-used stuff."
   ["Work"
    [("t" "Today + Priority" oht-org-agenda-today)
@@ -78,7 +80,7 @@ wherever you need to go."
     ("w" "Watch"       oht-dispatch-watch)]])
 
 
-(define-transient-command oht-transient-window ()
+(transient-define-prefix oht-transient-window ()
   "Most commonly used window commands"
   [["Splits"
     ("s" "Horizontal" split-window-below)
@@ -108,7 +110,7 @@ wherever you need to go."
     ("s-Z" "Winner Redo" winner-redo :transient t)]])
 
 
-(define-transient-command oht-transient-help ()
+(transient-define-prefix oht-transient-help ()
   "Transient for Helpful commands"
   [[("p" "At Point" helpful-at-point)]
    [("c" "Callable" helpful-callable)
@@ -124,7 +126,7 @@ wherever you need to go."
     ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
 
 
-(define-transient-command oht-transient-fonts ()
+(transient-define-prefix oht-transient-fonts ()
   "Set Font Properties"
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
@@ -146,7 +148,7 @@ wherever you need to go."
     ("m" "Modus Toggle" modus-themes-toggle)]])
 
 
-(define-transient-command oht-transient-2nd ()
+(transient-define-prefix oht-transient-2nd ()
   "Secondary Selection"
   [["Cut/Copy"
     ("xx" "Cut 2nd" oht/cut-secondary-selection)
@@ -160,7 +162,7 @@ wherever you need to go."
     ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
 
 
-(define-transient-command oht-transient-outline ()
+(transient-define-prefix oht-transient-outline ()
   "Outline Navigation"
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
@@ -183,7 +185,7 @@ wherever you need to go."
     ("c" "Consult" consult-outline :transient nil)]])
 
 
-(define-transient-command oht-transient-spelling ()
+(transient-define-prefix oht-transient-spelling ()
   "Spelling Interface"
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
@@ -204,7 +206,7 @@ wherever you need to go."
 
 ;;; Mode-Specific Transients
 
-(define-transient-command oht-transient-org ()
+(transient-define-prefix oht-transient-org ()
   "Transient for Org Mode"
   [["Navigation"
     ("o" "Outline" consult-outline)
@@ -228,7 +230,7 @@ wherever you need to go."
     ("i" "Insert Link" org-insert-last-stored-link)]])
 
 
-(define-transient-command oht-transient-org-agenda ()
+(transient-define-prefix oht-transient-org-agenda ()
   "A transient for setting org-agenda todo status.
 
 I've created this because I don't like how org-todo messes with
@@ -241,7 +243,7 @@ org-todo-keywords to a transient command."
     ("c" "CANCELED" org-agenda-todo-set-canceled)]])
 
 
-(define-transient-command oht-transient-org-todo ()
+(transient-define-prefix oht-transient-org-todo ()
   "A transient for setting org todo status.
 
 I've created this because I don't like how org-todo messes with
@@ -254,7 +256,7 @@ org-todo-keywords to a transient command."
     ("c" "CANCELED" org-todo-set-canceled)]])
 
 
-(define-transient-command oht-transient-dired ()
+(transient-define-prefix oht-transient-dired ()
   "Dired commands."
   [["Action"
     ("RET" "Open file"            dired-find-file)
@@ -294,7 +296,7 @@ org-todo-keywords to a transient command."
     ("m" "Marks..." oht-transient-dired-marks)]])
 
 
-(define-transient-command oht-transient-dired-marks ()
+(transient-define-prefix oht-transient-dired-marks ()
   "Sub-transient for dired."
   [["Toggles"
     ("mm"  "Mark"                 dired-mark)
@@ -332,7 +334,7 @@ org-todo-keywords to a transient command."
     ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
 
-(define-transient-command oht-transient-eww ()
+(transient-define-prefix oht-transient-eww ()
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
   [["Actions"
@@ -357,7 +359,7 @@ org-todo-keywords to a transient command."
     ("M-p" "Previous Bookmark" eww-previous-bookmark)]
    ])
 
-(define-transient-command oht-transient-info ()
+(transient-define-prefix oht-transient-info ()
   [[("d" "Info Directory" Info-directory)
     ("m" "Menu" Info-menu)
     ("F" "Go to Node" Info-goto-emacs-command-node)]

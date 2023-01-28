@@ -45,7 +45,9 @@
         `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
            "* TODO %?\n %i" :empty-lines 1)
 
-          ("j" "Journal" entry (file+olp+datetree ,(concat org-directory "journal.org"))
+          ("j" "Journal"
+           entry
+           (file+olp+datetree ,(concat org-directory "journal.org"))
            "**** %<%H:%M>\n%?" :empty-lines 1)
 
           ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
