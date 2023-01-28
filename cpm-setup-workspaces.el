@@ -53,6 +53,32 @@
       (require 'mu4e)
       (lem-jump-to-org-dashboard))))
 
+;; Dedicate windows
+;; https://christiantietze.de/posts/2022/12/manage-org-agenda-related-buffers-via-display-buffer-alist/
+;; https://christiantietze.de/posts/2022/12/updated-org-mode-agenda-display-buffer-alist/
+
+(defun ct/display-buffer-org-agenda-managed-p (buffer-name action)
+  "Determine whether BUFFER-NAME is an org-agenda managed buffer."
+  (with-current-buffer buffer-name
+    (and (derived-mode-p 'org-mode)
+         (member (buffer-file-name) (org-agenda-files)))))
+
+(add-to-list 'display-buffer-alist
+             `("\\*Org Agenda\\*"
+               (display-buffer-in-tab  ;; Make sure to use the "Org Files" tab
+                display-buffer-reuse-mode-window)
+               (ignore-current-tab . t)
+               (tab-name . "Agenda")
+               (window-width . 100)
+               (dedicated . side)  ;; Make the Agenda a dedicated side-window
+               (side . left)       ;; to the left so it always stays open.
+               (inhibit-same-window . nil)))
+(add-to-list 'display-buffer-alist
+             '(ct/display-buffer-org-agenda-managed-p
+               (display-buffer-reuse-mode-window  ;; Prioritize reuse of current window
+                display-buffer-in-tab)            ;; over switching to the Org tab.
+               (tab-name . "Agenda")))
+
 ;;;;; Open emacs.d in Workspace
 (defun cpm-open-emacsd-in-workspace ()
   "Open emacs.d in its own workspace"
@@ -139,10 +165,39 @@
         (t
          (tab-bar-new-tab)
          (tab-bar-rename-tab "Email")
-         (require 'org) ; need this for loading?
-         (find-file (concat org-directory "mail.org"))
+         ;; (require 'org) ; need this for loading?
+         ;; (find-file (concat org-directory "mail.org"))
          (mu4e)
          (switch-to-buffer " *mu4e-main*"))))
+
+(defun cpm-display-buffer-email-managed-p (buffer-name action)
+  "Determine whether BUFFER-NAME is an org-agenda managed buffer."
+  (with-current-buffer buffer-name
+    (or (derived-mode-p 'mu4e-main-mode)
+        (derived-mode-p 'mu4e-headers-mode)
+        (derived-mode-p 'mu4e-view-mode))))
+
+;; (setq display-buffer-base-action '(display-buffer-in-tab))
+(setq display-buffer-base-action nil)
+
+(add-to-list 'display-buffer-alist
+             `("\\*mu4e-main\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Email")))
+(add-to-list 'display-buffer-alist
+             `("\\*mu4e-view\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Email")))
+(add-to-list 'display-buffer-alist
+             `("\\*mu4e-headers\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Email")))
+(add-to-list 'display-buffer-alist
+             '(cpm-display-buffer-email-managed-p
+               (display-buffer-in-tab
+                display-buffer-reuse-mode-window)
+               (tab-name . "Email")))
+
 
 ;;;;; Open New Buffer & Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
