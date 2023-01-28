@@ -43,7 +43,7 @@
 ;; Explicitly set packages for download/install or removal
 ;; Needs to be set before package initialization
 ;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
-(customize-set-variable 'package-selected-packages '(;; libraries
+(customize-set-variable 'package-selected-packages '(;; utility
                                                      async
                                                      dash
                                                      s
@@ -69,9 +69,8 @@
                                                      ace-window
 
                                                      ;; buffers
-                                                     revert-buffer-all
-                                                     ibuffer-vc
                                                      popper
+                                                     revert-buffer-all
 
                                                      ;; fonts
                                                      all-the-icons
@@ -79,26 +78,24 @@
                                                      all-the-icons-completion
 
                                                      ;; faces
-                                                     outline-minor-faces
                                                      dimmer
-                                                     svg-tag-mode
-                                                     lin
+                                                     goggles
                                                      highlight-numbers
                                                      hl-todo
-                                                     goggles
+                                                     outline-minor-faces
+                                                     svg-tag-mode
 
                                                      ;; completion
+                                                     cape
                                                      consult
                                                      consult-dir
-                                                     vertico
-                                                     orderless
+                                                     corfu
                                                      embark
                                                      embark-consult
-                                                     marginalia
-                                                     corfu
-                                                     ;; corfu-doc
-                                                     cape
                                                      kind-icon
+                                                     marginalia
+                                                     orderless
+                                                     vertico
                                                      yasnippet
                                                      yasnippet-snippets
 
@@ -117,7 +114,6 @@
                                                      dired-ranger
 
                                                      ;; search
-                                                     ag
                                                      deadgrep
                                                      ripgrep
                                                      visual-regexp-steroids
@@ -160,14 +156,14 @@
                                                      osx-dictionary
                                                      visual-fill-column
 
+                                                     ;; citation
+                                                     citeproc
+                                                     citar
+
                                                      ;; notes
                                                      denote
                                                      citar-denote
                                                      consult-notes
-
-                                                     ;; citation
-                                                     citeproc
-                                                     citar
 
                                                      ;; programming
                                                      aggressive-indent
@@ -186,10 +182,6 @@
                                                      esup
 
                                                      ;; shell
-                                                     vterm
-                                                     multi-vterm
-                                                     virtualenvwrapper
-                                                     tramp-term
                                                      exec-path-from-shell
                                                      eat
 
@@ -261,7 +253,7 @@ If missing, install packages."
 ;; Check for missing packages & install if necessary
 (lem-check-and-install-packages)
 
-;; Initialize installed packages at startup
+;; Enable installed packages at startup
 (setq package-enable-at-startup t)
 
 ;; Allow loading from the package cache
