@@ -299,16 +299,17 @@
              ("m" . cpm-open-email-in-workspace            )
              ("n" . cpm-open-notes-in-workspace            )
              ("t" . cpm-open-new-terminal-and-workspace    )
-
-             ;; Pandoc
-             ("p" .  run-pandoc                            )
-             ("P" .  lem-pandoc-pdf-open                   )
-
              ;; Citation
              ("x" .  citar-insert-citation                 ))
 
+  ;; Package management
+  (bind-keys :prefix-map lem+packages
+             :prefix (concat lem-prefix " u p")
+             ("p" . package-list-packages)
+             ("u" . package-list-upgradable-packages))
+
   (bind-keys :prefix-map lem+jump-to
-             :prefix (concat lem-prefix " u" " j"          )
+             :prefix (concat lem-prefix " u j"             )
              ;; Jump to
              ("a" .  lem-jump-to-org-dashboard             )
              ("W" .  lem-jump-to-week-agenda               )
@@ -318,7 +319,7 @@
              ("O" .  lem-goto-org-files                    ))
 
   (bind-keys :prefix-map lem+text
-             :prefix (concat lem-prefix " u" " T"          )
+             :prefix (concat lem-prefix " u T"             )
              ;; Text manipulation
              ("S" .  just-one-space                        )
              ("h" .  lem-org-export-to-buffer-html-as-body )
