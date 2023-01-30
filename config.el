@@ -39,17 +39,17 @@
 ;;;;; Tab workspaces
 
 (with-eval-after-load 'tabspaces
-  (customize-set-variable 'tabspaces-session-mode t)
-  (customize-set-variable 'tabspaces-session-file (concat lem-cache-dir "tabsession.el")))
+  (setopt tabspaces-session-mode t
+          tabspaces-session-file (concat lem-cache-dir "tabsession.el")))
 
 ;;;;; Fullscreen Frame
-;; Need to do this after startup to avoid flashing the screen for some reason
-(push '(fullscreen . maximized) initial-frame-alist)
+  ;; Need to do this after startup to avoid flashing the screen for some reason
+  (push '(fullscreen . maximized) initial-frame-alist))
 
 ;;;;; User Paths
-;; Set exec-path-from-shell
-(setopt exec-path-from-shell-variables
-        '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
+  ;; Set exec-path-from-shell
+  (setopt exec-path-from-shell-variables
+          '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
 
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
@@ -75,12 +75,12 @@
   "Variable for notebook setup using hugo.")
 
 ;; Denote settings
-(customize-set-variable 'lem-notes-dir (concat (getenv "HOME") "/Documents/notes/"))
-(customize-set-variable 'denote-directory (concat lem-notes-dir "denotes/"))
-(customize-set-variable 'denote-known-keywords '("emacs" "teaching" "unl" "workbook"))
-(customize-set-variable 'denote-prompts '(title keywords subdirectory))
-(customize-set-variable 'consult-notes-denote-display-id t)
-
+(setopt lem-notes-dir (concat (getenv "HOME") "/Documents/notes/")
+        denote-directory (concat lem-notes-dir "denotes/")
+        denote-known-keywords '("emacs" "teaching" "unl" "workbook")
+        denote-prompts '(title keywords subdirectory)
+        consult-notes-denote-display-id t
+        citar-denote-subdir t)
 
 ;; Provide nicer spacing for note front matter
 (setq denote-org-front-matter
@@ -90,21 +90,18 @@
 #+identifier: %s
 \n")
 
-
-
 ;; Consult Notes Setup
 (with-eval-after-load 'consult-notes
 
-  (customize-set-variable 'consult-notes-file-dir-sources
-                          `(("Agenda Files"    ?a ,(car org-agenda-files))
-                            ("Refile Notes"    ?r ,(concat lem-notes-dir "refile-notes/"))))
+  (setopt consult-notes-file-dir-sources
+          `(("Agenda Files"    ?a ,(car org-agenda-files))
+            ("Refile Notes"    ?r ,(concat lem-notes-dir "refile-notes/"))))
 
-  (customize-set-variable
-   'consult-notes-org-headings-files '("~/Dropbox/org-files/inbox.org"
-                                       "~/Dropbox/org-files/reading.org"
-                                       "~/Dropbox/org-files/writing.org"
-                                       "~/Dropbox/org-files/reference.org"
-                                       "~/Dropbox/org-files/music.org"))
+  (setopt consult-notes-org-headings-files '("~/Dropbox/org-files/inbox.org"
+                                             "~/Dropbox/org-files/reading.org"
+                                             "~/Dropbox/org-files/writing.org"
+                                             "~/Dropbox/org-files/reference.org"
+                                             "~/Dropbox/org-files/music.org"))
 
   (defun cpm-consult-notes--file-dir-annotate (name dir cand)
     "Annotate file CAND with its directory DIR, size, and modification time."
@@ -117,8 +114,7 @@
       (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
       (format "%8s %12s" fsize ftime)))
 
-  (customize-set-variable 'consult-notes-file-dir-annotate-function #'cpm-consult-notes--file-dir-annotate)
-
+  (setopt consult-notes-file-dir-annotate-function #'cpm-consult-notes--file-dir-annotate)
   (consult-notes-denote-mode)
   (consult-notes-org-headings-mode))
 
@@ -134,9 +130,9 @@
 ;; (setq org-roam-directory lem-notes-dir)
 
 ;;;;; Org Directories
-(setq org-directory "~/Dropbox/org-files/"
-      org-default-notes-file (concat org-directory "inbox.org")
-      org-agenda-files (list org-directory))
+(setopt org-directory "~/Dropbox/org-files/"
+        org-default-notes-file (concat org-directory "inbox.org")
+        org-agenda-files (list org-directory))
 
 ;;;;; Straight Package Manager
 (with-eval-after-load 'straight
@@ -280,10 +276,10 @@
 
 ;;;;; Scratch Directory
 (with-eval-after-load 'lem-setup-scratch
-  (customize-set-variable 'lem-scratch-default-dir lem-scratch-save-dir))
+  (setopt lem-scratch-default-dir lem-scratch-save-dir))
 
 ;;;; User Keybindings
-(customize-set-variable 'lem-prefix "C-c C-SPC")
+(setopt lem-prefix "C-c C-SPC")
 
 ;; Make sure to load these after general keybindings
 (with-eval-after-load 'lem-setup-keybindings
@@ -402,24 +398,24 @@
 
 (with-eval-after-load 'popper
   ;; Match eshell, shell, term and/or vterm buffers
-  (setq popper-reference-buffers
-        (append popper-reference-buffers
-                '(;; make all shell/terminals popups
-                  "^\\*eshell.*\\*$" eshell-mode
-                  "^\\*shell.*\\*$"  shell-mode
-                  "^\\*term.*\\*$"   term-mode
-                  "^\\*vterm.*\\*$"  vterm-mode))))
+  (setopt popper-reference-buffers
+          (append popper-reference-buffers
+                  '(;; make all shell/terminals popups
+                    "^\\*eshell.*\\*$" eshell-mode
+                    "^\\*shell.*\\*$"  shell-mode
+                    "^\\*term.*\\*$"   term-mode
+                    "^\\*vterm.*\\*$"  vterm-mode))))
 
 
 ;;;;; Elfeed
 
 ;; Set elfeed feeds
 (with-eval-after-load 'elfeed
-  (customize-set-variable 'elfeed-feeds '("http://nullprogram.com/feed/"
-                                          ("https://planet.emacslife.com/atom.xml" emacs)
-                                          ("https://tilde.town/~ramin_hal9001/atom.xml" emacs)
-                                          ("https://www.mail-archive.com/emacs-devel@gnu.org/maillist.xml" emacs)
-                                          ("https://karthinks.com/index.xml" emacs))))
+  (setopt elfeed-feeds '("http://nullprogram.com/feed/"
+                         ("https://planet.emacslife.com/atom.xml" emacs)
+                         ("https://tilde.town/~ramin_hal9001/atom.xml" emacs)
+                         ("https://www.mail-archive.com/emacs-devel@gnu.org/maillist.xml" emacs)
+                         ("https://karthinks.com/index.xml" emacs))))
 
 ;;;;; Eshell Aliases
 (with-eval-after-load 'eshell
@@ -542,7 +538,7 @@
               tab-bar-close-button)
          ""))))
 
-(customize-set-variable 'tab-bar-tab-name-format-function #'lem-tab-bar-tab-name-format)
+(setopt tab-bar-tab-name-format-function #'lem-tab-bar-tab-name-format)
 
 ;;;;; Kill Process
 ;; https://xenodium.com/emacs-quick-kill-process/
@@ -655,7 +651,7 @@ current window, as a ratio between 0 and 1.")
   (add-hook 'emacs-startup-hook #'lem-user-fonts))
 
 ;;;;; SHR Rendering
-(setq shr-use-fonts nil)
+(setopt shr-use-fonts nil)
 
 ;;;;; Davmail & Mu4e
 (defun cpm-start-davmail ()
