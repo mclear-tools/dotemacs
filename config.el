@@ -429,17 +429,13 @@ If missing, install packages."
   ;; *Loading 𝛌-Emacs after-init Modules*
   ;; ======================================================")
   (measure-time (cl-dolist (mod (list
-                                 ;; Completion & Keybinds
+                                 ;; Completion
                                  'lem-setup-completion
-                                 'lem-setup-keybindings
 
                                  ;; Navigation & Search modules
                                  'lem-setup-navigation
                                  'lem-setup-dired
                                  'lem-setup-search
-
-                                 ;; Modal
-                                 'cpm-setup-meow
 
                                  ;; Project & Tab/Workspace modules
                                  'lem-setup-vc
@@ -498,6 +494,10 @@ If missing, install packages."
                                  ;; loads only if on macos
                                  (when sys-mac
                                    'lem-setup-macos)
+
+                                 ;; Keybindings & Modal
+                                 'lem-setup-keybindings
+                                 'cpm-setup-meow
 
                                  ;; Splash
                                  'lem-setup-splash
@@ -618,6 +618,7 @@ If missing, install packages."
 
 ;;;;; Macro Expand
 (use-package macrostep
+  :defer 1
   :bind ("C-c e" . #'macrostep-expand))
 
 ;;;;; Documentation
