@@ -42,14 +42,10 @@
   (setopt tabspaces-session-mode t
           tabspaces-session-file (concat lem-cache-dir "tabsession.el")))
 
-;;;;; Fullscreen Frame
-  ;; Need to do this after startup to avoid flashing the screen for some reason
-  (push '(fullscreen . maximized) initial-frame-alist))
-
 ;;;;; User Paths
-  ;; Set exec-path-from-shell
-  (setopt exec-path-from-shell-variables
-          '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
+;; Set exec-path-from-shell vars
+(setopt exec-path-from-shell-variables
+        '("PATH" "MANPATH" "XDG_CONFIG_HOME" "BEETSDIR"))
 
 ;;;;; Shell
 (setq-default shell-file-name "/opt/homebrew/bin/zsh")
@@ -57,6 +53,11 @@
 
 ;;;;; Set User Elisp Dir
 (setq lem-user-elisp-dir "~/bin/lisp-projects/")
+
+;;;;; Org Directories
+(setopt org-directory "~/Dropbox/org-files/"
+        org-default-notes-file (concat org-directory "inbox.org")
+        org-agenda-files (list org-directory))
 
 ;;;;; Citations
 (setq lem-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
@@ -92,10 +93,10 @@
 
 ;; Consult Notes Setup
 (with-eval-after-load 'consult-notes
-
-  (setopt consult-notes-file-dir-sources
-          `(("Agenda Files"    ?a ,(car org-agenda-files))
-            ("Refile Notes"    ?r ,(concat lem-notes-dir "refile-notes/"))))
+  ;; don't use setopt here since the macro won't eval the vars
+  (setq consult-notes-file-dir-sources
+        `(("Agenda Files" ?a ,(car org-agenda-files))
+          ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/"))))
 
   (setopt consult-notes-org-headings-files '("~/Dropbox/org-files/inbox.org"
                                              "~/Dropbox/org-files/reading.org"
@@ -129,18 +130,6 @@
 ;; (require 'lem-setup-org-roam)
 ;; (setq org-roam-directory lem-notes-dir)
 
-;;;;; Org Directories
-(setopt org-directory "~/Dropbox/org-files/"
-        org-default-notes-file (concat org-directory "inbox.org")
-        org-agenda-files (list org-directory))
-
-;;;;; Straight Package Manager
-(with-eval-after-load 'straight
-  ;; Don't walk straight repos
-  (push "straight" vc-directory-exclusion-list)
-  ;; Delete .DS_Store before prune
-  (advice-add 'straight-prune-build :before #'(lambda () (move-file-to-trash (concat lem-var-dir "straight/build/.DS_Store")))))
-
 ;;;;; Set Splash Footer
 (setq lem-splash-footer  "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
 
@@ -160,6 +149,225 @@
        " --metadata=reference-section-title:References"
        " --citeproc"
        " --bibliography=~/Dropbox/Work/bibfile.bib"))
+
+;;;; Package List
+;; Explicitly set packages for download/install or removal
+;; Needs to be set before package initialization
+;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
+(customize-set-variable 'package-selected-packages '(;; utility
+                                                     async
+                                                     dash
+                                                     s
+                                                     f
+                                                     el-patch
+
+                                                     ;; settings
+                                                     visual-regexp
+                                                     ws-butler
+                                                     backup-walker
+                                                     expand-region
+
+                                                     ;; functions
+                                                     crux
+
+                                                     ;; macros
+                                                     anaphora
+
+                                                     ;; frames
+                                                     ns-auto-titlebar
+
+                                                     ;; windows
+                                                     ace-window
+
+                                                     ;; buffers
+                                                     popper
+                                                     revert-buffer-all
+
+                                                     ;; fonts
+                                                     all-the-icons
+                                                     all-the-icons-dired
+                                                     all-the-icons-completion
+
+                                                     ;; faces
+                                                     dimmer
+                                                     goggles
+                                                     highlight-numbers
+                                                     hl-todo
+                                                     outline-minor-faces
+                                                     svg-tag-mode
+
+                                                     ;; completion
+                                                     cape
+                                                     consult
+                                                     consult-dir
+                                                     corfu
+                                                     embark
+                                                     embark-consult
+                                                     kind-icon
+                                                     marginalia
+                                                     orderless
+                                                     vertico
+                                                     yasnippet
+                                                     yasnippet-snippets
+
+                                                     ;; keybindings
+                                                     which-key
+
+                                                     ;; navigation
+                                                     imenu-list
+                                                     goto-last-change
+
+                                                     ;; dired
+                                                     dired-narrow
+                                                     dired-quick-sort
+                                                     diredfl
+                                                     peep-dired
+                                                     dired-ranger
+
+                                                     ;; search
+                                                     deadgrep
+                                                     ripgrep
+                                                     visual-regexp-steroids
+
+                                                     ;; modal
+                                                     meow
+
+                                                     ;; vc
+                                                     magit
+                                                     git-commit
+                                                     diff-hl
+                                                     vdiff-magit
+
+                                                     ;; tabs
+                                                     tabspaces
+
+                                                     ;; help
+                                                     hydra
+                                                     helpful
+                                                     elisp-demos
+                                                     info-colors
+
+                                                     ;; colors
+                                                     rainbow-mode
+
+                                                     ;; modeline
+                                                     hide-mode-line
+
+                                                     ;; writing
+                                                     binder
+                                                     consult-flyspell
+                                                     flyspell-correct
+                                                     markdown-mode
+                                                     markdown-toc
+                                                     writeroom-mode
+                                                     lorem-ipsum
+                                                     palimpsest
+                                                     auctex
+                                                     define-word
+                                                     osx-dictionary
+                                                     visual-fill-column
+
+                                                     ;; citation
+                                                     citeproc
+                                                     citar
+
+                                                     ;; notes
+                                                     denote
+                                                     citar-denote
+                                                     consult-notes
+
+                                                     ;; programming
+                                                     aggressive-indent
+                                                     flymake-collection
+                                                     elisp-def
+                                                     embrace
+                                                     highlight-indent-guides
+                                                     iedit
+                                                     multi-compile
+                                                     package-lint
+                                                     rainbow-delimiters
+                                                     puni
+                                                     treesit-auto
+
+                                                     ;; debug
+                                                     bug-hunter
+                                                     esup
+
+                                                     ;; shell
+                                                     exec-path-from-shell
+                                                     eat
+
+                                                     ;; eshell
+                                                     pcmpl-homebrew
+                                                     pcmpl-git
+                                                     pcmpl-args
+                                                     pcomplete-extension
+                                                     esh-help
+                                                     eshell-up
+                                                     eshell-syntax-highlighting
+
+                                                     ;; org extensions
+                                                     htmlize
+                                                     org-autolist
+                                                     org-appear
+                                                     org-contrib
+                                                     org-download
+                                                     org-modern
+                                                     org-pomodoro
+                                                     ox-pandoc
+                                                     ox-hugo
+
+                                                     ;; pdf
+                                                     pdf-tools
+                                                     org-noter
+
+                                                     ;; elfeed
+                                                     elfeed
+                                                     elfeed-tube
+
+                                                     ;; macos
+                                                     reveal-in-osx-finder
+                                                     grab-mac-link
+                                                     osx-lib
+
+                                                     ;; mail
+                                                     mu4e-views
+                                                     org-msg))
+
+;; Auto install the required packages
+;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
+;; http://toumorokoshi.github.io/emacs-from-scratch-part-2-package-management.html
+;; https://github.com/kaushalmodi/.emacs.d
+(defvar lem-missing-packages '()
+  "List populated at startup containing packages needing installation.")
+
+(defun lem-check-and-install-packages ()
+  "Check if packages are installed.
+If missing, install packages."
+  (interactive)
+  ;; Check packages
+  (message "%s" "Checking for missing packages.")
+  (dolist (p package-selected-packages)
+    (unless (package-installed-p p)
+      (add-to-list 'lem-missing-packages p 'append)))
+  ;; Install packages
+  (if lem-missing-packages
+      (progn
+        (message "Emacs is now refreshing its package database...")
+        (package-refresh-contents)
+        ;; Install the missing packages
+        (dolist (p lem-missing-packages)
+          (message "Installing `%s' ..." p)
+          (package-install p))
+        (setq lem-missing-packages '()))
+    (message "%s" "No missing packages.")))
+
+;; Check for missing packages & install if necessary
+;; (lem-check-and-install-packages)
+
+;; TODO: add auto refresh option
+;; See https://andreyorst.gitlab.io/posts/2022-07-15-refresh-package-contents-automatically/
+
 
 ;;;; Load Modules
 ;; Load modules in stages for a shorter init time. We load core modules first,
@@ -197,9 +405,6 @@
   ;; *Loading 𝛌-Emacs after-init Modules*
   ;; ======================================================")
   (measure-time (cl-dolist (mod (list
-                                 ;; Splash
-                                 'lem-setup-splash
-
                                  ;; Completion & Keybinds
                                  'lem-setup-completion
                                  'lem-setup-keybindings
@@ -264,6 +469,9 @@
                                  ;; loads only if on macos
                                  (when sys-mac
                                    'lem-setup-macos)
+
+                                 ;; Splash
+                                 'lem-setup-splash
 
                                  ;; Personal modules
                                  'cpm-setup-email
@@ -395,7 +603,6 @@
   (setq tldr-directory-path (expand-file-name "tldr/" lem-etc-dir)))
 
 ;;;;; Popper Shells
-
 (with-eval-after-load 'popper
   ;; Match eshell, shell, term and/or vterm buffers
   (setopt popper-reference-buffers
@@ -406,9 +613,7 @@
                     "^\\*term.*\\*$"   term-mode
                     "^\\*vterm.*\\*$"  vterm-mode))))
 
-
 ;;;;; Elfeed
-
 ;; Set elfeed feeds
 (with-eval-after-load 'elfeed
   (setopt elfeed-feeds '("http://nullprogram.com/feed/"
@@ -423,9 +628,9 @@
    "pg" "lem-goto-projects"
    "pd" "cd ~/Dropbox/Work/projects"))
 
-
 ;;;;; Zotero Org Zotxt Inferface
 (use-package zotxt
+  :ensure nil
   :commands (org-zotxt-insert-reference-link
              org-zotxt-open-attachment
              rg-zotxt-update-reference-link-at-point)
@@ -437,6 +642,7 @@
 ;;;;; Capf-bibtex
 
 (use-package capf-bibtex
+  :ensure nil
   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
   :custom
   (capf-bibtex-bibliography
@@ -448,6 +654,7 @@
 ;;;;; Pulsing Cursor
 
 (use-package pulsing-cursor
+  :ensure nil
   :defer 1
   :custom-face
   (pulsing-cursor-overlay-face1 ((t (:inherit match))))
@@ -464,6 +671,7 @@
 ;;;;; Org Modern Indent
 ;; Make org-modern work better with org-indent
 (use-package org-modern-indent
+  :ensure nil
   :hook (org-indent-mode . org-modern-indent-mode)
   :custom-face
   (org-modern-indent-line ((t (:height 1.0 :inherit lem-ui-default-font :inherit lambda-meek))))
@@ -473,6 +681,7 @@
 
 ;;;;; Org Devonthink Integration
 (use-package org-devonthink
+  :ensure nil
   :when sys-mac
   :commands (org-insert-dtp-link org-dtp-store-link)
   :init
@@ -481,6 +690,7 @@
 
 ;;;;; Command log mode
 (use-package command-log-mode
+  :ensure nil
   :commands (command-log-mode)
   :init
   (unless (package-installed-p 'command-log-mode)
@@ -538,7 +748,8 @@
               tab-bar-close-button)
          ""))))
 
-(setopt tab-bar-tab-name-format-function #'lem-tab-bar-tab-name-format)
+;; not sure why setopt isn't good enough here
+(customize-set-variable 'tab-bar-tab-name-format-function #'lem-tab-bar-tab-name-format)
 
 ;;;;; Kill Process
 ;; https://xenodium.com/emacs-quick-kill-process/
@@ -735,7 +946,6 @@ end tell")
 ;; Kill davmail on quit
 (add-hook 'kill-emacs-hook #'cpm-stop-davmail)
 
-
 ;;;;; Package.el Helper Functions
 
 ;; Show Packages Ready for Updating
@@ -759,7 +969,9 @@ DESC must be a `package-desc' object and must have a link to a recognized repo h
   (require 'popper)
   (unless desc
     (user-error "No package here"))
-  (let* ((url (cdr (assoc :url (package-desc-extras desc))))
+  (let* ((extras (and desc (package-desc-extras desc)))
+         (url (cdr (assoc :url extras)))
+         (commit (cdr (assoc :commit extras)))
          (tmp "/tmp/")
          (tmpd (concat tmp "tmpdir/"))
          (vc-log-short-style '(file))
@@ -779,7 +991,7 @@ DESC must be a `package-desc' object and must have a link to a recognized repo h
            (shell-command (concat "rm -rf " tmpd))
            (shell-command (concat "cd " tmp " && git clone --filter=blob:none --no-checkout " url " tmpdir && cd tmpdir"))
            (when-let ((default-directory tmpd))
-             (vc-print-log nil 15))
+             (vc-print-log commit 15))
            ;; move buffer window to popper (optional)
            (popper-toggle-type "*vc-change-log*")))))
 (bind-key "l" #'package-browse-vc-log 'package-menu-mode-map)
