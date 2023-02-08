@@ -14,7 +14,7 @@
 (setq-default initial-frame-alist
               (append (list
                        '(fullscreen . maximized)
-                       `(background-color . ,(if (eq active-theme 'light-theme) "#fffef9" "#141414"))
+                       `(background-color . ,(if (eq active-theme 'light-theme) "#fffefd" "#141414"))
                        '(internal-border-width . 12)
                        '(tool-bar-lines . 0)
                        '(vertical-scroll-bars . nil)

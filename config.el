@@ -163,7 +163,6 @@
 
                                                      ;; settings
                                                      visual-regexp
-                                                     ws-butler
                                                      backup-walker
                                                      expand-region
 
@@ -172,6 +171,7 @@
 
                                                      ;; macros
                                                      anaphora
+                                                     macrostep
 
                                                      ;; frames
                                                      ns-auto-titlebar
@@ -226,7 +226,8 @@
 
                                                      ;; search
                                                      deadgrep
-                                                     ripgrep
+                                                     rg
+                                                     wgrep
                                                      visual-regexp-steroids
 
                                                      ;; modal
@@ -288,6 +289,18 @@
                                                      rainbow-delimiters
                                                      puni
                                                      treesit-auto
+                                                     vimrc-mode
+                                                     web-mode
+                                                     php-mode
+                                                     haskell-mode
+                                                     applescript-mode
+                                                     tldr
+                                                     lua-mode
+                                                     yaml-mode
+                                                     rainbow-identifiers
+                                                     auto-compile
+                                                     esxml
+                                                     kv
 
                                                      ;; debug
                                                      bug-hunter
@@ -316,6 +329,7 @@
                                                      org-pomodoro
                                                      ox-pandoc
                                                      ox-hugo
+                                                     org-tree-slide
 
                                                      ;; pdf
                                                      pdf-tools
@@ -331,8 +345,23 @@
                                                      osx-lib
 
                                                      ;; mail
-                                                     mu4e-views
-                                                     org-msg))
+                                                     org-msg
+                                                     mu4e-column-faces
+
+                                                     ;; package-vc
+                                                     lambda-themes
+                                                     capf-bibtex
+                                                     org-modern-indent
+                                                     pulsing-cursor
+                                                     zotxt-emacs
+                                                     org-devonthink
+                                                     lambda-line
+                                                     ws-butler
+
+                                                     ;; other
+                                                     command-log-mode
+
+                                                     xwidgets-reuse))
 
 ;; Auto install the required packages
 ;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
@@ -384,17 +413,12 @@ If missing, install packages."
                   ;; Base modules
                   'lem-setup-libraries
                   'lem-setup-settings
-                  'lem-setup-functions
-                  'lem-setup-macros
-                  'lem-setup-scratch
 
                   ;; Basic UI modules
                   'lem-setup-frames
                   'lem-setup-windows
                   'lem-setup-buffers
-                  'lem-setup-fonts
-                  'lem-setup-faces
-                  'lem-setup-theme))
+                  'lem-setup-faces))
    (require mod)))
 
 ;;;;; Load After-Init Modules
@@ -435,9 +459,12 @@ If missing, install packages."
   ;; ======================================================")
   (measure-time (cl-dolist (mod (list
                                  ;; Other UI/UX
+                                 'lem-setup-scratch
+                                 'lem-setup-theme
                                  'lem-setup-help
                                  'lem-setup-colors
-                                 'cpm-setup-modeline
+                                 'lem-setup-modeline
+                                 'lem-setup-fonts
 
                                  ;; Server
                                  'lem-setup-server
@@ -462,6 +489,8 @@ If missing, install packages."
                                  'lem-setup-org-extensions
 
                                  ;; Productivity
+                                 'lem-setup-functions
+                                 'lem-setup-macros
                                  'lem-setup-pdf
                                  'lem-setup-elfeed
 
@@ -533,11 +562,6 @@ If missing, install packages."
              ("m" .  lem-org-to-markdown                   )))
 
 ;;;; User Packages
-
-;; Here's a list of packages that I may want to install...
-;; macrostep
-;; tldr
-
 ;;;;; Programming Modes
 
 ;;;;;; Applescript
@@ -585,7 +609,6 @@ If missing, install packages."
 
 ;;;;;; Plist
 (use-package plist-mode
-  ;; :straight nil
   :load-path "~/bin/lisp-projects/plist-mode"
   :commands (plist-mode))
 
@@ -593,12 +616,13 @@ If missing, install packages."
 (use-package vimrc-mode
   :commands vimrc-mode)
 
+;;;;; Macro Expand
+(use-package macrostep
+  :bind ("C-c e" . #'macrostep-expand))
+
 ;;;;; Documentation
 (use-package tldr
   :commands (tldr tldr-update-docs)
-  :init
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'tldr-mode 'emacs))
   :config
   (setq tldr-directory-path (expand-file-name "tldr/" lem-etc-dir)))
 
@@ -858,8 +882,7 @@ current window, as a ratio between 0 and 1.")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
          (set-face-attribute 'variable-pitch    nil :font "SF Pro Text-14"))))
-(with-eval-after-load 'lem-setup-functions
-  (add-hook 'emacs-startup-hook #'lem-user-fonts))
+(add-hook 'window-setup-hook #'lem-user-fonts)
 
 ;;;;; SHR Rendering
 (setopt shr-use-fonts nil)
