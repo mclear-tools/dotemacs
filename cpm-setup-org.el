@@ -223,7 +223,7 @@ This can be used by non-qwerty users who don't use hjkl.")
     (visual-line-mode 1))
   ;; Make agenda more readable
   (defun cpm-setup-org-agenda--set-line-spacing ()
-    (setq-local default-text-properties '(line-spacing 0.20 line-height 1.20)))
+    (setq-local default-text-properties '(line-spacing 0.15 line-height 1.20)))
   (defun cpm-org--set-extra-faces ()
     "Make prop, etc., faces smaller."
     (mapc ;; This sets the fonts to a smaller size
@@ -234,6 +234,7 @@ This can be used by non-qwerty users who don't use hjkl.")
       'org-special-keyword
       'org-property-value)))
 
+  (add-hook 'org-agenda-mode-hook (lambda () (hl-line-mode)))
   (add-hook 'org-agenda-mode-hook #'cpm-setup-org-agenda--set-line-spacing)
   (add-hook 'org-agenda-mode-hook #'cpm-org--set-extra-faces)
   (add-hook 'org-mode-hook #'cpm-org-mode-hooks)
