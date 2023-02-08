@@ -194,6 +194,9 @@
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
   ;; start eshell in insert
   (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
+  ;; mu4e views in motion
+  (add-to-list 'meow-mode-state-list '(mu4e-headers-mode . motion))
+  (add-to-list 'meow-mode-state-list '(mu4e-view-mode . motion))
   ;; start helpful in normal
   ;; (add-to-list 'meow-mode-state-list '(helpful-mode . normal))
   (meow-global-mode 1)
