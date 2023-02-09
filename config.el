@@ -88,7 +88,7 @@
       "#+title:     %s
 #+date:    %s
 #+filetags:    %s
-#+identifier: %s
+#+identifier:  %s
 \n")
 
 ;; Consult Notes Setup
