@@ -407,7 +407,8 @@ If missing, install packages."
 (message "
 ;; ======================================================
 ;; *Loading 𝛌-Emacs Base Modules*
-;; ======================================================")
+;; ======================================================
+")
 (measure-time
  (cl-dolist (mod (list
                   ;; Base modules
@@ -425,9 +426,10 @@ If missing, install packages."
 (defun lem-user-config-after-init ()
   "Modules loaded after init."
   (message "
-  ;; ======================================================
-  ;; *Loading 𝛌-Emacs after-init Modules*
-  ;; ======================================================")
+;; ======================================================
+;; *Loading 𝛌-Emacs after-init Modules*
+;; ======================================================
+")
   (measure-time (cl-dolist (mod (list
                                  ;; Completion
                                  'lem-setup-completion
@@ -450,9 +452,10 @@ If missing, install packages."
 
   "Modules loaded after Emacs startup."
   (message "
-  ;; ======================================================
-  ;; *Loading 𝛌-Emacs after-startup Modules*
-  ;; ======================================================")
+;; ======================================================
+;; *Loading 𝛌-Emacs after-startup Modules*
+;; ======================================================
+")
   (measure-time (cl-dolist (mod (list
                                  ;; Other UI/UX
                                  'lem-setup-scratch
