@@ -350,7 +350,7 @@
 
                                                      ;; package-vc
                                                      lambda-themes
-                                                     capf-bibtex
+                                                     bibtex-capf
                                                      org-modern-indent
                                                      pulsing-cursor
                                                      zotxt-emacs
@@ -667,17 +667,17 @@ If missing, install packages."
     (package-vc-install "https://github.com/egh/zotxt-emacs.git"))
   (add-hook 'org-mode #'org-zotxt-mode))
 
-;;;;; Capf-bibtex
+;;;;; Bibtex-capf
 
-(use-package capf-bibtex
+(use-package bibtex-capf
   :ensure nil
-  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . capf-bibtex-mode)
+  :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . bibtex-capf-mode)
   :custom
-  (capf-bibtex-bibliography
+  (bibtex-capf-bibliography
    '("~/Dropbox/Work/bibfile.bib"))
   :init
-  (unless (package-installed-p 'capf-bibtex)
-    (package-vc-install "https://github.com/mclear-tools/capf-bibtex.git")))
+  (unless (package-installed-p 'bibtex-capf)
+    (package-vc-install "https://github.com/mclear-tools/bibtex-capf.git")))
 
 ;;;;; Pulsing Cursor
 
