@@ -652,7 +652,6 @@ the real email address"
 
 
 ;;;;; Quick Actions
-
 (with-eval-after-load 'mu4e
   ;; Helpful discussion at
   ;; https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Mail-05.org
@@ -668,26 +667,29 @@ the real email address"
     (call-interactively 'org-store-link)
     (org-capture nil "mr"))
 
-  (defun lem-capture-mail-remind (msg)
+  (defun lem-capture-mail-link (msg)
     "Capture for message read-later"
     (interactive)
     (call-interactively 'org-store-link)
-    (org-capture nil "mm"))
+    (org-capture nil "ml"))
 
   ;; Add custom actions for our capture templates
   (add-to-list 'mu4e-headers-actions
+               '("Link" . lem-capture-mail-link) t)
+  (add-to-list 'mu4e-view-actions
+               '("Link" . lem-capture-mail-link) t)
+  (add-to-list 'mu4e-headers-actions
                '("Comment on" . lem-capture-mail-comment) t)
   (add-to-list 'mu4e-view-actions
                '("Comment on" . lem-capture-mail-comment) t)
   (add-to-list 'mu4e-headers-actions
-               '("respond" . lem-capture-mail-respond) t)
+               '("Respond" . lem-capture-mail-respond) t)
   (add-to-list 'mu4e-view-actions
-               '("respond" . lem-capture-mail-respond) t)
+               '("Respond" . lem-capture-mail-respond) t)
   (add-to-list 'mu4e-headers-actions
                '("Remind" . lem-capture-mail-remind) t)
   (add-to-list 'mu4e-view-actions
                '("Remind" . lem-capture-mail-remind) t))
-
 
 ;;;;; Mail Custom Bookmarks/Searches
 (with-eval-after-load 'mu4e
