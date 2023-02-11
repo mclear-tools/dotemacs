@@ -56,8 +56,7 @@
 
 ;;;;; Org Directories
 (setopt org-directory "~/Dropbox/org-files/"
-        org-default-notes-file (concat org-directory "inbox.org")
-        org-agenda-files (list org-directory))
+        org-default-notes-file (concat org-directory "inbox.org"))
 
 ;;;;; Citations
 (setq lem-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
@@ -468,6 +467,10 @@ If missing, install packages."
                                  ;; Server
                                  'lem-setup-server
 
+                                 ;; Keybindings & Modal
+                                 'lem-setup-keybindings
+                                 'cpm-setup-meow
+
                                  ;; Writing modules
                                  'lem-setup-writing
                                  'lem-setup-notes
@@ -498,22 +501,19 @@ If missing, install packages."
                                  (when sys-mac
                                    'lem-setup-macos)
 
-                                 ;; Keybindings & Modal
-                                 'lem-setup-keybindings
-                                 'cpm-setup-meow
-
                                  ;; Splash
                                  'lem-setup-splash
 
                                  ;; Personal modules
                                  'cpm-setup-email
-                                 'cpm-setup-org
                                  'cpm-setup-calendars
                                  'cpm-setup-multi-compile
-                                 'cpm-setup-teaching))
+                                 'cpm-setup-teaching
+                                 ))
                   (require mod))))
 (add-hook 'emacs-startup-hook #'lem-user-config-after-startup)
-
+(with-eval-after-load 'org
+  (require 'cpm-setup-org))
 ;;;;; Scratch Directory
 (with-eval-after-load 'lem-setup-scratch
   (setopt lem-scratch-default-dir lem-scratch-save-dir))
@@ -523,7 +523,12 @@ If missing, install packages."
 
 ;; Make sure to load these after general keybindings
 (with-eval-after-load 'lem-setup-keybindings
+  ;; Eshell
   (bind-key (concat lem-prefix " \\")  #'lem-toggle-eshell)
+  (with-eval-after-load 'org-mode
+    ;; Org Headings w/created property
+  (bind-key "C-M-<return>" #'lem-insert-header-and-time-property org-mode-map))
+  ;; User Keys
   (bind-keys :prefix-map lem+user-keys
              :prefix (concat lem-prefix " u"               )
              ;; Workspaces
@@ -885,7 +890,11 @@ current window, as a ratio between 0 and 1.")
          (set-face-attribute 'default           nil :font "SF Mono-13")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
-         (set-face-attribute 'variable-pitch    nil :font "SF Pro Text-14"))))
+         (set-face-attribute 'variable-pitch    nil :font "SF Pro Text-14")
+         ;; Allow SF font as a fallback
+         (set-fontset-font t nil "SF Pro Text" nil 'append)
+         ;; SF font insert
+         (require 'sf))))
 (add-hook 'window-setup-hook #'lem-user-fonts)
 
 ;;;;; SHR Rendering
