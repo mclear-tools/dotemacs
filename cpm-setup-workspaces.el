@@ -83,11 +83,11 @@
 (defun cpm-open-emacsd-in-workspace ()
   "Open emacs.d in its own workspace"
   (interactive)
-  (if (member "emacs.d" (tabspaces--list-tabspaces))
-      (tab-bar-switch-to-tab "emacs.d")
+  (if (member ".emacs.d" (tabspaces--list-tabspaces))
+      (tab-bar-switch-to-tab ".emacs.d")
     (progn
       (tab-bar-new-tab)
-      (tab-bar-rename-tab "emacs.d")
+      (tab-bar-rename-tab ".emacs.d")
       (find-file lem-config-file)
       (split-window-right)
       (other-window 1)

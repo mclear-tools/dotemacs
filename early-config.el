@@ -15,6 +15,7 @@
               (append (list
                        '(fullscreen . maximized)
                        `(background-color . ,(if (eq active-theme 'light-theme) "#fffefd" "#141414"))
+                       `(foreground-color . ,(if (eq active-theme 'light-theme) "#141414" "#A3A3A3"))
                        '(internal-border-width . 12)
                        '(tool-bar-lines . 0)
                        '(vertical-scroll-bars . nil)

@@ -1022,6 +1022,7 @@ DESC must be a `package-desc' object and must have a link to a recognized repo h
   (interactive (list (package--query-desc))
                package-menu-mode)
   (require 'popper)
+  (require 'vc)
   (unless desc
     (user-error "No package here"))
   (let* ((extras (and desc (package-desc-extras desc)))
