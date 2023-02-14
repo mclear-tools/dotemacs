@@ -473,11 +473,6 @@ If missing, install packages."
                                  'lem-setup-keybindings
                                  'cpm-setup-meow
 
-                                 ;; Writing modules
-                                 'lem-setup-writing
-                                 'lem-setup-notes
-                                 'lem-setup-citation
-
                                  ;; Programming modules
                                  'lem-setup-programming
                                  'lem-setup-debug
@@ -897,15 +892,29 @@ current window, as a ratio between 0 and 1.")
   "Set user fonts."
   (cond ((and (lem-font-available-p "SF Mono")
               (lem-font-available-p "SF Pro Text"))
-         (set-face-attribute 'default           nil :font "SF Mono-13")
+         ;; (set-face-attribute 'default           nil :font "SF Mono-13")
+         (set-face-attribute 'default           nil :font "Inconsolata-15")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
-         (set-face-attribute 'variable-pitch    nil :font "SF Pro Text-14")
+         (set-face-attribute 'variable-pitch    nil :font "Metropolis-15" :weight 'normal)
          ;; Allow SF font as a fallback
          (set-fontset-font t nil "SF Pro Text" nil 'append)
          ;; SF font insert
-         (require 'sf))))
+         (require 'sf)))
+  (setq-default line-spacing 0.0))
 (add-hook 'window-setup-hook #'lem-user-fonts)
+
+(with-eval-after-load 'svg-tag-mode
+  (setq svg-tag-tags
+        '(;; Replaces any occurence of :XXX: with a dynamic SVG tag displaying XXX
+          ("\\(:[A-Z]+:\\)" . ((lambda (tag)
+                                 (svg-tag-make tag :face 'success :inverse t :beg 1 :end -1))))
+          ;; other tags
+          ("DONE:"  . ((lambda (tag) (svg-tag-make "DONE:"  :face 'fringe  :font-family "SF Mono" :inverse t ))))
+          ("FIXME:" . ((lambda (tag) (svg-tag-make "FIXME:" :face 'error   :font-family "SF Mono" :inverse t))))
+          ("HACK:"  . ((lambda (tag) (svg-tag-make "HACK:"  :face 'warning :font-family "SF Mono" :inverse t))))
+          ("NOTE:"  . ((lambda (tag) (svg-tag-make "NOTE:"  :face 'warning :font-family "SF Mono" :inverse t))))
+          ("TODO:"  . ((lambda (tag) (svg-tag-make "TODO:"  :face 'warning :font-family "SF Mono" :inverse t)))))))
 
 ;;;;; SHR Rendering
 (setopt shr-use-fonts nil)
