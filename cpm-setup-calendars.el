@@ -1,7 +1,6 @@
 ;;; Calendars
 (setq diary-file (concat lem-cache-dir "diary-files/diary"))
 (setq diary-location (concat lem-cache-dir "diary-files/"))
-(setq org-agenda-include-diary t)
 (setq diary-display-function 'diary-fancy-display)
 (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
 (add-hook 'diary-list-entries-hook 'diary-sort-entries t)

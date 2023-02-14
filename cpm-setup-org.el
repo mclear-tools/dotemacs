@@ -26,7 +26,6 @@
 ;; More basic configuration goes in the lem setup files.
 
 ;;; Code:
-
 ;;;; Org Capture
 
 ;;;;; Capture Functions
@@ -68,13 +67,8 @@
          "* %? :link: \n%(cpm-capture-browser)"  :empty-lines 1)
 
         ("m" "eMail Workflow")
-        ("mc" "Comment" entry (file+olp ,(concat org-directory "Mail.org") "Mail Comment")
-         "* TODO Comment re: %:fromname about %:subject :email: \nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%?  %i"  :empty-lines 1)
-        ("mm" "Remember" entry (file+olp ,(concat org-directory "Mail.org") "Remember")
-         "* TODO %:subject :email: \nSCHEDULED:%t\nFrom: %:from \nMessage: %a \n\n  %i" :immediate-finish t  :empty-lines 1)
         ("mr" "Respond" entry (file+olp ,(concat org-directory "Mail.org") "Respond")
          "* TODO Respond to %:from | %:subject :email: \nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
-
         ("ml" "Link" entry (file+olp ,(concat org-directory "Mail.org") "Link")
          "* %:from | %:subject :email: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
 
@@ -137,6 +131,26 @@
 
 ;;;; Personal Agenda Config
 
+;;;;; Agenda Icons
+;; https://florianwinkelbauer.com/posts/2020-07-13-org-agenda-icons/
+(defun cpm-agenda-icon-material (name)
+  "Returns an all-the-icons-material icon"
+  (list (all-the-icons-material name)))
+
+(setq org-agenda-category-icon-alist
+      `(("Birthday" ,(cpm-agenda-icon-material "cake") nil nil :ascent center)
+        ("Anniversary" ,(cpm-agenda-icon-material "favorite") nil nil :ascent center)
+        ("Diary" ,(cpm-agenda-icon-material "book") nil nil :ascent center)))
+
+;;;;; Agenda Faces
+(setopt org-agenda-fontify-priorities 'cookies)
+(with-eval-after-load 'org-modern
+  (when (lem-font-available-p "SF Pro Text")
+    (setq org-modern-priority
+          `((?A . ,(propertize "􀂔" 'face 'lambda-red))
+            (?B . ,(propertize "􀂖" 'face 'lambda-orange))
+            (?C . ,(propertize "􀂘" 'face 'lambda-purple))))))
+
 ;;;;; Agenda Date Display
 (setq org-agenda-format-date 'my-org-agenda-format-date-aligned)
 
@@ -163,25 +177,6 @@ This function makes sure that dates are aligned for easy reading."
     (format " %-2s. %2d %s"
             dayname day monthname)))
 
-;;;;; Custom Agenda
-
-;; Vim movement
-(with-eval-after-load 'org-agenda
-  (bind-key "j"  #'org-agenda-next-item org-agenda-mode-map)
-  (bind-key "k" #'org-agenda-previous-item org-agenda-mode-map))
-
-;; Faces
-(setq org-faces-easy-properties '((todo . :foreground)
-                                  (tag  . :foreground)
-                                  (priority . :foreground)))
-(setq org-agenda-fontify-priorities 'cookies)
-(setq org-priority-faces '((?A . (:foreground 'red :weight regular))
-                           (?B . (:foreground 'orange :weight regular))
-                           (?C . (:foreground 'yellow :weight regular))))
-(with-eval-after-load 'org-modern
-  (setq org-modern-priority (quote ((?A . "􀂔")
-                                    (?B . "􀂖")
-                                    (?C . "􀂘")))))
 ;;;;; Agenda Search
 ;; https://orgmode.org/worg/org-tutorials/advanced-searching.html
 ;; https://github.com/psamim/dotfiles/blob/master/doom/config.el
@@ -191,7 +186,6 @@ This function makes sure that dates are aligned for easy reading."
                                     (todo priority-down category-keep)
                                     (tags priority-down category-keep)
                                     (search category-keep)))
-(setq org-agenda-files (list org-directory))
 
 ;; https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-908260553
 (require 'cl-lib)
@@ -228,8 +222,44 @@ org-agenda--todo-keyword-regex."
        "~/Dropbox/org-files/teaching.org"
        "~/Dropbox/org-files/todo.org"
        "~/Dropbox/org-files/writing.org"))))
-(setq org-agenda-files
-      (org-agenda--calculate-files-for-regex org-agenda--todo-keyword-regex))
+
+
+;;;; Delete Empty Agenda Blocks
+;; Not using currently as it is incompatible with a compact agenda
+(defun org-agenda-delete-empty-blocks ()
+  "Remove empty agenda blocks.
+  A block is identified as empty if there are fewer than 2
+  non-empty lines in the block (excluding the line with
+  `org-agenda-block-separator' characters)."
+  (when org-agenda-compact-blocks
+    (user-error "Cannot delete empty compact blocks"))
+  (setq buffer-read-only nil)
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((blank-line-re "^\\s-*$")
+           (content-line-count (if (looking-at-p blank-line-re) 0 1))
+           (start-pos (point))
+           (block-re (format "%c\\{10,\\}" org-agenda-block-separator)))
+      (while (and (not (eobp)) (forward-line))
+        (cond
+         ((looking-at-p block-re)
+          (when (< content-line-count 2)
+            (delete-region start-pos (1+ (point-at-bol))))
+          (setq start-pos (point))
+          (forward-line)
+          (setq content-line-count (if (looking-at-p blank-line-re) 0 1)))
+         ((not (looking-at-p blank-line-re))
+          (setq content-line-count (1+ content-line-count)))))
+      (when (< content-line-count 2)
+        (delete-region start-pos (point-max)))
+      (goto-char (point-min))
+      ;; The above strategy can leave a separator line at the beginning
+      ;; of the buffer.
+      (when (looking-at-p block-re)
+        (delete-region (point) (1+ (point-at-eol))))))
+  (setq buffer-read-only t))
+;; (add-hook 'org-agenda-finalize-hook #'org-agenda-delete-empty-blocks)
+
 
 ;;;;; Custom Commands
 ;; https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
@@ -240,20 +270,27 @@ org-agenda--todo-keyword-regex."
 ;; https://www.reddit.com/r/emacs/comments/hnf3cw/my_orgmode_agenda_much_better_now_with_category/
 ;; https://github.com/psamim/dotfiles/blob/master/doom/config.el
 
+(setopt org-priority-default 68)
 (setq org-agenda-custom-commands
       '(("d" "Dashboard"
          (;; Timed daily agenda with due items
-          (agenda "" ((org-agenda-span 1)
-                      (org-agenda-entry-types '(:timestamp :deadline* :scheduled*))))
+          (agenda "" ((org-agenda-span 'day)
+                      (org-agenda-include-diary t)
+                      (org-agenda-prefix-format " %i   %?-2 t%s")
+                      (org-agenda-time-grid
+                       (quote
+                        ((today require-timed remove-match) () "      " "┈┈┈┈┈┈┈┈┈┈┈┈┈")))
+                      (org-agenda-sorting-strategy '(time-up priority-down tag-up))
+                      (org-agenda-entry-types '(:deadline* :scheduled*))))
           ;; Due!
           (tags-todo "+DEADLINE<=\"<+6d>\""
                      ((org-agenda-sorting-strategy '(priority-down time-up tag-up))
                       (org-agenda-overriding-header
                        (concat "\n" "    " "⸺ " "Due!" " ⸺" ))))
           ;; Priorities
-          (tags "PRIORITY=\"A\""
+          (tags "+PRIORITY=\"A\"|+PRIORITY=\"B\"|+PRIORITY=\"C\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-tags-match-list-sublevels t)
+                 (org-tags-match-list-sublevels nil)
                  (org-agenda-overriding-header
                   (concat "\n" "    " "⸺ " "Priority Tasks" " ⸺" ))))
           ;; Scheduled
@@ -289,11 +326,16 @@ org-agenda--todo-keyword-regex."
           (org-agenda-timegrid-use-ampm nil)
           (org-agenda-current-time-string "–––––––––––––– Now")
           ;; display
-          (org-agenda-compact-blocks t)
           (org-agenda-remove-tags t)
-          (org-agenda-scheduled-leaders '("" ""))))))
+          (org-agenda-compact-blocks t)
 
-;;; Org Scheduling Keybinds
+          (org-agenda-scheduled-leaders '("" ""))))))
+;;;; Org Custom Keybinds
+;; Vim movement
+(with-eval-after-load 'org-agenda
+  (bind-key "j"  #'org-agenda-next-item org-agenda-mode-map)
+  (bind-key "k" #'org-agenda-previous-item org-agenda-mode-map))
+
 (defvar cpm-setup--org-movement-bindings
   '((up    . "k")
     (down  . "j")

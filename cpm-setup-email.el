@@ -655,14 +655,8 @@ the real email address"
 (with-eval-after-load 'mu4e
   ;; Helpful discussion at
   ;; https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Mail-05.org
-  (defun lem-capture-mail-comment (msg)
-    "Capture for message follow-up"
-    (interactive)
-    (call-interactively 'org-store-link)
-    (org-capture nil "mc"))
-
   (defun lem-capture-mail-respond (msg)
-    "Capture for message follow-up"
+    "Capture for message follow-up with schedule & deadline."
     (interactive)
     (call-interactively 'org-store-link)
     (org-capture nil "mr"))
@@ -679,17 +673,9 @@ the real email address"
   (add-to-list 'mu4e-view-actions
                '("Link" . lem-capture-mail-link) t)
   (add-to-list 'mu4e-headers-actions
-               '("Comment on" . lem-capture-mail-comment) t)
-  (add-to-list 'mu4e-view-actions
-               '("Comment on" . lem-capture-mail-comment) t)
-  (add-to-list 'mu4e-headers-actions
                '("Respond" . lem-capture-mail-respond) t)
   (add-to-list 'mu4e-view-actions
-               '("Respond" . lem-capture-mail-respond) t)
-  (add-to-list 'mu4e-headers-actions
-               '("Remind" . lem-capture-mail-remind) t)
-  (add-to-list 'mu4e-view-actions
-               '("Remind" . lem-capture-mail-remind) t))
+               '("Respond" . lem-capture-mail-respond) t))
 
 ;;;;; Mail Custom Bookmarks/Searches
 (with-eval-after-load 'mu4e
@@ -837,23 +823,23 @@ the real email address"
            (oend  (+ (line-beginning-position) 21))
            (overlay (make-overlay obeg oend)))
       (cond ((eql mark 'refile)
-             (overlay-put overlay 'display (svg-tag-make "ARCHIVE" :face 'success :inverse t 3 0)))
+             (overlay-put overlay 'display (svg-tag-make "ARCHIVE" :face 'success :font-family "SF Mono" :inverse t 3 0)))
             ((eql mark 'trash)
-             (overlay-put overlay 'display (svg-tag-make "TRASH"   :face 'error   :inverse t 5 0)))
+             (overlay-put overlay 'display (svg-tag-make "TRASH"   :face 'error   :font-family "SF Mono" :inverse t 5 0)))
             ((eql mark 'untrash)
-             (overlay-put overlay 'display (svg-tag-make "UNTRASH" :face 'warning :inverse t 3 0)))
+             (overlay-put overlay 'display (svg-tag-make "UNTRASH" :face 'warning :font-family "SF Mono" :inverse t 3 0)))
             ((eql mark 'delete)
-             (overlay-put overlay 'display (svg-tag-make "DELETE"  :face 'error   :inverse t 4 0)))
+             (overlay-put overlay 'display (svg-tag-make "DELETE"  :face 'error   :font-family "SF Mono" :inverse t 4 0)))
             ((eql mark 'unread)
-             (overlay-put overlay 'display (svg-tag-make "UNREAD"  :face 'warning :inverse t 4 0)))
+             (overlay-put overlay 'display (svg-tag-make "UNREAD"  :face 'warning :font-family "SF Mono" :inverse t 4 0)))
             ((eql mark 'flag)
-             (overlay-put overlay 'display (svg-tag-make "FLAG"    :face 'warning :inverse t 6 0)))
+             (overlay-put overlay 'display (svg-tag-make "FLAG"    :face 'warning :font-family "SF Mono" :inverse t 6 0)))
             ((eql mark 'unflag)
-             (overlay-put overlay 'display (svg-tag-make "UNFLAG"  :face 'warning :inverse t 4 0)))
+             (overlay-put overlay 'display (svg-tag-make "UNFLAG"  :face 'warning :font-family "SF Mono" :inverse t 4 0)))
             ((eql mark 'move)
-             (overlay-put overlay 'display (svg-tag-make "MOVE"    :face 'warning :inverse t 6 0)))
+             (overlay-put overlay 'display (svg-tag-make "MOVE"    :face 'warning :font-family "SF Mono" :inverse t 6 0)))
             ((eql mark 'tag)
-             (overlay-put overlay 'display (svg-tag-make "TAG"     :face 'region  :inverse nil 7 0)))
+             (overlay-put overlay 'display (svg-tag-make "TAG"     :face 'region  :font-family "SF Mono" :inverse nil 7 0)))
             ((eql mark 'unmark)
              (save-excursion
                (remove-overlays (line-beginning-position) (line-end-position)))))))
