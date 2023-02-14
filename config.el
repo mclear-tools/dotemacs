@@ -352,7 +352,6 @@
                                                      ;; package-vc
                                                      lambda-themes
                                                      bibtex-capf
-                                                     org-modern-indent
                                                      pulsing-cursor
                                                      zotxt-emacs
                                                      org-devonthink
@@ -370,6 +369,8 @@
 ;; https://github.com/kaushalmodi/.emacs.d
 (defvar lem-missing-packages '()
   "List populated at startup containing packages needing installation.")
+(defvar lem-missing-vc-packages '()
+  "List populated at startup containing vc packages requiring installation.")
 
 (defun lem-check-and-install-packages ()
   "Check if packages are installed.
@@ -380,6 +381,11 @@ If missing, install packages."
   (dolist (p package-selected-packages)
     (unless (package-installed-p p)
       (add-to-list 'lem-missing-packages p 'append)))
+  ;; Check vc installed packages (Emacs 29+)
+  (message "%s" "Checking for missing vc packages.")
+  (dolist (p package-vc-selected-packages)
+    (unless (package-installed-p p)
+      (add-to-list 'lem-missing-vc-packages p 'append)))
   ;; Install packages
   (if lem-missing-packages
       (progn
@@ -390,7 +396,16 @@ If missing, install packages."
           (message "Installing `%s' ..." p)
           (package-install p))
         (setq lem-missing-packages '()))
-    (message "%s" "No missing packages.")))
+    (message "%s" "No missing packages."))
+  ;; Install missing vc packages (Emacs 29+)
+  (if lem-missing-vc-packages
+      (progn
+        ;; Install the missing packages
+        (dolist (p lem-missing-vc-packages)
+          (message "Installing missing vc package `%s' ..." p)
+          (package-vc-install p))
+        (setq lem-missing-vc-packages '()))
+    (message "%s" "No missing vc packages.")))
 
 ;; Check for missing packages & install if necessary
 ;; (lem-check-and-install-packages)
@@ -665,31 +680,41 @@ If missing, install packages."
    "pg" "lem-goto-projects"
    "pd" "cd ~/Dropbox/Work/projects"))
 
-;;;;; Zotero Org Zotxt Inferface
+;;;;; Package-VC Installed Packages
+(setq package-vc-selected-packages     '((zotxt-emacs
+                                          :url "https://github.com/egh/zotxt-emacs.git"
+                                          :branch "master")
+                                         (bibtex-capf
+                                          :url "https://github.com/mclear-tools/bibtex-capf.git"
+                                          :branch "main")
+                                         (pulsing-cursor
+                                          :url "https://github.com/jasonjckn/pulsing-cursor"
+                                          :branch "main")
+                                         (org-devonthink
+                                          :url "https://github.com/lasvice/org-devonthink"
+                                          :branch "master")
+                                         (command-log-mode
+                                          :url "https://github.com/lewang/command-log-mode.git"
+                                          :branch "master")))
+
+;;;;;; Zotero Org Zotxt Inferface
 (use-package zotxt
   :ensure nil
   :commands (org-zotxt-insert-reference-link
              org-zotxt-open-attachment
              rg-zotxt-update-reference-link-at-point)
-  :init
-  (unless (package-installed-p 'zotxt-emacs)
-    (package-vc-install "https://github.com/egh/zotxt-emacs.git"))
+  :config
   (add-hook 'org-mode #'org-zotxt-mode))
 
-;;;;; Bibtex-capf
-
+;;;;;; Bibtex-capf
 (use-package bibtex-capf
   :ensure nil
   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . bibtex-capf-mode)
   :custom
   (bibtex-capf-bibliography
-   '("~/Dropbox/Work/bibfile.bib"))
-  :init
-  (unless (package-installed-p 'bibtex-capf)
-    (package-vc-install "https://github.com/mclear-tools/bibtex-capf.git")))
+   '("~/Dropbox/Work/bibfile.bib")))
 
-;;;;; Pulsing Cursor
-
+;;;;;; Pulsing Cursor
 (use-package pulsing-cursor
   :ensure nil
   :defer 1
@@ -699,34 +724,16 @@ If missing, install packages."
   (pulsing-cursor-delay 1.0)
   (pulsing-cursor-interval .5)
   (pulsing-cursor-blinks 5)
-  :init
-  (unless (package-installed-p 'pulsing-cursor)
-    (package-vc-install "https://github.com/jasonjckn/pulsing-cursor"))
   :config
   (pulsing-cursor-mode +1))
 
-;;;;; Org Modern Indent
-;; Make org-modern work better with org-indent
-(use-package org-modern-indent
-  :disabled
-  :ensure nil
-  :hook (org-indent-mode . org-modern-indent-mode)
-  :custom-face
-  (org-modern-indent-line ((t (:height 1.0 :inherit lem-ui-default-font :inherit lambda-meek))))
-  :init
-  (unless (package-installed-p 'org-modern-indent)
-    (package-vc-install "https://github.com/jdtsmith/org-modern-indent.git")))
-
-;;;;; Org Devonthink Integration
+;;;;;; Org Devonthink Integration
 (use-package org-devonthink
   :ensure nil
   :when sys-mac
-  :commands (org-insert-dtp-link org-dtp-store-link)
-  :init
-  (unless (package-installed-p 'org-devonthink)
-    (package-vc-install "https://github.com/lasvice/org-devonthink")))
+  :commands (org-insert-dtp-link org-dtp-store-link))
 
-;;;;; Command log mode
+;;;;;; Command log mode
 (use-package command-log-mode
   :ensure nil
   :commands (command-log-mode)
@@ -893,7 +900,7 @@ current window, as a ratio between 0 and 1.")
   (cond ((and (lem-font-available-p "SF Mono")
               (lem-font-available-p "SF Pro Text"))
          ;; (set-face-attribute 'default           nil :font "SF Mono-13")
-         (set-face-attribute 'default           nil :font "Inconsolata-15")
+         (set-face-attribute 'default           nil :font "Inconsolata-15" :weight 'medium)
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
          (set-face-attribute 'variable-pitch    nil :font "Metropolis-15" :weight 'normal)
@@ -908,7 +915,7 @@ current window, as a ratio between 0 and 1.")
   (setq svg-tag-tags
         '(;; Replaces any occurence of :XXX: with a dynamic SVG tag displaying XXX
           ("\\(:[A-Z]+:\\)" . ((lambda (tag)
-                                 (svg-tag-make tag :face 'success :inverse t :beg 1 :end -1))))
+                                 (svg-tag-make tag :face 'success :font-family "SF Mono" :inverse t :beg 1 :end -1))))
           ;; other tags
           ("DONE:"  . ((lambda (tag) (svg-tag-make "DONE:"  :face 'fringe  :font-family "SF Mono" :inverse t ))))
           ("FIXME:" . ((lambda (tag) (svg-tag-make "FIXME:" :face 'error   :font-family "SF Mono" :inverse t))))
