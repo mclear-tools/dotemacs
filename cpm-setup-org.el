@@ -136,11 +136,23 @@
 (defun cpm-agenda-icon-material (name)
   "Returns an all-the-icons-material icon"
   (list (all-the-icons-material name)))
+(defun cpm-agenda-icon-faicon (name)
+  "Returns an all-the-icons-faicon icon"
+  (list (all-the-icons-faicon name)))
 
 (setq org-agenda-category-icon-alist
-      `(("Birthday" ,(cpm-agenda-icon-material "cake") nil nil :ascent center)
-        ("Anniversary" ,(cpm-agenda-icon-material "favorite") nil nil :ascent center)
-        ("Diary" ,(cpm-agenda-icon-material "book") nil nil :ascent center)))
+      `(("Birthday"    ,(cpm-agenda-icon-material "cake")            nil nil :ascent center)
+        ("Anniversary" ,(cpm-agenda-icon-material "favorite")        nil nil :ascent center)
+        ("Diary"       ,(cpm-agenda-icon-faicon   "book")            nil nil :ascent center)
+        ("Inbox"       ,(cpm-agenda-icon-material "inbox")           nil nil :ascent center)
+        ("Todo"        ,(cpm-agenda-icon-material "check_circle")    nil nil :ascent center)
+        ("Mail"        ,(cpm-agenda-icon-material "email")           nil nil :ascent center)
+        ("Reading"     ,(cpm-agenda-icon-material "library_books")   nil nil :ascent center)
+        ("Service"     ,(cpm-agenda-icon-faicon   "th-list")         nil nil :ascent center)
+        ("Teaching"    ,(cpm-agenda-icon-material "school")          nil nil :ascent center)
+        ("Writing"     ,(cpm-agenda-icon-faicon   "pencil-square-o") nil nil :ascent center)
+        ("Advising"    ,(cpm-agenda-icon-faicon   "users")           nil nil :ascent center)
+        ("Admin"       ,(cpm-agenda-icon-material "folder")          nil nil :ascent center)))
 
 ;;;;; Agenda Faces
 (setopt org-agenda-fontify-priorities 'cookies)
@@ -261,7 +273,7 @@ org-agenda--todo-keyword-regex."
 ;; (add-hook 'org-agenda-finalize-hook #'org-agenda-delete-empty-blocks)
 
 
-;;;;; Custom Commands
+;;;;; Agenda Custom Commands
 ;; https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
 ;; On priorities https://stackoverflow.com/a/66582772
 ;; Prot's custom commands https://protesilaos.com/codelog/2021-12-09-emacs-org-block-agenda/
@@ -270,17 +282,22 @@ org-agenda--todo-keyword-regex."
 ;; https://www.reddit.com/r/emacs/comments/hnf3cw/my_orgmode_agenda_much_better_now_with_category/
 ;; https://github.com/psamim/dotfiles/blob/master/doom/config.el
 
+;; NOTE: default must be set to 68 to see *only* explicit priorities A-C
 (setopt org-priority-default 68)
 (setq org-agenda-custom-commands
       '(("d" "Dashboard"
          (;; Timed daily agenda with due items
           (agenda "" ((org-agenda-span 'day)
                       (org-agenda-include-diary t)
-                      (org-agenda-prefix-format " %i   %?-2 t%s")
+                      (org-agenda-prefix-format " %-2i  %?-2 t%s")
                       (org-agenda-time-grid
                        (quote
-                        ((today require-timed remove-match) () "      " "┈┈┈┈┈┈┈┈┈┈┈┈┈")))
-                      (org-agenda-sorting-strategy '(time-up priority-down tag-up))
+                        ((today require-timed remove-match) ()
+                         " ┄┄┄┄┄ " "┈┈┈┈┈┈┈┈┈┈┈┈┈")))
+                      (org-agenda-sorting-strategy '((agenda time-up priority-down tag-up category-keep)
+                                                     (todo priority-down category-keep)
+                                                     (tags priority-down category-keep)
+                                                     (search category-keep)))
                       (org-agenda-entry-types '(:deadline* :scheduled*))))
           ;; Due!
           (tags-todo "+DEADLINE<=\"<+6d>\""
