@@ -134,6 +134,8 @@
 ;;;;; Set Splash Footer
 (setq lem-splash-footer  "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden")
 
+;; (setq lem-splash-banner (insert-image (create-image (concat lem-library-dir "lambda-logo.png"))))
+
 ;;;;; Markdown Command
 (setq markdown-command
       (concat
@@ -150,269 +152,6 @@
        " --metadata=reference-section-title:References"
        " --citeproc"
        " --bibliography=~/Dropbox/Work/bibfile.bib"))
-
-;;;; Package List
-;; Explicitly set packages for download/install or removal
-;; Needs to be set before package initialization
-;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
-(customize-set-variable 'package-selected-packages '(;; utility
-                                                     async
-                                                     dash
-                                                     s
-                                                     f
-                                                     el-patch
-
-                                                     ;; settings
-                                                     visual-regexp
-                                                     backup-walker
-                                                     expand-region
-
-                                                     ;; functions
-                                                     crux
-
-                                                     ;; macros
-                                                     anaphora
-                                                     macrostep
-
-                                                     ;; frames
-                                                     ns-auto-titlebar
-
-                                                     ;; windows
-                                                     ace-window
-
-                                                     ;; buffers
-                                                     popper
-                                                     revert-buffer-all
-
-                                                     ;; fonts
-                                                     all-the-icons
-                                                     all-the-icons-dired
-                                                     all-the-icons-completion
-
-                                                     ;; faces
-                                                     dimmer
-                                                     goggles
-                                                     highlight-numbers
-                                                     hl-todo
-                                                     outline-minor-faces
-                                                     svg-tag-mode
-
-                                                     ;; completion
-                                                     cape
-                                                     consult
-                                                     consult-dir
-                                                     corfu
-                                                     embark
-                                                     embark-consult
-                                                     kind-icon
-                                                     marginalia
-                                                     orderless
-                                                     vertico
-                                                     yasnippet
-                                                     yasnippet-snippets
-
-                                                     ;; keybindings
-                                                     which-key
-
-                                                     ;; navigation
-                                                     imenu-list
-                                                     goto-last-change
-
-                                                     ;; dired
-                                                     dired-narrow
-                                                     dired-quick-sort
-                                                     diredfl
-                                                     peep-dired
-                                                     dired-ranger
-
-                                                     ;; search
-                                                     deadgrep
-                                                     rg
-                                                     wgrep
-                                                     visual-regexp-steroids
-
-                                                     ;; modal
-                                                     meow
-
-                                                     ;; vc
-                                                     magit
-                                                     git-commit
-                                                     diff-hl
-                                                     vdiff-magit
-
-                                                     ;; tabs
-                                                     tabspaces
-
-                                                     ;; help
-                                                     hydra
-                                                     helpful
-                                                     elisp-demos
-                                                     info-colors
-
-                                                     ;; colors
-                                                     rainbow-mode
-
-                                                     ;; modeline
-                                                     hide-mode-line
-
-                                                     ;; writing
-                                                     binder
-                                                     consult-flyspell
-                                                     flyspell-correct
-                                                     markdown-mode
-                                                     markdown-toc
-                                                     writeroom-mode
-                                                     lorem-ipsum
-                                                     palimpsest
-                                                     auctex
-                                                     define-word
-                                                     osx-dictionary
-                                                     visual-fill-column
-
-                                                     ;; citation
-                                                     citeproc
-                                                     citar
-
-                                                     ;; notes
-                                                     denote
-                                                     citar-denote
-                                                     consult-notes
-
-                                                     ;; programming
-                                                     aggressive-indent
-                                                     flymake-collection
-                                                     elisp-def
-                                                     embrace
-                                                     highlight-indent-guides
-                                                     iedit
-                                                     multi-compile
-                                                     package-lint
-                                                     rainbow-delimiters
-                                                     puni
-                                                     treesit-auto
-                                                     vimrc-mode
-                                                     web-mode
-                                                     php-mode
-                                                     haskell-mode
-                                                     applescript-mode
-                                                     tldr
-                                                     lua-mode
-                                                     yaml-mode
-                                                     rainbow-identifiers
-                                                     auto-compile
-                                                     esxml
-                                                     kv
-
-                                                     ;; debug
-                                                     bug-hunter
-                                                     esup
-
-                                                     ;; shell
-                                                     exec-path-from-shell
-                                                     eat
-
-                                                     ;; eshell
-                                                     pcmpl-homebrew
-                                                     pcmpl-git
-                                                     pcmpl-args
-                                                     pcomplete-extension
-                                                     esh-help
-                                                     eshell-up
-                                                     eshell-syntax-highlighting
-
-                                                     ;; org extensions
-                                                     htmlize
-                                                     org-autolist
-                                                     org-appear
-                                                     org-contrib
-                                                     org-download
-                                                     org-modern
-                                                     org-pomodoro
-                                                     ox-pandoc
-                                                     ox-hugo
-                                                     org-tree-slide
-
-                                                     ;; pdf
-                                                     pdf-tools
-                                                     org-noter
-
-                                                     ;; elfeed
-                                                     elfeed
-                                                     elfeed-tube
-
-                                                     ;; macos
-                                                     reveal-in-osx-finder
-                                                     grab-mac-link
-                                                     osx-lib
-
-                                                     ;; mail
-                                                     org-msg
-                                                     mu4e-column-faces
-
-                                                     ;; package-vc
-                                                     lambda-themes
-                                                     bibtex-capf
-                                                     pulsing-cursor
-                                                     zotxt-emacs
-                                                     org-devonthink
-                                                     lambda-line
-                                                     ws-butler
-
-                                                     ;; other
-                                                     command-log-mode
-
-                                                     xwidgets-reuse))
-
-;; Auto install the required packages
-;; https://github.com/bbatsov/prelude/blob/master/core/prelude-packages.el
-;; http://toumorokoshi.github.io/emacs-from-scratch-part-2-package-management.html
-;; https://github.com/kaushalmodi/.emacs.d
-(defvar lem-missing-packages '()
-  "List populated at startup containing packages needing installation.")
-(defvar lem-missing-vc-packages '()
-  "List populated at startup containing vc packages requiring installation.")
-
-(defun lem-check-and-install-packages ()
-  "Check if packages are installed.
-If missing, install packages."
-  (interactive)
-  ;; Check packages
-  (message "%s" "Checking for missing packages.")
-  (dolist (p package-selected-packages)
-    (unless (package-installed-p p)
-      (add-to-list 'lem-missing-packages p 'append)))
-  ;; Check vc installed packages (Emacs 29+)
-  (message "%s" "Checking for missing vc packages.")
-  (dolist (p package-vc-selected-packages)
-    (unless (package-installed-p p)
-      (add-to-list 'lem-missing-vc-packages p 'append)))
-  ;; Install packages
-  (if lem-missing-packages
-      (progn
-        (message "Emacs is now refreshing its package database...")
-        (package-refresh-contents)
-        ;; Install the missing packages
-        (dolist (p lem-missing-packages)
-          (message "Installing `%s' ..." p)
-          (package-install p))
-        (setq lem-missing-packages '()))
-    (message "%s" "No missing packages."))
-  ;; Install missing vc packages (Emacs 29+)
-  (if lem-missing-vc-packages
-      (progn
-        ;; Install the missing packages
-        (dolist (p lem-missing-vc-packages)
-          (message "Installing missing vc package `%s' ..." p)
-          (package-vc-install p))
-        (setq lem-missing-vc-packages '()))
-    (message "%s" "No missing vc packages.")))
-
-;; Check for missing packages & install if necessary
-;; (lem-check-and-install-packages)
-
-;; TODO: add auto refresh option
-;; See https://andreyorst.gitlab.io/posts/2022-07-15-refresh-package-contents-automatically/
-
 
 ;;;; Load Modules
 ;; Load modules in stages for a shorter init time. We load core modules first,
@@ -432,9 +171,11 @@ If missing, install packages."
                   'lem-setup-settings
 
                   ;; Basic UI modules
+
                   'lem-setup-frames
                   'lem-setup-windows
                   'lem-setup-buffers
+                  'lem-setup-fonts
                   'lem-setup-faces))
    (require mod)))
 
@@ -479,7 +220,6 @@ If missing, install packages."
                                  'lem-setup-help
                                  'lem-setup-colors
                                  'lem-setup-modeline
-                                 'lem-setup-fonts
 
                                  ;; Server
                                  'lem-setup-server
@@ -654,6 +394,12 @@ If missing, install packages."
   :config
   (setq tldr-directory-path (expand-file-name "tldr/" lem-etc-dir)))
 
+
+;;;;;; Command log mode
+(use-package command-log-mode
+  :ensure nil
+  :commands (command-log-mode))
+
 ;;;;; Popper Shells
 (with-eval-after-load 'popper
   ;; Match eshell, shell, term and/or vterm buffers
@@ -675,27 +421,12 @@ If missing, install packages."
                          ("https://karthinks.com/index.xml" emacs))))
 
 ;;;;; Eshell Aliases
-(with-eval-after-load 'eshell
+(with-eval-after-load 'lem-setup-eshell
   (lem-set-eshell-alias
    "pg" "lem-goto-projects"
    "pd" "cd ~/Dropbox/Work/projects"))
 
 ;;;;; Package-VC Installed Packages
-(setq package-vc-selected-packages     '((zotxt-emacs
-                                          :url "https://github.com/egh/zotxt-emacs.git"
-                                          :branch "master")
-                                         (bibtex-capf
-                                          :url "https://github.com/mclear-tools/bibtex-capf.git"
-                                          :branch "main")
-                                         (pulsing-cursor
-                                          :url "https://github.com/jasonjckn/pulsing-cursor"
-                                          :branch "main")
-                                         (org-devonthink
-                                          :url "https://github.com/lasvice/org-devonthink"
-                                          :branch "master")
-                                         (command-log-mode
-                                          :url "https://github.com/lewang/command-log-mode.git"
-                                          :branch "master")))
 
 ;;;;;; Zotero Org Zotxt Inferface
 (use-package zotxt
@@ -732,14 +463,6 @@ If missing, install packages."
   :ensure nil
   :when sys-mac
   :commands (org-insert-dtp-link org-dtp-store-link))
-
-;;;;;; Command log mode
-(use-package command-log-mode
-  :ensure nil
-  :commands (command-log-mode)
-  :init
-  (unless (package-installed-p 'command-log-mode)
-    (package-vc-install "https://github.com/lewang/command-log-mode.git")))
 
 ;;;; User Functions
 
