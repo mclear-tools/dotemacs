@@ -205,6 +205,7 @@
                                     org-appear
                                     org-contrib
                                     org-download
+                                    org-modern
                                     org-pomodoro
                                     ox-pandoc
                                     ox-hugo

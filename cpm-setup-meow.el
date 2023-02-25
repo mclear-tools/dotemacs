@@ -63,7 +63,6 @@
    ;; high frequency commands
    '(";" . comment-line)
    '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
    '("=" . hl-line-mode)
    '("a" . consult-org-agenda)
    '("b" . lem+buffer-keys)
