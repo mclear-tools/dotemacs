@@ -27,7 +27,6 @@
 
 ;;; Code:
 ;;;; Org Capture
-
 ;;;;; Capture Functions
 
 ;; Add date to captured items
@@ -69,8 +68,8 @@
         ("m" "eMail Workflow")
         ("mr" "Respond" entry (file+olp ,(concat org-directory "Mail.org") "Respond")
          "* TODO Respond to %:from | %:subject :email: \nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
-        ("ml" "Link" entry (file+olp ,(concat org-directory "Mail.org") "Link")
-         "* %:from | %:subject :email: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
+        ("ml" "Link" entry (file+olp ,(concat org-directory "Mail.org") "Mail Capture")
+         "* %:from | %:subject :email: \n%(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
 
         ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
          "* %?"  :empty-lines 1)
@@ -316,28 +315,45 @@ org-agenda--todo-keyword-regex."
                        (concat "\n" "    " "⸺ " "Scheduled/Upcoming" " ⸺"))))
 
           ;; Areas (Grading, Teaching, Research, Editing)
+          ;; Skip priorities
           (tags "+grading"
                 ((org-agenda-overriding-header
-                  (concat "\n" "    "  "⸺ " "Grading" " ⸺"))))
+                  (concat "\n" "    "  "⸺ " "Grading" " ⸺"))
+                 (org-agenda-skip-function
+                  `(org-agenda-skip-entry-if
+                    'regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))))
           (tags-todo "+teaching-grading"
                      ((org-agenda-overriding-header
-                       (concat "\n" "    " "⸺ " "Teaching" " ⸺"))))
+                       (concat "\n" "    " "⸺ " "Teaching" " ⸺"))
+                      (org-agenda-skip-function
+                       `(org-agenda-skip-entry-if
+                         'regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))))
           (tags-todo "writing|book|paper"
                      ((org-agenda-overriding-header
-                       (concat "\n" "    "  "⸺ " "Research & Writing" " ⸺"))))
+                       (concat "\n" "    "  "⸺ " "Research & Writing" " ⸺"))
+                      (org-agenda-skip-function
+                       `(org-agenda-skip-entry-if
+                         'regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))))
           (tags-todo "editing"
                      ((org-agenda-overriding-header
-                       (concat "\n" "    "  "⸺ " "Editing" " ⸺")))))
+                       (concat "\n" "    "  "⸺ " "Editing" " ⸺"))
+                      (org-agenda-skip-function
+                       `(org-agenda-skip-entry-if
+                         'regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest)))))))
          ;; Options
          (;; files
           (org-agenda-files
            (org-agenda--calculate-files-for-regex org-agenda--todo-keyword-regex))
           ;; skip
           (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+          (org-agenda-repeating-timestamp-show-all nil)
           (org-agenda-skip-scheduled-if-deadline-is-shown t)
           (org-agenda-skip-scheduled-if-done t)
           (org-agenda-skip-deadline-if-done t)
           (org-agenda-skip-timestamp-if-done t)
+          (org-agenda-skip-timestamp-if-deadline-is-shown t)
+          (org-agenda-prefer-last-repeat nil)
+          (org-agenda-show-future-repeats nil)
           ;; time
           (org-agenda-time-leading-zero t)
           (org-agenda-timegrid-use-ampm nil)
