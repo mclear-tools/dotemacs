@@ -171,7 +171,7 @@
                   'lem-setup-settings
 
                   ;; Basic UI modules
-
+                  'lem-setup-scratch
                   'lem-setup-frames
                   'lem-setup-windows
                   'lem-setup-buffers
@@ -215,7 +215,7 @@
 ")
   (measure-time (cl-dolist (mod (list
                                  ;; Other UI/UX
-                                 'lem-setup-scratch
+
                                  'lem-setup-theme
                                  'lem-setup-help
                                  'lem-setup-colors
