@@ -56,8 +56,8 @@
 
 ;;;;; Org Settings
 ;; Org Directories
-(setopt org-directory "~/Dropbox/org-files/"
-        org-default-notes-file (concat org-directory "inbox.org")
+(setopt org-directory "/Users/roambot/Documents/org-files"
+        org-default-notes-file (concat org-directory "/inbox.org")
         org-agenda-files (list org-directory))
 
 ;;;;; Citations
@@ -65,60 +65,80 @@
 
 (setq lem-bib-notes (concat (getenv "HOME") "/Dropbox/Work/projects/notebook/content-org/ref-notes"))
 
-(setq lem-citar-note  "${author-or-editor} (${year}): ${title}\n#+ROAM_KEY: [cite:@${=key=}]\n#+SETUPFILE: ../hugo-notebook-setup.org\n#+HUGO_SECTION: reading-notes\n\n- Tags :: \n- Bookends link :: bookends://sonnysoftware.com/${beref}\n- PDF :: [[${file}][PDF Link]]\n\n\n#+BEGIN_SRC emacs-lisp :exports none\n(insert \"#+BEGIN_SRC bibtex\")\n(newline)\n(citar--insert-bibtex \"${=key=}\")\n(insert \"#+END_SRC\")\n#+END_SRC\n")
-
-;; Set citar library path
-(with-eval-after-load 'citar
-  (setq citar-library-paths '("~/Library/Mobile Documents/iCloud~com~sonnysoftware~bot/Documents/be-library")))
+(setq lem-citar-note  "${author-or-editor} (${year}): ${title}\n\n- Tags :: \n- PDF :: [[${file}][PDF Link]]\n\n\n#+BEGIN_SRC emacs-lisp :exports none\n(insert \"#+BEGIN_SRC bibtex\")\n(newline)\n(citar--insert-bibtex \"${=key=}\")\n(insert \"#+END_SRC\")\n#+END_SRC\n")
 
 ;;;;; Notes
-;; I use hugo so define a setup file variable
-(defvar hugo-notebook-setup-file "~/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org"
-  "Variable for notebook setup using hugo.")
+(with-eval-after-load (or 'consult-notes
+                          'denote)
+  ;; Consult Notes Setup
+  ;; Set notes dir(s)
+  (setopt lem-notes-dir (concat (getenv "HOME") "/Documents/notes/")
+          consult-notes-file-dir-sources `(("Agenda Files" ?a ,(car org-agenda-files))
+                                           ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/"))))
+  ;; Simplify annotation
+  (defun cpm-consult-notes--file-dir-annotate (name dir cand)
+    "Annotate file CAND with its directory DIR, size, and modification time."
+    (let* ((file  (concat (file-name-as-directory dir) cand))
+           (dirs  (abbreviate-file-name dir))
+           (attrs (file-attributes file))
+           (fsize (file-size-human-readable (file-attribute-size attrs)))
+	       (ftime (consult-notes--time (file-attribute-modification-time attrs))))
+      (put-text-property 0 (length name)  'face 'consult-notes-name name)
+      (put-text-property 0 (length dirs)  'face 'consult-notes-name dirs)
+      (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
+      (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
+      (format "%8s  %12s" fsize ftime)))
+  (setopt consult-notes-file-dir-annotate-function #'cpm-consult-notes--file-dir-annotate)
 
-;; Denote settings
-(setopt lem-notes-dir (concat (getenv "HOME") "/Documents/notes/")
-        denote-directory (concat lem-notes-dir "denotes/")
-        denote-known-keywords '("emacs" "teaching" "unl" "workbook")
-        denote-prompts '(title keywords subdirectory)
-        consult-notes-denote-display-id t
-        citar-denote-subdir t)
+  ;; Set consult-notes integration
+  ;; Org integration
+  (consult-notes-org-headings-mode)
+  (setopt consult-notes-org-headings-files `(,(concat org-directory "/inbox.org")
+                                             ,(concat org-directory "/reading.org")
+                                             ,(concat org-directory "/writing.org")
+                                             ,(concat org-directory "/reference.org")
+                                             ,(concat org-directory "/music.org")))
+  ;; Denote settings
+  (when (locate-library "denote")
+    (consult-notes-denote-mode)
+    (setopt denote-directory (concat lem-notes-dir "denotes")
+            denote-known-keywords '("emacs" "teaching" "unl" "workbook")
+            denote-prompts '(title keywords subdirectory)
+            consult-notes-denote-display-id t
+            citar-denote-subdir t)
+    (setopt consult-notes-denote-files-function (function denote-directory-text-only-files))
 
-;; Provide nicer spacing for note front matter
-(setq denote-org-front-matter
-      "#+title:     %s
+    ;; Provide nicer spacing for denote note front matter
+    (setq denote-org-front-matter
+          "#+title:     %s
 #+date:    %s
 #+filetags:    %s
 #+identifier:  %s
-\n")
+\n")))
 
-;; Consult Notes Setup
-(with-eval-after-load 'consult-notes
-  ;; don't use setopt here since the macro won't eval the vars
-  (setq consult-notes-file-dir-sources
-        `(("Agenda Files" ?a ,(car org-agenda-files))
-          ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/"))))
 
-  (setopt consult-notes-org-headings-files '("~/Dropbox/org-files/inbox.org"
-                                             "~/Dropbox/org-files/reading.org"
-                                             "~/Dropbox/org-files/writing.org"
-                                             "~/Dropbox/org-files/reference.org"
-                                             "~/Dropbox/org-files/music.org"))
 
-  (defun cpm-consult-notes--file-dir-annotate (name dir cand)
-    "Annotate file CAND with its directory DIR, size, and modification time."
-    (let* ((file  (concat dir cand))
-           (attrs (file-attributes file))
-           (fsize (file-size-human-readable (file-attribute-size attrs)))
-           (ftime (consult-notes--time (file-attribute-modification-time attrs))))
-      (put-text-property 0 (length dir)  'face 'consult-notes-name dir)
-      (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
-      (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
-      (format "%8s %12s" fsize ftime)))
 
-  (setopt consult-notes-file-dir-annotate-function #'cpm-consult-notes--file-dir-annotate)
-  (consult-notes-denote-mode)
-  (consult-notes-org-headings-mode))
+
+
+;; ;; I use hugo so define a setup file variable
+;; (defvar hugo-notebook-setup-file "~/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org"
+;;   "Variable for notebook setup using hugo.")
+
+;; (with-eval-after-load 'consult-notes
+;;   ;; don't use setopt here since the macro won't eval the vars
+;;   (setopt consult-notes-file-dir-sources
+;;           `(("Agenda Files" ?a ,(car org-agenda-files))
+;;             ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/"))))
+
+;;   (setopt consult-notes-org-headings-files `(,(concat org-directory "/inbox.org")
+;;                                              ,(concat org-directory "/reading.org")
+;;                                              ,(concat org-directory "/writing.org")
+;;                                              ,(concat org-directory "/reference.org")
+;;                                              ,(concat org-directory "/music.org")))
+
+;;   (consult-notes-denote-mode)
+;;   (consult-notes-org-headings-mode))
 
 ;; Old sources
 ;; ("Zettel"          ?z ,(concat lem-notes-dir "zettel/"))
@@ -139,19 +159,20 @@
 ;;;;; Markdown Command
 (setq markdown-command
       (concat
-       "/usr/local/bin/pandoc"
-       " --from=markdown --to=html"
-       " --standalone --mathjax --highlight-style=pygments"
-       " --css=~/.pandoc/pandoc.css"
-       " --quiet"
-       " --number-sections"
-       " --lua-filter=~/dotfiles/pandoc/cutsection.lua"
-       " --lua-filter=~/dotfiles/pandoc/cuthead.lua"
-       " --lua-filter=~/dotfiles/pandoc/date.lua"
+       "pandoc"
+       ;; " --from=markdown --to=html"
+       ;; " --standalone --mathjax --highlight-style=pygments"
+       ;; " --css=~/.pandoc/pandoc.css"
+       ;; " --quiet"
+       ;; " --number-sections"
+       ;; " --lua-filter=~/dotfiles/pandoc/cutsection.lua"
+       ;; " --lua-filter=~/dotfiles/pandoc/cuthead.lua"
+       ;; " --lua-filter=~/dotfiles/pandoc/date.lua"
        ;; " --metadata-file=~/dotfiles/pandoc/metadata.yml"
-       " --metadata=reference-section-title:References"
-       " --citeproc"
-       " --bibliography=~/Dropbox/Work/bibfile.bib"))
+       ;; " --metadata=reference-section-title:References"
+       ;; " --citeproc"
+       ;; " --bibliography=~/Dropbox/Work/bibfile.bib"
+       ))
 
 ;;;; Load Modules
 ;; Load modules in stages for a shorter init time. We load core modules first,
