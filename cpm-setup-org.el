@@ -67,7 +67,7 @@
 
         ("m" "eMail Workflow")
         ("mr" "Respond" entry (file+olp ,(concat org-directory "Mail.org") "Respond")
-         "* TODO Respond to %:from | %:subject :email: \nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
+         "* TODO Respond to %:from | %:subject :email: \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))  SCHEDULED:%t\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
         ("ml" "Link" entry (file+olp ,(concat org-directory "Mail.org") "Mail Capture")
          "* %:from | %:subject :email: \n%(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
 
@@ -220,19 +220,19 @@ org-agenda--todo-keyword-regex."
     (cl-concatenate
      'list
      files
-     '("~/Dropbox/org-files/admin.org"
-       "~/Dropbox/org-files/advising.org"
-       "~/Dropbox/org-files/conferences.org"
-       "~/Dropbox/org-files/grants.org"
-       "~/Dropbox/org-files/inbox.org"
-       "~/Dropbox/org-files/mail.org"
-       "~/Dropbox/org-files/music.org"
-       "~/Dropbox/org-files/reading.org"
-       "~/Dropbox/org-files/service.org"
-       "~/Dropbox/org-files/someday.org"
-       "~/Dropbox/org-files/teaching.org"
-       "~/Dropbox/org-files/todo.org"
-       "~/Dropbox/org-files/writing.org"))))
+     `(,(concat org-directory "/admin.org")
+       ,(concat org-directory "/advising.org")
+       ,(concat org-directory "/conferences.org")
+       ,(concat org-directory "/grants.org")
+       ,(concat org-directory "/inbox.org")
+       ,(concat org-directory "/mail.org")
+       ,(concat org-directory "/music.org")
+       ,(concat org-directory "/reading.org")
+       ,(concat org-directory "/service.org")
+       ,(concat org-directory "/someday.org")
+       ,(concat org-directory "/teaching.org")
+       ,(concat org-directory "/todo.org")
+       ,(concat org-directory "/writing.org")))))
 
 
 ;;;; Delete Empty Agenda Blocks
@@ -281,7 +281,7 @@ org-agenda--todo-keyword-regex."
 ;; https://www.reddit.com/r/emacs/comments/hnf3cw/my_orgmode_agenda_much_better_now_with_category/
 ;; https://github.com/psamim/dotfiles/blob/master/doom/config.el
 
-;; NOTE: default must be set to 68 to see *only* explicit priorities A-C
+;; NOTE: default priority must be set to 68 to see *only* explicit priorities A-C
 (setopt org-priority-default 68)
 (setq org-agenda-custom-commands
       '(("d" "Dashboard"
@@ -299,7 +299,7 @@ org-agenda--todo-keyword-regex."
                                                      (search category-keep)))
                       (org-agenda-entry-types '(:deadline* :scheduled*))))
           ;; Due!
-          (tags-todo "+DEADLINE<=\"<+6d>\""
+          (tags-todo "+DEADLINE<=\"<+2d>\""
                      ((org-agenda-sorting-strategy '(priority-down time-up tag-up))
                       (org-agenda-overriding-header
                        (concat "\n" "    " "⸺ " "Due!" " ⸺" ))))
@@ -310,7 +310,7 @@ org-agenda--todo-keyword-regex."
                  (org-agenda-overriding-header
                   (concat "\n" "    " "⸺ " "Priority Tasks" " ⸺" ))))
           ;; Scheduled
-          (tags-todo "SCHEDULED>=\"<today>\""
+          (tags-todo "+SCHEDULED<=\"<+2w>\"-PRIORITY=\"A\"-PRIORITY=\"B\"-PRIORITY=\"C\"-DEADLINE<=\"<+2d>\""
                      ((org-agenda-overriding-header
                        (concat "\n" "    " "⸺ " "Scheduled/Upcoming" " ⸺"))))
 
@@ -437,9 +437,13 @@ org-agenda--todo-keyword-regex."
 
 ;;;; Org Template Expansions
 (setq new-structure-template-alist
-      '(("el" . "src emacs-lisp")
-        ("t" . "COMMENT \TODO:")
-        ("n" . "notes")))
+      '(("dc" . "commentbox")
+        ("dp" . "paperbox")
+        ("dq" . "quotebox")
+        ("ds" . "subtitle")
+        ("el" . "src emacs-lisp")
+        ("n" . "notes")
+        ("t" . "COMMENT \TODO:")))
 (dolist (ele new-structure-template-alist)
   (add-to-list 'org-structure-template-alist ele))
 
@@ -472,6 +476,14 @@ org-agenda--todo-keyword-regex."
 
 (add-hook 'org-mode-hook #'cpm-org-mode-setup)
 (add-hook 'org-agenda-mode-hook #'cpm-org-agenda-mode-setup)
+
+;;;; Org-BB Export
+;; Export for BB format; useful for WorldAnvil
+(use-package ox-bb
+  :disabled
+  :after org)
+
+
 
 ;;; Provide
 (provide 'cpm-setup-org)
