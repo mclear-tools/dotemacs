@@ -207,7 +207,7 @@
   "Open an empty buffer in its own workspace"
   (interactive)
   (tab-bar-new-tab)
-  (tab-bar-rename-tab-tab "New project")
+  (tab-bar-rename-tab "New project")
   (let ((lem-project-temp-dir "/tmp/temp-projects/"))
     (progn
       (when (not (file-exists-p lem-project-temp-dir))

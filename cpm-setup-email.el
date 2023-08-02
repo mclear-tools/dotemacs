@@ -225,7 +225,7 @@ the query (for links starting with 'query:')."
         mu4e-headers-fields '(
                               (:flags          .  8)
                               (:mailbox-short  .  10)
-                              (:relative-date  .  11)
+                              ;; (:relative-date  .  11)
                               (:tags           .  12)
                               (:from-or-to     .  20)
                               (:subject        .  120)))
