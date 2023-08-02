@@ -40,7 +40,33 @@
 
 (with-eval-after-load 'tabspaces
   (setopt tabspaces-session-mode t
-          tabspaces-session-file (concat lem-cache-dir "tabsession.el")))
+          tabspaces-session-file (concat lem-cache-dir "tabsession.el"))
+  ;; Add embark action
+  (with-eval-after-load 'embark
+    (defvar-keymap embark-tabspaces-actions
+      :doc "Keymap for actions for tabspaces."
+      :parent embark-general-map
+      "B" #'tab-bar-select-tab-by-name)
+    (add-to-list 'embark-keymap-alist '(buffer . embark-tabspaces-actions)))
+
+  (with-eval-after-load 'consult
+    (consult-customize consult--source-buffer :narrow ?B)
+    ;; When showing all buffers make default action to switch to buffer in its tab
+    (defvar consult--source-tab-buffer
+      `(:name     "All Buffers"
+        :narrow   ?b
+        :hidden t
+        :category buffer
+        :face     consult-buffer
+        :history  buffer-name-history
+        :state    ,#'consult--buffer-state
+        :default  t
+        :items
+        ,(lambda () (consult--buffer-query :sort 'visibility
+                                      :as #'buffer-name))
+        :action ,#'tabspaces-switch-buffer-and-tab)
+      "All visible buffers list; switch to tab when switching buffers.")
+    (add-to-list 'consult-buffer-sources consult--source-tab-buffer)))
 
 ;;;;; User Paths
 ;; Set exec-path-from-shell vars
@@ -74,7 +100,8 @@
   ;; Set notes dir(s)
   (setopt lem-notes-dir (concat (getenv "HOME") "/Documents/notes/")
           consult-notes-file-dir-sources `(("Agenda Files" ?a ,(car org-agenda-files))
-                                           ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/"))))
+                                           ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/")))
+          consult-notes-ripgrep-args "rg --multiline --null --with-filename --line-buffered --color=never --max-columns=1000 --path-separator /\ --ignore-case --no-heading --line-number --hidden --glob=!.git/ --glob=!org-archive/ --glob=!templates/ -L --sortr=accessed")
   ;; Simplify annotation
   (defun cpm-consult-notes--file-dir-annotate (name dir cand)
     "Annotate file CAND with its directory DIR, size, and modification time."
@@ -350,6 +377,7 @@
              ("m" .  lem-org-to-markdown                   )))
 
 ;;;; User Packages
+
 ;;;;; Programming Modes
 
 ;;;;;; Applescript
@@ -449,6 +477,13 @@
 
 ;;;;; Package-VC Installed Packages
 
+;;;;;; Org-Modern Indent
+(use-package org-modern-indent
+  :after org
+  :config
+  ;; add late to hook
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+
 ;;;;;; Zotero Org Zotxt Inferface
 (use-package zotxt
   :ensure nil
@@ -484,6 +519,34 @@
   :ensure nil
   :when sys-mac
   :commands (org-insert-dtp-link org-dtp-store-link))
+
+;;;;;; GM Campaign Packages
+;;;;;;; Obsidian.el
+;; Interface for Obsidian
+(use-package obsidian
+  :config
+  (obsidian-specify-path "/Users/roambot/Library/Mobile Documents/iCloud~md~obsidian/Documents/DnD-5e-Campaign")
+  (global-obsidian-mode t)
+  :custom
+  ;; This directory will be used for `obsidian-capture' if set.
+  (obsidian-inbox-directory "Inbox")
+  :bind (:map obsidian-mode-map
+         ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
+         ("C-c C-o" . obsidian-follow-link-at-point)
+         ;; Jump to backlinks
+         ("C-c C-b" . obsidian-backlink-jump)
+         ;; If you prefer you can use `obsidian-insert-link'
+         ("C-c C-l" . obsidian-insert-wikilink)))
+
+;;;;;;; Emacs DnD
+;; Create 5e DnD style documents with org and latex
+(use-package emacs-org-dnd
+  :init
+  (unless (package-installed-p 'emacs-org-dnd)
+    (package-vc-install "https://github.com/mclearc/emacs-org-dnd.git"))
+  :after ox
+  :demand t)
+
 
 ;;;; User Functions
 
