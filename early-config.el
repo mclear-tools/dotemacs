@@ -156,6 +156,7 @@
                                     denote
                                     citar-denote
                                     consult-notes
+                                    obsidian
 
                                     ;; programming
                                     aggressive-indent
@@ -244,7 +245,9 @@
                                       :branch "main")
                                      (org-devonthink
                                       :url "https://github.com/lasvice/org-devonthink"
-                                      :branch "master")))
+                                      :branch "master")
+                                     (org-modern-indent
+                                      :url "https://github.com/jdtsmith/org-modern-indent")))
 
 ;; Auto install the required packages
 ;; Set missing package vars
