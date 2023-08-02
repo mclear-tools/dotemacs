@@ -54,27 +54,27 @@
 ;;;;; Capture templates
 (setq org-capture-templates
       ;; Note the ` and , to get concat to evaluate properly
-      `(("c" "Capture" entry (file ,(concat org-directory "inbox.org"))
+      `(("c" "Capture" entry (file ,(concat org-directory "/inbox.org"))
          "* TODO %?\n %i" :empty-lines 1)
 
         ("j" "Journal"
          entry
-         (file+olp+datetree ,(concat org-directory "journal.org"))
+         (file+olp+datetree ,(concat org-directory "/journal.org"))
          "**** %<%H:%M>\n%?" :empty-lines 1)
 
-        ("l" "A link, for reading later" entry (file ,(concat org-directory "inbox.org"))
+        ("l" "A link, for reading later" entry (file ,(concat org-directory "/inbox.org"))
          "* %? :link: \n%(cpm-capture-browser)"  :empty-lines 1)
 
         ("m" "eMail Workflow")
-        ("mr" "Respond" entry (file+olp ,(concat org-directory "Mail.org") "Respond")
+        ("mr" "Respond" entry (file+olp ,(concat org-directory "/Mail.org") "Respond")
          "* TODO Respond to %:from | %:subject :email: \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))  SCHEDULED:%t\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
-        ("ml" "Link" entry (file+olp ,(concat org-directory "Mail.org") "Mail Capture")
+        ("ml" "Link" entry (file+olp ,(concat org-directory "/Mail.org") "Mail Capture")
          "* %:from | %:subject :email: \n%(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
 
-        ("r" "Reference" entry (file ,(concat org-directory "reference.org"))
+        ("r" "Reference" entry (file ,(concat org-directory "/reference.org"))
          "* %?"  :empty-lines 1)
 
-        ("s" "Music Review" entry  (file ,(concat org-directory "music.org"))
+        ("s" "Music Review" entry  (file ,(concat org-directory "/music.org"))
          ,(concat "\n** Artist - Album :Artist:Genre: %?\n"
 	              "  - Date: %T\n"
 	              "  - Listened While: \n"
@@ -83,14 +83,14 @@
 	              "  - Rating: /10\n"
 	              "  - Thoughts: \n"))
 
-        ("M" "UNL Merit Review" entry (file ,(concat org-directory "merit-reviews.org"))
-         (file ,(concat org-directory "templates/merit-review-template.org")))
+        ("M" "UNL Merit Review" entry (file ,(concat org-directory "/merit-reviews.org"))
+         (file ,(concat org-directory "/templates/merit-review-template.org")))
 
-        ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "reviews.org"))
-         (file ,(concat org-directory "templates/weekly_review_template.org")))
+        ("w" "Review: Weekly Review" entry (file+datetree ,(concat org-directory "/reviews.org"))
+         (file ,(concat org-directory "/templates/weekly_review_template.org")))
 
-        ("R" "Referee report" entry (file+datetree ,(concat org-directory "referee-reports.org"))
-         (file ,(concat org-directory "templates/referee-report-template.org")))))
+        ("R" "Referee report" entry (file+datetree ,(concat org-directory "/referee-reports.org"))
+         (file ,(concat org-directory "/templates/referee-report-template.org")))))
 
 ;;;;; Org Journal Capture
 ;; Tell emacs what you're doing a few times a day. Depends on a shell script run
