@@ -66,9 +66,11 @@
          "* %? :link: \n%(cpm-capture-browser)"  :empty-lines 1)
 
         ("m" "eMail Workflow")
+        ("ms" "Schedule" entry (file+olp ,(concat org-directory "/Mail.org") "Respond")
+         "* TODO Respond to %:from | %:subject :email: \nSCHEDULED:%t\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
         ("mr" "Respond" entry (file+olp ,(concat org-directory "/Mail.org") "Respond")
          "* TODO Respond to %:from | %:subject :email: \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))  SCHEDULED:%t\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
-        ("ml" "Link" entry (file+olp ,(concat org-directory "/Mail.org") "Mail Capture")
+        ("ml" "Link" entry (file+olp ,(concat org-directory "/Mail.org") "Mail Link")
          "* %:from | %:subject :email: \n%(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\nMessage: %a\n  %i" :immediate-finish t  :empty-lines 1)
 
         ("r" "Reference" entry (file ,(concat org-directory "/reference.org"))

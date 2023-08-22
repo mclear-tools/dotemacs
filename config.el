@@ -19,7 +19,7 @@
 ;;; Commentary:
 
 ;; Personal config file
-;; This file contains all settings that aren't an official part of 𝛌-Emacs.
+;; This file contains all settings that aren't an official part of λ-Emacs.
 
 ;;; Code:
 ;;;; Personal Information
@@ -87,9 +87,9 @@
         org-agenda-files (list org-directory))
 
 ;;;;; Citations
-(setq lem-bibliography (concat (getenv "HOME") "/Dropbox/Work/bibfile.bib"))
+(setq lem-bibliography (concat (getenv "HOME") "/Work/bibfile.bib"))
 
-(setq lem-bib-notes (concat (getenv "HOME") "/Dropbox/Work/projects/notebook/content-org/ref-notes"))
+(setq lem-bib-notes (concat (getenv "HOME") "/Work/projects/notebook/content-org/ref-notes"))
 
 (setq lem-citar-note  "${author-or-editor} (${year}): ${title}\n\n- Tags :: \n- PDF :: [[${file}][PDF Link]]\n\n\n#+BEGIN_SRC emacs-lisp :exports none\n(insert \"#+BEGIN_SRC bibtex\")\n(newline)\n(citar--insert-bibtex \"${=key=}\")\n(insert \"#+END_SRC\")\n#+END_SRC\n")
 
@@ -149,7 +149,7 @@
 
 
 ;; ;; I use hugo so define a setup file variable
-;; (defvar hugo-notebook-setup-file "~/Dropbox/Work/projects/notebook/content-org/hugo-notebook-setup.org"
+;; (defvar hugo-notebook-setup-file "~/Work/projects/notebook/content-org/hugo-notebook-setup.org"
 ;;   "Variable for notebook setup using hugo.")
 
 ;; (with-eval-after-load 'consult-notes
@@ -209,7 +209,7 @@
 ;;;;; Load Base Modules
 (message "
 ;; ======================================================
-;; *Loading 𝛌-Emacs Base Modules*
+;; *Loading λ-Emacs Base Modules*
 ;; ======================================================
 ")
 (measure-time
@@ -232,7 +232,7 @@
   "Modules loaded after init."
   (message "
 ;; ======================================================
-;; *Loading 𝛌-Emacs after-init Modules*
+;; *Loading λ-Emacs after-init Modules*
 ;; ======================================================
 ")
   (measure-time (cl-dolist (mod (list
@@ -258,7 +258,7 @@
   "Modules loaded after Emacs startup."
   (message "
 ;; ======================================================
-;; *Loading 𝛌-Emacs after-startup Modules*
+;; *Loading λ-Emacs after-startup Modules*
 ;; ======================================================
 ")
   (measure-time (cl-dolist (mod (list
@@ -473,7 +473,7 @@
 (with-eval-after-load 'lem-setup-eshell
   (lem-set-eshell-alias
    "pg" "lem-goto-projects"
-   "pd" "cd ~/Dropbox/Work/projects"))
+   "pd" "cd ~/Work/projects"))
 
 ;;;;; Package-VC Installed Packages
 
@@ -499,7 +499,7 @@
   :hook ((org-mode markdown-mode tex-mode latex-mode reftex-mode) . bibtex-capf-mode)
   :custom
   (bibtex-capf-bibliography
-   '("~/Dropbox/Work/bibfile.bib")))
+   '("~/Work/bibfile.bib")))
 
 ;;;;;; Pulsing Cursor
 (use-package pulsing-cursor
@@ -707,7 +707,7 @@ current window, as a ratio between 0 and 1.")
   (cond ((and (lem-font-available-p "SF Mono")
               (lem-font-available-p "SF Pro Text"))
          ;; (set-face-attribute 'default           nil :font "SF Mono-13")
-         (set-face-attribute 'default           nil :font "Inconsolata-15" :weight 'medium)
+         (set-face-attribute 'default           nil :font "SF Mono-13" :weight 'medium)
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
          (set-face-attribute 'variable-pitch    nil :font "Metropolis-15" :weight 'normal)
