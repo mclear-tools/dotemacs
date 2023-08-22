@@ -30,7 +30,7 @@
   (interactive)
   (progn
     (tab-bar-new-tab)
-    (call-interactively 'project-switch-project-open-file)
+    (call-interactively #'tabspaces-project-switch-project-open-file)
     (tab-bar-rename-tab (tabspaces--name-tab-by-project-or-default))
     (project-magit-dir)))
 
@@ -41,8 +41,10 @@
   (if (member "Agenda" (tabspaces--list-tabspaces))
       (progn
         (tab-bar-switch-to-tab "Agenda")
-        (switch-to-buffer "*Org Agenda*")
-        (org-agenda-redo)
+        (if (get-buffer "*Org Agenda*")
+            (switch-to-buffer "*Org Agenda*")
+          (org-agenda nil "d"))
+        (org-agenda-redo t)
         (delete-other-windows))
     (progn
       (tab-bar-new-tab)
@@ -51,15 +53,41 @@
       (require 'mu4e)
       (lem-jump-to-org-dashboard))))
 
+;; Dedicate windows
+;; https://christiantietze.de/posts/2022/12/manage-org-agenda-related-buffers-via-display-buffer-alist/
+;; https://christiantietze.de/posts/2022/12/updated-org-mode-agenda-display-buffer-alist/
+
+(defun ct/display-buffer-org-agenda-managed-p (buffer-name action)
+  "Determine whether BUFFER-NAME is an org-agenda managed buffer."
+  (with-current-buffer buffer-name
+    (and (derived-mode-p 'org-mode)
+         (member (buffer-file-name) (org-agenda-files)))))
+
+(add-to-list 'display-buffer-alist
+             `("\\*Org Agenda\\*"
+               (display-buffer-in-tab  ;; Make sure to use the "Org Files" tab
+                display-buffer-reuse-mode-window)
+               (ignore-current-tab . t)
+               (tab-name . "Agenda")
+               (window-width . 100)
+               (dedicated . side)  ;; Make the Agenda a dedicated side-window
+               (side . left)       ;; to the left so it always stays open.
+               (inhibit-same-window . nil)))
+(add-to-list 'display-buffer-alist
+             '(ct/display-buffer-org-agenda-managed-p
+               (display-buffer-reuse-mode-window  ;; Prioritize reuse of current window
+                display-buffer-in-tab)            ;; over switching to the Org tab.
+               (tab-name . "Agenda")))
+
 ;;;;; Open emacs.d in Workspace
 (defun cpm-open-emacsd-in-workspace ()
   "Open emacs.d in its own workspace"
   (interactive)
-  (if (member "emacs.d" (tabspaces--list-tabspaces))
-      (tab-bar-switch-to-tab "emacs.d")
+  (if (member ".emacs.d" (tabspaces--list-tabspaces))
+      (tab-bar-switch-to-tab ".emacs.d")
     (progn
       (tab-bar-new-tab)
-      (tab-bar-rename-tab "emacs.d")
+      (tab-bar-rename-tab ".emacs.d")
       (find-file lem-config-file)
       (split-window-right)
       (other-window 1)
@@ -76,7 +104,7 @@
       (tab-bar-new-tab)
       (tab-bar-rename-tab "Notes")
       (dired lem-notes-dir)
-      (lem-notebook))))
+      (consult-notes))))
 
 ;;;;; Elfeed Workspace
 (defun cpm-open-elfeed-in-workspace ()
@@ -137,11 +165,39 @@
         (t
          (tab-bar-new-tab)
          (tab-bar-rename-tab "Email")
-         (require 'org) ; need this for loading?
-         (find-file (concat org-directory "mail.org"))
+         ;; (require 'org) ; need this for loading?
+         ;; (find-file (concat org-directory "mail.org"))
          (mu4e)
-         (switch-to-buffer "*davmail*")
          (switch-to-buffer " *mu4e-main*"))))
+
+(defun cpm-display-buffer-email-managed-p (buffer-name action)
+  "Determine whether BUFFER-NAME is an org-agenda managed buffer."
+  (with-current-buffer buffer-name
+    (or (derived-mode-p 'mu4e-main-mode)
+        (derived-mode-p 'mu4e-headers-mode)
+        (derived-mode-p 'mu4e-view-mode))))
+
+;; (setq display-buffer-base-action '(display-buffer-in-tab))
+(setq display-buffer-base-action nil)
+
+(add-to-list 'display-buffer-alist
+             `("\\*mu4e-main\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Email")))
+(add-to-list 'display-buffer-alist
+             `("\\*mu4e-view\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Email")))
+(add-to-list 'display-buffer-alist
+             `("\\*mu4e-headers\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Email")))
+(add-to-list 'display-buffer-alist
+             '(cpm-display-buffer-email-managed-p
+               (display-buffer-in-tab
+                display-buffer-reuse-mode-window)
+               (tab-name . "Email")))
+
 
 ;;;;; Open New Buffer & Workspace
 ;; This function is a bit weird; It creates a new buffer in a new workspace with a
@@ -151,7 +207,7 @@
   "Open an empty buffer in its own workspace"
   (interactive)
   (tab-bar-new-tab)
-  (tab-bar-rename-tab-tab "New project")
+  (tab-bar-rename-tab "New project")
   (let ((lem-project-temp-dir "/tmp/temp-projects/"))
     (progn
       (when (not (file-exists-p lem-project-temp-dir))
@@ -178,7 +234,7 @@
     ("e" . cpm-open-elfeed-in-workspace)
     ("m" . cpm-open-email-in-workspace)
     ("n" . cpm-open-notes-in-workspace)
-    ("p" . cpm-open-existing-project-and-workspace)
+    ("p" . tabspaces-open-or-create-project-and-workspace)
     ("q" . lem-splash-screen-bury)
     ("[esc]" . lem-splash-screen-bury)
     ("k" . lem-splash-screen-kill)))

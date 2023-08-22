@@ -63,7 +63,6 @@
    ;; high frequency commands
    '(";" . comment-line)
    '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
    '("=" . hl-line-mode)
    '("a" . consult-org-agenda)
    '("b" . lem+buffer-keys)
@@ -72,7 +71,7 @@
    '("d" . dired-jump)
    '("D" . dired-jump-other-window)
    '("e" . lem+eval-keys)
-   '("E" . restart-emacs-start-new-emacs)
+   '("E" . lem-call-emacs)
    '("f" . lem+file-keys)
    '("F" . lem+flymake-keys)
    '("i" . lem-find-lambda-file)
@@ -175,7 +174,6 @@
 ;;;; Meow
 ;; Note load Meow before loading personal keybindings, otherwise some might get clobbered
 (use-package meow
-  :straight (:type git :host github :repo "meow-edit/meow")
   :custom
   (meow-use-cursor-position-hack t)
   (meow-use-clipboard t)
@@ -195,6 +193,11 @@
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
   ;; start eshell in insert
   (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
+  ;; mu4e views in motion
+  (add-to-list 'meow-mode-state-list '(mu4e-headers-mode . motion))
+  (add-to-list 'meow-mode-state-list '(mu4e-view-mode . motion))
+  ;; start helpful in normal
+  ;; (add-to-list 'meow-mode-state-list '(helpful-mode . normal))
   (meow-global-mode 1)
   (meow-setup))
 

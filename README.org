@@ -50,23 +50,22 @@ Some highlights of this emacs setup include:
 
 1. Short start up time -- emacs-init-time < 1 sec (though this may vary with
    your system)
-2. Uses [[https://github.com/raxod502/straight.el][straight.el]] for package management
 3. Modal editing with [[https://github.com/meow-edit/meow][meow]]
-4. Comprehensive [[file:.local/lambda-library/lambda-setup/lem-setup-keybindings.el][keybindings]] using [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] and [[https://github.com/meow-edit/meow][meow]], with spacebar as my leader key
-5. Sensible [[file:.local/lambda-library/lambda-setup/lem-setup-settings.el][defaults]]
-6. [[file:.local/lambda-library/lambda-setup/lem-setup-dired.el][Dired]] with sensible colors, settings, and useful extensions  
-7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:.local/lambda-library/lambda-setup/lem-setup-completion.el][related packages]]
+4. Comprehensive [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-keybindings.el][keybindings]] using [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] and [[https://github.com/meow-edit/meow][meow]], with spacebar as my leader key
+5. Sensible [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-settings.el][defaults]]
+6. [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-dired.el][Dired]] with sensible colors, settings, and useful extensions  
+7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-completion.el][related packages]]
 8. My own [[https://github.com/Lambda-Emacs/lambda-themes][Lambda-themes]], which has four distinct light and dark variants
 9. An attractive custom status-line -- [[https://github.com/Lambda-Emacs/lambda-line][Lambda-line]]
-10. Extensive [[file:.local/lambda-library/lambda-setup/lem-setup-macos.el][MacOS integration]]
-11. Single frame, [[file:.local/lambda-library/lambda-setup/lem-setup-tabs.el][tab-based]], [[file:.local/lambda-library/lambda-setup/lem-setup-projects.el][project]] workflow leveraging project.el and tab-bar (both
+10. Extensive [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-macos.el][MacOS integration]]
+11. Single frame, [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-tabs.el][tab-based]], [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-projects.el][project]] workflow leveraging project.el and tab-bar (both
     built-in) with buffer-isolated [[https://github.com/mclear-tools/tabspaces][workspaces]]
-12. A configurable [[file:.local/lambda-library/lambda-setup/lem-setup-splash.el][splash page]]
-13. A [[file:.local/lambda-library/lambda-setup/lem-setup-writing.el][writing-centric]] configuration with great [[.local/lambda-library/lambda-setup/lem-setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
-    dedicated [[.local/lambda-library/lambda-user/lem-setup-notes.el][functions for notes]], and [[.local/lambda-library/lambda-user/lem-setup-org.el][org-mode]]
+12. A configurable [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-splash.el][splash page]]
+13. A [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-writing.el][writing-centric]] configuration with great [[~/.emacs.d/lambda-library/lambda-setup/lem-setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
+    dedicated [[~/.emacs.d/lambda-library/lambda-user/lem-setup-notes.el][functions for notes]], and [[~/.emacs.d/lambda-library/lambda-user/lem-setup-org.el][org-mode]]
 
     
-For more information please take a look at the individual [[file:.local/lambda-library/lambda-setup/][configuration files]].
+For more information please take a look at the individual [[file:~/.emacs.d/lambda-library/lambda-setup/][configuration files]].
 Please note that I'm by no means a competent programmer, so I'm sure there are
 better ways of implementing many elements of this config. Suggestions are
 welcome!
