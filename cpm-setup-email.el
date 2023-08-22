@@ -256,11 +256,28 @@ the query (for links starting with 'query:')."
   (let ((mu4e-org-link-query-in-headers-mode t))
     (call-interactively 'org-store-link)))
 
+;; Execute Marks
+(with-eval-after-load 'mu4e
+  (bind-key "x" (lambda() (interactive) (mu4e-mark-execute-all t)) mu4e-headers-mode-map)
+  (bind-key "x" (lambda() (interactive) (mu4e-mark-execute-all t)) mu4e-view-mode-map))
+
 
 ;;;;; Sending Mail
 (with-eval-after-load 'mu4e
+  (require 'smtpmail)
+  ;; send function:
+  (setq send-mail-function 'sendmail-send-it
+        message-send-mail-function 'sendmail-send-it)
+
+  ;; send program:
+  ;; this is exeranal. remember we installed it before.
+  (setq sendmail-program (executable-find "msmtp"))
+
+  ;; select the right sender email from the context.
+  (setq message-sendmail-envelope-from 'header)
+
   ;; Configure the function to use for sending mail
-  (setq message-send-mail-function #'smtpmail-send-it)
+  ;; (setq message-send-mail-function #'smtpmail-send-it)
   (setq smtpmail-queue-dir (concat mu4e-maildir "/queued-mail/"))
   (setq smtpmail-debug-info t)
   ;; :TEST: Try a fix for encoding issues with sent mail especially
@@ -284,6 +301,7 @@ the query (for links starting with 'query:')."
                   ;; this address needs to be the original not the alias
                   (smtpmail-user-mail-address . "cmclear2@unl.edu")
                   ;; use keychain for credentials
+                  (smtp-auth-credentials "security find-generic-password -s mbsync-unl-pass -w")
                   (smtpmail-smtp-service . 1025)
                   (smtpmail-stream-type  . nil)
                   (mu4e-compose-signature . (concat
@@ -311,7 +329,7 @@ the query (for links starting with 'query:')."
                   (smtpmail-smtp-service . 465)
                   (smtpmail-stream-type  . ssl)
                   ;; use keychain for credentials
-                  (smtp-auth-credentials "security find-generic-password -s mbsync-fastmail-password -w")
+                  (smtp-auth-credentials "security find-generic-password -s mbsync-fastmail-pass -w")
                   (mu4e-compose-signature . (concat
                                              "Colin McLear\n"
                                              "[[https://www.colinmclear.net]]"))
@@ -661,6 +679,12 @@ the real email address"
     (call-interactively 'org-store-link)
     (org-capture nil "mr"))
 
+  (defun lem-capture-mail-schedule (msg)
+    "Capture for message follow-up with schedule."
+    (interactive)
+    (call-interactively 'org-store-link)
+    (org-capture nil "ms"))
+
   (defun lem-capture-mail-link (msg)
     "Capture for message read-later"
     (interactive)
@@ -675,7 +699,11 @@ the real email address"
   (add-to-list 'mu4e-headers-actions
                '("Respond" . lem-capture-mail-respond) t)
   (add-to-list 'mu4e-view-actions
-               '("Respond" . lem-capture-mail-respond) t))
+               '("Respond" . lem-capture-mail-respond) t)
+  (add-to-list 'mu4e-headers-actions
+               '("Schedule" . lem-capture-mail-schedule) t)
+  (add-to-list 'mu4e-view-actions
+               '("Schedule" . lem-capture-mail-schedule) t))
 
 ;;;;; Mail Custom Bookmarks/Searches
 (with-eval-after-load 'mu4e
@@ -696,102 +724,76 @@ the real email address"
                          (:name "Images"      :query "mime:image/*"                           :key ?I))))
 
 
+
+
 ;;;;; Better Icons
 ;; All-the-icons for marking
 ;; Use all-the-icons
 ;;https://github.com/emacsmirror/mu4e-marker-icons
 ;;https://github.com/djcb/mu/issues/1795
+
 (with-eval-after-load 'mu4e
   ;; Depends on all-the-icons
-  (when (featurep 'all-the-icons)
-    (require 'all-the-icons)
+  (defgroup mu4e-marker-icons nil
+    "Display icons for mu4e markers."
+    :group 'mu4e-marker-icons)
 
-    (defgroup mu4e-marker-icons nil
-      "Display icons for mu4e markers."
-      :group 'mu4e-marker-icons)
+  (defvar mu4e-marker-icons-marker-alist
+    '((mu4e-headers-seen-mark      . mu4e-marker-icons-saved-headers-seen-mark)
+      (mu4e-headers-new-mark       . mu4e-marker-icons-saved-headers-new-mark)
+      (mu4e-headers-unread-mark    . mu4e-marker-icons-saved-headers-unread-mark)
+      (mu4e-headers-signed-mark    . mu4e-marker-icons-saved-headers-signed-mark)
+      (mu4e-headers-encrypted-mark . mu4e-marker-icons-saved-headers-encrypted-mark)
+      (mu4e-headers-draft-mark     . mu4e-marker-icons-saved-headers-draft-mark)
+      (mu4e-headers-attach-mark    . mu4e-marker-icons-saved-headers-attach-mark)
+      (mu4e-headers-passed-mark    . mu4e-marker-icons-saved-headers-passed-mark)
+      (mu4e-headers-flagged-mark   . mu4e-marker-icons-saved-headers-flagged-mark)
+      (mu4e-headers-replied-mark   . mu4e-marker-icons-saved-headers-replied-mark)
+      (mu4e-headers-trashed-mark   . mu4e-marker-icons-saved-headers-trashed-mark))
+    "An alist of markers used in mu4e.")
 
-    (defvar mu4e-marker-icons-marker-alist
-      '((mu4e-headers-seen-mark      . mu4e-marker-icons-saved-headers-seen-mark)
-        (mu4e-headers-new-mark       . mu4e-marker-icons-saved-headers-new-mark)
-        (mu4e-headers-unread-mark    . mu4e-marker-icons-saved-headers-unread-mark)
-        (mu4e-headers-signed-mark    . mu4e-marker-icons-saved-headers-signed-mark)
-        (mu4e-headers-encrypted-mark . mu4e-marker-icons-saved-headers-encrypted-mark)
-        (mu4e-headers-draft-mark     . mu4e-marker-icons-saved-headers-draft-mark)
-        (mu4e-headers-attach-mark    . mu4e-marker-icons-saved-headers-attach-mark)
-        (mu4e-headers-passed-mark    . mu4e-marker-icons-saved-headers-passed-mark)
-        (mu4e-headers-flagged-mark   . mu4e-marker-icons-saved-headers-flagged-mark)
-        (mu4e-headers-replied-mark   . mu4e-marker-icons-saved-headers-replied-mark)
-        (mu4e-headers-trashed-mark   . mu4e-marker-icons-saved-headers-trashed-mark))
-      "An alist of markers used in mu4e.")
+  (defun mu4e-marker-icons--store (l)
+    "Store mu4e header markers value from L."
+    (mapcar (lambda (x) (set (cdr x) (symbol-value (car x)))) l))
 
-    (defun mu4e-marker-icons--store (l)
-      "Store mu4e header markers value from L."
-      (mapcar (lambda (x) (set (cdr x) (symbol-value (car x)))) l))
+  (defun mu4e-marker-icons--restore (l)
+    "Restore mu4e header markers value from L."
+    (let ((lrev (mapcar (lambda (x) (cons (cdr x) (car x))) l)))
+      (mu4e-marker-icons--store lrev)))
 
-    (defun mu4e-marker-icons--restore (l)
-      "Restore mu4e header markers value from L."
-      (let ((lrev (mapcar (lambda (x) (cons (cdr x) (car x))) l)))
-        (mu4e-marker-icons--store lrev)))
+  (defun mu4e-marker-icons-enable ()
+    "Enable mu4e-marker-icons."
+    (mu4e-marker-icons--store mu4e-marker-icons-marker-alist)
+    (setq mu4e-use-fancy-chars t)
+    (setq mu4e-headers-precise-alignment t)
 
-    (defun mu4e-marker-icons-enable ()
-      "Enable mu4e-marker-icons."
-      (mu4e-marker-icons--store mu4e-marker-icons-marker-alist)
-      (setq mu4e-use-fancy-chars t)
-      (setq mu4e-headers-precise-alignment t)
-      (setq mu4e-headers-seen-mark       `("S" . ,(propertize
-                                                   (all-the-icons-material "mail_outline")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground ,(face-background 'default))))
-            mu4e-headers-new-mark        `("N" . ,(propertize
-                                                   (all-the-icons-material "markunread")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground ,(face-background 'default))))
-            mu4e-headers-unread-mark     `("u" . ,(propertize
-                                                   (all-the-icons-material "notifications_none")
-                                                   'face 'mu4e-unread-face))
-            mu4e-headers-draft-mark      `("D" . ,(propertize
-                                                   (all-the-icons-material "drafts")
-                                                   'face 'mu4e-draft-face))
-            mu4e-headers-attach-mark     `("a" . ,(propertize
-                                                   (all-the-icons-material "attachment")
-                                                   'face 'mu4e-attach-number-face))
-            mu4e-headers-passed-mark     `("P" . ,(propertize ; ❯ (I'm participating in thread)
-                                                   (all-the-icons-material "center_focus_weak")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground lambda-focus)))
-            mu4e-headers-flagged-mark    `("F" . ,(propertize
-                                                   (all-the-icons-material "flag")
-                                                   'face 'mu4e-flagged-face))
-            mu4e-headers-replied-mark    `("R" . ,(propertize
-                                                   (all-the-icons-material "reply_all")
-                                                   'face 'mu4e-replied-face))
-            mu4e-headers-trashed-mark    `("T" . ,(propertize
-                                                   (all-the-icons-material "delete_forever")
-                                                   'face 'mu4e-trashed-face))
-            mu4e-headers-encrypted-mark `("x" . ,(propertize
-                                                  (all-the-icons-material "enhanced_encryption")
-                                                  'face `(:family ,(all-the-icons-material-family)
-                                                          :foreground lambda-blue)))
-            mu4e-headers-signed-mark     `("s" . ,(propertize
-                                                   (all-the-icons-material "check")
-                                                   'face `(:family ,(all-the-icons-material-family)
-                                                           :foreground lambda-green)))
-            mu4e-headers-list-mark      '("s" . "Ⓛ")
-            mu4e-headers-personal-mark  '("p" . "")))
+    (setq mu4e-headers-seen-mark       `("S" . "⦾")
+          mu4e-headers-new-mark        `("N" . "⦿")
+          mu4e-headers-unread-mark     `("u" . "🖅")
+          mu4e-headers-draft-mark      `("D" . "🖉")
+          mu4e-headers-attach-mark     `("a" . "📎")
+          mu4e-headers-passed-mark     `("P" . "")
+          mu4e-headers-flagged-mark    `("F" . "⚑")
+          mu4e-headers-replied-mark    `("R" . "↩")
+          mu4e-headers-trashed-mark    `("T" . "🗑")
+          mu4e-headers-encrypted-mark  `("x" . "🗝")
+          mu4e-headers-signed-mark     `("s" . "✍")
+          mu4e-headers-list-mark       '("s" . "Ⓛ")
+          mu4e-headers-personal-mark   '("p" . "")))
 
-    (defun mu4e-marker-icons-disable ()
-      "Disable mu4e-marker-icons."
-      (mu4e-marker-icons--restore mu4e-marker-icons-marker-alist))
+  (defun mu4e-marker-icons-disable ()
+    "Disable mu4e-marker-icons."
+    (mu4e-marker-icons--restore mu4e-marker-icons-marker-alist))
 
-    (define-minor-mode mu4e-marker-icons-mode
-      "Display icons for mu4e markers."
-      :require 'mu4e-marker-icons-mode
-      :init-value nil
-      :global t
-      (if mu4e-marker-icons-mode
-          (mu4e-marker-icons-enable)
-        (mu4e-marker-icons-disable)))
-    (mu4e-marker-icons-mode)))
+  (define-minor-mode mu4e-marker-icons-mode
+    "Display icons for mu4e markers."
+    :require 'mu4e-marker-icons-mode
+    :init-value nil
+    :global t
+    (if mu4e-marker-icons-mode
+        (mu4e-marker-icons-enable)
+      (mu4e-marker-icons-disable)))
+  (mu4e-marker-icons-mode))
 
 ;;;;; Better Marking w/SVG Tags)
 
