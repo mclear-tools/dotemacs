@@ -335,6 +335,14 @@
   (with-eval-after-load 'org-mode
     ;; Org Headings w/created property
     (bind-key "C-M-<return>" #'lem-insert-header-and-time-property org-mode-map))
+
+  ;; Completion Navigation
+  (with-eval-after-load 'vertico
+    (bind-key "C-j" #'vertico-next 'vertico-map)
+    (bind-key "C-k" #'vertico-previous 'vertico-map)
+    (bind-key "C-n" #'vertico-next-group 'vertico-map)
+    (bind-key "C-p" #'vertico-previous-group 'vertico-map))
+
   ;; User Keys
   (bind-keys :prefix-map lem+user-keys
              :prefix (concat lem-prefix " u"               )
