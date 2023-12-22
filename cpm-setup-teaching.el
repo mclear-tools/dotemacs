@@ -213,5 +213,8 @@
   (setq org-tree-slide-skip-done nil)
   (setq org-tree-slide-modeline-display nil))
 
+(use-package org-tree-slide-pauses
+  :after org-tree-slide)
+
 ;;; Provide Teaching
 (provide 'cpm-setup-teaching)
