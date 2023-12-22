@@ -36,37 +36,45 @@
 
 ;;;; User Vars
 
+;;;;; Theme
+(with-eval-after-load 'lambda-themes
+  (setopt lambda-themes-set-vibrant t))
+
 ;;;;; Tab workspaces
 
 (with-eval-after-load 'tabspaces
   (setopt tabspaces-session-mode t
-          tabspaces-session-file (concat lem-cache-dir "tabsession.el"))
-  ;; Add embark action
-  (with-eval-after-load 'embark
-    (defvar-keymap embark-tabspaces-actions
-      :doc "Keymap for actions for tabspaces."
-      :parent embark-general-map
-      "B" #'tab-bar-select-tab-by-name)
-    (add-to-list 'embark-keymap-alist '(buffer . embark-tabspaces-actions)))
+          tabspaces-session-file (concat lem-cache-dir "tabsession.el")
+          tabspaces-project-switch-commands #'project-find-file)
+  (defvar tabspaces-history nil
+    "History of visited tabspaces."))
 
-  (with-eval-after-load 'consult
-    (consult-customize consult--source-buffer :narrow ?B)
-    ;; When showing all buffers make default action to switch to buffer in its tab
-    (defvar consult--source-tab-buffer
-      `(:name     "All Buffers"
-        :narrow   ?b
-        :hidden t
-        :category buffer
-        :face     consult-buffer
-        :history  buffer-name-history
-        :state    ,#'consult--buffer-state
-        :default  t
-        :items
-        ,(lambda () (consult--buffer-query :sort 'visibility
-                                      :as #'buffer-name))
-        :action ,#'tabspaces-switch-buffer-and-tab)
-      "All visible buffers list; switch to tab when switching buffers.")
-    (add-to-list 'consult-buffer-sources consult--source-tab-buffer)))
+;; Add embark action
+(with-eval-after-load 'embark
+  (defvar-keymap embark-tabspaces-actions
+    :doc "Keymap for actions for tabspaces."
+    :parent embark-general-map
+    "B" #'tab-bar-select-tab-by-name)
+  (add-to-list 'embark-keymap-alist '(buffer . embark-tabspaces-actions)))
+
+(with-eval-after-load 'consult
+  (consult-customize consult--source-buffer :narrow ?B)
+  ;; When showing all buffers make default action to switch to buffer in its tab
+  (defvar consult--source-tab-buffer
+    `(:name     "All Buffers"
+      :narrow   ?b
+      :hidden t
+      :category buffer
+      :face     consult-buffer
+      :history  buffer-name-history
+      :state    ,#'consult--buffer-state
+      :default  t
+      :items
+      ,(lambda () (consult--buffer-query :sort 'visibility
+                                    :as #'buffer-name))
+      :action ,#'tabspaces-switch-buffer-and-tab)
+    "All visible buffers list; switch to tab when switching buffers.")
+  (add-to-list 'consult-buffer-sources consult--source-tab-buffer))
 
 ;;;;; User Paths
 ;; Set exec-path-from-shell vars
@@ -549,6 +557,7 @@
 ;;;;;;; Emacs DnD
 ;; Create 5e DnD style documents with org and latex
 (use-package emacs-org-dnd
+  :disabled
   :init
   (unless (package-installed-p 'emacs-org-dnd)
     (package-vc-install "https://github.com/mclearc/emacs-org-dnd.git"))
