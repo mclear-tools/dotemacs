@@ -120,7 +120,7 @@ the query (for links starting with 'query:')."
     "Make a clickable button with specified FACE displaying TEXT.
     When hovered, HELP is displayed. When clicked, mu4e QUERY is executed."
     (let ((map (make-sparse-keymap)))
-      (set-keymap-parent map 'mu4e-headers-mode-map)
+      ;; (set-keymap-parent map 'mu4e-headers-mode-map)
       (define-key map [mouse-1] `(lambda ()
                                    (interactive) (mu4e-headers-search ,query)))
       (concat
@@ -138,7 +138,7 @@ the query (for links starting with 'query:')."
     "Make a clickable button with specified FACE displaying TEXT.
     When hovered, HELP is displayed. When clicked, mu4e QUERY is executed."
     (let ((map (make-sparse-keymap)))
-      (set-keymap-parent map 'mu4e-headers-mode-map)
+      ;; (set-keymap-parent map 'mu4e-headers-mode-map)
       (define-key map [mouse-1] `(lambda ()
                                    (interactive) (mu4e-headers-search ,query)))
       (propertize text
@@ -224,8 +224,8 @@ the query (for links starting with 'query:')."
   (setq mu4e-headers-date-format "%D";; "%Y-%m-%d %H:%M:%S"
         mu4e-headers-fields '(
                               (:flags          .  8)
-                              (:mailbox-short  .  10)
-                              ;; (:relative-date  .  11)
+                              (:mailbox-short  .  12)
+                              (:relative-date  .  11)
                               (:tags           .  12)
                               (:from-or-to     .  20)
                               (:subject        .  120)))
