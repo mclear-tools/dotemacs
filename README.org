@@ -1,7 +1,6 @@
 These are my [[https://www.gnu.org/software/emacs/][emacs]] configuration files. I use them with MacOS and a [[https://github.com/mclear-tools/build-emacs-macos][custom build
-script]]. I typically build from the master branch (currently: GNU Emacs 29.0.50
-(build 1, aarch64-apple-darwin21.4.0, NS appkit-2113.40 Version 12.3.1 (Build
-21E258), git sha1 0a151b7c29) of 2022-05-06).
+script]]. I am currently using Emacs 29, and that is what I recommend for use
+with this config.
 
 You are welcome to use any part of this configuration as you please, but the
 config really only makes sense if you look at [[https://github.com/Lambda-Emacs/lambda-emacs][Lambda-Emacs]], which is the
