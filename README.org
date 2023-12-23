@@ -10,8 +10,7 @@ exists in the =lambda-user= directory, as part of the user-created configuration
 I use Emacs primarily for all my academic work in the humanities (for
 discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]]) and the style of configuration
 tends in that direction (rather than opposed to, e.g., a programming language
-emphasis). I've tried to provide enough commentary on the configuration so that
-it might be useful to those new to emacs or [[https://en.wikipedia.org/wiki/Text_editor][text-editors]] generally. 
+emphasis). I've tried to provide enough commentary on the configuration so thafull-body portrait, watercolor and ink, realistic yet ethereal, dungeons and dragons, meticulous detail, watercolor wash background it might be useful to those new to emacs or [[https://en.wikipedia.org/wiki/Text_editor][text-editors]] generally. 
 
 One important thing to note is that the configuration uses [[https://wincent.com/wiki/Modal_editor][modal
 ]]keybindings---specifically [[https://github.com/meow-edit/meow][meow]]. I used [[http://www.vim.org][vim]] (or [[https://neovim.io][neovim]]) prior to emacs and I
@@ -26,48 +25,29 @@ Bryan Gilbert (see also his [[https://github.com/gilbertw1/emacs-literate-starte
 other good emacs starter kits to look at include John Kitchen's [[https://github.com/jkitchin/scimax][scimax]] and
 Kieran Healy's [[https://github.com/kjhealy/emacs-starter-kit][social sciences starter kit]].
 
-The advantage of meow, as I see it, is that it allows for broadly vim-like
-modal editing without all the overhead of evil, or the tendency to override
-(often in a somewhat sloppy way) vanilla-emacs bindings. I've tried to make
-the current config "slimmer" than it has been in the past, in the sense of
-relying, where possible, on built-in features of emacs (or on small packages
-that leverage built-in emacs functions). For some useful tips on using some
-potentially neglected built-in packages see [[https://karthinks.com/software/batteries-included-with-emacs/][here]] and [[https://karthinks.com/software/more-batteries-included-with-emacs/][here]].  
+The advantage of meow, as I see it, is that it allows for broadly vim-like modal editing without all the overhead of evil, or the tendency to override (often in a somewhat sloppy way) vanilla-emacs bindings. I've tried to make the current config "slimmer" than it has been in the past, in the sense of relying, where possible, on built-in features of emacs (or on small packages that leverage built-in emacs functions). For some useful tips on using some potentially neglected built-in packages see [[https://karthinks.com/software/batteries-included-with-emacs/][here]] and [[https://karthinks.com/software/more-batteries-included-with-emacs/][here]].
 
-My config is based on a series of "[[file:~/.emacs.d/lambda-library/lambda-setup/][modules]]" loaded in the [[file:config.el][config.el]] file. Please
-see [[https://github.com/Lambda-Emacs/lambda-emacs][Lambda-Emacs]] for the init file and the various config "helper" functions I
-use to search for things and for easy navigation. While many like to use a
-literate org-file for organizing their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring
-things in separate elisp files. The modules are organized thematically rather
-than package by package (e.g. the writing module contains the config for
-spelling and markdown mode). Note that while I have an early-init file for use
-with emacs 27+, the configuration should work with emacs 26+ on MacOS (though I
-haven't tested this in awhile), with the latest release (currently 28.1) being
-best.
+My config is based on a series of "modules" loaded in the [[file:config.el][config.el]] file. Please see [[https://github.com/Lambda-Emacs/lambda-emacs][Lambda-Emacs]] for the init file and the various config "helper" functions I use to search for things and for easy navigation. While many like to use a literate org-file for organizing their config I [[https://www.colinmclear.net/posts/emacs-configuration/][have reasons]] for preferring things in separate elisp files. The modules are organized thematically rather than package by package (e.g. the writing module contains the config for spelling and markdown mode). Note that while I have an early-init file for use with emacs 27+, the configuration should work with emacs 26+ on MacOS (though I haven't tested this in awhile), with the latest release (currently 28.1) being best.
 
 Some highlights of this emacs setup include:
 
-1. Short start up time -- emacs-init-time < 1 sec (though this may vary with
-   your system)
+1. Short start up time -- emacs-init-time < 1 sec (though this may vary with your system)
 3. Modal editing with [[https://github.com/meow-edit/meow][meow]]
-4. Comprehensive [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-keybindings.el][keybindings]] using [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] and [[https://github.com/meow-edit/meow][meow]], with spacebar as my leader key
-5. Sensible [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-settings.el][defaults]]
-6. [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-dired.el][Dired]] with sensible colors, settings, and useful extensions  
-7. Completion with [[https://github.com/minad/vertico][Vertico]] and [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-completion.el][related packages]]
+4. Comprehensive keybindings using [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] and [[https://github.com/meow-edit/meow][meow]], with spacebar as my leader key
+5. Sensible defaults
+6. Dired with sensible colors, settings, and useful extensions  
+7. Completion with [[https://github.com/minad/vertico][Vertico]] and related packages
 8. My own [[https://github.com/Lambda-Emacs/lambda-themes][Lambda-themes]], which has four distinct light and dark variants
 9. An attractive custom status-line -- [[https://github.com/Lambda-Emacs/lambda-line][Lambda-line]]
-10. Extensive [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-macos.el][MacOS integration]]
-11. Single frame, [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-tabs.el][tab-based]], [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-projects.el][project]] workflow leveraging project.el and tab-bar (both
+10. Extensive MacOS integration
+11. Single frame, tab-based, project workflow leveraging project.el and tab-bar (both
     built-in) with buffer-isolated [[https://github.com/mclear-tools/tabspaces][workspaces]]
-12. A configurable [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-splash.el][splash page]]
-13. A [[file:~/.emacs.d/lambda-library/lambda-setup/lem-setup-writing.el][writing-centric]] configuration with great [[~/.emacs.d/lambda-library/lambda-setup/lem-setup-citation.el][citation support]], markdown, [[https://github.com/jgm/pandoc][pandoc]],
-    dedicated [[~/.emacs.d/lambda-library/lambda-user/lem-setup-notes.el][functions for notes]], and [[~/.emacs.d/lambda-library/lambda-user/lem-setup-org.el][org-mode]]
+12. A configurable splash page
+13. A writing-centric configuration with great citation support, markdown, [[https://github.com/jgm/pandoc][pandoc]],
+    dedicated functions for notes, and org-mode
 
     
-For more information please take a look at the individual [[file:~/.emacs.d/lambda-library/lambda-setup/][configuration files]].
-Please note that I'm by no means a competent programmer, so I'm sure there are
-better ways of implementing many elements of this config. Suggestions are
-welcome!
+For more information please take a look at the individual configuration files in both this config, and in [[https://github.com/Lambda-Emacs/lambda-emacs][Lambda Emacs]]. Please note that I'm by no means a competent programmer, so I'm sure there are better ways of implementing many elements of this config. Suggestions are welcome!
 
 *** Screenshots
 These screenshots also feature [[https://github.com/Lambda-Emacs/lambda-line][Lambda-line]] and [[https://github.com/Lambda-Emacs/lambda-themes][Lambda-themes]]. 
