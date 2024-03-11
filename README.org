@@ -10,7 +10,7 @@ exists in the =lambda-user= directory, as part of the user-created configuration
 I use Emacs primarily for all my academic work in the humanities (for
 discussion of my view of text editors [[https://www.colinmclear.net/posts/texteditor/][see here]]) and the style of configuration
 tends in that direction (rather than opposed to, e.g., a programming language
-emphasis). I've tried to provide enough commentary on the configuration so thafull-body portrait, watercolor and ink, realistic yet ethereal, dungeons and dragons, meticulous detail, watercolor wash background it might be useful to those new to emacs or [[https://en.wikipedia.org/wiki/Text_editor][text-editors]] generally. 
+emphasis). I've tried to provide enough commentary on the configuration so that it might be useful to those new to emacs or [[https://en.wikipedia.org/wiki/Text_editor][text-editors]] generally. 
 
 One important thing to note is that the configuration uses [[https://wincent.com/wiki/Modal_editor][modal
 ]]keybindings---specifically [[https://github.com/meow-edit/meow][meow]]. I used [[http://www.vim.org][vim]] (or [[https://neovim.io][neovim]]) prior to emacs and I
