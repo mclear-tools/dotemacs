@@ -165,13 +165,11 @@
         (t
          (tab-bar-new-tab)
          (tab-bar-rename-tab "Email")
-         ;; (require 'org) ; need this for loading?
-         ;; (find-file (concat org-directory "mail.org"))
          (mu4e)
          (switch-to-buffer " *mu4e-main*"))))
 
 (defun cpm-display-buffer-email-managed-p (buffer-name action)
-  "Determine whether BUFFER-NAME is an org-agenda managed buffer."
+  "Determine whether BUFFER-NAME is an email managed buffer."
   (with-current-buffer buffer-name
     (or (derived-mode-p 'mu4e-main-mode)
         (derived-mode-p 'mu4e-headers-mode)

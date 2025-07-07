@@ -29,7 +29,7 @@
   ;; Tell package system to use homebrew mu4e. NOTE: This means that the user
   ;; must install mu & mu4e, which comes with it, on their system independently
   ;; of emacs.
-  :load-path "/opt/homebrew/share/emacs/site-lisp/mu/mu4e"
+  :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e"
   :commands (mu4e mu4e-compose-new mu4e-update-mail-and-index)
   :config/el-patch
   ;; Open mu org links in Email tab
@@ -389,7 +389,7 @@ the query (for links starting with 'query:')."
     (let* ((msg (mu4e-message-at-point))
            (id (cleanse-subject (mu4e-message-field msg :subject)))
            (attachdir (concat bulk-saved-attachments-dir "/" id))
-	       (parts (mu4e~view-gather-mime-parts))
+	       (parts (mu4e--view-gather-mime-parts))
            (handles '())
            (files '())
            dir)
@@ -891,6 +891,13 @@ the real email address"
 (use-package org-msg
   :after mu4e
   :config
+  ;; TEMP: Fix for sending messages
+  (defun my--ensure-text-not-read-only (orig &rest args)
+    (let ((inhibit-read-only t))
+      (remove-text-properties (point-min) (point-max) '(read-only nil))
+      (apply orig args)))
+  (advice-add 'message-send :around #'my--ensure-text-not-read-only)
+
   (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} ':t toc:nil author:nil email:nil \\n:t"
 	    org-msg-startup "hidestars inlineimages"
 	    org-msg-greeting-fmt nil
@@ -910,6 +917,13 @@ the real email address"
       ;; FIXME: Try remove auto-save hook *locally* to avoid multiple saved drafts
       (remove-hook 'auto-save-hook #'lem-full-auto-save t)))
   (add-hook 'org-msg-edit-mode-hook #'lem-org-msg-hooks)
+
+  (defun lem-disable-diff-hl-for-org-msg ()
+    "Disable diff-hl-mode in message-mode buffers when using org-msg."
+    (when (and (bound-and-true-p org-msg-mode)
+               (eq major-mode 'org-msg-edit-mode))
+      (diff-hl-mode -1)))
+  (add-hook 'lem-org-message-mode-hook #'lem-disable-diff-hl-for-org-msg)
 
   ;; Org HTML Styling
   (defconst cpm-org-msg-style

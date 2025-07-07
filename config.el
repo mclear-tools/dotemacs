@@ -43,9 +43,13 @@
 ;;;;; Tab workspaces
 
 (with-eval-after-load 'tabspaces
-  (setopt tabspaces-session-mode t
+  (setopt tabspaces-session t
+          tabspaces-session-auto-restore nil
+          tabspaces-fully-resolve-paths nil
+          tabspaces-include-path-name t
           tabspaces-session-file (concat lem-cache-dir "tabsession.el")
-          tabspaces-project-switch-commands #'project-find-file)
+          tabspaces-project-switch-commands #'project-find-file
+          tabspaces-include-buffers '("*scratch*" "*Messages*"))
   (defvar tabspaces-history nil
     "History of visited tabspaces."))
 
@@ -102,6 +106,25 @@
 (setq lem-citar-note  "${author-or-editor} (${year}): ${title}\n\n- Tags :: \n- PDF :: [[${file}][PDF Link]]\n\n\n#+BEGIN_SRC emacs-lisp :exports none\n(insert \"#+BEGIN_SRC bibtex\")\n(newline)\n(citar--insert-bibtex \"${=key=}\")\n(insert \"#+END_SRC\")\n#+END_SRC\n")
 
 ;;;;; Notes
+(with-eval-after-load (and 'denote
+                           'consult-notes)
+  (defun consult-notes-denote--insert-link (cand)
+    "Insert CAND in `consult-notes-denote' using `denote-link'."
+    (let* ((file (get-text-property 0 'denote-path cand))
+ 	       (file-type (denote-filetype-heuristics buffer-file-name))
+ 	       (description (denote--link-get-description file)))
+      (kill-buffer)
+      (denote-link file file-type description)))
+
+  (defun consult-notes-insert-link ()
+    "Find a file in a notes directory with consult-multi and insert it as a
+ link."
+    (interactive)
+    (if (not (bound-and-true-p consult-notes-denote-mode))
+        (message "`consult-notes-insert-link' currently only supports `consult-notes-denote-mode'.")
+      (consult-notes `((,@consult-notes-denote--source
+ 		                :action ,#'consult-notes-denote--insert-link))))))
+
 (with-eval-after-load (or 'consult-notes
                           'denote)
   ;; Consult Notes Setup
@@ -110,6 +133,7 @@
           consult-notes-file-dir-sources `(("Agenda Files" ?a ,(car org-agenda-files))
                                            ("Refile Notes" ?r ,(concat lem-notes-dir "refile-notes/")))
           consult-notes-ripgrep-args "rg --multiline --null --with-filename --line-buffered --color=never --max-columns=1000 --path-separator /\ --ignore-case --no-heading --line-number --hidden --glob=!.git/ --glob=!org-archive/ --glob=!templates/ -L --sortr=accessed")
+
   ;; Simplify annotation
   (defun cpm-consult-notes--file-dir-annotate (name dir cand)
     "Annotate file CAND with its directory DIR, size, and modification time."
@@ -139,7 +163,7 @@
     (setopt denote-directory (concat lem-notes-dir "denotes")
             denote-known-keywords '("emacs" "teaching" "unl" "workbook")
             denote-prompts '(title keywords subdirectory)
-            consult-notes-denote-display-id t
+            consult-notes-denote-display-id nil
             citar-denote-subdir t)
     (setopt consult-notes-denote-files-function (function denote-directory-text-only-files))
 
@@ -149,16 +173,17 @@
 #+date:    %s
 #+filetags:    %s
 #+identifier:  %s
-\n")))
+\n"))
+
+  ;; I use hugo so define a setup file variable
+  (defvar hugo-notebook-setup-file "~/Work/projects/notebook/content-org/hugo-notebook-setup.org"
+    "Variable for notebook setup using hugo."))
 
 
 
 
 
 
-;; ;; I use hugo so define a setup file variable
-;; (defvar hugo-notebook-setup-file "~/Work/projects/notebook/content-org/hugo-notebook-setup.org"
-;;   "Variable for notebook setup using hugo.")
 
 ;; (with-eval-after-load 'consult-notes
 ;;   ;; don't use setopt here since the macro won't eval the vars
@@ -394,6 +419,15 @@
 
 ;;;; User Packages
 
+;;;;; Emacs Everywhere
+;; Type everything in Emacs
+;; https://github.com/tecosaur/emacs-everywhere
+
+(use-package emacs-everywhere
+  :commands (emacs-everywhere)
+  :config
+  (setopt emacs-everywhere-clipboard-sleep-delay 0.1))
+
 ;;;;; Programming Modes
 
 ;;;;;; Applescript
@@ -409,13 +443,47 @@
 ;;;;;; HTML
 (use-package web-mode
   :commands (web-mode)
-  :mode ("\\.html$" . web-mode)
+  :mode (("\\.html$" . web-mode)
+         ("\\.hbs$"  . web-mode))
   :config
   (setq web-mode-enable-auto-pairing t
         web-mode-enable-auto-expanding t
         web-mode-enable-css-colorization t
         web-mode-enable-auto-closing t
-        web-mode-enable-auto-quoting t))
+        web-mode-enable-auto-quoting t
+        web-mode-enable-current-element-highlight t)
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-enable-auto-indentation nil))
+
+
+;;;;;; Javascript
+
+;; JS2-Mode for JavaScript
+(use-package js2-mode
+  :mode ("\\.js\\'" . js2-mode)
+  :config
+  (setq js2-highlight-level 3
+        js2-basic-offset 2 ;; Set indentation level to 2 spaces
+        js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil)
+  (add-hook 'js2-mode-hook 'js2-imenu-extras-mode))
+
+;; Eglot for LSP support
+(use-package eglot
+  :hook ((js2-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure))
+  :config
+  (add-to-list 'eglot-server-programs '((js2-mode typescript-mode) . ("typescript-language-server" "--stdio")))
+  (setq display-buffer-alist
+        '(("\\*eglot\\*"
+           (display-buffer-reuse-window
+            display-buffer-at-top)
+           (window-height . 0.2)
+           (window-parameters . ((no-other-window . t)
+                                 (no-delete-other-windows . t)))))))
+
 
 ;;;;;; Lua
 (use-package lua-mode

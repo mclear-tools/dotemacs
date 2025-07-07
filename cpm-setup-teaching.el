@@ -90,6 +90,9 @@
    ;;  (if (string/starts-with text "\\begin{NOTES}") ""))
    ((eq backend 'rst)
     (if (string/starts-with text ".. NOTES::") ""))
+   ((eq backend 'latex)
+    (let ((text (replace-regexp-in-string "\\\\begin{NOTES}" "\\\\begin{shadednote}" text)))
+      (replace-regexp-in-string "\\\\end{NOTES}" "\\\\end{shadednote}" text)))
    ((eq backend 'html)
     (if (string/starts-with text "<div class=\"NOTES\">") ""))
    ((eq backend 'beamer)
@@ -137,13 +140,16 @@
     (org-open-file (org-beamer-export-to-pdf nil t nil nil '(:latex-class "beamer-slides-no-notes")))))
 
 (defun cpm/org-export--file-beamer-no-notes ()
-  "Export org file slide content to useful custom style handout (PDF) form"
+  "Export org file slide content to a custom style handout (PDF) form without notes."
   (interactive)
-  (let ((org-export-exclude-tags '("slides")))
-    (save-excursion
-      (goto-char (point-min))
-      (org-beamer-export-to-pdf nil nil nil nil '(:latex-class "beamer-slides-no-notes")))))
-
+  (let* ((org-export-exclude-tags '("slides" "noexport"))
+         (org-latex-compiler "xelatex")
+         (output-file (save-excursion
+                        (goto-char (point-min))
+                        (org-beamer-export-to-pdf nil nil nil nil '(:latex-class "beamer-slides-no-notes"))))
+         (new-output-file (concat (file-name-sans-extension output-file) "-slides.pdf")))
+    (rename-file output-file new-output-file t)
+    (message "Exported to %s" new-output-file)))
 
 ;;; Handouts
 
@@ -162,10 +168,14 @@
 (defun cpm/org-export--file-beamer-handout ()
   "Export file content to PDF handout. Handout uses a distinctive quote style."
   (interactive)
-  (let ((org-latex-default-quote-environment "quote-b")
-        (org-latex-compiler "xelatex")
-        (org-export-exclude-tags '("slides" "noexport")))
-    (org-latex-export-to-pdf nil nil nil nil '(:latex-class "beamer-handout"))))
+  (let* ((org-latex-default-quote-environment "quote-b")
+         (org-latex-compiler "xelatex")
+         (org-export-exclude-tags '("slides" "noexport"))
+         (output-file (org-latex-export-to-pdf nil nil nil nil '(:latex-class "beamer-handout")))
+         (new-output-file (concat (file-name-sans-extension output-file) "-handout.pdf")))
+    (rename-file output-file new-output-file t)
+    (message "Exported to %s" new-output-file)))
+
 
 ;;; Notes
 

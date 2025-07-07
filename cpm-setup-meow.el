@@ -79,7 +79,7 @@
    '("j" . avy-goto-char-timer)
    '("J" . crux-top-join-line)
    '("k" . consult-yank-from-kill-ring)
-   '("l" . vertico-repeat-last)
+   '("l" . vertico-repeat)
    '("L" . consult-locate)
    '("M" . lem+compile-keys)
    '("n" . lem+notes-keys)
@@ -189,6 +189,14 @@
   (with-eval-after-load 'org
     ;; for use with meow movement
     (modify-syntax-entry ?@ "_" org-mode-syntax-table))
+  ;; make more compatible with magit
+  (add-to-list 'meow-mode-state-list '(magit-status-mode . normal))
+  (add-to-list 'meow-mode-state-list '(magit-log-mode . normal))
+  (add-to-list 'meow-grab-fill-commands 'magit-discard)
+  (defun my-magit-mode-hook ()
+    (local-unset-key (kbd "j"))
+    (local-unset-key (kbd "k")))
+  (add-hook 'magit-mode-hook 'my-magit-mode-hook)
   ;; start vterm in insert
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
   ;; start eshell in insert
