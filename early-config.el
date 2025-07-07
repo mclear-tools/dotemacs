@@ -34,6 +34,7 @@
 ;; Explicitly set packages for download/install or removal
 ;; Needs to be set before package initialization
 ;; https://www.olivertaylor.net/emacs/notes-on-package-el.html
+;; Updated for Emacs 30 - removed packages now built-in
 (setopt package-selected-packages '(;; utility
                                     async
                                     dash
@@ -91,7 +92,7 @@
                                     yasnippet-snippets
 
                                     ;; keybindings
-                                    which-key
+                                    ;; which-key - NOW BUILT INTO EMACS 30
 
                                     ;; navigation
                                     imenu-list
@@ -115,7 +116,7 @@
 
                                     ;; vc
                                     magit
-                                    git-commit
+                                    ;; git-commit
                                     diff-hl
                                     vdiff-magit
 
@@ -146,7 +147,8 @@
                                     auctex
                                     define-word
                                     osx-dictionary
-                                    visual-fill-column
+                                    ;; visual-fill-column - Use built-in visual-wrap-prefix-mode
+                                    typst-ts-mode
 
                                     ;; citation
                                     citeproc
@@ -169,7 +171,7 @@
                                     package-lint
                                     rainbow-delimiters
                                     puni
-                                    treesit-auto
+                                    ;; treesit-auto - Using built-in mode remapping instead
                                     vimrc-mode
                                     web-mode
                                     php-mode
@@ -179,9 +181,10 @@
                                     lua-mode
                                     yaml-mode
                                     rainbow-identifiers
-                                    auto-compile
+                                    ;; auto-compile - Native compilation now default in Emacs 30
                                     esxml
                                     kv
+                                    js2-mode
 
                                     ;; debug
                                     bug-hunter
@@ -193,7 +196,6 @@
 
                                     ;; eshell
                                     pcmpl-homebrew
-                                    pcmpl-git
                                     pcmpl-args
                                     pcomplete-extension
                                     esh-help
@@ -229,6 +231,9 @@
                                     org-msg
                                     mu4e-column-faces
 
+                                    ;; llm
+                                    gptel
+                                    
                                     ;; other
                                     command-log-mode
                                     xwidgets-reuse))
@@ -265,12 +270,11 @@
   (dolist (p package-selected-packages)
     (unless (package-installed-p p)
       (add-to-list 'lem-missing-packages p 'append)))
-  ;; Check vc installed packages (Emacs 29+)
-  (when (version< "29" emacs-version)
-    (message "%s" "Checking for missing vc packages.")
-    (dolist (p package-vc-selected-packages)
-      (unless (package-installed-p (car p))
-        (add-to-list 'lem-missing-vc-packages (car p) 'append)))))
+  ;; Check vc installed packages (built-in since Emacs 29)
+  (message "%s" "Checking for missing vc packages.")
+  (dolist (p package-vc-selected-packages)
+    (unless (package-installed-p (car p))
+      (add-to-list 'lem-missing-vc-packages (car p) 'append))))
 
 ;; Install packages
 (defun lem-install-missing-packages ()
