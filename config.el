@@ -776,6 +776,11 @@ current window, as a ratio between 0 and 1.")
   (save-buffer)
   (server-edit))
 
+
+;;;;; Magit
+(with-eval-after-load 'magit
+  (setopt magit-git-executable "/opt/homebrew/bin/git"))
+
 ;; Disable emacs vc for git; just use magit!
 ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
 
