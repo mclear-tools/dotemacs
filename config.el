@@ -165,7 +165,7 @@
             denote-prompts '(title keywords subdirectory)
             consult-notes-denote-display-id nil
             citar-denote-subdir t)
-    (setopt consult-notes-denote-files-function (function denote-directory-text-only-files))
+    (setopt consult-notes-denote-files-function (lambda () (denote-directory-files nil nil :text-only)))
 
     ;; Provide nicer spacing for denote note front matter
     (setq denote-org-front-matter
@@ -317,6 +317,7 @@
                                  ;; Shell & Terminal
                                  'lem-setup-shell
                                  'lem-setup-eshell
+                                 'lem-setup-llm
 
                                  ;; Org modules
                                  'lem-setup-org-base
@@ -635,6 +636,16 @@
 
 ;;;; User Functions
 
+;;;;; Remember Non-VC Projects
+
+(defun cpm-project-marker-find (dir)
+  "Find project DIR root by looking for .project marker file."
+  (when-let ((root (locate-dominating-file dir ".project")))
+    (cons 'marker: root)))
+
+(add-hook 'project-find-functions #'cpm-project-marker-find)
+
+
 ;;;;; Tab Numbers In Tab-Bar
 ;; Tab bar numbers
 (defface lem-tab-bar-numbers
@@ -736,7 +747,7 @@
                                  (map-elt selection 'pid)
                                  (map-elt selection 'user)
                                  (map-elt selection 'comm))))
-      (when (y-or-n-p (format "Kill? %s" prompt-title))
+      (when (y-or-n-p (format "Kill? %s?" prompt-title))
         (if (eq (signal-process (map-elt selection 'pid) 9) 0)
             (message "killed: %s" prompt-title)
           (message "error: could not kill %s" prompt-title))))))
@@ -745,8 +756,9 @@
 ;; https://www.n16f.net/blog/eye-level-window-centering-in-emacs/
 ;; NOTE: As value approaches 1 "center" goes to the bottom of the screen
 ;; A value between.15 and .25 seems best
-(defcustom lem-recenter-buffer-eye-level 0.25  "The relative position of the line considered as eye level in the
-current window, as a ratio between 0 and 1.")
+(defcustom lem-recenter-buffer-eye-level 0.25  "The relative position of the
+line considered as eye level in the current window is expressed as a ratio
+between 0 and 1.")
 
 (defun lem-recenter-buffer ()
   "Scroll the window so that the current line is at eye level."
