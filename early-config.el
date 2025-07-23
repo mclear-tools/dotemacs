@@ -252,7 +252,10 @@
                                       :url "https://github.com/lasvice/org-devonthink"
                                       :branch "master")
                                      (org-modern-indent
-                                      :url "https://github.com/jdtsmith/org-modern-indent")))
+                                      :url "https://github.com/jdtsmith/org-modern-indent")
+                                     (claudemacs
+                                      :url "https://github.com/cpoile/claudemacs"
+                                      :branch "main")))
 
 ;; Auto install the required packages
 ;; Set missing package vars
