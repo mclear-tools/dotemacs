@@ -817,6 +817,36 @@ between 0 and 1.")
          (set-fontset-font t nil "SF Pro Text" nil 'append)
          ;; Fix problematic characters in Claudemacs
          (set-fontset-font t ?✻ "Menlo" nil 'prepend)  ; Star character in welcome message
+        ;; Additional star variations
+        (set-fontset-font t ?★ "Menlo" nil 'prepend)  ; Black star
+        (set-fontset-font t ?☆ "Menlo" nil 'prepend)  ; White star
+        (set-fontset-font t ?✦ "Menlo" nil 'prepend)  ; Black four pointed star
+        (set-fontset-font t ?✧ "Menlo" nil 'prepend)  ; White four pointed star
+        (set-fontset-font t ?✶ "Menlo" nil 'prepend)  ; Six pointed black star
+        (set-fontset-font t ?✷ "Menlo" nil 'prepend)  ; White six pointed star
+        ;; Cross variations
+        (set-fontset-font t ?✕ "Menlo" nil 'prepend)  ; Multiplication X
+        (set-fontset-font t ?✖ "Menlo" nil 'prepend)  ; Heavy multiplication X
+        (set-fontset-font t ?✗ "Menlo" nil 'prepend)  ; Ballot X
+        (set-fontset-font t ?✘ "Menlo" nil 'prepend)  ; Heavy ballot X
+        (set-fontset-font t ?× "Menlo" nil 'prepend)  ; Multiplication sign
+        ;; Checkbox symbols
+        (set-fontset-font t ?☐ "Menlo" nil 'prepend)  ; Ballot box (empty checkbox)
+        (set-fontset-font t ?☑ "Menlo" nil 'prepend)  ; Ballot box with check
+        (set-fontset-font t ?☒ "Menlo" nil 'prepend)  ; Ballot box with X
+        (set-fontset-font t ?✓ "Menlo" nil 'prepend)  ; Check mark
+        (set-fontset-font t ?✔ "Menlo" nil 'prepend)  ; Heavy check mark
+        ;; Claude Code spinner and tool symbols
+        (set-fontset-font t ?· "Menlo" nil 'prepend)  ; Middle dot
+        (set-fontset-font t ?✢ "Menlo" nil 'prepend)  ; Four teardrop-spoked asterisk
+        (set-fontset-font t ?✳ "Menlo" nil 'prepend)  ; Eight spoked asterisk
+        (set-fontset-font t ?∗ "Menlo" nil 'prepend)  ; Asterisk operator
+        (set-fontset-font t ?✽ "Menlo" nil 'prepend)  ; Heavy teardrop-spoked asterisk
+        (set-fontset-font t ?⛏ "Menlo" nil 'prepend)  ; Pick
+        (set-fontset-font t ?⚒ "Menlo" nil 'prepend)  ; Hammer and pick
+        (set-fontset-font t ?⚔ "Menlo" nil 'prepend)  ; Crossed swords
+        (set-fontset-font t ?⚖ "Menlo" nil 'prepend)  ; Alembic
+        (set-fontset-font t ?❌ "Menlo" nil 'prepend)  ; Cross mark
          ;; SF font insert
          (require 'sf)))
   (setq-default line-spacing 0.0))
