@@ -813,12 +813,17 @@ between 0 and 1.")
          (set-face-attribute 'fixed-pitch       nil :inherit 'default)
          (set-face-attribute 'fixed-pitch-serif nil :inherit 'default)
          (set-face-attribute 'variable-pitch    nil :font "Metropolis-15" :weight 'normal)
-         ;; Allow SF font as a fallback
+         ;; Fallback font
          (set-fontset-font t nil "SF Pro Text" nil 'append)
+         ;; Fix problematic characters in Claudemacs
+         (set-fontset-font t ?✻ "Menlo" nil 'prepend)  ; Star character in welcome message
          ;; SF font insert
          (require 'sf)))
   (setq-default line-spacing 0.0))
 (add-hook 'window-setup-hook #'lem-user-fonts)
+
+
+
 
 (with-eval-after-load 'svg-tag-mode
   (setq svg-tag-tags
