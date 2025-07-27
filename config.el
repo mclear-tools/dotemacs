@@ -636,16 +636,6 @@
 
 ;;;; User Functions
 
-;;;;; Remember Non-VC Projects
-
-(defun cpm-project-marker-find (dir)
-  "Find project DIR root by looking for .project marker file."
-  (when-let ((root (locate-dominating-file dir ".project")))
-    (cons 'marker: root)))
-
-(add-hook 'project-find-functions #'cpm-project-marker-find)
-
-
 ;;;;; Tab Numbers In Tab-Bar
 ;; Tab bar numbers
 (defface lem-tab-bar-numbers
